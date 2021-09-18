@@ -1,0 +1,37 @@
+table {
+    border: 1px solid #000;
+    border-radius: 10px;
+    border-spacing: 1;
+    box-shadow: 2px 2px 2px #ccc;
+    border-spacing: 0;
+    width: 97%;
+    background-color: #fff;
+    margin-left:1.6% ;
+  }
+  
+  table tr {
+    text-align: center;
+  }
+  table td,
+  table th {
+    border-right: 1px solid #000;
+    /*设置表格单元格外边框，只设置右下边框*/
+    border-bottom: 1px solid #000;
+    padding: 10px;
+    /*设置单元格内边距，单元格内容显得不拥挤*/
+    text-align: center;
+    width: 600px;
+  }
+  tr:last-child td:first-child {
+    border-radius: 0 0 0 10px;
+  }
+  tr:last-child td:last-child {
+    border-radius: 0 0 10px 0;
+  }
+  tr:last-child td {
+    border-bottom: none;
+  }
+  tr td:last-child,
+  tr th:last-child {
+    border-right: none;
+  }
