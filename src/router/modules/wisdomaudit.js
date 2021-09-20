@@ -130,41 +130,7 @@ const wisdomauditRouter = {
       meta: {
         title: '数据管理'
       }
-    },
-    {
-      path: 'riskwarning',
-      name: 'riskwarning',
-      component: () => import('@WISDOMAUDIT/views/audit/riskwarning'),
-      meta: {
-        title: '风险提示'
-      },
-      hidden: true
-    },
-    {
-      path: 'manageSuggest',
-      name: 'manageSuggest',
-      component: () => import('@WISDOMAUDIT/views/audit/manageSuggest'),
-      meta: {
-        title: '管理建议'
-      },
-      hidden: true
-    },
-    {
-      path: 'statisticsReport',
-      name: 'statisticsReport',
-      component: () => import('@WISDOMAUDIT/views/audit/statisticsReport'),
-      meta: {
-        title: '模型管理'
-      },
-    },
-    {
-      path: 'statisticsReport',
-      name: 'statisticsReport',
-      component: () => import('@WISDOMAUDIT/views/audit/statisticsReport'),
-      meta: {
-        title: '系统管理'
-      },
-    },
+    }
   ]
 }
 
