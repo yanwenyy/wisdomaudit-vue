@@ -69,9 +69,9 @@
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { listByPage, save, update, del, getAuditedTree, getAllPerson } from '@WISDOMAUDIT/api/wisdomaudit/project'
+import { listByPage, save, update, del, getAuditedTree, getAllPerson } from '@SDMOBILE/api/sdmobile/project'
 import QueryField from '@/components/public/query-field/index'
-import { getMemberList, saveMember, deleteAllProjectMemberById } from '@WISDOMAUDIT/api/wisdomaudit/projectmember'
+import { getMemberList, saveMember, deleteAllProjectMemberById } from '@SDMOBILE/api/sdmobile/projectmember'
 import _ from 'lodash'
 import axios from 'axios'
 

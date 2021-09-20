@@ -1,5 +1,5 @@
 <template>
-  <div class="page-container indocator">
+  <div class="page-container">
     <div class="filter-container">
       <QueryField
         ref="queryfield"
@@ -59,12 +59,12 @@
         align="center"
       />
       <el-table-column
-        label="管理建议名称"
-        prop="manageSuggestName"
+        label="风险提示名称"
+        prop="riskWarningName"
       >
         <template slot-scope="scope">
-          <el-link :underline="false" type="primary" @click="findManageSuggest(scope.row)">
-            {{ scope.row.manageSuggestName }}</el-link>
+          <el-link :underline="false" type="primary" @click="findRiskWarning(scope.row)">
+            {{ scope.row.riskWarningName }}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="项目名称">
@@ -75,9 +75,9 @@
         prop="businessType"
       />
       <el-table-column
-        label="管理建议描述"
+        label="风险提示描述"
         show-overflow-tooltip
-        prop="manageSuggestDesc"
+        prop="riskWarningDesc"
       />
       <el-table-column
         label="创建时间"
@@ -121,12 +121,12 @@
         class="detail-form"
       >
         <el-form-item
-          label="管理建议名称"
-          prop="manageSuggestName"
+          label="风险提示名称"
+          prop="riskWarningName"
         >
           <el-input
-            v-model="temp.manageSuggestName"
-            :placeholder="disableUpdate === true ? '' : '请输入管理建议名称'"
+            v-model="temp.riskWarningName"
+            :placeholder="disableUpdate === true ? '' : '请输入风险提示名称'"
             :disabled="disableUpdate"
           />
         </el-form-item>
@@ -137,12 +137,12 @@
           <el-input v-model="temp.businessType" :placeholder="disableUpdate === true ? '' : '请输入业务分类'" :disabled="disableUpdate" />
         </el-form-item>
         <el-form-item
-          label="管理建议描述"
-          prop="manageSuggestDesc"
+          label="风险提示描述"
+          prop="riskWarningDesc"
         >
           <el-input
-            v-model="temp.manageSuggestDesc"
-            :placeholder="disableUpdate === true ? '' : '请输入管理建议描述'"
+            v-model="temp.riskWarningDesc"
+            :placeholder="disableUpdate === true ? '' : '请输入风险提示描述'"
             type="textarea"
             :disabled="disableUpdate"
           />
@@ -167,7 +167,7 @@
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { listByPage, save, update, del, listProjectByPage } from '@SDMOBILE/api/sdmobile/managesuggest'
+import { listByPage, save, update, del, listProjectByPage } from '@SDMOBILE/api/sdmobile/riskwarning'
 import QueryField from '@/components/public/query-field/index'
 import _ from 'lodash'
 import axios from 'axios'
@@ -192,18 +192,18 @@ export default {
   },
   data() {
     return {
-      tableKey: 'manageSuggestUuid',
+      tableKey: 'riskWarningUuid',
       list: null,
       total: 0,
       listLoading: false,
       projectlist: null,
       // text 精确查询   fuzzyText 模糊查询  select下拉框  timePeriod时间区间
       queryFields: [
-        { label: '管理建议名称', name: 'manageSuggestName', type: 'text', value: '' },
+        { label: '风险提示名称', name: 'riskWarningName', type: 'text', value: '' },
         { label: '业务分类', name: 'businessType', type: 'text', value: '' },
         { label: '创建时间', name: 'createTime', type: 'timePeriod', value: '' }
       ],
-      // 查询管理建议提示条件
+      // 查询风险提示条件
       pageQuery: {
         condition: {},
         pageNo: 1,
@@ -226,9 +226,9 @@ export default {
         createUserName: null,
         createUserUuid: null,
         projectUuid: null,
-        manageSuggestDesc: null,
-        manageSuggestName: null,
-        manageSuggestUuid: null,
+        riskWarningDesc: null,
+        riskWarningName: null,
+        riskWarningUuid: null,
         updateTime: null,
         updateUserName: null,
         updateUserUuid: null
@@ -237,17 +237,15 @@ export default {
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: '修改管理建议',
-        create: '新增管理建议',
-        show: '查看管理建议'
+        update: '修改风险提示',
+        create: '新增风险提示',
+        show: '查看风险提示'
       },
       // 新增的表单验证
       rules: {
-        manageSuggestName: [{ required: true, message: '请填写管理建议名称', trigger: 'change' },
-          { max: 100, message: '管理建议名称在100个字符之内', trigger: 'change' }],
-        manageSuggestDesc: [{ max: 500, message: '管理建议描述在500个字符之内', trigger: 'change' }],
-        businessType: [{ required: false, message: '请填写业务分类', trigger: 'change' },
-          { max: 100, message: '业务分类在100个字符之内', trigger: 'change' }]
+        riskWarningName: [{ required: true, message: '请填写风险提示名称', trigger: 'change' },
+          { max: 100, message: '风险提示名称在100个字符之内', trigger: 'change' }],
+        riskWarningDesc: [{ max: 500, message: '风险提示描述在500个字符之内', trigger: 'change' }],
       },
       disableUpdate: false,
       closeStatus: false,
@@ -266,7 +264,7 @@ export default {
     this.getList()
   },
   methods: {
-    findManageSuggest(data) {
+    findRiskWarning(data) {
       this.closeStatus = true
       this.disableUpdate = true
       this.temp = Object.assign({}, data) // copy obj
@@ -310,9 +308,9 @@ export default {
         createUserName: null,
         createUserUuid: null,
         projectUuid: null,
-        manageSuggestDesc: null,
-        manageSuggestName: null,
-        manageSuggestUuid: null,
+        riskWarningDesc: null,
+        riskWarningName: null,
+        riskWarningUuid: null,
         updateTime: null,
         updateUserName: null,
         updateUserUuid: null
@@ -362,7 +360,7 @@ export default {
           this.temp.projectUuid = this.projectId
           const tempData = Object.assign({}, this.temp)
           update(tempData).then(() => {
-            const index = this.list.findIndex(v => v.manageSuggestUuid === this.temp.manageSuggestUuid)
+            const index = this.list.findIndex(v => v.riskWarningUuid === this.temp.riskWarningUuid)
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false
             this.getList()
@@ -384,7 +382,7 @@ export default {
         type: 'warning'
       }).then(() => {
         var ids = []
-        this.selections.forEach((r, i) => { ids.push(r.manageSuggestUuid) })
+        this.selections.forEach((r, i) => { ids.push(r.riskWarningUuid) })
         del(ids.join(',')).then(() => {
           this.getList()
           this.$notify({
@@ -427,12 +425,12 @@ export default {
       // 创建表单对象
       const formData = new FormData()
       // 后端接受参数 ，可以接受多个参数
-      formData.append('manageSuggestFile', this.file)
+      formData.append('riskWarningFile', this.file)
       formData.append('uploadFileName', 'git')
       formData.append('uploadFileContentType', suffix)
       var num = Math.random()
       axios({
-        url: `/sdmobile/manageSuggest/importFiles?${num}`,
+        url: `/sdmobile/riskWarning/importFiles?${num}`,
         method: 'post',
         data: formData
       }).then((res) => {
@@ -456,7 +454,7 @@ export default {
       }).catch(() => {
         this.$notify({
           title: this.$t('message.title'),
-          message: '导入建议时发生异常',
+          message: '导入项目时发生异常',
           type: 'error',
           duration: 2000,
           position: 'bottom-right'
@@ -465,10 +463,10 @@ export default {
       })
     },
     handleDownload() {
-      // 下载管理建议模板excel
+      // 下载风险提示模板excel
       axios({
         method: 'get',
-        url: `/sdmobile/manageSuggest/downloadManageSuggestTemplate`,
+        url: `/sdmobile/riskWarning/downloadRiskWarningTemplate`,
         responseType: 'blob'
       }).then((res) => {
         // if (res.code !== 0) this.$message.error(res.msg)

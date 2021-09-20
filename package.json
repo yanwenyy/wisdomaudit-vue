@@ -1,5 +1,5 @@
 {
-  "name": "wisdomaudit-vue",
+  "name": "sdmobile-vue",
   "version": "1.0.12",
   "description": "A vue admin template with Element UI & axios & iconfont & permission control & lint",
   "author": "dara",
@@ -14,6 +14,8 @@
     "test:ci": "npm run lint && npm run test:unit"
   },
   "dependencies": {
+    "ag-grid-community": "^23.2.1",
+    "ag-grid-vue": "^23.2.1",
     "axios": "0.18.1",
     "core-js": "3.6.5",
     "echarts": "5.1.2",

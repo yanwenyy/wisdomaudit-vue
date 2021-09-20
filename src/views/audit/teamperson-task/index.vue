@@ -48,13 +48,19 @@
         <span>新增</span>
       </div>
       </el-tab-pane>
-      <el-tab-pane label="审计任务维护" name="second">已操作的资料列表</el-tab-pane>
+      <el-tab-pane label="审计任务维护" name="second">
+        <TaskMaintenance />
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
 <script>
+import TaskMaintenance from '@/views/audit/task-maintenance/index'
 export default {
+  components:{
+    TaskMaintenance
+  },
      data() {
       return {
         activeName: 'first',

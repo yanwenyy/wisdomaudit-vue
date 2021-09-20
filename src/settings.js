@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'wisdomaudit',
+  title: 'sdmobile',
 
   /**
    * @type {boolean} true | false

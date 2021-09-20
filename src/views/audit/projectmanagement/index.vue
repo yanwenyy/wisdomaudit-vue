@@ -46,37 +46,64 @@
     </el-table>
 
     <el-dialog title="新增" :visible.sync="addDialogVisible" width="50%">
-        <div class="addForm">
-            <el-form label-width="100px" >
+      <div class="addForm">
+        <el-form label-width="100px">
           <el-row>
             <el-form-item label="项目编号:">
-              <el-input placeholder="hk123456789" >
-               </el-input>
+              <el-input placeholder="hk123456789"> </el-input>
             </el-form-item>
           </el-row>
           <el-row>
             <el-form-item label="项目分类:">
-               <el-select placeholder="专项"></el-select>
+              <el-select placeholder="专项"></el-select>
             </el-form-item>
           </el-row>
-           <el-row>
+          <el-row>
             <el-form-item label="项目名称:">
-               <el-input placeholder="请输入" >
-               </el-input>
+              <el-input placeholder="请输入"> </el-input>
             </el-form-item>
           </el-row>
-           <el-row>
+          <el-row>
             <el-form-item label="项目负责人:">
-               <el-select placeholder="请输入"></el-select>
+              <el-select placeholder="请输入"></el-select>
             </el-form-item>
           </el-row>
-           <el-row>
+          <el-row>
             <el-form-item label="审计期间:">
-               
+              <el-date-picker type="date" placeholder="请选择"></el-date-picker>
             </el-form-item>
+            <el-form-item label="设置组长"> 123 </el-form-item>
+            <el-table :data="leaderData" style="width: 100%" border>
+              <el-table-column label="项目编号" prop="projectItem" width="150">
+              </el-table-column>
+              <el-table-column prop="auditee" label="被审计单位">
+                <el-input
+                  placeholder="请输入"
+                  v-model="leaderData.auditee"
+                  class="auditeeInput"
+                ></el-input>
+              </el-table-column>
+              <el-table-column prop="role" label="角色" width="100">
+              </el-table-column>
+              <el-table-column prop="personCharge" label="负责人">
+                <el-select placeholder="请选择" class="auditeeInput">
+                  <el-option label="是" value="shi"></el-option>
+                  <el-option label="否" value="fou"></el-option>
+                </el-select>
+              </el-table-column>
+              <el-table-column label="操作" width="80">
+                <template>
+                  <el-button type="primary">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <div class="addIcon">
+              <i class="el-icon-plus"></i>
+              <span>新增</span>
+            </div>
           </el-row>
         </el-form>
-        </div>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -139,6 +166,14 @@ export default {
           address: "上海市普陀区金沙江路 1516 弄",
         },
       ],
+      leaderData: [
+        {
+          projectItem: "hk123456",
+          auditee: "",
+          role: "组长",
+          personCharge: "",
+        },
+      ],
     };
   },
   methods: {
@@ -156,15 +191,30 @@ export default {
     background: #4bdcb4 !important;
   }
 }
-.addForm{
+.addForm {
   margin-top: 2%;
-  .el-select,.el-input{
+  .el-select,
+  .el-input {
     position: relative;
     top: -35px;
-    width:400px;
+    width: 400px;
   }
-  .el-form-item{
+  .el-form-item {
     margin-bottom: -25px !important;
+  }
+  .auditeeInput {
+    position: relative;
+    top: 0px !important;
+    width: 200px;
+  }
+  .addIcon {
+    background-color: #fff;
+    width: 100%;
+    padding: 10px;
+    color: #128ad7;
+    text-align: center;
+    border: 1px solid #ebeef2;
+    cursor: pointer;
   }
 }
 </style>

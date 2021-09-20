@@ -6,7 +6,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'wisdomaudit' // page title
+const name = defaultSettings.title || 'sdmobile' // page title
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
@@ -39,13 +39,13 @@ module.exports = {
     // before: require('./mock/mock-server.js'),
     proxy: {
       // etl调度模块调用的地址
-      // '/wisdomaudit/': {
+      // '/sdmobile/': {
       //   timeout: 1800000,
       //   target: process.env.PRODUCTION_API,
-      //   // target: 'http://localhost:1095/wisdomaudit',
+      //   // target: 'http://localhost:1095/sdmobile',
       //   changeOrigin: true,
       //   pathRewrite: {
-      //     '^/wisdomaudit/': '/'
+      //     '^/sdmobile/': '/'
       //   }
       // },
       '/base/': {
@@ -73,7 +73,7 @@ module.exports = {
     resolve: {
       alias: {
         '@': resolve('src'),
-        '@WISDOMAUDIT': resolve('src')
+        '@SDMOBILE': resolve('src')
       }
     }
   },

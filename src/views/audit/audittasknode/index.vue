@@ -35,8 +35,8 @@
   </div>
 </template>
 <script>
-import { listByPage } from '@WISDOMAUDIT/api/wisdomaudit/project'
-import { getTaskNodeTree } from '@WISDOMAUDIT/api/wisdomaudit/audittasknode'
+import { listByPage } from '@SDMOBILE/api/sdmobile/project'
+import { getTaskNodeTree } from '@SDMOBILE/api/sdmobile/audittasknode'
 
 export default {
   components: {

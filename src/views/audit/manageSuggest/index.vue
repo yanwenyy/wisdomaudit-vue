@@ -1,5 +1,5 @@
 <template>
-  <div class="page-container indocator">
+  <div class="page-container">
     <div class="filter-container">
       <QueryField
         ref="queryfield"

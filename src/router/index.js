@@ -1,7 +1,17 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import wisdomauditRouter from './modules/wisdomaudit'
+import sdmobileRouter from './modules/sdmobile'
+import riskmonitoringRouter from './modules/riskmonitoring'
+import auditoverviewRouter from './modules/auditoverview'
+import projectRouter from './modules/project'
+import rectificationRouter from './modules/rectification'
+import knowledgebaseRouter from './modules/knowledgebase'
+import modelmanagementRouter from './modules/modelmanagement'
+import systemmanagementRouter from './modules/systemmanagement'
+
+
+
 
 Vue.use(Router)
 
@@ -34,13 +44,13 @@ import Layout from '@/layout'
  */
 export const constantRoutes = [{
   path: '/login',
-  component: () => import('@WISDOMAUDIT/views/login'),
+  component: () => import('@SDMOBILE/views/login'),
   hidden: true
 },
 
 {
   path: '/404',
-  component: () => import('@WISDOMAUDIT/views/404'),
+  component: () => import('@SDMOBILE/views/404'),
   hidden: true
 },
 
@@ -52,11 +62,18 @@ export const constantRoutes = [{
   //   {
   //     path:'/audit/accountableAdd',
   //     component: () => import('@/views/audit/project/accountableAdd.vue')
-  //   }
+  //   } 
   // ]
 },
 
-wisdomauditRouter,
+sdmobileRouter,
+auditoverviewRouter,
+riskmonitoringRouter,
+projectRouter,
+rectificationRouter,
+knowledgebaseRouter,
+modelmanagementRouter,
+systemmanagementRouter,
 // 404 page must be placed at the end !!!
 {
   path: '*',
