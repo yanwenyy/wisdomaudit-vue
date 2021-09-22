@@ -96,9 +96,9 @@
               style="width: 200px"
             ></el-input>
           </el-table-column>
-          <el-table-column prop="role" label="联系方式"> </el-table-column>
-          <el-table-column prop="role" label="所属单位"> </el-table-column>
-          <el-table-column prop="role" label="所属部门"> </el-table-column>
+          <el-table-column prop="mobile" label="联系方式"> </el-table-column>
+          <el-table-column prop="company" label="所属单位"> </el-table-column>
+          <el-table-column prop="Department" label="所属部门"> </el-table-column>
 
           <el-table-column prop="personCharge" label="是否接口人" width="280">
             <el-select placeholder="请选择" class="auditeeInput">
@@ -107,12 +107,12 @@
             </el-select>
           </el-table-column>
           <el-table-column label="操作" width="80">
-            <template>
-              <el-button type="text" style="color: #db454b">删除</el-button>
+            <template slot-scope="scope">
+              <el-button type="text" style="color: #db454b" @click.native.prevent="deleteRow(scope.$index, leaderData)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
-        <div class="addIcon">
+        <div class="addIcon" @click="addData">
           <i class="el-icon-plus"></i>
           <span>添 加</span>
         </div>
@@ -321,6 +321,9 @@ export default {
       leaderData: [
         {
           projectItem: "hk123456",
+          mobile:'13564578989',
+          company:'审计局',
+          Department:'事业部',
           auditee: "",
           role: "组长",
           personCharge: "",
@@ -343,7 +346,21 @@ export default {
     },
     prevoius(){
       this.step = 1
-    }
+    },
+     deleteRow(index, rows) {
+      rows.splice(index, 1);
+    },
+     addData() {
+      // alert(11);
+      this.leaderData.push({
+        projectItem: "hk123456",
+         mobile:'13564578989',
+          company:'审计局',
+          Department:'事业部',
+        role: "组长",
+        personCharge: "",
+      });
+    },
   },
   created() {},
   mounted() {},
@@ -588,6 +605,7 @@ export default {
 
 .stepBtn{
   /* border: 1px solid red; */
+  margin-top: 5%;
   text-align: center;
 }
 .addAudit .nextBtn{

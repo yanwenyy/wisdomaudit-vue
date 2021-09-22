@@ -4,7 +4,7 @@
       <el-col :span="17">
         <!-- 添加按钮 -->
         <el-button type="success" class="addBtn" @click="addProject"
-          >添加</el-button
+          >新增审计项目</el-button
         >
       </el-col>
       <el-col :span="5">
@@ -42,7 +42,18 @@
       <el-table-column prop="address" label="审计期间"> </el-table-column>
       <el-table-column prop="address" label="创建人"> </el-table-column>
       <el-table-column prop="address" label="创建日期"> </el-table-column>
-      <el-table-column label="操作"></el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button
+            type="text"
+            style="color: #db454b"
+            size="small"
+            @click.native.prevent="deleteRow(scope.$index, tableData)"
+          >
+            删除
+          </el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <el-dialog title="新增" :visible.sync="addDialogVisible" width="50%">
@@ -77,27 +88,42 @@
               <el-table-column label="项目编号" prop="projectItem" width="150">
               </el-table-column>
               <el-table-column prop="auditee" label="被审计单位">
-                <el-input
-                  placeholder="请输入"
-                  v-model="leaderData.auditee"
-                  class="auditeeInput"
-                ></el-input>
+                <template scope="scope">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="scope.row.auditee"
+                    class="auditeeInput"
+                  ></el-input>
+                </template>
               </el-table-column>
               <el-table-column prop="role" label="角色" width="100">
               </el-table-column>
               <el-table-column prop="personCharge" label="负责人">
-                <el-select placeholder="请选择" class="auditeeInput">
-                  <el-option label="是" value="shi"></el-option>
-                  <el-option label="否" value="fou"></el-option>
-                </el-select>
+                <template scope="scope">
+                  <el-select
+                    placeholder="请选择"
+                    class="auditeeInput"
+                    v-model="scope.row.personCharge"
+                  >
+                    <el-option label="是" value="shi"></el-option>
+                    <el-option label="否" value="fou"></el-option>
+                  </el-select>
+                </template>
               </el-table-column>
               <el-table-column label="操作" width="80">
-                <template>
-                  <el-button type="primary">删除</el-button>
+                <template slot-scope="scope">
+                  <el-button
+                    type="text"
+                    style="color: #db454b"
+                    size="small"
+                    @click.native.prevent="deleteRow(scope.$index, leaderData)"
+                  >
+                    删除
+                  </el-button>
                 </template>
               </el-table-column>
             </el-table>
-            <div class="addIcon">
+            <div class="addIcon" @click="addData">
               <i class="el-icon-plus"></i>
               <span>新增</span>
             </div>
@@ -180,6 +206,18 @@ export default {
     addProject() {
       this.addDialogVisible = true;
     },
+    addData() {
+      // alert(11);
+      this.leaderData.push({
+        projectItem: "hk123456",
+        auditee: "",
+        role: "组长",
+        personCharge: "",
+      });
+    },
+    deleteRow(index, rows) {
+      rows.splice(index, 1);
+    },
   },
 };
 </script>
@@ -215,6 +253,7 @@ export default {
     text-align: center;
     border: 1px solid #ebeef2;
     cursor: pointer;
+    margin-bottom: 5%;
   }
 }
 </style>
