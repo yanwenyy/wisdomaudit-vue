@@ -39,15 +39,15 @@ module.exports = {
     // before: require('./mock/mock-server.js'),
     proxy: {
       // etl调度模块调用的地址
-      // '/sdmobile/': {
-      //   timeout: 1800000,
-      //   target: process.env.PRODUCTION_API,
-      //   // target: 'http://localhost:1095/sdmobile',
-      //   changeOrigin: true,
-      //   pathRewrite: {
-      //     '^/sdmobile/': '/'
-      //   }
-      // },
+      '/sdmobile/': {
+        timeout: 1800000,
+        target: process.env.SDMOBILE_API,
+        // target: 'http://localhost:1095/sdmobile',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/sdmobile/': '/'
+        }
+      },
       '/base/': {
         timeout: 1800000,
         target: process.env.AMSBASE_API,

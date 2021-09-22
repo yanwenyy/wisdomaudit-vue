@@ -88,27 +88,41 @@
         <el-table :data="leaderData" style="width: 100%" border>
           <el-table-column label="角色" prop="projectItem" width="150">
           </el-table-column>
-          <el-table-column prop="auditee" label="姓名" width="250">
-            <el-input
-              placeholder="请输入"
-              v-model="leaderData.auditee"
-              class="auditeeInput"
-              style="width: 200px"
-            ></el-input>
+          <el-table-column prop="name" label="姓名" width="250">
+            <template slot-scope="scope">
+              <el-input
+                placeholder="请输入"
+                v-model="scope.row.name"
+                class="auditeeInput"
+                style="width: 200px"
+              ></el-input>
+            </template>
           </el-table-column>
           <el-table-column prop="mobile" label="联系方式"> </el-table-column>
           <el-table-column prop="company" label="所属单位"> </el-table-column>
-          <el-table-column prop="Department" label="所属部门"> </el-table-column>
+          <el-table-column prop="Department" label="所属部门">
+          </el-table-column>
 
           <el-table-column prop="personCharge" label="是否接口人" width="280">
-            <el-select placeholder="请选择" class="auditeeInput">
-              <el-option label="是" value="shi"></el-option>
-              <el-option label="否" value="fou"></el-option>
-            </el-select>
+            <template slot-scope="scope">
+              <el-select
+                placeholder="请选择"
+                class="auditeeInput"
+                v-model="scope.row.personCharge"
+              >
+                <el-option label="是" value="shi"></el-option>
+                <el-option label="否" value="fou"></el-option>
+              </el-select>
+            </template>
           </el-table-column>
           <el-table-column label="操作" width="80">
             <template slot-scope="scope">
-              <el-button type="text" style="color: #db454b" @click.native.prevent="deleteRow(scope.$index, leaderData)">删除</el-button>
+              <el-button
+                type="text"
+                style="color: #db454b"
+                @click.native.prevent="deleteRow(scope.$index, leaderData)"
+                >删除</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -170,8 +184,8 @@
         </div>
         <div v-else-if="radio == '2'" class="selfTask">
           <el-form label-width="80px">
-            <el-form-item label="类型：" style="margin-bottom:50px">
-              <div style="margin-top: -7.7%;margin-bottom:20px">
+            <el-form-item label="类型：" style="margin-bottom: 50px">
+              <div style="margin-top: -7.7%; margin-bottom: 20px">
                 <el-radio v-model="radio" label="1">模型任务</el-radio>
                 <el-radio v-model="radio" label="2">自建任务</el-radio>
               </div>
@@ -180,7 +194,11 @@
               <el-input placeholder="请输入"></el-input>
             </el-form-item>
             <el-form-item label="责任人：">
-              <el-select placeholder="请选择" class="auditeeInput">
+              <el-select
+                placeholder="请选择"
+                class="auditeeInput"
+                v-model="value"
+              >
                 <el-option label="是" value="shi"></el-option>
                 <el-option label="否" value="fou"></el-option>
               </el-select>
@@ -209,14 +227,14 @@
             </el-form-item>
           </el-form>
         </div>
-        
+
         <div class="stepBtn">
           <el-button @click="prevoius">上一步</el-button>
           <el-button class="nextBtn">完成</el-button>
         </div>
       </div>
 
-       <!-- <span slot="footer" class="dialog-footer">
+      <!-- <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button @click="dialogVisible = false" class="nextBtn"
           >下一步</el-button
@@ -228,7 +246,6 @@
 
 <script>
 export default {
-  components: {},
   data() {
     return {
       radio: "1",
@@ -260,6 +277,7 @@ export default {
         },
       ],
       value: "",
+      input3: "",
       tableData: [
         {
           date: "2016-05-03",
@@ -321,11 +339,10 @@ export default {
       leaderData: [
         {
           projectItem: "hk123456",
-          mobile:'13564578989',
-          company:'审计局',
-          Department:'事业部',
-          auditee: "",
-          role: "组长",
+          name: "",
+          mobile: "13564578989",
+          company: "审计局",
+          Department: "事业部",
           personCharge: "",
         },
       ],
@@ -336,27 +353,28 @@ export default {
   methods: {
     // 新增
     new_add() {
+      this.step = 1;
       this.addDialogVisible = true;
     },
     deleteRow(index, rows) {
       rows.splice(index, 1);
     },
-    nextBtn(){
-      this.step = 2
+    nextBtn() {
+      this.step = 2;
     },
-    prevoius(){
-      this.step = 1
+    prevoius() {
+      this.step = 1;
     },
-     deleteRow(index, rows) {
+    deleteRow(index, rows) {
       rows.splice(index, 1);
     },
-     addData() {
+    addData() {
       // alert(11);
       this.leaderData.push({
         projectItem: "hk123456",
-         mobile:'13564578989',
-          company:'审计局',
-          Department:'事业部',
+        mobile: "13564578989",
+        company: "审计局",
+        Department: "事业部",
         role: "组长",
         personCharge: "",
       });
@@ -603,13 +621,13 @@ export default {
   margin: 1% 0 2% 0;
 }
 
-.stepBtn{
+.stepBtn {
   /* border: 1px solid red; */
   margin-top: 5%;
   text-align: center;
 }
-.addAudit .nextBtn{
-   background: #508ce6 !important;
+.addAudit .nextBtn {
+  background: #508ce6 !important;
   color: #fff;
 }
 .addPerson .nextBtn {
@@ -638,7 +656,7 @@ export default {
 .selfTask .el-form-item {
   margin-bottom: -10px !important;
 }
-.upload-demo{
+.upload-demo {
   margin-top: -35px;
 }
 </style>
