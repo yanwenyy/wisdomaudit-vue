@@ -99,8 +99,8 @@ const riskmonitoringRouter =
     },
 
     {
-      path: 'numriskMonitoring',
-      name: 'numriskMonitoring',
+      path: 'numriskMonitoData',
+      name: 'numriskMonitoData',
       component: AppMain,
       // redirect: '/numriskMonitoring/notification',
       children:[
