@@ -9,6 +9,8 @@
         <el-button class="gary-border">查看指标结果</el-button>
       </div>
     </div>
+    <!-- @sort-change="sortChange"
+      @selection-change="handleSelectionChange" -->
     <el-table
       :key="tableKey"
       v-loading="listLoading"
@@ -19,8 +21,6 @@
       highlight-current-row
       height="calc(100vh - 300px)"
       max-height="calc(100vh - 300px)"
-      @sort-change="sortChange"
-      @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" align="center" />
       <el-table-column label="指标类型" prop="type" />
@@ -160,10 +160,10 @@ export default {
   },
   watch: {},
   created() {
-    this.getlist()
+    this.getList()
   },
   methods: {
-    getlist() {
+    getList() {
       this.list = [
         {
           type: "xxx",
