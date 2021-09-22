@@ -29,6 +29,14 @@ const riskmonitoringRouter =
                 title: '项目工作台'
             }
         },
+        {
+            path: 'businessindicator',
+            name: 'businessindicator',
+            component: () => import('@SDMOBILE/views/audit/businessindicator/index'),
+            meta: {
+                title: '经营指标'
+            }
+        },
     ]
 }
 

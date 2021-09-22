@@ -1,51 +1,19 @@
 <template>
   <div class="page-container indocator">
     <div class="filter-container">
-      <QueryField
-        ref="queryfield"
-        :form-data="queryFields"
-        :text-width="110"
-        :time-period-width="130"
-        @submit="getList"
-      />
+      <el-button type="primary" @click="add()">新增指标</el-button>
+      <div class="indocator-btn-box">
+        <el-button class="gary-border">导入</el-button>
+        <el-button class="gary-border">下发</el-button>
+        <el-button class="gary-border">更新</el-button>
+        <el-button class="gary-border">查看指标结果</el-button>
+      </div>
     </div>
-    <el-row>
-      <el-col align="right">
-        <!-- 新增 -->
-        <el-button type="primary" class="oper-btn add" @click="handleCreate()" />
-        <!-- 修改 -->
-        <el-button type="primary" class="oper-btn edit" :disabled="selections.length !== 1" @click="handleUpdate()" />
-        <!-- 删除 -->
-        <el-button type="primary" class="oper-btn delete" :disabled="selections.length === 0" @click="handleDelete()" />
-        <!-- 下载模板 -->
-        <el-button
-          type="primary"
-          class="oper-btn download-template btn-width-md"
-          @click="handleDownload()"
-        />
-        <!-- 导入 -->
-        <el-upload
-          multiple
-          class="upload-demo"
-          action=""
-          :on-remove="handleRemove"
-          :headers="headers"
-          :http-request="uploadFile"
-          :limit="3"
-          :auto-upload="true"
-          :on-change="handleFileChange"
-          :show-file-list="false"
-          style="display: inline-block; padding-left: 10px"
-        >
-          <el-button type="primary" class="oper-btn export" />
-        </el-upload>
-      </el-col>
-    </el-row>
     <el-table
       :key="tableKey"
       v-loading="listLoading"
       fit
-      style="width: 100%;"
+      style="width: 100%"
       :data="list"
       border
       highlight-current-row
@@ -54,54 +22,21 @@
       @sort-change="sortChange"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column
-        type="selection"
-        align="center"
-      />
-      <el-table-column
-        label="管理建议名称"
-        prop="manageSuggestName"
-      >
+      <el-table-column type="selection" align="center" />
+      <el-table-column label="指标类型" prop="type" />
+      <el-table-column label="指标名称" prop="name" />
+      <el-table-column label="单位" show-overflow-tooltip prop="danwei" />
+      <el-table-column label="资料提供部门" align="center" prop="bumen" />
+      <el-table-column label="取数口径或公式" prop="gongshi" />
+      <el-table-column label="指标值" width="180px" align="center" prop="int">
         <template slot-scope="scope">
-          <el-link :underline="false" type="primary" @click="findManageSuggest(scope.row)">
-            {{ scope.row.manageSuggestName }}</el-link>
+          <el-input v-model="scope.row.int" />
         </template>
       </el-table-column>
-      <el-table-column label="项目名称">
-        <template slot-scope="scope">{{ scope.row.projectUuid | formatProject(projectlist) }}</template>
-      </el-table-column>
-      <el-table-column
-        label="业务类型"
-        prop="businessType"
-      />
-      <el-table-column
-        label="管理建议描述"
-        show-overflow-tooltip
-        prop="manageSuggestDesc"
-      />
-      <el-table-column
-        label="创建时间"
-        width="180px"
-        align="center"
-        prop="createTime"
-      />
-      <el-table-column
-        label="创建人名称"
-        prop="createUserName"
-      />
-      <el-table-column
-        label="修改时间"
-        width="180px"
-        align="center"
-        prop="updateTime"
-      />
-      <el-table-column
-        label="创建人名称"
-        prop="updateUserName"
-      />
+      <el-table-column label="是否被审计单位提供" prop="iftigong" />
     </el-table>
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="pageQuery.pageNo"
       :limit.sync="pageQuery.pageSize"
@@ -120,378 +55,146 @@
         label-position="right"
         class="detail-form"
       >
-        <el-form-item
-          label="管理建议名称"
-          prop="manageSuggestName"
-        >
-          <el-input
-            v-model="temp.manageSuggestName"
-            :placeholder="disableUpdate === true ? '' : '请输入管理建议名称'"
-            :disabled="disableUpdate"
-          />
+        <el-form-item label="指标类型" prop="type">
+          <el-input v-model="temp.type" placeholder="请输入指标类型" />
         </el-form-item>
-        <el-form-item
-          label="业务分类"
-          prop="businessType"
-        >
-          <el-input v-model="temp.businessType" :placeholder="disableUpdate === true ? '' : '请输入业务分类'" :disabled="disableUpdate" />
+        <el-form-item label="指标名称" prop="name">
+          <el-input v-model="temp.name" placeholder="请输入指标名称" />
         </el-form-item>
-        <el-form-item
-          label="管理建议描述"
-          prop="manageSuggestDesc"
-        >
-          <el-input
-            v-model="temp.manageSuggestDesc"
-            :placeholder="disableUpdate === true ? '' : '请输入管理建议描述'"
-            type="textarea"
-            :disabled="disableUpdate"
-          />
+        <el-form-item label="单位" prop="danwei">
+          <el-input v-model="temp.danwei" placeholder="请输入单位" />
+        </el-form-item>
+        <el-form-item label="资料提供部门" prop="bumen">
+          <el-input v-model="temp.bumen" placeholder="请输入资料提供部门" />
+        </el-form-item>
+        <el-form-item label="取数口径或公式" prop="gongshi">
+          <el-input v-model="temp.gongshi" placeholder="请输入取数口径或公式" />
+        </el-form-item>
+        <el-form-item label="指标值" prop="int">
+          <el-input v-model="temp.int" placeholder="请输入指标值" />
         </el-form-item>
       </el-form>
       <div slot="footer">
-        <el-button v-if="!closeStatus" @click="dialogFormVisible = false">取消</el-button>
+        <el-button v-if="!closeStatus" @click="dialogFormVisible = false"
+          >取消</el-button
+        >
         <el-button
           v-if="closeStatus"
           type="primary"
           @click="dialogFormVisible = false"
-        >关闭</el-button>
+          >关闭</el-button
+        >
         <el-button
           v-if="!closeStatus"
           type="primary"
-          @click="dialogStatus==='create'?createData():updateData()"
-        >保存</el-button>
+          @click="dialogStatus === 'create' ? createData() : updateData()"
+          >保存</el-button
+        >
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { listByPage, save, update, del, listProjectByPage } from '@SDMOBILE/api/sdmobile/managesuggest'
-import QueryField from '@/components/public/query-field/index'
-import _ from 'lodash'
-import axios from 'axios'
+import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
+import _ from "lodash";
 
 export default {
-  components: { Pagination, QueryField },
-  filters: {
-    // 根据项目id查找项目名称
-    formatProject(value, list) {
-      const project = _.find(list, { 'projectUuid': value })
-      if (typeof (project) !== 'undefined' && project != null) {
-        return project.projectName
-      }
-      return ''
-    }
-  },
-  props: {
-    projectId: {
-      type: String,
-      default: ''
-    }
-  },
+  components: { Pagination },
+  filters: {},
   data() {
     return {
-      tableKey: 'manageSuggestUuid',
+      tableKey: "indicator",
       list: null,
       total: 0,
       listLoading: false,
-      projectlist: null,
-      // text 精确查询   fuzzyText 模糊查询  select下拉框  timePeriod时间区间
-      queryFields: [
-        { label: '管理建议名称', name: 'manageSuggestName', type: 'text', value: '' },
-        { label: '业务分类', name: 'businessType', type: 'text', value: '' },
-        { label: '创建时间', name: 'createTime', type: 'timePeriod', value: '' }
-      ],
-      // 查询管理建议提示条件
       pageQuery: {
         condition: {},
         pageNo: 1,
         pageSize: 20,
-        sortBy: 'desc',
-        sortName: 'createTime'
-      },
-      // 查询项目条件
-      pageProjectQuery: {
-        condition: {},
-        pageNo: 1,
-        pageSize: 2000,
-        sortBy: 'desc',
-        sortName: 'createTime'
+        sortBy: "desc",
+        sortName: "createTime",
       },
       temp: {
         // 业务分类
-        businessType: null,
-        createTime: null,
-        createUserName: null,
-        createUserUuid: null,
-        projectUuid: null,
-        manageSuggestDesc: null,
-        manageSuggestName: null,
-        manageSuggestUuid: null,
-        updateTime: null,
-        updateUserName: null,
-        updateUserUuid: null
+        name: null,
+        danwei: null,
+        bumen: null,
+        gongshi: null,
+        int: null,
+        iftigong: null,
       },
       selections: [],
       dialogFormVisible: false,
-      dialogStatus: '',
+      dialogStatus: "",
       textMap: {
-        update: '修改管理建议',
-        create: '新增管理建议',
-        show: '查看管理建议'
+        update: "修改指标",
+        create: "新增指标",
+        show: "查看指标",
       },
       // 新增的表单验证
       rules: {
-        manageSuggestName: [{ required: true, message: '请填写管理建议名称', trigger: 'change' },
-          { max: 100, message: '管理建议名称在100个字符之内', trigger: 'change' }],
-        manageSuggestDesc: [{ max: 500, message: '管理建议描述在500个字符之内', trigger: 'change' }],
-        businessType: [{ required: false, message: '请填写业务分类', trigger: 'change' },
-          { max: 100, message: '业务分类在100个字符之内', trigger: 'change' }]
+        type: [
+          { required: true, message: "请填写指标类型", trigger: "change" },
+        ],
+        name: [
+          { required: true, message: "请填写指标名称", trigger: "change" },
+        ],
+        danwei: [{ required: false, message: "请填写单位", trigger: "change" }],
+        bumen: [
+          { required: false, message: "请填写资料提供部门", trigger: "change" },
+        ],
+        gongshi: [
+          {
+            required: false,
+            message: "请填写取数口径或公式",
+            trigger: "change",
+          },
+        ],
       },
-      disableUpdate: false,
       closeStatus: false,
       downloadLoading: false,
-      headers: { 'Content-Type': 'multipart/form-data' },
-      file: ''
-    }
+      headers: { "Content-Type": "multipart/form-data" },
+      file: "",
+    };
   },
-  watch: {
-    // 监听父组件传值projectId
-    projectId() {
-      this.getList()
-    }
-  },
+  watch: {},
   created() {
-    this.getList()
+    this.getlist()
   },
   methods: {
-    findManageSuggest(data) {
-      this.closeStatus = true
-      this.disableUpdate = true
-      this.temp = Object.assign({}, data) // copy obj
-      this.dialogStatus = 'show'
+    getlist() {
+      this.list = [
+        {
+          type: "xxx",
+          name: "x",
+          danwei: "xxx",
+          bumen: "xxxx",
+          gongshi: "xx",
+          int: "",
+          iftigong: "xxxx",
+        },
+      ];
+    },
+    add(){
       this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
     },
-    getList(query) {
-      this.listLoading = true
-      if (query) {
-        this.pageQuery.condition = query
-        this.pageQuery.pageNo = 1
-      }
-      // 给项目Id赋初始值
-      this.pageQuery.condition.projectUuid = this.projectId
-      listProjectByPage(this.pageProjectQuery).then(resp => {
-        this.projectlist = resp.data.records
-      })
-      listByPage(this.pageQuery).then(resp => {
-        this.total = resp.data.total
-        this.list = resp.data.records
-        this.listLoading = false
-      })
+    createData(){
+
     },
-    handleFilter() {
-      this.pageQuery.pageNo = 1
-      this.getList()
-    },
-    sortChange(data) {
-      const { prop, order } = data
-      this.pageQuery.sortBy = order
-      this.pageQuery.sortName = prop
-      this.handleFilter()
-    },
-    resetTemp() {
-      this.temp = {
-        businessType: null,
-        createTime: null,
-        createUserName: null,
-        createUserUuid: null,
-        projectUuid: null,
-        manageSuggestDesc: null,
-        manageSuggestName: null,
-        manageSuggestUuid: null,
-        updateTime: null,
-        updateUserName: null,
-        updateUserUuid: null
-      }
-    },
-    handleCreate() {
-      this.closeStatus = false
-      this.disableUpdate = false
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    createData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          this.temp.projectUuid = this.projectId
-          save(this.temp).then(() => {
-            this.getList()
-            this.dialogFormVisible = false
-            this.$notify({
-              title: this.$t('message.title'),
-              message: this.$t('message.insert.success'),
-              type: 'success',
-              duration: 2000,
-              position: 'bottom-right'
-            })
-          })
-        }
-      })
-    },
-    handleUpdate() {
-      this.closeStatus = false
-      this.disableUpdate = false
-      this.temp = Object.assign({}, this.selections[0]) // copy obj
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    updateData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          this.temp.projectUuid = this.projectId
-          const tempData = Object.assign({}, this.temp)
-          update(tempData).then(() => {
-            const index = this.list.findIndex(v => v.manageSuggestUuid === this.temp.manageSuggestUuid)
-            this.list.splice(index, 1, this.temp)
-            this.dialogFormVisible = false
-            this.getList()
-            this.$notify({
-              title: this.$t('message.title'),
-              message: this.$t('message.update.success'),
-              type: 'success',
-              duration: 2000,
-              position: 'bottom-right'
-            })
-          })
-        }
-      })
-    },
-    handleDelete() {
-      this.$confirm(this.$t('confirm.delete'), this.$t('confirm.title'), {
-        confirmButtonText: this.$t('confirm.okBtn'),
-        cancelButtonText: this.$t('confirm.cancelBtn'),
-        type: 'warning'
-      }).then(() => {
-        var ids = []
-        this.selections.forEach((r, i) => { ids.push(r.manageSuggestUuid) })
-        del(ids.join(',')).then(() => {
-          this.getList()
-          this.$notify({
-            title: this.$t('message.title'),
-            message: this.$t('message.delete.success'),
-            type: 'success',
-            duration: 2000,
-            position: 'bottom-right'
-          })
-        })
-      }).catch(() => {
-        // this.$notify({
-        //   title: '消息',
-        //   message: '已取消删除',
-        //   duration: 2000,
-        //   position: 'bottom-right'
-        // })
-      })
-    },
-    handleSelectionChange(val) {
-      this.selections = val
-    },
-    // 上传文件，获取文件流
-    handleFileChange(file) {
-      this.file = file.raw
-    },
-    handleRemove(file, fileList) {
-      this.file = ''
-    },
-    beforeUpload(file) {},
-    // 自定义上传
-    uploadFile() {
-      const loading = this.$loading({
-        lock: true,
-        // spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      })
-      const index = this.file.name.lastIndexOf('.')
-      const suffix = this.file.name.substr(index + 1)
-      // 创建表单对象
-      const formData = new FormData()
-      // 后端接受参数 ，可以接受多个参数
-      formData.append('manageSuggestFile', this.file)
-      formData.append('uploadFileName', 'git')
-      formData.append('uploadFileContentType', suffix)
-      var num = Math.random()
-      axios({
-        url: `/sdmobile/manageSuggest/importFiles?${num}`,
-        method: 'post',
-        data: formData
-      }).then((res) => {
-        if (res.data.code === 2501) {
-          this.$message({
-            type: 'error',
-            message: res.data.msg
-          })
-          loading.close()
-        } else {
-          this.getList()
-          this.$notify({
-            title: this.$t('message.title'),
-            message: '导入成功',
-            type: 'success',
-            duration: 5000,
-            position: 'bottom-right'
-          })
-          loading.close()
-        }
-      }).catch(() => {
-        this.$notify({
-          title: this.$t('message.title'),
-          message: '导入建议时发生异常',
-          type: 'error',
-          duration: 2000,
-          position: 'bottom-right'
-        })
-        loading.close()
-      })
-    },
-    handleDownload() {
-      // 下载管理建议模板excel
-      axios({
-        method: 'get',
-        url: `/sdmobile/manageSuggest/downloadManageSuggestTemplate`,
-        responseType: 'blob'
-      }).then((res) => {
-        // if (res.code !== 0) this.$message.error(res.msg)
-        const filename = decodeURI(
-          res.headers['content-disposition'].split(';')[1].split('=')[1]
-        )
-        const blob = new Blob([res.data], {
-          type: 'application/octet-stream'
-        })
-        const url = window.URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.style.display = 'none'
-        link.href = url
-        link.setAttribute('download', filename)
-        document.body.appendChild(link)
-        link.click()
-      })
-    },
-    getSortClass: function(key) {
-      const sort = this.pageQuery.sort
-      return sort === `+${key}` ? 'asc' : 'desc'
+    updateData(){
+      
     }
-  }
-}
+
+  },
+};
 </script>
+<style scoped>
+.indocator-btn-box {
+  float: right;
+}
+.gary-border {
+  border: 1px solid #ccc;
+}
+</style>
 
