@@ -73,7 +73,8 @@ module.exports = {
     resolve: {
       alias: {
         '@': resolve('src'),
-        '@SDMOBILE': resolve('src')
+        '@SDMOBILE': resolve('src'),
+        '@WISDOMAUDIT': resolve('src')
       }
     }
   },
