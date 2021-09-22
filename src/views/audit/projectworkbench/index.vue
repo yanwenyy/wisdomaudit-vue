@@ -310,7 +310,7 @@ export default {
   }
 }
 .tac {
-  margin-top: 7%;
+  margin-top: 20px;
   width: 100%;
   box-sizing: border-box;
   display: flex;
