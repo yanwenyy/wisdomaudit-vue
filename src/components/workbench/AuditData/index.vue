@@ -7,10 +7,11 @@
       <el-tab-pane label="审计资料任务列表"
                    name="0">
 
-        <div class="projectTab">
+        <div class="projectTab anmition_show">
           <el-row class="titleMes">
             <el-col :span="1.5">
-              <el-button type="primary">新增</el-button>
+              <el-button type="primary"
+                         @click="add_data()">新增</el-button>
             </el-col>
           </el-row>
           <el-table :data="tableData"
@@ -33,7 +34,7 @@
 
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button @click.native.prevent="deleteRow(scope.$index, tableData)"
+                <el-button @click.native.prevent="edit_data(scope.$index, tableData)"
                            type="text"
                            style="color:#1371CC"
                            size="small">
@@ -45,12 +46,22 @@
                            size="small">
                   下发
                 </el-button>
-                <el-button @click.native.prevent="deleteRow(scope.$index, tableData)"
+
+                <el-popconfirm confirm-button-text='好的'
+                               cancel-button-text='不用了'
+                               icon="el-icon-info"
+                               icon-color="red"
+                               title="这是一段内容确定删除吗？">
+                  <el-button slot="reference"
+                             style="color:#DB454B;    font-size: 12px;">删除</el-button>
+                </el-popconfirm>
+
+                <!-- <el-button @click.native.prevent="deleteRow(scope.$index, tableData)"
                            type="text"
-                           style="color:#DB454B"
+                           
                            size="small">
                   移除
-                </el-button>
+                </el-button> -->
               </template>
             </el-table-column>
           </el-table>
@@ -66,7 +77,7 @@
       </el-tab-pane>
       <el-tab-pane label="已操作的资料列表"
                    name="1">
-        <div class="projectTab">
+        <div class="projectTab anmition_show">
 
           <el-table :data="tableData"
                     style="width: 100%;">
@@ -126,6 +137,81 @@
       </el-tab-pane>
     </el-tabs>
 
+    <!-- 新增资料 -->
+    <el-dialog :title="title"
+               :visible.sync="dialogVisible"
+               style="padding-bottom: 59px; ">
+      <div class="dlag_conter">
+        <el-form ref="form"
+                 :model="form"
+                 label-width="80px">
+          <el-form-item label="标题">
+            <el-input v-model="form.name"></el-input>
+          </el-form-item>
+          <el-form-item label=发起人>
+            <el-input v-model="form.name"></el-input>
+          </el-form-item>
+        </el-form>
+        <el-form ref="form"
+                 :model="form"
+                 label-width="80px">
+          <div style="display:flex;align-items: center;padding:10px 0;box-sizing: border-box;">
+            <p>获取资料清单：</p>
+            <el-button type="primary">添加资料</el-button>
+          </div>
+        </el-form>
+        <el-form ref="form"
+                 :model="form"
+                 label-width="80px">
+          <el-table ref="multipleTable"
+                    :data="tableData"
+                    tooltip-effect="dark"
+                    style="width: 100%"
+                    @selection-change="handleSelectionChange">
+            <el-table-column type="selection"
+                             width="55">
+            </el-table-column>
+            <el-table-column label="类别">
+              <template slot-scope="scope">{{ scope.row.date }}</template>
+            </el-table-column>
+            <el-table-column prop="name"
+                             label="编号">
+            </el-table-column>
+            <el-table-column prop="address"
+                             label="二级编号"
+                             show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="address"
+                             label="资料名称"
+                             show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="address"
+                             label="部门"
+                             show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="address"
+                             label="备注"
+                             show-overflow-tooltip>
+            </el-table-column>
+
+          </el-table>
+        </el-form>
+      </div>
+
+      <span slot="footer">
+        <el-button size="small"
+                   @click="dialogVisible = false">取 消</el-button>
+
+        <el-button size="small"
+                   type="primary"
+                   @click="query()">保存</el-button>
+        <el-button size="small"
+                   type="primary"
+                   @click="query()">下发</el-button>
+      </span>
+
+    </el-dialog>
+
   </div>
 </template>
 
@@ -135,8 +221,12 @@ export default {
   data () {
     return {
       activeName: 0,
+      title: '新增资料任务',
+      dialogVisible: false,//新增弹窗
       // color: '',   // 上传文件icon 颜色
-
+      form: {
+        name: '',
+      },
       tableData: [{
         date: '2016-05-03',
         name: '王小虎',
@@ -196,10 +286,41 @@ export default {
     handleClick (tab, event) {
       console.log(tab, event);
     },
-
+    add_data () {
+      this.dialogVisible = true
+    },//新增任务
+    // 确认
+    query () {
+      this.dialogVisible = false
+    },
+    // 删除
     deleteRow (index, rows) {
       rows.splice(index, 1);
+    },
+
+    // 编辑
+    edit_data () {
+      this.title = '编辑资料任务',
+
+        this.dialogVisible = true
+
+    },
+    // 新增资料弹窗
+    // 全选
+    toggleSelection (rows) {
+      if (rows) {
+        rows.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row);
+        });
+      } else {
+        this.$refs.multipleTable.clearSelection();
+      }
+    },
+    handleSelectionChange (val) {
+      this.multipleSelection = val;
     }
+
+
   },
   created () {
 
@@ -211,6 +332,8 @@ export default {
 </script>
 
 <style scoped>
+@import "../../../assets/styles/css/lhg.css";
+
 .sjzl .conter {
   width: 100%;
   float: left;
@@ -263,5 +386,22 @@ export default {
   padding: 20px 10px;
   display: flex;
   justify-content: flex-end;
+}
+
+.dlag_conter {
+  padding: 20px;
+  box-sizing: border-box;
+}
+.dlag_conter >>> .el-form-item {
+  margin-bottom: 20px !important;
+}
+.dlag_conter >>> .el-form-item {
+  display: flex;
+}
+.dlag_conter >>> .el-form-item__content {
+  margin-left: 10px !important;
+}
+.dlag_conter >>> .el-dialog__footer {
+  text-align: center;
 }
 </style>

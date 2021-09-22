@@ -1,0 +1,20 @@
+/* 入场动画 */
+. {
+  animation: go_in_show 1s;
+  -moz-animation: go_in_show 1s;
+  -webkit-animation: go_in_show 1s;
+}
+
+/* active_show 动画 */
+@keyframes go_in_show {
+  0% {
+    transform: translateX(5%);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(10%) !important;
+    opacity: 1 !important;
+    transition: all .6s ease;
+  }
+}

@@ -230,6 +230,11 @@ export default {
 ::v-deep.el-menu {
   border-right: none;
 }
+
+::v-deep.el-menu-item-group__title {
+  color: red !important;
+  padding: 0 !important;
+}
 // 二级导航 穿透样式 end
 
 .projectWorkbench {
@@ -249,6 +254,7 @@ export default {
     }
   }
 }
+
 .initializeProject {
   margin: 2% 1% 1% 0;
   ul {
