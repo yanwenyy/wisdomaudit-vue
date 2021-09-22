@@ -157,7 +157,9 @@
             <AuditTask></AuditTask>
           </div>
           <div class="routerView"
-               v-else-if="index =='2-3'">2</div>
+               v-else-if="index =='2-3'">
+            <Auditproblem></Auditproblem>
+          </div>
           <div class="routerView"
                v-else-if="index =='2-4'">3</div>
           <div class="routerView"
@@ -194,12 +196,14 @@
 import TeamPersonTask from '@/views/audit/teamperson-task/index'
 import AuditData from '@/components/workbench/AuditData/index'//审计资料
 import AuditTask from '@/components/workbench/AuditTask/index'//审计任务
+import Auditproblem from '@/components/workbench/auditproblem/index'//审计问题
 import Businessindicator from '@/components/workbench/businessindicator/index'//经营指标
 export default {
   components: {
     TeamPersonTask,//组员及任务维护
     AuditData,//审计资料
     AuditTask,//审计任务 
+    Auditproblem,//审计问题
     Businessindicator,//经营指标
   },
   data () {
