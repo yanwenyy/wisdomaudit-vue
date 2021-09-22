@@ -219,45 +219,50 @@
                :visible.sync="dialogVisible"
                style="padding-bottom: 59px; ">
       <div class="dlag_conter">
-        <div>
-          <p>项目新增：</p>
-          <input type="text">
-        </div>
-        <div>
-          <p>项目分类：</p>
+        <el-form ref="form"
+                 :model="form"
+                 label-width="80px">
+          <p>自建任务新增：</p>
+          <el-input v-model="task"
+                    placeholder="请输入任务新增"></el-input>
+        </el-form>
+        <el-form ref="form"
+                 :model="form"
+                 label-width="80px">
+          <p>责任人：</p>
           <el-select v-model="model"
-                     placeholder="">
+                     placeholder="请选择责任人">
             <el-option v-for="item in options"
                        :key="item.value"
                        :label="item.label"
                        :value="item.value">
             </el-option>
           </el-select>
-        </div>
-        <div>
-          <p>项目名称：</p>
-          <input type="text">
-        </div>
-        <div>
-          <p>项目负责人：</p>
-          <el-select v-model="model"
-                     placeholder="">
-            <el-option v-for="item in options"
-                       :key="item.value"
-                       :label="item.label"
-                       :value="item.value">
-            </el-option>
-          </el-select>
-        </div>
-        <div>
-          <p>审计期间：</p>
-          <input type="text">
-        </div>
-
+        </el-form>
+        <el-form ref="form"
+                 :model="form"
+                 label-width="80px">
+          <p>任务描述：</p>
+          <el-input v-model="task"
+                    placeholder="请输入任务描述"></el-input>
+        </el-form>
+        <el-form ref="model"
+                 :model="model"
+                 label-width="80px">
+          <p>上传附件：</p>
+          <el-upload class="upload-demo"
+                     style="width:300px"
+                     drag
+                     action="https://jsonplaceholder.typicode.com/posts/"
+                     multiple>
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">支持上传或者拖拽文件到这里<em>点击上传</em></div>
+            <div class="el-upload__text">支持.ZIP.DOC</div>
+          </el-upload>
+        </el-form>
       </div>
 
       <span slot="footer">
-
         <el-button size="small"
                    type="primary"
                    @click="query()">确 定</el-button>
@@ -360,13 +365,12 @@ export default {
     on_Task (index) {
       this.task_type = index
     },
-    // 关闭新增
+    //  确认新增
     clearTopic () {
-      alert(111)
+      console.log('关闭新增');
     },
     // 确认新增
     quert () {
-      alert('确认新增')
       this.dialogVisible = false;
     },
     deleteRow (index, rows) {
@@ -386,7 +390,12 @@ export default {
 
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
-
+.sjzl {
+  display: flex;
+}
+.titleMes {
+  margin: 0;
+}
 .sjzl .conter {
   width: 100%;
   float: left;
@@ -467,9 +476,35 @@ export default {
 }
 
 .dlag_conter {
-  width: 100%;
-  height: 300px;
+  padding: 20px;
 }
-.task_type {
+.dlag_conter p {
+  margin-bottom: 10px;
+  min-width: 120px;
+  text-align: right;
+}
+.dlag_conter >>> .el-form {
+  margin-bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+}
+.dlag_conter >>> .el-input {
+  width: 300px;
+}
+.dlag_conter >>> .el-form-item {
+  margin-bottom: 20px !important;
+  display: flex;
+}
+.dlag_conter >>> .el-form-item__content {
+  margin-left: 10px !important;
+}
+.dlag_conter >>> .el-dialog__footer {
+  text-align: center;
+}
+.dlag_conter >>> .el-upload-dragger {
+  width: 300px;
 }
 </style>

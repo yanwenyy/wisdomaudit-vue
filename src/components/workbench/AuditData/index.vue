@@ -11,7 +11,7 @@
           <el-row class="titleMes">
             <el-col :span="1.5">
               <el-button type="primary"
-                         @click="add_data()">新增</el-button>
+                         @click="add_data_task()">新增</el-button>
             </el-col>
           </el-row>
           <el-table :data="tableData"
@@ -157,7 +157,8 @@
                  label-width="80px">
           <div style="display:flex;align-items: center;padding:10px 0;box-sizing: border-box;">
             <p>获取资料清单：</p>
-            <el-button type="primary">添加资料</el-button>
+            <el-button type="primary"
+                       @click="add_data()">添加资料</el-button>
           </div>
         </el-form>
         <el-form ref="form"
@@ -201,7 +202,6 @@
       <span slot="footer">
         <el-button size="small"
                    @click="dialogVisible = false">取 消</el-button>
-
         <el-button size="small"
                    type="primary"
                    @click="query()">保存</el-button>
@@ -212,6 +212,122 @@
 
     </el-dialog>
 
+    <!-- 添加资料 -->
+    <el-dialog :title="title"
+               :visible.sync="dialogVisible2"
+               style="padding-bottom: 59px; ">
+      <div class="dlag_conter2">
+        <el-form ref="form"
+                 :model="form"
+                 label-width="80px">
+          <p>类别：</p>
+          <el-select v-model="model"
+                     placeholder="请选择责任人">
+            <el-option v-for="item in options"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.value">
+            </el-option>
+          </el-select>
+          <p>资料名称：</p>
+          <el-select v-model="model"
+                     placeholder="请选择资料名称">
+            <el-option v-for="item in options"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form>
+
+        <el-form ref="form"
+                 :model="form"
+                 label-width="80px">
+          <p>编号 ：</p>
+          <el-input v-model="model"
+                    placeholder=""></el-input>
+          <p>二级编号：</p>
+          <el-input v-model="model"
+                    placeholder=""></el-input>
+
+        </el-form>
+
+        <el-form ref="form"
+                 :model="form"
+                 label-width="80px">
+          <p>部门：</p>
+          <el-select v-model="model"
+                     placeholder="请选择责任人">
+            <el-option v-for="item in options"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.value">
+            </el-option>
+          </el-select>
+          <p>来源：</p>
+          <el-select v-model="model"
+                     placeholder="请选择资料名称">
+            <el-option v-for="item in options"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form>
+
+        <el-form ref="form"
+                 :model="form"
+                 label-width="80px">
+          <p>添加人：</p>
+          <el-select v-model="model"
+                     placeholder="请选择责任人">
+            <el-option v-for="item in options"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.value">
+            </el-option>
+          </el-select>
+          <p>添加日期：</p>
+          <el-select v-model="model"
+                     placeholder="请选择资料名称">
+            <el-option v-for="item in options"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form>
+
+        <el-form ref="form"
+                 style="    justify-content: flex-start;align-items: center;"
+                 :model="form"
+                 label-width="80px">
+          <p>是否沉淀为常规需求资料：</p>
+          <el-radio v-model="radio"
+                    label="否"></el-radio>
+          <el-radio v-model="radio"
+                    label="是"></el-radio>
+        </el-form>
+
+        <el-form ref="form"
+                 :model="form"
+                 label-width="80px">
+          <p>备注：</p>
+          <el-input type="textarea"
+                    v-model="model"
+                    placeholder=""></el-input>
+        </el-form>
+
+      </div>
+      <span slot="footer">
+        <el-button size="small"
+                   @click="dialogVisible2 = false">取 消</el-button>
+        <el-button size="small"
+                   type="primary"
+                   @click="query()">确定</el-button>
+
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -223,6 +339,7 @@ export default {
       activeName: 0,
       title: '新增资料任务',
       dialogVisible: false,//新增弹窗
+      dialogVisible2: false,//添加资料
       // color: '',   // 上传文件icon 颜色
       form: {
         name: '',
@@ -286,9 +403,10 @@ export default {
     handleClick (tab, event) {
       console.log(tab, event);
     },
-    add_data () {
+    //新增任务
+    add_data_task () {
       this.dialogVisible = true
-    },//新增任务
+    },
     // 确认
     query () {
       this.dialogVisible = false
@@ -296,6 +414,10 @@ export default {
     // 删除
     deleteRow (index, rows) {
       rows.splice(index, 1);
+    },
+    // 添加资料
+    add_data () {
+      this.dialogVisible2 = true;
     },
 
     // 编辑
@@ -401,7 +523,43 @@ export default {
 .dlag_conter >>> .el-form-item__content {
   margin-left: 10px !important;
 }
-.dlag_conter >>> .el-dialog__footer {
+
+/* 新增资料 */
+.dlag_conter2 {
+  padding: 20px;
+}
+.dlag_conter2 p {
+  padding-top: 10px;
+  min-width: 120px;
+  text-align: right;
+}
+.dlag_conter2 >>> .el-input {
+  width: 270px !important;
+}
+.dlag_conter2 >>> .el-form {
+  margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+}
+.dlag_conter2 >>> .el-input {
+  width: 300px;
+}
+
+.dlag_conter2 >>> .el-form-item {
+  margin-bottom: 20px !important;
+  display: flex;
+}
+.dlag_conter2 >>> .el-form-item__content {
+  margin-left: 10px !important;
+}
+.dlag_conter2 >>> .el-dialog__footer {
   text-align: center;
+}
+.dlag_conter2 >>> .el-textarea {
+  width: 500px;
 }
 </style>

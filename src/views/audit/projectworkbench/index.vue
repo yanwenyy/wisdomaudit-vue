@@ -91,6 +91,7 @@
         <li>2021年泰安分公司xxx领导经责审计</li>
         <li>2021年泰安分公司xxx领导经责审计</li>
         <li>2021年泰安分公司xxx领导经责审计</li>
+        <span @click="project_more()">更多>></span>
       </ul>
     </div>
 
@@ -167,6 +168,23 @@
       </div>
       <!-- 右侧内容 end -->
     </el-row>
+
+    <!-- 查看更多未初始化项目 -->
+    <div class="project_data"
+         :class="project_data == true ?'opctin':''">
+      <div class="right_data"
+           @click="close()">
+        <ul :class="project_data == true ?'style_width':''"
+            class="ul_data">
+          <li @click.stop="look_project()">2021年泰安分公司xxx领导经责审计</li>
+          <li>2021年泰安分公司xxx领导经责审计</li>
+          <li>2021年泰安分公司xxx领导经责审计</li>
+          <li>2021年泰安分公司xxx领导经责审计</li>
+          <li>2021年泰安分公司xxx领导经责审计</li>
+          <li>2021年泰安分公司xxx领导经责审计</li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -182,7 +200,8 @@ export default {
   },
   data () {
     return {
-      index: '1-1'//默认指定项
+      index: '1-1',//默认指定项
+      project_data: false,//更多项目
     }
   },
   created () {
@@ -191,6 +210,16 @@ export default {
     open (index) {
       this.index = 0;
       this.index = index;
+    },
+    // 查看更多
+    project_more () {
+      this.project_data = true;
+    },
+    close () {
+      this.project_data = false;
+    },
+    look_project () {
+      console.log(222);
     },
 
   },
@@ -259,6 +288,9 @@ export default {
   margin: 2% 1% 1% 0;
   ul {
     width: 100%;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
     // margin-bottom: 1%;
     li {
       float: left;
@@ -267,7 +299,13 @@ export default {
       margin-left: 0.2%;
       padding: 1.5%;
       border-radius: 10px;
-      // border: 1px solid red;
+    }
+    span {
+      color: #12579a;
+      margin: 0 10px;
+      min-width: 60px;
+      box-sizing: border-box;
+      cursor: pointer;
     }
   }
 }
@@ -294,5 +332,59 @@ export default {
     // border: 1px solid red;
     padding: 10px;
   }
+}
+// 展示更多项目
+.project_data {
+  width: 0;
+  height: 100%;
+  position: fixed;
+  right: 0;
+  top: 0;
+  opacity: 0;
+  z-index: 10;
+  transition: opacity 0.5s, background 0.3s;
+  background: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  .right_data {
+    position: relative;
+    display: flex;
+    height: 100%;
+
+    .ul_data {
+      width: 0;
+      height: 100%;
+      position: absolute;
+      right: -300px;
+      top: 0;
+      // width: 300px;
+      padding: 20px 0;
+      background-color: #fff;
+      float: left;
+      transition: width 0.3s;
+      // margin-bottom: 1%;
+      li {
+        margin: 0 auto;
+        width: 80%;
+        min-height: 60px;
+        margin-bottom: 20px;
+        background: #f1f5fb;
+        padding: 10px;
+        border-radius: 10px;
+        transition: all 0.3s;
+        cursor: pointer;
+      }
+      li:hover {
+        background-color: rgb(66, 130, 254, 0.4);
+      }
+    }
+  }
+}
+.opctin {
+  width: 100% !important;
+  opacity: 1 !important;
+}
+.style_width {
+  right: 0px !important;
+  width: 300px !important;
 }
 </style>
