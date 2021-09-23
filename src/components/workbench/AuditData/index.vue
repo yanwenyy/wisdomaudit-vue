@@ -46,6 +46,12 @@
                            size="small">
                   下发
                 </el-button>
+                <el-button @click.native.prevent="operation"
+                           type="text"
+                           style="color:#1371CC"
+                           size="small">
+                  操作
+                </el-button>
 
                 <el-popconfirm confirm-button-text='好的'
                                cancel-button-text='不用了'
@@ -139,6 +145,7 @@
 
     <!-- 新增资料 -->
     <el-dialog :title="title"
+               width="80%"
                :visible.sync="dialogVisible"
                style="padding-bottom: 59px; ">
       <div class="dlag_conter">
@@ -197,6 +204,14 @@
 
           </el-table>
         </el-form>
+        <!-- 分页 -->
+        <div class="page">
+          <el-pagination background
+                         layout="prev, pager, next"
+                         :total="1000">
+          </el-pagination>
+        </div>
+        <!-- 分页 end-->
       </div>
 
       <span slot="footer">
@@ -328,6 +343,100 @@
 
       </span>
     </el-dialog>
+
+    <!-- 操作 -->
+    <el-dialog title="资料列表"
+               width="90%"
+               :visible.sync="dialogVisibl_operation"
+               style="padding-bottom: 59px; ">
+      <div class="dlag_conter2">
+        <div class="operation_header">
+          <div>
+
+            <p>资料名称：</p>
+            <el-input v-model="model"
+                      placeholder=""></el-input>
+
+            <p>资料类型：</p>
+            <el-select v-model="model"
+                       placeholder="资料类型">
+              <el-option v-for="item in options"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+
+          <el-button type="primary">查询</el-button>
+
+        </div>
+
+        <el-table ref="multipleTable"
+                  :data="tableData"
+                  tooltip-effect="dark"
+                  style="width: 100%"
+                  @selection-change="handleSelectionChange">
+          <el-table-column type="selection"
+                           width="55">
+          </el-table-column>
+          <el-table-column label="类型"
+                           width="120">
+            <template slot-scope="scope">{{ scope.row.date }}</template>
+          </el-table-column>
+          <el-table-column prop="name"
+                           label="编号"
+                           width="120">
+          </el-table-column>
+          <el-table-column prop="address"
+                           label="二级编号"
+                           show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column prop="address"
+                           label="资料名称"
+                           show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column prop="address"
+                           label="部门"
+                           show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column prop="address"
+                           label="备注"
+                           show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column prop="address"
+                           label="提供时间"
+                           show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column prop="type"
+                           label="状态"
+                           show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column prop="address"
+                           label="附件"
+                           show-overflow-tooltip>
+          </el-table-column>
+
+        </el-table>
+        <!-- 分页 -->
+        <div class="page">
+          <el-pagination background
+                         layout="prev, pager, next"
+                         :total="1000">
+          </el-pagination>
+        </div>
+        <!-- 分页 end-->
+      </div>
+      <span slot="footer">
+        <el-button size="small"
+                   @click="dialogVisible2 = false">取 消</el-button>
+        <el-button size="small"
+                   type="primary"
+                   @click="query()">确定</el-button>
+
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -340,6 +449,7 @@ export default {
       title: '新增资料任务',
       dialogVisible: false,//新增弹窗
       dialogVisible2: false,//添加资料
+      dialogVisibl_operation: false,//操作
       // color: '',   // 上传文件icon 颜色
       form: {
         name: '',
@@ -350,49 +460,58 @@ export default {
         province: '上海',
         city: '普陀区',
         address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
+        zip: 200333,
+        type: 1,
       }, {
         date: '2016-05-02',
         name: '王小虎',
         province: '上海',
         city: '普陀区',
         address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
+        zip: 200333,
+        type: 2
+
       }, {
         date: '2016-05-04',
         name: '王小虎',
         province: '上海',
         city: '普陀区',
         address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
+        zip: 200333,
+        type: 3
+
       }, {
         date: '2016-05-01',
         name: '王小虎',
         province: '上海',
         city: '普陀区',
         address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
+        zip: 200333, type: 3
+
       }, {
         date: '2016-05-08',
         name: '王小虎',
         province: '上海',
         city: '普陀区',
         address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
+        zip: 200333, type: 1
+
       }, {
         date: '2016-05-06',
         name: '王小虎',
         province: '上海',
         city: '普陀区',
         address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
+        zip: 200333, type: 1
+
       }, {
         date: '2016-05-07',
         name: '王小虎',
         province: '上海',
         city: '普陀区',
         address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
+        zip: 200333, type: 1
+
       }]
     }
   },
@@ -425,8 +544,12 @@ export default {
       this.title = '编辑资料任务',
 
         this.dialogVisible = true
-
     },
+    // 操作
+    operation () {
+      this.dialogVisibl_operation = true
+    },
+
     // 新增资料弹窗
     // 全选
     toggleSelection (rows) {
@@ -468,10 +591,10 @@ export default {
   border-bottom: 2px solid #eeeeee;
 }
 /* 内容  按钮 */
-.sjzl >>> .el-button--primary {
+/* .sjzl >>> .el-button--primary {
   background-color: #42d7a5 !important;
   border: none;
-}
+} */
 .titleMes {
   padding: 10px 0 0;
   box-sizing: border-box;
@@ -523,7 +646,9 @@ export default {
 .dlag_conter >>> .el-form-item__content {
   margin-left: 10px !important;
 }
-
+.sjzl >>> .el-dialog__footer {
+  text-align: center !important;
+}
 /* 新增资料 */
 .dlag_conter2 {
   padding: 20px;
@@ -556,10 +681,25 @@ export default {
 .dlag_conter2 >>> .el-form-item__content {
   margin-left: 10px !important;
 }
-.dlag_conter2 >>> .el-dialog__footer {
-  text-align: center;
-}
 .dlag_conter2 >>> .el-textarea {
   width: 500px;
+}
+
+.operation_header {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  justify-content: space-between;
+}
+.operation_header div {
+  display: flex;
+}
+.operation_header div .el-input {
+  width: 120px !important;
+}
+.operation_header div .el-select {
+  width: 120px;
+}
+.operation_header div .el-button {
 }
 </style>
