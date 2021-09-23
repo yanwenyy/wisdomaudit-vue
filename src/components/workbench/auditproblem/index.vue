@@ -57,8 +57,8 @@
         label-position="right"
         class="detail-form"
       >
-        <el-form-item label="领域" prop="type">
-          <el-select v-model="temp.type" placeholder="请选择领域">
+        <el-form-item label="领域" prop="field">
+          <el-select v-model="temp.field" placeholder="请选择领域">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -68,11 +68,48 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="问题" prop="name">
-          <el-input v-model="temp.name" placeholder="请输入问题" />
+        <el-form-item label="问题" prop="problem">
+          <el-input v-model="temp.problem" placeholder="请输入问题" />
         </el-form-item>
-        <el-form-item label="依据" prop="danwei">
-          <el-select v-model="temp.danwei" multiple placeholder="请选择">
+        <el-form-item label="描述" prop="describe">
+          <el-input v-model="temp.describe" placeholder="请输入描述" />
+        </el-form-item>
+        <el-form-item label="管理建议" prop="projectId">
+          <el-input v-model="temp.projectId" placeholder="请输入管理建议" />
+        </el-form-item>
+        <el-form-item label="发现日期" prop="problemDiscoveryTime">
+          <el-input
+            v-model="temp.problemDiscoveryTime"
+            type="date"
+            placeholder="请输入发现日期"
+          />
+        </el-form-item>
+        <el-form-item label="发现人" prop="problemFindPeople">
+          <el-input
+            v-model="temp.problemFindPeople"
+            placeholder="请输入发现人"
+          />
+        </el-form-item>
+        <el-form-item label="风险金额（万元）" prop="riskAmount">
+          <el-input v-model="temp.riskAmount" placeholder="请输入风险金额" />
+        </el-form-item>
+        <el-form-item label="关联任务" prop="associatedTask">
+          <el-select
+            v-model="temp.associatedTask"
+            multiple
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="依据" prop="basis">
+          <el-select v-model="temp.basis" multiple placeholder="请选择">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -83,37 +120,7 @@
           </el-select>
         </el-form-item>
         <el-button type="primary" class="citebtn">引用知识库</el-button>
-        <el-form-item label="描述" prop="bumen">
-          <el-input v-model="temp.bumen" placeholder="请输入描述" />
-        </el-form-item>
-        <el-form-item label="管理建议" prop="int">
-          <el-input v-model="temp.int" placeholder="请输入管理建议" />
-        </el-form-item>
-        <el-form-item label="发现日期" prop="gongshi">
-          <el-input
-            v-model="temp.gongshi"
-            type="date"
-            placeholder="请输入发现日期"
-          />
-        </el-form-item>
-        <el-form-item label="发现人" prop="int">
-          <el-input v-model="temp.int" />
-        </el-form-item>
-        <el-form-item label="风险金额（万元）" prop="int">
-          <el-input v-model="temp.int" placeholder="请输入风险金额" />
-        </el-form-item>
-        <el-form-item label="关联任务" prop="int">
-          <el-select v-model="temp.int" multiple placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="上传附件" prop="int">
+        <!-- <el-form-item label="上传附件" prop="int">
           <el-upload
             class="upload-demo"
             drag
@@ -124,11 +131,8 @@
             <div class="el-upload__text">
               将文件拖到此处，或<em>点击上传</em>
             </div>
-            <!-- <div class="el-upload__tip" slot="tip">
-              只能上传jpg/png文件，且不超过500kb
-            </div> -->
           </el-upload>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer">
         <el-button v-if="!closeStatus" @click="dialogFormVisible = false"
@@ -140,10 +144,7 @@
           @click="dialogFormVisible = false"
           >关闭</el-button
         >
-        <el-button
-          v-if="!closeStatus"
-          type="primary"
-          @click="dialogStatus === 'create' ? createData() : updateData()"
+        <el-button v-if="!closeStatus" type="primary" @click="createData()"
           >保存</el-button
         >
       </div>
@@ -154,7 +155,7 @@
 <script>
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 import _ from "lodash";
-
+import axios from "axios";
 export default {
   components: { Pagination },
   filters: {},
@@ -177,12 +178,19 @@ export default {
       },
       temp: {
         // 业务分类
-        name: null,
-        danwei: [],
-        bumen: null,
-        gongshi: null,
-        int: null,
-        iftigong: null,
+        associatedTask: "",
+        auditTaskUuid: "1",
+        basis: "",
+        describe: "",
+        enclosure: "",
+        field: "",
+        isDeleted: 0,
+        problem: "",
+        problemDiscoveryTime: "",
+        problemFindPeople: "",
+        projectId: "",
+        riskAmount: "",
+        status: 0,
       },
       selections: [],
       dialogFormVisible: false,
@@ -239,7 +247,24 @@ export default {
     add() {
       this.dialogFormVisible = true;
     },
-    createData() {},
+    createData() {
+      let rep = this.temp;
+      rep.associatedTask = rep.associatedTask.join(",");
+      rep.basis = rep.basis.join(",");
+      axios({
+        url: `/wisdomaudit/problemList/save`,
+        method: "post",
+        data: rep,
+      }).then((res) => {
+        if (res.code == 0) {
+          this.$message({
+            message: "新增成功",
+            type: "success",
+          });
+          this.dialogFormVisible = false;
+        }
+      });
+    },
     updateData() {},
   },
 };
