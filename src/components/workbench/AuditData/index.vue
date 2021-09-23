@@ -228,111 +228,113 @@
     </el-dialog>
 
     <!-- 添加资料 -->
-    <el-dialog :title="title"
+    <el-dialog title="添加资料"
                :visible.sync="dialogVisible2"
                style="padding-bottom: 59px; ">
       <div class="dlag_conter2">
-        <el-form ref="form"
-                 :model="form"
-                 label-width="80px">
-          <p>类别：</p>
-          <el-select v-model="model"
-                     placeholder="请选择责任人">
-            <el-option v-for="item in options"
-                       :key="item.value"
-                       :label="item.label"
-                       :value="item.value">
-            </el-option>
-          </el-select>
-          <p>资料名称：</p>
-          <el-select v-model="model"
-                     placeholder="请选择资料名称">
-            <el-option v-for="item in options"
-                       :key="item.value"
-                       :label="item.label"
-                       :value="item.value">
-            </el-option>
-          </el-select>
+        <el-form label-width="80px">
+
+          <div class="son">
+            <el-form-item label-width="80px">
+              <p>类别：</p>
+              <el-select v-model="value_select">
+                <el-option v-for="item in sensitiveOptions"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label-width="80px">
+              <p>资料名称：</p>
+              <el-select v-model="value_select">
+                <el-option v-for="item in sensitiveOptions"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <div class="son">
+
+            <el-form-item label-width="80px">
+              <p>编号 ：</p>
+              <el-input v-model="value_name"
+                        placeholder=""></el-input>
+              <p>二级编号：</p>
+              <el-input v-model="value_name"
+                        placeholder=""></el-input>
+
+            </el-form-item>
+          </div>
+          <div class="son">
+
+            <el-form-item label-width="80px">
+              <p>部门：</p>
+              <el-select v-model="value_select">
+                <el-option v-for="item in sensitiveOptions"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value">
+                </el-option>
+              </el-select>
+              <p>来源：</p>
+              <el-select v-model="value_select"
+                         placeholder="请选择资料名称">
+                <el-option v-for="item in sensitiveOptions"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <div class="son">
+
+            <el-form-item label-width="80px">
+              <p>添加人：</p>
+              <el-select v-model="value_select"
+                         placeholder="请选择责任人">
+                <el-option v-for="item in sensitiveOptions"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value">
+                </el-option>
+              </el-select>
+              <p>添加日期：</p>
+              <el-select v-model="value_select"
+                         placeholder="请选择资料名称">
+                <el-option v-for="item in sensitiveOptions"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <div class="son">
+
+            <el-form-item label-width="80px">
+              <p style="padding:0">是否沉淀为常规需求资料：</p>
+              <el-radio-group v-model="resource">
+                <el-radio label="否"></el-radio>
+                <el-radio label="是"></el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </div>
+
+          <div class="son">
+
+            <el-form-item label-width="80px">
+              <p>备注：</p>
+              <el-input type="textarea"
+                        v-model="value_name"
+                        placeholder=""></el-input>
+            </el-form-item>
+          </div>
+
         </el-form>
-
-        <el-form ref="form"
-                 :model="form"
-                 label-width="80px">
-          <p>编号 ：</p>
-          <el-input v-model="model"
-                    placeholder=""></el-input>
-          <p>二级编号：</p>
-          <el-input v-model="model"
-                    placeholder=""></el-input>
-
-        </el-form>
-
-        <el-form ref="form"
-                 :model="form"
-                 label-width="80px">
-          <p>部门：</p>
-          <el-select v-model="model"
-                     placeholder="请选择责任人">
-            <el-option v-for="item in options"
-                       :key="item.value"
-                       :label="item.label"
-                       :value="item.value">
-            </el-option>
-          </el-select>
-          <p>来源：</p>
-          <el-select v-model="model"
-                     placeholder="请选择资料名称">
-            <el-option v-for="item in options"
-                       :key="item.value"
-                       :label="item.label"
-                       :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form>
-
-        <el-form ref="form"
-                 :model="form"
-                 label-width="80px">
-          <p>添加人：</p>
-          <el-select v-model="model"
-                     placeholder="请选择责任人">
-            <el-option v-for="item in options"
-                       :key="item.value"
-                       :label="item.label"
-                       :value="item.value">
-            </el-option>
-          </el-select>
-          <p>添加日期：</p>
-          <el-select v-model="model"
-                     placeholder="请选择资料名称">
-            <el-option v-for="item in options"
-                       :key="item.value"
-                       :label="item.label"
-                       :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form>
-
-        <el-form ref="form"
-                 style="    justify-content: flex-start;align-items: center;"
-                 :model="form"
-                 label-width="80px">
-          <p>是否沉淀为常规需求资料：</p>
-          <el-radio v-model="radio"
-                    label="否"></el-radio>
-          <el-radio v-model="radio"
-                    label="是"></el-radio>
-        </el-form>
-
-        <el-form ref="form"
-                 :model="form"
-                 label-width="80px">
-          <p>备注：</p>
-          <el-input type="textarea"
-                    v-model="model"
-                    placeholder=""></el-input>
-        </el-form>
-
       </div>
       <span slot="footer">
         <el-button size="small"
@@ -345,31 +347,30 @@
     </el-dialog>
 
     <!-- 操作 -->
-    <el-dialog title="资料列表"
+    <el-dialog title="操作"
                width="90%"
                :visible.sync="dialogVisibl_operation"
                style="padding-bottom: 59px; ">
       <div class="dlag_conter2">
+
+        <div class="tt">资料列表</div>
+
         <div class="operation_header">
           <div>
-
             <p>资料名称：</p>
-            <el-input v-model="model"
+            <el-input v-model="value_name"
                       placeholder=""></el-input>
 
             <p>资料类型：</p>
-            <el-select v-model="model"
-                       placeholder="资料类型">
-              <el-option v-for="item in options"
+            <el-select v-model="value_select">
+              <el-option v-for="item in sensitiveOptions"
                          :key="item.value"
                          :label="item.label"
                          :value="item.value">
               </el-option>
             </el-select>
           </div>
-
           <el-button type="primary">查询</el-button>
-
         </div>
 
         <el-table ref="multipleTable"
@@ -426,13 +427,48 @@
           </el-pagination>
         </div>
         <!-- 分页 end-->
+
+        <div class="tt">操作记录</div>
+
+        <!-- 操作记录 -->
+        <el-table :data="tableData"
+                  style="width: 100%">
+          <el-table-column prop="date"
+                           label="动作"
+                           width="180">
+          </el-table-column>
+          <el-table-column prop="name"
+                           label="操作人"
+                           width="180">
+          </el-table-column>
+          <el-table-column prop="address"
+                           label="操作时间">
+          </el-table-column>
+          <el-table-column prop="address"
+                           label="备注">
+          </el-table-column>
+          <el-table-column prop="address"
+                           label="附件">
+          </el-table-column>
+
+        </el-table>
+        <!-- 分页 -->
+        <div class="page">
+          <el-pagination background
+                         layout="prev, pager, next"
+                         :total="1000">
+          </el-pagination>
+        </div>
+        <!-- 分页 end-->
+
       </div>
       <span slot="footer">
-        <el-button size="small"
-                   @click="dialogVisible2 = false">取 消</el-button>
+
         <el-button size="small"
                    type="primary"
-                   @click="query()">确定</el-button>
+                   @click="query()">通过</el-button>
+        <el-button size="small"
+                   @click="dialogVisible2 = false">驳回</el-button>
 
       </span>
     </el-dialog>
@@ -441,6 +477,8 @@
 </template>
 
 <script>
+import { task_pageList } from
+  '@SDMOBILE/api/shandong/task'
 export default {
   components: {},
   data () {
@@ -456,7 +494,7 @@ export default {
       },
       tableData: [{
         date: '2016-05-03',
-        name: '王小虎',
+        name: '',
         province: '上海',
         city: '普陀区',
         address: '上海市普陀区金沙江路 1518 弄',
@@ -464,7 +502,7 @@ export default {
         type: 1,
       }, {
         date: '2016-05-02',
-        name: '王小虎',
+        name: '',
         province: '上海',
         city: '普陀区',
         address: '上海市普陀区金沙江路 1518 弄',
@@ -473,7 +511,7 @@ export default {
 
       }, {
         date: '2016-05-04',
-        name: '王小虎',
+        name: '',
         province: '上海',
         city: '普陀区',
         address: '上海市普陀区金沙江路 1518 弄',
@@ -482,7 +520,7 @@ export default {
 
       }, {
         date: '2016-05-01',
-        name: '王小虎',
+        name: '',
         province: '上海',
         city: '普陀区',
         address: '上海市普陀区金沙江路 1518 弄',
@@ -490,7 +528,7 @@ export default {
 
       }, {
         date: '2016-05-08',
-        name: '王小虎',
+        name: '',
         province: '上海',
         city: '普陀区',
         address: '上海市普陀区金沙江路 1518 弄',
@@ -498,7 +536,7 @@ export default {
 
       }, {
         date: '2016-05-06',
-        name: '王小虎',
+        name: '',
         province: '上海',
         city: '普陀区',
         address: '上海市普陀区金沙江路 1518 弄',
@@ -506,18 +544,74 @@ export default {
 
       }, {
         date: '2016-05-07',
-        name: '王小虎',
+        name: '',
         province: '上海',
         city: '普陀区',
         address: '上海市普陀区金沙江路 1518 弄',
         zip: 200333, type: 1
 
-      }]
+      }],
+      value_name: '',//input
+      value_select: '',//select
+      sensitiveOptions: [
+        {
+          value: "选项1",
+          label: "老李",
+        },
+        {
+          value: "选项2",
+          label: "老王",
+        },
+        {
+          value: "选项3",
+          label: "吴老二",
+        },
+        {
+          value: "选项4",
+          label: "张三",
+        },
+      ],
+      resource: '',//radio
+
+      params: {
+        pageNo: 0,
+        pageSize: 15,
+        condition: {
+          projectNumber: '项目001',
+          status: "0,1",
+
+        }
+      }
+
     }
   },
   computed: {},
   watch: {},
+  created () {
+    let params = {
+      pageNo: this.params.pageNo,
+      pageSize: this.params.pageSize,
+      condition: {
+        projectNumber: this.params.condition.projectNumber,
+        status: this.params.condition.status,
+
+      }
+    }
+    this.list_data(params);
+  },
+  mounted () {
+
+  },
   methods: {
+    // 列表
+    list_data (params) {
+      task_pageList(params).then(resp => {
+        console.log(params);
+        this.list = resp.data;
+        console.log(this.list);
+      })
+    },
+
 
     handleClick (tab, event) {
       console.log(tab, event);
@@ -567,12 +661,7 @@ export default {
 
 
   },
-  created () {
 
-  },
-  mounted () {
-
-  },
 }
 </script>
 
@@ -659,7 +748,7 @@ export default {
   text-align: right;
 }
 .dlag_conter2 >>> .el-input {
-  width: 270px !important;
+  width: 220px !important;
 }
 .dlag_conter2 >>> .el-form {
   margin-bottom: 20px;
@@ -674,12 +763,27 @@ export default {
   width: 300px;
 }
 
+.dlag_conter2 >>> .el-form-item__content {
+  margin-left: 10px !important;
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+.son {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+}
+
 .dlag_conter2 >>> .el-form-item {
   margin-bottom: 20px !important;
   display: flex;
+  box-sizing: border-box;
+  flex-wrap: wrap;
 }
 .dlag_conter2 >>> .el-form-item__content {
-  margin-left: 10px !important;
 }
 .dlag_conter2 >>> .el-textarea {
   width: 500px;
@@ -700,6 +804,14 @@ export default {
 .operation_header div .el-select {
   width: 120px;
 }
-.operation_header div .el-button {
+.tt {
+  font-size: 16px;
+  padding: 20px 0;
+  box-sizing: border-box;
+  color: rgba(0, 0, 0, 0.8);
+  font-weight: 600;
+}
+.sjzl >>> .el-dialog {
+  min-width: 800px;
 }
 </style>
