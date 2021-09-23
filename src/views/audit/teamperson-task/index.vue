@@ -3,6 +3,7 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="组员维护" name="first">
         <!-- <el-button  type="success" class="add">添加</el-button> -->
+        <!-- 组员维护列表 -->
         <el-form ref="form" :model="form">
           <el-table
             ref="singleTable"

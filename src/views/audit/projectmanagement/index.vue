@@ -1,4 +1,5 @@
 <template>
+<!-- 项目管理列表 -->
   <div class="projectmanagement">
     <el-row>
       <el-col :span="17">
@@ -55,6 +56,13 @@
         </template>
       </el-table-column>
     </el-table>
+
+        <!-- 分页 -->
+        <div class="page">
+          <el-pagination background layout="prev, pager, next" :total="1000" :page-size="5" :pager-count="10">
+          </el-pagination>
+        </div>
+        <!-- 分页 end-->
 
     <el-dialog title="新增" :visible.sync="addDialogVisible" width="50%"  @close="addDialogClosed">
       <div class="addForm">
@@ -374,4 +382,10 @@ export default {
     top: 15%;
     left: 45%;
   }
+  .page {
+  width: 100%;
+  padding: 20px 10px;
+  display: flex;
+  justify-content: flex-end;
+}
 </style>
