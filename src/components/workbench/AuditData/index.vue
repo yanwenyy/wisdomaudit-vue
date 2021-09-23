@@ -14,70 +14,98 @@
                          @click="add_data_task()">新增</el-button>
             </el-col>
           </el-row>
-          <el-table :data="tableData"
+          <el-table :data="tableData_list"
+                    v-loading="loading"
                     style="width: 100%;">
-            <el-table-column prop="date"
+            <el-table-column prop="dataTaskNumber"
                              label="流水单号">
             </el-table-column>
-            <el-table-column prop="name"
+            <el-table-column prop="title"
                              label="标题">
             </el-table-column>
-            <el-table-column prop="province"
+            <el-table-column prop="launchPeople"
                              label="发起人">
             </el-table-column>
-            <el-table-column prop="city"
+            <el-table-column prop="addTime"
                              label="发起日期">
+
+              <template slot-scope="scope">
+                {{  scope.row.addTime |filtedate }}
+              </template>
+
             </el-table-column>
-            <el-table-column prop="address"
+            <el-table-column prop="status"
                              label="状态">
+
+              <template slot-scope="scope">
+                {{
+                  scope.row.ing == 0
+                    ? "未开始"
+                    : scope.row.ing == 1
+                    ? "已完成"
+                    : scope.row.ing == 2
+                    ? "执行中"
+                    : "待开始"
+                }}
+              </template>
+
             </el-table-column>
 
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button @click.native.prevent="edit_data(scope.$index, tableData)"
-                           type="text"
-                           style="color:#1371CC"
-                           size="small">
-                  编辑
-                </el-button>
-                <el-button @click.native.prevent="deleteRow(scope.$index, tableData)"
-                           type="text"
-                           style="color:#1371CC"
-                           size="small">
-                  下发
-                </el-button>
-                <el-button @click.native.prevent="operation"
-                           type="text"
-                           style="color:#1371CC"
-                           size="small">
-                  操作
-                </el-button>
+                <div v-if=" scope.row.status == 0">
+                  <el-button @click.native.prevent="edit_data(scope.$index, tableData)"
+                             type="text"
+                             style="color:#1371CC"
+                             size="small">
+                    编辑
+                  </el-button>
+                  <el-button @click.native.prevent="push(scope.$index, tableData)"
+                             type="text"
+                             style="color:#1371CC"
+                             size="small">
+                    下发
+                  </el-button>
+                  <el-button @click.native.prevent="operation"
+                             type="text"
+                             style="color:#1371CC"
+                             size="small">
+                    操作
+                  </el-button>
+                </div>
 
-                <el-popconfirm confirm-button-text='好的'
-                               cancel-button-text='不用了'
-                               icon="el-icon-info"
-                               icon-color="red"
-                               title="这是一段内容确定删除吗？">
-                  <el-button slot="reference"
-                             style="color:#DB454B;    font-size: 12px;">删除</el-button>
-                </el-popconfirm>
+                <div v-if=" scope.row.status == 1">
+                  <el-button @click.native.prevent="edit_data(scope.$index, tableData)"
+                             type="text"
+                             style="color:#1371CC"
+                             size="small">
+                    审批
+                  </el-button>
 
-                <!-- <el-button @click.native.prevent="deleteRow(scope.$index, tableData)"
-                           type="text"
-                           
-                           size="small">
-                  移除
-                </el-button> -->
+                  <el-button @click.native.prevent="operation"
+                             type="text"
+                             style="color:red"
+                             size="small">
+                    删除
+                  </el-button>
+
+                </div>
+
               </template>
+
             </el-table-column>
           </el-table>
         </div>
         <!-- 分页 -->
         <div class="page">
           <el-pagination background
+                         :hide-on-single-page="false"
                          layout="prev, pager, next"
-                         :total="1000">
-          </el-pagination>
+                         :page-sizes="[2, 4, 6, 8]"
+                         :current-page="this.tableData.current"
+                         @current-change="handleCurrentChange"
+                         :page-size="this.tableData.size"
+                         :total="this.tableData.total"></el-pagination>
         </div>
         <!-- 分页 end-->
       </el-tab-pane>
@@ -85,30 +113,30 @@
                    name="1">
         <div class="projectTab anmition_show">
 
-          <el-table :data="tableData"
+          <el-table :data="tableData_list"
                     style="width: 100%;">
-            <el-table-column prop="date"
+            <el-table-column prop="dataTaskNumber"
                              label="流水单号">
             </el-table-column>
-            <el-table-column prop="name"
+            <el-table-column prop=""
                              label="反馈日期">
             </el-table-column>
-            <el-table-column prop="province"
+            <el-table-column prop=""
                              label="编号">
             </el-table-column>
-            <el-table-column prop="city"
+            <el-table-column prop=""
                              label="二级编号">
             </el-table-column>
-            <el-table-column prop="address"
+            <el-table-column prop="title"
                              label="资料名称">
             </el-table-column>
-            <el-table-column prop="address"
+            <el-table-column prop=""
                              label="部门">
             </el-table-column>
-            <el-table-column prop="address"
+            <el-table-column prop=""
                              label="备注">
             </el-table-column>
-            <el-table-column prop="address"
+            <el-table-column prop=""
                              label=附件>
               <div class="update">
                 <div class="update_icon">
@@ -477,8 +505,11 @@
 </template>
 
 <script>
-import { task_pageList } from
-  '@SDMOBILE/api/shandong/task'
+import { data_pageList, data_push, data_save, add_pageList } from
+  '@SDMOBILE/api/shandong/data'
+import { fmtDate } from '@SDMOBILE/model/time.js';
+
+
 export default {
   components: {},
   data () {
@@ -489,6 +520,7 @@ export default {
       dialogVisible2: false,//添加资料
       dialogVisibl_operation: false,//操作
       // color: '',   // 上传文件icon 颜色
+      loading: false,
       form: {
         name: '',
       },
@@ -573,6 +605,8 @@ export default {
       ],
       resource: '',//radio
 
+
+      tableData_list: [],
       params: {
         pageNo: 0,
         pageSize: 15,
@@ -588,6 +622,7 @@ export default {
   computed: {},
   watch: {},
   created () {
+    // 资料列表
     let params = {
       pageNo: this.params.pageNo,
       pageSize: this.params.pageSize,
@@ -602,24 +637,95 @@ export default {
   mounted () {
 
   },
+  filters: {
+    filtedate: function (date) {
+      let t = new Date(date);
+      return fmtDate(t, 'yyyy-MM-dd hh:mm:ss');
+    }
+  },
+
   methods: {
+    // 顶部tab 切换事件
+    handleClick (val, event) {
+      if (val.index == 0) {
+        let params = {
+          pageNo: val,
+          pageSize: this.params.pageSize,
+          condition: {
+            projectNumber: this.params.condition.projectNumber,
+            status: this.params.condition.status,
+          }
+        }
+        this.list_data(params)
+      } else {
+        let params = {
+          pageNo: val,
+          pageSize: this.params.pageSize,
+          condition: {
+            projectNumber: this.params.condition.projectNumber,
+            status: 2,
+          }
+        }
+        this.list_data(params)
+      }
+    },
     // 列表
     list_data (params) {
-      task_pageList(params).then(resp => {
-        console.log(params);
-        this.list = resp.data;
-        console.log(this.list);
+      data_pageList(params).then(resp => {
+        this.loading = true
+        this.tableData = resp.data;
+        this.tableData_list = resp.data.records
+        this.loading = false
+        // console.log(this.tableData);
       })
     },
+    // 任务列表分页
+    handleCurrentChange (val) {
+      let params = {
+        pageNo: val,
+        pageSize: this.params.pageSize,
+        condition: {
+          projectNumber: this.params.condition.projectNumber,
+          status: this.params.condition.status,
+        }
+      }
+      this.list_data(params)
+    },
 
+    // 任务新增
+    data_save () {
 
-    handleClick (tab, event) {
-      console.log(tab, event);
+    },
+    // 未完成任务下发
+    push (index, rows) {
+      console.log(rows.records[index].addDataTaskUuid);
+      let params = {
+        taskId: rows.records[index].addDataTaskUuid
+      }
+      data_push(params).then(resp => {
+        console.log(params);
+        // console.log(resp.data);
+      })
     },
     //新增任务
     add_data_task () {
       this.dialogVisible = true
+
+      let params = {
+        pageNo: 0,
+        pageSize: 15,
+        projectType: '111'
+      }
+      // 新增未完成任务列表
+      add_pageList(params).then(resp => {
+        console.log(params);
+        // console.log(resp.data);
+      })
     },
+
+
+
+
     // 确认
     query () {
       this.dialogVisible = false
@@ -636,7 +742,6 @@ export default {
     // 编辑
     edit_data () {
       this.title = '编辑资料任务',
-
         this.dialogVisible = true
     },
     // 操作

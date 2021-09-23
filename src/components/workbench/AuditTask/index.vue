@@ -58,6 +58,7 @@
 
         <!-- 模型任务 -->
         <div class="task_type"
+             v-loading="loading"
              v-if="task_type == 0"
              :class="task_type == 0 ? 'anmition_show' : ''">
           <!-- 表单 -->
@@ -637,6 +638,10 @@
 </template>
 
 <script>
+import { task_pageList } from
+  '@SDMOBILE/api/shandong/task'
+
+
 export default {
   components: {},
   data () {
@@ -830,12 +835,60 @@ export default {
           label: "张三",
         },
       ],
+
+      loading: false,
+      tableData_list: [],
+      params: {
+        auditModelCategory: 'auditModelCategory',
+        pageNo: 0,
+        pageSize: 15,
+        projectId: '11111213231',//项目id
+        taskName: '',//模糊查询
+        taskType: '1',//1:模型任务 2:自建任务
+      }
+
     };
   },
   computed: {},
   watch: {},
+
+  created () {
+    // 资料列表
+    let params = {
+      basePageParam: {
+        pageNo: this.params.pageNo,
+        pageSize: this.params.pageSize,
+      },
+      condition: {
+        auditModelCategory: this.params.auditModelCategory,
+        projectId: this.params.projectId,
+        taskName: this.params.taskName,
+        taskType: this.params.taskType
+      }
+
+    }
+    this.list_data(params);
+  },
+  mounted () { },
+
+
   methods: {
     // 模型任务===========
+    // 列表
+    list_data (params) {
+      task_pageList(params).then(resp => {
+        console.log(params);
+        alert(1)
+
+        this.loading = true
+        this.tableData = resp.data;
+        // this.tableData_list = resp.data.records
+        this.loading = false
+        console.log(this.tableData);
+      })
+    },
+
+
     // 引用
     quote () {
       this.dialogVisible_quote = true;
@@ -886,8 +939,6 @@ export default {
       this.problemsDialogVisible = true;
     }
   },
-  created () { },
-  mounted () { },
 };
 </script>
 

@@ -18,6 +18,9 @@ import VueAnimateNumber from 'vue-animate-number'
 Vue.use(VueAnimateNumber)
 // Ace end
 
+
+import qs from 'qs'//请求数据
+Vue.prototype.$qs = qs;//请求数据
 import '@/styles/index.scss' // global css
 
 import App from './App'
