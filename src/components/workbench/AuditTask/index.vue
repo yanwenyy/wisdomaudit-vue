@@ -187,7 +187,7 @@
                            layout="prev, pager, next"
                            :page-sizes="[2, 4, 6, 8]"
                            :current-page="this.tableData.current"
-                           @current-change="handleCurrentChange"
+                           @current-change="handleCurrentChange_model"
                            :page-size="this.tableData.size"
                            :total="this.tableData.total"></el-pagination>
           </div>
@@ -236,7 +236,7 @@
                              label="附件"
                              width="90">
               <div class="update">
-                <icon class="update_icon">
+                <i class="update_icon">
                   <svg t="1631877671204"
                        class="icon"
                        viewBox="0 0 1024 1024"
@@ -249,7 +249,7 @@
                           fill="#FD9D27"
                           p-id="9940"></path>
                   </svg>
-                </icon>
+                </i>
                 <span>2</span>
               </div>
             </el-table-column>
@@ -263,7 +263,7 @@
                            layout="prev, pager, next"
                            :page-sizes="[2, 4, 6, 8]"
                            :current-page="this.tableData.current"
-                           @current-change="handleCurrentChange"
+                           @current-change="handleCurrentChange_zijian"
                            :page-size="this.tableData.size"
                            :total="this.tableData.total"></el-pagination>
           </div>
