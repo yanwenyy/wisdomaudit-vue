@@ -18,7 +18,7 @@
             <el-table-column prop="address" label="任务描述"> </el-table-column>
             <el-table-column prop="address" label="附件" width="90">
               <div class="update">
-                <icon class="update_icon">
+                <i class="update_icon">
                   <svg
                     t="1631877671204"
                     class="icon"
@@ -35,7 +35,7 @@
                       p-id="9940"
                     ></path>
                   </svg>
-                </icon>
+                </i>
                 <span>2</span>
               </div>
             </el-table-column>

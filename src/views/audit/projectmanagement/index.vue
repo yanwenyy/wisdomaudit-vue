@@ -1,5 +1,5 @@
 <template>
-<!-- 项目管理列表 -->
+  <!-- 项目管理列表 -->
   <div class="projectmanagement">
     <el-row>
       <el-col :span="17">
@@ -11,7 +11,7 @@
       <el-col :span="5">
         <el-input
           placeholder="请输入内容"
-          v-model="input3"
+          v-model="queryInfo.query"
           class="input-with-select"
         >
           <el-button slot="append" icon="el-icon-search"></el-button>
@@ -57,14 +57,26 @@
       </el-table-column>
     </el-table>
 
-        <!-- 分页 -->
-        <div class="page">
-          <el-pagination background layout="prev, pager, next" :total="1000" :page-size="5" :pager-count="10">
-          </el-pagination>
-        </div>
-        <!-- 分页 end-->
-
-    <el-dialog title="新增" :visible.sync="addDialogVisible" width="50%"  @close="addDialogClosed">
+    <!-- 分页 -->
+    <div class="page">
+      <el-pagination
+        background
+        :hide-on-single-page="false"
+        layout="prev, pager, next"
+        :page-sizes="[2, 4, 6, 8]" 
+      ></el-pagination>
+    </div>
+    <!-- 分页 end-->
+        <!-- :current-page="this.tableData.current"
+        @current-change="handleCurrentChange"
+        :page-size="this.tableData.size"
+        :total="this.tableData.total" -->
+    <el-dialog
+      title="新增"
+      :visible.sync="addDialogVisible"
+      width="50%"
+      @close="addDialogClosed"
+    >
       <div class="addForm">
         <el-form
           label-width="100px"
@@ -92,10 +104,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item
-              label="项目名称:"
-              prop="projectName"
-            >
+            <el-form-item label="项目名称:" prop="projectName">
               <el-input
                 placeholder="请输入"
                 v-model="addProjectManagement.projectName"
@@ -104,10 +113,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item
-              label="项目负责人:"
-              prop="projectLeader"
-            >
+            <el-form-item label="项目负责人:" prop="projectLeader">
               <el-select
                 placeholder="请选择"
                 v-model="addProjectManagement.projectLeader"
@@ -118,10 +124,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item
-              label="审计期间:"
-              prop="projectPeriod"
-            >
+            <el-form-item label="审计期间:" prop="projectPeriod">
               <el-date-picker
                 type="date"
                 placeholder="请选择"
@@ -129,17 +132,22 @@
               ></el-date-picker>
             </el-form-item>
             <el-form-item label="设置组长"></el-form-item>
-            <el-table :data="leaderData" style="width: 100%" border class="projectTable">
+            <el-table
+              :data="leaderData"
+              style="width: 100%"
+              border
+              class="projectTable"
+            >
               <el-table-column label="项目编号" prop="projectItem" width="110">
               </el-table-column>
               <el-table-column prop="auditee" label="被审计单位" width="330">
                 <template scope="scope">
                   <el-form-item prop="auditee">
-                  <el-input 
-                    placeholder="请输入"
-                    v-model="scope.row.auditee"
-                    class="auditeeInput"
-                  ></el-input>
+                    <el-input
+                      placeholder="请输入"
+                      v-model="scope.row.auditee"
+                      class="auditeeInput"
+                    ></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
@@ -148,14 +156,14 @@
               <el-table-column prop="personCharge" label="负责人" width="330">
                 <template scope="scope">
                   <el-form-item prop="personCharge">
-                     <el-select
-                    placeholder="请选择"
-                    class="auditeeInput"
-                    v-model="scope.row.personCharge"
-                  >
-                    <el-option label="是" value="shi"></el-option>
-                    <el-option label="否" value="fou"></el-option>
-                  </el-select>
+                    <el-select
+                      placeholder="请选择"
+                      class="auditeeInput"
+                      v-model="scope.row.personCharge"
+                    >
+                      <el-option label="是" value="shi"></el-option>
+                      <el-option label="否" value="fou"></el-option>
+                    </el-select>
                   </el-form-item>
                 </template>
               </el-table-column>
@@ -179,7 +187,7 @@
           </el-row>
         </el-form>
 
-         <div class="stepBtn">
+        <div class="stepBtn">
           <el-button @click="addDialogVisible = false">取消</el-button>
           <el-button class="nextBtn" @click="nextBtn">确认</el-button>
         </div>
@@ -189,9 +197,18 @@
 </template>
 
 <script>
+import { projectList } from
+  '@SDMOBILE/api/shandong/projectmanagement'
+import { fmtDate } from '@SDMOBILE/model/time.js';
+
 export default {
   data() {
     return {
+      queryInfo: {
+        query: "",
+        pageSize: "10",
+        pageNo: "0",
+      },
       addDialogVisible: false,
       input3: "",
       tableData: [
@@ -273,28 +290,39 @@ export default {
           },
         ],
         itemClassfication: [
-          { required: true, message: '请选择项目分类', trigger: "change"}
+          { required: true, message: "请选择项目分类", trigger: "change" },
         ],
         projectName: [
           { required: true, message: "请填写项目名称", trigger: "blur" },
           { max: 10, message: "项目名称在10个字符之内", trigger: "change" },
         ],
-        projectLeader:[
-           { required: true, message: "请选择项目负责人", trigger: "change" },
+        projectLeader: [
+          { required: true, message: "请选择项目负责人", trigger: "change" },
         ],
-        projectPeriod :[
-           { required: true, message: "请选择审计期间", trigger: "change" },
+        projectPeriod: [
+          { required: true, message: "请选择审计期间", trigger: "change" },
         ],
-        auditee:[
-           { required: true, message: "请输入被审计单位", trigger: "blur" },
+        auditee: [
+          { required: true, message: "请输入被审计单位", trigger: "blur" },
         ],
-        personCharge:[
-           { required: true, message: "请选择负责人", trigger: "change" },
-        ]
+        personCharge: [
+          { required: true, message: "请选择负责人", trigger: "change" },
+        ],
       },
     };
   },
+  created() {
+      this.projectData(this.queryInfo);
+  },
   methods: {
+    
+    projectData(queryInfo){
+      projectList(queryInfo).then(resp => {
+       console.log(resp);
+        // console.log(this.tableData);
+      })
+    },
+
     addProject() {
       this.addDialogVisible = true;
     },
@@ -313,7 +341,7 @@ export default {
     nextBtn() {
       this.$refs["form"].validate((valid) => {
         console.log(valid);
-      })
+      });
     },
     //监听添加用户对话框的关闭事件
     addDialogClosed() {
@@ -365,24 +393,23 @@ export default {
   // margin-top: 5%;
   text-align: center;
   .nextBtn {
-  background: #508ce6 !important;
-  color: #fff;
+    background: #508ce6 !important;
+    color: #fff;
+  }
 }
-}
-
 </style>
 <style scoped>
-  .addForm /deep/ .el-form-item__error{
-    position: absolute;
-    top: -70%;
-    left: 52%;
-  }
-  .projectTable /deep/ .el-form-item__error{
-    position: absolute;
-    top: 15%;
-    left: 45%;
-  }
-  .page {
+.addForm /deep/ .el-form-item__error {
+  position: absolute;
+  top: -70%;
+  left: 52%;
+}
+.projectTable /deep/ .el-form-item__error {
+  position: absolute;
+  top: 15%;
+  left: 45%;
+}
+.page {
   width: 100%;
   padding: 20px 10px;
   display: flex;
