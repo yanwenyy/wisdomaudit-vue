@@ -1,27 +1,28 @@
 import request from '@/utils/request'
 
 const baseURL = '/wisdomaudit'
-// 资料列表
+// 资料列表 未完成
 export function data_pageList (data) {
   return request({
     baseURL: baseURL,
-    url: `/addDataTask/pageList`,
+    url: `/addDataTask/pageListDoing`,
+    method: 'post',
+    data
+  })
+}
+// 资料列表 已完成
+export function data_pageListDone (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/auditPreviousDemandData/pageListDone`,
     method: 'post',
     data
   })
 }
 
-// 资料列表 新增里的列表
-export function add_pageList (data) {
-  console.log(data);
-  let id = data.taskId
-  return request({
-    baseURL: baseURL,
-    url: `/auditPreviousData/pageList`,
-    method: 'put',
-    data
-  })
-}
+
+
+
 
 
 
@@ -39,6 +40,18 @@ export function data_push (data) {
 }
 
 
+// 资料列表 新增任务里的列表
+export function add_pageList (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/auditPreviousData/pageList`,
+    method: 'put',
+    data
+  })
+}
+
+
+
 // 资料列表 新增
 export function data_save (data) {
   console.log(data);
@@ -46,7 +59,7 @@ export function data_save (data) {
   return request({
     baseURL: baseURL,
     url: `/addDataTask/save`,
-    method: 'pust',
+    method: 'post',
     data
   })
 }

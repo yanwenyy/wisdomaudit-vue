@@ -2,8 +2,22 @@
   <div class="sjzl anmition_show">
     <div class="conter">
       <div class="projectTab">
+        <!-- tab -->
         <el-row :gutter="24"
                 class="titleMes">
+
+          <!-- 自建任务 / 模型任务 -->
+          <el-col :span="1.5">
+            <el-button type="primary"
+                       :class="task_type == 0 ? 'active_tab':''"
+                       @click="on_Task(0)">模型任务</el-button>
+            <el-button type="primary"
+                       :class="task_type == 1 ? 'active_tab':''"
+                       @click="on_Task(1)">自建任务</el-button>
+
+          </el-col>
+          <!-- 自建任务 /  模型任务 end-->
+
           <!-- 引用 -->
           <el-col :span="1.5"
                   v-if="task_type == 0">
@@ -18,16 +32,6 @@
                        @click="new_add()">新增</el-button>
           </el-col>
 
-          <!-- 自建任务 / 模型任务 -->
-          <el-col :span="1.5">
-            <el-button type="primary"
-                       v-if="task_type == 0"
-                       @click="on_Task(1)">自建任务</el-button>
-            <el-button type="primary"
-                       v-if="task_type == 1"
-                       @click="on_Task(0)">模型任务</el-button>
-          </el-col>
-          <!-- 自建任务 /  模型任务 end-->
           <!--自建任务 筛选 -->
           <div class="search"
                v-if="task_type == 0">
@@ -55,6 +59,7 @@
                        @click="search_list()">筛选</el-button>
           </div>
         </el-row>
+        <!-- tab end-->
 
         <!-- 模型任务 -->
         <div class="task_type"
@@ -62,15 +67,19 @@
              v-if="task_type == 0"
              :class="task_type == 0 ? 'anmition_show' : ''">
           <!-- 表单 -->
-          <el-table :data="tableData"
+          <el-table :data="tableData_list"
+                    v-loading="loading"
                     style="width: 100%">
-            <el-table-column prop="date"
-                             label="序号"> </el-table-column>
-            <el-table-column prop="name"
+
+            <el-table-column type="index"
+                             label="序号"
+                             width="50">
+            </el-table-column>
+            <el-table-column prop="auditModelName"
                              label="模型名称"> </el-table-column>
-            <el-table-column prop="type"
+            <el-table-column prop="auditModelCategory"
                              label="模型分类">
-              <template slot-scope="scope">
+              <!-- <template slot-scope="auditModelCategory">
                 {{
                   scope.row.type == 0
                     ? "个人"
@@ -80,29 +89,27 @@
                     ? "财务"
                     : "其他"
                 }}
-              </template>
+              </template> -->
             </el-table-column>
-            <el-table-column prop="data_num"
+            <el-table-column prop="resultsNumber"
                              label="结果数">
               <template slot-scope="scope">
-                <el-button @click.native.prevent="
-                    data_num_click(scope.$index, tableData)
-                  "
+                <el-button @click="data_num_click(scope.row)"
                            type="text"
                            style="color: #1371cc"
                            size="small">
-                  {{ scope.row.data_num }}
+                  {{ scope.row.resultsNumber }}
                 </el-button>
               </template>
             </el-table-column>
-            <el-table-column prop="wt_num"
+            <el-table-column prop="problemsNumber"
                              label="问题数">
               <template slot-scope="scope">
                 <el-button @click.native.prevent="probleNum()"
                            type="text"
                            style="color: #1371cc"
                            size="small">
-                  {{ scope.row.wt_num }}
+                  {{ scope.row.problemsNumber }}
                 </el-button>
               </template>
             </el-table-column>
@@ -120,9 +127,9 @@
               </template>
             </el-table-column>
 
-            <el-table-column prop="ing"
+            <el-table-column prop="runStatus"
                              label="运行状态">
-              <template slot-scope="scope">
+              <!-- <template slot-scope="scope">
                 {{
                   scope.row.ing == 0
                     ? "未开始"
@@ -132,13 +139,19 @@
                     ? "执行中"
                     : "待开始"
                 }}
+              </template> -->
+            </el-table-column>
+            <el-table-column prop="taskStartTime"
+                             label="运行开始时间">
+              <template slot-scope="scope">
+                <p>{{scope.row.taskStartTime |filtedate}}</p>
               </template>
             </el-table-column>
-            <el-table-column prop="start_time"
-                             label="运行开始时间">
-            </el-table-column>
-            <el-table-column prop="end_time"
+            <el-table-column prop="taskFinishTime"
                              label="运行结束时间">
+              <template slot-scope="scope">
+                <p>{{scope.row.taskFinishTime |filtedate}}</p>
+              </template>
             </el-table-column>
 
             <el-table-column prop="edit"
@@ -170,9 +183,13 @@
           <!-- 分页 -->
           <div class="page">
             <el-pagination background
+                           :hide-on-single-page="false"
                            layout="prev, pager, next"
-                           :total="1000">
-            </el-pagination>
+                           :page-sizes="[2, 4, 6, 8]"
+                           :current-page="this.tableData.current"
+                           @current-change="handleCurrentChange"
+                           :page-size="this.tableData.size"
+                           :total="this.tableData.total"></el-pagination>
           </div>
           <!-- 分页 end-->
         </div>
@@ -183,11 +200,17 @@
              v-if="task_type == 1"
              :class="task_type == 1 ? 'anmition_show' : ''">
           <!-- 表单 -->
-          <el-table :data="tableData2"
+          <el-table :data="tableData_list"
+                    v-loading="loading"
                     style="width: 100%">
-            <el-table-column prop="name"
+
+            <el-table-column type="index"
+                             label="序号"
+                             width="50">
+            </el-table-column>
+            <el-table-column prop="taskName"
                              label="任务名称"> </el-table-column>
-            <el-table-column prop="task_name"
+            <el-table-column prop="taskDescription"
                              label="任务描述">
             </el-table-column>
             <el-table-column prop="task_text"
@@ -199,7 +222,7 @@
                              label="责任人 ">
               <template scope="scope">
 
-                <el-select v-model="scope.row.name">
+                <el-select v-model="scope.row.peopleName">
                   <el-option v-for="item in sensitiveOptions"
                              :key="item.value"
                              :label="item.label"
@@ -236,9 +259,13 @@
           <!-- 分页 -->
           <div class="page">
             <el-pagination background
+                           :hide-on-single-page="false"
                            layout="prev, pager, next"
-                           :total="1000">
-            </el-pagination>
+                           :page-sizes="[2, 4, 6, 8]"
+                           :current-page="this.tableData.current"
+                           @current-change="handleCurrentChange"
+                           :page-size="this.tableData.size"
+                           :total="this.tableData.total"></el-pagination>
           </div>
           <!-- 分页 end-->
         </div>
@@ -448,7 +475,7 @@
                    type="primary"
                    @click="query()">确 定</el-button>
         <el-button size="small"
-                   @click="clearTopic(), (dialogVisible_quote = false)">取 消</el-button>
+                   @click="clearTopic(), (dialogVisible_data_num = false)">取 消</el-button>
       </span>
     </el-dialog>
 
@@ -638,9 +665,9 @@
 </template>
 
 <script>
-import { task_pageList } from
+import { task_pageList, task_selectModel, task_selectTable } from
   '@SDMOBILE/api/shandong/task'
-
+import { fmtDate } from '@SDMOBILE/model/time.js';
 
 export default {
   components: {},
@@ -837,15 +864,16 @@ export default {
       ],
 
       loading: false,
-      tableData_list: [],
+      tableData_list: [],//任务列表数据
       params: {
-        auditModelCategory: 'auditModelCategory',
-        pageNo: 0,
-        pageSize: 15,
-        projectId: '11111213231',//项目id
+        auditModelCategory: '',
+        managementProjectUuid: '3757f078afa6161474430894936de6ed',//项目管理id
         taskName: '',//模糊查询
         taskType: '1',//1:模型任务 2:自建任务
-      }
+        pageNo: 0,
+        pageSize: 15,
+      },
+      multipleSelection: [],//新增列表选中的数据
 
     };
   },
@@ -855,39 +883,140 @@ export default {
   created () {
     // 资料列表
     let params = {
-      basePageParam: {
-        pageNo: this.params.pageNo,
-        pageSize: this.params.pageSize,
-      },
+      pageNo: this.params.pageNo,
+      pageSize: this.params.pageSize,
       condition: {
         auditModelCategory: this.params.auditModelCategory,
-        projectId: this.params.projectId,
+        managementProjectUuid: this.params.managementProjectUuid,
         taskName: this.params.taskName,
         taskType: this.params.taskType
       }
-
     }
     this.list_data(params);
   },
   mounted () { },
+  filters: {
+    filtedate: function (date) {
+      let t = new Date(date);
+      return fmtDate(t, 'yyyy-MM-dd hh:mm:ss');
+    }
+  },
 
 
   methods: {
+    // 显示自建任务
+    on_Task (index) {
+      this.task_type = index;
+      if (index == 0) {
+        this.loading = true
+        this.params.pageNo = 1;
+        // 模型列表
+        let params = {
+          pageNo: this.params.pageNo,
+          pageSize: this.params.pageSize,
+          condition: {
+            auditModelCategory: this.params.auditModelCategory,
+            managementProjectUuid: this.params.managementProjectUuid,
+            taskName: this.params.taskName,
+            taskType: 1
+          }
+        }
+        this.list_data(params);
+
+      } else if (index == 1) {
+        this.loading = true
+        this.params.pageNo = 1;
+
+        // 资料列表
+        let params = {
+          pageNo: this.params.pageNo,
+          pageSize: this.params.pageSize,
+          condition: {
+            auditModelCategory: this.params.auditModelCategory,
+            managementProjectUuid: this.params.managementProjectUuid,
+            taskName: this.params.taskName,
+            taskType: 2
+          }
+        }
+        this.list_data(params);
+      }
+    },
+    // 全选
+    handleSelectionChange (val) {
+      this.multipleSelection = val;
+    },
+
     // 模型任务===========
     // 列表
     list_data (params) {
       task_pageList(params).then(resp => {
-        console.log(params);
-        alert(1)
-
         this.loading = true
         this.tableData = resp.data;
-        // this.tableData_list = resp.data.records
+        this.tableData_list = resp.data.records
         this.loading = false
-        console.log(this.tableData);
+        // console.log(this.tableData);
       })
     },
 
+    // 结果数
+    data_num_click (id) {
+      console.log(id);
+      return false
+      // if (this.multipleSelection.length != 1) {
+      //   this.$message.info("请选择至少一条数据进行删除！");
+      //   return false;
+      // }
+
+      this.dialogVisible_data_num = true;
+      this.data_tab();//结果分类tab
+    },
+
+
+    // 结果弹窗 结果分类tab
+    data_tab (params) {
+      task_selectModel(params).then(resp => {
+        this.loading = true
+        // this.tableData = resp.data;
+        // this.tableData_list = resp.data.records
+        this.loading = false
+        console.log(resp.data);
+      })
+    },
+
+
+
+    // 模型列表分页
+    handleCurrentChange_model (val) {
+      // 模型列表
+      let params = {
+        pageNo: val,
+        pageSize: this.params.pageSize,
+        condition: {
+          auditModelCategory: this.params.auditModelCategory,
+          managementProjectUuid: this.params.managementProjectUuid,
+          taskName: this.params.taskName,
+          taskType: 1
+        }
+      }
+      this.list_data(params);
+
+    },
+    // 自建列表分页
+    handleCurrentChange_zijian (val) {
+      // 资料列表
+      let params = {
+        pageNo: val,
+        pageSize: this.params.pageSize,
+        condition: {
+          auditModelCategory: this.params.auditModelCategory,
+          managementProjectUuid: this.params.managementProjectUuid,
+          taskName: this.params.taskName,
+          taskType: 2
+        }
+      }
+      this.list_data(params);
+
+    },
 
     // 引用
     quote () {
@@ -897,15 +1026,8 @@ export default {
     quote_list () {
       console.log(222);
     },
-    // 全选
-    handleSelectionChange (val) {
-      this.multipleSelection = val;
-    },
 
-    // 结果数
-    data_num_click () {
-      this.dialogVisible_data_num = true;
-    },
+
     // 自建任务===========
 
     // 新增
@@ -916,10 +1038,7 @@ export default {
     search_list () {
       console.log(this.task.search);
     },
-    // 显示自建任务
-    on_Task (index) {
-      this.task_type = index;
-    },
+
     //  确认新增
     clearTopic () {
       console.log("关闭新增");
@@ -946,6 +1065,14 @@ export default {
 @import "../../../assets/styles/css/lhg.css";
 .sjzl {
   display: flex;
+}
+
+/* 当前选项 */
+.active_tab {
+  background: #1371cc !important;
+}
+.task_type >>> .el-table {
+  min-height: 500px;
 }
 .titleMes {
   margin: 0;
@@ -989,14 +1116,10 @@ export default {
 }
 .status_data li {
   margin: 0 5px;
-  min-width: 100px;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
   cursor: pointer;
-  background: #559ed4 !important;
-  border-radius: 5px;
-  color: #fff;
 }
 
 .update {

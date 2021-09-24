@@ -8,6 +8,7 @@
                    name="0">
 
         <div class="projectTab anmition_show">
+          <!-- 新增 -->
           <el-row class="titleMes">
             <el-col :span="1.5">
               <el-button type="primary"
@@ -54,7 +55,7 @@
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <div v-if=" scope.row.status == 0">
-                  <el-button @click.native.prevent="edit_data(scope.$index, tableData)"
+                  <el-button @click="comment()"
                              type="text"
                              style="color:#1371CC"
                              size="small">
@@ -177,28 +178,37 @@
                :visible.sync="dialogVisible"
                style="padding-bottom: 59px; ">
       <div class="dlag_conter">
-        <el-form ref="form"
-                 :model="form"
+        <el-form ref="add_form"
+                 :inline="false"
+                 :model="add_form"
                  label-width="80px">
-          <el-form-item label="标题">
-            <el-input v-model="form.name"></el-input>
+          <el-form-item label="标题"
+                        prop="title"
+                        :rules="{
+              required: true,
+              message: '此项不能为空',
+              trigger: 'blur',
+            }">
+            <el-input v-model="add_form.title"></el-input>
           </el-form-item>
-          <el-form-item label=发起人>
-            <el-input v-model="form.name"></el-input>
+          <el-form-item label="发起人"
+                        prop="name"
+                        :rules="{
+              required: true,
+              message: '此项不能为空',
+              trigger: 'blur',
+            }">
+            <el-input v-model="add_form.name"></el-input>
           </el-form-item>
         </el-form>
-        <el-form ref="form"
-                 :model="form"
-                 label-width="80px">
+        <el-form label-width="80px">
           <div style="display:flex;align-items: center;padding:10px 0;box-sizing: border-box;">
             <p>获取资料清单：</p>
             <el-button type="primary"
                        @click="add_data()">添加资料</el-button>
           </div>
         </el-form>
-        <el-form ref="form"
-                 :model="form"
-                 label-width="80px">
+        <el-form label-width="80px">
           <el-table ref="multipleTable"
                     :data="tableData"
                     tooltip-effect="dark"
@@ -247,10 +257,10 @@
                    @click="dialogVisible = false">取 消</el-button>
         <el-button size="small"
                    type="primary"
-                   @click="query()">保存</el-button>
+                   @click="query_add_form('add_form')">保存</el-button>
         <el-button size="small"
                    type="primary"
-                   @click="query()">下发</el-button>
+                   @click="pust()">下发</el-button>
       </span>
 
     </el-dialog>
@@ -505,7 +515,7 @@
 </template>
 
 <script>
-import { data_pageList, data_push, data_save, add_pageList } from
+import { data_pageList, data_push, data_save, add_pageList, data_pageListDone } from
   '@SDMOBILE/api/shandong/data'
 import { fmtDate } from '@SDMOBILE/model/time.js';
 
@@ -521,9 +531,15 @@ export default {
       dialogVisibl_operation: false,//操作
       // color: '',   // 上传文件icon 颜色
       loading: false,
-      form: {
-        name: '',
+
+      // 新增任务
+      add_form: {
+        title: '',//标题
+        name: '',//发起人
       },
+
+
+
       tableData: [{
         date: '2016-05-03',
         name: '',
@@ -606,8 +622,23 @@ export default {
       resource: '',//radio
 
 
+      // 未完成
+      tableData: [],
+      multipleSelection: [],//新增列表选中的数据
       tableData_list: [],
       params: {
+        pageNo: 0,
+        pageSize: 15,
+        condition: {
+          projectNumber: '项目001',
+          status: "0,1",
+        }
+      },
+      // 已完成
+      tableData2: [],
+      multipleSelection2: [],//新增列表选中的数据
+      tableData_list2: [],
+      params2: {
         pageNo: 0,
         pageSize: 15,
         condition: {
@@ -632,7 +663,12 @@ export default {
 
       }
     }
-    this.list_data(params);
+    this.list_data_start(params);//未完成
+
+
+
+
+    // 完成
   },
   mounted () {
 
@@ -648,6 +684,7 @@ export default {
     // 顶部tab 切换事件
     handleClick (val, event) {
       if (val.index == 0) {
+        // 未完成
         let params = {
           pageNo: val,
           pageSize: this.params.pageSize,
@@ -656,8 +693,9 @@ export default {
             status: this.params.condition.status,
           }
         }
-        this.list_data(params)
+        this.list_data_start(params)
       } else {
+        // 已完成
         let params = {
           pageNo: val,
           pageSize: this.params.pageSize,
@@ -666,11 +704,14 @@ export default {
             status: 2,
           }
         }
-        this.list_data(params)
+        this.list_data_start(params)
       }
     },
-    // 列表
-    list_data (params) {
+
+
+    // 未完成============================
+    // 列表 未完成
+    list_data_start (params) {
       data_pageList(params).then(resp => {
         this.loading = true
         this.tableData = resp.data;
@@ -719,28 +760,94 @@ export default {
       // 新增未完成任务列表
       add_pageList(params).then(resp => {
         console.log(params);
+        console.log(333);
         // console.log(resp.data);
       })
     },
 
-
-
-
     // 确认
-    query () {
-      this.dialogVisible = false
+    query_add_form (formName) {
+      // console.log(this.add_form); 
+      // this.multipleSelection
+      console.log(this.add_form);
+      return false
+
+      // this.$refs[formName].validate((valid) => {
+      //   if (valid) {
+      //     // 确认接口
+      //     // 传递 参数 this.add_form
+      //     this.dialogVisible = false
+      //     this.add_form = "";
+
+      //   }
+      // })
+    },
+    // 新增里的下发
+    pust () {
+
+    },
+
+    // 列表选择事件
+    handleSelectionChange (val) {
+      this.multipleSelection = val;
     },
     // 删除
     deleteRow (index, rows) {
-      rows.splice(index, 1);
+      if (this.multipleSelection.length != 1) {
+        this.$message.info("请选择至少一条数据进行删除！");
+        return false;
+      }
+      let id = [],
+        itemStatus = true;
+      this.multipleSelection.forEach((item) => {
+        id.push(item.id);
+      });
+
+      this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          // this.$http
+          //   .post(
+          //     "/communityMng/superUser/deleteAll",
+          //     qs.stringify({ ids: id.join(",") })
+          //   )
+          //   .then((res) => {
+          //     this.$message({
+          //       message: "删除成功",
+          //       type: "success",
+          //     });
+          //     this.getData();
+          //   });
+        })
+        .catch(() => { });
     },
+
+
+
+
+    // 已完成==========================
+    // 已完成列表
+    list_data_start (params) {
+      data_pageListDone(params).then(resp => {
+        this.loading = true
+        this.tableData2 = resp.data;
+        this.tableData_list2 = resp.data.records
+        this.loading = false
+        // console.log(this.tableData);
+      })
+    },
+
+
     // 添加资料
     add_data () {
       this.dialogVisible2 = true;
     },
 
-    // 编辑
-    edit_data () {
+    // 编辑任务列表
+    comment () {
       this.title = '编辑资料任务',
         this.dialogVisible = true
     },
@@ -760,9 +867,7 @@ export default {
         this.$refs.multipleTable.clearSelection();
       }
     },
-    handleSelectionChange (val) {
-      this.multipleSelection = val;
-    }
+
 
 
   },
