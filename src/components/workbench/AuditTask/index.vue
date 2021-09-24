@@ -973,15 +973,15 @@ export default {
 
 
     // 结果弹窗 结果分类tab
-    data_tab (params) {
-      task_selectModel(params).then(resp => {
-        this.loading = true
-        // this.tableData = resp.data;
-        // this.tableData_list = resp.data.records
-        this.loading = false
-        console.log(resp.data);
-      })
-    },
+    // data_tab (params) {
+    //   task_selectModel(params).then(resp => {
+    //     this.loading = true
+    //     // this.tableData = resp.data;
+    //     // this.tableData_list = resp.data.records
+    //     this.loading = false
+    //     console.log(resp.data);
+    //   })
+    // },
 
 
 
