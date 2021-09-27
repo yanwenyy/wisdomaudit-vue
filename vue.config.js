@@ -64,12 +64,12 @@ module.exports = {
           '^/wisdomaudit/': '/'
         }
       },
-      '/wisdomaudit/': {
+      '/wisdomaudit_son/': {
         timeout: 1800000,
         target: process.env.XUE_API,
         changeOrigin: true,
         pathRewrite: {
-          '^/wisdomaudit/': '/'
+          '^/wisdomaudit_son/': '/'
         }
       },
       // '/wisdomaudit/': {
