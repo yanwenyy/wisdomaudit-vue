@@ -1,4 +1,5 @@
 <template>
+<!-- 审计任务维护列表 -->
   <div class="sjzl">
     <div class="conter">
       <div class="two">
@@ -17,7 +18,7 @@
             <el-table-column prop="address" label="任务描述"> </el-table-column>
             <el-table-column prop="address" label="附件" width="90">
               <div class="update">
-                <icon class="update_icon">
+                <i class="update_icon">
                   <svg
                     t="1631877671204"
                     class="icon"
@@ -34,7 +35,7 @@
                       p-id="9940"
                     ></path>
                   </svg>
-                </icon>
+                </i>
                 <span>2</span>
               </div>
             </el-table-column>
@@ -44,7 +45,7 @@
                   type="text"
                   style="color: #1371cc"
                   size="small"
-                  @click.native.prevent="deleteRow(scope.$index, tableData)"
+                  @click.native.prevent="editModel()"
                 >
                   编辑
                 </el-button>
@@ -71,6 +72,47 @@
       </div>
     </div>
 
+    <!-- 审计任务维护编辑弹框 -->
+    <el-dialog title="增加" :visible.sync="editModelDialogVisible" width="50%">
+      <el-form label-width="80px" class="selfTask">
+        <el-form-item label="自建任务名称：">
+          <el-input placeholder="请输入"></el-input>
+        </el-form-item>
+        <el-form-item label="责任人：">
+          <el-select placeholder="请选择" class="auditeeInput" v-model="value">
+            <el-option label="是" value="shi"></el-option>
+            <el-option label="否" value="fou"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="任务描述：">
+          <el-input type="textarea" style="top: -35px; width: 400px"></el-input>
+        </el-form-item>
+        <el-form-item label="上传附件：">
+          <el-upload
+            class="upload-demo"
+            drag
+            action="https://jsonplaceholder.typicode.com/posts/"
+            multiple
+          >
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">
+              将文件拖到此处，或<em>点击上传</em>
+            </div>
+            <div class="el-upload__tip" slot="tip">
+              只能上传jpg/png文件，且不超过500kb
+            </div>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editModelDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editModelDialogVisible = false"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
+
+    <!-- 审计任务维护添加弹框 -->
     <el-dialog :visible.sync="addDialogVisible" width="60%">
       <div class="title">2021年泰安分公司xxx领导经责审计</div>
       <div class="addPerson" v-if="step == 1">
@@ -251,6 +293,7 @@ export default {
       radio: "1",
       step: 1, //判断步骤条
       addDialogVisible: false, //添加弹框的隐藏与显示
+      editModelDialogVisible: false, //审计任务维护编辑
       color: "white", // 上传文件icon 颜色
       tab: [{ name: "审计资料任务列表" }, { name: "已操作的资料列表" }],
       label: "黄金糕",
@@ -378,6 +421,9 @@ export default {
         role: "组长",
         personCharge: "",
       });
+    },
+    editModel() {
+      this.editModelDialogVisible = true;
     },
   },
   created() {},

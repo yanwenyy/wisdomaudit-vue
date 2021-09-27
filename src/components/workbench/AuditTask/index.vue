@@ -2,59 +2,84 @@
   <div class="sjzl anmition_show">
     <div class="conter">
       <div class="projectTab">
-        <el-row :gutter="24" class="titleMes">
-          <!-- 引用 -->
-          <el-col :span="1.5" v-if="task_type == 0">
-            <el-button type="primary" @click="quote()">引用</el-button>
-          </el-col>
-
-          <!-- 新增 -->
-          <el-col :span="1.5" v-if="task_type == 1">
-            <el-button type="primary" @click="new_add()">新增</el-button>
-          </el-col>
+        <!-- tab -->
+        <el-row :gutter="24"
+                class="titleMes">
 
           <!-- 自建任务 / 模型任务 -->
           <el-col :span="1.5">
-            <el-button type="primary" v-if="task_type == 0" @click="on_Task(1)"
-              >自建任务</el-button
-            >
-            <el-button type="primary" v-if="task_type == 1" @click="on_Task(0)"
-              >模型任务</el-button
-            >
+            <el-button type="primary"
+                       :class="task_type == 0 ? 'active_tab':''"
+                       @click="on_Task(0)">模型任务</el-button>
+            <el-button type="primary"
+                       :class="task_type == 1 ? 'active_tab':''"
+                       @click="on_Task(1)">自建任务</el-button>
+
           </el-col>
           <!-- 自建任务 /  模型任务 end-->
+
+          <!-- 引用 -->
+          <el-col :span="1.5"
+                  v-if="task_type == 0">
+            <el-button type="primary"
+                       @click="quote()">引用</el-button>
+          </el-col>
+
+          <!-- 新增 -->
+          <el-col :span="1.5"
+                  v-if="task_type == 1">
+            <el-button type="primary"
+                       @click="new_add()">新增</el-button>
+          </el-col>
+
           <!--自建任务 筛选 -->
-          <div class="search" v-if="task_type == 0">
-            <el-input placeholder="请输入" v-model="task.search"> </el-input>
+          <div class="search"
+               v-if="task_type == 0">
+            <el-input placeholder="请输入"
+                      v-model="task.search"> </el-input>
             <div class="search_icon">
-              <i class="el-icon-search" style="color: rgba(0, 0, 0, 0.5)"></i>
+              <i class="el-icon-search"
+                 style="color: rgba(0, 0, 0, 0.5)"></i>
             </div>
 
-            <el-button type="primary" @click="search_list()">筛选</el-button>
+            <el-button type="primary"
+                       @click="search_list()">筛选</el-button>
           </div>
           <!-- 模型任务 -->
-          <div class="search" v-if="task_type == 1">
-            <el-input placeholder="请输入" v-model="task.search"> </el-input>
+          <div class="search"
+               v-if="task_type == 1">
+            <el-input placeholder="请输入"
+                      v-model="task.search"> </el-input>
             <div class="search_icon">
-              <i class="el-icon-search" style="color: rgba(0, 0, 0, 0.5)"></i>
+              <i class="el-icon-search"
+                 style="color: rgba(0, 0, 0, 0.5)"></i>
             </div>
 
-            <el-button type="primary" @click="search_list()">筛选</el-button>
+            <el-button type="primary"
+                       @click="search_list()">筛选</el-button>
           </div>
         </el-row>
+        <!-- tab end-->
 
         <!-- 模型任务 -->
-        <div
-          class="task_type"
-          v-if="task_type == 0"
-          :class="task_type == 0 ? 'anmition_show' : ''"
-        >
+        <div class="task_type"
+             v-loading="loading"
+             v-if="task_type == 0"
+             :class="task_type == 0 ? 'anmition_show' : ''">
           <!-- 表单 -->
-          <el-table :data="tableData" style="width: 100%">
-            <el-table-column prop="date" label="序号"> </el-table-column>
-            <el-table-column prop="name" label="模型名称"> </el-table-column>
-            <el-table-column prop="type" label="模型分类">
-              <template slot-scope="scope">
+          <el-table :data="tableData_list"
+                    v-loading="loading"
+                    style="width: 100%">
+
+            <el-table-column type="index"
+                             label="序号"
+                             width="50">
+            </el-table-column>
+            <el-table-column prop="auditModelName"
+                             label="模型名称"> </el-table-column>
+            <el-table-column prop="auditModelCategory"
+                             label="模型分类">
+              <!-- <template slot-scope="auditModelCategory">
                 {{
                   scope.row.type == 0
                     ? "个人"
@@ -64,52 +89,47 @@
                     ? "财务"
                     : "其他"
                 }}
-              </template>
+              </template> -->
             </el-table-column>
-            <el-table-column prop="data_num" label="结果数">
+            <el-table-column prop="resultsNumber"
+                             label="结果数">
               <template slot-scope="scope">
-                <el-button
-                  @click.native.prevent="
-                    data_num_click(scope.$index, tableData)
-                  "
-                  type="text"
-                  style="color: #1371cc"
-                  size="small"
-                >
-                  {{ scope.row.data_num }}
+                <el-button @click="data_num_click(scope.row)"
+                           type="text"
+                           style="color: #1371cc"
+                           size="small">
+                  {{ scope.row.resultsNumber }}
                 </el-button>
               </template>
             </el-table-column>
-            <el-table-column prop="wt_num" label="问题数">
+            <el-table-column prop="problemsNumber"
+                             label="问题数">
               <template slot-scope="scope">
-                <el-button
-                  @click.native.prevent="probleNum()"
-                  type="text"
-                  style="color: #1371cc"
-                  size="small"
-                >
-                  {{ scope.row.wt_num }}
+                <el-button @click.native.prevent="probleNum()"
+                           type="text"
+                           style="color: #1371cc"
+                           size="small">
+                  {{ scope.row.problemsNumber }}
                 </el-button>
               </template>
             </el-table-column>
-            <el-table-column prop="city" label="责任人 ">
-              <el-select
-                v-model="task.zrr_id"
-                @change="$forceUpdate()"
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="item in options"
-                  :key="item.value_zjr"
-                  :label="item.label"
-                  :value="item.value_zjr"
-                >
-                </el-option>
-              </el-select>
+            <el-table-column prop="name"
+                             label="责任人 ">
+              <template scope="scope">
+
+                <el-select v-model="scope.row.name">
+                  <el-option v-for="item in sensitiveOptions"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value">
+                  </el-option>
+                </el-select>
+              </template>
             </el-table-column>
 
-            <el-table-column prop="ing" label="运行状态">
-              <template slot-scope="scope">
+            <el-table-column prop="runStatus"
+                             label="运行状态">
+              <!-- <template slot-scope="scope">
                 {{
                   scope.row.ing == 0
                     ? "未开始"
@@ -119,21 +139,29 @@
                     ? "执行中"
                     : "待开始"
                 }}
+              </template> -->
+            </el-table-column>
+            <el-table-column prop="taskStartTime"
+                             label="运行开始时间">
+              <template slot-scope="scope">
+                <p>{{scope.row.taskStartTime |filtedate}}</p>
               </template>
             </el-table-column>
-            <el-table-column prop="start_time" label="运行开始时间">
-            </el-table-column>
-            <el-table-column prop="end_time" label="运行结束时间">
+            <el-table-column prop="taskFinishTime"
+                             label="运行结束时间">
+              <template slot-scope="scope">
+                <p>{{scope.row.taskFinishTime |filtedate}}</p>
+              </template>
             </el-table-column>
 
-            <el-table-column prop="edit" label="操作" width="100">
+            <el-table-column prop="edit"
+                             label="操作"
+                             width="100">
               <template slot-scope="scope">
-                <el-button
-                  @click.native.prevent="setParameters()"
-                  type="text"
-                  style="color: #1371cc"
-                  size="small"
-                >
+                <el-button @click.native.prevent="setParameters()"
+                           type="text"
+                           style="color: #1371cc"
+                           size="small">
                   <!-- {{scope.row.ing == 0? "未开始"
                 : scope.row.ing == 1? "设置参数"
                 : scope.row.ing == 2 ? "执行中"
@@ -154,63 +182,74 @@
 
           <!-- 分页 -->
           <div class="page">
-            <el-pagination background layout="prev, pager, next" :total="1000">
-            </el-pagination>
+            <el-pagination background
+                           :hide-on-single-page="false"
+                           layout="prev, pager, next"
+                           :page-sizes="[2, 4, 6, 8]"
+                           :current-page="this.tableData.current"
+                           @current-change="handleCurrentChange_model"
+                           :page-size="this.tableData.size"
+                           :total="this.tableData.total"></el-pagination>
           </div>
           <!-- 分页 end-->
         </div>
         <!-- 模型任务 end-->
 
         <!-- 自建任务 -->
-        <div
-          class="task_type"
-          v-if="task_type == 1"
-          :class="task_type == 1 ? 'anmition_show' : ''"
-        >
+        <div class="task_type"
+             v-if="task_type == 1"
+             :class="task_type == 1 ? 'anmition_show' : ''">
           <!-- 表单 -->
-          <el-table :data="tableData2" style="width: 100%">
-            <el-table-column prop="name" label="任务名称"> </el-table-column>
-            <el-table-column prop="task_name" label="任务描述">
+          <el-table :data="tableData_list"
+                    v-loading="loading"
+                    style="width: 100%">
+
+            <el-table-column type="index"
+                             label="序号"
+                             width="50">
             </el-table-column>
-            <el-table-column prop="task_text" label="问题描述">
+            <el-table-column prop="taskName"
+                             label="任务名称"> </el-table-column>
+            <el-table-column prop="taskDescription"
+                             label="任务描述">
             </el-table-column>
-            <el-table-column prop="basis" label="依据"> </el-table-column>
-            <el-table-column prop="city" label="责任人 ">
-              <el-select
-                v-model="task.zrr_id"
-                @change="$forceUpdate()"
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="item in options"
-                  :key="item.value_zjr"
-                  :label="item.label"
-                  :value="item.value_zjr"
-                >
-                </el-option>
-              </el-select>
+            <el-table-column prop="task_text"
+                             label="问题描述">
+            </el-table-column>
+            <el-table-column prop="basis"
+                             label="依据"> </el-table-column>
+            <el-table-column prop="name"
+                             label="责任人 ">
+              <template scope="scope">
+
+                <el-select v-model="scope.row.peopleName">
+                  <el-option v-for="item in sensitiveOptions"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value">
+                  </el-option>
+                </el-select>
+              </template>
             </el-table-column>
 
-            <el-table-column prop="address" label="附件" width="90">
+            <el-table-column prop="address"
+                             label="附件"
+                             width="90">
               <div class="update">
-                <icon class="update_icon">
-                  <svg
-                    t="1631877671204"
-                    class="icon"
-                    viewBox="0 0 1024 1024"
-                    version="1.1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    p-id="9939"
-                    width="200"
-                    height="200"
-                  >
-                    <path
-                      d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                      fill="#FD9D27"
-                      p-id="9940"
-                    ></path>
+                <i class="update_icon">
+                  <svg t="1631877671204"
+                       class="icon"
+                       viewBox="0 0 1024 1024"
+                       version="1.1"
+                       xmlns="http://www.w3.org/2000/svg"
+                       p-id="9939"
+                       width="200"
+                       height="200">
+                    <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
+                          fill="#FD9D27"
+                          p-id="9940"></path>
                   </svg>
-                </icon>
+                </i>
                 <span>2</span>
               </div>
             </el-table-column>
@@ -219,8 +258,14 @@
 
           <!-- 分页 -->
           <div class="page">
-            <el-pagination background layout="prev, pager, next" :total="1000">
-            </el-pagination>
+            <el-pagination background
+                           :hide-on-single-page="false"
+                           layout="prev, pager, next"
+                           :page-sizes="[2, 4, 6, 8]"
+                           :current-page="this.tableData.current"
+                           @current-change="handleCurrentChange_zijian"
+                           :page-size="this.tableData.size"
+                           :total="this.tableData.total"></el-pagination>
           </div>
           <!-- 分页 end-->
         </div>
@@ -229,42 +274,49 @@
     </div>
 
     <!-- 模型任务 结果数 -->
-    <el-dialog
-      title="模型列表"
-      width="90%"
-      popper-class="status_data_dlag"
-      :visible.sync="dialogVisible_data_num"
-      style="padding-bottom: 59px"
-    >
+    <el-dialog title="模型列表"
+               width="90%"
+               popper-class="status_data_dlag"
+               :visible.sync="dialogVisible_data_num"
+               style="padding-bottom: 59px">
       <div class="dlag_conter">
         <el-row :gutter="24">
           <ul class="status_data">
             <li>
-              <el-button type="primary" @click="quote()">结果1</el-button>
+              <el-button type="primary"
+                         @click="quote()">结果1</el-button>
             </li>
             <li>
-              <el-button type="primary" @click="quote()">结果1</el-button>
+              <el-button type="primary"
+                         @click="quote()">结果1</el-button>
             </li>
             <li>
-              <el-button type="primary" @click="quote()">结果1</el-button>
+              <el-button type="primary"
+                         @click="quote()">结果1</el-button>
             </li>
           </ul>
         </el-row>
-        <div class="cxjg" style="margin: 20px 0; display: flex">
+        <div class="cxjg"
+             style="margin: 20px 0; display: flex">
           <el-col> 模型线索结果（XXX模型） </el-col>
           <el-col style="display: contents">
-            <el-button type="primary" @click="quote()">核实</el-button>
-            <el-button type="primary" @click="quote()">下载</el-button>
-            <el-button type="primary" @click="dialogVisible_data_num == false"
-              >返回</el-button
-            >
+            <el-button type="primary"
+                       @click="quote()">核实</el-button>
+            <el-button type="primary"
+                       @click="quote()">下载</el-button>
+            <el-button type="primary"
+                       @click="dialogVisible_data_num == false">返回</el-button>
           </el-col>
         </div>
         <!-- 表单 -->
-        <el-table :data="tableData" style="width: 100%">
-          <el-table-column prop="date" label="序号"> </el-table-column>
-          <el-table-column prop="name" label="合同名称"> </el-table-column>
-          <el-table-column prop="type" label="合同标题">
+        <el-table :data="tableData"
+                  style="width: 100%">
+          <el-table-column prop="date"
+                           label="序号"> </el-table-column>
+          <el-table-column prop="name"
+                           label="合同名称"> </el-table-column>
+          <el-table-column prop="type"
+                           label="合同标题">
             <template slot-scope="scope">
               {{
                 scope.row.type == 0
@@ -277,47 +329,41 @@
               }}
             </template>
           </el-table-column>
-          <el-table-column prop="data_num" label="地区编码">
+          <el-table-column prop="data_num"
+                           label="地区编码">
             <template slot-scope="scope">
-              <el-button
-                @click.native.prevent="data_num_click(scope.$index, tableData)"
-                type="text"
-                style="color: #1371cc"
-                size="small"
-              >
+              <el-button @click.native.prevent="data_num_click(scope.$index, tableData)"
+                         type="text"
+                         style="color: #1371cc"
+                         size="small">
                 {{ scope.row.data_num }}
               </el-button>
             </template>
           </el-table-column>
-          <el-table-column prop="wt_num" label="签约厂家">
+          <el-table-column prop="wt_num"
+                           label="签约厂家">
             <template slot-scope="scope">
-              <el-button
-                @click.native.prevent="deleteRow(scope.$index, tableData)"
-                type="text"
-                style="color: #1371cc"
-                size="small"
-              >
+              <el-button @click.native.prevent="deleteRow(scope.$index, tableData)"
+                         type="text"
+                         style="color: #1371cc"
+                         size="small">
                 {{ scope.row.wt_num }}
               </el-button>
             </template>
           </el-table-column>
-          <el-table-column prop="city" label="盖章时间">
-            <el-select
-              v-model="task.zrr_id"
-              @change="$forceUpdate()"
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in options"
-                :key="item.value_zjr"
-                :label="item.label"
-                :value="item.value_zjr"
-              >
+          <el-table-column prop="city"
+                           label="盖章时间">
+            <el-select v-model="value_select">
+              <el-option v-for="item in sensitiveOptions"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
               </el-option>
             </el-select>
           </el-table-column>
 
-          <el-table-column prop="ing" label="合同起草时间">
+          <el-table-column prop="ing"
+                           label="合同起草时间">
             <template slot-scope="scope">
               {{
                 scope.row.ing == 0
@@ -330,82 +376,84 @@
               }}
             </template>
           </el-table-column>
-          <el-table-column prop="start_time" label="合同金额">
+          <el-table-column prop="start_time"
+                           label="合同金额">
           </el-table-column>
-          <el-table-column prop="end_time" label="合同履行时间">
-          </el-table-column>
-
-          <el-table-column prop="edit" label="合同履行结束时间" width="100">
-            <template slot-scope="scope">
-              <el-button
-                @click.native.prevent="deleteRow(scope.$index, tableData)"
-                type="text"
-                style="color: #1371cc"
-                size="small"
-              >
-                设置参数
-              </el-button>
-            </template>
+          <el-table-column prop="end_time"
+                           label="合同履行时间">
           </el-table-column>
 
-          <el-table-column prop="edit" label="滞后天数" width="100">
+          <el-table-column prop="edit"
+                           label="合同履行结束时间"
+                           width="100">
             <template slot-scope="scope">
-              <el-button
-                @click.native.prevent="deleteRow(scope.$index, tableData)"
-                type="text"
-                style="color: #1371cc"
-                size="small"
-              >
-                设置参数
-              </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column prop="edit" label="是否问题" width="100">
-            <template slot-scope="scope">
-              <el-button
-                @click.native.prevent="deleteRow(scope.$index, tableData)"
-                type="text"
-                style="color: #1371cc"
-                size="small"
-              >
+              <el-button @click.native.prevent="deleteRow(scope.$index, tableData)"
+                         type="text"
+                         style="color: #1371cc"
+                         size="small">
                 设置参数
               </el-button>
             </template>
           </el-table-column>
 
-          <el-table-column prop="edit" label="核实人" width="100">
+          <el-table-column prop="edit"
+                           label="滞后天数"
+                           width="100">
             <template slot-scope="scope">
-              <el-button
-                @click.native.prevent="deleteRow(scope.$index, tableData)"
-                type="text"
-                style="color: #1371cc"
-                size="small"
-              >
+              <el-button @click.native.prevent="deleteRow(scope.$index, tableData)"
+                         type="text"
+                         style="color: #1371cc"
+                         size="small">
+                设置参数
+              </el-button>
+            </template>
+          </el-table-column>
+          <el-table-column prop="edit"
+                           label="是否问题"
+                           width="100">
+            <template slot-scope="scope">
+              <el-button @click.native.prevent="deleteRow(scope.$index, tableData)"
+                         type="text"
+                         style="color: #1371cc"
+                         size="small">
                 设置参数
               </el-button>
             </template>
           </el-table-column>
 
-          <el-table-column prop="edit" label="核实信息" width="100">
+          <el-table-column prop="edit"
+                           label="核实人"
+                           width="100">
             <template slot-scope="scope">
-              <el-button
-                @click.native.prevent="deleteRow(scope.$index, tableData)"
-                type="text"
-                style="color: #1371cc"
-                size="small"
-              >
+              <el-button @click.native.prevent="deleteRow(scope.$index, tableData)"
+                         type="text"
+                         style="color: #1371cc"
+                         size="small">
                 设置参数
               </el-button>
             </template>
           </el-table-column>
-          <el-table-column prop="edit" label="附件" width="100">
+
+          <el-table-column prop="edit"
+                           label="核实信息"
+                           width="100">
             <template slot-scope="scope">
-              <el-button
-                @click.native.prevent="deleteRow(scope.$index, tableData)"
-                type="text"
-                style="color: #1371cc"
-                size="small"
-              >
+              <el-button @click.native.prevent="deleteRow(scope.$index, tableData)"
+                         type="text"
+                         style="color: #1371cc"
+                         size="small">
+                设置参数
+              </el-button>
+            </template>
+          </el-table-column>
+          <el-table-column prop="edit"
+                           label="附件"
+                           width="100">
+            <template slot-scope="scope">
+              <el-button @click.native.prevent="deleteRow(scope.$index, tableData)"
+                         type="text"
+                         style="color: #1371cc"
+                         size="small">
                 设置参数
               </el-button>
             </template>
@@ -415,56 +463,61 @@
 
         <!-- 分页 -->
         <div class="page">
-          <el-pagination background layout="prev, pager, next" :total="1000">
+          <el-pagination background
+                         layout="prev, pager, next"
+                         :total="1000">
           </el-pagination>
         </div>
         <!-- 分页 end-->
       </div>
       <span slot="footer">
-        <el-button size="small" type="primary" @click="query()"
-          >确 定</el-button
-        >
-        <el-button
-          size="small"
-          @click="clearTopic(), (dialogVisible_quote = false)"
-          >取 消</el-button
-        >
+        <el-button size="small"
+                   type="primary"
+                   @click="query()">确 定</el-button>
+        <el-button size="small"
+                   @click="clearTopic(), (dialogVisible_data_num = false)">取 消</el-button>
       </span>
     </el-dialog>
 
     <!-- 模型任务 问题数 -->
-    <el-dialog
-      :visible.sync="problemsDialogVisible"
-      width="60%"
-    >
+    <el-dialog :visible.sync="problemsDialogVisible"
+               width="60%">
       <el-row style="margin-top:3%;background:#F2F2F2;padding:15px">
-        <el-col :span="18" class="tableTitle">xxx模型审计发现列表</el-col>
+        <el-col :span="18"
+                class="tableTitle">xxx模型审计发现列表</el-col>
         <el-col :span="6">
           <el-button type="primary">增加</el-button>
           <el-button type="primary">修改</el-button>
           <el-button type="primary">删除</el-button>
         </el-col>
       </el-row>
-      <el-table
-          :data="tableData1"
-          ref="multipleTable"
-          tooltip-effect="dark"
-          style="width: 100%;margin-bottom:2%"
-        >
-          <el-table-column type="selection" width="55"> </el-table-column>
-          <el-table-column prop="name" label="领域"> </el-table-column>
-          <el-table-column prop="name1" label="审计发现"> </el-table-column>
-          <el-table-column prop="name2" label="依据"> </el-table-column>
-          <el-table-column prop="name3" label="描述"> </el-table-column>
-          <el-table-column prop="name4" label="发现时间"> </el-table-column>
-          <el-table-column prop="name5" label="风险金额（万元）"> </el-table-column>
-          <el-table-column prop="name6" label="发现人"> </el-table-column>
+      <el-table :data="tableData1"
+                ref="multipleTable"
+                tooltip-effect="dark"
+                style="width: 100%;margin-bottom:2%">
+        <el-table-column type="selection"
+                         width="55"> </el-table-column>
+        <el-table-column prop="name"
+                         label="领域"> </el-table-column>
+        <el-table-column prop="name1"
+                         label="审计发现"> </el-table-column>
+        <el-table-column prop="name2"
+                         label="依据"> </el-table-column>
+        <el-table-column prop="name3"
+                         label="描述"> </el-table-column>
+        <el-table-column prop="name4"
+                         label="发现时间"> </el-table-column>
+        <el-table-column prop="name5"
+                         label="风险金额（万元）"> </el-table-column>
+        <el-table-column prop="name6"
+                         label="发现人"> </el-table-column>
 
-        </el-table>
+      </el-table>
     </el-dialog>
 
     <!-- 模型任务设置参数 -->
-    <el-dialog :visible.sync="setParametersDialogVisible" width="60%">
+    <el-dialog :visible.sync="setParametersDialogVisible"
+               width="60%">
       <el-card class="setParameters"> 参数设置 </el-card>
       <el-card class="parameters">
         <i class="el-icon-s-grid"></i>
@@ -474,20 +527,28 @@
         <el-form label-width="100px">
           <el-row>
             <el-form-item label="被审计单位">
-              <el-select placeholder="请选择"></el-select>
+              <el-select v-model="value_select">
+                <el-option v-for="item in sensitiveOptions"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-row>
           <el-row>
             <el-form-item label="审计期间_开始">
               <el-input placeholder="请输入内容">
-                <el-button slot="append" icon="el-icon-error"></el-button>
+                <el-button slot="append"
+                           icon="el-icon-error"></el-button>
               </el-input>
             </el-form-item>
           </el-row>
           <el-row>
             <el-form-item label="审计期间_结束">
               <el-input placeholder="请输入内容">
-                <el-button slot="append" icon="el-icon-error"></el-button>
+                <el-button slot="append"
+                           icon="el-icon-error"></el-button>
               </el-input>
             </el-form-item>
           </el-row>
@@ -501,103 +562,88 @@
     </el-dialog>
 
     <!-- 模型任务 引用 -->
-    <el-dialog
-      title="模型列表"
-      :visible.sync="dialogVisible_quote"
-      style="padding-bottom: 59px"
-    >
+    <el-dialog title="模型列表"
+               :visible.sync="dialogVisible_quote"
+               style="padding-bottom: 59px">
       <div class="dlag_conter">
-        <el-row :gutter="24" class="titleMes">
-          <div
-            class="search"
-            style="width: 100%; justify-content: flex-start; width: 300px"
-            v-if="task_type == 0"
-          >
-            <el-input placeholder="请输入模型名称" v-model="task.search">
+        <el-row :gutter="24"
+                class="titleMes">
+          <div class="search"
+               style="width: 100%; justify-content: flex-start; width: 300px"
+               v-if="task_type == 0">
+            <el-input placeholder="请输入模型名称"
+                      v-model="task.search">
             </el-input>
             <div class="search_icon">
-              <i class="el-icon-search" style="color: rgba(0, 0, 0, 0.5)"></i>
+              <i class="el-icon-search"
+                 style="color: rgba(0, 0, 0, 0.5)"></i>
             </div>
 
-            <el-button type="primary" @click="quote_list()">筛选</el-button>
+            <el-button type="primary"
+                       @click="quote_list()">筛选</el-button>
           </div>
         </el-row>
-        <div class="cxjg" style="margin: 20px 0">
+        <div class="cxjg"
+             style="margin: 20px 0">
           <el-col :span="1.5">
             查询结果
-            <el-button type="primary" @click="quote()">引用</el-button>
+            <el-button type="primary"
+                       @click="quote()">引用</el-button>
           </el-col>
         </div>
-        <el-table
-          :data="tableData"
-          ref="multipleTable"
-          tooltip-effect="dark"
-          @selection-change="handleSelectionChange"
-          style="width: 100%"
-        >
-          <el-table-column type="selection" width="55"> </el-table-column>
-          <el-table-column prop="name" label="模型名称"> </el-table-column>
+        <el-table :data="tableData"
+                  ref="multipleTable"
+                  tooltip-effect="dark"
+                  @selection-change="handleSelectionChange"
+                  style="width: 100%">
+          <el-table-column type="selection"
+                           width="55"> </el-table-column>
+          <el-table-column prop="name"
+                           label="模型名称"> </el-table-column>
         </el-table>
       </div>
 
       <span slot="footer">
-        <el-button size="small" type="primary" @click="query()"
-          >确 定</el-button
-        >
-        <el-button
-          size="small"
-          @click="clearTopic(), (dialogVisible_quote = false)"
-          >取 消</el-button
-        >
+        <el-button size="small"
+                   type="primary"
+                   @click="query()">确 定</el-button>
+        <el-button size="small"
+                   @click="clearTopic(), (dialogVisible_quote = false)">取 消</el-button>
       </span>
     </el-dialog>
 
     <!-- 自建任务新增 -->
-    <el-dialog
-      title="新增"
-      :visible.sync="dialogVisible"
-      style="padding-bottom: 59px"
-    >
+    <el-dialog title="新增"
+               :visible.sync="dialogVisible"
+               style="padding-bottom: 59px">
       <div class="dlag_conter">
         <el-form label-width="80px">
           <p>自建任务新增：</p>
-          <el-input
-            v-model="add_task.name"
-            placeholder="请输入任务新增"
-          ></el-input>
+          <el-input v-model="add_task.name"
+                    placeholder="请输入任务新增"></el-input>
         </el-form>
         <el-form label-width="80px">
           <p>责任人：</p>
-          <el-select
-            v-model="task.zrr_id"
-            @change="$forceUpdate()"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in options"
-              :key="item.value_zjr"
-              :label="item.label"
-              :value="item.value_zjr"
-            >
+          <el-select v-model="value_select">
+            <el-option v-for="item in sensitiveOptions"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.value">
             </el-option>
           </el-select>
         </el-form>
         <el-form label-width="80px">
           <p>任务描述：</p>
-          <el-input
-            v-model="add_task.textare"
-            placeholder="请输入任务描述"
-          ></el-input>
+          <el-input v-model="add_task.textare"
+                    placeholder="请输入任务描述"></el-input>
         </el-form>
         <el-form label-width="80px">
           <p>上传附件：</p>
-          <el-upload
-            class="upload-demo"
-            style="width: 300px"
-            drag
-            action="https://jsonplaceholder.typicode.com/posts/"
-            multiple
-          >
+          <el-upload class="upload-demo"
+                     style="width: 300px"
+                     drag
+                     action="https://jsonplaceholder.typicode.com/posts/"
+                     multiple>
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">
               支持上传或者拖拽文件到这里<em>点击上传</em>
@@ -608,21 +654,24 @@
       </div>
 
       <span slot="footer">
-        <el-button size="small" type="primary" @click="query()"
-          >确 定</el-button
-        >
-        <el-button size="small" @click="clearTopic(), (dialogVisible = false)"
-          >取 消</el-button
-        >
+        <el-button size="small"
+                   type="primary"
+                   @click="query()">确 定</el-button>
+        <el-button size="small"
+                   @click="clearTopic(), (dialogVisible = false)">取 消</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import { task_pageList, task_selectModel, task_selectTable } from
+  '@SDMOBILE/api/shandong/task'
+import { fmtDate } from '@SDMOBILE/model/time.js';
+
 export default {
   components: {},
-  data() {
+  data () {
     return {
       task_type: 0, //默认显示任务/自建任务
       tab: [{ name: "审计资料任务列表" }, { name: "已操作的资料列表" }], //任务切换
@@ -630,7 +679,7 @@ export default {
       dialogVisible: false, // 自建任务新增弹窗
       dialogVisible_data_num: false, //模型任务结果数
       setParametersDialogVisible: false, //模型任务设置参数
-      problemsDialogVisible:false, //模型任务问题数
+      problemsDialogVisible: false, //模型任务问题数
       multipleSelection: [],
 
       // 提交数据单
@@ -696,51 +745,51 @@ export default {
           zip: 200333,
         },
       ],
-      tableData1:[
+      tableData1: [
         {
-          name:'个人',
-          name1:'小金额',
-          name2:'依据xxx法规xxx条',
-          name3:'描述1',
-          name4:'2021-02-22',
-          name5:'55',
-          name6:'小明'
+          name: '个人',
+          name1: '小金额',
+          name2: '依据xxx法规xxx条',
+          name3: '描述1',
+          name4: '2021-02-22',
+          name5: '55',
+          name6: '小明'
         },
-         {
-          name:'个人',
-          name1:'小金额',
-          name2:'依据xxx法规xxx条',
-          name3:'描述1',
-          name4:'2021-02-22',
-          name5:'55',
-          name6:'小明'
+        {
+          name: '个人',
+          name1: '小金额',
+          name2: '依据xxx法规xxx条',
+          name3: '描述1',
+          name4: '2021-02-22',
+          name5: '55',
+          name6: '小明'
         },
-         {
-          name:'个人',
-          name1:'小金额',
-          name2:'依据xxx法规xxx条',
-          name3:'描述1',
-          name4:'2021-02-22',
-          name5:'55',
-          name6:'小明'
+        {
+          name: '个人',
+          name1: '小金额',
+          name2: '依据xxx法规xxx条',
+          name3: '描述1',
+          name4: '2021-02-22',
+          name5: '55',
+          name6: '小明'
         },
-         {
-          name:'个人',
-          name1:'小金额',
-          name2:'依据xxx法规xxx条',
-          name3:'描述1',
-          name4:'2021-02-22',
-          name5:'55',
-          name6:'小明'
+        {
+          name: '个人',
+          name1: '小金额',
+          name2: '依据xxx法规xxx条',
+          name3: '描述1',
+          name4: '2021-02-22',
+          name5: '55',
+          name6: '小明'
         },
-         {
-          name:'个人',
-          name1:'小金额',
-          name2:'依据xxx法规xxx条',
-          name3:'描述1',
-          name4:'2021-02-22',
-          name5:'55',
-          name6:'小明'
+        {
+          name: '个人',
+          name1: '小金额',
+          name2: '依据xxx法规xxx条',
+          name3: '描述1',
+          name4: '2021-02-22',
+          name5: '55',
+          name6: '小明'
         },
       ],
       tableData2: [
@@ -794,64 +843,221 @@ export default {
         },
       ],
       value_zrr: "",
+      value_select: '',//select
+      sensitiveOptions: [
+        {
+          value: "选项1",
+          label: "老李",
+        },
+        {
+          value: "选项2",
+          label: "老王",
+        },
+        {
+          value: "选项3",
+          label: "吴老二",
+        },
+        {
+          value: "选项4",
+          label: "张三",
+        },
+      ],
+
+      loading: false,
+      tableData_list: [],//任务列表数据
+      params: {
+        auditModelCategory: '',
+        managementProjectUuid: '3757f078afa6161474430894936de6ed',//项目管理id
+        taskName: '',//模糊查询
+        taskType: '1',//1:模型任务 2:自建任务
+        pageNo: 0,
+        pageSize: 15,
+      },
+      multipleSelection: [],//新增列表选中的数据
+
     };
   },
   computed: {},
   watch: {},
+
+  created () {
+    // 资料列表
+    let params = {
+      pageNo: this.params.pageNo,
+      pageSize: this.params.pageSize,
+      condition: {
+        auditModelCategory: this.params.auditModelCategory,
+        managementProjectUuid: this.params.managementProjectUuid,
+        taskName: this.params.taskName,
+        taskType: this.params.taskType
+      }
+    }
+    this.list_data(params);
+  },
+  mounted () { },
+  filters: {
+    filtedate: function (date) {
+      let t = new Date(date);
+      return fmtDate(t, 'yyyy-MM-dd hh:mm:ss');
+    }
+  },
+
+
   methods: {
-    // 模型任务===========
-    // 引用
-    quote() {
-      this.dialogVisible_quote = true;
-    },
-    // 查询引用列表
-    quote_list() {
-      console.log(222);
+    // 显示自建任务
+    on_Task (index) {
+      this.task_type = index;
+      if (index == 0) {
+        this.loading = true
+        this.params.pageNo = 1;
+        // 模型列表
+        let params = {
+          pageNo: this.params.pageNo,
+          pageSize: this.params.pageSize,
+          condition: {
+            auditModelCategory: this.params.auditModelCategory,
+            managementProjectUuid: this.params.managementProjectUuid,
+            taskName: this.params.taskName,
+            taskType: 1
+          }
+        }
+        this.list_data(params);
+
+      } else if (index == 1) {
+        this.loading = true
+        this.params.pageNo = 1;
+
+        // 资料列表
+        let params = {
+          pageNo: this.params.pageNo,
+          pageSize: this.params.pageSize,
+          condition: {
+            auditModelCategory: this.params.auditModelCategory,
+            managementProjectUuid: this.params.managementProjectUuid,
+            taskName: this.params.taskName,
+            taskType: 2
+          }
+        }
+        this.list_data(params);
+      }
     },
     // 全选
-    handleSelectionChange(val) {
+    handleSelectionChange (val) {
       this.multipleSelection = val;
     },
 
-    // 结果数
-    data_num_click() {
-      this.dialogVisible_data_num = true;
+    // 模型任务===========
+    // 列表
+    list_data (params) {
+      task_pageList(params).then(resp => {
+        this.loading = true
+        this.tableData = resp.data;
+        this.tableData_list = resp.data.records
+        this.loading = false
+        // console.log(this.tableData);
+      })
     },
+
+    // 结果数
+    data_num_click (id) {
+      console.log(id);
+      return false
+      // if (this.multipleSelection.length != 1) {
+      //   this.$message.info("请选择至少一条数据进行删除！");
+      //   return false;
+      // }
+
+      this.dialogVisible_data_num = true;
+      this.data_tab();//结果分类tab
+    },
+
+
+    // 结果弹窗 结果分类tab
+    // data_tab (params) {
+    //   task_selectModel(params).then(resp => {
+    //     this.loading = true
+    //     // this.tableData = resp.data;
+    //     // this.tableData_list = resp.data.records
+    //     this.loading = false
+    //     console.log(resp.data);
+    //   })
+    // },
+
+
+
+    // 模型列表分页
+    handleCurrentChange_model (val) {
+      // 模型列表
+      let params = {
+        pageNo: val,
+        pageSize: this.params.pageSize,
+        condition: {
+          auditModelCategory: this.params.auditModelCategory,
+          managementProjectUuid: this.params.managementProjectUuid,
+          taskName: this.params.taskName,
+          taskType: 1
+        }
+      }
+      this.list_data(params);
+
+    },
+    // 自建列表分页
+    handleCurrentChange_zijian (val) {
+      // 资料列表
+      let params = {
+        pageNo: val,
+        pageSize: this.params.pageSize,
+        condition: {
+          auditModelCategory: this.params.auditModelCategory,
+          managementProjectUuid: this.params.managementProjectUuid,
+          taskName: this.params.taskName,
+          taskType: 2
+        }
+      }
+      this.list_data(params);
+
+    },
+
+    // 引用
+    quote () {
+      this.dialogVisible_quote = true;
+    },
+    // 查询引用列表
+    quote_list () {
+      console.log(222);
+    },
+
+
     // 自建任务===========
 
     // 新增
-    new_add() {
+    new_add () {
       this.dialogVisible = true;
     },
     // 筛选
-    search_list() {
+    search_list () {
       console.log(this.task.search);
     },
-    // 显示自建任务
-    on_Task(index) {
-      this.task_type = index;
-    },
+
     //  确认新增
-    clearTopic() {
+    clearTopic () {
       console.log("关闭新增");
     },
     // 确认新增
-    quert() {
+    quert () {
       this.dialogVisible = false;
     },
-    deleteRow(index, rows) {
+    deleteRow (index, rows) {
       rows.splice(index, 1);
     },
-    setParameters() {
+    setParameters () {
       this.setParametersDialogVisible = true;
     },
     // 问题数
-    probleNum(){
-      this.problemsDialogVisible= true;
+    probleNum () {
+      this.problemsDialogVisible = true;
     }
   },
-  created() {},
-  mounted() {},
 };
 </script>
 
@@ -859,6 +1065,14 @@ export default {
 @import "../../../assets/styles/css/lhg.css";
 .sjzl {
   display: flex;
+}
+
+/* 当前选项 */
+.active_tab {
+  background: #1371cc !important;
+}
+.task_type >>> .el-table {
+  min-height: 500px;
 }
 .titleMes {
   margin: 0;
@@ -902,14 +1116,10 @@ export default {
 }
 .status_data li {
   margin: 0 5px;
-  min-width: 100px;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
   cursor: pointer;
-  background: #559ed4 !important;
-  border-radius: 5px;
-  color: #fff;
 }
 
 .update {
@@ -1039,8 +1249,8 @@ export default {
 .parametersTab .el-form-item {
   margin-bottom: -25px !important;
 }
-.tableTitle{
+.tableTitle {
   font-size: 20px;
-  font-weight:700;
+  font-weight: 700;
 }
 </style>

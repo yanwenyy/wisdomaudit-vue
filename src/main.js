@@ -4,6 +4,7 @@ import Cookies from 'js-cookie'
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
 import ElementUI from 'element-ui'
+
 import 'element-ui/lib/theme-chalk/index.css'
 // import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 
@@ -18,6 +19,9 @@ import VueAnimateNumber from 'vue-animate-number'
 Vue.use(VueAnimateNumber)
 // Ace end
 
+
+import qs from 'qs'//请求数据
+Vue.prototype.$qs = qs;//请求数据
 import '@/styles/index.scss' // global css
 
 import App from './App'
