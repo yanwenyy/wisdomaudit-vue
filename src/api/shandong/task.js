@@ -5,7 +5,6 @@ import qs from 'qs'
 
 // 资料列表
 export function task_pageList (data) {
-  console.log(data);
   return request({
     baseURL: baseURL,
     url: `/auditTask/selectTask/pageList`,
@@ -14,7 +13,15 @@ export function task_pageList (data) {
   })
 }
 
-// 模型任务新增 资料列表
+// 模型任务新增 模型列表
+export function task_model_pageList (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/auditModel/pageList`,
+    method: 'post',
+    data,
+  })
+}
 
 
 
