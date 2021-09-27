@@ -2,11 +2,14 @@
   <div class="page-container auditproblem">
     <div class="filter-container">
       <el-button type="primary" @click="add()">新增</el-button>
-      <div class="auditproblem-btn-box"></div>
+      <div class="auditproblem-btn-box">
+        <el-button type="primary" @click="del()">删除</el-button>
+      </div>
     </div>
     <!-- @sort-change="sortChange"
-      @selection-change="handleSelectionChange" -->
+       -->
     <el-table
+      ref="problemtable"
       :key="tableKey"
       v-loading="listLoading"
       fit
@@ -16,6 +19,7 @@
       highlight-current-row
       height="calc(100vh - 300px)"
       max-height="calc(100vh - 300px)"
+      @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" align="center" />
       <el-table-column label="序号">
@@ -168,13 +172,81 @@
       :visible.sync="dialogDetailVisible"
       :close-on-click-modal="false"
     >
-      <el-form
+    <el-form
         ref="dataForm"
         :model="dqProblem"
         label-position="right"
         class="detail-form"
       >
         <el-form-item label="领域" prop="field">
+          <el-select v-model="dqProblem.field" placeholder="请选择领域">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="问题" prop="problem">
+          <el-input v-model="dqProblem.problem" placeholder="请输入问题" />
+        </el-form-item>
+        <el-form-item label="描述" prop="describe">
+          <el-input v-model="dqProblem.describe" placeholder="请输入描述" />
+        </el-form-item>
+        <el-form-item label="管理建议" prop="managementAdvice">
+          <el-input
+            v-model="dqProblem.managementAdvice"
+            placeholder="请输入管理建议"
+          />
+        </el-form-item>
+        <el-form-item label="发现日期" prop="problemDiscoveryTime">
+          <el-input v-model="dqProblem.problemDiscoveryTime"/>
+          <el-input
+            v-model="dqProblem.problemDiscoveryTime"
+            type="date"
+            placeholder="请输入发现日期"
+          />
+        </el-form-item>
+        <el-form-item label="发现人" prop="problemFindPeople">
+          <el-input
+            v-model="dqProblem.problemFindPeople"
+            placeholder="请输入发现人"
+          />
+        </el-form-item>
+        <el-form-item label="风险金额（万元）" prop="riskAmount">
+          <el-input v-model="dqProblem.riskAmount" placeholder="请输入风险金额" />
+        </el-form-item>
+        <el-form-item label="关联任务" prop="associatedTask">
+          <el-select
+            v-model="dqProblem.associatedTask"
+            multiple
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="依据" prop="basis">
+          <el-select v-model="dqProblem.basis" multiple placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-button type="primary" class="citebtn">引用知识库</el-button>
+
+        <!-- <el-form-item label="领域" prop="field">
           <el-input
             v-model="dqProblem.field"
             disabled
@@ -236,9 +308,12 @@
             disabled
             placeholder="请输入依据"
           />
-        </el-form-item>
-      </el-form>
+        </el-form-item> -->
+    </el-form>
       <div slot="footer">
+        <el-button type="primary" @click="updateData()"
+          >保存修改</el-button
+        >
         <el-button type="primary" @click="dialogDetailVisible = false"
           >关闭</el-button
         >
@@ -323,6 +398,7 @@ export default {
       headers: { "Content-Type": "multipart/form-data" },
       file: "",
       pageNo: 1,
+      problemtableSelection:[]
     };
   },
   watch: {},
@@ -331,8 +407,17 @@ export default {
   },
   methods: {
     openDetail(int) {
-      this.dqProblem = this.list[int];
-      this.dialogDetailVisible = true;
+      axios({
+        url: `/wisdomaudit//problemList/getById/`+this.list[int].problemListUuid,
+        method: "get",
+        data: {},
+      }).then((res) => {
+        console.log(res) 
+        this.dqProblem = res.data.data;
+        this.dqProblem.associatedTask = this.dqProblem.associatedTask.split(',')
+        this.dqProblem.basis = this.dqProblem.basis.split(',')
+        this.dialogDetailVisible = true;
+      })
     },
     repDate(data) {
       let date = new Date(data);
@@ -372,6 +457,30 @@ export default {
     add() {
       this.dialogFormVisible = true;
     },
+    handleSelectionChange (val) {
+      this.problemtableSelection = val;
+    },
+    del(){
+      console.log(this.problemtableSelection)
+      let rep = []
+      for(let i = 0;i<this.problemtableSelection.length;i++){
+        rep.push(this.problemtableSelection[i].problemListUuid)
+      }
+      rep =  rep.join(",")
+      axios({
+        url: `/wisdomaudit/problemList/delete/`+rep,
+        method: "delete",
+        data: {},
+      }).then((res) => {
+        if (res.data.code == 0) {
+          this.$message({
+            message: "删除成功",
+            type: "success",
+          });
+          this.getList()
+        }
+      })
+    },
     createData() {
       let rep = this.temp;
       rep.associatedTask = rep.associatedTask.join(",");
@@ -396,10 +505,29 @@ export default {
           this.temp.problemFindPeople = '';
           this.temp.managementAdvice = '';
           this.temp.riskAmount = '';
+          this.getList()
         }
       });
     },
-    updateData() {},
+    updateData() {
+      let rep = this.dqProblem
+      rep.associatedTask = rep.associatedTask.join(",");
+      rep.basis = rep.basis.join(",");
+      axios({
+        url: `/wisdomaudit/problemList/update`,
+        method: "put",
+        data: rep,
+      }).then((res) => {
+        if (res.data.code == 0) {
+          this.$message({
+            message: "编辑成功",
+            type: "success",
+          });
+          this.dialogDetailVisible = false;
+          this.getList()
+        }
+      })
+    },
   },
 };
 </script>
