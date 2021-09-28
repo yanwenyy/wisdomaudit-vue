@@ -344,8 +344,8 @@ export default {
         condition: {},
         pageNo: 1,
         pageSize: 20,
-        sortBy: "desc",
-        sortName: "createTime",
+        sortBy: "",
+        sortName: "",
       },
       temp: {
         // 业务分类
@@ -397,7 +397,6 @@ export default {
       downloadLoading: false,
       headers: { "Content-Type": "multipart/form-data" },
       file: "",
-      pageNo: 1,
       problemtableSelection:[]
     };
   },
@@ -441,12 +440,7 @@ export default {
       axios({
         url: `/wisdomaudit/problemList/pageList`,
         method: "post",
-        data: {
-          pageNo: this.pageNo,
-          pageSize: 20,
-          sortBy: "",
-          sortName: "",
-        },
+        data: this.pageQuery,
       }).then((res) => {
         console.log(res.data.data);
         if (res.data.code == 0) {

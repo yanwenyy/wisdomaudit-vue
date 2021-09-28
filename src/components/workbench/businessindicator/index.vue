@@ -168,8 +168,8 @@ export default {
         condition: {},
         pageNo: 1,
         pageSize: 20,
-        sortBy: "desc",
-        sortName: "createTime",
+        sortBy: "",
+        sortName: "",
       },
       temp: {
         // 业务分类
@@ -244,12 +244,7 @@ export default {
       axios({
         url: `/wisdomaudit/operatingIndicators/pageList`,
         method: "post",
-        data: {
-          pageNo: 0,
-          pageSize: 0,
-          sortBy: "",
-          sortName: "",
-        },
+        data: this.pageQuery,
       }).then((res) => {
         if (res.code == 0) {
           this.list = this.res.data.data;
