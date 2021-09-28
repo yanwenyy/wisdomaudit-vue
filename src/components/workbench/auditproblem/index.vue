@@ -408,7 +408,7 @@ export default {
   methods: {
     openDetail(int) {
       axios({
-        url: `/wisdomaudit//problemList/getById/`+this.list[int].problemListUuid,
+        url: `/wisdomaudit/problemList/getById/`+this.list[int].problemListUuid,
         method: "get",
         data: {},
       }).then((res) => {
