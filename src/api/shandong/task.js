@@ -44,33 +44,50 @@ export function task_add (data) {
     data,
   })
 }
-
-// 自建任务编辑
-export function task_remove (data) {
+// 自建任务编辑详情
+export function task_details (data) {
+  let id = data.id
   return request({
     baseURL: baseURL,
-    url: `/auditTask/update`,
-    method: 'post',
+    url: '/auditTask/getById/' + id + '',
+    method: 'get',
     data,
   })
 }
 
 
+// 自建任务编辑 保存
+export function task_update (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/auditTask/update`,
+    method: 'put',
+    data,
+  })
+}
 
 // 自建任务删除
-export function task_edit (data) {
+export function task_remove (data) {
   let ids = data.ids
   return request({
     baseURL: baseURL,
     url: '/auditTask/delete/' + ids + '',
-    method: 'post',
+    method: 'delete',
     data,
   })
 }
 
 
 
-
+// 责任人
+export function task_select_people (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/peopleTable/pageList`,
+    method: 'post',
+    data,
+  })
+}
 
 
 
