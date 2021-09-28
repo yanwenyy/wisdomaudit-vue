@@ -27,7 +27,8 @@
         >
       </el-col>
     </el-row>
-
+    
+    <!-- 项目管理列表 -->
     <el-table
       class="table"
       :data="tableData"
@@ -59,9 +60,9 @@
         <template slot-scope="scope">
           <el-button
             type="text"
-            style="color: #44A3DF"
+            style="color: #44a3df"
             size="small"
-            @click.native.prevent="deleteRow(scope.$index, tableData)"
+            @click="editDialog(scope.row)"
           >
             编辑
           </el-button>
@@ -83,10 +84,8 @@
       ></el-pagination>
     </div>
     <!-- 分页 end-->
-    <!-- :current-page="this.tableData.current"
-        @current-change="handleCurrentChange"
-        :page-size="this.tableData.size"
-        :total="this.tableData.total" -->
+
+    <!-- 新增页面 -->
     <el-dialog
       title="新增"
       :visible.sync="addDialogVisible"
@@ -136,7 +135,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="项目负责人:">
+            <el-form-item label="项目负责人:" prop="projectLeaderName">
               <el-select
                 placeholder="请选择"
                 v-model="addProjectManagement.projectLeaderName"
@@ -153,7 +152,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="审计期间:" class="dataTime">
+            <el-form-item label="审计期间:" class="dataTime" prop="auditStartData">
               <el-date-picker
                 type="date"
                 placeholder="请选择"
@@ -168,18 +167,18 @@
             </el-form-item>
             <el-form-item label="设置组长">123</el-form-item>
             <el-table
-              :data="addProjectManagement.leaderData"
+              :data="addProjectManagement.auditList"
               style="width: 100%"
               border
               class="projectTable"
             >
-              <el-table-column
-                label="项目编号"
-               prop="projectCode"
-                width="110"
-              >
+              <el-table-column label="项目编号" prop="projectCode" width="110">
               </el-table-column>
-              <el-table-column prop="auditOrgName" label="被审计单位" width="330">
+              <el-table-column
+                prop="auditOrgName"
+                label="被审计单位"
+                width="330"
+              >
                 <template slot-scope="scope">
                   <el-form-item prop="auditOrgName">
                     <el-select
@@ -198,9 +197,12 @@
                   </el-form-item>
                 </template>
               </el-table-column>
-              <el-table-column prop="role" label="角色" width="60">
-              </el-table-column>
-              <el-table-column prop="projectChargemanName" label="负责人" width="330">
+              <el-table-column label="角色" width="60">组长 </el-table-column>
+              <el-table-column
+                prop="projectChargemanName"
+                label="负责人"
+                width="330"
+              >
                 <template slot-scope="scope">
                   <el-form-item prop="projectChargemanName">
                     <el-select
@@ -225,7 +227,9 @@
                     type="text"
                     style="color: #db454b"
                     size="small"
-                    @click.native.prevent="deleteRow(scope.$index, leaderData)"
+                    @click.native.prevent="
+                      deleteRow(scope.$index, addProjectManagement.auditList)
+                    "
                   >
                     删除
                   </el-button>
@@ -374,6 +378,294 @@
         </div>
       </div>
     </el-dialog>
+
+    <el-dialog title="编辑" :visible.sync="editDialogVisible" width="50%">
+      <div class="addForm" v-if="prjType == 1">
+        <el-form
+          label-width="100px"
+          :rules="rules"
+          :model="addProjectManagement"
+          ref="form"
+        >
+          <el-row>
+            <el-form-item label="项目编号:" prop="projectCode">
+              <el-input
+                placeholder=""
+                v-model="addProjectManagement.projectCode"
+              ></el-input>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="项目类型:">
+              <el-select
+                placeholder="请选择"
+                v-model="addProjectManagement.projectTypeName"
+                :label-in-value="true"
+                @change="selectprojectType"
+              >
+                <el-option
+                  v-for="item in projectTypeoptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="项目名称:" prop="projectName">
+              <el-input
+                placeholder="请输入"
+                v-model="addProjectManagement.projectName"
+              >
+              </el-input>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="项目负责人:">
+              <el-select
+                placeholder="请选择"
+                v-model="addProjectManagement.projectLeaderName"
+                @change="selectprojectLeader"
+              >
+                <el-option
+                  v-for="item in projectpeopleoptions"
+                  :key="item.peopleTableUuid"
+                  :label="item.peopleName"
+                  :value="item.peopleTableUuid"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="审计期间:" class="dataTime">
+              <el-date-picker
+                type="date"
+                placeholder="请选择"
+                v-model="addProjectManagement.auditStartData"
+              ></el-date-picker>
+              <span>-</span>
+              <el-date-picker
+                type="date"
+                placeholder="请选择"
+                v-model="addProjectManagement.auditFinishData"
+              ></el-date-picker>
+            </el-form-item>
+            <el-form-item label="设置组长">123</el-form-item>
+            <el-table
+              :data="addProjectManagement.auditList"
+              style="width: 100%"
+              border
+              class="projectTable"
+            >
+              <el-table-column label="项目编号" prop="projectCode" width="110">
+              </el-table-column>
+              <el-table-column
+                prop="auditOrgName"
+                label="被审计单位"
+                width="330"
+              >
+                <template slot-scope="scope">
+                  <el-form-item prop="auditOrgName">
+                    <el-select
+                      placeholder="请选择"
+                      v-model="scope.row.auditOrgUuid"
+                      @change="orgSelect(scope.row)"
+                    >
+                      <el-option
+                        v-for="item in loadaudittorgoptions"
+                        :key="item.auditOrgUuid"
+                        :label="item.orgName"
+                        :value="item.auditOrgUuid"
+                      >
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                </template>
+              </el-table-column>
+              <el-table-column label="角色" width="60">组长 </el-table-column>
+              <el-table-column
+                prop="projectChargemanName"
+                label="负责人"
+                width="330"
+              >
+                <template slot-scope="scope">
+                  <el-form-item prop="projectChargemanName">
+                    <el-select
+                      placeholder="请选择"
+                      v-model="scope.row.projectChargemanID"
+                      @change="LeaderSelect(scope.row)"
+                    >
+                      <el-option
+                        v-for="item in projectpeopleoptions"
+                        :key="item.peopleTableUuid"
+                        :label="item.peopleName"
+                        :value="item.peopleTableUuid"
+                      >
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="80">
+                <template slot-scope="scope">
+                  <el-button
+                    type="text"
+                    style="color: #db454b"
+                    size="small"
+                    @click.native.prevent="
+                      deleteProjectrow(scope.$index, addProjectManagement.auditList,scope.row)
+                    "
+                  >
+                    删除
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <div class="addIcon" @click="addData">
+              <i class="el-icon-plus"></i>
+              <span>新增</span>
+            </div>
+          </el-row>
+        </el-form>
+
+        <div class="stepBtn">
+          <el-button @click="addDialogVisible = false">取消</el-button>
+          <el-button class="nextBtn" @click="editBtn">确认</el-button>
+        </div>
+      </div>
+
+      <div class="addForm" v-if="prjType == 2">
+        <el-form label-width="100px" :model="addprojectjing">
+          <el-row>
+            <el-form-item label="项目编号:" prop="projectCode">
+              <el-input
+                placeholder=""
+                v-model="addprojectjing.projectCode"
+              ></el-input>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="项目类型:">
+              <el-select
+                placeholder="请选择"
+                v-model="addprojectjing.projectTypeName"
+                :label-in-value="true"
+                @change="selectprojectType"
+              >
+                <el-option
+                  v-for="item in projectTypeoptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="项目名称:" prop="projectName">
+              <el-input
+                placeholder="请输入"
+                v-model="addprojectjing.projectName"
+              >
+              </el-input>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="项目负责人:" prop="projectLeaderName">
+              <el-select
+                placeholder="请选择"
+                v-model="addprojectjing.projectLeaderName"
+                @change="selectprojectLeader"
+              >
+                <el-option
+                  v-for="item in projectpeopleoptions"
+                  :key="item.peopleTableUuid"
+                  :label="item.peopleName"
+                  :value="item.peopleTableUuid"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="被审计单位:" prop="auditOrgName">
+              <el-select
+                placeholder="请选择"
+                v-model="addprojectjing.auditOrgName"
+                @change="selectorg"
+              >
+                <el-option
+                  v-for="item in loadaudittorgoptions"
+                  :key="item.auditOrgUuid"
+                  :label="item.orgName"
+                  :value="item.auditOrgUuid"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="被审计领导:" prop="auditOrgLeader">
+              <el-input
+                placeholder="请输入"
+                v-model="addprojectjing.auditOrgLeader"
+              >
+              </el-input>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="项目组长:" prop="projectChargemanName">
+              <el-select
+                placeholder="请选择"
+                v-model="addprojectjing.projectChargemanName"
+                @change="selectChargeman"
+              >
+                <el-option
+                  v-for="item in projectpeopleoptions"
+                  :key="item.peopleTableUuid"
+                  :label="item.peopleName"
+                  :value="item.peopleTableUuid"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="审计期间:" class="dataTime">
+              <el-date-picker
+                type="date"
+                placeholder="请选择"
+                v-model="addprojectjing.auditStartData"
+              ></el-date-picker>
+              <span>-</span>
+              <el-date-picker
+                type="date"
+                placeholder="请选择"
+                v-model="addprojectjing.auditFinishData"
+              ></el-date-picker>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="地市接口人:" prop="areaUserName">
+              <el-input
+                placeholder="请输入"
+                v-model="addprojectjing.areaUserName"
+              >
+              </el-input>
+            </el-form-item>
+          </el-row>
+        </el-form>
+
+        <div class="stepBtn">
+          <el-button @click="editDialogVisible = false">取消</el-button>
+          <el-button class="nextBtn" @click="editSave">确认</el-button>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -385,6 +677,9 @@ import {
   loadaudittorg,
   addProject,
   getItemId,
+  editProject,
+  editProjectUpdata,
+  deleteProject,
 } from "@SDMOBILE/api/shandong/projectmanagement.js";
 import { fmtDate } from "@SDMOBILE/model/time.js";
 
@@ -404,6 +699,7 @@ export default {
         pageSize: 10,
       },
       addDialogVisible: false,
+      editDialogVisible: false,
       input3: "",
       project: [],
       tableData: [
@@ -468,16 +764,15 @@ export default {
         projectLeaderName: "",
         auditStartData: "",
         auditFinishData: "",
-        leaderData: [
-        {
-          projectCode: "",
-          auditOrgUuid: "",
-          auditOrgName: "",
-          role: "组长",
-          projectChargemanID: "",
-          projectChargemanName: "",
-        },
-      ],
+        auditList: [
+          {
+            projectCode: "",
+            auditOrgUuid: "",
+            auditOrgName: "",
+            projectChargemanID: "",
+            projectChargemanName: "",
+          },
+        ],
       },
       // 经责新增项目管理的表单
       addprojectjing: {
@@ -505,11 +800,11 @@ export default {
 
       // 新增的表单验证
       rules: {
-        itemNo: [
+        projectCode: [
           { required: true, message: "请输入项目编号", trigger: "blur" },
           {
             max: 10,
-            message: "项目编号应在10个字符之内",
+            message: "项目编号应在20个字符之内",
             trigger: "change",
           },
         ],
@@ -520,10 +815,10 @@ export default {
           { required: true, message: "请填写项目名称", trigger: "blur" },
           { max: 10, message: "项目名称在10个字符之内", trigger: "change" },
         ],
-        projectLeader: [
+        projectLeaderName: [
           { required: true, message: "请选择项目负责人", trigger: "change" },
         ],
-        projectPeriod: [
+        auditStartData: [
           { required: true, message: "请选择审计期间", trigger: "change" },
         ],
         auditee: [
@@ -558,7 +853,7 @@ export default {
     selectprojectPeople(data) {
       projectPeople(data).then((resp) => {
         this.projectpeopleoptions = resp.data;
-        console.log(this.projectpeopleoptions);
+        // console.log(this.projectpeopleoptions);
       });
     },
     selectloadaudittorg(data) {
@@ -571,9 +866,9 @@ export default {
     },
     addData() {
       // alert(11);
-      this.addProjectManagement.leaderData.push({
+      this.addProjectManagement.auditList.push({
         projectCode: this.addProjectManagement.projectCode,
-         auditOrgUuid: "",
+        auditOrgUuid: "",
         auditOrgName: "",
         role: "组长",
         projectChargemanID: "",
@@ -588,8 +883,8 @@ export default {
       //   console.log(valid);
       // });
       addProject(this.addprojectjing).then((resp) => {
-        this.$message.success("添加项目成功！")
-        this.addDialogClosed = false
+        this.$message.success("添加项目成功！");
+        this.addDialogVisible = false;
         this.projectData(this.query);
       });
     },
@@ -624,6 +919,8 @@ export default {
           if (val == this.projectTypeoptions[i].value) {
             this.addprojectjing.projectTypeName =
               this.projectTypeoptions[i].label;
+            this.addProjectManagement.projectTypeName =
+              this.projectTypeoptions[i].label;
           }
         }
         // 获取项目编号
@@ -634,22 +931,30 @@ export default {
         });
       } else {
         this.prjType = 1;
-        this.addProjectManagement.projectTypeName = val;
+        this.addProjectManagement.projectType = val;
+        for (var i = 0; i < this.projectTypeoptions.length; i++) {
+          if (val == this.projectTypeoptions[i].value) {
+            this.addProjectManagement.projectTypeName =
+              this.projectTypeoptions[i].label;
+          }
+        }
         // 获取项目编号
         this.projectTypeSelect.typeCode = val;
         getItemId(this.projectTypeSelect).then((resp) => {
           this.addProjectManagement.projectCode = resp.data;
-          this.addProjectManagement.leaderData[0].projectCode = resp.data
+          this.addProjectManagement.auditList[0].projectCode = resp.data;
         });
       }
     },
     selectprojectLeader(val) {
       this.addprojectjing.projectLeaderUuid = val;
+      this.addProjectManagement.projectLeaderUuid = val;
       for (var i = 0; i < this.projectpeopleoptions.length; i++) {
         if (val == this.projectpeopleoptions[i].peopleTableUuid) {
           this.addprojectjing.projectLeaderName =
             this.projectpeopleoptions[i].peopleName;
-            this.addProjectManagement.projectLeaderName = this.projectpeopleoptions[i].peopleName;
+          this.addProjectManagement.projectLeaderName =
+            this.projectpeopleoptions[i].peopleName;
         }
       }
       // console.log(this.addprojectjing.projectLeaderUuid);
@@ -677,29 +982,76 @@ export default {
       // console.log(this.addprojectjing.projectChargemanID);
       // console.log(this.addprojectjing.projectChargemanName);
     },
-    orgSelect(row){
-      for(var i=0;i<this.loadaudittorgoptions.length;i++){
-        if(row.auditOrgUuid == this.loadaudittorgoptions[i].auditOrgUuid){
+    orgSelect(row) {
+      for (var i = 0; i < this.loadaudittorgoptions.length; i++) {
+        if (row.auditOrgUuid == this.loadaudittorgoptions[i].auditOrgUuid) {
           row.auditOrgName = this.loadaudittorgoptions[i].orgName;
         }
       }
     },
-    LeaderSelect(row){
-      
-       for(var i=0;i<this.projectpeopleoptions.length;i++){
-        if(row.projectChargemanID == this.projectpeopleoptions[i].peopleTableUuid){
+    LeaderSelect(row) {
+      for (var i = 0; i < this.projectpeopleoptions.length; i++) {
+        if (
+          row.projectChargemanID == this.projectpeopleoptions[i].peopleTableUuid
+        ) {
           row.projectChargemanName = this.projectpeopleoptions[i].peopleName;
         }
       }
-
     },
-    addSave(){
+    addSave() {
       addProject(this.addProjectManagement).then((resp) => {
-        this.$message.success("添加项目成功！")
-        this.addDialogClosed = false
+        this.$message.success("添加项目成功！");
+        this.addDialogVisible = false;
         this.projectData(this.query);
       });
+    },
+
+    // 编辑
+
+    editDialog(rows) {
+      this.editDialogVisible = true;
+      console.log(rows);
+      if (rows.projectType == "zxsj") {
+        this.prjType = 1;
+        editProject(rows.managementProjectUuid).then((resp) => {
+          this.addProjectManagement = resp.data;
+          console.log(this.addProjectManagement);
+        });
+      } else {
+        this.prjType = 2;
+        editProject(rows.managementProjectUuid).then((resp) => {
+          this.addprojectjing = resp.data;
+        });
+      }
+    },
+    // 专项修改按钮事件
+    editBtn() {
+      editProjectUpdata(this.addProjectManagement).then((resp) => {
+        this.editDialogVisible = false;
+        this.$message.success("修改成功！");
+        this.projectData(this.query);
+      });
+    },
+    // 其他项目类型按钮事件
+    editSave() {
+      editProjectUpdata(this.addprojectjing).then((resp) => {
+        this.editDialogVisible = false;
+        this.$message.success("修改成功！");
+        this.projectData(this.query);
+      });
+    },
+    deleteProjectrow(index, rows, obj){
+        console.log(obj);
+        if(!obj.managementProjectUuid){
+           rows.splice(index, 1);
+        }else{
+          deleteProject(obj.managementProjectUuid).then((resp)=>{
+            // console.log(resp);
+           rows.splice(index, 1);
+          })
+        }
     }
+
   },
 };
 </script>
@@ -743,7 +1095,7 @@ export default {
 }
 .stepBtn {
   /* border: 1px solid red; */
-  // margin-top: 5%;
+  margin-top: 3%;
   text-align: center;
   .nextBtn {
     background: #508ce6 !important;
@@ -753,10 +1105,10 @@ export default {
 .dataTime .el-input {
   width: 190px;
 }
-.projectTable{
-  .el-select{
+.projectTable {
+  .el-select {
     width: 200px;
-    margin:45px 0 0 -100px;
+    margin: 45px 0 0 -100px;
   }
 }
 </style>

@@ -66,3 +66,36 @@ export function addProject(data) {
   })
 }
 
+
+// 编辑项目回显
+export function editProject(id){
+  return request({
+  baseURL: baseURL,
+  url: `/managementProject/getById/`+id+'',
+  method: 'get'
+  })
+}
+
+
+// 编辑项目上传
+export function editProjectUpdata(data){
+  return request({
+  baseURL: baseURL,
+  url: `/managementProject/update`,
+  method: 'put',
+  data
+  })
+}
+
+
+// 删除专项
+export function deleteProject(id){
+  return request({
+  baseURL: baseURL,
+  url: `/managementProject/delete/`+id+'',
+  method: 'delete'
+  })
+}
+
+
+
