@@ -1200,7 +1200,8 @@ export default {
     },
     // 确认引用方法
     quoteModel_btn (params) {
-      quoteModel(params).then(resp => {
+      quoteModel(params).then(resp => { 
+        
         // console.log(resp);
         if (resp.code == 0) {
           this.$message({
