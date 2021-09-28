@@ -6,12 +6,12 @@
       >
       <div class="indocator-btn-box" v-if="!ifprojectmanage">
         <el-button class="gary-border">提交</el-button>
-        <el-button class="gary-border">导入</el-button>
+        <el-button class="gary-border" @click="importData()">导入</el-button>
         <el-button class="gary-border" @click="exportData()">导出</el-button>
       </div>
       <div class="indocator-btn-box" v-else>
         <el-button class="gary-border" @click="openExamine()">审核</el-button>
-        <el-button class="gary-border">下发</el-button>
+        <el-button class="gary-border" @click="issued()">下发</el-button>
         <!-- <el-button class="gary-border" @click="deleteData()">删除</el-button> -->
       </div>
     </div>
@@ -54,7 +54,17 @@
           <el-input v-model="scope.row.indexValue" />
         </template>
       </el-table-column>
-      <el-table-column label="状态" prop="status" />
+      <el-table-column label="状态" prop="status">
+        <template slot-scope="scope">
+          {{
+            scope.row.status == 1
+              ? "启用"
+              : scope.row.status == 0
+              ? "停用"
+              : "--"
+          }}
+        </template>
+      </el-table-column>
     </el-table>
     <pagination
       v-show="total > 0"
@@ -76,13 +86,6 @@
         label-position="right"
         class="detail-form"
       >
-        <el-form-item label="指标类型" prop="indexType">
-          <el-input
-            v-model="temp.indexType"
-            placeholder="请输入指标类型"
-            :disabled="dialogStatus == 'show'"
-          />
-        </el-form-item>
         <el-form-item label="指标名称" prop="indexName">
           <el-input
             v-model="temp.indexName"
@@ -90,19 +93,55 @@
             :disabled="dialogStatus == 'show'"
           />
         </el-form-item>
-        <el-form-item label="单位" prop="indexUnit">
+
+        <el-form-item label="父指标名" prop="parentIndexName">
           <el-input
-            v-model="temp.indexUnit"
-            placeholder="请输入单位"
+            v-model="temp.parentIndexName"
+            placeholder="请输入父指标名"
             :disabled="dialogStatus == 'show'"
           />
         </el-form-item>
-        <el-form-item label="资料提供部门" prop="dataProvideDepartment">
+        <el-form-item label="指标类型" prop="indexType">
           <el-input
+            v-model="temp.indexType"
+            placeholder="请输入指标类型"
+            :disabled="dialogStatus == 'show'"
+          />
+        </el-form-item>
+        <el-form-item label="指标单位" prop="indexUnit">
+          <!-- <el-input
+            v-model="temp.indexUnit"
+            placeholder="请输入单位"
+            :disabled="dialogStatus == 'show'"
+          /> -->
+          <el-select v-model="temp.indexUnit" placeholder="请选择指标单位">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="资料提供部门" prop="dataProvideDepartment">
+          <!-- <el-input
             v-model="temp.dataProvideDepartment"
             placeholder="请输入资料提供部门"
             :disabled="dialogStatus == 'show'"
-          />
+          /> -->
+          <el-select
+            v-model="temp.dataProvideDepartment"
+            placeholder="请选择资料提供部门"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="取数口径或公式" prop="accessCaliber">
           <el-input
@@ -110,6 +149,12 @@
             placeholder="请输入取数口径或公式"
             :disabled="dialogStatus == 'show'"
           />
+        </el-form-item>
+        <el-form-item label="指标状态" prop="status">
+          <el-radio-group v-model="temp.status">
+            <el-radio :label="1">启用</el-radio>
+            <el-radio :label="0">停用</el-radio>
+          </el-radio-group>
         </el-form-item>
       </el-form>
       <div slot="footer">
@@ -135,7 +180,11 @@
     >
       <el-form v-model="examine">
         <el-form-item label="审批意见">
-          <el-input type="textarea" v-model="examine.text" :autosize="{ minRows: 4, maxRows: 8}"></el-input>
+          <el-input
+            type="textarea"
+            v-model="examine.text"
+            :autosize="{ minRows: 4, maxRows: 8 }"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer">
@@ -146,6 +195,43 @@
         <el-button type="danger" @click="dialogtextVisible = false"
           >驳回</el-button
         >
+      </div>
+    </el-dialog>
+    <el-dialog
+      title="经营指标列表"
+      :visible.sync="dialoglistVisible"
+      :close-on-click-modal="false"
+    >
+      <div style="display: flex; padding: 20px">
+        指标名称：
+        <el-input
+          placeholder=""
+          v-model="kupageQuery.condition.indexName"
+          style="width: 300px"
+        >
+        </el-input>
+        <el-button type="primary" class="gary-border" @click="getkulist()"
+          >查询</el-button
+        >
+      </div>
+      <el-table
+        :data="kulistData"
+        style="width: 100%"
+        @selection-change="kulistSelectionChange"
+      >
+        <el-table-column type="selection" align="center" />
+        <el-table-column prop="indexName" label="指标名称"></el-table-column>
+      </el-table>
+      <pagination
+        v-show="kutotal > 0"
+        :total="kutotal"
+        :page.sync="kupageQuery.pageNo"
+        :limit.sync="kupageQuery.pageSize"
+        @pagination="getList"
+      />
+      <div slot="footer">
+        <el-button @click="dialoglistVisible = false">取消</el-button>
+        <el-button type="primary" @click="importSave()">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -165,11 +251,13 @@ export default {
       total: 0,
       listLoading: false,
       pageQuery: {
-        condition: {},
+        condition: {
+          managementProjectUuid: "", //项目管理主键
+          auditStartData: "", //项目周期
+          auditFinishData: "", //项目周期
+        },
         pageNo: 1,
         pageSize: 20,
-        sortBy: "",
-        sortName: "",
       },
       temp: {
         // 业务分类
@@ -178,6 +266,7 @@ export default {
         indexUnit: null,
         dataProvideDepartment: null,
         accessCaliber: null,
+        status: 1,
       },
       selections: [],
       dialogFormVisible: false,
@@ -201,7 +290,7 @@ export default {
         dataProvideDepartment: [
           { required: true, message: "请填写资料提供部门", trigger: "change" },
         ],
-        accessCaliber: [
+        state: [
           {
             required: true,
             message: "请填写取数口径或公式",
@@ -209,6 +298,10 @@ export default {
           },
         ],
       },
+      options: [
+        { value: "xxx1", label: "xxx1" },
+        { value: "xxx2", label: "xxx2" },
+      ],
       downloadLoading: false,
       headers: { "Content-Type": "multipart/form-data" },
       file: "",
@@ -216,10 +309,26 @@ export default {
       ifprojectmanage: false,
       dialogtextVisible: false,
       examine: { text: "" },
+      //导入经营指标相关
+      dialoglistVisible: false,
+      kulistData: [],
+      kupageQuery: {
+        condition: {
+          indexName: "",
+        },
+        pageNo: 1,
+        pageSize: 20,
+      },
+      kutotal: 0,
+      kutableSelection: [],
     };
   },
   watch: {},
   created() {
+    this.pageQuery.condition.managementProjectUuid =
+      "a1sa0d13as5d13asd1a3s00001";
+    this.pageQuery.condition.auditStartData = "2016-02-22T01:39:34.665Z";
+    this.pageQuery.condition.auditFinishData = "2016-02-22T01:39:34.665Z";
     this.getList();
     this.getManage();
   },
@@ -228,26 +337,15 @@ export default {
       this.ifprojectmanage = true;
     },
     getList() {
-      this.list = [
-        {
-          accessCaliber: "1",
-          status: "审核中",
-          indexName: "xxxxxxxxxxxxxxx",
-          indexId: "111",
-          indexValue: "2019-111",
-          indexType: "1类",
-          indexUnit: "什么居",
-          dataProvideDepartment: "提供人",
-        },
-      ];
-      return;
       axios({
         url: `/wisdomaudit/operatingIndicators/pageList`,
         method: "post",
         data: this.pageQuery,
       }).then((res) => {
-        if (res.code == 0) {
-          this.list = this.res.data.data;
+        console.log(res);
+        if (res.data.code == 0) {
+          this.list = res.data.data.data;
+          this.total = res.data.data.total;
         }
       });
     },
@@ -257,6 +355,9 @@ export default {
     handleSelectionChange(val) {
       this.indicatortableSelection = val;
     },
+    kulistSelectionChange(val) {
+      this.kutableSelection = val;
+    },
     add() {
       this.temp = {
         indexType: null,
@@ -264,6 +365,8 @@ export default {
         indexUnit: null,
         dataProvideDepartment: null,
         accessCaliber: null,
+        status: 1,
+        managementProjectUuid: this.pageQuery.condition.managementProjectUuid,
       };
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
@@ -288,6 +391,37 @@ export default {
         this.dialogDetailVisible = true;
       });
     },
+    importData() {
+      this.getkulist();
+      this.dialoglistVisible = true;
+    },
+    importSave() {
+      axios({
+        url: `/wisdomaudit/`,
+        method: "post",
+        data: this.kutableSelection,
+      }).then((res) => {
+        if (res.data.code == 0) {
+          this.$message({
+            message: "导入成功",
+            type: "success",
+          });
+          this.dialoglistVisible = false;
+        }
+      });
+    },
+    getkulist() {
+      this.kulistData = [{ indexName: "11" }];
+      return;
+      axios({
+        url: `/wisdomaudit/`,
+        method: "post",
+        data: this.kupageQuery,
+      }).then((res) => {
+        this.kulistData = res.data.data;
+        this.kutotal = res.data.total;
+      });
+    },
     exportData() {
       axios({
         url: `/wisdomaudit/`,
@@ -301,11 +435,13 @@ export default {
         method: "post",
         data: this.temp,
       }).then((res) => {
-        if (res.code == 0) {
+        console.log(res);
+        if (res.data.code == 0) {
           this.$message({
             message: "新增成功",
             type: "success",
           });
+          this.dialogFormVisible = false;
           this.getList();
         }
       });
@@ -316,9 +452,33 @@ export default {
         method: "put",
         data: this.temp,
       }).then((res) => {
-        if (res.code == 0) {
+        if (res.data.code == 0) {
           this.$message({
             message: "修改成功",
+            type: "success",
+          });
+          this.dialogFormVisible = false;
+          this.getList();
+        }
+      });
+    },
+    issued() {
+      let rep = []
+      for(let i =0;i<this.indicatortableSelection.length;i++){
+        rep.push({operatingIndicatorsUuid:this.indicatortableSelection[i].operatingIndicatorsUuid})
+      }
+      let params = {
+        managementProjectUuid: this.pageQuery.condition.managementProjectUuid,
+        operatingIndicatorsList: rep,
+      };
+      axios({
+        url: `/wisdomaudit/operatingIndicatorsBackTask/sendTask`,
+        method: "post",
+        data: params,
+      }).then((res) => {
+        if (res.data.code == 0) {
+          this.$message({
+            message: "下发成功",
             type: "success",
           });
           this.getList();
