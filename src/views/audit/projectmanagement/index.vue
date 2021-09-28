@@ -379,7 +379,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="编辑" :visible.sync="editDialogVisible" width="50%">
+    <el-dialog title="编辑" :visible.sync="editDialogVisible" @close="addDialogClosed" width="50%">
       <div class="addForm" v-if="prjType == 1">
         <el-form
           label-width="100px"
@@ -890,6 +890,7 @@ export default {
     },
     //监听添加用户对话框的关闭事件
     addDialogClosed() {
+      this.$router.go(0);
       this.$refs["form"].resetFields();
     },
 
