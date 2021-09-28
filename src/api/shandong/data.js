@@ -1,6 +1,7 @@
 import request from '@/utils/request'
+import qs from 'qs'
 
-const baseURL = '/wisdomaudit'
+const baseURL = '/wisdomaudit_son'
 // 资料列表 未完成
 export function data_pageList (data) {
   return request({
@@ -20,15 +21,31 @@ export function data_pageListDone (data) {
   })
 }
 
+//未完成 删除
+export function data_delete (data) {
+  let ids = data.ids
+  return request({
+    baseURL: baseURL,
+    url: '/addDataTask/delete/' + ids + '',
+    method: 'delete',
+    data
+  })
+}
 
 
-
-
-
+// 新增 弹窗 初始化模型列表
+export function add_pageList (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/auditPreviousData/pageList`,
+    method: 'post',
+    data
+  })
+}
 
 
 // 资料列表 下发
-export function data_push (data) {
+export function data_push_ing (data) {
   console.log(data);
   let id = data.taskId
   return request({
@@ -40,22 +57,8 @@ export function data_push (data) {
 }
 
 
-// 资料列表 新增任务里的列表
-export function add_pageList (data) {
-  return request({
-    baseURL: baseURL,
-    url: `/auditPreviousData/pageList`,
-    method: 'put',
-    data
-  })
-}
-
-
-
 // 资料列表 新增
 export function data_save (data) {
-  console.log(data);
-  let id = data.taskId
   return request({
     baseURL: baseURL,
     url: `/addDataTask/save`,
@@ -63,6 +66,8 @@ export function data_save (data) {
     data
   })
 }
+
+
 
 
 // url: NewJingjiribao + '/select/work/page?activityId=' + data.activityId + '&current=' + data.current + '&size=' + data.size + '&type=' + data.type,

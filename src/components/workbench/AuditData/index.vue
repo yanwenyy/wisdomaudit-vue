@@ -1,12 +1,12 @@
 <template>
   <div class="sjzl">
     <!-- tab 切换 -->
-
     <el-tabs v-model="activeName"
              @tab-click="handleClick">
+
+      <!-- 未完成 -->
       <el-tab-pane label="审计资料任务列表"
                    name="0">
-
         <div class="projectTab anmition_show">
           <!-- 新增 -->
           <el-row class="titleMes">
@@ -18,6 +18,9 @@
           <el-table :data="tableData_list"
                     v-loading="loading"
                     style="width: 100%;">
+            <!-- <el-table-column type="selection"
+                             width="55">
+            </el-table-column> -->
             <el-table-column prop="dataTaskNumber"
                              label="流水单号">
             </el-table-column>
@@ -83,7 +86,7 @@
                     审批
                   </el-button>
 
-                  <el-button @click.native.prevent="operation"
+                  <el-button @click="deleteRow(scope.row)"
                              type="text"
                              style="color:red"
                              size="small">
@@ -100,62 +103,71 @@
         <!-- 分页 -->
         <div class="page">
           <el-pagination background
-                         :hide-on-single-page="false"
+                         :hide-on-single-page="true"
                          layout="prev, pager, next"
                          :page-sizes="[2, 4, 6, 8]"
                          :current-page="this.tableData.current"
-                         @current-change="handleCurrentChange"
+                         @current-change="handleCurrentChange_model"
                          :page-size="this.tableData.size"
                          :total="this.tableData.total"></el-pagination>
         </div>
         <!-- 分页 end-->
       </el-tab-pane>
+
+      <!-- 已完成 -->
       <el-tab-pane label="已操作的资料列表"
                    name="1">
         <div class="projectTab anmition_show">
 
-          <el-table :data="tableData_list"
+          <el-table :data="tableData_list2"
+                    v-loading="loading"
                     style="width: 100%;">
             <el-table-column prop="dataTaskNumber"
                              label="流水单号">
             </el-table-column>
-            <el-table-column prop=""
+            <el-table-column prop="createTime"
                              label="反馈日期">
+
+              <template slot-scope="scope">
+                <span>{{scope.row.createTime|filtedate}}</span>
+              </template>
             </el-table-column>
-            <el-table-column prop=""
+            <el-table-column prop="dataNumber"
                              label="编号">
             </el-table-column>
-            <el-table-column prop=""
+            <el-table-column prop="secondLevelDataNumber"
                              label="二级编号">
             </el-table-column>
-            <el-table-column prop="title"
+            <el-table-column prop="dataName"
                              label="资料名称">
             </el-table-column>
-            <el-table-column prop=""
+            <el-table-column prop="department"
                              label="部门">
             </el-table-column>
-            <el-table-column prop=""
+            <el-table-column prop="remarks"
                              label="备注">
             </el-table-column>
             <el-table-column prop=""
                              label=附件>
-              <div class="update">
-                <div class="update_icon">
-                  <svg t="1631877671204"
-                       class="icon"
-                       viewBox="0 0 1024 1024"
-                       version="1.1"
-                       xmlns="http://www.w3.org/2000/svg"
-                       p-id="9939"
-                       width="200"
-                       height="200">
-                    <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                          fill="#FD9D27"
-                          p-id="9940"></path>
-                  </svg>
+              <template slot-scope="scope">
+                <div class="update">
+                  <div class="update_icon">
+                    <svg t="1631877671204"
+                         class="icon"
+                         viewBox="0 0 1024 1024"
+                         version="1.1"
+                         xmlns="http://www.w3.org/2000/svg"
+                         p-id="9939"
+                         width="200"
+                         height="200">
+                      <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
+                            fill="#FD9D27"
+                            p-id="9940"></path>
+                    </svg>
+                  </div>
+                  <span>{{scope.row.enclosureCount}}</span>
                 </div>
-                <span>2</span>
-              </div>
+              </template>
             </el-table-column>
 
           </el-table>
@@ -164,9 +176,13 @@
         <!-- 分页 -->
         <div class="page">
           <el-pagination background
+                         :hide-on-single-page="true"
                          layout="prev, pager, next"
-                         :total="1000">
-          </el-pagination>
+                         :page-sizes="[2, 4, 6, 8]"
+                         :current-page="this.tableData2.current"
+                         @current-change="handleCurrentChange_zj"
+                         :page-size="this.tableData2.size"
+                         :total="this.tableData2.total"></el-pagination>
         </div>
         <!-- 分页 end-->
       </el-tab-pane>
@@ -182,6 +198,7 @@
                  :inline="false"
                  :model="add_form"
                  label-width="80px">
+          <!-- 标题 -->
           <el-form-item label="标题"
                         prop="title"
                         :rules="{
@@ -191,6 +208,7 @@
             }">
             <el-input v-model="add_form.title"></el-input>
           </el-form-item>
+          <!-- 发起人 -->
           <el-form-item label="发起人"
                         prop="name"
                         :rules="{
@@ -210,32 +228,34 @@
         </el-form>
         <el-form label-width="80px">
           <el-table ref="multipleTable"
-                    :data="tableData"
+                    :data="task_list_records"
                     tooltip-effect="dark"
+                    v-loading="loading"
                     style="width: 100%"
-                    @selection-change="handleSelectionChange">
+                    @selection-change="handleSelectionChange_query">
             <el-table-column type="selection"
                              width="55">
             </el-table-column>
-            <el-table-column label="类别">
-              <template slot-scope="scope">{{ scope.row.date }}</template>
+            <el-table-column prop="dataCategory"
+                             label="类别">
+              <!-- <template slot-scope="scope">{{ scope.row.dataCategory }}</template> -->
             </el-table-column>
-            <el-table-column prop="name"
+            <el-table-column prop="dataNumber"
                              label="编号">
             </el-table-column>
-            <el-table-column prop="address"
+            <el-table-column prop="secondLevelDataNumber"
                              label="二级编号"
                              show-overflow-tooltip>
             </el-table-column>
-            <el-table-column prop="address"
+            <el-table-column prop="dataName"
                              label="资料名称"
                              show-overflow-tooltip>
             </el-table-column>
-            <el-table-column prop="address"
+            <el-table-column prop="department"
                              label="部门"
                              show-overflow-tooltip>
             </el-table-column>
-            <el-table-column prop="address"
+            <el-table-column prop="remarks"
                              label="备注"
                              show-overflow-tooltip>
             </el-table-column>
@@ -245,9 +265,13 @@
         <!-- 分页 -->
         <div class="page">
           <el-pagination background
+                         :hide-on-single-page="true"
                          layout="prev, pager, next"
-                         :total="1000">
-          </el-pagination>
+                         :page-sizes="[2, 4, 6, 8]"
+                         :current-page="this.task_list_records.current"
+                         @current-change="handleCurrentChange_csh"
+                         :page-size="this.task_list_records.size"
+                         :total="this.task_list_records.total"></el-pagination>
         </div>
         <!-- 分页 end-->
       </div>
@@ -515,7 +539,7 @@
 </template>
 
 <script>
-import { data_pageList, data_push, data_save, add_pageList, data_pageListDone } from
+import { data_pageList, data_push, data_save, add_pageList, data_pageListDone, data_delete, data_push_ing } from
   '@SDMOBILE/api/shandong/data'
 import { fmtDate } from '@SDMOBILE/model/time.js';
 
@@ -540,65 +564,6 @@ export default {
 
 
 
-      tableData: [{
-        date: '2016-05-03',
-        name: '',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333,
-        type: 1,
-      }, {
-        date: '2016-05-02',
-        name: '',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333,
-        type: 2
-
-      }, {
-        date: '2016-05-04',
-        name: '',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333,
-        type: 3
-
-      }, {
-        date: '2016-05-01',
-        name: '',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333, type: 3
-
-      }, {
-        date: '2016-05-08',
-        name: '',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333, type: 1
-
-      }, {
-        date: '2016-05-06',
-        name: '',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333, type: 1
-
-      }, {
-        date: '2016-05-07',
-        name: '',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333, type: 1
-
-      }],
       value_name: '',//input
       value_select: '',//select
       sensitiveOptions: [
@@ -627,23 +592,27 @@ export default {
       multipleSelection: [],//新增列表选中的数据
       tableData_list: [],
       params: {
-        pageNo: 0,
+        pageNo: 1,
         pageSize: 15,
         condition: {
           projectNumber: '项目001',
-          status: "0,1",
         }
       },
+
+      multipleSelection_list: [], // 新增 任务弹窗里的全选
+
+      task_list: [],// 新增任务初始化 
+      task_list_records: [],//新增任务初始化 列表
+
       // 已完成
       tableData2: [],
       multipleSelection2: [],//新增列表选中的数据
       tableData_list2: [],
       params2: {
-        pageNo: 0,
+        pageNo: 1,
         pageSize: 15,
         condition: {
           projectNumber: '项目001',
-          status: "0,1",
 
         }
       }
@@ -664,10 +633,6 @@ export default {
       }
     }
     this.list_data_start(params);//未完成
-
-
-
-
     // 完成
   },
   mounted () {
@@ -676,7 +641,9 @@ export default {
   filters: {
     filtedate: function (date) {
       let t = new Date(date);
-      return fmtDate(t, 'yyyy-MM-dd hh:mm:ss');
+      // return fmtDate(t, 'yyyy-MM-dd hh:mm:ss');
+      return fmtDate(t, 'yyyy-MM-dd ');
+
     }
   },
 
@@ -686,25 +653,23 @@ export default {
       if (val.index == 0) {
         // 未完成
         let params = {
-          pageNo: val,
+          pageNo: this.params.pageNo,
           pageSize: this.params.pageSize,
           condition: {
             projectNumber: this.params.condition.projectNumber,
-            status: this.params.condition.status,
           }
         }
         this.list_data_start(params)
       } else {
         // 已完成
         let params = {
-          pageNo: val,
-          pageSize: this.params.pageSize,
+          pageNo: this.params2.pageNo,
+          pageSize: this.params2.pageSize,
           condition: {
-            projectNumber: this.params.condition.projectNumber,
-            status: 2,
+            dataTaskNumber: this.params2.condition.projectNumber,
           }
         }
-        this.list_data_start(params)
+        this.list_data_end(params)
       }
     },
 
@@ -712,16 +677,15 @@ export default {
     // 未完成============================
     // 列表 未完成
     list_data_start (params) {
+      this.loading = true
       data_pageList(params).then(resp => {
-        this.loading = true
         this.tableData = resp.data;
         this.tableData_list = resp.data.records
         this.loading = false
-        // console.log(this.tableData);
       })
     },
     // 任务列表分页
-    handleCurrentChange (val) {
+    handleCurrentChange_model (val) {
       let params = {
         pageNo: val,
         pageSize: this.params.pageSize,
@@ -739,37 +703,59 @@ export default {
     },
     // 未完成任务下发
     push (index, rows) {
-      console.log(rows.records[index].addDataTaskUuid);
+      // console.log(rows.records[index].addDataTaskUuid);
       let params = {
         taskId: rows.records[index].addDataTaskUuid
       }
       data_push(params).then(resp => {
-        console.log(params);
+        // console.log(params);
         // console.log(resp.data);
+
+
+
       })
     },
-    //新增任务
+    //新增任务 弹窗
     add_data_task () {
       this.dialogVisible = true
-
       let params = {
         pageNo: 0,
         pageSize: 15,
         projectType: '111'
       }
       // 新增未完成任务列表
+      this.add_add_csh(params);
+    },
+    // 新增任务初始化 列表
+    add_add_csh (params) {
+      this.loading = true;
       add_pageList(params).then(resp => {
-        console.log(params);
-        console.log(333);
-        // console.log(resp.data);
+        this.task_list = resp.data;
+        this.task_list_records = resp.data.records;
+        this.loading = false;
       })
     },
+    // 新增任务初始化 列表 分页
+    handleCurrentChange_csh (val) {
+      let params = {
+        pageNo: val,
+        pageSize: 15,
+        projectType: '111'
+      }
+      this.add_add_csh(params)
+    },
 
-    // 确认
+    // 新增任务 里的全选
+    handleSelectionChange_query (val) {
+      this.multipleSelection_list = val;
+    },
+
+    // 确认保存添加的资料
     query_add_form (formName) {
       // console.log(this.add_form); 
       // this.multipleSelection
       console.log(this.add_form);
+      console.log(this.multipleSelection_list);
       return false
 
       // this.$refs[formName].validate((valid) => {
@@ -792,16 +778,19 @@ export default {
       this.multipleSelection = val;
     },
     // 删除
-    deleteRow (index, rows) {
-      if (this.multipleSelection.length != 1) {
-        this.$message.info("请选择至少一条数据进行删除！");
-        return false;
-      }
-      let id = [],
-        itemStatus = true;
-      this.multipleSelection.forEach((item) => {
-        id.push(item.id);
-      });
+    deleteRow (data) {
+      // if (this.multipleSelection.length == 0) {
+      //   this.$message.info("请选择至少一条数据进行删除！");
+      //   return false;
+      // }
+      console.log(data);
+      // return false
+      // let ids = [];
+      // data.forEach((item) => {
+      //   ids.push(item.addDataTaskUuid);
+      // });
+      // console.log(data);
+      // 
 
       this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, "提示", {
         confirmButtonText: "确定",
@@ -809,37 +798,32 @@ export default {
         type: "warning",
       })
         .then(() => {
-          // this.$http
-          //   .post(
-          //     "/communityMng/superUser/deleteAll",
-          //     qs.stringify({ ids: id.join(",") })
-          //   )
-          //   .then((res) => {
-          //     this.$message({
-          //       message: "删除成功",
-          //       type: "success",
-          //     });
-          //     this.getData();
-          //   });
+          console.log(data);
+          let params = {
+            ids: data.addDataTaskUuid,
+          };
+          this.remove(params)//删除
         })
         .catch(() => { });
     },
-
-
-
-
-    // 已完成==========================
-    // 已完成列表
-    list_data_start (params) {
-      data_pageListDone(params).then(resp => {
-        this.loading = true
-        this.tableData2 = resp.data;
-        this.tableData_list2 = resp.data.records
-        this.loading = false
-        // console.log(this.tableData);
-      })
+    // 删除接口
+    remove (params) {
+      data_delete(params).then(resp => {
+        console.log(resp.data);
+        if (resp.data.code == 200) {
+          this.$message({
+            message: "删除成功",
+            type: "success",
+          });
+          this.getData();//刷新列表
+        } else {
+          this.$message({
+            message: resp.data.msg,
+            type: "error",
+          });
+        }
+      });
     },
-
 
     // 添加资料
     add_data () {
@@ -856,18 +840,31 @@ export default {
       this.dialogVisibl_operation = true
     },
 
-    // 新增资料弹窗
-    // 全选
-    toggleSelection (rows) {
-      if (rows) {
-        rows.forEach(row => {
-          this.$refs.multipleTable.toggleRowSelection(row);
-        });
-      } else {
-        this.$refs.multipleTable.clearSelection();
-      }
-    },
 
+
+
+    // 已完成==========================
+    // 已完成列表
+    list_data_end (params2) {
+      this.loading = true
+      data_pageListDone(params2).then(resp => {
+        this.tableData2 = resp.data;
+        this.tableData_list2 = resp.data.records
+        this.loading = false
+      })
+    },
+    // 已完成 分页
+    handleCurrentChange_zj (val) {
+      // 已完成
+      let params = {
+        pageNo: this.params2.pageNo,
+        pageSize: this.params2.pageSize,
+        condition: {
+          dataTaskNumber: this.params2.condition.projectNumber,
+        }
+      }
+      this.list_data_end(params)
+    },
 
 
   },
@@ -877,6 +874,13 @@ export default {
 
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
+.projectTab >>> .el-table th.el-table__cell > .cell,
+.projectTab >>> .el-table td.el-table__cell div {
+  text-align: center;
+}
+.projectTab >>> .el-table {
+  min-height: 500px;
+}
 
 .sjzl .conter {
   width: 100%;

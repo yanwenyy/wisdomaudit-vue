@@ -18,52 +18,41 @@
           </el-col>
           <!-- 自建任务 /  模型任务 end-->
 
-          <!-- 引用 -->
+          <!-- 模型引用 -->
           <el-col :span="1.5"
                   v-if="task_type == 0">
             <el-button type="primary"
-                       @click="quote()">引用</el-button>
+                       @click="new_add_model()">选择模型</el-button>
           </el-col>
 
-          <!-- 新增 -->
+          <!-- 自建新增 -->
           <el-col :span="1.5"
                   v-if="task_type == 1">
             <el-button type="primary"
-                       @click="new_add()">新增</el-button>
+                       @click="new_add_zj()">新增</el-button>
           </el-col>
 
-          <!--自建任务 筛选 -->
-          <div class="search"
-               v-if="task_type == 0">
+          <!--自建任务 模型任务 筛选 -->
+          <div class="search">
             <el-input placeholder="请输入"
-                      v-model="task.search"> </el-input>
+                      v-model="params.taskName"> </el-input>
             <div class="search_icon">
               <i class="el-icon-search"
                  style="color: rgba(0, 0, 0, 0.5)"></i>
             </div>
+            <el-button type="primary"
+                       v-if="task_type == 0"
+                       @click="search_list(1)">筛选</el-button>
 
             <el-button type="primary"
-                       @click="search_list()">筛选</el-button>
-          </div>
-          <!-- 模型任务 -->
-          <div class="search"
-               v-if="task_type == 1">
-            <el-input placeholder="请输入"
-                      v-model="task.search"> </el-input>
-            <div class="search_icon">
-              <i class="el-icon-search"
-                 style="color: rgba(0, 0, 0, 0.5)"></i>
-            </div>
-
-            <el-button type="primary"
-                       @click="search_list()">筛选</el-button>
+                       v-if="task_type == 1"
+                       @click="search_list(2)">筛选</el-button>
           </div>
         </el-row>
         <!-- tab end-->
 
         <!-- 模型任务 -->
         <div class="task_type"
-             v-loading="loading"
              v-if="task_type == 0"
              :class="task_type == 0 ? 'anmition_show' : ''">
           <!-- 表单 -->
@@ -77,9 +66,9 @@
             </el-table-column>
             <el-table-column prop="auditModelName"
                              label="模型名称"> </el-table-column>
-            <el-table-column prop="auditModelCategory"
-                             label="模型分类">
-              <!-- <template slot-scope="auditModelCategory">
+            <!-- <el-table-column prop="auditModelCategory"
+                             label="模型分类"> -->
+            <!-- <template slot-scope="auditModelCategory">
                 {{
                   scope.row.type == 0
                     ? "个人"
@@ -90,7 +79,33 @@
                     : "其他"
                 }}
               </template> -->
+            <!-- </el-table-column> -->
+
+            <!-- 专题和领域 -->
+            <el-table-column prop="belongSpcial"
+                             label="专题">
+              <!-- <template slot-scope="scope">
+                <el-button @click="data_num_click(scope.row)"
+                           type="text"
+                           style="color: #1371cc"
+                           size="small">
+                  {{ scope.row.belongSpcial }}
+                </el-button>
+              </template> -->
             </el-table-column>
+
+            <el-table-column prop="belongField"
+                             label="领域">
+              <!-- <template slot-scope="scope">
+                <el-button @click="data_num_click(scope.row)"
+                           type="text"
+                           style="color: #1371cc"
+                           size="small">
+                  {{ scope.row.belongField }}
+                </el-button>
+              </template> -->
+            </el-table-column>
+
             <el-table-column prop="resultsNumber"
                              label="结果数">
               <template slot-scope="scope">
@@ -183,13 +198,12 @@
           <!-- 分页 -->
           <div class="page">
             <el-pagination background
-                           :hide-on-single-page="false"
                            layout="prev, pager, next"
-                           :page-sizes="[2, 4, 6, 8]"
                            :current-page="this.tableData.current"
                            @current-change="handleCurrentChange_model"
                            :page-size="this.tableData.size"
                            :total="this.tableData.total"></el-pagination>
+
           </div>
           <!-- 分页 end-->
         </div>
@@ -253,19 +267,37 @@
                 <span>2</span>
               </div>
             </el-table-column>
+
+            <el-table-column label="操作">
+              <template scope="scope">
+                <!-- 编辑 -->
+                <el-button @click="edit_data(scope.$index, tableData_list)"
+                           type="text"
+                           style="color:#1371CC"
+                           size="small">
+                  编辑
+                </el-button>
+                <el-button @click="delete_zj(scope.row.auditTaskUuid)"
+                           type="text"
+                           style="color:red"
+                           size="small">
+                  删除
+                </el-button>
+              </template>
+            </el-table-column>
           </el-table>
           <!-- 表单 end-->
 
           <!-- 分页 -->
           <div class="page">
             <el-pagination background
-                           :hide-on-single-page="false"
+                           :hide-on-single-page="true"
                            layout="prev, pager, next"
                            :page-sizes="[2, 4, 6, 8]"
-                           :current-page="this.tableData.current"
+                           :current-page="this.list_data.current"
                            @current-change="handleCurrentChange_zijian"
-                           :page-size="this.tableData.size"
-                           :total="this.tableData.total"></el-pagination>
+                           :page-size="this.list_data.size"
+                           :total="this.list_data.total"></el-pagination>
           </div>
           <!-- 分页 end-->
         </div>
@@ -572,7 +604,7 @@
                style="width: 100%; justify-content: flex-start; width: 300px"
                v-if="task_type == 0">
             <el-input placeholder="请输入模型名称"
-                      v-model="task.search">
+                      v-model="params2.condition.modelName">
             </el-input>
             <div class="search_icon">
               <i class="el-icon-search"
@@ -591,17 +623,29 @@
                        @click="quote()">引用</el-button>
           </el-col>
         </div>
-        <el-table :data="tableData"
+        <el-table :data="model_list"
                   ref="multipleTable"
                   tooltip-effect="dark"
                   @selection-change="handleSelectionChange"
                   style="width: 100%">
           <el-table-column type="selection"
-                           width="55"> </el-table-column>
-          <el-table-column prop="name"
+                           width="55">
+          </el-table-column>
+          <el-table-column prop="modelName"
                            label="模型名称"> </el-table-column>
         </el-table>
       </div>
+
+      <!-- 分页 -->
+      <div class="page">
+        <el-pagination background
+                       layout="prev, pager, next"
+                       :current-page="this.model_data.current"
+                       @current-change="handleCurrentChange_model_add"
+                       :page-size="this.model_data.size"
+                       :total="this.model_data.total"></el-pagination>
+      </div>
+      <!-- 分页 end-->
 
       <span slot="footer">
         <el-button size="small"
@@ -614,17 +658,19 @@
 
     <!-- 自建任务新增 -->
     <el-dialog title="新增"
-               :visible.sync="dialogVisible"
+               :visible.sync="dialogVisible_zj"
                style="padding-bottom: 59px">
       <div class="dlag_conter">
+        <!-- 任务名称 -->
         <el-form label-width="80px">
-          <p>自建任务新增：</p>
-          <el-input v-model="add_task.name"
+          <p>任务名称：</p>
+          <el-input v-model="save_zj_query.taskName"
                     placeholder="请输入任务新增"></el-input>
         </el-form>
+        <!-- 责任人 -->
         <el-form label-width="80px">
           <p>责任人：</p>
-          <el-select v-model="value_select">
+          <el-select v-model="save_zj_query.taskDescription">
             <el-option v-for="item in sensitiveOptions"
                        :key="item.value"
                        :label="item.label"
@@ -632,11 +678,13 @@
             </el-option>
           </el-select>
         </el-form>
+        <!-- 任务描述 -->
         <el-form label-width="80px">
           <p>任务描述：</p>
-          <el-input v-model="add_task.textare"
+          <el-input v-model="save_zj_query.taskDescription"
                     placeholder="请输入任务描述"></el-input>
         </el-form>
+        <!-- 上传附件 -->
         <el-form label-width="80px">
           <p>上传附件：</p>
           <el-upload class="upload-demo"
@@ -656,16 +704,16 @@
       <span slot="footer">
         <el-button size="small"
                    type="primary"
-                   @click="query()">确 定</el-button>
+                   @click="save_zj()">确 定</el-button>
         <el-button size="small"
-                   @click="clearTopic(), (dialogVisible = false)">取 消</el-button>
+                   @click="clearTopic(), (dialogVisible_zj = false)">取 消</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { task_pageList, task_selectModel, task_selectTable } from
+import { task_pageList, task_model_pageList, task_selectModel, task_selectTable, quoteModel, task_add, task_remove, task_edit } from
   '@SDMOBILE/api/shandong/task'
 import { fmtDate } from '@SDMOBILE/model/time.js';
 
@@ -676,11 +724,10 @@ export default {
       task_type: 0, //默认显示任务/自建任务
       tab: [{ name: "审计资料任务列表" }, { name: "已操作的资料列表" }], //任务切换
       dialogVisible_quote: false, //模型任务引用
-      dialogVisible: false, // 自建任务新增弹窗
+      dialogVisible_zj: false, // 自建任务新增弹窗
       dialogVisible_data_num: false, //模型任务结果数
       setParametersDialogVisible: false, //模型任务设置参数
       problemsDialogVisible: false, //模型任务问题数
-      multipleSelection: [],
 
       // 提交数据单
       task: {
@@ -704,47 +751,47 @@ export default {
       ],
       value_zrr: "",
 
-      tableData: [
-        {
-          date: 1,
-          name: "王小虎",
-          type: 0,
-          ing: 0,
-          data_num: 1, //结果数
-          wt_num: 2,
-          start_time: "10-1",
-          end_time: "10-11",
-          address: "上海市普陀区金沙江路 1518 弄",
-          edit: 1,
-          zip: "1.zip",
-        },
-        {
-          date: 2,
-          name: "王小虎",
-          type: 1,
-          ing: 1,
-          data_num: 1, //结果数
-          wt_num: 2,
-          start_time: "10-1",
-          end_time: "10-11",
-          address: "上海市普陀区金沙江路 1518 弄",
-          edit: 2,
-          zip: 200333,
-        },
-        {
-          date: 3,
-          name: "王小虎",
-          ing: 2,
-          data_num: 1, //结果数
-          wt_num: 2,
-          type: 2,
-          start_time: "10-1",
-          end_time: "10-11",
-          address: "上海市普陀区金沙江路 1518 弄",
-          edit: 3,
-          zip: 200333,
-        },
-      ],
+      // tableData: [
+      //   {
+      //     date: 1,
+      //     name: "王小虎",
+      //     type: 0,
+      //     ing: 0,
+      //     data_num: 1, //结果数
+      //     wt_num: 2,
+      //     start_time: "10-1",
+      //     end_time: "10-11",
+      //     address: "上海市普陀区金沙江路 1518 弄",
+      //     edit: 1,
+      //     zip: "1.zip",
+      //   },
+      //   {
+      //     date: 2,
+      //     name: "王小虎",
+      //     type: 1,
+      //     ing: 1,
+      //     data_num: 1, //结果数
+      //     wt_num: 2,
+      //     start_time: "10-1",
+      //     end_time: "10-11",
+      //     address: "上海市普陀区金沙江路 1518 弄",
+      //     edit: 2,
+      //     zip: 200333,
+      //   },
+      //   {
+      //     date: 3,
+      //     name: "王小虎",
+      //     ing: 2,
+      //     data_num: 1, //结果数
+      //     wt_num: 2,
+      //     type: 2,
+      //     start_time: "10-1",
+      //     end_time: "10-11",
+      //     address: "上海市普陀区金沙江路 1518 弄",
+      //     edit: 3,
+      //     zip: 200333,
+      //   },
+      // ],
       tableData1: [
         {
           name: '个人',
@@ -864,24 +911,47 @@ export default {
       ],
 
       loading: false,
+      tableData: [],//模型列表
       tableData_list: [],//任务列表数据
+      // 模型/自建人任务 列表
       params: {
         auditModelCategory: '',
         managementProjectUuid: '3757f078afa6161474430894936de6ed',//项目管理id
         taskName: '',//模糊查询
         taskType: '1',//1:模型任务 2:自建任务
-        pageNo: 0,
-        pageSize: 15,
+        pageNo: 1,
+        pageSize: 10,
       },
       multipleSelection: [],//新增列表选中的数据
 
-    };
+      // 模型列表的新增模型列表
+      params2: {
+        condition: {
+          modelName: '',//模糊查询
+        },
+        pageNo: 1,
+        pageSize: 10,
+      },
+      model_data: [],//引入模型列表
+      model_list: [],//引入模型列表数据 son
+
+      // 新增自建任务
+      save_zj_query: {
+        managementProjectUuid: "3757f078afa6161474430894936de6ed",//项目id
+        taskDescription: "",
+        taskName: "",
+        taskType: "2",//任务类型
+        enclosure: '',//附件
+      },
+
+
+    }
   },
   computed: {},
   watch: {},
 
   created () {
-    // 资料列表
+    // 模型  自建任务列表
     let params = {
       pageNo: this.params.pageNo,
       pageSize: this.params.pageSize,
@@ -893,23 +963,29 @@ export default {
       }
     }
     this.list_data(params);
+
+
+
   },
   mounted () { },
   filters: {
     filtedate: function (date) {
       let t = new Date(date);
-      return fmtDate(t, 'yyyy-MM-dd hh:mm:ss');
+      // return fmtDate(t, 'yyyy-MM-dd hh:mm:ss');
+      return fmtDate(t, 'yyyy-MM-dd');
+
     }
   },
 
 
   methods: {
-    // 显示自建任务
+    //tab 切换模型任务   自建任务
     on_Task (index) {
       this.task_type = index;
-      if (index == 0) {
+      if (this.task_type == 0) {
         this.loading = true
         this.params.pageNo = 1;
+        this.params.taskName = ''//清空筛选
         // 模型列表
         let params = {
           pageNo: this.params.pageNo,
@@ -923,11 +999,11 @@ export default {
         }
         this.list_data(params);
 
-      } else if (index == 1) {
+      } else if (this.task_type == 1) {
         this.loading = true
         this.params.pageNo = 1;
-
-        // 资料列表
+        this.params.taskName = ''//清空筛选
+        // 自建列表
         let params = {
           pageNo: this.params.pageNo,
           pageSize: this.params.pageSize,
@@ -941,35 +1017,235 @@ export default {
         this.list_data(params);
       }
     },
-    // 全选
-    handleSelectionChange (val) {
-      this.multipleSelection = val;
+    // 新增模型  
+    new_add_model () {
+
+      //模型任务  选择模型
+      this.dialogVisible_quote = true;
+      // 模型新增
+      let params2 = {
+        pageNo: this.params2.pageNo,
+        pageSize: this.params2.pageSize,
+        condition: {
+          modelName: this.params2.condition.modelName,
+        }
+      }
+      this.add_model_list(params2)
+
+
+
+    },
+    // 选择模型列表
+    add_model_list (params) {
+      task_model_pageList(params).then(resp => {
+        this.model_data = resp.data
+        this.model_list = resp.data.records
+      })
+    },
+    // 模型任务列表 自建任务 筛选
+    search_list (index) {
+      let params = {
+        pageNo: this.params.pageNo,
+        pageSize: this.params.pageSize,
+        condition: {
+          auditModelCategory: this.params.auditModelCategory,
+          managementProjectUuid: this.params.managementProjectUuid,
+          taskName: this.params.taskName,
+          taskType: index
+        }
+      };
+      // 模型列表 自建任务
+      this.list_data(params);
     },
 
-    // 模型任务===========
-    // 列表
+
+    // 模型任务列表  
     list_data (params) {
+      this.loading = true
       task_pageList(params).then(resp => {
-        this.loading = true
         this.tableData = resp.data;
         this.tableData_list = resp.data.records
         this.loading = false
-        // console.log(this.tableData);
+        console.log(this.tableData);
       })
     },
+
 
     // 结果数
     data_num_click (id) {
       console.log(id);
-      return false
-      // if (this.multipleSelection.length != 1) {
-      //   this.$message.info("请选择至少一条数据进行删除！");
-      //   return false;
-      // }
-
       this.dialogVisible_data_num = true;
       this.data_tab();//结果分类tab
     },
+
+    // 问题数
+    probleNum () {
+      this.problemsDialogVisible = true;
+    },
+    // 设置参数
+    setParameters () {
+      this.setParametersDialogVisible = true;
+    },
+
+    // 查询 选择模型列表  / 自建模型
+    quote_list () {
+      // console.log(this.params2.condition.modelName);
+      let params = {
+        pageNo: this.params2.pageNo,
+        pageSize: this.params2.pageSize,
+        condition: {
+          modelName: this.params2.condition.modelName,
+        }
+      }
+      this.add_model_list(params)
+    },
+
+
+    // 选择模型列表 确认引用
+    quote () {
+      if (this.multipleSelection.length == 0) {
+        this.$message.info("请选择至少一条数据进行引用！");
+        return false;
+      }
+      let auditModelList = [];
+      this.multipleSelection.forEach((item) => {
+        auditModelList.push(item);
+      });
+      console.log(auditModelList);
+      let params = {
+        auditModelList: auditModelList,
+        projectId: "3757f078afa6161474430894936de6ed",
+      };
+
+      // let projectId = '1111'
+      this.quoteModel_btn(params);
+    },
+    // 确认引用方法
+    quoteModel_btn (params) {
+      quoteModel(params).then(resp => {
+        // console.log(resp);
+        if (resp.code == 0) {
+          this.$message({
+            message: '引用成功',
+            type: 'success'
+          });
+          this.dialogVisible_quote = false;//关闭引用的弹窗
+
+          // 模型列表
+          let params = {
+            pageNo: this.params.pageNo,
+            pageSize: this.params.pageSize,
+            condition: {
+              auditModelCategory: this.params.auditModelCategory,
+              managementProjectUuid: this.params.managementProjectUuid,
+              taskName: this.params.taskName,
+              taskType: 1
+            }
+          }
+          this.list_data(params);//刷新外层模型列表
+
+
+
+
+        } else {
+          this.$message({
+            message: resp.data.msg,
+            type: 'error'
+          });
+        }
+      })
+    },
+
+
+
+
+
+    // 模型任务===========
+    new_add_zj () {
+      //自建任务 新增 
+      this.dialogVisible_zj = true;
+    },
+
+    // 新增自建任务
+    save_zj () {
+      let params = {
+        managementProjectUuid: this.save_zj_query.managementProjectUuid,//项目id
+        taskDescription: this.save_zj_query.taskDescription,
+        taskName: this.save_zj_query.taskName,
+        taskType: this.save_zj_query.taskType,//任务类型
+        enclosure: this.save_zj_query.enclosure,//附件
+      }
+      console.log(params);
+      task_add(params).then(resp => {
+        console.log(resp);
+        if (resp.code == 0) {
+          this.$message({
+            message: '新增',
+            type: 'success'
+          });
+          this.dialogVisible_zj = false;//关闭当前弹窗
+          // 刷新自建列表
+          let params = {
+            pageNo: this.params.pageNo,
+            pageSize: this.params.pageSize,
+            condition: {
+              auditModelCategory: this.params.auditModelCategory,
+              managementProjectUuid: this.params.managementProjectUuid,
+              taskName: this.params.taskName,
+              taskType: 2
+            }
+          }
+          this.list_data(params);
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: 'success'
+          });
+        }
+      })
+    },
+
+    // 自建 任务--删除
+    edit_data () {
+
+    },
+
+    // 自建 任务--删除
+    delete_zj (ids) {
+      console.log(ids);
+      return false
+      // deleteRow
+      let deleteRow = ids
+      quoteModel(deleteRow).then(resp => {
+        console.log(resp);
+        if (resp.code == 0) {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          });
+          // 刷新自建列表
+          let params = {
+            pageNo: this.params.pageNo,
+            pageSize: this.params.pageSize,
+            condition: {
+              auditModelCategory: this.params.auditModelCategory,
+              managementProjectUuid: this.params.managementProjectUuid,
+              taskName: this.params.taskName,
+              taskType: 2
+            }
+          }
+          this.list_data(params);
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: 'error'
+          });
+        }
+      })
+    },
+
+
+
 
 
     // 结果弹窗 结果分类tab
@@ -985,8 +1261,38 @@ export default {
 
 
 
+
+    // 自建任务===========
+
+    //  关闭清空  
+    clearTopic () {
+      console.log("关闭");
+    },
+
+    // 自建任务 列表分页
+    handleCurrentChange_zijian (val) {
+      // 资料列表
+      let params = {
+        pageNo: val,
+        pageSize: this.params.pageSize,
+        condition: {
+          auditModelCategory: this.params.auditModelCategory,
+          managementProjectUuid: this.params.managementProjectUuid,
+          taskName: this.params.taskName,
+          taskType: 2//自建任务列表
+        }
+      }
+      this.list_data(params);
+    },
+
+
+    deleteRow (index, rows) {
+      rows.splice(index, 1);
+    },
+
     // 模型列表分页
     handleCurrentChange_model (val) {
+      this.loading = true
       // 模型列表
       let params = {
         pageNo: val,
@@ -1001,62 +1307,23 @@ export default {
       this.list_data(params);
 
     },
-    // 自建列表分页
-    handleCurrentChange_zijian (val) {
-      // 资料列表
+    // 选择模型 新增 列表分页
+    handleCurrentChange_model_add (val) {
       let params = {
         pageNo: val,
-        pageSize: this.params.pageSize,
+        pageSize: this.params2.pageSize,
         condition: {
-          auditModelCategory: this.params.auditModelCategory,
-          managementProjectUuid: this.params.managementProjectUuid,
-          taskName: this.params.taskName,
-          taskType: 2
+          modelName: this.params2.condition.modelName,
         }
       }
-      this.list_data(params);
-
+      this.add_model_list(params)
     },
-
-    // 引用
-    quote () {
-      this.dialogVisible_quote = true;
-    },
-    // 查询引用列表
-    quote_list () {
-      console.log(222);
+    //选择模型列表分页  全选
+    handleSelectionChange (val) {
+      this.multipleSelection = val;
     },
 
 
-    // 自建任务===========
-
-    // 新增
-    new_add () {
-      this.dialogVisible = true;
-    },
-    // 筛选
-    search_list () {
-      console.log(this.task.search);
-    },
-
-    //  确认新增
-    clearTopic () {
-      console.log("关闭新增");
-    },
-    // 确认新增
-    quert () {
-      this.dialogVisible = false;
-    },
-    deleteRow (index, rows) {
-      rows.splice(index, 1);
-    },
-    setParameters () {
-      this.setParametersDialogVisible = true;
-    },
-    // 问题数
-    probleNum () {
-      this.problemsDialogVisible = true;
-    }
   },
 };
 </script>
@@ -1065,6 +1332,10 @@ export default {
 @import "../../../assets/styles/css/lhg.css";
 .sjzl {
   display: flex;
+}
+.task_type >>> .el-table th.el-table__cell > .cell,
+.task_type >>> .el-table td.el-table__cell div {
+  text-align: center;
 }
 
 /* 当前选项 */
