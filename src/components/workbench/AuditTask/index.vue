@@ -140,17 +140,16 @@
             <!-- 责任人 -->
             <el-table-column prop="peopleName"
                              label="责任人 ">
-              <!-- <template scope="scope"> -->
-              <p>{{peopleName}}--</p>
-              <!-- <el-select v-model="scope.row.peopleName"
-                           @change="changeHeader($event)">
-                  <el-option v-for="item in scope.row.select_list"
-                             :key="item.peopleTableUuid"
-                             :label="item.peopleName"
-                             :value="item.peopleTableUuid">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.peopleName"
+                           @change="changeHeader(scope.row,1)">
+                  <el-option v-for="item in select_list"
+                             :key="item.peopleTable.peopleTableUuid"
+                             :label="item.peopleTable.peopleName"
+                             :value="item.peopleTable.peopleName">
                   </el-option>
-                </el-select> -->
-              <!-- </template> -->
+                </el-select>
+              </template>
             </el-table-column>
 
             <!-- 运行状态 -->
@@ -248,15 +247,15 @@
             </el-table-column>
             <el-table-column prop="basis"
                              label="依据"> </el-table-column>
-            <el-table-column prop="name"
+            <el-table-column prop="peopleName"
                              label="责任人 ">
-              <template scope="scope">
-
-                <el-select v-model="scope.row.peopleName">
-                  <el-option v-for="item in sensitiveOptions"
-                             :key="item.value"
-                             :label="item.label"
-                             :value="item.value">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.peopleName"
+                           @change="changeHeader(scope.row,2)">
+                  <el-option v-for="item in select_list"
+                             :key="item.peopleTable.peopleTableUuid"
+                             :label="item.peopleTable.peopleName"
+                             :value="item.peopleTable.peopleName">
                   </el-option>
                 </el-select>
               </template>
@@ -679,30 +678,41 @@
       <div class="dlag_conter">
         <!-- 任务名称 -->
         <el-form label-width="80px">
-          <p>任务名称：</p>
+          <p style="padding-top: 10px;">任务名称：</p>
           <el-input v-model="save_zj_query.taskName"
                     placeholder="请输入任务新增"></el-input>
         </el-form>
         <!-- 责任人 -->
-        <!-- <el-form label-width="80px">
-          <p>责任人：</p>
-          <el-select v-model="save_zj_query.taskDescription">
-            <el-option v-for="item in sensitiveOptions"
-                       :key="item.value"
-                       :label="item.label"
-                       :value="item.value">
+        <el-form label-width="80px">
+          <p style="padding-top: 10px;">责任人：</p>
+          <!-- <el-select v-model="save_zj_query.peopleName"
+                     @change="changeHeader2">
+            <el-option v-for="item in select_list"
+                       :key="item.peopleTableUuid"
+                       :label="item.peopleName"
+                       :value="item.peopleName">
+            </el-option>
+          </el-select> -->
+          <el-select v-model="save_zj_query.peopleName"
+                     @change="changeHeader2">
+            <el-option v-for="item in select_list"
+                       :key="item.peopleTable.peopleTableUuid"
+                       :label="item.peopleTable.peopleName"
+                       :value="item.peopleTable.peopleName">
             </el-option>
           </el-select>
-        </el-form> -->
+
+        </el-form>
+
         <!-- 任务描述 -->
         <el-form label-width="80px">
-          <p>任务描述：</p>
+          <p style="padding-top: 10px;">任务描述：</p>
           <el-input v-model="save_zj_query.taskDescription"
                     placeholder="请输入任务描述"></el-input>
         </el-form>
         <!-- 上传附件 -->
         <el-form label-width="80px">
-          <p>上传附件：</p>
+          <p style="padding-top: 10px;">上传附件：</p>
           <el-upload class="upload-demo"
                      style="width: 300px"
                      drag
@@ -735,7 +745,7 @@
 </template>
 
 <script>
-import { task_pageList, task_model_pageList, task_selectModel, task_selectTable, quoteModel, task_add, task_remove, task_update, task_details, task_select_people } from
+import { task_pageList, task_model_pageList, task_selectModel, task_selectTable, quoteModel, task_add, task_remove, task_update, task_details, task_select_people, task_setChargePeople } from
   '@SDMOBILE/api/shandong/task'
 import { fmtDate } from '@SDMOBILE/model/time.js';
 
@@ -760,60 +770,14 @@ export default {
       options: [
         {
           value_zrr: "",
-          label: "张三",
+          label: "张三22222",
         },
-        {
-          value_zrr: "",
-          label: "李四",
-        },
-        {
-          value_zrr: "",
-          label: "王五",
-        },
+
+
       ],
       value_zrr: "",
 
-      // tableData: [
-      //   {
-      //     date: 1,
-      //     name: "王小虎",
-      //     type: 0,
-      //     ing: 0,
-      //     data_num: 1, //结果数
-      //     wt_num: 2,
-      //     start_time: "10-1",
-      //     end_time: "10-11",
-      //     address: "上海市普陀区金沙江路 1518 弄",
-      //     edit: 1,
-      //     zip: "1.zip",
-      //   },
-      //   {
-      //     date: 2,
-      //     name: "王小虎",
-      //     type: 1,
-      //     ing: 1,
-      //     data_num: 1, //结果数
-      //     wt_num: 2,
-      //     start_time: "10-1",
-      //     end_time: "10-11",
-      //     address: "上海市普陀区金沙江路 1518 弄",
-      //     edit: 2,
-      //     zip: 200333,
-      //   },
-      //   {
-      //     date: 3,
-      //     name: "王小虎",
-      //     ing: 2,
-      //     data_num: 1, //结果数
-      //     wt_num: 2,
-      //     type: 2,
-      //     start_time: "10-1",
-      //     end_time: "10-11",
-      //     address: "上海市普陀区金沙江路 1518 弄",
-      //     edit: 3,
-      //     zip: 200333,
-      //   },
-      // ],
+
       tableData1: [
         {
           name: '个人',
@@ -893,7 +857,7 @@ export default {
 
 
       // 项目id
-      managementProjectUuid: '3757f078afa6161474430894936de6ed',//项目管理id
+      managementProjectUuid: '8351286cd70c3f41c92f59ed425a4659',//项目管理id
 
 
       // 新增任务
@@ -907,10 +871,7 @@ export default {
           value_zrr: "",
           label: "张三",
         },
-        {
-          value_zrr: "",
-          label: "李四",
-        },
+
         {
           value_zrr: "",
           label: "王五",
@@ -931,10 +892,7 @@ export default {
           value: "选项3",
           label: "吴老二",
         },
-        {
-          value: "选项4",
-          label: "张三",
-        },
+
       ],
 
       loading: false,
@@ -955,6 +913,8 @@ export default {
       params2: {
         condition: {
           modelName: '',//模糊查询
+          peopleName: '',//责任人name
+          peopleTableUuid: '',//责任人id
         },
         pageNo: 1,
         pageSize: 10,
@@ -969,6 +929,9 @@ export default {
         taskName: "",
         taskType: 2,//任务类型
         enclosure: '',//附件
+
+        peopleName: '',//责任人name
+        peopleTableUuid: '',//责任人id
       },
       // 编辑数据
       edit_datails: [],
@@ -976,7 +939,9 @@ export default {
       title: '',//弹窗变量标题
 
       select_list: [],//责任人数据
-      peopleName: '请选择',
+      peopleName: '请选择',//责任人默认值
+      auditTaskUuid: '',//当前点击的项目id
+
 
     }
   },
@@ -1004,7 +969,7 @@ export default {
         managementProjectUuid: this.managementProjectUuid,
       },
       pageNo: 1,
-      pageSize: 50,
+      pageSize: 3,
     }
     this.select_people(params_people)//请求责任人数据
 
@@ -1024,6 +989,14 @@ export default {
 
 
   methods: {
+    // 请求责任人 select数据
+    select_people (params_people) {
+      task_select_people(params_people).then(resp => {
+        this.select_list = resp.data.records;
+        // console.log(this.select_list);
+      })
+    },
+
     //tab 切换模型任务   自建任务
     on_Task (index) {
       this.task_type = index;
@@ -1111,7 +1084,7 @@ export default {
         this.tableData = resp.data;
         this.tableData_list = resp.data.records
         this.loading = false
-        console.log(this.tableData);
+        // console.log(this.tableData);
       })
     },
 
@@ -1183,25 +1156,11 @@ export default {
       } else {
         this.quoteModel_btn(params);//确认引用
       }
-
-
-
-      // for (var i = 0; i < this.multipleSelection.length; i++) {
-      //   console.log(i);
-      //   for (var j = i + 1; j < this.tableData_list.length; j++) {
-      //     if (this.multipleSelection[i].auditModelUuid == this.tableData_list[j].auditModelUuid) {
-      //       console.log(this.multipleSelection[i].auditModelUuid);
-      //       console.log(this.tableData_list[j].auditModelUuid);
-      //       alert('重复了')
-      //       return false;
-      //     }
-      //   }
-      // };
     },
     // 确认引用方法
     quoteModel_btn (params) {
-      quoteModel(params).then(resp => { 
-        
+      quoteModel(params).then(resp => {
+
         // console.log(resp);
         if (resp.code == 0) {
           this.$message({
@@ -1264,23 +1223,77 @@ export default {
     },
 
 
-    // 责任人接口
-    // peopleName: null
-    // peopleTableUuid
 
-    // 获取责任人 
-    changeHeader (event) {
-      // console.log(event);
-
-    },
-    // 请求责任人
-    select_people (params_people) {
-      task_select_people(params_people).then(resp => {
-        this.select_list = resp.records;
+    // 模型列表 获取责任人 
+    changeHeader (val, index) {
+      this.select_list.find((item) => {
+        if (item.peopleTable.peopleName === val.peopleName) {//筛选出匹配数据
+          let peopleTableUuid = item.peopleTable.peopleTableUuid.replace('{', '').replace('}', '').trim();
+          this.save_zj_query.peopleTableUuid = peopleTableUuid;
+          console.log(peopleTableUuid);
+        }
+      })
+      let params2 = {
+        peopleName: val.peopleName,//责任人
+        peopleTableUuid: this.save_zj_query.peopleTableUuid,//责任人id
+        auditTaskUuid: val.auditTaskUuid,//项目id
+        managementProjectUuid: this.managementProjectUuid,//项目id
+      }
+      // 保存责任人
+      task_setChargePeople(params2).then(resp => {
+        if (resp.code == 0) {
+          this.$message({
+            message: '保存成功',
+            type: 'success'
+          });
+          // 模型列表 获取责任人
+          if (index == 1) {
+            // 刷新模型列表
+            let params = {
+              pageNo: this.params.pageNo,
+              pageSize: this.params.pageSize,
+              condition: {
+                auditModelCategory: this.params.auditModelCategory,
+                managementProjectUuid: this.managementProjectUuid,
+                taskName: this.params.taskName,
+                taskType: 1
+              }
+            }
+            this.list_data(params);
+          } else {
+            // 自建人物
+            // 刷新自建列表
+            let params = {
+              pageNo: this.params.pageNo,
+              pageSize: this.params.pageSize,
+              condition: {
+                auditModelCategory: this.params.auditModelCategory,
+                managementProjectUuid: this.managementProjectUuid,
+                taskName: this.params.taskName,
+                taskType: 2,
+              }
+            }
+            this.list_data(params);
+          }
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: 'success'
+          });
+        }
       })
     },
 
-
+    // 自建人物 设置责任人
+    changeHeader2 (val) {
+      this.select_list.find((item) => {
+        if (item.peopleTable.peopleName === val) {//筛选出匹配数据
+          let peopleTableUuid = item.peopleTable.peopleTableUuid.replace('{', '').replace('}', '').trim();
+          this.save_zj_query.peopleTableUuid = peopleTableUuid;
+          console.log(this.save_zj_query.peopleTableUuid);
+        }
+      })
+    },
     // 模型任务===========
 
     // 新增弹窗
@@ -1303,8 +1316,10 @@ export default {
           taskName: this.save_zj_query.taskName,//名称
           taskType: 2,//任务类型
           enclosure: this.save_zj_query.enclosure,//附件
+          peopleName: this.save_zj_query.peopleName,//责任人
+          peopleTableUuid: this.save_zj_query.peopleTableUuid,//责任人id
         }
-
+        console.log(params1);
         task_add(params1).then(resp => {
           // console.log(resp);
           if (resp.code == 0) {
@@ -1321,7 +1336,8 @@ export default {
                 auditModelCategory: this.params.auditModelCategory,
                 managementProjectUuid: this.managementProjectUuid,
                 taskName: this.params.taskName,
-                taskType: 2
+                taskType: 2,
+
               }
             }
             this.list_data(params);
@@ -1334,17 +1350,20 @@ export default {
         })
       } else {
         let params2 = {
+          taskType: 2,//任务类型
           auditTaskUuid: this.save_zj_query.auditTaskUuid,//项目id
           taskDescription: this.save_zj_query.taskDescription,
           taskName: this.save_zj_query.taskName,
           taskType: this.save_zj_query.taskType,//任务类型
           enclosure: this.save_zj_query.enclosure,//附件
+          peopleName: this.save_zj_query.peopleName,//责任人
+          peopleTableUuid: this.save_zj_query.peopleTableUuid,//责任人id
         }
         // 编辑保存  
         task_update(params2).then(resp => {
           if (resp.code == 0) {
             this.$message({
-              message: '新增',
+              message: '保存成功',
               type: 'success'
             });
             this.dialogVisible_zj = false;//关闭当前弹窗
@@ -1356,7 +1375,8 @@ export default {
                 auditModelCategory: this.params.auditModelCategory,
                 managementProjectUuid: this.managementProjectUuid,
                 taskName: this.params.taskName,
-                taskType: 2
+                taskType: 2,
+
               }
             }
             this.list_data(params);
@@ -1373,7 +1393,10 @@ export default {
     edit_data (data) {
       this.title = '编辑';
       this.dialogVisible_zj = true;//显示新增编辑 弹窗
-      this.save_zj_query.auditTaskUuid = data.auditTaskUuid
+      this.save_zj_query.auditTaskUuid = data.auditTaskUuid;
+      this.save_zj_query.peopleName = data.peopleName;//责任人
+
+
       let params = {
         id: data.auditTaskUuid,//任务id
       }

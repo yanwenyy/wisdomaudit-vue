@@ -39,7 +39,7 @@ export function task_model_pageList (data) {
 export function task_add (data) {
   return request({
     baseURL: baseURL,
-    url: `/auditTask/save`,
+    url: `/auditTask/saveTask`,
     method: 'post',
     data,
   })
@@ -83,11 +83,23 @@ export function task_remove (data) {
 export function task_select_people (data) {
   return request({
     baseURL: baseURL,
-    url: `/peopleTable/pageList`,
+    url: `/projectMembership/pageList`,
     method: 'post',
     data,
   })
 }
+
+
+// 责任人 保存
+export function task_setChargePeople (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/auditTask/setChargePeople`,
+    method: 'put',
+    data,
+  })
+}
+
 
 
 
