@@ -21,8 +21,12 @@
             <!-- <el-table-column type="selection"
                              width="55">
             </el-table-column> -->
-            <el-table-column prop="dataTaskNumber"
-                             label="流水单号">
+            <el-table-column type="index"
+                             label="序号"
+                             width="50">
+            </el-table-column>
+            <!-- <el-table-column prop="dataTaskNumber"
+                             label="流水单号"> -->
             </el-table-column>
             <el-table-column prop="title"
                              label="标题">
@@ -52,19 +56,20 @@
                     : "待开始"
                 }}
               </template>
-
             </el-table-column>
 
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <div v-if=" scope.row.status == 0">
-                  <el-button @click="comment()"
+                <!-- <div v-if=" scope.row.status == 0"> -->
+                <div v-if=" scope.row.status == 1">
+
+                  <el-button @click="edit_common(scope.row)"
                              type="text"
                              style="color:#1371CC"
                              size="small">
                     编辑
                   </el-button>
-                  <el-button @click.native.prevent="push(scope.$index, tableData)"
+                  <el-button @click="list_push(scope.row)"
                              type="text"
                              style="color:#1371CC"
                              size="small">
@@ -76,23 +81,27 @@
                              size="small">
                     操作
                   </el-button>
-                </div>
-
-                <div v-if=" scope.row.status == 1">
-                  <el-button @click.native.prevent="edit_data(scope.$index, tableData)"
-                             type="text"
-                             style="color:#1371CC"
-                             size="small">
-                    审批
-                  </el-button>
-
                   <el-button @click="deleteRow(scope.row)"
                              type="text"
                              style="color:red"
                              size="small">
                     删除
                   </el-button>
+                </div>
 
+                <div v-if=" scope.row.status == 1">
+                  <el-button @click="edit_data(scope.row,tableData)"
+                             type="text"
+                             style="color:#1371CC"
+                             size="small">
+                    审批
+                  </el-button>
+                  <el-button @click="deleteRow(scope.row)"
+                             type="text"
+                             style="color:red"
+                             size="small">
+                    删除
+                  </el-button>
                 </div>
 
               </template>
@@ -122,8 +131,12 @@
           <el-table :data="tableData_list2"
                     v-loading="loading"
                     style="width: 100%;">
-            <el-table-column prop="dataTaskNumber"
+            <!-- <el-table-column prop="dataTaskNumber"
                              label="流水单号">
+            </el-table-column> -->
+            <el-table-column type="index"
+                             label="序号"
+                             width="50">
             </el-table-column>
             <el-table-column prop="createTime"
                              label="反馈日期">
@@ -188,7 +201,7 @@
       </el-tab-pane>
     </el-tabs>
 
-    <!-- 新增资料 -->
+    <!-- 新增资料 编辑资料-->
     <el-dialog :title="title"
                width="80%"
                :visible.sync="dialogVisible"
@@ -226,67 +239,119 @@
                        @click="add_data()">添加资料</el-button>
           </div>
         </el-form>
-        <el-form label-width="80px">
-          <el-table ref="multipleTable"
-                    :data="task_list_records"
-                    tooltip-effect="dark"
-                    v-loading="loading"
-                    style="width: 100%"
-                    @selection-change="handleSelectionChange_query">
-            <el-table-column type="selection"
-                             width="55">
-            </el-table-column>
-            <el-table-column prop="dataCategory"
-                             label="类别">
-              <!-- <template slot-scope="scope">{{ scope.row.dataCategory }}</template> -->
-            </el-table-column>
-            <el-table-column prop="dataNumber"
-                             label="编号">
-            </el-table-column>
-            <el-table-column prop="secondLevelDataNumber"
-                             label="二级编号"
-                             show-overflow-tooltip>
-            </el-table-column>
-            <el-table-column prop="dataName"
-                             label="资料名称"
-                             show-overflow-tooltip>
-            </el-table-column>
-            <el-table-column prop="department"
-                             label="部门"
-                             show-overflow-tooltip>
-            </el-table-column>
-            <el-table-column prop="remarks"
-                             label="备注"
-                             show-overflow-tooltip>
-            </el-table-column>
 
-          </el-table>
-        </el-form>
+        <!-- 模版列表 新增-->
+        <div v-if="title =='新增资料任务' ">
+          <el-form label-width="80px">
+            <el-table ref="multipleTable"
+                      row-key="id"
+                      :data="task_list_records"
+                      tooltip-effect="dark"
+                      v-loading="loading"
+                      style="width: 100%"
+                      @selection-change="handleSelectionChange_query">
+              <el-table-column type="selection"
+                               width="55">
+              </el-table-column>
+              <el-table-column prop="dataCategory"
+                               label="类别">
+                <!-- <template slot-scope="scope">{{ scope.row.dataCategory }}</template> -->
+              </el-table-column>
+              <el-table-column prop="dataNumber"
+                               label="编号">
+              </el-table-column>
+              <el-table-column prop="secondLevelDataNumber"
+                               label="二级编号"
+                               show-overflow-tooltip>
+              </el-table-column>
+              <el-table-column prop="dataName"
+                               label="资料名称"
+                               show-overflow-tooltip>
+              </el-table-column>
+              <el-table-column prop="department"
+                               label="部门"
+                               show-overflow-tooltip>
+              </el-table-column>
+              <el-table-column prop="remarks"
+                               label="备注"
+                               show-overflow-tooltip>
+              </el-table-column>
+
+            </el-table>
+          </el-form>
+        </div>
+
+        <!-- 模版列表 编辑 -->
+        <div v-else>
+          <el-form label-width="80px">
+            <el-table ref="multipleTable"
+                      row-key="id"
+                      :data="task_list_records_details"
+                      tooltip-effect="dark"
+                      v-loading="loading"
+                      style="width: 100%"
+                      @selection-change="handleSelectionChange_query">
+              <el-table-column type="selection"
+                               width="55">
+              </el-table-column>
+              <el-table-column prop="dataCategory"
+                               label="类别">
+                <!-- <template slot-scope="scope">{{ scope.row.dataCategory }}</template> -->
+              </el-table-column>
+              <el-table-column prop="dataNumber"
+                               label="编号">
+              </el-table-column>
+              <el-table-column prop="secondLevelDataNumber"
+                               label="二级编号"
+                               show-overflow-tooltip>
+              </el-table-column>
+              <el-table-column prop="dataName"
+                               label="资料名称"
+                               show-overflow-tooltip>
+              </el-table-column>
+              <el-table-column prop="department"
+                               label="部门"
+                               show-overflow-tooltip>
+              </el-table-column>
+              <el-table-column prop="remarks"
+                               label="备注"
+                               show-overflow-tooltip>
+              </el-table-column>
+            </el-table>
+          </el-form>
+        </div>
+
         <!-- 分页 -->
         <div class="page">
+
           <el-pagination background
-                         :hide-on-single-page="true"
                          layout="prev, pager, next"
-                         :page-sizes="[2, 4, 6, 8]"
-                         :current-page="this.task_list_records.current"
+                         :current-page="this.task_list.current"
                          @current-change="handleCurrentChange_csh"
-                         :page-size="this.task_list_records.size"
-                         :total="this.task_list_records.total"></el-pagination>
+                         :page-size="this.task_list.size"
+                         :total="this.task_list.total"></el-pagination>
+
         </div>
         <!-- 分页 end-->
       </div>
-
       <span slot="footer">
         <el-button size="small"
-                   @click="dialogVisible = false">取 消</el-button>
+                   @click="close()">取 消</el-button>
+        <!-- 新增保存 -->
         <el-button size="small"
                    type="primary"
-                   @click="query_add_form('add_form')">保存</el-button>
+                   v-if="title=='新增资料任务'"
+                   @click="query_add_form(1)">新增保存</el-button>
+        <!-- 编辑保存 -->
         <el-button size="small"
                    type="primary"
-                   @click="pust()">下发</el-button>
+                   v-else
+                   @click="query_add_form(2)">编辑保存</el-button>
+        <!-- 新增直接下发 -->
+        <el-button size="small"
+                   type="primary"
+                   @click="add_push_save()">下发</el-button>
       </span>
-
     </el-dialog>
 
     <!-- 添加资料 -->
@@ -539,11 +604,9 @@
 </template>
 
 <script>
-import { data_pageList, data_push, data_save, add_pageList, data_pageListDone, data_delete, data_push_ing } from
+import { data_pageList, data_push, data_save, add_pageList, data_pageListDone, data_delete, data_push_ing, data_edit_details, data_update, data_savePush } from
   '@SDMOBILE/api/shandong/data'
 import { fmtDate } from '@SDMOBILE/model/time.js';
-
-
 export default {
   components: {},
   data () {
@@ -555,14 +618,6 @@ export default {
       dialogVisibl_operation: false,//操作
       // color: '',   // 上传文件icon 颜色
       loading: false,
-
-      // 新增任务
-      add_form: {
-        title: '',//标题
-        name: '',//发起人
-      },
-
-
 
       value_name: '',//input
       value_select: '',//select
@@ -587,52 +642,69 @@ export default {
       resource: '',//radio
 
 
+      projectNumber: '项目001',//项目id 编号
+      projectType: '1111',//项目类型
+      addDataTaskUuid: '',//任务类型id
       // 未完成
-      tableData: [],
+      tableData: [],//未完成数据
       multipleSelection: [],//新增列表选中的数据
-      tableData_list: [],
+      tableData_list: [],//未完成列表
       params: {
         pageNo: 1,
-        pageSize: 15,
-        condition: {
-          projectNumber: '项目001',
-        }
+        pageSize: 10,
       },
 
-      multipleSelection_list: [], // 新增 任务弹窗里的全选
+      // 新增任务 确认保存
+      add_form: {
+        title: '',//标题
+        name: '',//发起人
+      },
 
-      task_list: [],// 新增任务初始化 
+
+      multipleSelection_list: [], // 新增 任务弹窗里的全选
+      task_list: [],// 新增任务初始化 数据
       task_list_records: [],//新增任务初始化 列表
+      task_list_records_details: [],//编辑任务初始化 列表
+      // 新增任务初始化  传递参数
+      params_add: {
+        pageNo: 1,
+        pageSize: 10,
+      },
+      edit_details: [],//编辑 回显详情数据
 
       // 已完成
-      tableData2: [],
+      tableData2: [],//已完成数据
       multipleSelection2: [],//新增列表选中的数据
-      tableData_list2: [],
+      tableData_list2: [],//已完成列表
       params2: {
         pageNo: 1,
-        pageSize: 15,
-        condition: {
-          projectNumber: '项目001',
-
-        }
-      }
+        pageSize: 10,
+      },
 
     }
   },
   computed: {},
   watch: {},
   created () {
-    // 资料列表
+    // 资料 未完成列表 
     let params = {
       pageNo: this.params.pageNo,
       pageSize: this.params.pageSize,
       condition: {
-        projectNumber: this.params.condition.projectNumber,
-        status: this.params.condition.status,
-
+        projectNumber: this.projectNumber,
       }
     }
     this.list_data_start(params);//未完成
+
+
+    let params2 = {
+      pageNo: this.params_add.pageNo,
+      pageSize: this.params_add.pageSize,
+      projectType: this.projectType,
+    }
+    // 新增未完成任务列表
+    this.add_add_csh(params2);
+
     // 完成
   },
   mounted () {
@@ -643,7 +715,6 @@ export default {
       let t = new Date(date);
       // return fmtDate(t, 'yyyy-MM-dd hh:mm:ss');
       return fmtDate(t, 'yyyy-MM-dd ');
-
     }
   },
 
@@ -656,24 +727,29 @@ export default {
           pageNo: this.params.pageNo,
           pageSize: this.params.pageSize,
           condition: {
-            projectNumber: this.params.condition.projectNumber,
+            projectNumber: this.projectNumber,
           }
         }
-        this.list_data_start(params)
+        this.list_data_start(params)//未完成列表
       } else {
         // 已完成
         let params = {
           pageNo: this.params2.pageNo,
           pageSize: this.params2.pageSize,
           condition: {
-            dataTaskNumber: this.params2.condition.projectNumber,
+            dataTaskNumber: this.projectNumber,
           }
         }
-        this.list_data_end(params)
+        this.list_data_end(params)//已完成列表
       }
     },
-
-
+    // 关闭
+    close () {
+      this.dialogVisible = false;
+      this.add_form.name = '';//清空name
+      this.add_form.title = '';//清空title
+      // this.$refs.multipleTable.clearSelection();//清空
+    },
     // 未完成============================
     // 列表 未完成
     list_data_start (params) {
@@ -690,88 +766,260 @@ export default {
         pageNo: val,
         pageSize: this.params.pageSize,
         condition: {
-          projectNumber: this.params.condition.projectNumber,
-          status: this.params.condition.status,
+          projectNumber: this.projectNumber,
         }
       }
-      this.list_data(params)
+      this.list_data_start(params)
     },
 
-    // 任务新增
-    data_save () {
 
-    },
-    // 未完成任务下发
-    push (index, rows) {
-      // console.log(rows.records[index].addDataTaskUuid);
-      let params = {
-        taskId: rows.records[index].addDataTaskUuid
-      }
-      data_push(params).then(resp => {
-        // console.log(params);
-        // console.log(resp.data);
-
-
-
-      })
-    },
     //新增任务 弹窗
     add_data_task () {
+
+      this.add_form.name = '';//清空name
+      this.add_form.title = '';//清空title
+      // this.$refs.multipleTable.clearSelection();//清空
+
       this.dialogVisible = true
-      let params = {
-        pageNo: 0,
-        pageSize: 15,
-        projectType: '111'
-      }
-      // 新增未完成任务列表
-      this.add_add_csh(params);
+      this.title = '新增资料任务';
+
+    },
+
+    // 添加资料
+    add_data () {
+      this.dialogVisible2 = true;
     },
     // 新增任务初始化 列表
     add_add_csh (params) {
-      this.loading = true;
+      // this.loading = true;
       add_pageList(params).then(resp => {
         this.task_list = resp.data;
         this.task_list_records = resp.data.records;
-        this.loading = false;
+        // console.log(this.task_list_records);
+        // this.loading = false;
       })
     },
     // 新增任务初始化 列表 分页
     handleCurrentChange_csh (val) {
       let params = {
         pageNo: val,
-        pageSize: 15,
-        projectType: '111'
+        pageSize: this.params_add.pageSize,
+        projectType: this.projectType,
       }
       this.add_add_csh(params)
     },
 
-    // 新增任务 里的全选
+    // 新增任务列表 里的全选
     handleSelectionChange_query (val) {
       this.multipleSelection_list = val;
     },
-
     // 确认保存添加的资料
-    query_add_form (formName) {
-      // console.log(this.add_form); 
-      // this.multipleSelection
-      console.log(this.add_form);
-      console.log(this.multipleSelection_list);
-      return false
+    query_add_form (index) {
+      // 新增保存 编辑 为空拦截
+      if (this.add_form.title == '') {
+        this.$message.info("请输入标题！");
+        return false
 
-      // this.$refs[formName].validate((valid) => {
-      //   if (valid) {
-      //     // 确认接口
-      //     // 传递 参数 this.add_form
-      //     this.dialogVisible = false
-      //     this.add_form = "";
+      } else if (this.add_form.name == '') {
+        this.$message.info("请输入发起人！");
+        return false
+      }
+      if (this.multipleSelection_list.length == 0) {
+        this.$message.info("请选择至少一条数据！");
+        return false
+      }
 
-      //   }
-      // })
+      let array1 = [];//数组1
+      this.multipleSelection_list.forEach((item) => {
+        array1.push(item);
+      });
+      // this.array1 = array1;
+
+      // 新增确认
+      if (index == 1) {
+        let params = {
+          demandDataList: array1,
+          title: this.add_form.title,
+          launchPeople: this.add_form.name,
+          projectNumber: this.projectNumber,
+        };
+        this.query_save(params)//进行新增确认保存操作
+      } else {
+        // 编辑确认
+        // console.log(this.array1);
+        // return false
+        let params2 = {
+          demandDataList: array1,
+          title: this.add_form.title,
+          launchPeople: this.add_form.name,
+          projectNumber: this.projectNumber,
+          addDataTaskUuid: this.addDataTaskUuid,
+        };
+
+        // 编辑保存
+        this.query_update(params2);//编辑保存
+      }
+
     },
-    // 新增里的下发
-    pust () {
+    // 新增直接下发
+    add_push_save () {
+      // 新增保存
+      if (this.add_form.title == '') {
+        this.$message.info("请输入标题！");
+        return false
+
+      } else if (this.add_form.name == '') {
+        this.$message.info("请输入发起人！");
+        return false
+      }
+      if (this.multipleSelection_list.length == 0) {
+        this.$message.info("请选择至少一条数据！");
+        return false
+      }
+
+      let array1 = [];//数组1
+      this.multipleSelection_list.forEach((item) => {
+        array1.push(item);
+      });
+      // this.array1 = array1
+
+      let params_push = {
+        demandDataList: array1,
+        title: this.add_form.title,
+        launchPeople: this.add_form.name,
+        projectNumber: this.projectNumber,
+      };
+      // 新增 直接下发
+      data_savePush(params_push).then(resp => {
+        console.log(resp);
+        if (resp.code == 0) {
+          this.$message({
+            message: "新增成功",
+            type: "success",
+          });
+          // 未完成
+          let params = {
+            pageNo: this.params.pageNo,
+            pageSize: this.params.pageSize,
+            condition: {
+              projectNumber: this.projectNumber,
+            }
+          }
+          this.list_data_start(params)//未完成列表
+          this.dialogVisible = false;//关闭新增弹窗
+          this.add_form.name = '';//清空name
+          this.add_form.title = '';//清空name
+          array1 = [];//清空
+
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: "error",
+          });
+        }
+
+      })
 
     },
+
+
+    // 新增确认
+    query_save (params) {
+      data_save(params).then(resp => {
+        console.log(resp);
+        if (resp.code == 0) {
+          this.$message({
+            message: "新增成功",
+            type: "success",
+          });
+
+          // 未完成
+          let params = {
+            pageNo: this.params.pageNo,
+            pageSize: this.params.pageSize,
+            condition: {
+              projectNumber: this.projectNumber,
+            }
+          }
+          this.list_data_start(params)//未完成列表
+          this.dialogVisible = false;//关闭新增弹窗
+          this.add_form.name = '';//清空name
+          this.add_form.title = '';//清空name
+          this.array1 = [];//清空
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: "error",
+          });
+        }
+      })
+    },
+
+
+    // 编辑确认
+    query_update (params2) {
+      data_update(params2).then(resp => {
+        // console.log(resp);
+        if (resp.code == 0) {
+          this.$message({
+            message: "编辑成功",
+            type: "success",
+          });
+          // 未完成
+          let params = {
+            pageNo: this.params.pageNo,
+            pageSize: this.params.pageSize,
+            condition: {
+              projectNumber: this.projectNumber,
+            }
+          }
+          this.list_data_start(params)//未完成列表
+          this.dialogVisible = false;//关闭新增 编辑弹窗
+
+
+        } else {
+          this.$message({
+            message: resp.data.msg,
+            type: "error",
+          });
+        }
+      })
+    },
+
+    // 未完成列表 任务下发
+    list_push (data) {
+      // console.log(rows.records[index].addDataTaskUuid);
+      // console.log(data);
+      let params = {
+        taskId: data.addDataTaskUuid
+      }
+      data_push_ing(params).then(resp => {
+        // console.log(resp.data);
+        if (resp.code == 0) {
+          this.$message({
+            message: "下发成功",
+            type: "success",
+          });
+          // 未完成
+          let params = {
+            pageNo: this.params.pageNo,
+            pageSize: this.params.pageSize,
+            condition: {
+              projectNumber: this.projectNumber,
+            }
+          }
+          this.list_data_start(params)//未完成列表
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: "error",
+          });
+        }
+
+
+      })
+    },
+
 
     // 列表选择事件
     handleSelectionChange (val) {
@@ -779,21 +1027,7 @@ export default {
     },
     // 删除
     deleteRow (data) {
-      // if (this.multipleSelection.length == 0) {
-      //   this.$message.info("请选择至少一条数据进行删除！");
-      //   return false;
-      // }
-
-      // 
       console.log(data);
-      // return false
-      // let ids = [];
-      // data.forEach((item) => {
-      //   ids.push(item.addDataTaskUuid);
-      // });
-      // console.log(data);
-      // 
-
       this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -812,12 +1046,23 @@ export default {
     remove (params) {
       data_delete(params).then(resp => {
         console.log(resp.data);
-        if (resp.data.code == 200) {
+        if (resp.code == 0) {
           this.$message({
             message: "删除成功",
             type: "success",
           });
-          this.getData();//刷新列表
+
+          // 未完成
+          let params = {
+            pageNo: this.params.pageNo,
+            pageSize: this.params.pageSize,
+            condition: {
+              projectNumber: this.projectNumber,
+            }
+          }
+          this.list_data_start(params)//未完成列表
+
+
         } else {
           this.$message({
             message: resp.data.msg,
@@ -827,21 +1072,90 @@ export default {
       });
     },
 
-    // 添加资料
-    add_data () {
-      this.dialogVisible2 = true;
-    },
 
-    // 编辑任务列表
-    comment () {
-      this.title = '编辑资料任务',
-        this.dialogVisible = true
-    },
+
     // 操作
     operation () {
       this.dialogVisibl_operation = true
     },
 
+
+    // 任务列表 显示编辑
+    edit_common (data) {
+      this.add_form.name = '';//清空name
+      this.add_form.title = '';//清空title
+      // this.$refs.multipleTable.clearSelection();//清空
+      this.title = '编辑资料任务';
+      this.dialogVisible = true;//显示编辑
+
+      // 资料任务id 
+      this.addDataTaskUuid = data.addDataTaskUuid
+      let params = {
+        id: this.addDataTaskUuid
+      }
+      // 显示编辑 详情
+      data_edit_details(params).then(resp => {
+        // let data = resp.data.demandDataList;
+        this.edit_details = resp.data
+        this.add_form.title = this.edit_details.title;
+        this.add_form.name = this.edit_details.launchPeople;
+        this.task_list_records_details = resp.data.demandDataList
+
+
+        // this.edit_details 
+
+
+        // 显示模版列表数据
+        let params2 = {
+          pageNo: this.params_add.pageNo,
+          pageSize: this.params_add.pageSize,
+          projectType: this.projectType,
+        }
+
+        // if (rows) {
+        //   rows.forEach(row => {
+        //     this.$refs.multipleTable.toggleRowSelection(row);
+        //   });
+        // } else {
+        //   this.$refs.multipleTable.clearSelection();
+        // }
+
+
+        // 新增未完成任务列表
+        // this.add_add_csh(params2); 
+        // let a1 = this.edit_details.demandDataList;//详情回显数据
+        // let a1 = this.task_list_records_details;
+        // let a3 = [];//储存合并的值
+
+        this.task_list_records_details.find((item) => {
+          if (item.status == 2) {
+            // console.log(item);
+            this.$refs.multipleTable.toggleRowSelection(item) // 回显 
+          }
+        })
+
+
+
+
+
+        // for (var s in a1) {
+        //   for (var x in a2) {
+        //     if (a1[s].auditPreviousDemandDataUuid == a2[x].auditPreviousDataUuid) {
+        //       a3.push(a1[s]);
+        //     }
+        //   }
+        // }
+        // console.log(a1);
+        // console.log(a2);
+        // console.log(a3);
+
+        // this.$nextTick(() => {
+        //   a3.forEach(row => {
+        //     this.$refs.multipleTable.toggleRowSelection(row, true) // 回显 
+        //   })
+        // })
+      });
+    },
 
 
 
@@ -859,13 +1173,13 @@ export default {
     handleCurrentChange_zj (val) {
       // 已完成
       let params = {
-        pageNo: this.params2.pageNo,
+        pageNo: val,
         pageSize: this.params2.pageSize,
         condition: {
-          dataTaskNumber: this.params2.condition.projectNumber,
+          dataTaskNumber: this.projectNumber,
         }
       }
-      this.list_data_end(params)
+      this.list_data_end(params)//刷新已完成列表
     },
 
 

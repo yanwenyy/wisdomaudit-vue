@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import qs from 'qs'
 
-const baseURL = '/wisdomaudit_son'
+const baseURL = '/wisdomaudit'
 // 资料列表 未完成
 export function data_pageList (data) {
   return request({
@@ -56,13 +56,47 @@ export function data_push_ing (data) {
   })
 }
 
+// 资料新增 直接下发
+export function data_savePush (data) {
 
-// 资料列表 新增
+  return request({
+    baseURL: baseURL,
+    url: '/addDataTask/savePush',
+    method: 'post',
+    data
+  })
+}
+
+
+
+// 资料列表 确认保存
 export function data_save (data) {
   return request({
     baseURL: baseURL,
     url: `/addDataTask/save`,
     method: 'post',
+    data
+  })
+}
+
+// 资料列表新增后的 编辑
+export function data_edit_details (data) {
+  let id = data.id
+  return request({
+    baseURL: baseURL,
+    url: '/addDataTask/getById/' + id + '',
+    method: 'get',
+    data
+  })
+}
+
+
+// 资料列表新增后的 编辑保存
+export function data_update (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/addDataTask/update`,
+    method: 'put',
     data
   })
 }
