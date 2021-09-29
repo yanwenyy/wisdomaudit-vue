@@ -1,21 +1,44 @@
 <template>
-<!-- 审计任务维护列表 -->
+  <!-- 审计任务维护列表 -->
   <div class="sjzl">
     <div class="conter">
       <div class="two">
         <div class="projectTab">
           <el-row :gutter="24" class="titleMes">
             <el-col :span="1.5">
-              <el-button type="primary" @click="new_add()">新增</el-button>
+              <el-button type="primary" @click="addPerson()">新增</el-button>
             </el-col>
           </el-row>
           <!-- 表单 -->
-          <el-table :data="tableData" style="width: 100%">
-            <el-table-column prop="date" label="模型任务名称">
+          <el-table :data="taskData" style="width: 100%">
+            <el-table-column prop="auditModelName" label="模型任务名称">
             </el-table-column>
-            <el-table-column prop="name" label="任务类型"> </el-table-column>
-            <el-table-column prop="province" label="责任人"> </el-table-column>
-            <el-table-column prop="address" label="任务描述"> </el-table-column>
+            <el-table-column prop="belongField" label="领域"> </el-table-column>
+            <el-table-column prop="belongSpcial" label="专题">
+            </el-table-column>
+            <el-table-column prop="peopleName" label="责任人">
+              <template slot-scope="scope">
+                <el-form>
+                  <el-form-item>
+                    <el-select
+                      v-model="scope.row.peopleTableUuid"
+                      filterable
+                      @change="selectChange(scope.row)"
+                    >
+                      <el-option
+                        v-for="item in tableData"
+                        :key="item.peopleTable.peopleTableUuid"
+                        :label="item.peopleTable.peopleName"
+                        :value="item.peopleTable.peopleTableUuid"
+                      >
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column prop="taskDescription" label="任务描述">
+            </el-table-column>
             <el-table-column prop="address" label="附件" width="90">
               <div class="update">
                 <i class="update_icon">
@@ -41,19 +64,19 @@
             </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button
+                <!-- <el-button
                   type="text"
                   style="color: #1371cc"
                   size="small"
                   @click.native.prevent="editModel()"
                 >
                   编辑
-                </el-button>
+                </el-button> -->
                 <el-button
                   type="text"
                   style="color: #db454b"
                   size="small"
-                  @click.native.prevent="deleteRow(scope.$index, tableData)"
+                  @click.native.prevent="deleteModel(scope.row)"
                 >
                   移除
                 </el-button>
@@ -65,8 +88,16 @@
 
         <!-- 分页 -->
         <div class="page">
-          <el-pagination background layout="prev, pager, next" :total="1000">
-          </el-pagination>
+          <el-pagination
+            background
+            :hide-on-single-page="false"
+            layout="prev, pager, next"
+            :page-sizes="[2, 4, 6, 8]"
+            :current-page="project.current"
+            @current-change="handleCurrentChangeTask"
+            :page-size="project.size"
+            :total="project.total"
+          ></el-pagination>
         </div>
         <!-- 分页 end-->
       </div>
@@ -127,50 +158,62 @@
             <span></span>
           </div>
         </div>
-        <el-table :data="leaderData" style="width: 100%" border>
-          <el-table-column label="角色" prop="projectItem" width="150">
-          </el-table-column>
-          <el-table-column prop="name" label="姓名" width="250">
-            <template slot-scope="scope">
-              <el-input
-                placeholder="请输入"
-                v-model="scope.row.name"
-                class="auditeeInput"
-                style="width: 200px"
-              ></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column prop="mobile" label="联系方式"> </el-table-column>
-          <el-table-column prop="company" label="所属单位"> </el-table-column>
-          <el-table-column prop="Department" label="所属部门">
-          </el-table-column>
-
-          <el-table-column prop="personCharge" label="是否接口人" width="280">
-            <template slot-scope="scope">
-              <el-select
-                placeholder="请选择"
-                class="auditeeInput"
-                v-model="scope.row.personCharge"
-              >
-                <el-option label="是" value="shi"></el-option>
-                <el-option label="否" value="fou"></el-option>
-              </el-select>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="80">
-            <template slot-scope="scope">
-              <el-button
-                type="text"
-                style="color: #db454b"
-                @click.native.prevent="deleteRow(scope.$index, leaderData)"
-                >删除</el-button
-              >
-            </template>
-          </el-table-column>
-        </el-table>
-        <div class="addIcon" @click="addData">
-          <i class="el-icon-plus"></i>
-          <span>添 加</span>
+        <div class="text">请选择组员，可多选</div>
+        <div class="personMessage">
+          <el-table :data="personMes" @selection-change="handleSelectionChange">
+            <el-table-column type="selection"></el-table-column>
+            <el-table-column label="全选组员">
+              <template slot-scope="scope">
+                {{ scope.row.peopleName }} {{ scope.row.memberPhone }}
+                {{ scope.row.memberDepartment }}
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div class="editPerson">
+          <el-table :data="peopleSelection">
+            <el-table-column label="已选组员">
+              <template slot-scope="scope">
+                {{ scope.row.peopleTable.peopleName }}
+                {{ scope.row.peopleTable.memberPhone }}
+                {{ scope.row.peopleTable.memberDepartment }}
+              </template>
+            </el-table-column>
+            <el-table-column label="项目接口人">
+              <template slot-scope="scope">
+                <el-form>
+                  <el-form-item>
+                    <el-select
+                      v-model="scope.row.isLiaison"
+                      placeholder="请选择"
+                    >
+                      <el-option
+                        v-for="item in isconperOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      >
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="100">
+              <template slot-scope="scope">
+                <el-button
+                  type="text"
+                  style="color: #db454b"
+                  size="small"
+                  @click.native.prevent="
+                    deletePerson(scope.$index, peopleSelection)
+                  "
+                >
+                  删除
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
 
         <div class="stepBtn">
@@ -204,28 +247,54 @@
             <el-col :span="9">
               <el-input
                 placeholder="请输入内容"
-                v-model="input3"
+                v-model="modelQuery.condition.modelName"
                 class="input-with-select"
               >
-                <el-button slot="append" icon="el-icon-search"></el-button>
+                <el-button
+                  slot="append"
+                  icon="el-icon-search"
+                  @click="queryModel"
+                ></el-button>
               </el-input>
             </el-col>
           </el-row>
-          <el-table :data="tableData" style="width: 100%">
+          <el-table
+            :data="modelTableData"
+            style="width: 100%"
+            @selection-change="handleSelectionChangeModel"
+          >
             <el-table-column type="selection"> </el-table-column>
-            <el-table-column prop="date" label="模型编号"> </el-table-column>
-            <el-table-column prop="name" label="所属领域"> </el-table-column>
-            <el-table-column prop="province" label="所属专题">
+            <el-table-column prop="auditModelUuid" label="模型编号">
             </el-table-column>
-            <el-table-column prop="name" label="模型名称"> </el-table-column>
+            <el-table-column prop="belongField" label="所属领域">
+            </el-table-column>
+            <el-table-column prop="belongSpcial" label="所属专题">
+            </el-table-column>
+            <el-table-column prop="modelName" label="模型名称">
+            </el-table-column>
             <el-table-column prop="address" label="说明" width="300">
             </el-table-column>
-            <el-table-column prop="address" label="规则" width="300">
+            <el-table-column prop="ruleDescription" label="规则" width="300">
             </el-table-column>
           </el-table>
+
+          <!-- 分页 -->
+          <div class="page">
+            <el-pagination
+              background
+              :hide-on-single-page="false"
+              layout="prev, pager, next"
+              :page-sizes="[2, 4, 6, 8]"
+              :current-page="project.current"
+              @current-change="handleCurrentChangeModel"
+              :page-size="project.size"
+              :total="project.total"
+            ></el-pagination>
+          </div>
+          <!-- 分页 end-->
         </div>
         <div v-else-if="radio == '2'" class="selfTask">
-          <el-form label-width="80px">
+          <el-form label-width="80px" >
             <el-form-item label="类型：" style="margin-bottom: 50px">
               <div style="margin-top: -7.7%; margin-bottom: 20px">
                 <el-radio v-model="radio" label="1">模型任务</el-radio>
@@ -272,7 +341,7 @@
 
         <div class="stepBtn">
           <el-button @click="prevoius">上一步</el-button>
-          <el-button class="nextBtn">完成</el-button>
+          <el-button class="saveBtn">完成</el-button>
         </div>
       </div>
 
@@ -287,14 +356,45 @@
 </template>
 
 <script>
+import {
+  projectMembership,
+  editprojectMembership,
+  getProjectMember,
+  deletprojectMembership,
+  addprojectMembership,
+  auditModelList,
+  quoteModel,
+  editprojectMembershipList,
+  modelTaskList,
+  editmodelPerson,
+  deletmodelTask
+} from "@SDMOBILE/api/shandong/memberMaintenance.js";
 export default {
   data() {
     return {
+      taskData: [],
       radio: "1",
+      project: "",
       step: 1, //判断步骤条
       addDialogVisible: false, //添加弹框的隐藏与显示
       editModelDialogVisible: false, //审计任务维护编辑
       color: "white", // 上传文件icon 颜色
+      query: {
+        condition: {
+          managementProjectUuid: "",
+        },
+        pageNo: 1,
+        pageSize: 10,
+      },
+      queryInfo: {
+        condition: {
+          managementProjectUuid: "8351286cd70c3f41c92f59ed425a4659",
+          taskType: "1",
+        },
+        pageNo: 1,
+        pageSize: 5,
+      },
+
       tab: [{ name: "审计资料任务列表" }, { name: "已操作的资料列表" }],
       label: "黄金糕",
       options: [
@@ -389,16 +489,37 @@ export default {
           personCharge: "",
         },
       ],
+      select: {},
+      modelQuery: {
+        condition: {
+          modelName: "",
+        },
+        pageNo: 1,
+        pageSize: 10,
+      },
+      personMes: [],
+      peopleSelection: [],
+      isconperOptions: [
+        {
+          value: 0,
+          label: "是",
+        },
+        {
+          value: 1,
+          label: "否",
+        },
+      ],
+      modelPerson: {
+        managementProjectUuid: "",
+        peopleName: "",
+        peopleTableUuid: "",
+        auditTaskUuid:''
+      },
     };
   },
   computed: {},
   watch: {},
   methods: {
-    // 新增
-    new_add() {
-      this.step = 1;
-      this.addDialogVisible = true;
-    },
     deleteRow(index, rows) {
       rows.splice(index, 1);
     },
@@ -425,8 +546,136 @@ export default {
     editModel() {
       this.editModelDialogVisible = true;
     },
+
+    // 列表显示
+    getmodelTaskList(data) {
+      modelTaskList(data).then((resp) => {
+        this.taskData = resp.data.records;
+        console.log(this.taskData);
+        this.project = resp.data;
+      });
+    },
+
+    deleteModel(row){
+      console.log(row.auditTaskUuid);
+       deletmodelTask(row.auditTaskUuid).then((resp)=>{
+         this.$message.success("删除成功！")
+         this.$router.go(0)
+       })
+    },
+
+    handleCurrentChangeTask(val) {
+      let query = {
+        pageNo: val,
+        pageSize: this.project.pageSize,
+        condition: {
+          queryNum: "",
+        },
+      };
+      this.getmodelTaskList(query);
+    },
+    // 组员查询
+    getSelectData(data) {
+      getProjectMember(data).then((resp) => {
+        this.form = resp.data.records;
+      });
+    },
+
+    selectChange(rows) {
+      console.log(rows);
+      this.modelPerson.managementProjectUuid = rows.managementProjectUuid;
+      this.modelPerson.peopleTableUuid = rows.peopleTableUuid;
+      this.modelPerson.auditTaskUuid = rows.auditTaskUuid;
+      for(var i=0;i<this.tableData.length;i++){
+        if(rows.peopleTableUuid == this.tableData[i].peopleTableUuid){
+          this.modelPerson.peopleName = this.tableData[i].peopleTable.peopleName
+        }
+      }
+      console.log(this.modelPerson);
+      editmodelPerson(this.modelPerson).then((resp)=>{
+        this.$message.success("设置成功！")
+      })
+    },
+    // 添加人员页面
+    addPerson() {
+      this.addDialogVisible = true;
+      this.getSelectData(this.select);
+      this.personMes = this.form;
+      auditModelList(this.modelQuery).then((resp) => {
+        // console.log(resp);
+        this.modelTableData = resp.data.records;
+      });
+    },
+    handleSelectionChange(val) {
+      for (var i = 0; i < val.length; i++) {
+        for (var j = 0; j < this.peopleSelection.length; j++) {
+          if (
+            val[i].peopleTableUuid ==
+            this.peopleSelection[j].peopleTable.peopleTableUuid
+          ) {
+            return this.$message.error("请勿选择已有的组员！");
+          }
+        }
+        this.peopleSelection.push({
+          peopleRole: 2,
+          isLiaison: 0,
+          peopleTableUuid: val[i].peopleTableUuid,
+          peopleTable: {
+            peopleTableUuid: val[i].peopleTableUuid,
+            peopleName: val[i].peopleName,
+            memberPhone: val[i].memberPhone,
+            memberDepartment: val[i].memberDepartment,
+          },
+        });
+        this.$nextTick(() => {
+          this.$refs.multipleModel.clearSelection();
+        });
+      }
+    },
+    // 审计任务添加组员已选组员页面展示
+    projectMember(data) {
+      projectMembership(data).then((resp) => {
+        this.loading = true;
+        this.tableData = resp.data.records;
+        console.log(this.tableData);
+        this.peopleSelection = resp.data.records;
+        // console.log(this.tableData);
+        this.loading = false;
+      });
+    },
+    //模型模糊查询
+    queryModel() {
+      auditModelList(this.modelQuery).then((resp) => {
+        // console.log(resp);
+        this.modelTableData = resp.data.records;
+      });
+    },
+    //引入模型选择事件
+    handleSelectionChangeModel(val) {
+      for (var i = 0; i < val.length; i++) {
+        this.selectauditModelList.auditModelList.push({
+          auditModelUuid: val[i].auditModelUuid,
+          modelName: val[i].modelName,
+        });
+      }
+    },
+
+    //  完成按钮
+    saveBtn() {
+      quoteModel(this.selectauditModelList).then((resp) => {
+        console.log(resp);
+      });
+      editprojectMembershipList(this.peopleSelection).then((resp) => {
+        console.log(this.resp);
+        this.$message.success("修改成功！");
+      });
+    },
   },
-  created() {},
+  created() {
+    this.getmodelTaskList(this.queryInfo);
+    this.getSelectData(this.select);
+    this.projectMember(this.query);
+  },
   mounted() {},
 };
 </script>
@@ -704,5 +953,31 @@ export default {
 }
 .upload-demo {
   margin-top: -35px;
+}
+
+.addPerson .text {
+  font-size: 14px;
+  font-weight: 700;
+  margin-left: 5%;
+}
+.addPerson .personMessage {
+  width: 35%;
+  border: 1px solid #000;
+  height: 500px;
+  margin: 2% 1% 0 5%;
+  padding: 10px;
+  overflow: scroll;
+  border-radius: 5px;
+}
+.addPerson .editPerson {
+  width: 53%;
+  border: 1px solid #000;
+  height: 500px;
+  float: right;
+  margin-top: -45.08%;
+  margin-right: 5%;
+  padding: 10px;
+  overflow: scroll;
+  border-radius: 5px;
 }
 </style>

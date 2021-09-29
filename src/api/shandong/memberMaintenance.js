@@ -33,6 +33,18 @@ export function editprojectMembership(data){
     })
 }
 
+
+//组员编辑批量
+export function editprojectMembershipList(data){
+    return request({
+    baseURL: baseURL,
+    url: `/projectMembership/batchUpdate`,
+    method: 'put',
+    data
+    })
+}
+
+
 // 组员删除
 export function deletprojectMembership(id){
     return request({
@@ -49,5 +61,60 @@ export function addprojectMembership(data){
     url: `/projectMembership/save`,
     method: 'post',
     data
+    })
+}
+
+
+// 模型列表
+export function auditModelList(data){
+    return request({
+    baseURL: baseURL,
+    url: `/auditModel/pageList`,
+    method: 'post',
+    data
+    })
+}
+
+//引用模型
+export function quoteModel(data){
+    return request({
+    baseURL: baseURL,
+    url: `/auditTask/quoteModel`,
+    method: 'post',
+    data
+    })
+}
+
+
+// 模型任务列表
+export function modelTaskList(data){
+    return request({
+    baseURL: baseURL,
+    url: `/auditTask/selectTask/pageList`,
+    method: 'post',
+    data
+    })
+}
+
+
+// 模型任务编辑责任人
+export function editmodelPerson(data){
+    return request({
+    baseURL: baseURL,
+    url: `/auditTask/setChargePeople`,
+    method: 'put',
+    data
+    })
+}
+
+
+
+// 
+// 模型任务删除
+export function deletmodelTask(id){
+    return request({
+    baseURL: baseURL,
+    url: `/auditTask/delete/`+id+'',
+    method: 'delete'
     })
 }
