@@ -118,3 +118,25 @@ export function deletmodelTask(id){
     method: 'delete'
     })
 }
+
+
+//自建任务完成
+export function selfTaskFunction(data){
+    return request({
+    baseURL: baseURL,
+    url: `/auditTask/saveTask`,
+    method: 'post',
+    data
+    })
+}
+
+
+// 判断项目中模型是否存在
+export function isModel(data){
+    return request({
+    baseURL: baseURL,
+    url: `/auditTask/pageList`,
+    method: 'post',
+    data
+    })
+}

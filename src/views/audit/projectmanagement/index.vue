@@ -35,6 +35,7 @@
       style="margin-top: 1%; width: 100%"
       border
       stripe
+      v-loading="loading"
     >
       <el-table-column type="selection" width="55"> </el-table-column>
       <el-table-column prop="projectCode" label="项目编号" width="180">
@@ -686,6 +687,7 @@ import { fmtDate } from "@SDMOBILE/model/time.js";
 export default {
   data() {
     return {
+      loading: false,
       selectprojectPeopleNum: {},
       prjType: "2", //判断项目类型
       projectTypeNum: {
@@ -838,9 +840,11 @@ export default {
   },
   methods: {
     projectData(data) {
+      this.loading = true;
       projectList(data).then((resp) => {
         this.tableData = resp.data.records;
         this.project = resp.data;
+         this.loading = false;
       });
     },
     // 项目类行下拉框

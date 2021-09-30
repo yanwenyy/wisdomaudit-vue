@@ -10,7 +10,7 @@
             </el-col>
           </el-row>
           <!-- 表单 -->
-          <el-table :data="taskData" style="width: 100%">
+          <el-table :data="taskData" style="width: 100%" v-loading = "loading">
             <el-table-column prop="auditModelName" label="模型任务名称">
             </el-table-column>
             <el-table-column prop="belongField" label="领域"> </el-table-column>
@@ -144,7 +144,11 @@
     </el-dialog>
 
     <!-- 审计任务维护添加弹框 -->
-    <el-dialog :visible.sync="addDialogVisible" width="60%">
+    <el-dialog
+      :visible.sync="addDialogVisible"
+      width="60%"
+      @close="addDialogClosed"
+    >
       <div class="title">2021年泰安分公司xxx领导经责审计</div>
       <div class="addPerson" v-if="step == 1">
         <div class="stepNew">
@@ -160,7 +164,7 @@
         </div>
         <div class="text">请选择组员，可多选</div>
         <div class="personMessage">
-          <el-table :data="personMes" @selection-change="handleSelectionChange">
+          <el-table :data="personMes" @selection-change="handleSelectionChange" ref="personRef">
             <el-table-column type="selection"></el-table-column>
             <el-table-column label="全选组员">
               <template slot-scope="scope">
@@ -206,7 +210,7 @@
                   style="color: #db454b"
                   size="small"
                   @click.native.prevent="
-                    deletePerson(scope.$index, peopleSelection)
+                    deletePerson(scope.$index, peopleSelection, scope.row)
                   "
                 >
                   删除
@@ -262,6 +266,7 @@
             :data="modelTableData"
             style="width: 100%"
             @selection-change="handleSelectionChangeModel"
+            ref="modelRefs"
           >
             <el-table-column type="selection"> </el-table-column>
             <el-table-column prop="auditModelUuid" label="模型编号">
@@ -285,16 +290,16 @@
               :hide-on-single-page="false"
               layout="prev, pager, next"
               :page-sizes="[2, 4, 6, 8]"
-              :current-page="project.current"
+              :current-page="modelSize.current"
               @current-change="handleCurrentChangeModel"
-              :page-size="project.size"
-              :total="project.total"
+              :page-size="modelSize.size"
+              :total="modelSize.total"
             ></el-pagination>
           </div>
           <!-- 分页 end-->
         </div>
         <div v-else-if="radio == '2'" class="selfTask">
-          <el-form label-width="80px" >
+          <el-form label-width="80px" :model="taskSelf">
             <el-form-item label="类型：" style="margin-bottom: 50px">
               <div style="margin-top: -7.7%; margin-bottom: 20px">
                 <el-radio v-model="radio" label="1">模型任务</el-radio>
@@ -302,22 +307,31 @@
               </div>
             </el-form-item>
             <el-form-item label="自建任务名称：">
-              <el-input placeholder="请输入"></el-input>
+              <el-input
+                placeholder="请输入"
+                v-model="taskSelf.taskName"
+              ></el-input>
             </el-form-item>
             <el-form-item label="责任人：">
               <el-select
-                placeholder="请选择"
-                class="auditeeInput"
-                v-model="value"
+                v-model="tableData.peopleTableUuid"
+                filterable
+                @change="selectChangePerson"
               >
-                <el-option label="是" value="shi"></el-option>
-                <el-option label="否" value="fou"></el-option>
+                <el-option
+                  v-for="item in tableData"
+                  :key="item.peopleTable.peopleTableUuid"
+                  :label="item.peopleTable.peopleName"
+                  :value="item.peopleTable.peopleTableUuid"
+                >
+                </el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="任务描述：">
               <el-input
                 type="textarea"
                 style="top: -35px; width: 400px"
+                v-model="taskSelf.taskDescription"
               ></el-input>
             </el-form-item>
             <el-form-item label="上传附件：">
@@ -341,7 +355,7 @@
 
         <div class="stepBtn">
           <el-button @click="prevoius">上一步</el-button>
-          <el-button class="saveBtn">完成</el-button>
+          <el-button class="nextBtn" @click="saveBtn">完成</el-button>
         </div>
       </div>
 
@@ -367,11 +381,14 @@ import {
   editprojectMembershipList,
   modelTaskList,
   editmodelPerson,
-  deletmodelTask
+  deletmodelTask,
+  selfTaskFunction,
+  isModel,
 } from "@SDMOBILE/api/shandong/memberMaintenance.js";
 export default {
   data() {
     return {
+      loading:false,
       taskData: [],
       radio: "1",
       project: "",
@@ -421,64 +438,7 @@ export default {
       ],
       value: "",
       input3: "",
-      tableData: [
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333,
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333,
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333,
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333,
-        },
-        {
-          date: "2016-05-08",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333,
-        },
-        {
-          date: "2016-05-06",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333,
-        },
-        {
-          date: "2016-05-07",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333,
-        },
-      ],
+      tableData: [],
       leaderData: [
         {
           projectItem: "hk123456",
@@ -495,7 +455,7 @@ export default {
           modelName: "",
         },
         pageNo: 1,
-        pageSize: 10,
+        pageSize: 5,
       },
       personMes: [],
       peopleSelection: [],
@@ -513,13 +473,38 @@ export default {
         managementProjectUuid: "",
         peopleName: "",
         peopleTableUuid: "",
-        auditTaskUuid:''
+        auditTaskUuid: "",
+      },
+      selectauditModelList: {
+        auditModelList: [],
+        projectId: "8351286cd70c3f41c92f59ed425a4659",
+      },
+      taskSelf: {
+        //创建自建任务传参
+        managementProjectUuid: "8351286cd70c3f41c92f59ed425a4659",
+        peopleName: "",
+        peopleTableUuid: "",
+        taskDescription: "",
+        taskName: "",
+        taskType: "2",
+      },
+      modelSize: [],
+      ismodelList: {
+        condition: {
+          managementProjectUuid: "8351286cd70c3f41c92f59ed425a4659",
+          auditModelUuid: "",
+        },
+        pageNo: 1,
+        pageSize: 5,
       },
     };
   },
   computed: {},
   watch: {},
   methods: {
+    addDialogClosed() {
+      this.$router.go(0);
+    },
     deleteRow(index, rows) {
       rows.splice(index, 1);
     },
@@ -549,27 +534,40 @@ export default {
 
     // 列表显示
     getmodelTaskList(data) {
+      this.loading = true
       modelTaskList(data).then((resp) => {
         this.taskData = resp.data.records;
         console.log(this.taskData);
         this.project = resp.data;
       });
+       this.loading = true
     },
 
-    deleteModel(row){
-      console.log(row.auditTaskUuid);
-       deletmodelTask(row.auditTaskUuid).then((resp)=>{
-         this.$message.success("删除成功！")
-         this.$router.go(0)
-       })
+    deleteModel(row) {
+      this.$confirm("你将删除引入的模型任务分配", "提示", {
+        distinguishCancelAndClose: true,
+        confirmButtonText: "确定",
+        cancelButtonText: "放弃删除",
+      })
+        .then(() => {
+          deletmodelTask(row.auditTaskUuid).then((resp) => {});
+          this.getmodelTaskList(this.queryInfo);
+        })
+        .catch((action) => {
+          this.$message({
+            type: "info",
+            message: action === "cancel" ? "放弃删除并离开页面" : "删除成功！",
+          });
+        });
     },
 
     handleCurrentChangeTask(val) {
       let query = {
         pageNo: val,
-        pageSize: this.project.pageSize,
+        pageSize: 5,
         condition: {
-          queryNum: "",
+          managementProjectUuid: "8351286cd70c3f41c92f59ed425a4659",
+          taskType: "1",
         },
       };
       this.getmodelTaskList(query);
@@ -586,15 +584,16 @@ export default {
       this.modelPerson.managementProjectUuid = rows.managementProjectUuid;
       this.modelPerson.peopleTableUuid = rows.peopleTableUuid;
       this.modelPerson.auditTaskUuid = rows.auditTaskUuid;
-      for(var i=0;i<this.tableData.length;i++){
-        if(rows.peopleTableUuid == this.tableData[i].peopleTableUuid){
-          this.modelPerson.peopleName = this.tableData[i].peopleTable.peopleName
+      for (var i = 0; i < this.tableData.length; i++) {
+        if (rows.peopleTableUuid == this.tableData[i].peopleTableUuid) {
+          this.modelPerson.peopleName =
+            this.tableData[i].peopleTable.peopleName;
         }
       }
       console.log(this.modelPerson);
-      editmodelPerson(this.modelPerson).then((resp)=>{
-        this.$message.success("设置成功！")
-      })
+      editmodelPerson(this.modelPerson).then((resp) => {
+        this.$message.success("设置成功！");
+      });
     },
     // 添加人员页面
     addPerson() {
@@ -604,6 +603,7 @@ export default {
       auditModelList(this.modelQuery).then((resp) => {
         // console.log(resp);
         this.modelTableData = resp.data.records;
+        this.modelSize = resp.data;
       });
     },
     handleSelectionChange(val) {
@@ -613,7 +613,8 @@ export default {
             val[i].peopleTableUuid ==
             this.peopleSelection[j].peopleTable.peopleTableUuid
           ) {
-            return this.$message.error("请勿选择已有的组员！");
+            this.$message.error("请勿选择已有的组员！");
+            return this.$refs.personRef.toggleRowSelection(val[val.length - 1]);
           }
         }
         this.peopleSelection.push({
@@ -627,10 +628,23 @@ export default {
             memberDepartment: val[i].memberDepartment,
           },
         });
-        this.$nextTick(() => {
-          this.$refs.multipleModel.clearSelection();
-        });
+       this.$refs.personRef.toggleRowSelection(val[val.length - 1]);
       }
+    },
+    // 分页跳转页面的方法
+    handleCurrentChangeModel(val) {
+      let query = {
+        pageNo: val,
+        pageSize: 5,
+        condition: {
+          queryNum: "",
+        },
+      };
+      auditModelList(query).then((resp) => {
+        // console.log(resp);
+        this.modelTableData = resp.data.records;
+        this.modelSize = resp.data;
+      });
     },
     // 审计任务添加组员已选组员页面展示
     projectMember(data) {
@@ -648,6 +662,7 @@ export default {
       auditModelList(this.modelQuery).then((resp) => {
         // console.log(resp);
         this.modelTableData = resp.data.records;
+        this.modelSize = resp.data;
       });
     },
     //引入模型选择事件
@@ -658,17 +673,66 @@ export default {
           modelName: val[i].modelName,
         });
       }
+      this.ismodelList.condition.auditModelUuid =
+        val[val.length - 1].auditModelUuid;
+      // this.ismodelList.condition.auditModelUuid = replist.join(",")
+      //  console.log(this.ismodelList.condition.auditModelUuid)
+      // 判断项目中模型是否存在
+      isModel(this.ismodelList).then((resp) => {
+        if (resp.data.total > 0) {
+          this.$refs.modelRefs.toggleRowSelection(val[val.length - 1]);
+          this.$message.error("项目中已存在该模型！");
+        }
+      });
     },
-
+     // 弹框页面组员删除
+    deletePerson(index, rows, obj) {
+      if (!obj.projectMembershipUuid) {
+        rows.splice(index, 1);
+      } else {
+        this.$confirm("你将删除数据库中的组员数据", "提示", {
+          distinguishCancelAndClose: true,
+          confirmButtonText: "确定",
+          cancelButtonText: "放弃删除",
+        })
+          .then(() => {
+            deletprojectMembership(obj.projectMembershipUuid).then(
+              (resp) => {}
+            );
+            this.projectMember(this.query);
+          })
+          .catch((action) => {
+            this.$message({
+              type: "info",
+              message:
+                action === "cancel" ? "放弃删除并离开页面" : "删除成功！",
+            });
+          });
+      }
+    },
     //  完成按钮
     saveBtn() {
-      quoteModel(this.selectauditModelList).then((resp) => {
-        console.log(resp);
-      });
+      //判断是模型任务还是自建任务
+      if (this.radio == 1 && this.selectauditModelList.auditModelList.length !== 0) {
+        quoteModel(this.selectauditModelList).then((resp) => {
+          this.$message.success("创建成功！");
+        });
+      } 
+      
+      if(this.radio == 2){
+         selfTaskFunction(this.taskSelf).then((resp) => {
+          this.$message.success("自建任务创建成功！");
+        });
+      }
+  
+
       editprojectMembershipList(this.peopleSelection).then((resp) => {
-        console.log(this.resp);
         this.$message.success("修改成功！");
       });
+
+      setInterval(() => {
+        this.addDialogVisible = false;
+      }, 3000);
     },
   },
   created() {
