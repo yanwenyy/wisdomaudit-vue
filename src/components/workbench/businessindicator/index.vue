@@ -337,12 +337,14 @@ export default {
       this.ifprojectmanage = true;
     },
     getList() {
+      this.listLoading = true
       axios({
         url: `/wisdomaudit/operatingIndicators/pageList`,
         method: "post",
         data: this.pageQuery,
       }).then((res) => {
         console.log(res);
+        this.listLoading = false
         if (res.data.code == 0) {
           this.list = res.data.data.data;
           this.total = res.data.data.total;

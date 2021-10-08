@@ -82,6 +82,17 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="专题" prop="field">
+          <el-select v-model="temp.field" placeholder="请选择专题">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="问题" prop="problem">
           <el-input v-model="temp.problem" placeholder="请输入问题" />
         </el-form-item>
@@ -124,6 +135,8 @@
             >
             </el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item>
         </el-form-item>
         <el-form-item label="依据" prop="basis">
           <el-select v-model="temp.basis" multiple placeholder="请选择">
@@ -437,12 +450,14 @@ export default {
       return Y + M + D;
     },
     getList() {
+      this.listLoading = true
       axios({
         url: `/wisdomaudit/problemList/pageList`,
         method: "post",
         data: this.pageQuery,
       }).then((res) => {
         console.log(res.data.data);
+        this.listLoading = false
         if (res.data.code == 0) {
           this.list = res.data.data.records;
         }
