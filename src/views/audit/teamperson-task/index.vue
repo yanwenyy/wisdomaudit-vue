@@ -89,7 +89,7 @@
           </el-table>
         </el-form>
 
-        <div class="addBtn" @click="addPerson">
+        <div class="addBtn" @click="addPerson()">
           <i class="el-icon-plus"></i>
           <span>新增</span>
         </div>
@@ -121,78 +121,95 @@
     >
       <div class="title">2021年泰安分公司xxx领导经责审计</div>
       <div class="addPerson" v-if="step == 1">
-        <div class="stepNew">
-          <div class="stepOneN">
-            <div>1.第一步：添加组员</div>
-            <span></span>
-          </div>
-          <div class="stepTwoN">
-            <span></span>
-            <div>2.第二步：添加审计任务</div>
-            <span></span>
-          </div>
-        </div>
-        <div class="text">请选择组员，可多选</div>
-        <div class="personMessage">
-          <el-table
-            :data="personMes"
-            @selection-change="handleSelectionChange"
-            ref="personRef"
-          >
-            <el-table-column type="selection"></el-table-column>
-            <el-table-column label="全选组员">
-              <template slot-scope="scope">
-                {{ scope.row.peopleName }} {{ scope.row.memberPhone }}
-                {{ scope.row.memberDepartment }}
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-        <div class="editPerson">
-          <el-table :data="peopleSelection">
-            <el-table-column label="已选组员">
-              <template slot-scope="scope">
-                {{ scope.row.peopleTable.peopleName }}
-                {{ scope.row.peopleTable.memberPhone }}
-                {{ scope.row.peopleTable.memberDepartment }}
-              </template>
-            </el-table-column>
-            <el-table-column label="项目接口人">
-              <template slot-scope="scope">
-                <el-form>
-                  <el-form-item>
-                    <el-select
-                      v-model="scope.row.isLiaison"
-                      placeholder="请选择"
+        <el-row>
+          <el-col :span="24">
+            <div class="stepNew">
+              <div class="stepOneN">
+                <div>1.第一步：添加组员</div>
+                <span></span>
+              </div>
+              <div class="stepTwoN">
+                <span></span>
+                <div>2.第二步：添加审计任务</div>
+                <span></span>
+              </div>
+            </div>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <div class="text">请选择组员，可多选</div>
+        </el-row>
+        <el-row>
+          <el-col :span="10">
+            <div class="personMessage">
+              <el-table
+                :data="personMes"
+                @selection-change="handleSelectionChange"
+                ref="personRef"
+              >
+                <el-table-column type="selection"></el-table-column>
+                <el-table-column label="全选组员">
+                  <template slot-scope="scope">
+                    {{ scope.row.peopleName }} {{ scope.row.memberPhone }}
+                    {{ scope.row.memberDepartment }}
+                  </template>
+                </el-table-column>
+              </el-table>
+              <!-- <el-button @click="toggleSelection([personMes[1], personMes[2]])"
+                >切换第二、第三行的选中状态</el-button
+              >
+              <el-button @click="toggleSelection()">取消选择</el-button> -->
+            </div>
+          </el-col>
+          <el-col :span="13">
+            <div class="editPerson">
+              <el-table :data="peopleSelection" ref="editPerson">
+                <el-table-column label="已选组员">
+                  <template slot-scope="scope">
+                    {{ scope.row.peopleTable.peopleName }}
+                    {{ scope.row.peopleTable.memberPhone }}
+                    {{ scope.row.peopleTable.memberDepartment }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="项目接口人">
+                  <template slot-scope="scope">
+                    <el-form>
+                      <el-form-item>
+                        <el-select
+                          v-model="scope.row.isLiaison"
+                          placeholder="请选择"
+                        >
+                          <el-option
+                            v-for="item in isconperOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                          >
+                          </el-option>
+                        </el-select>
+                      </el-form-item>
+                    </el-form>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="100">
+                  <template slot-scope="scope">
+                    <el-button
+                      type="text"
+                      style="color: #db454b"
+                      size="small"
+                      @click.native.prevent="
+                        deletePerson(scope.$index, peopleSelection, scope.row)
+                      "
                     >
-                      <el-option
-                        v-for="item in isconperOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      >
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-form>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" width="100">
-              <template slot-scope="scope">
-                <el-button
-                  type="text"
-                  style="color: #db454b"
-                  size="small"
-                  @click.native.prevent="
-                    deletePerson(scope.$index, peopleSelection, scope.row)
-                  "
-                >
-                  删除
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
+                      删除
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-col>
+        </el-row>
 
         <div class="stepBtn">
           <el-button @click="addDialogVisible = false">取消</el-button>
@@ -428,12 +445,14 @@ export default {
         pageNo: 1,
         pageSize: 5,
       },
+      groupMemberEcho: [], //组员选框回显
     };
   },
   created() {
     this.projectMember(this.query);
     this.getSelectData(this.select);
     this.getmodelTaskList(this.queryInfo);
+
   },
   methods: {
     // 获取数据库模型任务数据
@@ -580,19 +599,49 @@ export default {
       }
     },
 
+    //测试123
+      //  toggleSelection(rows) {
+      //   if (rows) {
+      //     rows.forEach(row => {  
+      //       this.$refs.personRef.toggleRowSelection(row);
+      //     });
+      //   } else {
+      //     this.$refs.personRef.clearSelection();
+      //   }
+      // },
     // 添加人员页面
     addPerson() {
       this.addDialogVisible = true;
       this.getSelectData(this.select);
       this.personMes = this.form;
+      console.log(this.personMes);
       auditModelList(this.modelQuery).then((resp) => {
         // console.log(resp);
         this.modelTableData = resp.data.records;
         this.modelSize = resp.data;
-        console.log(this.modelTableData);
       });
+    //   for (var i = 0; i < this.personMes.length; i++) {
+    //     for (var j = 0; j < this.peopleSelection.length; j++) {
+    //       if (
+    //         this.personMes[i].peopleTableUuid ==
+    //         this.peopleSelection[j].peopleTableUuid
+    //       ) {
+    //         this.groupMemberEcho.push(this.personMes[i]);
+    //       }
+    //     }
+    //   }
     },
-
+    // 新增人员的勾选状态回显
+    toggleaddpersonSelection(rows) {
+      if (rows) {
+        rows.forEach((row) => {
+          this.$refs.personRef.toggleRowSelection(row);
+        });
+      } else {
+        this.$refs.personRef.clearSelection();
+      }
+    },
+    // 下一步按钮事件
     nextBtn() {
       this.step = 2;
     },
@@ -623,7 +672,7 @@ export default {
             memberDepartment: val[i].memberDepartment,
           },
         });
-        this.$refs.personRef.toggleRowSelection(val[val.length - 1]);
+        // this.$refs.personRef.toggleRowSelection(val[val.length - 1]);
       }
     },
     // 模糊查询任务模型
@@ -752,7 +801,7 @@ export default {
 
 /*  */
 .stepOneN {
-  width: 230px;
+  width: 40%;
   font-size: 0;
   position: relative;
   float: left;
@@ -762,10 +811,10 @@ export default {
 }
 
 .stepOneN div {
-  width: 180px;
+  width: 80%;
   height: 50px;
   vertical-align: text-bottom;
-  font-size: 15px;
+  font-size: 0.7vw;
   color: #fff;
   line-height: 50px;
   text-align: center;
@@ -781,7 +830,7 @@ export default {
 }
 
 .auditStepOneN {
-  width: 230px;
+  width: 45%;
   font-size: 0;
   position: relative;
   float: left;
@@ -791,10 +840,10 @@ export default {
 }
 
 .auditStepOneN div {
-  width: 180px;
+  width: 80%;
   height: 50px;
   vertical-align: text-bottom;
-  font-size: 15px;
+  font-size: 0.7vw;
   color: #000;
   line-height: 50px;
   text-align: center;
@@ -811,8 +860,8 @@ export default {
 
 /*  */
 .stepTwoN {
-  width: 230px;
-  font-size: 0;
+  width: 48%;
+  font-size: 0.7vw;
   position: relative;
   left: -5%;
   float: left;
@@ -820,20 +869,21 @@ export default {
 }
 
 .stepTwoN div {
-  width: 180px;
+  width: 70%;
   height: 50px;
   vertical-align: text-bottom;
-  font-size: 15px;
+  font-size: 0.7vw;
   color: #000;
   line-height: 50px;
   text-align: right;
   margin-left: 8%;
+  overflow: hidden;
 }
 
 .stepTwoN span:nth-of-type(1) {
   border-width: 25px 0 25px 25px;
   border-style: solid;
-  border-color: transparent transparent transparent #fff;
+  border-color: transparent transparent transparent #e0e0e0;
   position: absolute;
   top: 0;
   left: 0;
@@ -848,28 +898,28 @@ export default {
   right: 0;
 }
 .auditStepTwoN {
-  width: 230px;
-  font-size: 0;
+  width: 48%;
   position: relative;
   left: -5%;
   float: left;
   background: #508ce6;
 }
 .auditStepTwoN div {
-  width: 180px;
+  width: 70%;
   height: 50px;
   vertical-align: text-bottom;
-  font-size: 15px;
+  font-size: 0.7vw;
   color: #000;
   line-height: 50px;
   text-align: right;
   margin-left: 8%;
+  overflow: hidden;
 }
 
 .auditStepTwoN span:nth-of-type(1) {
   border-width: 25px 0 25px 25px;
   border-style: solid;
-  border-color: transparent transparent transparent #fff;
+  border-color: transparent transparent transparent #508ce6;
   position: absolute;
   top: 0;
   left: 0;
@@ -914,7 +964,6 @@ export default {
     margin-left: 5%;
   }
   .personMessage {
-    width: 35%;
     border: 1px solid #000;
     height: 500px;
     margin: 2% 1% 0 5%;
@@ -923,12 +972,9 @@ export default {
     border-radius: 5px;
   }
   .editPerson {
-    width: 53%;
     border: 1px solid #000;
     height: 500px;
-    float: right;
-    margin-top: -45.08%;
-    margin-right: 5%;
+    margin: 1.5% 0 0 3%;
     padding: 10px;
     overflow: scroll;
     border-radius: 5px;

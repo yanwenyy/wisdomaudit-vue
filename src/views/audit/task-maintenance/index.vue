@@ -10,7 +10,7 @@
             </el-col>
           </el-row>
           <!-- 表单 -->
-          <el-table :data="taskData" style="width: 100%" v-loading = "loading">
+          <el-table :data="taskData" style="width: 100%" v-loading="loading">
             <el-table-column prop="auditModelName" label="模型任务名称">
             </el-table-column>
             <el-table-column prop="belongField" label="领域"> </el-table-column>
@@ -151,74 +151,88 @@
     >
       <div class="title">2021年泰安分公司xxx领导经责审计</div>
       <div class="addPerson" v-if="step == 1">
-        <div class="stepNew">
-          <div class="stepOneN">
-            <div>1.第一步：添加组员</div>
-            <span></span>
+        <el-row>
+          <div class="stepNew">
+            <div class="stepOneN">
+              <div>1.第一步：添加组员</div>
+              <span></span>
+            </div>
+            <div class="stepTwoN">
+              <span></span>
+              <div>2.第二步：添加审计任务</div>
+              <span></span>
+            </div>
           </div>
-          <div class="stepTwoN">
-            <span></span>
-            <div>2.第二步：添加审计任务</div>
-            <span></span>
-          </div>
-        </div>
-        <div class="text">请选择组员，可多选</div>
-        <div class="personMessage">
-          <el-table :data="personMes" @selection-change="handleSelectionChange" ref="personRef">
-            <el-table-column type="selection"></el-table-column>
-            <el-table-column label="全选组员">
-              <template slot-scope="scope">
-                {{ scope.row.peopleName }} {{ scope.row.memberPhone }}
-                {{ scope.row.memberDepartment }}
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-        <div class="editPerson">
-          <el-table :data="peopleSelection">
-            <el-table-column label="已选组员">
-              <template slot-scope="scope">
-                {{ scope.row.peopleTable.peopleName }}
-                {{ scope.row.peopleTable.memberPhone }}
-                {{ scope.row.peopleTable.memberDepartment }}
-              </template>
-            </el-table-column>
-            <el-table-column label="项目接口人">
-              <template slot-scope="scope">
-                <el-form>
-                  <el-form-item>
-                    <el-select
-                      v-model="scope.row.isLiaison"
-                      placeholder="请选择"
+        </el-row>
+        <el-row>
+          <div class="text">请选择组员，可多选</div>
+        </el-row>
+        <el-row>
+          <el-col :span="10">
+            <div class="personMessage">
+              <el-table
+                :data="personMes"
+                @selection-change="handleSelectionChange"
+                ref="personRef"
+              >
+                <el-table-column type="selection"></el-table-column>
+                <el-table-column label="全选组员">
+                  <template slot-scope="scope">
+                    {{ scope.row.peopleName }} {{ scope.row.memberPhone }}
+                    {{ scope.row.memberDepartment }}
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-col>
+          <el-col :span="13">
+            <div class="editPerson">
+              <el-table :data="peopleSelection">
+                <el-table-column label="已选组员">
+                  <template slot-scope="scope">
+                    {{ scope.row.peopleTable.peopleName }}
+                    {{ scope.row.peopleTable.memberPhone }}
+                    {{ scope.row.peopleTable.memberDepartment }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="项目接口人">
+                  <template slot-scope="scope">
+                    <el-form>
+                      <el-form-item>
+                        <el-select
+                          v-model="scope.row.isLiaison"
+                          placeholder="请选择"
+                        >
+                          <el-option
+                            v-for="item in isconperOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                          >
+                          </el-option>
+                        </el-select>
+                      </el-form-item>
+                    </el-form>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="100">
+                  <template slot-scope="scope">
+                    <el-button
+                      type="text"
+                      style="color: #db454b"
+                      size="small"
+                      @click.native.prevent="
+                        deletePerson(scope.$index, peopleSelection, scope.row)
+                      "
                     >
-                      <el-option
-                        v-for="item in isconperOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      >
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-form>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" width="100">
-              <template slot-scope="scope">
-                <el-button
-                  type="text"
-                  style="color: #db454b"
-                  size="small"
-                  @click.native.prevent="
-                    deletePerson(scope.$index, peopleSelection, scope.row)
-                  "
-                >
-                  删除
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
+                      删除
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-col>
+        </el-row>
 
         <div class="stepBtn">
           <el-button @click="addDialogVisible = false">取消</el-button>
@@ -388,7 +402,7 @@ import {
 export default {
   data() {
     return {
-      loading:false,
+      loading: false,
       taskData: [],
       radio: "1",
       project: "",
@@ -534,13 +548,13 @@ export default {
 
     // 列表显示
     getmodelTaskList(data) {
-      this.loading = true
+      this.loading = true;
       modelTaskList(data).then((resp) => {
         this.taskData = resp.data.records;
         console.log(this.taskData);
         this.project = resp.data;
       });
-       this.loading = true
+      this.loading = true;
     },
 
     deleteModel(row) {
@@ -628,7 +642,7 @@ export default {
             memberDepartment: val[i].memberDepartment,
           },
         });
-       this.$refs.personRef.toggleRowSelection(val[val.length - 1]);
+        this.$refs.personRef.toggleRowSelection(val[val.length - 1]);
       }
     },
     // 分页跳转页面的方法
@@ -679,13 +693,14 @@ export default {
       //  console.log(this.ismodelList.condition.auditModelUuid)
       // 判断项目中模型是否存在
       isModel(this.ismodelList).then((resp) => {
+        console.log(resp);
         if (resp.data.total > 0) {
           this.$refs.modelRefs.toggleRowSelection(val[val.length - 1]);
           this.$message.error("项目中已存在该模型！");
         }
       });
     },
-     // 弹框页面组员删除
+    // 弹框页面组员删除
     deletePerson(index, rows, obj) {
       if (!obj.projectMembershipUuid) {
         rows.splice(index, 1);
@@ -713,18 +728,20 @@ export default {
     //  完成按钮
     saveBtn() {
       //判断是模型任务还是自建任务
-      if (this.radio == 1 && this.selectauditModelList.auditModelList.length !== 0) {
+      if (
+        this.radio == 1 &&
+        this.selectauditModelList.auditModelList.length !== 0
+      ) {
         quoteModel(this.selectauditModelList).then((resp) => {
           this.$message.success("创建成功！");
         });
-      } 
-      
-      if(this.radio == 2){
-         selfTaskFunction(this.taskSelf).then((resp) => {
+      }
+
+      if (this.radio == 2) {
+        selfTaskFunction(this.taskSelf).then((resp) => {
           this.$message.success("自建任务创建成功！");
         });
       }
-  
 
       editprojectMembershipList(this.peopleSelection).then((resp) => {
         this.$message.success("修改成功！");
@@ -838,7 +855,7 @@ export default {
 
 /*  */
 .stepOneN {
-  width: 230px;
+  width: 40%;
   font-size: 0;
   position: relative;
   float: left;
@@ -848,10 +865,10 @@ export default {
 }
 
 .stepOneN div {
-  width: 180px;
+  width: 80%;
   height: 50px;
   vertical-align: text-bottom;
-  font-size: 15px;
+  font-size: 0.7vw;
   color: #fff;
   line-height: 50px;
   text-align: center;
@@ -867,7 +884,7 @@ export default {
 }
 
 .auditStepOneN {
-  width: 230px;
+  width: 45%;
   font-size: 0;
   position: relative;
   float: left;
@@ -877,10 +894,10 @@ export default {
 }
 
 .auditStepOneN div {
-  width: 180px;
+  width: 80%;
   height: 50px;
   vertical-align: text-bottom;
-  font-size: 15px;
+  font-size: 0.7vw;
   color: #000;
   line-height: 50px;
   text-align: center;
@@ -897,7 +914,7 @@ export default {
 
 /*  */
 .stepTwoN {
-  width: 230px;
+  width: 48%;
   font-size: 0;
   position: relative;
   left: -5%;
@@ -906,10 +923,10 @@ export default {
 }
 
 .stepTwoN div {
-  width: 180px;
+  width: 70%;
   height: 50px;
   vertical-align: text-bottom;
-  font-size: 15px;
+  font-size: 0.7vw;
   color: #000;
   line-height: 50px;
   text-align: right;
@@ -919,7 +936,7 @@ export default {
 .stepTwoN span:nth-of-type(1) {
   border-width: 25px 0 25px 25px;
   border-style: solid;
-  border-color: transparent transparent transparent #fff;
+  border-color: transparent transparent transparent #e0e0e0;
   position: absolute;
   top: 0;
   left: 0;
@@ -934,7 +951,7 @@ export default {
   right: 0;
 }
 .auditStepTwoN {
-  width: 230px;
+  width: 48%;
   font-size: 0;
   position: relative;
   left: -5%;
@@ -942,10 +959,10 @@ export default {
   background: #508ce6;
 }
 .auditStepTwoN div {
-  width: 180px;
+  width: 70%;
   height: 50px;
   vertical-align: text-bottom;
-  font-size: 15px;
+  font-size: 0.7vw;
   color: #000;
   line-height: 50px;
   text-align: right;
@@ -955,7 +972,7 @@ export default {
 .auditStepTwoN span:nth-of-type(1) {
   border-width: 25px 0 25px 25px;
   border-style: solid;
-  border-color: transparent transparent transparent #fff;
+  border-color: transparent transparent transparent #508ce6;
   position: absolute;
   top: 0;
   left: 0;
@@ -1025,21 +1042,17 @@ export default {
   margin-left: 5%;
 }
 .addPerson .personMessage {
-  width: 35%;
   border: 1px solid #000;
   height: 500px;
-  margin: 2% 1% 0 5%;
+  margin: 2% 1% 0 8%;
   padding: 10px;
   overflow: scroll;
   border-radius: 5px;
 }
 .addPerson .editPerson {
-  width: 53%;
   border: 1px solid #000;
   height: 500px;
-  float: right;
-  margin-top: -45.08%;
-  margin-right: 5%;
+  margin: 1.5% 0 0 3%;
   padding: 10px;
   overflow: scroll;
   border-radius: 5px;
