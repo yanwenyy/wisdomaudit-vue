@@ -2,6 +2,7 @@
   <div style="overflow-y: visible;"
        ref="inputParamContent"
        class="paramadrawnew">
+    {{arr}}
     <div ref="nodeParam"
          style="overflow:auto;max-height:62vh"
          class="detail-form">
@@ -90,7 +91,9 @@ import {
   getSelectTreeData,
   recplaceParams
 } from '@SDMOBILE/api/shandong/paramsJs'
+
 import * as paramCommonJs from '@SDMOBILE/api/shandong/paramCommon'
+
 export default {
   props: ['arr', 'sql'],
   data () {
@@ -106,12 +109,14 @@ export default {
       paramListValueList: [], // 下拉列表参数值集合
       paramTreeValueList: [] // 下拉树列表参数值集合
     }
-  }, created () {
+  },
+  created () {
     addJsFile('/lib/layui/xm-select.js', 'xm-select')
   },
   beforeDestroy () {
     removeJcCssfile("xm-select.js", "js")
-  }, methods: {
+  },
+  methods: {
     async createParamNodeHtml (id, collapseTitle, flag) {
       try {
         this.loading = $(this.$refs.inputParamContent).mLoading({ 'text': '正在初始化数据，请稍后……', 'hasCancel': false })

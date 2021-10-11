@@ -129,7 +129,7 @@
             <el-table-column prop="problemsNumber"
                              label="问题数">
               <template slot-scope="scope">
-                <el-button @click="probleNum()"
+                <el-button @click="probleNum_click(scope.row.auditTaskUuid)"
                            type="text"
                            style="color: #1371cc"
                            size="small">
@@ -302,7 +302,6 @@
           <!-- 分页 -->
           <div class="page">
             <el-pagination background
-                           :hide-on-single-page="true"
                            layout="prev, pager, next"
                            :page-sizes="[2, 4, 6, 8]"
                            :current-page="this.list_data.current"
@@ -594,37 +593,45 @@
 
     <!-- 模型任务 问题数 -->
     <el-dialog :visible.sync="problemsDialogVisible"
-               width="60%">
+               width="70%">
       <el-row style="margin-top:3%;background:#F2F2F2;padding:15px">
         <el-col :span="18"
                 class="tableTitle">xxx模型审计发现列表</el-col>
         <el-col :span="6">
           <el-button size="small"
                      type="primary"
+                     style="float:right"
                      @click="add_list()">增加</el-button>
 
         </el-col>
       </el-row>
-      <el-table :data="tableData1"
+      <el-table :data="probleNum_list"
                 ref="multipleTable"
                 tooltip-effect="dark"
                 style="width: 100%;margin-bottom:2%"
                 @selection-change="handleSelectionChange_wts">
         <el-table-column type="selection"
                          width="55"> </el-table-column>
-        <el-table-column prop="name"
+        <el-table-column prop="field"
                          label="领域"> </el-table-column>
-        <el-table-column prop="name1"
-                         label="审计发现"> </el-table-column>
-        <el-table-column prop="name2"
+        <el-table-column prop="problem"
+                         label="问题"> </el-table-column>
+        <el-table-column prop="basis"
                          label="依据"> </el-table-column>
-        <el-table-column prop="name3"
+        <el-table-column prop="describe"
                          label="描述"> </el-table-column>
-        <el-table-column prop="name4"
-                         label="发现时间"> </el-table-column>
-        <el-table-column prop="name5"
+
+        <el-table-column prop="problemDiscoveryTime"
+                         label="发现时间">
+          <template slot-scope="scope">
+            {{scope.row.problemDiscoveryTime |filtedate }}
+          </template>
+
+        </el-table-column>
+
+        <el-table-column prop="riskAmount"
                          label="风险金额（万元）"> </el-table-column>
-        <el-table-column prop="name6"
+        <el-table-column prop="problemFindPeople"
                          label="发现人"> </el-table-column>
         <el-table-column prop="name6"
                          label="操作">
@@ -632,33 +639,46 @@
 
             <el-button size="small"
                        type="primary"
-                       @click="edit_list(scope.row)">修改</el-button>
+                       @click="edit_list(scope.row.problemListUuid)">修改</el-button>
             <el-button size="small"
                        type="primary"
-                       @click="remove_list(scope.row)">删除</el-button>
+                       @click="remove_list(scope.row.problemListUuid)">删除</el-button>
           </template>
         </el-table-column>
-
       </el-table>
+
+      <!-- 分页 -->
+      <div class="page">
+        <el-pagination background
+                       layout="prev, pager, next"
+                       :page-sizes="[2, 4, 6, 8]"
+                       :current-page="this.probleNum_data.current"
+                       @current-change="handleCurrentChange_probleNum"
+                       :page-size="this.probleNum_data.size"
+                       :total="this.probleNum_data.total"></el-pagination>
+      </div>
+      <!-- 分页 end-->
+
     </el-dialog>
 
     <!-- 问题数新增 -->
     <el-dialog :visible.sync="dialogVisible_add_list"
-               title="新增"
+               :title="problems_title"
                width="60%">
       <el-row style="margin-top:3%;background:#F2F2F2;border-radius:3px;padding:15px">
         <el-col :span="18"
                 class="tableTitle">问题</el-col>
       </el-row>
       <div class="dlag_conter3 ">
-        <el-form>
+        <el-form :rules="rules"
+                 :model="problems_form">
           <div class="son">
 
-            <el-form-item prop="isProbleam">
+            <el-form-item prop="field">
               <p>领域：</p>
-              <el-select v-model="verify.isProbleam"
-                         @change="isProbleam_change">
-                <el-option v-for="item in isProbleam"
+              <el-select v-model="problems_form.field"
+                         @change="problems_form_change">
+                <el-option v-for="item in problems_slect"
                            :key="item.value"
                            :label="item.label"
                            :value="item.value">
@@ -667,19 +687,19 @@
             </el-form-item>
           </div>
           <div class="son">
-            <el-form-item prop="isProbleam">
+            <el-form-item prop="problem">
               <p>问题：</p>
               <el-input type="textarea"
-                        v-model="verify.isProbleam"
+                        v-model="problems_form.problem"
                         placeholder=""></el-input>
 
             </el-form-item>
 
-            <el-form-item prop="isProbleam"
+            <el-form-item prop="basis"
                           style="margin-left:20px">
               <p>依据：</p>
               <el-input type="textarea"
-                        v-model="verify.isProbleam"
+                        v-model="problems_form.basis"
                         placeholder=""></el-input>
               <el-button type="primary"
                          size="small">引用知识库</el-button>
@@ -687,48 +707,51 @@
           </div>
 
           <div class="son">
-
-            <el-form-item prop="isProbleam">
+            <el-form-item prop="problemDiscoveryTime">
               <p>发现时间：</p>
-              <el-select v-model="verify.isProbleam"
+              <!-- <el-select v-model="problems_form.problemDiscoveryTime"
                          @change="isProbleam_change">
                 <el-option v-for="item in isProbleam"
                            :key="item.value"
                            :label="item.label"
                            :value="item.value">
                 </el-option>
-              </el-select>
+              </el-select> -->
+              <el-date-picker v-model="problems_form.problemDiscoveryTime"
+                              type="date"
+                              placeholder="发现时间">
+              </el-date-picker>
             </el-form-item>
 
-            <el-form-item prop="isProbleam"
+            <el-form-item prop="describe"
                           style="margin-left:20px">
               <p>描述：</p>
               <el-input type="textarea"
-                        v-model="verify.isProbleam"
+                        v-model="problems_form.describe"
                         placeholder=""></el-input>
             </el-form-item>
           </div>
 
           <div class="son">
 
-            <el-form-item prop="isProbleam">
+            <el-form-item prop="problemFindPeople">
               <p>发现人：</p>
-              <div>laoli</div>
+              <div v-model="problems_form.problemFindPeople">laoli</div>
             </el-form-item>
 
-            <el-form-item prop="isProbleam"
+            <el-form-item prop="riskAmount"
                           style="margin-left:20px">
               <p>风险金额：</p>
               <el-input type="textarea"
-                        v-model="verify.isProbleam"
+                        v-model="problems_form.riskAmount"
                         placeholder=""></el-input>
             </el-form-item>
           </div>
           <div class="son">
 
-            <el-form-item prop="isProbleam">
+            <el-form-item prop="associatedTask">
               <p>关联任务：</p>
-              <el-select v-model="verify.isProbleam"
+              <el-select v-model="problems_form.associatedTask"
                          @change="isProbleam_change">
                 <el-option v-for="item in isProbleam"
                            :key="item.value"
@@ -741,7 +764,7 @@
           <div class="son">
 
             <el-form-item prop="isProbleam">
-              <p>关联任务：</p>
+              <p>上传附件：</p>
               <el-input v-model="verify.uodate_path"
                         disabled
                         style="width: 133px;margin-right: 10px;"
@@ -764,7 +787,14 @@
               class="foot">
           <el-button size="small"
                      type="primary"
-                     @click="add_list_save()">保 存</el-button>
+                     v-if=" this.problems_title == '新增'"
+                     @click="add_list_save('problems_form')">保 存</el-button>
+
+          <el-button size="small"
+                     type="primary"
+                     v-if=" this.problems_title == '修改'"
+                     @click="add_list_update()">保 存</el-button>
+
           <el-button size="small"
                      @click="dialogVisible_add_list = false">
             返回</el-button>
@@ -782,8 +812,8 @@
         请输入参数值
       </el-card>
 
-      <Paramdrawnew :arr="form_arr"
-                    :sql="form_sql"></Paramdrawnew>
+      <Paramdrawnew :arr="arr"
+                    :sql="sql"></Paramdrawnew>
 
       <!-- <el-card class="parametersTab">
         <el-form label-width="100px">
@@ -970,7 +1000,14 @@
 </template>
 
 <script>
-import { task_pageList, task_model_pageList, task_selectModel, task_selectTable, quoteModel, task_add, task_remove, task_update, task_details, task_select_people, task_setChargePeople, task_data_verify, } from
+import {
+  task_pageList, task_model_pageList, task_selectModel, task_selectTable, quoteModel, task_add, task_remove, task_update, task_details, task_select_people, task_setChargePeople, task_data_verify,
+  task_problems_list,//问题列表 
+  task_problems_save,//问题保存 
+  task_problems_update,//问题编辑 
+  task_problems_delete,//问题删除
+  task_problems_loadcascader,//公用模版 领域
+} from
   '@SDMOBILE/api/shandong/task'
 import { Task_run, Task_data_status, task_findModelList, task_findModelList_all } from '@SDMOBILE/api/shandong/task_setting'
 import { fmtDate } from '@SDMOBILE/model/time.js';
@@ -1204,13 +1241,52 @@ export default {
       auditTaskUuid: '',//当前点击的项目id
 
       //  ------------------------------\
-      form_arr: {},
-      form_sql: '',
+      arr: {},
+      sql: '',
+
+      // 问题数
+      probleNum: {
+        auditTaskUuid: '',
+        pageNo: 1,
+        pageSize: 10,
+      },
+      probleNum_data: [],
+      probleNum_list: [],//问题列表
+      problems_title: '',//问题 新增 编辑  标题
+
+      // 问题 新增
+      problems_form: {
+        field: '',//领域
+        problem: '',//问题
+        basis: '',//依据
+        problemDiscoveryTime: '',//发现时间
+        describe: '', // 描述
+        riskAmount: '',// 风险金额
+        associatedTask: '',// 关联任务
+        // 附件
+      },
+      //新增问题 校验规则
+      rules: {
+        field: [{ required: true, message: '请选择领域', trigger: 'change' }],
+        problem: [{ required: true, message: '请输入问题', trigger: 'blur' }],
+        basis: [{ required: true, message: '请输入依据', trigger: 'blur' }],
+        problemDiscoveryTime: [{ required: true, message: '请选择发现时间', trigger: 'change' }],
+        describe: [{ required: true, message: '请输入描述', trigger: 'blur' }],
+        riskAmount: [{ required: true, message: '请输入风险金额', trigger: 'change' }],
+        associatedTask: [{ required: true, message: '请选择关联任务', trigger: 'change' }],
+      },
+      problems_slect: [],//领域
     }
   },
   computed: {},
   watch: {},
-
+  filters: {
+    filtedate: function (date) {
+      let t = new Date(date);
+      // return fmtDate(t, 'yyyy-MM-dd hh:mm:ss');
+      return fmtDate(t, 'yyyy-MM-dd ');
+    }
+  },
   created () {
     // 模型  自建任务列表
     let params = {
@@ -1237,8 +1313,13 @@ export default {
     this.select_people(params_people)//请求责任人数据
 
 
+    let params2 = {
+      typecode: 'Category',
+    }
+    this.lingyu(params2);//领域
 
 
+    6
   },
   mounted () { },
   filters: {
@@ -1367,29 +1448,174 @@ export default {
     },
 
     // 问题数===================================
-    probleNum () {
-      this.problemsDialogVisible = true;
+    probleNum_click (id) {
+      this.problemsDialogVisible = true;//显示问题数弹窗
+      this.auditTaskUuid = id
+      let params = {
+        condition: {
+          auditTaskUuid: this.auditTaskUuid,
+        },
+        pageNo: this.probleNum.pageNo,
+        pageSize: this.probleNum.pageSize,
+      };
+      this.task_problems_data(params);
+    },
+    // 问题数列表
+    task_problems_data (params) {
+      task_problems_list(params).then(resp => {
+        this.probleNum_data = resp.data
+        this.probleNum_list = resp.data.records
+
+      })
+    },
+    // 问题数分页
+    handleCurrentChange_probleNum (val) {
+      let params = {
+        condition: {
+          auditTaskUuid: this.auditTaskUuid,
+        },
+        pageNo: val,
+        pageSize: this.probleNum.pageSize,
+      };
+      this.task_problems_data(params);
     },
 
     // 新增
     add_list () {
-
       this.dialogVisible_add_list = true;
-    },
-    // 新增  问题数 保存
-    add_list_save () {
+      this.problems_title = '新增';
 
+    },
+
+    // 领域select
+    lingyu (params) {
+      task_problems_loadcascader(params).then(resp => {
+        this.problems_slect = resp.data
+      })
+    },
+
+    // 新增  问题数 保存
+    add_list_save (formName) {
+      // this.$refs[formName].validate((valid) => {
+      //   if (valid) {
+      let problemList = {
+        auditTaskUuid: this.auditTaskUuid,
+        field: this.problems_form.field,//领域
+        problem: this.problems_form.problem,//问题
+        basis: this.problems_form.basis,//依据
+        problemDiscoveryTime: this.problems_form.problemDiscoveryTime,//发现时间
+        describe: this.problems_form.describe, // 描述
+        riskAmount: this.problems_form.riskAmount,// 风险金额
+        associatedTask: this.problems_form.associatedTask,// 关联任务
+        // 附件
+      };
+      this.add_task_problems_save(problemList)//
+      // } else {
+      //   this.$message.info("请填写信息");
+      //   return false;
+      // }
+      // })
+    },
+    // resetForm (formName) {
+    //   this.$refs[formName].resetFields();
+    // },
+    // 保存接口
+    add_task_problems_save (problemList) {
+      task_problems_save(problemList).then(resp => {
+        console.log(resp);
+        if (resp.code == 0) {
+          this.$message({
+            message: "新增成功",
+            type: "success",
+          });
+          this.dialogVisible_add_list = false;//关闭借口
+
+          let params2 = {
+            condition: {
+              auditTaskUuid: this.auditTaskUuid,
+            },
+            pageNo: this.probleNum.pageNo,
+            pageSize: this.probleNum.pageSize,
+          };
+          this.task_problems_data(params2);//问题 成列表
+
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: "error",
+          });
+        }
+      })
     },
     // 编辑
     edit_list (data) {
+      this.dialogVisible_add_list = true;
+      this.problems_title = '修改'
+    },
+    // 编辑保存
+    add_list_update () {
+      let problemList = {
+        auditTaskUuid: this.auditTaskUuid,
+        field: this.problems_form.field,//领域
+        problem: this.problems_form.problem,//问题
+        basis: this.problems_form.basis,//依据
+        problemDiscoveryTime: this.problems_form.problemDiscoveryTime,//发现时间
+        describe: this.problems_form.describe, // 描述
+        riskAmount: this.problems_form.riskAmount,// 风险金额
+        associatedTask: this.problems_form.associatedTask,// 关联任务
+        // 附件
+      };
+      this.edit_list_data(problemList);
+    },
+    // 编辑问题数列表
+    edit_list_data (problemList) {
+      task_problems_update(problemList).then(resp => {
+        // this.probleNum = resp.data
+        // this.probleNum_list = resp.data.records
+        console.log(resp);
+      })
+    },
+
+
+
+    problems_form_change () {
 
     },
 
+
     // 删除
-    remove_list (data) {
-      // if (this.wts_data.length == 0) {
-      //   this.$message.info("请选择一条进行删除");
-      // }
+    remove_list (id) {
+      let params = {
+        ids: id,
+      }
+      this.task_problems_delete_btn(params);
+    },
+    // 删除接口
+    task_problems_delete_btn (params) {
+      task_problems_delete(params).then(resp => {
+        console.log(resp);
+        if (resp.code == 0) {
+          this.$message({
+            message: "删除成功",
+            type: "success",
+          });
+
+          let params2 = {
+            condition: {
+              auditTaskUuid: this.auditTaskUuid,
+            },
+            pageNo: this.probleNum.pageNo,
+            pageSize: this.probleNum.pageSize,
+          };
+          this.task_problems_data(params2);//问题 成列表
+
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: "error",
+          });
+        }
+      })
     },
 
     // 问题数选择
@@ -1413,8 +1639,8 @@ export default {
       let modelUuids = [this.auditModelUuid];
       task_findModelList(modelUuids).then(resp => {
         console.log(resp.data);
-        this.form_arr = JSON.parse(resp.data[0].parammModelRel[0].paramValue);
-        this.form_sql = resp.data[0].sqlValue;
+        this.arr = JSON.parse(resp.data[0].parammModelRel[0].paramValue);
+        this.sql = resp.data[0].sqlValue;
       })
     },
 
@@ -1559,7 +1785,6 @@ export default {
       for (var s in array1) {
         for (var x in array2) {
           if (array1[s].modelName == array2[x].auditModelName) {
-
             array3.push(array1[s].modelName);
           }
         }
