@@ -186,14 +186,10 @@
             <el-table-column prop="edit"
                              label="操作">
               <template slot-scope="scope">
-                <el-button @click.native.prevent="setParameters()"
+                <el-button @click="setParameters(scope.row.auditModelUuid)"
                            type="text"
                            style="color: #1371cc"
                            size="small">
-                  <!-- {{scope.row.ing == 0? "未开始"
-                : scope.row.ing == 1? "设置参数"
-                : scope.row.ing == 2 ? "执行中"
-                : "待开始"}} -->
                   设置
                 </el-button>
 
@@ -328,6 +324,7 @@
                style="padding-bottom: 59px">
       <div class="dlag_conter">
         <el-row :gutter="24">
+          <!-- 结果分类  -->
           <ul class="status_data">
             <li>
               <el-button type="primary"
@@ -348,21 +345,31 @@
           <el-col> 模型线索结果（XXX模型） </el-col>
           <el-col style="display: contents">
             <el-button type="primary"
-                       @click="quote()">核实</el-button>
+                       @click="task_verify()">核实</el-button>
             <el-button type="primary"
-                       @click="quote()">下载</el-button>
+                       @click="download()">下载</el-button>
             <el-button type="primary"
                        @click="dialogVisible_data_num == false">返回</el-button>
           </el-col>
         </div>
         <!-- 表单 -->
-        <el-table :data="tableData"
-                  style="width: 100%">
-          <el-table-column prop="date"
-                           label="序号"> </el-table-column>
+        <el-table :data="tableData1"
+                  ref="multipleTable"
+                  tooltip-effect="dark"
+                  v-loading="loading"
+                  style="width: 100%"
+                  @selection-change="handleSelectionChange_operation">
+          >
+          <el-table-column type="selection"
+                           width="55">
+          </el-table-column>
+
+          <!-- <el-table-column prop="date"
+                           label="序号">
+          </el-table-column> -->
           <el-table-column prop="name"
                            label="合同名称"> </el-table-column>
-          <el-table-column prop="type"
+          <el-table-column prop="resultDetailId"
                            label="合同标题">
             <template slot-scope="scope">
               {{
@@ -376,10 +383,10 @@
               }}
             </template>
           </el-table-column>
-          <el-table-column prop="data_num"
+          <el-table-column prop="name"
                            label="地区编码">
             <template slot-scope="scope">
-              <el-button @click.native.prevent="data_num_click(scope.$index, tableData)"
+              <el-button @click="data_num_click(scope.$index, tableData)"
                          type="text"
                          style="color: #1371cc"
                          size="small">
@@ -387,10 +394,10 @@
               </el-button>
             </template>
           </el-table-column>
-          <el-table-column prop="wt_num"
+          <el-table-column prop="name"
                            label="签约厂家">
             <template slot-scope="scope">
-              <el-button @click.native.prevent="deleteRow(scope.$index, tableData)"
+              <el-button @click="deleteRow(scope.$index, tableData)"
                          type="text"
                          style="color: #1371cc"
                          size="small">
@@ -398,7 +405,7 @@
               </el-button>
             </template>
           </el-table-column>
-          <el-table-column prop="city"
+          <el-table-column prop="name"
                            label="盖章时间">
             <el-select v-model="value_select">
               <el-option v-for="item in sensitiveOptions"
@@ -423,18 +430,18 @@
               }}
             </template>
           </el-table-column>
-          <el-table-column prop="start_time"
+          <el-table-column prop="name"
                            label="合同金额">
           </el-table-column>
-          <el-table-column prop="end_time"
+          <el-table-column prop="name"
                            label="合同履行时间">
           </el-table-column>
 
-          <el-table-column prop="edit"
+          <el-table-column prop="name"
                            label="合同履行结束时间"
                            width="100">
             <template slot-scope="scope">
-              <el-button @click.native.prevent="deleteRow(scope.$index, tableData)"
+              <el-button @click="deleteRow(scope.$index, tableData)"
                          type="text"
                          style="color: #1371cc"
                          size="small">
@@ -447,7 +454,7 @@
                            label="滞后天数"
                            width="100">
             <template slot-scope="scope">
-              <el-button @click.native.prevent="deleteRow(scope.$index, tableData)"
+              <el-button @click="deleteRow(scope.$index, tableData)"
                          type="text"
                          style="color: #1371cc"
                          size="small">
@@ -526,6 +533,65 @@
       </span>
     </el-dialog>
 
+    <!-- 模型任务 核实明细结果  -->
+    <el-dialog title="核实结果"
+               width="40%"
+               popper-class="status_data_dlag_verify"
+               :visible.sync="dialogVisible_data_verify"
+               style="padding-bottom: 59px">
+      <div class="dlag_conter3">
+        <el-form>
+          <el-form-item prop="isProbleam">
+            <p>是否问题：</p>
+            <el-select v-model="verify.isProbleam"
+                       @change="isProbleam_change">
+              <el-option v-for="item in isProbleam"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item prop="dataName">
+            <p>核实信息：</p>
+            <el-input type="textarea"
+                      v-model="verify.handleIdea"
+                      placeholder="请输入核实信息"></el-input>
+          </el-form-item>
+
+          <el-form-item prop="dataName">
+            <p>上传文件：</p>
+            <el-input v-model="verify.uodate_path"
+                      disabled
+                      style="width: 133px;margin-right: 10px;"
+                      placeholder="附件"></el-input>
+            <!-- <el-button size="small"
+                       type="primary"
+                       @click="update()">上传</el-button> -->
+
+            <el-upload class="upload-demo"
+                       action="https://jsonplaceholder.typicode.com/posts/"
+                       :on-change="handleChange"
+                       :file-list="fileList">
+              <el-button size="small"
+                         type="primary">点击上传</el-button>
+            </el-upload>
+
+          </el-form-item>
+        </el-form>
+        <span slot="footer"
+              class="foot">
+          <el-button size="small"
+                     type="primary"
+                     @click="verify_save()">保 存</el-button>
+          <el-button size="small"
+                     @click="dialogVisible_data_verify = false">
+            返回</el-button>
+        </span>
+      </div>
+    </el-dialog>
+
     <!-- 模型任务 问题数 -->
     <el-dialog :visible.sync="problemsDialogVisible"
                width="60%">
@@ -533,15 +599,17 @@
         <el-col :span="18"
                 class="tableTitle">xxx模型审计发现列表</el-col>
         <el-col :span="6">
-          <el-button type="primary">增加</el-button>
-          <el-button type="primary">修改</el-button>
-          <el-button type="primary">删除</el-button>
+          <el-button size="small"
+                     type="primary"
+                     @click="add_list()">增加</el-button>
+
         </el-col>
       </el-row>
       <el-table :data="tableData1"
                 ref="multipleTable"
                 tooltip-effect="dark"
-                style="width: 100%;margin-bottom:2%">
+                style="width: 100%;margin-bottom:2%"
+                @selection-change="handleSelectionChange_wts">
         <el-table-column type="selection"
                          width="55"> </el-table-column>
         <el-table-column prop="name"
@@ -558,8 +626,151 @@
                          label="风险金额（万元）"> </el-table-column>
         <el-table-column prop="name6"
                          label="发现人"> </el-table-column>
+        <el-table-column prop="name6"
+                         label="操作">
+          <template slot-scope="scope">
+
+            <el-button size="small"
+                       type="primary"
+                       @click="edit_list(scope.row)">修改</el-button>
+            <el-button size="small"
+                       type="primary"
+                       @click="remove_list(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
 
       </el-table>
+    </el-dialog>
+
+    <!-- 问题数新增 -->
+    <el-dialog :visible.sync="dialogVisible_add_list"
+               title="新增"
+               width="60%">
+      <el-row style="margin-top:3%;background:#F2F2F2;border-radius:3px;padding:15px">
+        <el-col :span="18"
+                class="tableTitle">问题</el-col>
+      </el-row>
+      <div class="dlag_conter3 ">
+        <el-form>
+          <div class="son">
+
+            <el-form-item prop="isProbleam">
+              <p>领域：</p>
+              <el-select v-model="verify.isProbleam"
+                         @change="isProbleam_change">
+                <el-option v-for="item in isProbleam"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <div class="son">
+            <el-form-item prop="isProbleam">
+              <p>问题：</p>
+              <el-input type="textarea"
+                        v-model="verify.isProbleam"
+                        placeholder=""></el-input>
+
+            </el-form-item>
+
+            <el-form-item prop="isProbleam"
+                          style="margin-left:20px">
+              <p>依据：</p>
+              <el-input type="textarea"
+                        v-model="verify.isProbleam"
+                        placeholder=""></el-input>
+              <el-button type="primary"
+                         size="small">引用知识库</el-button>
+            </el-form-item>
+          </div>
+
+          <div class="son">
+
+            <el-form-item prop="isProbleam">
+              <p>发现时间：</p>
+              <el-select v-model="verify.isProbleam"
+                         @change="isProbleam_change">
+                <el-option v-for="item in isProbleam"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item prop="isProbleam"
+                          style="margin-left:20px">
+              <p>描述：</p>
+              <el-input type="textarea"
+                        v-model="verify.isProbleam"
+                        placeholder=""></el-input>
+            </el-form-item>
+          </div>
+
+          <div class="son">
+
+            <el-form-item prop="isProbleam">
+              <p>发现人：</p>
+              <div>laoli</div>
+            </el-form-item>
+
+            <el-form-item prop="isProbleam"
+                          style="margin-left:20px">
+              <p>风险金额：</p>
+              <el-input type="textarea"
+                        v-model="verify.isProbleam"
+                        placeholder=""></el-input>
+            </el-form-item>
+          </div>
+          <div class="son">
+
+            <el-form-item prop="isProbleam">
+              <p>关联任务：</p>
+              <el-select v-model="verify.isProbleam"
+                         @change="isProbleam_change">
+                <el-option v-for="item in isProbleam"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <div class="son">
+
+            <el-form-item prop="isProbleam">
+              <p>关联任务：</p>
+              <el-input v-model="verify.uodate_path"
+                        disabled
+                        style="width: 133px;margin-right: 10px;"
+                        placeholder="附件"></el-input>
+
+              <el-upload class="upload-demo"
+                         action="https://jsonplaceholder.typicode.com/posts/"
+                         :on-change="handleChange"
+                         :file-list="fileList">
+                <el-button size="small"
+                           type="primary">点击上传</el-button>
+              </el-upload>
+
+            </el-form-item>
+          </div>
+
+        </el-form>
+
+        <span slot="footer"
+              class="foot">
+          <el-button size="small"
+                     type="primary"
+                     @click="add_list_save()">保 存</el-button>
+          <el-button size="small"
+                     @click="dialogVisible_add_list = false">
+            返回</el-button>
+        </span>
+
+      </div>
     </el-dialog>
 
     <!-- 模型任务设置参数 -->
@@ -570,7 +781,11 @@
         <i class="el-icon-s-grid"></i>
         请输入参数值
       </el-card>
-      <el-card class="parametersTab">
+
+      <Paramdrawnew :arr="form_arr"
+                    :sql="form_sql"></Paramdrawnew>
+
+      <!-- <el-card class="parametersTab">
         <el-form label-width="100px">
           <el-row>
             <el-form-item label="被审计单位">
@@ -605,7 +820,17 @@
             </el-form-item>
           </el-row>
         </el-form>
-      </el-card>
+      </el-card> -->
+
+      <span slot="footer">
+        <el-button @click="play_data()"
+                   type="primary"
+                   style="color: #1371cc"
+                   size="small">
+          运行
+        </el-button>
+      </span>
+
     </el-dialog>
 
     <!-- 模型任务 引用 -->
@@ -745,12 +970,16 @@
 </template>
 
 <script>
-import { task_pageList, task_model_pageList, task_selectModel, task_selectTable, quoteModel, task_add, task_remove, task_update, task_details, task_select_people, task_setChargePeople } from
+import { task_pageList, task_model_pageList, task_selectModel, task_selectTable, quoteModel, task_add, task_remove, task_update, task_details, task_select_people, task_setChargePeople, task_data_verify, } from
   '@SDMOBILE/api/shandong/task'
+import { Task_run, Task_data_status, task_findModelList, task_findModelList_all } from '@SDMOBILE/api/shandong/task_setting'
 import { fmtDate } from '@SDMOBILE/model/time.js';
+import Paramdrawnew from '@/components/workbench/AuditTask/paramdrawnew'//参数设置
 
 export default {
-  components: {},
+  components: {
+    Paramdrawnew
+  },
   data () {
     return {
       task_type: 0, //默认显示任务/自建任务
@@ -760,6 +989,36 @@ export default {
       dialogVisible_data_num: false, //模型任务结果数
       setParametersDialogVisible: false, //模型任务设置参数
       problemsDialogVisible: false, //模型任务问题数
+      dialogVisible_data_verify: false,//模型任务 核实 结果
+      dialogVisible_add_list: false,//问题数新增
+
+      multipleSelection_data_list: [],// 结果数 全选数据
+      verify: {
+        isProbleam: '',//是否问题
+        handleIdea: '',//核实信息
+        resultDetailIds: '',//核实结果id
+        uodat_path: '',
+      },
+
+      // 是否问题
+      isProbleam: [
+        {
+          value: "0",
+          label: "否",
+        },
+        {
+          value: "1",
+          label: "是",
+        },
+      ],
+      fileList: [],//上传的文件
+
+      // 设置参数
+      auditModelUuid: '',
+
+
+      wts_data: [],// 问题数选择
+
 
       // 提交数据单
       task: {
@@ -772,8 +1031,6 @@ export default {
           value_zrr: "",
           label: "张三22222",
         },
-
-
       ],
       value_zrr: "",
 
@@ -786,7 +1043,8 @@ export default {
           name3: '描述1',
           name4: '2021-02-22',
           name5: '55',
-          name6: '小明'
+          name6: '小明',
+          resultDetailId: '111111111111111111111'
         },
         {
           name: '个人',
@@ -795,7 +1053,9 @@ export default {
           name3: '描述1',
           name4: '2021-02-22',
           name5: '55',
-          name6: '小明'
+          name6: '小明',
+          resultDetailId: '222222'
+
         },
         {
           name: '个人',
@@ -804,7 +1064,8 @@ export default {
           name3: '描述1',
           name4: '2021-02-22',
           name5: '55',
-          name6: '小明'
+          name6: '小明',
+          resultDetailId: '3333'
         },
         {
           name: '个人',
@@ -858,7 +1119,7 @@ export default {
 
       // 项目id
       managementProjectUuid: '8351286cd70c3f41c92f59ed425a4659',//项目管理id
-
+      runTaskRelId: '',//参数任务id  运行需要的
 
       // 新增任务
       add_task: {
@@ -942,7 +1203,9 @@ export default {
       peopleName: '请选择',//责任人默认值
       auditTaskUuid: '',//当前点击的项目id
 
-
+      //  ------------------------------\
+      form_arr: {},
+      form_sql: '',
     }
   },
   computed: {},
@@ -986,6 +1249,7 @@ export default {
 
     }
   },
+
 
 
   methods: {
@@ -1089,21 +1353,172 @@ export default {
     },
 
 
+
+    // 结果数列表 里的全选
+    handleSelectionChange_operation (val) {
+      this.multipleSelection_data_list = val;
+    },
+
     // 结果数
     data_num_click (id) {
-      console.log(id);
-      this.dialogVisible_data_num = true;
+      // console.log(id);
+      this.dialogVisible_data_num = true;//显示结果数
       this.data_tab();//结果分类tab
     },
 
-    // 问题数
+    // 问题数===================================
     probleNum () {
       this.problemsDialogVisible = true;
     },
-    // 设置参数
-    setParameters () {
-      this.setParametersDialogVisible = true;
+
+    // 新增
+    add_list () {
+
+      this.dialogVisible_add_list = true;
     },
+    // 新增  问题数 保存
+    add_list_save () {
+
+    },
+    // 编辑
+    edit_list (data) {
+
+    },
+
+    // 删除
+    remove_list (data) {
+      // if (this.wts_data.length == 0) {
+      //   this.$message.info("请选择一条进行删除");
+      // }
+    },
+
+    // 问题数选择
+    handleSelectionChange_wts (val) {
+      this.wts_data = val
+    },
+
+
+
+
+
+
+
+
+    // 设置参数
+    setParameters (auditModelUuid) {
+      this.all_setting();// 全部参数
+      this.setParametersDialogVisible = true;//显示设置参数
+      // this.auditModelUuid = auditModelUuid;
+      this.auditModelUuid = '9903ce3a78c00744b57a30a759e79808';
+      let modelUuids = [this.auditModelUuid];
+      task_findModelList(modelUuids).then(resp => {
+        console.log(resp.data);
+        this.form_arr = JSON.parse(resp.data[0].parammModelRel[0].paramValue);
+        this.form_sql = resp.data[0].sqlValue;
+      })
+    },
+
+    // 全部参数 起对比作用
+    all_setting () {
+      task_findModelList_all().then(resp => {
+        console.log(resp);
+      })
+    },
+
+    //运行
+    play_data () {
+      let settingInfo = {
+        sql: '',
+        paramsArr: '',
+      }
+      let runTaskRel = {
+        sourceUuid: this.auditModelUuid,
+        settingInfo: JSON.stringify(settingInfo)
+      }
+      this.run(runTaskRel);//运行
+    },
+    // 运行
+    run (runTaskRel) {
+      Task_run(runTaskRel).then(resp => {
+        console.log(resp);
+      })
+    },
+
+    //查询任务状态
+    task_status () {
+      let params = {
+        runTaskRelId: this.runTaskRelId,
+      }
+      Task_data_status(params).then(resp => {
+        console.log(resp);
+      })
+    },
+
+
+    // 结果弹窗 结果分类tab
+    data_tab (params) {
+      //   task_selectModel(params).then(resp => {
+      //     this.loading = true
+      //     // this.tableData = resp.data;
+      //     // this.tableData_list = resp.data.records
+      //     this.loading = false
+      //     console.log(resp.data);
+      // })
+    },
+
+    // 核实
+    task_verify () {
+      if (this.multipleSelection_data_list.length == 0) {
+        this.$message.info("请选择一条进行数据核实");
+        return false
+      }
+      this.dialogVisible_data_verify = true;//显示核实结果
+
+    },
+    // 是否问题 change
+    isProbleam_change (val) {
+      this.verify.isProbleam = val
+    },
+    // 核实文件上传
+    handleChange (file, fileList) {
+      // this.fileList = fileList.slice(-3);
+    },
+
+    // 核实保存 
+    verify_save () {
+      var arr = this.multipleSelection_data_list.map(function (item, index) {
+        return item.resultDetailId;
+      }).join(",");
+      let resultDetailProjectRelDto = {
+        handleIdea: this.verify.handleIdea,//核实信息
+        isProbleam: this.verify.isProbleam, //是否问题（0：否 1：是 ）
+        resultDetailIds: arr,//核实明细结果id （多个）
+      };
+      // 核实保存
+      task_data_verify(resultDetailProjectRelDto).then(resp => {
+        console.log(resp);
+        if (resp.code == 0) {
+          this.$message({
+            message: "核实成功",
+            type: "success",
+          });
+          this.dialogVisible_data_verify = false;//关闭核实  弹窗
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: "error",
+          });
+        }
+      })
+    },
+
+    //下载
+    download () {
+
+    },
+
+
+
 
     // 查询 选择模型列表  / 自建模型
     quote_list () {
@@ -1444,20 +1859,6 @@ export default {
 
 
 
-    // 结果弹窗 结果分类tab
-    // data_tab (params) {
-    //   task_selectModel(params).then(resp => {
-    //     this.loading = true
-    //     // this.tableData = resp.data;
-    //     // this.tableData_list = resp.data.records
-    //     this.loading = false
-    //     console.log(resp.data);
-    //   })
-    // },
-
-
-
-
     // 自建任务===========
 
     //  关闭清空  
@@ -1719,5 +2120,50 @@ export default {
 .tableTitle {
   font-size: 20px;
   font-weight: 700;
+}
+
+/* 核实结果 */
+.dlag_conter3 {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-bottom: 33px;
+  box-sizing: border-box;
+}
+.dlag_conter3 >>> .el-form-item__content {
+  display: flex;
+  margin-top: 20px;
+}
+.dlag_conter3 >>> .el-form-item__content textarea,
+.dlag_conter3 >>> .el-form-item__content .el-input {
+  width: 200px;
+}
+.dlag_conter3 >>> p {
+  min-width: 80px;
+}
+.dlag_conter3 >>> .el-form-item__content .el-button {
+  display: flex;
+}
+.dlag_conter3 >>> .foot {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.son {
+  width: 100%;
+  display: flex;
+}
+.son >>> .el-form-item {
+  min-width: 280px;
+  display: flex;
+  align-items: flex-start;
+}
+.son >>> .el-form-item .el-button {
+  height: 40px;
+  margin: 0 10px;
+  line-height: 40px;
+  padding: 0 10px;
 }
 </style>

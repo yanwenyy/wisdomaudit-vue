@@ -101,7 +101,66 @@ export function data_update (data) {
   })
 }
 
+// 添加资料 模版数据
+export function loadcascader (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/init/loadcascader`,
+    method: 'post',
+    data
+  })
+}
+
+// 添加资料 保存确认
+export function saveTemp (data) {
+  return request({
+    baseURL: baseURL,
+    url: `auditPreviousData/saveTemp`,
+    method: 'post',
+    data
+  })
+}
 
 
+// 操作  资料列表
+export function operation_list_data (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/auditPreviousDemandData/pageList`,
+    method: 'post',
+    data
+  })
+}
 
-// url: NewJingjiribao + '/select/work/page?activityId=' + data.activityId + '&current=' + data.current + '&size=' + data.size + '&type=' + data.type,
+// 操作   操作记录
+export function operation_record_list (data) {
+  let id = data.id
+  return request({
+    baseURL: baseURL,
+    url: '/auditPreviousDemandData/sysLogById/' + id + '',
+    method: 'post',
+    data
+  })
+}
+
+
+// 操作   审核
+export function operation_audit (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/auditPreviousDemandData/audit`,
+    method: 'post',
+    data
+  })
+}
+
+
+// 操作   提交
+export function operation_uploadData (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/auditPreviousDemandData/uploadData`,
+    method: 'post',
+    data
+  })
+}

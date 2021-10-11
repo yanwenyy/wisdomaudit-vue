@@ -44,25 +44,19 @@
             </el-table-column>
             <el-table-column prop="status"
                              label="状态">
-
               <template slot-scope="scope">
                 {{
-                  scope.row.ing == 0
+                  scope.row.status == 0
                     ? "未开始"
-                    : scope.row.ing == 1
-                    ? "已完成"
-                    : scope.row.ing == 2
-                    ? "执行中"
-                    : "待开始"
+                    : scope.row.status == 1
+                    ? "已完成":"执行中"
                 }}
               </template>
             </el-table-column>
 
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <!-- <div v-if=" scope.row.status == 0"> -->
-                <div v-if=" scope.row.status == 1">
-
+                <div v-if=" scope.row.status == 0">
                   <el-button @click="edit_common(scope.row)"
                              type="text"
                              style="color:#1371CC"
@@ -75,7 +69,7 @@
                              size="small">
                     下发
                   </el-button>
-                  <el-button @click.native.prevent="operation"
+                  <el-button @click="operation(scope.row)"
                              type="text"
                              style="color:#1371CC"
                              size="small">
@@ -236,7 +230,7 @@
           <div style="display:flex;align-items: center;padding:10px 0;box-sizing: border-box;">
             <p>获取资料清单：</p>
             <el-button type="primary"
-                       @click="add_data()">添加资料</el-button>
+                       @click="add_data_click()">添加资料</el-button>
           </div>
         </el-form>
 
@@ -359,12 +353,18 @@
                :visible.sync="dialogVisible2"
                style="padding-bottom: 59px; ">
       <div class="dlag_conter2">
-        <el-form label-width="80px">
+        <el-form label-width="80px"
+                 :rules="rules"
+                 :model="add_data"
+                 ref="add_data">
 
           <div class="son">
-            <el-form-item label-width="80px">
+            <el-form-item label-width="80px"
+                          prop="dataCategory">
               <p>类别：</p>
-              <el-select v-model="value_select">
+              <el-select v-model="add_data.dataCategory"
+                         @change="PrjType_change"
+                         placeholder="请选择类别">
                 <el-option v-for="item in sensitiveOptions"
                            :key="item.value"
                            :label="item.label"
@@ -372,44 +372,51 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label-width="80px">
+
+            <el-form-item label-width="80px"
+                          prop="dataName">
               <p>资料名称：</p>
-              <el-select v-model="value_select">
-                <el-option v-for="item in sensitiveOptions"
-                           :key="item.value"
-                           :label="item.label"
-                           :value="item.value">
-                </el-option>
-              </el-select>
+              <el-input v-model="add_data.dataName"
+                        placeholder="请输入资料名称"></el-input>
             </el-form-item>
           </div>
+
           <div class="son">
 
-            <el-form-item label-width="80px">
+            <el-form-item label-width="80px"
+                          prop="dataNumber">
               <p>编号 ：</p>
-              <el-input v-model="value_name"
-                        placeholder=""></el-input>
+              <el-input v-model="add_data.dataNumber"
+                        placeholder="请输入编号"></el-input>
+            </el-form-item>
+            <el-form-item label-width="80px"
+                          prop="secondLevelDataNumber">
               <p>二级编号：</p>
-              <el-input v-model="value_name"
-                        placeholder=""></el-input>
-
+              <el-input v-model="add_data.secondLevelDataNumber"
+                        placeholder="请输入二级编号"></el-input>
             </el-form-item>
           </div>
           <div class="son">
-
-            <el-form-item label-width="80px">
+            <el-form-item label-width="80px"
+                          prop="department">
               <p>部门：</p>
-              <el-select v-model="value_select">
-                <el-option v-for="item in sensitiveOptions"
+              <el-select v-model="add_data.department"
+                         @change="Department_change"
+                         placeholder="请选择资料部门">
+                <el-option v-for="item in sensitiveDepartment"
                            :key="item.value"
                            :label="item.label"
                            :value="item.value">
                 </el-option>
               </el-select>
+            </el-form-item>
+            <el-form-item label-width="80px"
+                          prop="source">
               <p>来源：</p>
-              <el-select v-model="value_select"
+              <el-select v-model="add_data.source"
+                         @change="DataSource_change"
                          placeholder="请选择资料名称">
-                <el-option v-for="item in sensitiveOptions"
+                <el-option v-for="item in sensitiveDataSource"
                            :key="item.value"
                            :label="item.label"
                            :value="item.value">
@@ -419,44 +426,44 @@
           </div>
           <div class="son">
 
-            <el-form-item label-width="80px">
+            <el-form-item label-width="80px"
+                          prop="addPeople">
               <p>添加人：</p>
-              <el-select v-model="value_select"
-                         placeholder="请选择责任人">
-                <el-option v-for="item in sensitiveOptions"
-                           :key="item.value"
-                           :label="item.label"
-                           :value="item.value">
-                </el-option>
-              </el-select>
+
+              <div class="addPeople">{{add_data.addPeople}}</div>
+            </el-form-item>
+
+            <el-form-item label-width="80px"
+                          prop="addTime">
               <p>添加日期：</p>
-              <el-select v-model="value_select"
-                         placeholder="请选择资料名称">
-                <el-option v-for="item in sensitiveOptions"
-                           :key="item.value"
-                           :label="item.label"
-                           :value="item.value">
-                </el-option>
-              </el-select>
+              <div class="block">
+                <el-date-picker v-model="add_data.addTime"
+                                type="date"
+                                placeholder="选择日期">
+                </el-date-picker>
+              </div>
             </el-form-item>
           </div>
-          <div class="son">
+          <div class="son cd">
 
-            <el-form-item label-width="80px">
+            <el-form-item label-width="80px"
+                          prop="status">
               <p style="padding:0">是否沉淀为常规需求资料：</p>
-              <el-radio-group v-model="resource">
-                <el-radio label="否"></el-radio>
-                <el-radio label="是"></el-radio>
+              <el-radio-group v-model="add_data.status"
+                              @change="changeHandler">
+                <el-radio label="1">否</el-radio>
+                <el-radio label="2">是</el-radio>
               </el-radio-group>
             </el-form-item>
           </div>
 
           <div class="son">
 
-            <el-form-item label-width="80px">
+            <el-form-item label-width="80px"
+                          prop="remarks">
               <p>备注：</p>
               <el-input type="textarea"
-                        v-model="value_name"
+                        v-model="add_data.remarks"
                         placeholder=""></el-input>
             </el-form-item>
           </div>
@@ -468,7 +475,7 @@
                    @click="dialogVisible2 = false">取 消</el-button>
         <el-button size="small"
                    type="primary"
-                   @click="query()">确定</el-button>
+                   @click="save_data_btn('add_data')">确定</el-button>
 
       </span>
     </el-dialog>
@@ -485,117 +492,165 @@
         <div class="operation_header">
           <div>
             <p>资料名称：</p>
-            <el-input v-model="value_name"
-                      placeholder=""></el-input>
-
+            <el-input v-model="operation_query.dataName"
+                      placeholder="请输入资料名称"></el-input>
             <p>资料类型：</p>
-            <el-select v-model="value_select">
+            <el-select v-model="operation_query.dataCategory"
+                       style="width:180px"
+                       clearable
+                       placeholder="请选择类别">
               <el-option v-for="item in sensitiveOptions"
                          :key="item.value"
                          :label="item.label"
                          :value="item.value">
               </el-option>
             </el-select>
+
           </div>
-          <el-button type="primary">查询</el-button>
+          <el-button type="primary"
+                     @click="search_operation_list()">查询</el-button>
         </div>
 
         <el-table ref="multipleTable"
-                  :data="tableData"
+                  :data="operation_tableData"
                   tooltip-effect="dark"
+                  v-loading="loading"
                   style="width: 100%"
-                  @selection-change="handleSelectionChange">
+                  @selection-change="handleSelectionChange_operation">
           <el-table-column type="selection"
                            width="55">
           </el-table-column>
           <el-table-column label="类型"
+                           prop="dataCategory"
                            width="120">
-            <template slot-scope="scope">{{ scope.row.date }}</template>
+            <!-- <template slot-scope="scope">{{ scope.row.date }}</template> -->
           </el-table-column>
-          <el-table-column prop="name"
+          <el-table-column prop="dataNumber"
                            label="编号"
                            width="120">
           </el-table-column>
-          <el-table-column prop="address"
+          <el-table-column prop="secondLevelDataNumber"
                            label="二级编号"
                            show-overflow-tooltip>
           </el-table-column>
-          <el-table-column prop="address"
+          <el-table-column prop="dataName"
                            label="资料名称"
                            show-overflow-tooltip>
           </el-table-column>
-          <el-table-column prop="address"
+          <el-table-column prop="department"
                            label="部门"
                            show-overflow-tooltip>
           </el-table-column>
-          <el-table-column prop="address"
+          <el-table-column prop="remarks"
                            label="备注"
                            show-overflow-tooltip>
           </el-table-column>
-          <el-table-column prop="address"
+          <el-table-column prop="createTime"
                            label="提供时间"
                            show-overflow-tooltip>
           </el-table-column>
-          <el-table-column prop="type"
+          <el-table-column prop="status"
                            label="状态"
                            show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{
+                  scope.row.status == 0
+                    ? "待提交"
+                    : scope.row.status == 1
+                    ? "已提交"
+                    : scope.row.status ==2
+                    ?'已拒绝 ':'审核通过'
+                }}
+            </template>
+
           </el-table-column>
-          <el-table-column prop="address"
+          <el-table-column prop="enclosureCount"
                            label="附件"
                            show-overflow-tooltip>
           </el-table-column>
+          <el-table-column prop="address"
+                           label="操作">
+            <template slot-scope="scope">
+              <el-button size="small"
+                         type="primary"
+                         @click="look_record(scope.row)">查看</el-button>
+              <el-button size="small"
+                         type="primary"
+                         @click="post(scope.row)">提交</el-button>
+            </template>
+          </el-table-column>
 
         </el-table>
         <!-- 分页 -->
         <div class="page">
           <el-pagination background
+                         :hide-on-single-page="true"
                          layout="prev, pager, next"
-                         :total="1000">
-          </el-pagination>
+                         :page-sizes="[2, 4, 6, 8]"
+                         :current-page="this.operation_table.current"
+                         @current-change="handleCurrentChange_list_data"
+                         :page-size="this.operation_table.size"
+                         :total="this.operation_table.total"></el-pagination>
         </div>
         <!-- 分页 end-->
 
-        <div class="tt">操作记录</div>
+        <div class="tt"
+             v-if="record_status==true">操作记录</div>
 
         <!-- 操作记录 -->
-        <el-table :data="tableData"
-                  style="width: 100%">
-          <el-table-column prop="date"
-                           label="动作"
-                           width="180">
-          </el-table-column>
-          <el-table-column prop="name"
-                           label="操作人"
-                           width="180">
-          </el-table-column>
-          <el-table-column prop="address"
-                           label="操作时间">
-          </el-table-column>
-          <el-table-column prop="address"
-                           label="备注">
-          </el-table-column>
-          <el-table-column prop="address"
-                           label="附件">
-          </el-table-column>
+        <div v-if="record_status==true">
+          <el-table :data="record"
+                    style="width: 100%">
+            <el-table-column prop="op_operate"
+                             label="动作"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="op_user_name"
+                             label="操作人"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="op_time  "
+                             label="操作时间">
+            </el-table-column>
+            <el-table-column prop="op_info"
+                             label="备注">
+            </el-table-column>
+            <el-table-column prop="enclosurePath"
+                             label="附件">
+            </el-table-column>
 
-        </el-table>
-        <!-- 分页 -->
-        <div class="page">
-          <el-pagination background
-                         layout="prev, pager, next"
-                         :total="1000">
-          </el-pagination>
+          </el-table>
         </div>
-        <!-- 分页 end-->
 
+        <!-- 分页 -->
+        <!-- <div class="page">
+         <el-pagination background
+                         :hide-on-single-page="true"
+                         layout="prev, pager, next"
+                         :page-sizes="[2, 4, 6, 8]"
+                         :current-page="this.record.current"
+                         @current-change="handleCurrentChange_record"
+                         :page-size="this.record.size"
+                         :total="this.record.total"></el-pagination>
+          </el-pagination>
+        </div> -->
+        <!-- 分页 end-->
+        <div class="remarks">
+          <p>备注：</p>
+          <el-input type="textarea"
+                    style="padding:10px;width:100%"
+                    v-model="audit_query.posy_remarks"></el-input>
+
+        </div>
       </div>
+
       <span slot="footer">
 
         <el-button size="small"
                    type="primary"
-                   @click="query()">通过</el-button>
+                   @click="adopt()">通过</el-button>
         <el-button size="small"
-                   @click="dialogVisible2 = false">驳回</el-button>
+                   @click="reject()">驳回</el-button>
 
       </span>
     </el-dialog>
@@ -604,7 +659,7 @@
 </template>
 
 <script>
-import { data_pageList, data_push, data_save, add_pageList, data_pageListDone, data_delete, data_push_ing, data_edit_details, data_update, data_savePush } from
+import { data_pageList, data_push, data_save, add_pageList, data_pageListDone, data_delete, data_push_ing, data_edit_details, data_update, data_savePush, loadcascader, saveTemp, operation_list_data, operation_record_list, operation_audit, operation_uploadData } from
   '@SDMOBILE/api/shandong/data'
 import { fmtDate } from '@SDMOBILE/model/time.js';
 export default {
@@ -619,27 +674,68 @@ export default {
       // color: '',   // 上传文件icon 颜色
       loading: false,
 
-      value_name: '',//input
-      value_select: '',//select
-      sensitiveOptions: [
-        {
-          value: "选项1",
-          label: "老李",
+
+      sensitiveOptions: [],//添加资料 类型
+      sensitiveDepartment: [],//添加资料 部门
+      sensitiveDataSource: [],//添加资料 来源
+
+      // 添加资料
+      add_data: {
+        value_select: '',//select
+        // typecode: 'PrjType',// PrjType 类型  Department 部门  DataSource 来源   
+        dataCategory: '',//类别
+        dataName: '',// 资料名称
+        dataNumber: '',//编号
+        secondLevelDataNumber: '',//二级编号
+        department: '',//部门
+        source: '',//来源
+        remarks: '',//备注
+        addPeople: '老李',//添加人
+        status: '',  // 是否沉淀
+        addTime: '',//添加日期 
+      },
+      // 添加日期
+      pickerOptions: {
+        disabledDate (time) {
+          return time.getTime() > Date.now();
         },
-        {
-          value: "选项2",
-          label: "老王",
-        },
-        {
-          value: "选项3",
-          label: "吴老二",
-        },
-        {
-          value: "选项4",
-          label: "张三",
-        },
-      ],
-      resource: '',//radio
+      },
+      //新增资料 校验规则
+      rules: {
+        dataCategory: [{ required: true, message: '请选择类别', trigger: 'change' }],
+        dataName: [{ required: true, message: '请输入资料名称', trigger: 'blur' }],
+        dataNumber: [{ required: true, message: '请输入资料编号', trigger: 'blur' }],
+        secondLevelDataNumber: [{ required: true, message: '请输入二级编号', trigger: 'blur' }],
+        department: [{ required: true, message: '请选择部门', trigger: 'change' }],
+        source: [{ required: true, message: '请选择来源', trigger: 'change' }],
+        remarks: [{ required: true, message: '请输入备注', trigger: 'blur' }],
+        status: [{ required: true, message: '请选择是否沉淀', trigger: 'change' }],
+        addTime: [{ required: true, message: '请设置添加日期', trigger: 'change' }],
+      },
+      operation_table: [],//操作  资料列表
+      operation_tableData: [],//操作  资料列表
+      multipleSelection_operation: [],//操作全选
+      operation_query: {
+        pageNo: 1,
+        pageSize: 10,
+        dataCategory: '',//类型
+        dataName: '',//名称
+        addDataTaskUuid: '',//id
+      },
+
+      record: [],//操作记录 数据
+      record_params: {
+        id: '',
+      },
+      // 审核
+      audit_query: {
+        taskId: '',
+        posy_remarks: '',//操作 备注
+      },
+
+      record_status: false,//查看操作记录
+
+
 
 
       projectNumber: '项目001',//项目id 编号
@@ -696,7 +792,6 @@ export default {
     }
     this.list_data_start(params);//未完成
 
-
     let params2 = {
       pageNo: this.params_add.pageNo,
       pageSize: this.params_add.pageSize,
@@ -705,7 +800,11 @@ export default {
     // 新增未完成任务列表
     this.add_add_csh(params2);
 
-    // 完成
+
+    this.post_select_loadcascader_lx();//添加资料   类型 数据
+    this.post_select_loadcascader_bm();//添加资料   类型 数据
+    this.post_select_loadcascader_ly();//添加资料   类型 数据
+
   },
   mounted () {
 
@@ -779,24 +878,19 @@ export default {
       this.add_form.name = '';//清空name
       this.add_form.title = '';//清空title
       // this.$refs.multipleTable.clearSelection();//清空
-
       this.dialogVisible = true
       this.title = '新增资料任务';
-
     },
 
     // 添加资料
-    add_data () {
+    add_data_click () {
       this.dialogVisible2 = true;
     },
     // 新增任务初始化 列表
     add_add_csh (params) {
-      // this.loading = true;
       add_pageList(params).then(resp => {
         this.task_list = resp.data;
         this.task_list_records = resp.data.records;
-        // console.log(this.task_list_records);
-        // this.loading = false;
       })
     },
     // 新增任务初始化 列表 分页
@@ -828,13 +922,10 @@ export default {
         this.$message.info("请选择至少一条数据！");
         return false
       }
-
       let array1 = [];//数组1
       this.multipleSelection_list.forEach((item) => {
         array1.push(item);
       });
-      // this.array1 = array1;
-
       // 新增确认
       if (index == 1) {
         let params = {
@@ -846,8 +937,6 @@ export default {
         this.query_save(params)//进行新增确认保存操作
       } else {
         // 编辑确认
-        // console.log(this.array1);
-        // return false
         let params2 = {
           demandDataList: array1,
           title: this.add_form.title,
@@ -921,8 +1010,6 @@ export default {
       })
 
     },
-
-
     // 新增确认
     query_save (params) {
       data_save(params).then(resp => {
@@ -954,8 +1041,6 @@ export default {
         }
       })
     },
-
-
     // 编辑确认
     query_update (params2) {
       data_update(params2).then(resp => {
@@ -986,10 +1071,114 @@ export default {
       })
     },
 
+
+    // 添加资料 ===============================
+
+    // 添加资料  类型
+    post_select_loadcascader_lx () {
+      let params = {
+        typecode: 'PrjType',//类型
+      }
+      loadcascader(params).then(resp => {
+        this.sensitiveOptions = resp.data;
+      })
+    },
+    // 类别类型
+    PrjType_change (val) {
+      console.log(val);
+      this.add_data.dataCategory = val
+    },
+
+
+    // 添加资料   部门
+    post_select_loadcascader_bm () {
+      let params = {
+        typecode: 'Department',//部门
+      }
+      loadcascader(params).then(resp => {
+        this.sensitiveDepartment = resp.data;
+      })
+    },
+    // 部门
+    Department_change (val) {
+      this.add_data.department = val
+    },
+
+    // 添加资料  来源
+    post_select_loadcascader_ly () {
+      let params = {
+        typecode: 'DataSource',//来源
+      }
+      loadcascader(params).then(resp => {
+        this.sensitiveDataSource = resp.data;
+      })
+    },
+    // 添加资料  来源
+    DataSource_change (val) {
+      this.add_data.source = val
+    },
+
+
+
+
+    // 添加资料  是否沉淀 radio
+    changeHandler (val) {
+      this.add_data.status = val;
+      // 1:沉淀 2：不沉淀
+    },
+    //添加资料 保存按钮
+    save_data_btn (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          let params = {
+            dataCategory: this.add_data.dataCategory,//类别
+            dataName: this.add_data.dataName,//资料名称
+            dataNumber: this.add_data.dataNumber,//编号
+            secondLevelDataNumber: this.add_data.secondLevelDataNumber,//二级编号
+            department: this.add_data.department,//部门
+            source: this.add_data.source,//来源
+            remarks: this.add_data.remarks,//备注
+            addPeople: this.add_data.addPeople,//添加人 
+            addTime: this.add_data.addTime,//添加时间
+            status: this.add_data.status,//是否沉淀
+          }
+          saveTemp(params).then(resp => {
+            console.log(resp.data);
+            if (resp.code == 0) {
+              this.$message({
+                message: '添加资料成功',
+                type: 'success'
+              });
+              this.dialogVisible2 = false;
+              let params2 = {
+                pageNo: this.params_add.pageNo,
+                pageSize: this.params_add.pageSize,
+                projectType: this.projectType,
+              }
+              // 新增未完成任务列表
+              this.add_add_csh(params2);
+            } else {
+              this.$message({
+                message: reesp.msg,
+                type: error
+              });
+            }
+
+          })
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
+    },
+    resetForm (formName) {
+      this.$refs[formName].resetFields();
+    },
+
+
+
     // 未完成列表 任务下发
     list_push (data) {
-      // console.log(rows.records[index].addDataTaskUuid);
-      // console.log(data);
       let params = {
         taskId: data.addDataTaskUuid
       }
@@ -1019,8 +1208,6 @@ export default {
 
       })
     },
-
-
     // 列表选择事件
     handleSelectionChange (val) {
       this.multipleSelection = val;
@@ -1071,13 +1258,215 @@ export default {
         }
       });
     },
-
-
-
     // 操作
-    operation () {
-      this.dialogVisibl_operation = true
+    operation (data) {
+      this.dialogVisibl_operation = true;
+      // console.log(data);
+      this.addDataTaskUuid = data.addDataTaskUuid;
+      let params = {
+        pageNo: this.operation_query.pageNo,
+        pageSize: this.operation_query.pageSize,
+        condition: {
+          dataName: this.operation_query.dataName,
+          dataCategory: this.operation_query.dataCategory,
+          dataTaskNumber: this.addDataTaskUuid,
+        }
+      }
+      this.operation_list(params); // 操作 资料列表
     },
+    // 操作 资料列表
+    operation_list (params) {
+      this.loading = true
+      operation_list_data(params).then(resp => {
+        this.operation_table = resp.data
+        this.operation_tableData = resp.data.records
+        this.loading = false
+      })
+    },
+    // 操作 资料列表 分页
+    handleCurrentChange_list_data (val) {
+      let params = {
+        pageNo: this.operation_query.pageNo,
+        pageSize: val,
+        condition: {
+          dataName: this.operation_query.dataName,
+          dataCategory: this.operation_query.dataCategory,
+          dataTaskNumber: this.addDataTaskUuid,
+        }
+      };
+      this.operation_list(params); // 操作 资料列表
+    },
+    // 查询 资料列表
+    search_operation_list () {
+      if (this.operation_query.data_name == '' && this.operation_query.data_category == '') {
+        this.$message.info("请输入标题或者选择类型 后进行查询！");
+        return false
+      }
+      let params = {
+        pageNo: this.operation_query.pageNo,
+        pageSize: this.operation_query.pageSize,
+        condition: {
+          dataName: this.operation_query.dataName,
+          dataCategory: this.operation_query.dataCategory,
+          dataTaskNumber: this.addDataTaskUuid,
+        }
+      };
+      this.operation_list(params); // 操作 资料列表
+    },
+
+    // 操作 资料列表 里的全选
+    handleSelectionChange_operation (val) {
+      this.multipleSelection_operation = val;
+    },
+
+    //查看操作 记录
+    look_record (data) {
+      this.record_status = true;
+      let query_params = {
+        id: data.auditPreviousDemandDataUuid
+      }
+      this.post_operation_record(query_params)//刷新 操作记录 列表
+
+    },
+
+    // 操作记录 
+    post_operation_record (query_params) {
+      operation_record_list(query_params).then(resp => {
+        this.record = resp.data
+      })
+    },
+    // 通过
+    adopt () {
+      let array1 = [];//数组1
+      this.multipleSelection_operation.forEach((item) => {
+        array1.push(item);
+      });
+      let params2 = {
+        status: 3,
+        note: this.audit_query.posy_remarks,
+        auditPreviousDemandData: array1,
+      }
+      this.audit(3, params2);//通过
+    },
+    // 驳回
+    reject () {
+      // this.dialogVisible2 = false
+      let array1 = [];//数组1
+      this.multipleSelection_operation.forEach((item) => {
+        array1.push(item);
+      });
+
+      let params2 = {
+        status: 3,
+        note: this.audit_query.posy_remarks,
+        auditPreviousDemandData: array1,
+      }
+      this.audit(2, params2)//2:驳回  3:通过
+    },
+
+    // 提交
+    post () {
+      if (this.multipleSelection_operation.length > 1 || this.multipleSelection_operation.length == 0) {
+        this.$message.info("请选择一条进行提交");
+        return false
+      }
+      let params = {
+        auditPreviousDemandDataUuid: this.multipleSelection_operation[0].auditPreviousDemandDataUuid,
+        status: this.multipleSelection_operation[0].status,
+      }
+      // 提交数据接口
+      operation_uploadData(params).then(resp => {
+        console.log(resp);
+        if (resp.code == 0) {
+          this.$message({
+            message: "提交成功",
+            type: "success",
+          });
+          let params2 = {
+            pageNo: this.operation_query.pageNo,
+            pageSize: this.operation_query.pageSize,
+            condition: {
+              dataName: this.operation_query.dataName,
+              dataCategory: this.operation_query.dataCategory,
+              dataTaskNumber: this.addDataTaskUuid,
+            }
+          };
+          this.operation_list(params2); // 操作 资料列表
+        }
+      })
+    },
+    // 审核
+    audit (index, params) {
+      // 驳回
+      if (index == 2) {
+        operation_audit(params).then(resp => {
+          console.log(resp.data);
+          if (resp.code == 0) {
+            this.$message({
+              message: "驳回",
+              type: "success",
+            });
+            let params2 = {
+              pageNo: this.operation_query.pageNo,
+              pageSize: this.operation_query.pageSize,
+              condition: {
+                dataName: this.operation_query.dataName,
+                dataCategory: this.operation_query.dataCategory,
+                dataTaskNumber: this.addDataTaskUuid,
+              }
+            };
+            this.operation_list(params2); // 操作 资料列表
+          } else {
+            this.$message({
+              message: resp.data.msg,
+              type: "error",
+            });
+          }
+        })
+      }
+      // 通过
+      if (index == 3) {
+        operation_audit(params).then(resp => {
+          console.log(resp.data);
+          if (resp.code == 0) {
+            this.$message({
+              message: "通过",
+              type: "success",
+            });
+            let params2 = {
+              pageNo: this.operation_query.pageNo,
+              pageSize: this.operation_query.pageSize,
+              condition: {
+                dataName: this.operation_query.dataName,
+                dataCategory: this.operation_query.dataCategory,
+                dataTaskNumber: this.addDataTaskUuid,
+              }
+            };
+            this.operation_list(params2); // 操作 资料列表
+
+          } else {
+            this.$message({
+              message: resp.data.msg,
+              type: "error",
+            });
+          }
+        })
+      }
+
+    },
+
+
+    // 操作记录分页
+    // 操作 资料列表 分页
+    // handleCurrentChange_record (val) {
+    //   let params = {
+    //     pageNo: this.record_params.pageNo,
+    //     pageSize: this.record_params.pageSize,
+    //   }
+    //   this.operation_list(params); // 操作 资料列表
+    // },
+
+
 
 
     // 任务列表 显示编辑
@@ -1100,64 +1489,23 @@ export default {
         this.add_form.title = this.edit_details.title;
         this.add_form.name = this.edit_details.launchPeople;
         this.task_list_records_details = resp.data.demandDataList
-
-
-        // this.edit_details 
-
-
         // 显示模版列表数据
         let params2 = {
           pageNo: this.params_add.pageNo,
           pageSize: this.params_add.pageSize,
           projectType: this.projectType,
         }
-
-        // if (rows) {
-        //   rows.forEach(row => {
-        //     this.$refs.multipleTable.toggleRowSelection(row);
-        //   });
-        // } else {
-        //   this.$refs.multipleTable.clearSelection();
-        // }
-
-
-        // 新增未完成任务列表
-        // this.add_add_csh(params2); 
-        // let a1 = this.edit_details.demandDataList;//详情回显数据
-        // let a1 = this.task_list_records_details;
-        // let a3 = [];//储存合并的值
-
-        this.task_list_records_details.find((item) => {
-          if (item.status == 2) {
-            // console.log(item);
-            this.$refs.multipleTable.toggleRowSelection(item) // 回显 
+        // 编辑回显 多选框
+        for (let i = 0; i < this.task_list_records_details.length; i++) {
+          if (this.task_list_records_details[i].status == 2) {
+            this.$nextTick(() => {
+              this.$refs.multipleTable.toggleRowSelection(this.task_list_records_details[i], true);
+            })
           }
-        })
+        }
 
-
-
-
-
-        // for (var s in a1) {
-        //   for (var x in a2) {
-        //     if (a1[s].auditPreviousDemandDataUuid == a2[x].auditPreviousDataUuid) {
-        //       a3.push(a1[s]);
-        //     }
-        //   }
-        // }
-        // console.log(a1);
-        // console.log(a2);
-        // console.log(a3);
-
-        // this.$nextTick(() => {
-        //   a3.forEach(row => {
-        //     this.$refs.multipleTable.toggleRowSelection(row, true) // 回显 
-        //   })
-        // })
       });
     },
-
-
 
     // 已完成==========================
     // 已完成列表
@@ -1343,5 +1691,28 @@ export default {
 }
 .sjzl >>> .el-dialog {
   min-width: 800px;
+}
+.addPeople {
+  padding-top: 10px;
+  width: 220px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* 为空提示 */
+.dlag_conter2 >>> .el-form-item__error {
+  left: 120px;
+}
+.cd >>> .el-form-item__error {
+  left: 165px;
+}
+.remarks {
+  width: 100%;
+}
+.remarks p {
+  width: 100%;
+  text-align: left;
+  padding: 10px 0;
 }
 </style>

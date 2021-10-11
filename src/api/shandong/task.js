@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-
 const baseURL = '/wisdomaudit_son'
 import qs from 'qs'
 
@@ -101,43 +100,14 @@ export function task_setChargePeople (data) {
 }
 
 
-
-
-
-
-// 设置参数
-
-
-//  点击结果 模型列表的  结果分类
-export function task_selectModel (data) {
-  // console.log(data);
-  // return request({
-  //   baseURL: baseURL,
-  //   url: `/analysis/RunTaskRelController/getLikeRunTaskRelByPage`,
-  //   method: 'post',
-  //   data,
-  // })
+// 查看结果  核实
+export function task_data_verify (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/resultDetailProjectRel/verify`,
+    method: 'post',
+    data,
+  })
 }
 
-// 点击结果的 数据列表
-// export function task_selectTable (data) {
-//   console.log(data);
-//   return request({
-//     baseURL: baseURL,
-//     url: `/analysis/RunResultTableController/selectTable`,
-//     method: 'post',
-//     data,
-//   })
-// }
 
-
-// // 设置参数
-// export function task_setting (data) {
-//   console.log(data);
-//   return request({
-//     baseURL: baseURL,
-//     url: `/analysis/RunResultTableController/selectTable`,
-//     method: 'post',
-//     data,
-//   })
-// }

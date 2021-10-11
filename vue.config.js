@@ -72,6 +72,15 @@ module.exports = {
           '^/wisdomaudit_son/': '/'
         }
       },
+      '/wisdomaudit_task/': {
+        timeout: 1800000,
+        target: process.env.TASK_API,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/wisdomaudit_task/': '/'
+        }
+      },
+
       // '/wisdomaudit/': {
       //   timeout: 1800000,
       //   target: process.env.MODEL_API,
