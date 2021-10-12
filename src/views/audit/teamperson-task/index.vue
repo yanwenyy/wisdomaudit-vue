@@ -156,7 +156,7 @@
                   </template>
                 </el-table-column>
               </el-table>
-              <!-- <el-button @click="toggleSelection([personMes[1], personMes[2]])"
+              <!-- <el-button @click="toggleSelection([personMes[0], personMes[2]])"
                 >切换第二、第三行的选中状态</el-button
               >
               <el-button @click="toggleSelection()">取消选择</el-button> -->
@@ -354,7 +354,7 @@
 </template>
 
 <script>
-import TaskMaintenance from "@/views/audit/task-maintenance/index";
+import TaskMaintenance from "@WISDOMAUDIT/views/audit/task-maintenance/index";
 import {
   projectMembership,
   editprojectMembership,
@@ -367,7 +367,7 @@ import {
   selfTaskFunction,
   modelTaskList,
   isModel,
-} from "@SDMOBILE/api/shandong/memberMaintenance.js";
+} from "@WISDOMAUDIT/api/shandong/memberMaintenance.js";
 
 export default {
   components: {
@@ -452,7 +452,6 @@ export default {
     this.projectMember(this.query);
     this.getSelectData(this.select);
     this.getmodelTaskList(this.queryInfo);
-
   },
   methods: {
     // 获取数据库模型任务数据
@@ -477,18 +476,27 @@ export default {
         .then(() => {
           deletprojectMembership(row.projectMembershipUuid).then((resp) => {});
           this.projectMember(this.query);
+          this.message.success("删除成功！");
         })
         .catch((action) => {
           this.$message({
             type: "info",
-            message: action === "cancel" ? "放弃删除并离开页面" : "删除成功！",
+            message: action === "cancel" ? "放弃删除并离开页面" : "取消删除！",
           });
         });
     },
     // 弹框页面组员删除
     deletePerson(index, rows, obj) {
+      console.log(obj);
       if (!obj.projectMembershipUuid) {
         rows.splice(index, 1);
+        for (let i = 0; i < this.personMes.length; i++) {
+          if (
+            this.personMes[i].peopleTableUuid == obj.peopleTable.peopleTableUuid
+          ) {
+            this.$refs.personRef.toggleRowSelection(this.personMes[i], false);
+          }
+        }
       } else {
         this.$confirm("你将删除数据库中的组员数据", "提示", {
           distinguishCancelAndClose: true,
@@ -500,12 +508,24 @@ export default {
               (resp) => {}
             );
             this.projectMember(this.query);
+            this.$message.success("删除成功！");
+            for (let i = 0; i < this.personMes.length; i++) {
+              if (
+                this.personMes[i].peopleTableUuid ==
+                obj.peopleTable.peopleTableUuid
+              ) {
+                this.$refs.personRef.toggleRowSelection(
+                  this.personMes[i],
+                  false
+                );
+              }
+            }
           })
           .catch((action) => {
             this.$message({
               type: "info",
               message:
-                action === "cancel" ? "放弃删除并离开页面" : "删除成功！",
+                action === "cancel" ? "放弃删除并离开页面" : "取消删除！",
             });
           });
       }
@@ -533,7 +553,7 @@ export default {
       projectMembership(data).then((resp) => {
         this.tableData = resp.data.records;
         this.peopleSelection = resp.data.records;
-        // console.log(this.tableData);
+        console.log(this.peopleSelection);
         this.loading = false;
       });
     },
@@ -599,46 +619,30 @@ export default {
       }
     },
 
-    //测试123
-      //  toggleSelection(rows) {
-      //   if (rows) {
-      //     rows.forEach(row => {  
-      //       this.$refs.personRef.toggleRowSelection(row);
-      //     });
-      //   } else {
-      //     this.$refs.personRef.clearSelection();
-      //   }
-      // },
     // 添加人员页面
     addPerson() {
       this.addDialogVisible = true;
       this.getSelectData(this.select);
       this.personMes = this.form;
-      console.log(this.personMes);
       auditModelList(this.modelQuery).then((resp) => {
-        // console.log(resp);
         this.modelTableData = resp.data.records;
         this.modelSize = resp.data;
       });
-    //   for (var i = 0; i < this.personMes.length; i++) {
-    //     for (var j = 0; j < this.peopleSelection.length; j++) {
-    //       if (
-    //         this.personMes[i].peopleTableUuid ==
-    //         this.peopleSelection[j].peopleTableUuid
-    //       ) {
-    //         this.groupMemberEcho.push(this.personMes[i]);
-    //       }
-    //     }
-    //   }
-    },
-    // 新增人员的勾选状态回显
-    toggleaddpersonSelection(rows) {
-      if (rows) {
-        rows.forEach((row) => {
-          this.$refs.personRef.toggleRowSelection(row);
-        });
-      } else {
-        this.$refs.personRef.clearSelection();
+      let _this = this;
+      for (let i = 0; i < this.peopleSelection.length; i++) {
+        for (let j = 0; j < this.personMes.length; j++) {
+          if (
+            this.peopleSelection[i].peopleTableUuid ==
+            this.personMes[j].peopleTableUuid
+          ) {
+            this.$nextTick(() => {
+              _this.$refs.personRef.toggleRowSelection(
+                _this.personMes[j],
+                true
+              );
+            });
+          }
+        }
       }
     },
     // 下一步按钮事件
@@ -650,29 +654,50 @@ export default {
     },
     // 组员选中事件
     handleSelectionChange(val) {
-      // console.log(val);
-      for (var i = 0; i < val.length; i++) {
-        for (var j = 0; j < this.peopleSelection.length; j++) {
-          if (
-            val[i].peopleTableUuid ==
-            this.peopleSelection[j].peopleTable.peopleTableUuid
-          ) {
-            this.$message.error("请勿选择已有的组员！");
-            return this.$refs.personRef.toggleRowSelection(val[val.length - 1]);
+      if (val.length == this.personMes.length) {
+        for (let o = 0; o < val.length; o++) {
+          this.peopleSelection.push({
+            peopleRole: 2,
+            isLiaison: 0,
+            peopleTableUuid: val[o].peopleTableUuid,
+            peopleTable: {
+              peopleTableUuid: val[o].peopleTableUuid,
+              peopleName: val[o].peopleName,
+              memberPhone: val[o].memberPhone,
+              memberDepartment: val[o].memberDepartment,
+            },
+          });
+        }
+        var result = [];
+        var obj = {};
+        for (let i = 0; i < this.peopleSelection.length; i++) {
+          if (!obj[this.peopleSelection[i].peopleTableUuid]) {
+            result.push(this.peopleSelection[i]);
+            obj[this.peopleSelection[i].peopleTableUuid] = true;
           }
         }
+        this.peopleSelection = result;
+      } else {
         this.peopleSelection.push({
           peopleRole: 2,
           isLiaison: 0,
-          peopleTableUuid: val[i].peopleTableUuid,
+          peopleTableUuid: val[val.length - 1].peopleTableUuid,
           peopleTable: {
-            peopleTableUuid: val[i].peopleTableUuid,
-            peopleName: val[i].peopleName,
-            memberPhone: val[i].memberPhone,
-            memberDepartment: val[i].memberDepartment,
+            peopleTableUuid: val[val.length - 1].peopleTableUuid,
+            peopleName: val[val.length - 1].peopleName,
+            memberPhone: val[val.length - 1].memberPhone,
+            memberDepartment: val[val.length - 1].memberDepartment,
           },
         });
-        // this.$refs.personRef.toggleRowSelection(val[val.length - 1]);
+        var result = [];
+        var obj = {};
+        for (let i = 0; i < this.peopleSelection.length; i++) {
+          if (!obj[this.peopleSelection[i].peopleTableUuid]) {
+            result.push(this.peopleSelection[i]);
+            obj[this.peopleSelection[i].peopleTableUuid] = true;
+          }
+        }
+        this.peopleSelection = result;
       }
     },
     // 模糊查询任务模型
@@ -701,7 +726,7 @@ export default {
     handleSelectionChangeModel(val) {
       this.ismodelList.condition.auditModelUuid = "";
       // let replist = []
-      for (var i = 0; i < val.length; i++) {
+      for (let i = 0; i < val.length; i++) {
         this.selectauditModelList.auditModelList.push({
           auditModelUuid: val[i].auditModelUuid,
           modelName: val[i].modelName,
@@ -728,7 +753,7 @@ export default {
       // console.log(val);
       console.log(this.tableData);
       this.taskSelf.peopleTableUuid = val;
-      for (var i = 0; i < this.tableData.length; i++) {
+      for (let i = 0; i < this.tableData.length; i++) {
         if (val == this.tableData[i].peopleTableUuid) {
           this.taskSelf.peopleName = this.tableData[i].peopleTable.peopleName;
         }

@@ -398,7 +398,7 @@ import {
   deletmodelTask,
   selfTaskFunction,
   isModel,
-} from "@SDMOBILE/api/shandong/memberMaintenance.js";
+} from "@WISDOMAUDIT/api/shandong/memberMaintenance.js";
 export default {
   data() {
     return {
@@ -619,30 +619,68 @@ export default {
         this.modelTableData = resp.data.records;
         this.modelSize = resp.data;
       });
-    },
-    handleSelectionChange(val) {
-      for (var i = 0; i < val.length; i++) {
-        for (var j = 0; j < this.peopleSelection.length; j++) {
+      let _this = this;
+      for (let i = 0; i < this.peopleSelection.length; i++) {
+        for (let j = 0; j < this.personMes.length; j++) {
           if (
-            val[i].peopleTableUuid ==
-            this.peopleSelection[j].peopleTable.peopleTableUuid
+            this.peopleSelection[i].peopleTableUuid ==
+            this.personMes[j].peopleTableUuid
           ) {
-            this.$message.error("请勿选择已有的组员！");
-            return this.$refs.personRef.toggleRowSelection(val[val.length - 1]);
+            this.$nextTick(() => {
+              _this.$refs.personRef.toggleRowSelection(
+                _this.personMes[j],
+                true
+              );
+            });
           }
         }
+      }
+    },
+    handleSelectionChange(val) {
+      if (val.length == this.personMes.length) {
+        for (let o = 0; o < val.length; o++) {
+          this.peopleSelection.push({
+            peopleRole: 2,
+            isLiaison: 0,
+            peopleTableUuid: val[o].peopleTableUuid,
+            peopleTable: {
+              peopleTableUuid: val[o].peopleTableUuid,
+              peopleName: val[o].peopleName,
+              memberPhone: val[o].memberPhone,
+              memberDepartment: val[o].memberDepartment,
+            },
+          });
+        }
+        var result = [];
+        var obj = {};
+        for (let i = 0; i < this.peopleSelection.length; i++) {
+          if (!obj[this.peopleSelection[i].peopleTableUuid]) {
+            result.push(this.peopleSelection[i]);
+            obj[this.peopleSelection[i].peopleTableUuid] = true;
+          }
+        }
+        this.peopleSelection = result;
+      } else {
         this.peopleSelection.push({
           peopleRole: 2,
           isLiaison: 0,
-          peopleTableUuid: val[i].peopleTableUuid,
+          peopleTableUuid: val[val.length - 1].peopleTableUuid,
           peopleTable: {
-            peopleTableUuid: val[i].peopleTableUuid,
-            peopleName: val[i].peopleName,
-            memberPhone: val[i].memberPhone,
-            memberDepartment: val[i].memberDepartment,
+            peopleTableUuid: val[val.length - 1].peopleTableUuid,
+            peopleName: val[val.length - 1].peopleName,
+            memberPhone: val[val.length - 1].memberPhone,
+            memberDepartment: val[val.length - 1].memberDepartment,
           },
         });
-        this.$refs.personRef.toggleRowSelection(val[val.length - 1]);
+        var result = [];
+        var obj = {};
+        for (let i = 0; i < this.peopleSelection.length; i++) {
+          if (!obj[this.peopleSelection[i].peopleTableUuid]) {
+            result.push(this.peopleSelection[i]);
+            obj[this.peopleSelection[i].peopleTableUuid] = true;
+          }
+        }
+        this.peopleSelection = result;
       }
     },
     // 分页跳转页面的方法
@@ -704,6 +742,13 @@ export default {
     deletePerson(index, rows, obj) {
       if (!obj.projectMembershipUuid) {
         rows.splice(index, 1);
+        for (let i = 0; i < this.personMes.length; i++) {
+          if (
+            this.personMes[i].peopleTableUuid == obj.peopleTable.peopleTableUuid
+          ) {
+            this.$refs.personRef.toggleRowSelection(this.personMes[i], false);
+          }
+        }
       } else {
         this.$confirm("你将删除数据库中的组员数据", "提示", {
           distinguishCancelAndClose: true,
@@ -715,12 +760,24 @@ export default {
               (resp) => {}
             );
             this.projectMember(this.query);
+            this.$message.success("删除成功！");
+            for (let i = 0; i < this.personMes.length; i++) {
+              if (
+                this.personMes[i].peopleTableUuid ==
+                obj.peopleTable.peopleTableUuid
+              ) {
+                this.$refs.personRef.toggleRowSelection(
+                  this.personMes[i],
+                  false
+                );
+              }
+            }
           })
           .catch((action) => {
             this.$message({
               type: "info",
               message:
-                action === "cancel" ? "放弃删除并离开页面" : "删除成功！",
+                action === "cancel" ? "放弃删除并离开页面" : "取消删除！",
             });
           });
       }
