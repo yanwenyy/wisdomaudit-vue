@@ -3,17 +3,17 @@
     <div class="title">未初始化项目</div>
     <el-row>
       <el-col :span="5"
-              style="margin-right:10px">
-        <div class="text">
+              style="margin-right:1%">
+        <div class="text" @click="projectClick">
           <p class="companyName">2021年泰安分公司xxx领导经责审计</p>
           <el-row>
-            <el-col :span="12">
+            <el-col :span="10">
               <div>
                 <p>被审计对象：</p>
                 <p>泰安分公司xxx领导</p>
               </div>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="14">
               <div>
                 <p>审计周期：</p>
                 <p>2021-12-12至2022 11-21</p>
@@ -23,17 +23,17 @@
         </div>
       </el-col>
       <el-col :span="5"
-              style="margin-right:10px">
+              style="margin-right:1%">
         <div class="text">
           <p class="companyName">2021年泰安分公司xxx领导经责审计</p>
           <el-row>
-            <el-col :span="12">
+            <el-col :span="10">
               <div>
                 <p>被审计对象：</p>
                 <p>泰安分公司xxx领导</p>
               </div>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="14">
               <div>
                 <p>审计周期：</p>
                 <p>2021-12-12至2022 11-21</p>
@@ -43,17 +43,17 @@
         </div>
       </el-col>
       <el-col :span="5"
-              style="margin-right:10px">
+              style="margin-right:1%">
         <div class="text">
           <p class="companyName">2021年泰安分公司xxx领导经责审计</p>
           <el-row>
-            <el-col :span="12">
+            <el-col :span="10">
               <div>
                 <p>被审计对象：</p>
                 <p>泰安分公司xxx领导</p>
               </div>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="14">
               <div>
                 <p>审计周期：</p>
                 <p>2021-12-12至2022 11-21</p>
@@ -66,13 +66,13 @@
         <div class="text">
           <p class="companyName">2021年泰安分公司xxx领导经责审计</p>
           <el-row>
-            <el-col :span="12">
+            <el-col :span="10">
               <div>
                 <p>被审计对象：</p>
                 <p>泰安分公司xxx领导</p>
               </div>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="14">
               <div>
                 <p>审计周期：</p>
                 <p>2021-12-12至2022 11-21</p>
@@ -144,7 +144,7 @@
           <!-- 组员及任务维护 -->
           <div class="routerView"
                v-if="index == '1-1'">
-            <TeamPersonTask />
+            <TeamPersonTask  ref="temPersonRef"/>
           </div>
           <!-- 审计资料 -->
           <div class="routerView"
@@ -193,11 +193,11 @@
 </template>
 
 <script>
-import TeamPersonTask from '@/views/audit/teamperson-task/index'
-import AuditData from '@/components/workbench/AuditData/index'//审计资料
-import AuditTask from '@/components/workbench/AuditTask/index'//审计任务
-import Auditproblem from '@/components/workbench/auditproblem/index'//审计问题
-import Businessindicator from '@/components/workbench/businessindicator/index'//经营指标
+import TeamPersonTask from '@WISDOMAUDIT/views/audit/teamperson-task/index'
+import AuditData from '@WISDOMAUDIT/components/workbench/AuditData/index'//审计资料
+import AuditTask from '@WISDOMAUDIT/components/workbench/AuditTask/index'//审计任务
+import Auditproblem from '@WISDOMAUDIT/components/workbench/auditproblem/index'//审计问题
+import Businessindicator from '@WISDOMAUDIT/components/workbench/businessindicator/index'//经营指标
 export default {
   components: {
     TeamPersonTask,//组员及任务维护
@@ -227,9 +227,12 @@ export default {
       this.project_data = false;
     },
     look_project () {
-      console.log(222);
+      // console.log(222);
     },
-
+    //调用组员维护组件的第一步第二步弹框事件
+    projectClick(){
+      this.$refs.temPersonRef.addPerson();
+    }
   },
 };
 </script>
@@ -282,10 +285,13 @@ export default {
     margin-bottom: 1%;
   }
   .text {
-    background: #4282fe;
+    background: #fff;
+    border: 1px solid #EBF0F6;
     border-radius: 10px;
     padding: 5%;
-    color: #fff;
+    color: #000;
+    box-shadow:0px 15px 10px -15px #DEE4E8;
+    cursor: pointer;
     .companyName {
       margin-bottom: 5%;
     }

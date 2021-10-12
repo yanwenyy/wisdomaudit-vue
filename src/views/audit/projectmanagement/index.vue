@@ -23,7 +23,9 @@
         </el-input>
       </el-col>
       <el-col :span="2">
-        <el-button style="margin-left: 10%; border: 1px solid #ebeef2"   @click="queryName"
+        <el-button
+          style="margin-left: 10%; border: 1px solid #ebeef2"
+          @click="queryName"
           >筛选</el-button
         >
       </el-col>
@@ -372,7 +374,7 @@
               </el-select>
             </el-form-item>
           </el-row>
-           <el-row>
+          <el-row>
             <el-form-item label="专  题:" prop="specialName">
               <el-select
                 placeholder="请选择"
@@ -498,6 +500,7 @@
       @close="addDialogClosed"
       width="50%"
     >
+     <!-- 专项 -->
       <div class="addForm" v-if="prjType == 1">
         <el-form
           label-width="100px"
@@ -541,7 +544,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="项目负责人:">
+            <el-form-item label="项目负责人:" prop="projectLeaderName">
               <el-select
                 placeholder="请选择"
                 v-model="addProjectManagement.projectLeaderName"
@@ -557,21 +560,65 @@
               </el-select>
             </el-form-item>
           </el-row>
+           <el-row>
+            <el-form-item label="专  题:" prop="specialName">
+              <el-select
+                placeholder="请选择"
+                v-model="addProjectManagement.specialName"
+                @change="selectSpecia"
+              >
+                <el-option
+                  v-for="item in thematicOption"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="领   域:" prop="fieldName">
+              <el-select
+                placeholder="请选择"
+                v-model="addProjectManagement.fieldName"
+                @change="selectField"
+              >
+                <el-option
+                  v-for="item in areasOption"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-row>
           <el-row>
             <el-form-item label="审计期间:" class="dataTime">
-              <el-date-picker
-                type="date"
-                placeholder="请选择"
-                v-model="addProjectManagement.auditStartData"
-              ></el-date-picker>
-              <span>-</span>
-              <el-date-picker
-                type="date"
-                placeholder="请选择"
-                v-model="addProjectManagement.auditFinishData"
-              ></el-date-picker>
+              <el-col :span="6">
+                <el-form-item prop="auditStartData">
+                  <el-date-picker
+                    type="date"
+                    placeholder="请选择"
+                    v-model="addProjectManagement.auditStartData"
+                  ></el-date-picker>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item prop="auditFinishData">
+                  <el-date-picker
+                    type="date"
+                    placeholder="请选择"
+                    v-model="addProjectManagement.auditFinishData"
+                    style="margin-left: 5px"
+                  ></el-date-picker>
+                </el-form-item>
+              </el-col>
             </el-form-item>
-            <el-form-item label="设置组长">123</el-form-item>
+             <el-col :span="15">
+              <el-form-item label="设置组长">123</el-form-item>
+            </el-col>
             <el-table
               :data="addProjectManagement.auditList"
               style="width: 100%"
@@ -658,9 +705,14 @@
           <el-button class="nextBtn" @click="editBtn">确认</el-button>
         </div>
       </div>
-
+      <!-- 经责 -->
       <div class="addForm" v-if="prjType == 2">
-        <el-form label-width="100px" :model="addprojectjing">
+        <el-form
+          label-width="100px"
+          :model="addprojectjing"
+          :rules="addprojectjingRules"
+          ref="editform"
+        >
           <el-row>
             <el-form-item label="项目编号:" prop="projectCode">
               <el-input
@@ -713,6 +765,40 @@
               </el-select>
             </el-form-item>
           </el-row>
+           <el-row>
+            <el-form-item label="专  题:" prop="specialName">
+              <el-select
+                placeholder="请选择"
+                v-model="addprojectjing.specialName"
+                @change="selectSpecia"
+              >
+                <el-option
+                  v-for="item in thematicOption"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="领   域:" prop="fieldName">
+              <el-select
+                placeholder="请选择"
+                v-model="addprojectjing.fieldName"
+                @change="selectField"
+              >
+                <el-option
+                  v-for="item in areasOption"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-row>
           <el-row>
             <el-form-item label="被审计单位:" prop="auditOrgName">
               <el-select
@@ -758,17 +844,25 @@
           </el-row>
           <el-row>
             <el-form-item label="审计期间:" class="dataTime">
-              <el-date-picker
-                type="date"
-                placeholder="请选择"
-                v-model="addprojectjing.auditStartData"
-              ></el-date-picker>
-              <span>-</span>
-              <el-date-picker
-                type="date"
-                placeholder="请选择"
-                v-model="addprojectjing.auditFinishData"
-              ></el-date-picker>
+              <el-col :span="6">
+                <el-form-item prop="auditStartData">
+                  <el-date-picker
+                    type="date"
+                    placeholder="请选择"
+                    v-model="addprojectjing.auditStartData"
+                  ></el-date-picker>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item prop="auditFinishData">
+                  <el-date-picker
+                    type="date"
+                    placeholder="请选择"
+                    v-model="addprojectjing.auditFinishData"
+                    style="margin-left: 3px"
+                  ></el-date-picker>
+                </el-form-item>
+              </el-col>
             </el-form-item>
           </el-row>
           <el-row>
@@ -804,7 +898,6 @@ import {
   deleteProject,
   thematicAreas,
 } from "@WISDOMAUDIT/api/shandong/projectmanagement.js";
-
 
 export default {
   data() {
@@ -889,8 +982,8 @@ export default {
         projectLeaderName: "",
         special: "",
         specialName: "",
-        field:'',
-        fieldName:"",
+        field: "",
+        fieldName: "",
         auditStartData: "",
         auditFinishData: "",
         auditList: [
@@ -913,8 +1006,8 @@ export default {
         projectLeaderName: "",
         special: "",
         specialName: "",
-        field:'',
-        fieldName:"",
+        field: "",
+        fieldName: "",
         auditOrgUuid: "",
         auditOrgName: "",
         auditOrgLeader: "",
@@ -950,9 +1043,14 @@ export default {
         projectLeaderName: [
           { required: true, message: "请选择项目负责人", trigger: "change" },
         ],
+        specialName: [
+          { required: true, message: "请选择专题", trigger: "change" },
+        ],
+        fieldName: [
+          { required: true, message: "请选择领域", trigger: "change" },
+        ],
         auditStartData: [
-          {
-            type: "date",
+          {          
             required: true,
             message: "请选择审计开始时间",
             trigger: "change",
@@ -960,7 +1058,6 @@ export default {
         ],
         auditFinishData: [
           {
-            type: "date",
             required: true,
             message: "请选择审计结束时间",
             trigger: "change",
@@ -979,6 +1076,12 @@ export default {
         projectLeaderName: [
           { required: true, message: "请选择项目负责人", trigger: "change" },
         ],
+        specialName: [
+          { required: true, message: "请选择专题", trigger: "change" },
+        ],
+        fieldName: [
+          { required: true, message: "请选择领域", trigger: "change" },
+        ],
         auditOrgName: [
           { required: true, message: "请选择被审计单位", trigger: "change" },
         ],
@@ -991,7 +1094,6 @@ export default {
         ],
         auditStartData: [
           {
-            type: "date",
             required: true,
             message: "请选择审计开始时间",
             trigger: "change",
@@ -999,7 +1101,6 @@ export default {
         ],
         auditFinishData: [
           {
-            type: "date",
             required: true,
             message: "请选择审计结束时间",
             trigger: "change",
@@ -1033,14 +1134,14 @@ export default {
     thematicSelect(data) {
       thematicAreas(data).then((resp) => {
         this.thematicOption = resp.data;
-        console.log(this.thematicOption);
+        // console.log(this.thematicOption);
       });
     },
     //领域下拉框
     areasSelect(data) {
       thematicAreas(data).then((resp) => {
         this.areasOption = resp.data;
-        console.log(this.areasOption);
+        // console.log(this.areasOption);
       });
     },
     // 项目类行下拉框
@@ -1082,7 +1183,7 @@ export default {
       this.$refs[addjingForm].validate((valid) => {
         if (valid) {
           addProject(this.addprojectjing).then((resp) => {
-            console.log(this.addprojectjing);
+            // console.log(this.addprojectjing);
             this.$message.success("添加项目成功！");
             // this.addDialogVisible = false;
             // this.projectData(this.query);
@@ -1244,7 +1345,6 @@ export default {
     },
 
     // 编辑
-
     editDialog(rows) {
       this.editDialogVisible = true;
       if (rows.projectType == "zxsj") {
@@ -1257,28 +1357,42 @@ export default {
         this.prjType = 2;
         editProject(rows.managementProjectUuid).then((resp) => {
           this.addprojectjing = resp.data;
+          console.log(this.addprojectjing);
         });
       }
     },
     // 专项修改按钮事件
     editBtn() {
-      editProjectUpdata(this.addProjectManagement).then((resp) => {
-        this.$message.success("修改成功！");
-        this.projectData(this.query);
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          editProjectUpdata(this.addProjectManagement).then((resp) => {
+            this.$message.success("修改成功！");
+            this.projectData(this.query);
+          });
+          this.editDialogVisible = false;
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
       });
-       this.editDialogVisible = false;
     },
     // 其他项目类型按钮事件
     editSave() {
-      editProjectUpdata(this.addprojectjing).then((resp) => {
-        
-        this.$message.success("修改成功！");
-        this.projectData(this.query);
+      this.$refs.editform.validate((valid) => {
+        if (valid) {
+          editProjectUpdata(this.addprojectjing).then((resp) => {
+            this.$message.success("修改成功！");
+          });
+          
+          this.editDialogVisible = false;
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
       });
-      this.editDialogVisible = false;
     },
     deleteProjectrow(index, rows, obj) {
-      console.log(obj);
+      // console.log(obj);
       if (!obj.managementProjectUuid) {
         rows.splice(index, 1);
       } else {

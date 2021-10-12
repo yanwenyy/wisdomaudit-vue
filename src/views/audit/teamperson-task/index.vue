@@ -89,7 +89,7 @@
           </el-table>
         </el-form>
 
-        <div class="addBtn" @click="addPerson()">
+        <div class="addBtn" @click="addgroupMember()">
           <i class="el-icon-plus"></i>
           <span>新增</span>
         </div>
@@ -113,7 +113,7 @@
       </el-tab-pane>
     </el-tabs>
 
-    <!-- 组员维护添加弹框 -->
+    <!-- 未初始化项目添加弹框 -->
     <el-dialog
       :visible.sync="addDialogVisible"
       width="60%"
@@ -350,6 +350,87 @@
         </div>
       </div>
     </el-dialog>
+
+    <!-- 添加组员维护弹框 -->
+    <el-dialog :visible.sync="addgroupDialog" @close="addDialogClosed" width="60%">
+      <div class="title">组员维护</div>
+      <div class="addPerson">
+        <el-row>
+          <div class="text" style="margin-top:20px">请选择组员，可多选</div>
+        </el-row>
+        <el-row>
+          <el-col :span="10">
+            <div class="personMessage">
+              <el-table
+                :data="personMes"
+                @selection-change="handleSelectionChange"
+                ref="personRef"
+              >
+                <el-table-column type="selection"></el-table-column>
+                <el-table-column label="全选组员">
+                  <template slot-scope="scope">
+                    {{ scope.row.peopleName }} {{ scope.row.memberPhone }}
+                    {{ scope.row.memberDepartment }}
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-col>
+          <el-col :span="13">
+            <div class="editPerson">
+              <el-table :data="peopleSelection" ref="editPerson">
+                <el-table-column label="已选组员">
+                  <template slot-scope="scope">
+                    {{ scope.row.peopleTable.peopleName }}
+                    {{ scope.row.peopleTable.memberPhone }}
+                    {{ scope.row.peopleTable.memberDepartment }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="项目接口人">
+                  <template slot-scope="scope">
+                    <el-form>
+                      <el-form-item>
+                        <el-select
+                          v-model="scope.row.isLiaison"
+                          placeholder="请选择"
+                        >
+                          <el-option
+                            v-for="item in isconperOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                          >
+                          </el-option>
+                        </el-select>
+                      </el-form-item>
+                    </el-form>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="100">
+                  <template slot-scope="scope">
+                    <el-button
+                      type="text"
+                      style="color: #db454b"
+                      size="small"
+                      @click.native.prevent="
+                        deletePerson(scope.$index, peopleSelection, scope.row)
+                      "
+                    >
+                      删除
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
+
+    <div class="stepBtn">
+          <el-button @click="addgroupDialog = false">取消</el-button>
+          <el-button type="primary" @click="saveGroupMember">确认</el-button>
+        </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -377,7 +458,8 @@ export default {
     return {
       modelTableData: [],
       radio: "1",
-      addDialogVisible: false, //添加弹框
+      addDialogVisible: false, //添加未初始化项目弹框
+      addgroupDialog: false, //添加组员弹框
       step: 1, //步骤条
       selectName: {},
       editId: "",
@@ -466,6 +548,39 @@ export default {
     handleClick(tab, event) {
       console.log(tab, event);
     },
+    // 新增组员弹框事件
+    addgroupMember() {
+      this.addgroupDialog = true;
+       this.getSelectData(this.select);
+      this.personMes = this.form;
+      auditModelList(this.modelQuery).then((resp) => {
+        this.modelTableData = resp.data.records;
+        this.modelSize = resp.data;
+      });
+      let _this = this;
+      for (let i = 0; i < this.peopleSelection.length; i++) {
+        for (let j = 0; j < this.personMes.length; j++) {
+          if (
+            this.peopleSelection[i].peopleTableUuid ==
+            this.personMes[j].peopleTableUuid
+          ) {
+            this.$nextTick(() => {
+              _this.$refs.personRef.toggleRowSelection(
+                _this.personMes[j],
+                true
+              );
+            });
+          }
+        }
+      }
+    },
+     //新增组员确认事件
+     saveGroupMember(){
+       editprojectMembershipList(this.peopleSelection).then((resp) => {
+        this.$message.success("修改成功！");
+       });
+       this.addgroupDialog = false;
+     },
     // 删除当前人员
     deleteRow(row, rows) {
       this.$confirm("你将删除数据库中的组员数据", "提示", {
@@ -552,8 +667,9 @@ export default {
       this.loading = true;
       projectMembership(data).then((resp) => {
         this.tableData = resp.data.records;
+        // console.log(this.tableData);
         this.peopleSelection = resp.data.records;
-        console.log(this.peopleSelection);
+        // console.log(this.peopleSelection);
         this.loading = false;
       });
     },
@@ -619,7 +735,7 @@ export default {
       }
     },
 
-    // 添加人员页面
+    // 添加未初始化项目弹框
     addPerson() {
       this.addDialogVisible = true;
       this.getSelectData(this.select);
@@ -738,10 +854,10 @@ export default {
       this.ismodelList.condition.auditModelUuid =
         val[val.length - 1].auditModelUuid;
       // this.ismodelList.condition.auditModelUuid = replist.join(",")
-      console.log(this.ismodelList.condition.auditModelUuid);
+      // console.log(this.ismodelList.condition.auditModelUuid);
       // 判断项目中模型是否存在
       isModel(this.ismodelList).then((resp) => {
-        console.log(resp);
+        // console.log(resp);
         if (resp.data.total > 0) {
           this.$refs.multipleModel.toggleRowSelection(val[val.length - 1]);
           this.$message.error("项目中已存在该模型！");
@@ -751,7 +867,7 @@ export default {
     // 自建任务责任人下拉框事件
     selectChangePerson(val) {
       // console.log(val);
-      console.log(this.tableData);
+      // console.log(this.tableData);
       this.taskSelf.peopleTableUuid = val;
       for (let i = 0; i < this.tableData.length; i++) {
         if (val == this.tableData[i].peopleTableUuid) {
@@ -762,7 +878,7 @@ export default {
     //  完成按钮
     saveBtn() {
       //判断是模型任务还是自建任务
-      console.log(this.selectauditModelList.auditModelList);
+      // console.log(this.selectauditModelList.auditModelList);
       if (
         this.radio == 1 &&
         this.selectauditModelList.auditModelList.length !== 0

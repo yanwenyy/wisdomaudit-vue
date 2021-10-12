@@ -6,7 +6,7 @@
         <div class="projectTab">
           <el-row :gutter="24" class="titleMes">
             <el-col :span="1.5">
-              <el-button type="primary" @click="addPerson()">新增</el-button>
+              <el-button type="primary" @click="addTask()">新增任务</el-button>
             </el-col>
           </el-row>
           <!-- 表单 -->
@@ -144,7 +144,7 @@
     </el-dialog>
 
     <!-- 审计任务维护添加弹框 -->
-    <el-dialog
+    <!-- <el-dialog
       :visible.sync="addDialogVisible"
       width="60%"
       @close="addDialogClosed"
@@ -297,7 +297,7 @@
             </el-table-column>
           </el-table>
 
-          <!-- 分页 -->
+     
           <div class="page">
             <el-pagination
               background
@@ -310,7 +310,7 @@
               :total="modelSize.total"
             ></el-pagination>
           </div>
-          <!-- 分页 end-->
+
         </div>
         <div v-else-if="radio == '2'" class="selfTask">
           <el-form label-width="80px" :model="taskSelf">
@@ -330,7 +330,6 @@
               <el-select
                 v-model="tableData.peopleTableUuid"
                 filterable
-                @change="selectChangePerson"
               >
                 <el-option
                   v-for="item in tableData"
@@ -372,13 +371,67 @@
           <el-button class="nextBtn" @click="saveBtn">完成</el-button>
         </div>
       </div>
+    </el-dialog> -->
 
-      <!-- <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button @click="dialogVisible = false" class="nextBtn"
-          >下一步</el-button
-        >
-        </span> -->
+    <!-- 审计任务维护新增弹框 -->
+    <el-dialog
+      :visible.sync="TaskDialogVisible"
+      width="30%"
+      :before-close="addDialogClosed"
+    >
+      <div class="taskTitle">新增任务</div>
+      <div class="taskAdd">
+         <el-form label-width="80px" :model="taskSelf">
+            <el-form-item label="自建任务名称：">
+              <el-input
+                placeholder="请输入"
+                v-model="taskSelf.taskName"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="责任人：">
+              <el-select
+                v-model="tableData.peopleTableUuid"
+                filterable
+                @change="personLiableSelect"
+              >
+                <el-option
+                  v-for="item in tableData"
+                  :key="item.peopleTable.peopleTableUuid"
+                  :label="item.peopleTable.peopleName"
+                  :value="item.peopleTable.peopleTableUuid"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="任务描述：">
+              <el-input
+                type="textarea"
+                style="top: -35px; width: 400px"
+                v-model="taskSelf.taskDescription"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="上传附件：">
+              <el-upload
+                class="upload-demo"
+                drag
+                action="https://jsonplaceholder.typicode.com/posts/"
+                multiple
+              >
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">
+                  将文件拖到此处，或<em>点击上传</em>
+                </div>
+                <div class="el-upload__tip" slot="tip">
+                  只能上传jpg/png文件，且不超过500kb
+                </div>
+              </el-upload>
+            </el-form-item>
+          </el-form>
+      </div>
+       <div class="stepBtn">
+          <el-button @click="TaskDialogVisible = false">取消</el-button>
+          <el-button style="background:#0C87D6;color:#FFF" @click="saveTask">完成</el-button>
+        </div>
     </el-dialog>
   </div>
 </template>
@@ -408,6 +461,7 @@ export default {
       project: "",
       step: 1, //判断步骤条
       addDialogVisible: false, //添加弹框的隐藏与显示
+      TaskDialogVisible:false,//添加任务弹框
       editModelDialogVisible: false, //审计任务维护编辑
       color: "white", // 上传文件icon 颜色
       query: {
@@ -551,7 +605,7 @@ export default {
       this.loading = true;
       modelTaskList(data).then((resp) => {
         this.taskData = resp.data.records;
-        console.log(this.taskData);
+        // console.log(this.taskData);
         this.project = resp.data;
       });
       this.loading = true;
@@ -594,7 +648,7 @@ export default {
     },
 
     selectChange(rows) {
-      console.log(rows);
+      // console.log(rows);
       this.modelPerson.managementProjectUuid = rows.managementProjectUuid;
       this.modelPerson.peopleTableUuid = rows.peopleTableUuid;
       this.modelPerson.auditTaskUuid = rows.auditTaskUuid;
@@ -604,37 +658,15 @@ export default {
             this.tableData[i].peopleTable.peopleName;
         }
       }
-      console.log(this.modelPerson);
+      // console.log(this.modelPerson);
       editmodelPerson(this.modelPerson).then((resp) => {
         this.$message.success("设置成功！");
       });
     },
     // 添加人员页面
-    addPerson() {
-      this.addDialogVisible = true;
-      this.getSelectData(this.select);
-      this.personMes = this.form;
-      auditModelList(this.modelQuery).then((resp) => {
-        // console.log(resp);
-        this.modelTableData = resp.data.records;
-        this.modelSize = resp.data;
-      });
-      let _this = this;
-      for (let i = 0; i < this.peopleSelection.length; i++) {
-        for (let j = 0; j < this.personMes.length; j++) {
-          if (
-            this.peopleSelection[i].peopleTableUuid ==
-            this.personMes[j].peopleTableUuid
-          ) {
-            this.$nextTick(() => {
-              _this.$refs.personRef.toggleRowSelection(
-                _this.personMes[j],
-                true
-              );
-            });
-          }
-        }
-      }
+    addTask() {
+      this.TaskDialogVisible = true;
+      
     },
     handleSelectionChange(val) {
       if (val.length == this.personMes.length) {
@@ -703,7 +735,7 @@ export default {
       projectMembership(data).then((resp) => {
         this.loading = true;
         this.tableData = resp.data.records;
-        console.log(this.tableData);
+        // console.log(this.tableData);
         this.peopleSelection = resp.data.records;
         // console.log(this.tableData);
         this.loading = false;
@@ -731,7 +763,7 @@ export default {
       //  console.log(this.ismodelList.condition.auditModelUuid)
       // 判断项目中模型是否存在
       isModel(this.ismodelList).then((resp) => {
-        console.log(resp);
+        // console.log(resp);
         if (resp.data.total > 0) {
           this.$refs.modelRefs.toggleRowSelection(val[val.length - 1]);
           this.$message.error("项目中已存在该模型！");
@@ -782,32 +814,51 @@ export default {
           });
       }
     },
-    //  完成按钮
-    saveBtn() {
-      //判断是模型任务还是自建任务
-      if (
-        this.radio == 1 &&
-        this.selectauditModelList.auditModelList.length !== 0
-      ) {
-        quoteModel(this.selectauditModelList).then((resp) => {
-          this.$message.success("创建成功！");
-        });
+    //创建任务责任人下拉框的事件
+    personLiableSelect(val){
+      this.taskSelf.peopleTableUuid = val;
+      for(let i=0; i<this.tableData.length;i++){
+        if(val == this.tableData[i].peopleTable.peopleTableUuid){
+          this.taskSelf.peopleName = this.tableData[i].peopleTable.peopleName
+        }
       }
-
-      if (this.radio == 2) {
-        selfTaskFunction(this.taskSelf).then((resp) => {
-          this.$message.success("自建任务创建成功！");
-        });
-      }
-
-      editprojectMembershipList(this.peopleSelection).then((resp) => {
-        this.$message.success("修改成功！");
-      });
-
-      setInterval(() => {
-        this.addDialogVisible = false;
-      }, 3000);
     },
+    //  完成按钮
+    // saveBtn() {
+    //   //判断是模型任务还是自建任务
+    //   if (
+    //     this.radio == 1 &&
+    //     this.selectauditModelList.auditModelList.length !== 0
+    //   ) {
+    //     quoteModel(this.selectauditModelList).then((resp) => {
+    //       this.$message.success("创建成功！");
+    //     });
+    //   }
+
+    //   if (this.radio == 2) {
+    //     selfTaskFunction(this.taskSelf).then((resp) => {
+    //       this.$message.success("自建任务创建成功！");
+    //     });
+    //   }
+
+    //   editprojectMembershipList(this.peopleSelection).then((resp) => {
+    //     this.$message.success("修改成功！");
+    //   });
+
+    //   setInterval(() => {
+    //     this.addDialogVisible = false;
+    //   }, 3000);
+    // },
+
+
+
+    //新增任务完成按钮
+    saveTask(){
+      selfTaskFunction(this.taskSelf).then((resp) => {
+          this.$message.success("新增任务成功！");
+      });
+      this.TaskDialogVisible = false;
+    }
   },
   created() {
     this.getmodelTaskList(this.queryInfo);
@@ -1092,7 +1143,30 @@ export default {
 .upload-demo {
   margin-top: -35px;
 }
-
+.taskAdd{
+  width: 70%;
+  margin: 20px auto;
+  /* border: 1px solid red; */
+}
+.taskAdd .el-input {
+  position: relative;
+  top: -35px;
+  width: 300px;
+}
+.taskAdd .el-select {
+  position: relative;
+  top: -35px;
+  width: 300px;
+}
+.taskAdd .el-form-item {
+  margin-bottom: -10px !important;
+}
+/deep/ .taskAdd .el-textarea__inner{
+  width: 75%;
+}
+/deep/ .taskAdd .el-upload-dragger{
+  width: 300px;
+}
 .addPerson .text {
   font-size: 14px;
   font-weight: 700;
@@ -1113,5 +1187,10 @@ export default {
   padding: 10px;
   overflow: scroll;
   border-radius: 5px;
+}
+.taskTitle{
+  text-align: center;
+  color: #000;
+  font-weight: 700;
 }
 </style>
