@@ -682,7 +682,7 @@ export default {
       // 添加资料
       add_data: {
         value_select: '',//select
-        // typecode: 'PrjType',// PrjType 类型  Department 部门  DataSource 来源   
+        // typecode: 'PrjType',// PrjType 类型  Department 部门  DataSource 来源    
         dataCategory: '',//类别
         dataName: '',// 资料名称
         dataNumber: '',//编号
@@ -1079,7 +1079,7 @@ export default {
       let params = {
         typecode: 'PrjType',//类型
       }
-      loadcascader(params).then(resp => {
+      select_loadcascader(params).then(resp => {
         this.sensitiveOptions = resp.data;
       })
     },
@@ -1166,7 +1166,7 @@ export default {
 
           })
         } else {
-          console.log('error submit!!');
+          this.$message.info("请填写信息");
           return false;
         }
       });

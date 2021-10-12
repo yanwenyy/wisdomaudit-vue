@@ -80,7 +80,6 @@ module.exports = {
           '^/wisdomaudit_task/': '/'
         }
       },
-
       // '/wisdomaudit/': {
       //   timeout: 1800000,
       //   target: process.env.MODEL_API,

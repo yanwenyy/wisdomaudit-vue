@@ -336,7 +336,7 @@
 </template>
 
 <script>
-import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
+import Pagination from "@WISDOMAUDIT/components/Pagination"; // secondary package based on el-pagination
 import _ from "lodash";
 import axios from "axios";
 export default {

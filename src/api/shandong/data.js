@@ -102,7 +102,7 @@ export function data_update (data) {
 }
 
 // 添加资料 模版数据
-export function loadcascader (data) {
+export function select_loadcascader (data) {
   return request({
     baseURL: baseURL,
     url: `/init/loadcascader`,

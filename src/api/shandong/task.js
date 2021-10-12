@@ -111,3 +111,71 @@ export function task_data_verify (data) {
 }
 
 
+
+
+
+
+// 问题数
+// 列表
+export function task_problems_list (data) {
+  return request({
+    baseURL: baseURL,
+    url: `problemList/pageList`,
+    method: 'post',
+    data,
+  })
+}
+
+
+// 新增
+export function task_problems_save (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/problemList/save`,
+    method: 'post',
+    data,
+  })
+}
+
+// 删除
+export function task_problems_delete (data) {
+  let ids = data.ids
+  return request({
+    baseURL: baseURL,
+    url: '/problemList/delete/' + ids + '',
+    method: 'delete',
+    data,
+  })
+}
+
+// 编辑修改
+export function task_problems_update (data) {
+  return request({
+    baseURL: baseURL,
+    url: '/problemList/update',
+    method: 'put',
+    data,
+  })
+}
+
+
+// 领域 select
+export function task_problems_loadcascader (data) {
+  return request({
+    baseURL: baseURL,
+    url: '/init/loadcascader',
+    method: 'post',
+    data,
+  })
+}
+
+
+// 关联任务
+// export function task_problems_relation (data) {
+//   return request({
+//     baseURL: baseURL,
+//     url: '/init/loadcascader',
+//     method: 'post',
+//     data,
+//   })
+// }
