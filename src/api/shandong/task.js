@@ -76,6 +76,16 @@ export function task_remove (data) {
   })
 }
 
+// 更新状态
+export function Task_update_status (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/auditTask/update`,
+    method: 'put',
+    data,
+  })
+}
+
 
 
 // 责任人
@@ -111,10 +121,6 @@ export function task_data_verify (data) {
 }
 
 
-
-
-
-
 // 问题数
 // 列表
 export function task_problems_list (data) {
@@ -148,6 +154,17 @@ export function task_problems_delete (data) {
   })
 }
 
+// 编辑 回显
+export function task_problems_details (data) {
+  let id = data.id
+  return request({
+    baseURL: baseURL,
+    url: '/problemList/getById/' + id + '',
+    method: 'get',
+    data,
+  })
+}
+
 // 编辑修改
 export function task_problems_update (data) {
   return request({
@@ -171,11 +188,11 @@ export function task_problems_loadcascader (data) {
 
 
 // 关联任务
-// export function task_problems_relation (data) {
-//   return request({
-//     baseURL: baseURL,
-//     url: '/init/loadcascader',
-//     method: 'post',
-//     data,
-//   })
-// }
+export function task_problems_relation (data) {
+  return request({
+    baseURL: baseURL,
+    url: '/auditTask/selectTask',
+    method: 'post',
+    data,
+  })
+}

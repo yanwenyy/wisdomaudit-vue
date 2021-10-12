@@ -2,7 +2,6 @@
   <div style="overflow-y: visible;"
        ref="inputParamContent"
        class="paramadrawnew">
-    {{arr}}
     <div ref="nodeParam"
          style="overflow:auto;max-height:62vh"
          class="detail-form">
@@ -83,6 +82,7 @@
   </div>
 </template>
 <script>
+import $ from "jquery"
 import {
   removeJcCssfile,
   addJsFile,
@@ -117,11 +117,13 @@ export default {
     removeJcCssfile("xm-select.js", "js")
   },
   methods: {
+
     async createParamNodeHtml (id, collapseTitle, flag) {
       try {
-        this.loading = $(this.$refs.inputParamContent).mLoading({ 'text': '正在初始化数据，请稍后……', 'hasCancel': false })
+        // this.loading = $(this.$refs.inputParamContent).mLoading({ 'text': '正在初始化数据，请稍后……', 'hasCancel': false })
         this.collapseTitle = collapseTitle
         let paramsArr = []// 定义所有母参信息数组
+        this.paramInfoArr = []
         let nodeParamInfoObj = {
           "paramInfoArr": [],
         }
@@ -142,7 +144,7 @@ export default {
         for (let j = 0; j < this.arr.length; j++) {
           for (let k = 0; k < paramsArr.length; k++) {
             let moduleParamId = paramsArr[k].ammParamUuid
-            if (moduleParamId === this.arr[j].moduleParamId && $.inArray(moduleParamId, moduleParamArr) < 0) { // 匹配复制参数的母版参数ID
+            if (moduleParamId == this.arr[j].moduleParamId && $.inArray(moduleParamId, moduleParamArr) < 0) {  // 匹配复制参数的母版参数ID
               this.arr[j].allowedNull = paramsArr[k].paramChoice.allowedNull
               // if (flag==='modelPreview' ||flag==='auditwarning'){
               //   if (this.arr[j].paramValue) {
@@ -158,6 +160,7 @@ export default {
               if (this.arr[j].defaultVal) {
                 paramsArr[k].defaultVal = this.arr[j].defaultVal
               }
+              // paramsArr[k].keyid = this.arr[j].id
               copyParamArr.push(paramsArr[k])
               moduleParamArr.push(moduleParamId)
               break
@@ -172,8 +175,10 @@ export default {
           'paramsArr': this.arr
         }
         this.overallParmaobj[id] = eachParamObj
+        // console.log(copyParamArr);
         for (let n = 0; n < copyParamArr.length; n++) {
           let paramInfoObj = {
+            // "keyid": copyParamArr[n].keyid,
             "paramName": copyParamArr[n].paramName,
             "description": '（参数说明：无）',
             "inputType": copyParamArr[n].inputType//参数类型
@@ -197,19 +202,19 @@ export default {
             paramInfoObj = { ...paramInfoObj, ...returnObj.setParamObj }
             paramInfoObj.description += `${paramInfoObj.title}`
           }
+          console.log(paramInfoObj)
           this.paramInfoArr.push(paramInfoObj)
         }
-        console.log(this.paramInfoArr);
         this.$nextTick(() => {
           // this.initParamInputAndSelect()
-          this.loading.destroy()
+          // this.loading.destroy()
           let nodeParamDom = this.$refs.nodeParam
           // if (nodeParamDom.$children.length===0){
           //   this.hasParam = true
           // }
         })
       } catch (e) {
-        this.loading.destroy()
+        // this.loading.destroy()
         console.info(e)
       }
     },

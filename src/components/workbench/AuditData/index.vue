@@ -84,12 +84,12 @@
                 </div>
 
                 <div v-if=" scope.row.status == 1">
-                  <el-button @click="edit_data(scope.row,tableData)"
+                  <!-- <el-button @click="edit_data(scope.row,tableData)"
                              type="text"
                              style="color:#1371CC"
                              size="small">
                     审批
-                  </el-button>
+                  </el-button> -->
                   <el-button @click="deleteRow(scope.row)"
                              type="text"
                              style="color:red"
@@ -350,6 +350,7 @@
 
     <!-- 添加资料 -->
     <el-dialog title="添加资料"
+               @close="resetForm('add_data')"
                :visible.sync="dialogVisible2"
                style="padding-bottom: 59px; ">
       <div class="dlag_conter2">
@@ -548,6 +549,11 @@
           <el-table-column prop="createTime"
                            label="提供时间"
                            show-overflow-tooltip>
+
+            <template slot-scope="scope">
+              {{  scope.row.createTime |filtedate }}
+            </template>
+
           </el-table-column>
           <el-table-column prop="status"
                            label="状态"
@@ -601,22 +607,25 @@
         <div v-if="record_status==true">
           <el-table :data="record"
                     style="width: 100%">
-            <el-table-column prop="op_operate"
+            <el-table-column prop="opOperate"
                              label="动作"
                              width="180">
             </el-table-column>
-            <el-table-column prop="op_user_name"
+            <el-table-column prop="opUserName"
                              label="操作人"
                              width="180">
             </el-table-column>
-            <el-table-column prop="op_time  "
+            <el-table-column prop="opTime  "
                              label="操作时间">
+              <template slot-scope="scope">
+                {{  scope.row.opTime |filtedate }}
+              </template>
             </el-table-column>
-            <el-table-column prop="op_info"
+            <el-table-column prop="opInfo"
                              label="备注">
             </el-table-column>
-            <el-table-column prop="enclosurePath"
-                             label="附件">
+            <!-- <el-table-column prop="enclosurePath"
+                             label="附件"> -->
             </el-table-column>
 
           </el-table>
@@ -659,7 +668,7 @@
 </template>
 
 <script>
-import { data_pageList, data_push, data_save, add_pageList, data_pageListDone, data_delete, data_push_ing, data_edit_details, data_update, data_savePush, loadcascader, saveTemp, operation_list_data, operation_record_list, operation_audit, operation_uploadData } from
+import { data_pageList, data_push, data_save, add_pageList, data_pageListDone, data_delete, data_push_ing, data_edit_details, data_update, data_savePush, loadcascader, saveTemp, operation_list_data, operation_record_list, operation_audit, operation_uploadData, select_loadcascader } from
   '@SDMOBILE/api/shandong/data'
 import { fmtDate } from '@SDMOBILE/model/time.js';
 export default {
@@ -885,6 +894,7 @@ export default {
     // 添加资料
     add_data_click () {
       this.dialogVisible2 = true;
+      this.add_data = {}; //清空
     },
     // 新增任务初始化 列表
     add_add_csh (params) {
@@ -1095,7 +1105,7 @@ export default {
       let params = {
         typecode: 'Department',//部门
       }
-      loadcascader(params).then(resp => {
+      select_loadcascader(params).then(resp => {
         this.sensitiveDepartment = resp.data;
       })
     },
@@ -1109,7 +1119,7 @@ export default {
       let params = {
         typecode: 'DataSource',//来源
       }
-      loadcascader(params).then(resp => {
+      select_loadcascader(params).then(resp => {
         this.sensitiveDataSource = resp.data;
       })
     },
@@ -1125,6 +1135,10 @@ export default {
     changeHandler (val) {
       this.add_data.status = val;
       // 1:沉淀 2：不沉淀
+    },
+    //添加资料 关闭清空 
+    resetForm (formName) {
+      this.$refs[formName].resetFields();
     },
     //添加资料 保存按钮
     save_data_btn (formName) {

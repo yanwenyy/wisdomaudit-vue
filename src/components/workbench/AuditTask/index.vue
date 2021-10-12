@@ -4,7 +4,6 @@
       <div class="projectTab">
         <!-- tab -->
         <el-card>
-
           <el-row :gutter="24"
                   class="titleMes">
 
@@ -117,7 +116,7 @@
             <el-table-column prop="resultsNumber"
                              label="结果数">
               <template slot-scope="scope">
-                <el-button @click="data_num_click(scope.row)"
+                <el-button @click="data_num_click(scope.row.runStatus)"
                            type="text"
                            style="color: #1371cc"
                            size="small">
@@ -155,17 +154,17 @@
             <!-- 运行状态 -->
             <el-table-column prop="runStatus"
                              label="运行状态">
-              <!-- <template slot-scope="scope">
+              <template slot-scope="scope">
                 {{
-                  scope.row.ing == 0
+                  scope.row.runStatus == 0
                     ? "未开始"
-                    : scope.row.ing == 1
-                    ? "已完成"
-                    : scope.row.ing == 2
+                    : scope.row.runStatus == 1
                     ? "执行中"
+                    : scope.row.runStatus == 2
+                    ? "已完成"
                     : "待开始"
                 }}
-              </template> -->
+              </template>
             </el-table-column>
             <!-- 运行开始时间 -->
             <el-table-column prop="taskStartTime"
@@ -186,7 +185,7 @@
             <el-table-column prop="edit"
                              label="操作">
               <template slot-scope="scope">
-                <el-button @click="setParameters(scope.row.auditModelUuid)"
+                <el-button @click="setParameters(scope.row)"
                            type="text"
                            style="color: #1371cc"
                            size="small">
@@ -325,18 +324,11 @@
         <el-row :gutter="24">
           <!-- 结果分类  -->
           <ul class="status_data">
-            <li>
+            <li v-for="(item,index) in status_data">
               <el-button type="primary"
-                         @click="quote()">结果1</el-button>
+                         @click="select_data()">{{item.name}}</el-button>
             </li>
-            <li>
-              <el-button type="primary"
-                         @click="quote()">结果1</el-button>
-            </li>
-            <li>
-              <el-button type="primary"
-                         @click="quote()">结果1</el-button>
-            </li>
+
           </ul>
         </el-row>
         <div class="cxjg"
@@ -362,7 +354,6 @@
           <el-table-column type="selection"
                            width="55">
           </el-table-column>
-
           <!-- <el-table-column prop="date"
                            label="序号">
           </el-table-column> -->
@@ -395,24 +386,10 @@
           </el-table-column>
           <el-table-column prop="name"
                            label="签约厂家">
-            <template slot-scope="scope">
-              <el-button @click="deleteRow(scope.$index, tableData)"
-                         type="text"
-                         style="color: #1371cc"
-                         size="small">
-                {{ scope.row.wt_num }}
-              </el-button>
-            </template>
+
           </el-table-column>
           <el-table-column prop="name"
                            label="盖章时间">
-            <el-select v-model="value_select">
-              <el-option v-for="item in sensitiveOptions"
-                         :key="item.value"
-                         :label="item.label"
-                         :value="item.value">
-              </el-option>
-            </el-select>
           </el-table-column>
 
           <el-table-column prop="ing"
@@ -437,79 +414,30 @@
           </el-table-column>
 
           <el-table-column prop="name"
-                           label="合同履行结束时间"
-                           width="100">
-            <template slot-scope="scope">
-              <el-button @click="deleteRow(scope.$index, tableData)"
-                         type="text"
-                         style="color: #1371cc"
-                         size="small">
-                设置参数
-              </el-button>
-            </template>
+                           label="合同履行结束时间">
           </el-table-column>
 
           <el-table-column prop="edit"
-                           label="滞后天数"
-                           width="100">
-            <template slot-scope="scope">
-              <el-button @click="deleteRow(scope.$index, tableData)"
-                         type="text"
-                         style="color: #1371cc"
-                         size="small">
-                设置参数
-              </el-button>
-            </template>
+                           label="滞后天数">
+
           </el-table-column>
           <el-table-column prop="edit"
-                           label="是否问题"
-                           width="100">
-            <template slot-scope="scope">
-              <el-button @click.native.prevent="deleteRow(scope.$index, tableData)"
-                         type="text"
-                         style="color: #1371cc"
-                         size="small">
-                设置参数
-              </el-button>
-            </template>
+                           label="是否问题">
+
           </el-table-column>
 
           <el-table-column prop="edit"
-                           label="核实人"
-                           width="100">
-            <template slot-scope="scope">
-              <el-button @click.native.prevent="deleteRow(scope.$index, tableData)"
-                         type="text"
-                         style="color: #1371cc"
-                         size="small">
-                设置参数
-              </el-button>
-            </template>
+                           label="核实人">
+
           </el-table-column>
 
           <el-table-column prop="edit"
-                           label="核实信息"
-                           width="100">
-            <template slot-scope="scope">
-              <el-button @click.native.prevent="deleteRow(scope.$index, tableData)"
-                         type="text"
-                         style="color: #1371cc"
-                         size="small">
-                设置参数
-              </el-button>
-            </template>
+                           label="核实信息">
+
           </el-table-column>
           <el-table-column prop="edit"
-                           label="附件"
-                           width="100">
-            <template slot-scope="scope">
-              <el-button @click.native.prevent="deleteRow(scope.$index, tableData)"
-                         type="text"
-                         style="color: #1371cc"
-                         size="small">
-                设置参数
-              </el-button>
-            </template>
+                           label="附件">
+
           </el-table-column>
         </el-table>
         <!-- 表单 end-->
@@ -671,6 +599,7 @@
       </el-row>
       <div class="dlag_conter3 ">
         <el-form :rules="rules"
+                 ref="problems_form"
                  :model="problems_form">
           <div class="son">
 
@@ -685,6 +614,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
+
           </div>
           <div class="son">
             <el-form-item prop="problem">
@@ -702,7 +632,8 @@
                         v-model="problems_form.basis"
                         placeholder=""></el-input>
               <el-button type="primary"
-                         size="small">引用知识库</el-button>
+                         size="small"
+                         @click="quote_knowledge()">引用知识库</el-button>
             </el-form-item>
           </div>
 
@@ -752,11 +683,11 @@
             <el-form-item prop="associatedTask">
               <p>关联任务：</p>
               <el-select v-model="problems_form.associatedTask"
-                         @change="isProbleam_change">
-                <el-option v-for="item in isProbleam"
-                           :key="item.value"
-                           :label="item.label"
-                           :value="item.value">
+                         @change="problems_task_change">
+                <el-option v-for="item in relation_task"
+                           :key="item.auditModelUuid"
+                           :label="item. auditModelName"
+                           :value="item.auditModelUuid">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -813,6 +744,7 @@
       </el-card>
 
       <Paramdrawnew :arr="arr"
+                    ref="paramDrawRefNew"
                     :sql="sql"></Paramdrawnew>
 
       <!-- <el-card class="parametersTab">
@@ -1006,10 +938,16 @@ import {
   task_problems_save,//问题保存 
   task_problems_update,//问题编辑 
   task_problems_delete,//问题删除
+  task_problems_details,//问题编辑回显
   task_problems_loadcascader,//公用模版 领域
+  task_problems_relation,//关联任务
+  Task_update_status,//更新
 } from
   '@SDMOBILE/api/shandong/task'
-import { Task_run, Task_data_status, task_findModelList, task_findModelList_all } from '@SDMOBILE/api/shandong/task_setting'
+
+//task_findModelList_all
+import { Task_run, Task_data_status, task_findModelList, } from '@SDMOBILE/api/shandong/task_setting'
+
 import { fmtDate } from '@SDMOBILE/model/time.js';
 import Paramdrawnew from '@/components/workbench/AuditTask/paramdrawnew'//参数设置
 
@@ -1051,7 +989,7 @@ export default {
       fileList: [],//上传的文件
 
       // 设置参数
-      auditModelUuid: '',
+      modelId: '',//外部引用模型id
 
 
       wts_data: [],// 问题数选择
@@ -1239,7 +1177,7 @@ export default {
       select_list: [],//责任人数据
       peopleName: '请选择',//责任人默认值
       auditTaskUuid: '',//当前点击的项目id
-
+      modelId: '',//modelid
       //  ------------------------------\
       arr: {},
       sql: '',
@@ -1276,6 +1214,16 @@ export default {
         associatedTask: [{ required: true, message: '请选择关联任务', trigger: 'change' }],
       },
       problems_slect: [],//领域
+      relation_task: [],//关联任务
+      paramDrawUuid: '',
+      runTaskRelUuid: '',//参数任务id
+      systemTime: '',//当前时间
+
+
+      status_data: [
+        { name: "结果1" },
+        { name: '结果2' }
+      ],// 
     }
   },
   computed: {},
@@ -1319,7 +1267,8 @@ export default {
     this.lingyu(params2);//领域
 
 
-    6
+    this.task_problems_relation_data();//关联任务
+
   },
   mounted () { },
   filters: {
@@ -1341,7 +1290,6 @@ export default {
         // console.log(this.select_list);
       })
     },
-
     //tab 切换模型任务   自建任务
     on_Task (index) {
       this.task_type = index;
@@ -1420,8 +1368,6 @@ export default {
       // 模型列表 自建任务
       this.list_data(params);
     },
-
-
     // 模型任务列表  
     list_data (params) {
       this.loading = true
@@ -1433,20 +1379,19 @@ export default {
       })
     },
 
-
-
     // 结果数列表 里的全选
     handleSelectionChange_operation (val) {
       this.multipleSelection_data_list = val;
     },
-
-    // 结果数
-    data_num_click (id) {
-      // console.log(id);
-      this.dialogVisible_data_num = true;//显示结果数
-      this.data_tab();//结果分类tab
+    // 查看结果数
+    data_num_click (status) {
+      if (status == 2) {
+        this.dialogVisible_data_num = true;//显示结果数
+        this.data_tab();//结果分类tab
+      } else {
+        this.$message.info("请选择已经完成的查看");
+      }
     },
-
     // 问题数===================================
     probleNum_click (id) {
       this.problemsDialogVisible = true;//显示问题数弹窗
@@ -1479,46 +1424,42 @@ export default {
       };
       this.task_problems_data(params);
     },
-
     // 新增
     add_list () {
       this.dialogVisible_add_list = true;
       this.problems_title = '新增';
-
     },
-
     // 领域select
     lingyu (params) {
       task_problems_loadcascader(params).then(resp => {
         this.problems_slect = resp.data
       })
     },
-
     // 新增  问题数 保存
     add_list_save (formName) {
-      // this.$refs[formName].validate((valid) => {
-      //   if (valid) {
-      let problemList = {
-        auditTaskUuid: this.auditTaskUuid,
-        field: this.problems_form.field,//领域
-        problem: this.problems_form.problem,//问题
-        basis: this.problems_form.basis,//依据
-        problemDiscoveryTime: this.problems_form.problemDiscoveryTime,//发现时间
-        describe: this.problems_form.describe, // 描述
-        riskAmount: this.problems_form.riskAmount,// 风险金额
-        associatedTask: this.problems_form.associatedTask,// 关联任务
-        // 附件
-      };
-      this.add_task_problems_save(problemList)//
-      // } else {
-      //   this.$message.info("请填写信息");
-      //   return false;
-      // }
-      // })
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          let problemList = {
+            auditTaskUuid: this.auditTaskUuid,
+            field: this.problems_form.field,//领域
+            problem: this.problems_form.problem,//问题
+            basis: this.problems_form.basis,//依据
+            problemDiscoveryTime: this.problems_form.problemDiscoveryTime,//发现时间
+            describe: this.problems_form.describe, // 描述
+            riskAmount: this.problems_form.riskAmount,// 风险金额
+            associatedTask: this.problems_form.associatedTask,// 关联任务
+            // 附件
+          };
+          this.add_task_problems_save(problemList)//
+        } else {
+          this.$message.info("请填写信息");
+          return false;
+        }
+      })
     },
-    // resetForm (formName) {
-    //   this.$refs[formName].resetFields();
-    // },
+    resetForm (formName) {
+      this.$refs[formName].resetFields();
+    },
     // 保存接口
     add_task_problems_save (problemList) {
       task_problems_save(problemList).then(resp => {
@@ -1547,10 +1488,38 @@ export default {
         }
       })
     },
+    //  关联任务
+    problems_task_change (val) {
+      this.problems_form.associatedTask = val
+    },
+
+    // 切换结果分类
+    select_data () {
+
+    },
+
+
     // 编辑
-    edit_list (data) {
+    edit_list (id) {
       this.dialogVisible_add_list = true;
       this.problems_title = '修改'
+      let params = {
+        id: id,
+      }
+      this.edit_details(params);//详情回显
+    },
+    // 问题详情 编辑回显
+    edit_details (params) {
+      task_problems_details(params).then(resp => {
+        let data = resp.data
+        this.problems_form.field = data.field;//领域
+        this.problems_form.problem = data.problem;//问题
+        this.problems_form.basis = data.basis;//依据
+        this.problems_form.problemDiscoveryTime = data.problemDiscoveryTime;//发现时间
+        this.problems_form.describe = data.describe;// 描述
+        this.problems_form.riskAmount = data.riskAmount;// 风险金额
+        this.problems_form.associatedTask = data.associatedTask;// 关联任务
+      })
     },
     // 编辑保存
     add_list_update () {
@@ -1570,18 +1539,35 @@ export default {
     // 编辑问题数列表
     edit_list_data (problemList) {
       task_problems_update(problemList).then(resp => {
-        // this.probleNum = resp.data
-        // this.probleNum_list = resp.data.records
-        console.log(resp);
+        if (resp.code == 0) {
+          this.$message({
+            message: "编辑成功",
+            type: "success",
+          });
+          this.dialogVisible_add_list = false;//关闭借口
+          let params2 = {
+            condition: {
+              auditTaskUuid: this.auditTaskUuid,
+            },
+            pageNo: this.probleNum.pageNo,
+            pageSize: this.probleNum.pageSize,
+          };
+          this.task_problems_data(params2);//问题 成列表
+
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: "error",
+          });
+        }
+
+
       })
     },
-
-
-
-    problems_form_change () {
-
+    // 新增问题  领域change
+    problems_form_change (val) {
+      this.problems_form.field = val;
     },
-
 
     // 删除
     remove_list (id) {
@@ -1623,39 +1609,65 @@ export default {
       this.wts_data = val
     },
 
+    // 关联任务
+    task_problems_relation_data () {
+      task_problems_relation().then(resp => {
+        this.relation_task = resp.data
+      })
+    },
 
-
-
+    // 引用知识库
+    quote_knowledge () {
+      alert('引用知识库')
+    },
 
 
 
 
     // 设置参数
-    setParameters (auditModelUuid) {
-      this.all_setting();// 全部参数
+    setParameters (data) {
+      console.log(data);
+      // this.all_setting();// 全部参数
       this.setParametersDialogVisible = true;//显示设置参数
-      // this.auditModelUuid = auditModelUuid;
-      this.auditModelUuid = '9903ce3a78c00744b57a30a759e79808';
-      let modelUuids = [this.auditModelUuid];
+      this.modelId = data.modelId;
+      this.auditTaskUuid = data.auditTaskUuid;
+
+      // this.auditModelUuid = '9903ce3a78c00744b57a30a759e79808';
+      let modelUuids = [this.modelId];
       task_findModelList(modelUuids).then(resp => {
-        console.log(resp.data);
-        this.arr = JSON.parse(resp.data[0].parammModelRel[0].paramValue);
+        this.arr = [JSON.parse(resp.data[0].parammModelRel[0].paramValue)];
         this.sql = resp.data[0].sqlValue;
       })
-    },
-
-    // 全部参数 起对比作用
-    all_setting () {
-      task_findModelList_all().then(resp => {
-        console.log(resp);
-      })
+      //  展现参数输入界面
+      const timestamp = new Date().getTime();
+      this.paramDrawUuid = timestamp;
+      let _this = this
+      setTimeout(() => {
+        _this.$refs.paramDrawRefNew.createParamNodeHtml(
+          _this.paramDrawUuid,
+          "",
+          "notModelPreview"
+        );
+      }, 200);
     },
 
     //运行
     play_data () {
+      // console.log(this.$refs.paramDrawRefNew.paramInfoArr)
+      let arr1 = this.arr;//
+      let arr2 = this.$refs.paramDrawRefNew.paramInfoArr;
+      let arr3 = [];//储存合并的值
+      for (var s in arr1) {
+        for (var x in arr2) {
+          if (arr1[s].moduleParamId == arr2[x].dataId) {
+            arr3.push(arr1[s].moduleParamId);
+            arr1[s].paramValue = arr2[x].dataDefaultVal
+          }
+        }
+      }
       let settingInfo = {
-        sql: '',
-        paramsArr: '',
+        sql: this.sql,
+        paramsArr: this.arr,
       }
       let runTaskRel = {
         sourceUuid: this.auditModelUuid,
@@ -1663,12 +1675,73 @@ export default {
       }
       this.run(runTaskRel);//运行
     },
+
     // 运行
     run (runTaskRel) {
       Task_run(runTaskRel).then(resp => {
-        console.log(resp);
+        this.runTaskRelUuid = resp.data;//参数任务id
+        if (resp.code == 0) {
+          this.$message({
+            message: "运行成功",
+            type: "success",
+          });
+          this.setParametersDialogVisible = false;//关闭设置参数
+
+          // 获取时间
+          let yy = new Date().getFullYear();
+          let mm = new Date().getMonth() + 1;
+          let dd = new Date().getDate();
+          let hh = new Date().getHours();
+          let mf = new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes();
+          let ss = new Date().getSeconds() < 10 ? '0' + new Date().getSeconds() : new Date().getSeconds();
+          this.systemTime = yy + '-' + mm + '-' + dd + ' ' + hh + ':' + mf + ':' + ss;
+          let params2 = {
+            // auditTask: {
+            // paramTaskContent:,
+            auditTaskUuid: this.auditTaskUuid,//当前对象id
+            // auditTaskUuid: "9903ce3a78c00744b57a30a759e79808",
+            paramTaskUuid: this.runTaskRelUuid,
+            runStatus: 1,
+            // taskStartTime: this.systemTime
+            // }
+          }
+          this.update_setting(params2)//update
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: "error",
+          });
+        }
       })
     },
+
+    // 更新状态
+    update_setting (params2) {
+      Task_update_status(params2).then(resp => {
+        console.log(resp.data);
+        if (resp.code == 0) {
+          // this.$message({
+          //   message: "运行成功",
+          //   type: "success",
+          // });
+
+          // 模型列表
+          let params = {
+            pageNo: this.params.pageNo,
+            pageSize: this.params.pageSize,
+            condition: {
+              auditModelCategory: this.params.auditModelCategory,
+              managementProjectUuid: this.managementProjectUuid,
+              taskName: this.params.taskName,
+              taskType: 1
+            }
+          }
+          this.list_data(params);//刷新列表
+        }
+
+      })
+    },
+
 
     //查询任务状态
     task_status () {
@@ -2080,10 +2153,6 @@ export default {
       })
     },
 
-
-
-
-
     // 自建任务===========
 
     //  关闭清空  
@@ -2379,6 +2448,7 @@ export default {
 .son {
   width: 100%;
   display: flex;
+  margin-top: 20px;
 }
 .son >>> .el-form-item {
   min-width: 280px;
@@ -2390,5 +2460,9 @@ export default {
   margin: 0 10px;
   line-height: 40px;
   padding: 0 10px;
+}
+
+.dlag_conter3 >>> .el-form-item__error {
+  left: 80px;
 }
 </style>

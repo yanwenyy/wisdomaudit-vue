@@ -47,6 +47,8 @@ export function Task_data_status (data) {
   })
 }
 
+
+
 //  查看结果  模型列表的  结果分类
 // export function task_selectModel (data) {
 // return request({
