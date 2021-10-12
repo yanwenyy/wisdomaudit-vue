@@ -98,4 +98,16 @@ export function deleteProject(id){
 }
 
 
+// 专题领域下拉框
+export function thematicAreas(data) {
+  return request({
+    baseURL: baseURL,
+    url: `/init/loadcascader`,
+    method: 'post',
+    data
+  })
+}
+
+
+
 
