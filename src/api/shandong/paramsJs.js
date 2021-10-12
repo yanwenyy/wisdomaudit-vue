@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import $ from "jquery"
-const analysisUrl = '/analysis'
-const baseURL = '/wisdomaudit_son'
+const analysisUrl = '/wisdomaudit_task'
+const baseURL = '/wisdomaudit_task'
 
 
 /**
@@ -14,6 +14,7 @@ export function findParamsAndModelRelParams () {
     method: 'post'
   })
 }
+
 /**
  * 执行当前参数SQL语句
  * @param {*} data   SQL语句
