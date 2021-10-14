@@ -71,8 +71,10 @@
           :key="index"
           style="cursor: pointer"
           class="initProjectItem"
-          @click="look_project(index,item)"
-           :class="active_project == item.managementProjectUuid ? 'active_class' : ''"
+          @click="look_project(index, item)"
+          :class="
+            active_project == item.managementProjectUuid ? 'active_class' : ''
+          "
         >
           {{ item.projectName }}
         </li>
@@ -134,36 +136,35 @@
         </el-col>
       </div>
       <!-- 左侧导航 end -->
-
       <!-- 右侧内容 -->
-      <div class="right_conter">
-        <el-col>
+      <div class="right_conter" v-if="active_project">
+        <el-col v-if="!refreash">
           <!-- 组员及任务维护 -->
           <div class="routerView" v-if="index == '1-1'">
             <TeamPersonTask
               ref="temPersonRef"
-              :projectInitUuid="projectInitUuid"
+              :active_project="active_project"
             />
           </div>
           <!-- 审计资料 -->
           <div class="routerView" v-else-if="index == '2-1'">
-            <AuditData :projectInitUuid="projectInitUuid"></AuditData>
+            <AuditData :active_project="active_project"></AuditData>
           </div>
           <!-- 审计任务 -->
           <div class="routerView" v-else-if="index == '2-2'">
-            <AuditTask :projectInitUuid="projectInitUuid"></AuditTask>
+            <AuditTask :active_project="active_project"></AuditTask>
           </div>
           <div class="routerView" v-else-if="index == '2-3'">
-            <Auditproblem :projectInitUuid="projectInitUuid"></Auditproblem>
+            <Auditproblem :active_project="active_project"></Auditproblem>
           </div>
           <div class="routerView" v-else-if="index == '2-4'">3</div>
           <div class="routerView" v-else-if="index == '3-1'">
             <!-- 审计报告 -->
-            <AuditReport :projectInitUuid="projectInitUuid"></AuditReport>
+            <AuditReport :active_project="active_project"></AuditReport>
           </div>
           <div class="routerView" v-else>
             <Businessindicator
-              :projectInitUuid="projectInitUuid"
+              :active_project="active_project"
             ></Businessindicator>
           </div>
         </el-col>
@@ -171,14 +172,17 @@
       <!-- 右侧内容 end -->
     </el-row>
 
-    <!-- 查看更多未初始化项目 -->
+    <!-- 查看更多初始化项目 -->
     <div class="project_data" :class="project_data == true ? 'opctin' : ''">
       <div class="right_data" @click="close()">
         <ul :class="project_data == true ? 'style_width' : ''" class="ul_data">
           <li
-            @click.stop="look_project(index)"
+            @click.stop="look_project(index,item)"
             v-for="(item, index) in projectInitMore"
             :key="index"
+            :class="
+            active_project == item.managementProjectUuid ? 'active_class' : ''
+          "
           >
             {{ item.projectName }}
           </li>
@@ -277,7 +281,7 @@
         </el-row>
 
         <div class="stepBtn">
-          <el-button @click="addDialogVisible = false">取消</el-button>
+          <el-button @click="addDialogVisibleRes()">取消</el-button>
           <el-button class="nextBtn" @click="nextBtn">下一步</el-button>
         </div>
       </div>
@@ -365,10 +369,20 @@
               </template>
             </el-table-column>
           </el-table>
-          <!-- <span slot="footer" class="dialog-footer">
-        <el-button @click="modelDialog = false">取 消</el-button>
-        <el-button type="primary" @click="modelDialog = false">确 定</el-button>
-      </span> -->
+           <!-- 分页 -->
+      <div class="page">
+        <el-pagination
+          background
+          :hide-on-single-page="false"
+          layout="prev, pager, next"
+          :page-sizes="[2, 4, 6, 8]"
+          :current-page="modelListTabSize.current"
+          @current-change="handleCurrentChangeModelTab"
+          :page-size="modelListTabSize.size"
+          :total="modelListTabSize.total"
+        ></el-pagination>
+      </div>
+      <!-- 分页 end-->
         </div>
         <div v-else-if="radio == '2'" class="selfTask">
           <el-row>
@@ -380,10 +394,7 @@
             </el-col>
           </el-row>
           <el-button type="primary" @click="addTaskSelf">新增</el-button>
-          <el-table
-            :data="tableData"
-            style="width: 100%"
-          >
+          <el-table :data="taskSelfTab" style="width: 100%">
             <el-table-column type="index" label="序号" width="50">
             </el-table-column>
             <el-table-column prop="taskName" label="任务名称">
@@ -391,6 +402,10 @@
             <el-table-column prop="taskDescription" label="任务描述">
             </el-table-column>
             <el-table-column prop="task_text" label="问题描述">
+            </el-table-column>
+            <el-table-column prop="belongSpcial" label="专题">
+            </el-table-column>
+             <el-table-column prop="belongField" label="领域">
             </el-table-column>
             <el-table-column prop="basis" label="依据"> </el-table-column>
             <el-table-column prop="peopleName" label="责任人 " width="200">
@@ -456,6 +471,20 @@
                 </el-button>
               </template>
             </el-table-column>
+              <!-- 分页 -->
+      <div class="page">
+        <el-pagination
+          background
+          :hide-on-single-page="false"
+          layout="prev, pager, next"
+          :page-sizes="[2, 4, 6, 8]"
+          :current-page="taskSelfTabSize.current"
+          @current-change="handleCurrentChangeTaskTab"
+          :page-size="taskSelfTabSize.size"
+          :total="taskSelfTabSize.total"
+        ></el-pagination>
+      </div>
+      <!-- 分页 end-->
           </el-table>
         </div>
 
@@ -492,7 +521,7 @@
         :data="modelTableData"
         style="width: 100%"
         @selection-change="handleSelectionChangeModel"
-        ref="multipleModel"
+        ref="multipleModelRef"
       >
         <el-table-column type="selection" :reserve-selection="true">
         </el-table-column>
@@ -534,7 +563,7 @@
       width="50%"
     >
       <div class="selfTask">
-        <el-form label-width="80px" :model="taskSelf">
+        <el-form label-width="80px" :model="taskSelf" ref="selfTaskRef">
           <el-form-item label="类型：" style="margin-bottom: 50px">
             <div style="margin-top: -5%; margin-bottom: 20px">
               <el-radio v-model="radio" label="1">模型任务</el-radio>
@@ -562,32 +591,32 @@
               </el-option>
             </el-select>
           </el-form-item>
-           <el-form-item label="专题：">
+          <el-form-item label="专  题:" prop="belongSpcial">
             <el-select
-              v-model="tableData.peopleTableUuid"
-              filterable
-              @change="selectChangePerson"
+              placeholder="请选择"
+              v-model="taskSelf.belongSpcial"
+              
             >
               <el-option
-                v-for="item in tableData"
-                :key="item.peopleTableUuid"
-                :label="item.peopleName"
-                :value="item.peopleTableUuid"
+                v-for="item in thematicOption"
+                :key="item.value"
+                :label="item.label"
+                :value="item.label"
               >
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="领域：">
+          <el-form-item label="领   域:" prop="belongField">
             <el-select
-              v-model="tableData.peopleTableUuid"
-              filterable
-              @change="selectChangePerson"
+              placeholder="请选择"
+              v-model="taskSelf.belongField"
+              
             >
               <el-option
-                v-for="item in tableData"
-                :key="item.peopleTableUuid"
-                :label="item.peopleName"
-                :value="item.peopleTableUuid"
+                v-for="item in areasOption"
+                :key="item.value"
+                :label="item.label"
+                :value="item.label"
               >
               </el-option>
             </el-select>
@@ -618,7 +647,102 @@
         </el-form>
         <div class="stepBtn">
           <el-button @click="res">取消</el-button>
-          <el-button type="primary" @click="modelInfo">确认</el-button>
+          <el-button type="primary" @click="taskSelfInfo">确认</el-button>
+        </div>
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      title="编辑自建项目"
+      :visible.sync="editTaskSelfDialogVisible"
+      width="50%"
+    >
+      <div class="selfTask">
+        <el-form label-width="80px" :model="edittaskSelfForm">
+          <!-- <el-form-item label="类型：" style="margin-bottom: 50px">
+            <div style="margin-top: -5%; margin-bottom: 20px">
+              <el-radio v-model="radio" label="1">模型任务</el-radio>
+              <el-radio v-model="radio" label="2">自建任务</el-radio>
+            </div>
+          </el-form-item> -->
+          <el-form-item label="自建任务名称：" style="margin-top: 20px">
+            <el-input
+              placeholder="请输入"
+              v-model="edittaskSelfForm.taskName"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="责任人：" prop="peopleName">
+            <el-select
+              v-model="edittaskSelfForm.peopleTableUuid"
+              filterable
+              @change="selectChangePerson"
+            >
+              <el-option
+                v-for="item in tableData"
+                :key="item.peopleTableUuid"
+                :label="item.peopleName"
+                :value="item.peopleTableUuid"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="专  题:" prop="belongSpcial">
+            <el-select
+              placeholder="请选择"
+              v-model="edittaskSelfForm.belongSpcial"
+              
+            >
+              <el-option
+                v-for="item in thematicOption"
+                :key="item.value"
+                :label="item.label"
+                :value="item.label"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="领   域:" prop="belongField">
+            <el-select
+              placeholder="请选择"
+              v-model="edittaskSelfForm.belongField"
+              
+            >
+              <el-option
+                v-for="item in areasOption"
+                :key="item.value"
+                :label="item.label"
+                :value="item.label"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="任务描述：">
+            <el-input
+              type="textarea"
+              style="top: -35px; width: 400px"
+              v-model="edittaskSelfForm.taskDescription"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="上传附件：">
+            <el-upload
+              class="upload-demo"
+              drag
+              action="https://jsonplaceholder.typicode.com/posts/"
+              multiple
+            >
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">
+                将文件拖到此处，或<em>点击上传</em>
+              </div>
+              <div class="el-upload__tip" slot="tip">
+                只能上传jpg/png文件，且不超过500kb
+              </div>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+        <div class="stepBtn">
+          <el-button @click="editTaskSelfDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="edittaskSelf">确认</el-button>
         </div>
       </div>
     </el-dialog>
@@ -632,7 +756,10 @@ import AuditTask from "@/components/workbench/AuditTask/index"; //审计任务
 import Auditproblem from "@/components/workbench/auditproblem/index"; //审计问题
 import Businessindicator from "@/components/workbench/businessindicator/index"; //经营指标
 import AuditReport from "@/components/workbench/AuditReport/index"; //审计问题
-import { projectList } from "@WISDOMAUDIT/api/shandong/projectmanagement.js";
+import {
+  projectList,
+  thematicAreas,
+} from "@WISDOMAUDIT/api/shandong/projectmanagement.js";
 import {
   projectMembership,
   editprojectMembership,
@@ -649,6 +776,8 @@ import {
   editmodelPerson,
   deletmodelTask,
   isModel,
+  editTaskSelf,
+  editTaskSelfInfo,
 } from "@WISDOMAUDIT/api/shandong/memberMaintenance.js";
 
 export default {
@@ -662,7 +791,9 @@ export default {
   },
   data() {
     return {
-      active_project:'0',//初始化项目有 默认选择
+      ifshow:false,
+      refreash:false,
+      active_project: "", //初始化项目有 默认选择
       index: "1-1", //默认指定项
       project_data: false, //更多项目
       drawer: false, //更多未初始化项目
@@ -691,7 +822,7 @@ export default {
         //初始化项目展示入参
         condition: {
           status: 1,
-          peopleTableUuid:'dfb11b4e26c4f4a0647a3f8238aa0a11',
+          peopleTableUuid: "dfb11b4e26c4f4a0647a3f8238aa0a11",
         },
         pageNo: 1,
         pageSize: 6,
@@ -699,6 +830,7 @@ export default {
       queryProjectAll: {
         //初始化项目更多入参
         condition: {
+           peopleTableUuid: "dfb11b4e26c4f4a0647a3f8238aa0a11",
           status: 1,
         },
         pageNo: 1,
@@ -743,6 +875,27 @@ export default {
         peopleTableUuid: "",
         taskDescription: "",
         taskName: "",
+        belongField: "",
+        belongSpcial: "",
+        taskType: "2",
+      },
+      edittaskSelfForm: {
+        peopleName: "",
+        peopleTableUuid: "",
+        taskDescription: "",
+        taskName: "",
+        belongField: "",
+        belongSpcial: "",
+        taskType: "2",
+      },
+      editTaskSelfData: {
+        auditTaskUuid: "",
+        peopleName: "",
+        peopleTableUuid: "",
+        taskDescription: "",
+        belongField: "",
+        belongSpcial: "",
+        taskName: "",
         taskType: "2",
       },
       tableData: [],
@@ -754,10 +907,20 @@ export default {
       isInfo: 1,
       modelDialog: false,
       modelTableData: [],
+      modelListTabSize:[], //模型分页返回值
+      taskSelfTabSize:[],//自建任务分页
       getModelList: {
         condition: {
           managementProjectUuid: "",
           taskType: "1",
+        },
+        pageNo: 1,
+        pageSize: 5,
+      },
+      getTaskSelfList: {
+        condition: {
+          managementProjectUuid: "",
+          taskType: "2",
         },
         pageNo: 1,
         pageSize: 5,
@@ -778,12 +941,32 @@ export default {
         pageSize: 1000,
       },
       taskSelfDialogVisible: false, //自建任务
+      thematicOption: [],
+      areasOption: [],
+      thematic: {
+        typecode: "SPECIAL",
+      },
+      areas: {
+        typecode: "Category",
+      },
+      editTaskSelfDialogVisible: false, //编辑自建任务窗口
+      taskSelfTab:[],//自建任务列表
     };
+  },watch: {
+    'active_project' (val) { 
+      this.refreash = true
+      console.log('-----------------------'+this.active_project)
+      let _this = this
+      setTimeout(function name() {
+        _this.refreash = false
+      },500)
+    }
   },
   created() {
     this.getprojectList(this.queryManage);
     this.getInitProject(this.queryProject);
-
+    this.thematicSelect(this.thematic);
+    this.areasSelect(this.areas);
   },
   methods: {
     //查询项目
@@ -794,10 +977,11 @@ export default {
     },
     // 初始化项目
     getInitProject(data) {
+      this.ifshow = true
       initProject(data).then((resp) => {
         this.projectInit = resp.data.records;
-        console.log(this.projectInit);
-           this.active_project = resp.data.records[0].managementProjectUuid
+        this.active_project = resp.data.records[0].managementProjectUuid;
+        this.ifshow = false
       });
     },
     open(index) {
@@ -807,7 +991,6 @@ export default {
     // 查看更多初始化项目
     project_more() {
       this.project_data = true;
-
       initProject(this.queryProjectAll).then((resp) => {
         this.projectInitMore = resp.data.records;
         console.log(this.projectInitMore);
@@ -816,26 +999,25 @@ export default {
     close() {
       this.project_data = false;
     },
-    look_project(index,item) {
-      this.active_project = item.managementProjectUuid;//点击选择添加高亮
-      this.projectInit.splice(index, 1)
-      this.projectInit.unshift(item)
+    look_project(index, item) {
+      this.active_project = item.managementProjectUuid; //点击选择添加高亮
+      this.projectInit.splice(index, 1);
+      this.projectInit.unshift(item);
 
-
-if (index > 6) {
+      if (index > 6) {
         this.projectInitUuid =
           this.projectInitMore[index].managementProjectUuid;
       } else {
         this.projectInitUuid = this.projectInit[index].managementProjectUuid;
       }
-      console.log(this.projectInitUuid);
+      // console.log(this.active_project);
     },
     // 组员查询
     getSelectData(data) {
       getProjectMember(data).then((resp) => {
         this.personMes = resp.data.records;
         this.tableData = resp.data.records;
-        console.log(this.tableData);
+        // console.log(this.tableData);
       });
     },
     //调用组员维护组件的第一步第二步弹框事件
@@ -861,13 +1043,16 @@ if (index > 6) {
         this.managementProjectUuid;
       // console.log(this.getModelList);
       this.getauditModelList(this.getModelList);
+      this.getTaskSelfList.condition.managementProjectUuid =
+        this.managementProjectUuid;
+      this.getTaskSelf(this.getTaskSelfList);
     },
     // 更多
     moreProject() {
       this.drawer = true;
       projectList(this.queryManageAll).then((resp) => {
         this.projectAll = resp.data.records;
-        console.log(this.projectAll);
+        // console.log(this.projectAll);
       });
     },
     // 选择组员事件
@@ -960,12 +1145,14 @@ if (index > 6) {
     },
     // 模型选择事件
     handleSelectionChangeModel(val) {
-      console.log(val);
+      // console.log(val);
       this.selectauditModelList.auditModelList = [];
       for (let i = 0; i < val.length; i++) {
         this.selectauditModelList.auditModelList.push({
           auditModelUuid: val[i].auditModelUuid,
           modelName: val[i].modelName,
+          belongField: val[i].belongField,
+          belongSpcial: val[i].belongSpcial,
         });
       }
       this.selectauditModelList.projectId = this.managementProjectUuid;
@@ -976,7 +1163,7 @@ if (index > 6) {
       isModel(this.ismodelList).then((resp) => {
         // console.log(resp);
         if (resp.data.total > 0) {
-          this.$refs.multipleModel.toggleRowSelection(val[val.length - 1]);
+          this.$refs.multipleModelRef.toggleRowSelection(val[val.length - 1]);
           this.$message.error("项目中已存在该模型！");
         }
       });
@@ -989,11 +1176,12 @@ if (index > 6) {
       for (let i = 0; i < this.tableData.length; i++) {
         if (val == this.tableData[i].peopleTableUuid) {
           this.taskSelf.peopleName = this.tableData[i].peopleName;
+          this.edittaskSelfForm.peopleName = this.tableData[i].peopleName;
         }
       }
     },
     selectChangenumber(val) {
-      console.log(val);
+      // console.log(val);
       this.changePerson.peopleTableUuid = val.peopleTableUuid;
       for (let i = 0; i < this.tableData.length; i++) {
         if (val.peopleTableUuid == this.tableData[i].peopleTableUuid) {
@@ -1003,7 +1191,7 @@ if (index > 6) {
       this.changePerson.managementProjectUuid = this.managementProjectUuid;
       this.changePerson.auditTaskUuid = val.auditTaskUuid;
       editmodelPerson(this.changePerson).then((resp) => {
-        console.log(resp);
+        // console.log(resp);
       });
     },
 
@@ -1011,21 +1199,21 @@ if (index > 6) {
     saveBtn() {
       //判断是模型任务还是自建任务
       // console.log(this.selectauditModelList.auditModelList);
-      if (
-        this.radio == 1 &&
-        this.selectauditModelList.auditModelList.length !== 0
-      ) {
-        quoteModel(this.selectauditModelList).then((resp) => {
-          this.$message.success("创建成功！");
-        });
-      }
+      // if (
+      //   this.radio == 1 &&
+      //   this.selectauditModelList.auditModelList.length !== 0
+      // ) {
+      //   quoteModel(this.selectauditModelList).then((resp) => {
+      //     this.$message.success("创建成功！");
+      //   });
+      // }
 
-      if (this.radio == 2) {
-        this.taskSelf.managementProjectUuid = this.managementProjectUuid;
-        selfTaskFunction(this.taskSelf).then((resp) => {
-          this.$message.success("自建任务创建成功！");
-        });
-      }
+      // if (this.radio == 2) {
+      //   this.taskSelf.managementProjectUuid = this.managementProjectUuid;
+      //   selfTaskFunction(this.taskSelf).then((resp) => {
+      //     this.$message.success("自建任务创建成功！");
+      //   });
+      // }
 
       editprojectMembershipList(this.peopleSelection).then((resp) => {
         this.$message.success("修改成功！");
@@ -1033,12 +1221,12 @@ if (index > 6) {
       this.projectCode.managementProjectUuid = this.managementProjectUuid;
       // this.projectCode.projectType = this.notInitType;
       editProjectCode(this.projectCode).then((resp) => {
-        console.log(resp);
+        // console.log(resp);
       });
 
-      // setInterval(() => {
-      //   this.addDialogVisible = false;
-      // }, 3000);
+      setInterval(() => {
+        this.$router.go(0)
+      }, 1000);
     },
     //
     selectModel() {
@@ -1047,13 +1235,19 @@ if (index > 6) {
     },
     res() {
       this.modelDialog = false;
+      this.taskSelf = []
       this.addDialogVisible = true;
+      for(let i =0 ;i<this.modelTableData.length;i++){
+        this.$refs.multipleModelRef.toggleRowSelection(this.modelTableData[i], false);
+      }
+       
     },
     // 模型列表渲染
     getauditModelList(data) {
       modelTaskList(data).then((resp) => {
         this.modelListTab = resp.data.records;
-        console.log(this.modelListTab);
+        this.modelListTabSize = resp.data
+        // console.log(this.modelListTab);
       });
     },
     // 模型引入
@@ -1070,9 +1264,7 @@ if (index > 6) {
       });
     },
     deletePerson(rows) {
-      console.log(rows);
       deletmodelTask(rows.auditTaskUuid).then((resp) => {
-        console.log(resp);
         // console.log(this.managementProjectUuid);
         this.getModelList.condition.managementProjectUuid =
           this.managementProjectUuid;
@@ -1080,11 +1272,113 @@ if (index > 6) {
         this.getauditModelList(this.getModelList);
       });
     },
+    // 模型列表分页事件
+    handleCurrentChangeModelTab(val){
+        let getModelList ={
+           condition: {
+          managementProjectUuid: this.managementProjectUuid,
+          taskType: "1",
+        },
+          pageNo: val,
+          pageSize: 5,
+        }
+        this.getauditModelList(getModelList);
+    },
+    handleCurrentChangeTaskTab(val){
+       let getTaskSelfList = {
+          condition: {
+          managementProjectUuid: this.managementProjectUuid,
+          taskType: "2",
+        },
+          pageNo: val,
+          pageSize: 5,
+       }
+        this.getTaskSelf(getTaskSelfList);
+    },
     // 新增自建任务
     addTaskSelf() {
       this.addDialogVisible = false;
       this.taskSelfDialogVisible = true;
     },
+    // 专题下拉框
+    thematicSelect(data) {
+      thematicAreas(data).then((resp) => {
+        this.thematicOption = resp.data;
+        // console.log(this.thematicOption);
+      });
+    },
+    //领域下拉框
+    areasSelect(data) {
+      thematicAreas(data).then((resp) => {
+        this.areasOption = resp.data;
+        // console.log(this.areasOption);
+      });
+    },
+    // 确定自建任务
+    taskSelfInfo() {
+      this.taskSelf.managementProjectUuid = this.managementProjectUuid;
+      selfTaskFunction(this.taskSelf).then((resp) => {
+        this.$message.success("自建任务创建成功！");
+        this.taskSelfDialogVisible = false;
+        this.addDialogVisible = true;
+        this.getTaskSelfList.condition.managementProjectUuid =
+        this.managementProjectUuid;
+        this.getTaskSelf(this.getTaskSelfList);
+      });
+    },
+    // 自建任务列表渲染
+    getTaskSelf(data) {
+      modelTaskList(data).then((resp) => {
+        this.taskSelfTab = resp.data.records;
+        this.taskSelfTabSize = resp.data;
+      });
+    },
+    // 编辑自建按钮
+    edit_data(row) {
+      this.editTaskSelfDialogVisible = true;
+      editTaskSelf(row.auditTaskUuid).then((resp) => {
+        this.edittaskSelfForm = resp.data;
+      });
+    },
+    // 自建任务编辑完成按钮
+    edittaskSelf() {
+      this.editTaskSelfData.auditTaskUuid = this.edittaskSelfForm.auditTaskUuid;
+      this.editTaskSelfData.peopleName = this.edittaskSelfForm.peopleName;
+      this.editTaskSelfData.peopleTableUuid =
+        this.edittaskSelfForm.peopleTableUuid;
+      this.editTaskSelfData.taskDescription =
+        this.edittaskSelfForm.taskDescription;
+      this.editTaskSelfData.taskName = this.edittaskSelfForm.taskName;
+      this.editTaskSelfData.belongSpcial = this.edittaskSelfForm.belongSpcial;
+      this.editTaskSelfData.belongField = this.edittaskSelfForm.belongField;
+      editTaskSelfInfo(this.editTaskSelfData).then((resp) => {
+        if (resp.code == 0) {
+          this.$message.success("修改自建任务成功！");
+          this.editTaskSelfDialogVisible = false;
+        }
+      });
+       this.addDialogVisible = true;
+       this.getTaskSelfList.condition.managementProjectUuid =
+          this.managementProjectUuid;
+          this.getTaskSelf(this.getTaskSelfList);
+         
+    },
+    // 自建任务删除
+    delete_zj(id){
+       deletmodelTask(id).then((resp) => {
+        // console.log(this.managementProjectUuid);
+        this.getTaskSelfList.condition.managementProjectUuid =
+          this.managementProjectUuid;
+          this.getTaskSelf(this.getTaskSelfList);
+      });
+    },
+    //步骤关闭事件
+    addDialogVisibleRes(){
+      this.addDialogVisible = false;
+       for(let i =0 ;i<this.personMes.length;i++){
+        this.$refs.personRef.toggleRowSelection(this.personMes[i], false);
+      }
+    }
   },
 };
 </script>
@@ -1494,7 +1788,7 @@ if (index > 6) {
   margin-top: -35px;
 }
 .initProjectItem {
-  background-color:gainsboro;
+  background-color: gainsboro;
   color: #000;
 }
 </style>
@@ -1502,7 +1796,7 @@ if (index > 6) {
 /deep/ .el-drawer__open .el-drawer.rtl {
   width: 21%;
 }
-.active_class{
+.active_class {
   background: #0c87d6 !important;
 }
 </style>

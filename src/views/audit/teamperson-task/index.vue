@@ -457,7 +457,7 @@ export default {
   // props:{
   //   projectNum:[],
   // },
-  props:['managementProjectUuid'],
+  props:['managementProjectUuid','active_project'],
   data() {
     return {
       modelTableData: [],
@@ -469,6 +469,7 @@ export default {
       editId: "",
       loading: false,
       activeName: "first",
+      active_projectchild:'',
       query: {
         condition: {
           managementProjectUuid:"",
@@ -535,6 +536,8 @@ export default {
     };
   },
   created() {
+    // console.log(this.active_project)
+    this.query.condition.managementProjectUuid = this.active_project;
     this.projectMember(this.query);
     this.getSelectData(this.select);
     this.getmodelTaskList(this.queryInfo);
