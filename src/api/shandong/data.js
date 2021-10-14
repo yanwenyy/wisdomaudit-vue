@@ -81,11 +81,10 @@ export function data_save (data) {
 
 // 资料列表新增后的 编辑
 export function data_edit_details (data) {
-  let id = data.id
   return request({
     baseURL: baseURL,
-    url: '/addDataTask/getById/' + id + '',
-    method: 'get',
+    url: `/addDataTask/getById`,
+    method: 'post',
     data
   })
 }

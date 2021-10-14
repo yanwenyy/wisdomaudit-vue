@@ -27,18 +27,14 @@
           </el-col>
 
           <div class="text">
-            <el-col>
+            <el-input type="textarea"
+                      v-model="administrativeAdvice">
               1.23o239139219830921832390131
-            </el-col>
+            </el-input>
           </div>
 
         </el-row>
 
-        <el-row>
-          <el-col>
-
-          </el-col>
-        </el-row>
       </div>
 
       <div class="top">
@@ -50,18 +46,14 @@
           </el-col>
 
           <div class="text">
-            <el-col>
+            <el-input type="textarea"
+                      v-model="businessEvaluation">
               1.23o239139219830921832390131
-            </el-col>
+            </el-input>
           </div>
 
         </el-row>
 
-        <el-row>
-          <el-col>
-
-          </el-col>
-        </el-row>
       </div>
 
       <div class="bottom">
@@ -197,7 +189,7 @@
 
 <script>
 
-import { task_pageList_wt } from '@SDMOBILE/api/shandong/AuditReport'
+import { task_pageList_wt, task_pageList_export } from '@SDMOBILE/api/shandong/AuditReport'
 import { fmtDate } from '@SDMOBILE/model/time.js';
 
 export default {
@@ -216,8 +208,8 @@ export default {
       dlag_Correlation_zb: false,//添加关联指标
       dlag_Correlation_wt: false,//添加关联问题
 
-      zb_list: [],//指标多选
-      zb_list: [],//问题多选
+      multipleSelection: [],//指标多选
+      multipleSelection2: [],//问题多选
       tableData1: [
         {
           name: '个人',
@@ -241,7 +233,8 @@ export default {
         },
       ],
       managementProjectUuid: 'string',//项目管理id
-
+      administrativeAdvice: '',//管理建议
+      businessEvaluation: '',//经营评价
       // 模糊查询
       query: {
         problem: '',//模糊查询
@@ -277,18 +270,32 @@ export default {
     Correlation_zb () {
       this.dlag_Correlation_zb = true;//添加关联指标
     },
-    // 指标确认保存
-    query_save_zb () {
-      this.dlag_Correlation_zb = false;//添加关联指标
-
-    },
     // 指标多选
     handleSelectionChange_zb (val) {
-      this.zb_list = val
+      this.multipleSelection = val;
+    },
+    // 指标确认保存
+    query_save_zb () {
+      console.log(this.multipleSelection);
+      if (this.multipleSelection.length == 0) {
+        this.$message.info("至少关联一条数据！");
+        return false;
+      }
+
+      let array1 = [];//数组1
+      this.multipleSelection.forEach((item) => {
+        array1.push(item);
+      });
+      console.log(array1);
+
+
+      // this.dlag_Correlation_zb = false;//添加关联指标
+
     },
 
 
-    // 添加关联问题
+
+    // 添加关联问题====================================
     Correlation_wt () {
       let params = {
         condition: {
@@ -298,30 +305,50 @@ export default {
       }
       this.dlag_Correlation_wt = true;//添加关联问题
       task_pageList_wt(params).then(resp => {
-        console.log(resp.data);
+        // console.log(resp.data);
         this.tableData2 = resp.data;
         this.tableData2_list = resp.data.records;
       })
     },
-    handleSelectionChange_wt () {
-      this.wt_list = val;
+    // 问题多选
+    handleSelectionChange_wt (val) {
+      this.multipleSelection2 = val;
     },
+
 
     // 指标确认保存
     query_save_wt () {
+      if (this.multipleSelection2.length == 0) {
+        this.$message.info("至少关联一条数据！");
+        return false;
+      }
+      let array1 = [];//数组1
+      this.multipleSelection2.forEach((item) => {
+        array1.push(item);
+      });
+      console.log(array1);
+      return
+      // this.businessEvaluation = array1;
+
       this.dlag_Correlation_wt = false;//添加关联问题
 
-    },
-    // 指标多选
-    handleSelectionChange_zb (val) {
-      this.wt_list = val
     },
 
     // 生成报告
     query_report () {
-
+      let params = {
+        managementProjectUuid: this.managementProjectUuid,//项目id
+        administrativeAdvice: this.administrativeAdvice,//管理建议
+        businessEvaluation: this.businessEvaluation//经营评价
+      }
+      this.generate(params);//生成
     },
-
+    // 生成
+    generate (params) {
+      task_pageList_export(params).then(resp => {
+        console.log(resp.data);
+      })
+    },
 
   },
 
@@ -351,8 +378,6 @@ export default {
 .text {
   width: 100%;
   float: left;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  padding: 20px;
   box-sizing: border-box;
   margin-top: 20px;
 }
