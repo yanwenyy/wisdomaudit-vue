@@ -71,7 +71,8 @@
           :key="index"
           style="cursor: pointer"
           class="initProjectItem"
-          @click="look_project(index)"
+          @click="look_project(index,item)"
+           :class="active_project == item.managementProjectUuid ? 'active_class' : ''"
         >
           {{ item.projectName }}
         </li>
@@ -139,26 +140,31 @@
         <el-col>
           <!-- 组员及任务维护 -->
           <div class="routerView" v-if="index == '1-1'">
-            <TeamPersonTask ref="temPersonRef" :projectInitUuid = projectInitUuid />
+            <TeamPersonTask
+              ref="temPersonRef"
+              :projectInitUuid="projectInitUuid"
+            />
           </div>
           <!-- 审计资料 -->
           <div class="routerView" v-else-if="index == '2-1'">
-            <AuditData :projectInitUuid = projectInitUuid></AuditData>
+            <AuditData :projectInitUuid="projectInitUuid"></AuditData>
           </div>
           <!-- 审计任务 -->
           <div class="routerView" v-else-if="index == '2-2'">
-            <AuditTask :projectInitUuid = projectInitUuid></AuditTask>
+            <AuditTask :projectInitUuid="projectInitUuid"></AuditTask>
           </div>
           <div class="routerView" v-else-if="index == '2-3'">
-            <Auditproblem :projectInitUuid = projectInitUuid></Auditproblem>
+            <Auditproblem :projectInitUuid="projectInitUuid"></Auditproblem>
           </div>
           <div class="routerView" v-else-if="index == '2-4'">3</div>
           <div class="routerView" v-else-if="index == '3-1'">
             <!-- 审计报告 -->
-            <AuditReport :projectInitUuid = projectInitUuid></AuditReport>
+            <AuditReport :projectInitUuid="projectInitUuid"></AuditReport>
           </div>
           <div class="routerView" v-else>
-            <Businessindicator :projectInitUuid = projectInitUuid></Businessindicator>
+            <Businessindicator
+              :projectInitUuid="projectInitUuid"
+            ></Businessindicator>
           </div>
         </el-col>
       </div>
@@ -352,9 +358,7 @@
                   type="text"
                   style="color: #db454b"
                   size="small"
-                  @click.native.prevent="
-                    deletePerson(scope.row)
-                  "
+                  @click.native.prevent="deletePerson(scope.row)"
                 >
                   删除
                 </el-button>
@@ -367,58 +371,92 @@
       </span> -->
         </div>
         <div v-else-if="radio == '2'" class="selfTask">
-          <el-form label-width="80px" :model="taskSelf">
-            <el-form-item label="类型：" style="margin-bottom: 50px">
-              <div style="margin-top: -7.7%; margin-bottom: 20px">
+          <el-row>
+            <el-col>
+              <div style="margin-top: 0; margin-bottom: 20px">
                 <el-radio v-model="radio" label="1">模型任务</el-radio>
                 <el-radio v-model="radio" label="2">自建任务</el-radio>
               </div>
-            </el-form-item>
-            <el-form-item label="自建任务名称：">
-              <el-input
-                placeholder="请输入"
-                v-model="taskSelf.taskName"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="责任人：">
-              <el-select
-                v-model="tableData.peopleTableUuid"
-                filterable
-                @change="selectChangePerson"
-              >
-                <el-option
-                  v-for="item in tableData"
-                  :key="item.peopleTableUuid"
-                  :label="item.peopleName"
-                  :value="item.peopleTableUuid"
+            </el-col>
+          </el-row>
+          <el-button type="primary" @click="addTaskSelf">新增</el-button>
+          <el-table
+            :data="tableData"
+            style="width: 100%"
+          >
+            <el-table-column type="index" label="序号" width="50">
+            </el-table-column>
+            <el-table-column prop="taskName" label="任务名称">
+            </el-table-column>
+            <el-table-column prop="taskDescription" label="任务描述">
+            </el-table-column>
+            <el-table-column prop="task_text" label="问题描述">
+            </el-table-column>
+            <el-table-column prop="basis" label="依据"> </el-table-column>
+            <el-table-column prop="peopleName" label="责任人 " width="200">
+              <!-- <template slot-scope="scope">
+                <el-select
+                  style="margin-top:50px;width:150px"
+                  v-model="scope.row.peopleName"
+                  @change="changeHeader(scope.row, 2)"
                 >
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="任务描述：">
-              <el-input
-                type="textarea"
-                style="top: -35px; width: 400px"
-                v-model="taskSelf.taskDescription"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="上传附件：">
-              <el-upload
-                class="upload-demo"
-                drag
-                action="https://jsonplaceholder.typicode.com/posts/"
-                multiple
-              >
-                <i class="el-icon-upload"></i>
-                <div class="el-upload__text">
-                  将文件拖到此处，或<em>点击上传</em>
-                </div>
-                <div class="el-upload__tip" slot="tip">
-                  只能上传jpg/png文件，且不超过500kb
-                </div>
-              </el-upload>
-            </el-form-item>
-          </el-form>
+                  <el-option
+                    v-for="item in select_list"
+                    :key="item.peopleTable.peopleTableUuid"
+                    :label="item.peopleTable.peopleName"
+                    :value="item.peopleTable.peopleName"
+                  >
+                  </el-option>
+                </el-select>
+              </template> -->
+            </el-table-column>
+
+            <el-table-column prop="address" label="附件" width="90">
+              <div class="update">
+                <i class="update_icon">
+                  <svg
+                    t="1631877671204"
+                    class="icon"
+                    viewBox="0 0 1024 1024"
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    p-id="9939"
+                    width="20"
+                    height="20"
+                  >
+                    <path
+                      d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
+                      fill="#FD9D27"
+                      p-id="9940"
+                    ></path>
+                  </svg>
+                </i>
+                <span>2</span>
+              </div>
+            </el-table-column>
+
+            <el-table-column label="操作">
+              <template scope="scope">
+                <!-- 编辑 -->
+                <el-button
+                  @click="edit_data(scope.row)"
+                  type="text"
+                  style="color: #1371cc"
+                  size="small"
+                >
+                  编辑
+                </el-button>
+                <el-button
+                  @click="delete_zj(scope.row.auditTaskUuid)"
+                  type="text"
+                  style="color: red"
+                  size="small"
+                >
+                  删除
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
 
         <div class="stepBtn">
@@ -488,6 +526,102 @@
         <el-button type="primary" @click="modelInfo">确认</el-button>
       </div>
     </el-dialog>
+
+    <!-- 自建任务弹出框 -->
+    <el-dialog
+      title="自建任务"
+      :visible.sync="taskSelfDialogVisible"
+      width="50%"
+    >
+      <div class="selfTask">
+        <el-form label-width="80px" :model="taskSelf">
+          <el-form-item label="类型：" style="margin-bottom: 50px">
+            <div style="margin-top: -5%; margin-bottom: 20px">
+              <el-radio v-model="radio" label="1">模型任务</el-radio>
+              <el-radio v-model="radio" label="2">自建任务</el-radio>
+            </div>
+          </el-form-item>
+          <el-form-item label="自建任务名称：">
+            <el-input
+              placeholder="请输入"
+              v-model="taskSelf.taskName"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="责任人：">
+            <el-select
+              v-model="tableData.peopleTableUuid"
+              filterable
+              @change="selectChangePerson"
+            >
+              <el-option
+                v-for="item in tableData"
+                :key="item.peopleTableUuid"
+                :label="item.peopleName"
+                :value="item.peopleTableUuid"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+           <el-form-item label="专题：">
+            <el-select
+              v-model="tableData.peopleTableUuid"
+              filterable
+              @change="selectChangePerson"
+            >
+              <el-option
+                v-for="item in tableData"
+                :key="item.peopleTableUuid"
+                :label="item.peopleName"
+                :value="item.peopleTableUuid"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="领域：">
+            <el-select
+              v-model="tableData.peopleTableUuid"
+              filterable
+              @change="selectChangePerson"
+            >
+              <el-option
+                v-for="item in tableData"
+                :key="item.peopleTableUuid"
+                :label="item.peopleName"
+                :value="item.peopleTableUuid"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="任务描述：">
+            <el-input
+              type="textarea"
+              style="top: -35px; width: 400px"
+              v-model="taskSelf.taskDescription"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="上传附件：">
+            <el-upload
+              class="upload-demo"
+              drag
+              action="https://jsonplaceholder.typicode.com/posts/"
+              multiple
+            >
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">
+                将文件拖到此处，或<em>点击上传</em>
+              </div>
+              <div class="el-upload__tip" slot="tip">
+                只能上传jpg/png文件，且不超过500kb
+              </div>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+        <div class="stepBtn">
+          <el-button @click="res">取消</el-button>
+          <el-button type="primary" @click="modelInfo">确认</el-button>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -514,7 +648,7 @@ import {
   modelTaskList,
   editmodelPerson,
   deletmodelTask,
-  isModel
+  isModel,
 } from "@WISDOMAUDIT/api/shandong/memberMaintenance.js";
 
 export default {
@@ -528,6 +662,7 @@ export default {
   },
   data() {
     return {
+      active_project:'0',//初始化项目有 默认选择
       index: "1-1", //默认指定项
       project_data: false, //更多项目
       drawer: false, //更多未初始化项目
@@ -556,6 +691,7 @@ export default {
         //初始化项目展示入参
         condition: {
           status: 1,
+          peopleTableUuid:'dfb11b4e26c4f4a0647a3f8238aa0a11',
         },
         pageNo: 1,
         pageSize: 6,
@@ -628,16 +764,26 @@ export default {
       },
       modelListTab: [],
       changePerson: {
-        managementProjectUuid:'',
+        managementProjectUuid: "",
         auditTaskUuid: "",
         peopleName: "",
         peopleTableUuid: "",
       },
+      ismodelList: {
+        condition: {
+          managementProjectUuid: "",
+          auditModelUuid: "",
+        },
+        pageNo: 1,
+        pageSize: 1000,
+      },
+      taskSelfDialogVisible: false, //自建任务
     };
   },
   created() {
     this.getprojectList(this.queryManage);
     this.getInitProject(this.queryProject);
+
   },
   methods: {
     //查询项目
@@ -646,10 +792,12 @@ export default {
         this.projectNum = resp.data.records;
       });
     },
+    // 初始化项目
     getInitProject(data) {
       initProject(data).then((resp) => {
         this.projectInit = resp.data.records;
         console.log(this.projectInit);
+           this.active_project = resp.data.records[0].managementProjectUuid
       });
     },
     open(index) {
@@ -659,6 +807,7 @@ export default {
     // 查看更多初始化项目
     project_more() {
       this.project_data = true;
+
       initProject(this.queryProjectAll).then((resp) => {
         this.projectInitMore = resp.data.records;
         console.log(this.projectInitMore);
@@ -667,9 +816,13 @@ export default {
     close() {
       this.project_data = false;
     },
-    look_project(index) {
-      // alert(index);
-      if (index > 6) {
+    look_project(index,item) {
+      this.active_project = item.managementProjectUuid;//点击选择添加高亮
+      this.projectInit.splice(index, 1)
+      this.projectInit.unshift(item)
+
+
+if (index > 6) {
         this.projectInitUuid =
           this.projectInitMore[index].managementProjectUuid;
       } else {
@@ -816,7 +969,17 @@ export default {
         });
       }
       this.selectauditModelList.projectId = this.managementProjectUuid;
-      
+      this.ismodelList.condition.auditModelUuid =
+        val[val.length - 1].auditModelUuid;
+      this.ismodelList.condition.managementProjectUuid =
+        this.managementProjectUuid;
+      isModel(this.ismodelList).then((resp) => {
+        // console.log(resp);
+        if (resp.data.total > 0) {
+          this.$refs.multipleModel.toggleRowSelection(val[val.length - 1]);
+          this.$message.error("项目中已存在该模型！");
+        }
+      });
     },
     // 自建任务责任人下拉框事件
     selectChangePerson(val) {
@@ -901,23 +1064,27 @@ export default {
         this.modelDialog = false;
         this.addDialogVisible = true;
         this.getModelList.condition.managementProjectUuid =
-        this.managementProjectUuid;
-      // console.log(this.getModelList);
-      this.getauditModelList(this.getModelList);
+          this.managementProjectUuid;
+        // console.log(this.getModelList);
+        this.getauditModelList(this.getModelList);
       });
     },
-    deletePerson(rows){
+    deletePerson(rows) {
       console.log(rows);
-      deletmodelTask(rows.auditTaskUuid).then((resp)=>{
+      deletmodelTask(rows.auditTaskUuid).then((resp) => {
         console.log(resp);
-          // console.log(this.managementProjectUuid);
-      this.getModelList.condition.managementProjectUuid =
-        this.managementProjectUuid;
-      // console.log(this.getModelList);
-      this.getauditModelList(this.getModelList);
-      })
-
-    }
+        // console.log(this.managementProjectUuid);
+        this.getModelList.condition.managementProjectUuid =
+          this.managementProjectUuid;
+        // console.log(this.getModelList);
+        this.getauditModelList(this.getModelList);
+      });
+    },
+    // 新增自建任务
+    addTaskSelf() {
+      this.addDialogVisible = false;
+      this.taskSelfDialogVisible = true;
+    },
   },
 };
 </script>
@@ -1306,7 +1473,7 @@ export default {
   padding: 2%;
 }
 .selfTask {
-  width: 50%;
+  width: 90%;
   margin: 0 auto;
   /* border: 1px solid red; */
 }
@@ -1327,12 +1494,15 @@ export default {
   margin-top: -35px;
 }
 .initProjectItem {
-  background-color: #0c87d6;
-  color: #fff;
+  background-color:gainsboro;
+  color: #000;
 }
 </style>
 <style scoped>
 /deep/ .el-drawer__open .el-drawer.rtl {
   width: 21%;
+}
+.active_class{
+  background: #0c87d6 !important;
 }
 </style>
