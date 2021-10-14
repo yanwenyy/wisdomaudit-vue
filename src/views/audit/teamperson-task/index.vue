@@ -435,7 +435,7 @@ export default {
   // props:{
   //   projectNum:[],
   // },
-  props: ['active_project'],
+  props: ['managementProjectUuid', 'active_project'],
   data () {
     return {
       managementProjectUuid: '',
@@ -448,6 +448,7 @@ export default {
       editId: "",
       loading: false,
       activeName: "first",
+      active_projectchild: '',
       query: {
         condition: {
           managementProjectUuid: "",
@@ -513,17 +514,9 @@ export default {
       groupMemberEcho: [], //组员选框回显
     };
   },
-  watch: {
-    active_project (val) {    //message即为父组件的值，val参数为值
-      this.managementProjectUuid = val    //将父组件的值赋给childrenMessage 子组件的值
-    }
-  },
-  mounted () {
-    this.managementProjectUuid = this.active_project
-    console.log('项目id====' + this.managementProjectUuid)
-  },
-
   created () {
+    // console.log(this.active_project)
+    this.query.condition.managementProjectUuid = this.active_project;
     this.projectMember(this.query);
     this.getSelectData(this.select);
     this.getmodelTaskList(this.queryInfo);

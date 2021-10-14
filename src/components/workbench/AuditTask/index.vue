@@ -786,41 +786,42 @@
         <!-- 责任人 -->
         <el-form label-width="80px">
           <p style="padding-top: 10px;">责任人：</p>
-          <!-- <el-select v-model="save_zj_query.peopleName"
+          <el-select v-model="save_zj_query.peopleName"
                      @change="changeHeader2">
             <el-option v-for="item in select_list"
                        :key="item.peopleTable.peopleTableUuid"
                        :label="item.peopleTable.peopleName"
                        :value="item.peopleTable.peopleName">
             </el-option>
-          </el-select> -->
+          </el-select>
 
         </el-form>
-        <!-- 专题 -->
-        <!-- <el-form label-width="80px">
-          <p style="padding-top: 10px;">专题：</p>
-          <el-select v-model="save_zj_query.belongSpcial"
-                     @change="changeHeader_zj_zt">
-            <el-option v-for="item in zt_slect"
-                       :key="item.peopleTable.peopleTableUuid"
-                       :label="item.peopleTable.peopleName"
-                       :value="item.peopleTable.peopleName">
-            </el-option>
-          </el-select>
-        </el-form> -->
 
         <!-- 领域 -->
-        <!-- <el-form label-width="80px">
+        <el-form label-width="80px">
           <p style="padding-top: 10px;">领域：</p>
-          <el-select v-model="save_zj_query.belongField"
+          <el-select v-model="save_zj_query.belongSpcial"
                      @change="changeHeader_zj_ly">
-            <el-option v-for="item in select_list"
-                       :key="item.peopleTable.problems_slect"
-                       :label="item.peopleTable.peopleName"
-                       :value="item.peopleTable.peopleName">
+            <el-option v-for="item in problems_slect"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.label">
             </el-option>
           </el-select>
-        </el-form> -->
+        </el-form>
+
+        <!-- 专题 -->
+        <el-form label-width="80px">
+          <p style="padding-top: 10px;">专题：</p>
+          <el-select v-model="save_zj_query.belongField "
+                     @change="changeHeader_zj_zt">
+            <el-option v-for="item in zt_slect"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.label">
+            </el-option>
+          </el-select>
+        </el-form>
 
         <!-- 任务描述 -->
         <el-form label-width="80px">
@@ -873,6 +874,7 @@ import {
   task_problems_loadcascader,//公用模版 领域
   task_problems_relation,//关联任务
   Task_update_status,//更新
+  task_select_repeat,//判断是否重复
 } from
   '@SDMOBILE/api/shandong/task'
 
@@ -881,8 +883,6 @@ import { Task_run, Task_data_status, task_findModelList, task_selectModel, task_
 
 import { fmtDate } from '@SDMOBILE/model/time.js';
 import Paramdrawnew from '@/components/workbench/AuditTask/paramdrawnew'//参数设置
-
-
 
 export default {
   components: {
@@ -1026,7 +1026,7 @@ export default {
 
 
       // 项目id
-      managementProjectUuid: '1aa246d15be4421b8b903d0e0e529070',//项目管理id
+      managementProjectUuid: '',//项目管理id
       runTaskRelId: '',//参数任务id  运行需要的
 
       // 新增任务
@@ -1171,7 +1171,6 @@ export default {
       data_active: '',//选中
     }
   },
-  // props: ['active_project'],
   // watch: {
   //   active_project (val) {    //message即为父组件的值，val参数为值
   //     this.managementProjectUuid = val    //将父组件的值赋给childrenMessage 子组件的值
@@ -1189,8 +1188,9 @@ export default {
       return fmtDate(t, 'yyyy-MM-dd ');
     }
   },
+  props: ['active_project'],
   created () {
-
+    this.managementProjectUuid = this.active_project;
     // 模型  自建任务列表
     let params = {
       pageNo: this.params.pageNo,
@@ -1226,8 +1226,6 @@ export default {
       typecode: 'SPECIAL',
     }
     this.zhuanti(params3);//专题
-
-
 
     this.task_problems_relation_data();//关联任务
 
@@ -1292,9 +1290,6 @@ export default {
         }
       }
       this.add_model_list(params2)
-
-
-
     },
     // 选择模型列表
     add_model_list (params) {
@@ -1327,6 +1322,36 @@ export default {
         this.loading = false
         // console.log(this.tableData);
       })
+    },
+
+
+    // 模型列表分页
+    handleCurrentChange_model (val) {
+      this.loading = true
+      // 模型列表
+      let params = {
+        pageNo: val,
+        pageSize: this.params.pageSize,
+        condition: {
+          auditModelCategory: this.params.auditModelCategory,
+          managementProjectUuid: this.managementProjectUuid,
+          taskName: this.params.taskName,
+          taskType: 1
+        }
+      }
+      this.list_data(params);
+
+    },
+    // 选择模型 新增 列表分页
+    handleCurrentChange_model_add (val) {
+      let params = {
+        pageNo: val,
+        pageSize: this.params2.pageSize,
+        condition: {
+          modelName: this.params2.condition.modelName,
+        }
+      }
+      this.add_model_list(params)
     },
 
     // 结果数=========================================
@@ -1497,10 +1522,6 @@ export default {
     changeHeader_zj_ly (val) {
       this.save_zj_query.belongSpcial = val
     },
-
-
-
-
     // 专题select
     zhuanti (params) {
       task_problems_loadcascader(params).then(resp => {
@@ -1696,11 +1717,8 @@ export default {
     },
 
 
-
-
     // 设置参数
     setParameters (data) {
-      console.log(data);
       // this.all_setting();// 全部参数
       this.setParametersDialogVisible = true;//显示设置参数
       this.modelId = data.modelId;
@@ -1906,40 +1924,69 @@ export default {
       }
 
 
-      let array1 = [];//数组1
-      this.multipleSelection.forEach((item) => {
-        array1.push(item);
-      });
-
-      let params = {
-        auditModelList: array1,
-        projectId: this.managementProjectUuid,
-      };
-
       // this.quoteModel_btn(params);//确认引用
       //做比较的两个数组
-      let array2 = this.tableData_list;//数组2
-      let array3 = [];//储存合并的值
-      for (var s in array1) {
-        for (var x in array2) {
-          if (array1[s].modelName == array2[x].auditModelName) {
-            array3.push(array1[s].modelName);
-          }
-        }
-      }
-      console.log(array3); // 1, 3
-      if (array3.length !== 0) {
-        this.$message.info("请不要重复选择引入的模型");
-        return false
-      } else {
-        this.quoteModel_btn(params);//确认引用
-      }
+
+      // console.log(array3); // 1, 3
+      // if (array3.length !== 0) {
+      //   this.$message.info("请不要重复选择引入的模型");
+      //   return false
+      // } else {
+
+      // auditModelList: array1,
+      // }
+      // this.repeat(params);//重复
+
+
     },
+
+    //选择模型列表分页  全选
+    handleSelectionChange (val) {
+      this.multipleSelection = val;
+
+      let params = {
+        condition: {
+          auditModelUuid: val[val.length - 1].auditModelUuid,
+          projectId: this.managementProjectUuid,
+        },
+        pageNo: 1,
+        pageSize: 100
+      };
+      // 判读是否重复
+      task_select_repeat(params).then((resp) => {
+        // console.log(resp);
+        if (resp.data.total > 0) {
+          this.$refs.multipleTable.toggleRowSelection(val[val.length - 1]);
+          this.$message.error("项目中已存在该模型！");
+          return false
+        } else {
+          // 没有重复
+
+          let array1 = [];//数组1
+          this.multipleSelection.forEach((item) => {
+            array1.push(item);
+          });
+          let array2 = this.tableData_list;//数组2
+          let array3 = [];//储存合并的值
+          for (var s in array1) {
+            for (var x in array2) {
+              if (array1[s].modelName == array2[x].auditModelName) {
+                array3.push(array1[s].modelName);
+              }
+            }
+          }
+          let params2 = {
+            auditModelList: array1,
+            projectId: this.managementProjectUuid,
+          };
+          this.quoteModel_btn(params2);//确认引用
+        }
+      });
+    },
+
     // 确认引用方法
     quoteModel_btn (params) {
       quoteModel(params).then(resp => {
-
-        // console.log(resp);
         if (resp.code == 0) {
           this.$message({
             message: '引用成功',
@@ -1948,7 +1995,7 @@ export default {
           this.dialogVisible_quote = false;//关闭引用的弹窗
 
           // 模型列表
-          let params = {
+          let params2 = {
             pageNo: this.params.pageNo,
             pageSize: this.params.pageSize,
             condition: {
@@ -1958,7 +2005,7 @@ export default {
               taskType: 1
             }
           }
-          this.list_data(params);//刷新外层模型列表
+          this.list_data(params2);//刷新外层模型列表
         } else {
           this.$message({
             message: resp.data.msg,
@@ -2096,8 +2143,11 @@ export default {
           enclosure: this.save_zj_query.enclosure,//附件
           peopleName: this.save_zj_query.peopleName,//责任人
           peopleTableUuid: this.save_zj_query.peopleTableUuid,//责任人id
-          // belongSpcial: this.save_zj_query.belongSpcial,//领域
-          // belongField: this.save_zj_query.belongField,//专题
+          belongSpcial: this.save_zj_query.belongSpcial,//领域
+          belongField: this.save_zj_query.belongField,//专题
+
+
+
         }
         console.log(params1);
         task_add(params1).then(resp => {
@@ -2138,8 +2188,8 @@ export default {
           enclosure: this.save_zj_query.enclosure,//附件
           peopleName: this.save_zj_query.peopleName,//责任人
           peopleTableUuid: this.save_zj_query.peopleTableUuid,//责任人id
-          // belongSpcial: this.save_zj_query.belongSpcial,//领域
-          // belongField: this.save_zj_query.belongField,//专题
+          belongSpcial: this.save_zj_query.belongSpcial,//领域
+          belongField: this.save_zj_query.belongField,//专题
 
         }
         // 编辑保存  
@@ -2250,42 +2300,8 @@ export default {
     deleteRow (index, rows) {
       rows.splice(index, 1);
     },
-
-    // 模型列表分页
-    handleCurrentChange_model (val) {
-      this.loading = true
-      // 模型列表
-      let params = {
-        pageNo: val,
-        pageSize: this.params.pageSize,
-        condition: {
-          auditModelCategory: this.params.auditModelCategory,
-          managementProjectUuid: this.managementProjectUuid,
-          taskName: this.params.taskName,
-          taskType: 1
-        }
-      }
-      this.list_data(params);
-
-    },
-    // 选择模型 新增 列表分页
-    handleCurrentChange_model_add (val) {
-      let params = {
-        pageNo: val,
-        pageSize: this.params2.pageSize,
-        condition: {
-          modelName: this.params2.condition.modelName,
-        }
-      }
-      this.add_model_list(params)
-    },
-    //选择模型列表分页  全选
-    handleSelectionChange (val) {
-      this.multipleSelection = val;
-    },
-
-
   },
+
 };
 </script>
 

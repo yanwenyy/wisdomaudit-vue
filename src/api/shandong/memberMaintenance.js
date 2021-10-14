@@ -162,5 +162,25 @@ export function initProject(data){
     })
 }
 
+// 自建任务回显
+
+export function editTaskSelf(id){
+    return request({
+    baseURL: baseURL,
+    url: `/auditTask/getById/`+id+'',
+    method: 'get'
+    })
+}
+
+
+// 自建任务编辑接口
+export function editTaskSelfInfo(data){
+    return request({
+    baseURL: baseURL,
+    url: `/auditTask/update`,
+    method: 'put',
+    data
+    })
+}
 
 

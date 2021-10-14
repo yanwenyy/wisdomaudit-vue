@@ -758,7 +758,7 @@ export default {
 
 
 
-      projectNumber: '项目001',//项目id 编号
+      projectNumber: '',//项目id 编号
       projectType: '1111',//项目类型
       addDataTaskUuid: '',//任务类型id
       // 未完成
@@ -808,6 +808,8 @@ export default {
   computed: {},
   watch: {},
   created () {
+    this.projectNumber = this.active_project;
+
     // 资料 未完成列表 
     let params = {
       pageNo: this.params.pageNo,
@@ -835,6 +837,8 @@ export default {
   mounted () {
 
   },
+  props: ['active_project'],
+
   filters: {
     filtedate: function (date) {
       let t = new Date(date);
