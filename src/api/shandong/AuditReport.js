@@ -13,3 +13,15 @@ export function task_pageList_wt (data) {
     data,
   })
 }
+
+// 问题导出
+export function task_pageList_export (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/auditReport/export/word`,
+    method: 'post',
+    data: qs.stringify(data),
+  })
+}
+
+

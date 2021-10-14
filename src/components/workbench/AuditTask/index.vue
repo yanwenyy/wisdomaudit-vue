@@ -1,5 +1,6 @@
 <template>
   <div class="sjzl anmition_show">
+    <!-- {{managementProjectUuid}} -->
     <div class="conter">
       <div class="projectTab">
         <!-- tab -->
@@ -762,13 +763,13 @@
       </div>
       <!-- 分页 end-->
 
-      <span slot="footer">
+      <!-- <span slot="footer">
         <el-button size="small"
                    type="primary"
                    @click="query()">确 定</el-button>
         <el-button size="small"
                    @click="clearTopic(), (dialogVisible_quote = false)">取 消</el-button>
-      </span>
+      </span> -->
     </el-dialog>
 
     <!-- 自建任务新增 -->
@@ -788,21 +789,38 @@
           <!-- <el-select v-model="save_zj_query.peopleName"
                      @change="changeHeader2">
             <el-option v-for="item in select_list"
-                       :key="item.peopleTableUuid"
-                       :label="item.peopleName"
-                       :value="item.peopleName">
+                       :key="item.peopleTable.peopleTableUuid"
+                       :label="item.peopleTable.peopleName"
+                       :value="item.peopleTable.peopleName">
             </el-option>
           </el-select> -->
-          <el-select v-model="save_zj_query.peopleName"
-                     @change="changeHeader2">
-            <el-option v-for="item in select_list"
+
+        </el-form>
+        <!-- 专题 -->
+        <!-- <el-form label-width="80px">
+          <p style="padding-top: 10px;">专题：</p>
+          <el-select v-model="save_zj_query.belongSpcial"
+                     @change="changeHeader_zj_zt">
+            <el-option v-for="item in zt_slect"
                        :key="item.peopleTable.peopleTableUuid"
                        :label="item.peopleTable.peopleName"
                        :value="item.peopleTable.peopleName">
             </el-option>
           </el-select>
+        </el-form> -->
 
-        </el-form>
+        <!-- 领域 -->
+        <!-- <el-form label-width="80px">
+          <p style="padding-top: 10px;">领域：</p>
+          <el-select v-model="save_zj_query.belongField"
+                     @change="changeHeader_zj_ly">
+            <el-option v-for="item in select_list"
+                       :key="item.peopleTable.problems_slect"
+                       :label="item.peopleTable.peopleName"
+                       :value="item.peopleTable.peopleName">
+            </el-option>
+          </el-select>
+        </el-form> -->
 
         <!-- 任务描述 -->
         <el-form label-width="80px">
@@ -863,6 +881,8 @@ import { Task_run, Task_data_status, task_findModelList, task_selectModel, task_
 
 import { fmtDate } from '@SDMOBILE/model/time.js';
 import Paramdrawnew from '@/components/workbench/AuditTask/paramdrawnew'//参数设置
+
+
 
 export default {
   components: {
@@ -1006,7 +1026,7 @@ export default {
 
 
       // 项目id
-      managementProjectUuid: '8351286cd70c3f41c92f59ed425a4659',//项目管理id
+      managementProjectUuid: '1aa246d15be4421b8b903d0e0e529070',//项目管理id
       runTaskRelId: '',//参数任务id  运行需要的
 
       // 新增任务
@@ -1081,6 +1101,8 @@ export default {
 
         peopleName: '',//责任人name
         peopleTableUuid: '',//责任人id
+        belongField: '',// 领域
+        belongSpcial: '',//专题
       },
       // 编辑数据
       edit_datails: [],
@@ -1128,6 +1150,7 @@ export default {
         associatedTask: [{ required: true, message: '请选择关联任务', trigger: 'change' }],
       },
       problems_slect: [],//领域
+      zt_slect: [],//专题
       relation_task: [],//关联任务
       paramDrawUuid: '',
       runTaskRelUuid: '',//参数任务id
@@ -1148,8 +1171,17 @@ export default {
       data_active: '',//选中
     }
   },
+  // props: ['active_project'],
+  // watch: {
+  //   active_project (val) {    //message即为父组件的值，val参数为值
+  //     this.managementProjectUuid = val    //将父组件的值赋给childrenMessage 子组件的值
+  //   }
+  // },
+  // mounted () {
+  //   this.managementProjectUuid = this.active_project
+  //   console.log('项目id====' + this.managementProjectUuid)
+  // },
   computed: {},
-  watch: {},
   filters: {
     filtedate: function (date) {
       let t = new Date(date);
@@ -1158,6 +1190,7 @@ export default {
     }
   },
   created () {
+
     // 模型  自建任务列表
     let params = {
       pageNo: this.params.pageNo,
@@ -1189,21 +1222,16 @@ export default {
     this.lingyu(params2);//领域
 
 
+    let params3 = {
+      typecode: 'SPECIAL',
+    }
+    this.zhuanti(params3);//专题
+
+
+
     this.task_problems_relation_data();//关联任务
 
   },
-  mounted () { },
-  filters: {
-    filtedate: function (date) {
-      let t = new Date(date);
-      // return fmtDate(t, 'yyyy-MM-dd hh:mm:ss');
-      return fmtDate(t, 'yyyy-MM-dd');
-
-    }
-  },
-
-
-
   methods: {
     // 请求责任人 select数据
     select_people (params_people) {
@@ -1465,6 +1493,26 @@ export default {
         this.problems_slect = resp.data
       })
     },
+    // 领域change
+    changeHeader_zj_ly (val) {
+      this.save_zj_query.belongSpcial = val
+    },
+
+
+
+
+    // 专题select
+    zhuanti (params) {
+      task_problems_loadcascader(params).then(resp => {
+        this.zt_slect = resp.data
+      })
+    },
+    // 专题 change
+    changeHeader_zj_zt (val) {
+      this.save_zj_query.belongField = val
+    },
+
+
     // 新增  问题数 保存
     add_list_save (formName) {
       this.$refs[formName].validate((valid) => {
@@ -2048,6 +2096,8 @@ export default {
           enclosure: this.save_zj_query.enclosure,//附件
           peopleName: this.save_zj_query.peopleName,//责任人
           peopleTableUuid: this.save_zj_query.peopleTableUuid,//责任人id
+          // belongSpcial: this.save_zj_query.belongSpcial,//领域
+          // belongField: this.save_zj_query.belongField,//专题
         }
         console.log(params1);
         task_add(params1).then(resp => {
@@ -2088,6 +2138,9 @@ export default {
           enclosure: this.save_zj_query.enclosure,//附件
           peopleName: this.save_zj_query.peopleName,//责任人
           peopleTableUuid: this.save_zj_query.peopleTableUuid,//责任人id
+          // belongSpcial: this.save_zj_query.belongSpcial,//领域
+          // belongField: this.save_zj_query.belongField,//专题
+
         }
         // 编辑保存  
         task_update(params2).then(resp => {
