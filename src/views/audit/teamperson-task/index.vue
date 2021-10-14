@@ -454,6 +454,10 @@ export default {
   components: {
     TaskMaintenance,
   },
+  // props:{
+  //   projectNum:[],
+  // },
+  props:['managementProjectUuid'],
   data() {
     return {
       modelTableData: [],
@@ -467,7 +471,7 @@ export default {
       activeName: "first",
       query: {
         condition: {
-          managementProjectUuid: "",
+          managementProjectUuid:"",
         },
         pageNo: 1,
         pageSize: 5,
@@ -744,6 +748,7 @@ export default {
         this.modelTableData = resp.data.records;
         this.modelSize = resp.data;
       });
+      
       let _this = this;
       for (let i = 0; i < this.peopleSelection.length; i++) {
         for (let j = 0; j < this.personMes.length; j++) {

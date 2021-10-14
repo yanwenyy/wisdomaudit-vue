@@ -112,6 +112,7 @@
               <el-input
                 placeholder=""
                 v-model="addProjectManagement.projectCode"
+                disabled 
               ></el-input>
             </el-form-item>
           </el-row>
@@ -327,6 +328,7 @@
               <el-input
                 placeholder=""
                 v-model="addprojectjing.projectCode"
+                disabled 
               ></el-input>
             </el-form-item>
           </el-row>
@@ -513,6 +515,7 @@
               <el-input
                 placeholder=""
                 v-model="addProjectManagement.projectCode"
+                disabled 
               ></el-input>
             </el-form-item>
           </el-row>
@@ -701,7 +704,7 @@
         </el-form>
 
         <div class="stepBtn">
-          <el-button @click="addDialogVisible = false">取消</el-button>
+          <el-button @click="editDialogVisible = false">取消</el-button>
           <el-button class="nextBtn" @click="editBtn">确认</el-button>
         </div>
       </div>
@@ -718,6 +721,7 @@
               <el-input
                 placeholder=""
                 v-model="addprojectjing.projectCode"
+                disabled 
               ></el-input>
             </el-form-item>
           </el-row>
@@ -1037,8 +1041,7 @@ export default {
           { required: true, message: "请选择项目分类", trigger: "change" },
         ],
         projectName: [
-          { required: true, message: "请填写项目名称", trigger: "blur" },
-          { max: 10, message: "项目名称在10个字符之内", trigger: "change" },
+          { required: true, message: "请填写项目名称", trigger: "blur" }
         ],
         projectLeaderName: [
           { required: true, message: "请选择项目负责人", trigger: "change" },
@@ -1068,7 +1071,6 @@ export default {
       addprojectjingRules: {
         projectName: [
           { required: true, message: "请填写项目名称", trigger: "blur" },
-          { max: 10, message: "项目名称在10个字符之内", trigger: "change" },
         ],
         projectTypeName: [
           { required: true, message: "请选择项目类型", trigger: "change" },
@@ -1185,8 +1187,8 @@ export default {
           addProject(this.addprojectjing).then((resp) => {
             // console.log(this.addprojectjing);
             this.$message.success("添加项目成功！");
-            // this.addDialogVisible = false;
-            // this.projectData(this.query);
+            this.addDialogVisible = false;
+            this.projectData(this.query);
           });
         } else {
           console.log("error submit!!");
@@ -1382,9 +1384,10 @@ export default {
         if (valid) {
           editProjectUpdata(this.addprojectjing).then((resp) => {
             this.$message.success("修改成功！");
+             this.editDialogVisible = false;
           });
           
-          this.editDialogVisible = false;
+         
         } else {
           console.log("error submit!!");
           return false;
