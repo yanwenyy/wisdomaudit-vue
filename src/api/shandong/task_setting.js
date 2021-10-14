@@ -47,25 +47,27 @@ export function Task_data_status (data) {
   })
 }
 
+
+
 //  查看结果  模型列表的  结果分类
-// export function task_selectModel (data) {
-// return request({
-//   baseURL: baseURL,
-//   url: `/analysis/RunTaskRelController/getLikeRunTaskRelByPage`,
-//   method: 'post',
-//   data,
-// })
-// }
+export function task_selectModel (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/RunResultTableController/getRunResultTableByRunTaskRelUuid`,
+    method: 'post',
+    data: qs.stringify(data),
+  })
+}
 
 // 查看结果 数据列表
-// export function task_selectTable (data) {
-//   return request({
-//     baseURL: baseURL,
-//     url: `/analysis/RunResultTableController/selectTable`,
-//     method: 'post',
-//     data,
-//   })
-// }
+export function task_selectTable (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/RunResultTableController/selectTable`,
+    method: 'post',
+    data,
+  })
+}
 
 
 // 查看结果  下载
