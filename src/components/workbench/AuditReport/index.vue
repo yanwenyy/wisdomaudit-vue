@@ -9,6 +9,14 @@
       </el-col>
     </div>
 
+    <!-- <div class="header">
+      <el-col :span="12"
+              v-for="(it,index) in tt"
+              :key="index">
+        <p @click="listTop(it,index)">{{it.name}}</p>
+      </el-col>
+    </div> -->
+
     <div class="conter">
       <div class="top">
         <el-row>
@@ -38,7 +46,7 @@
           <el-col>
             <p>管理建议：</p>
             <el-button type="primary"
-                       @click="Correlation_wt">关联问题</el-button>
+                       @click="Correlation_wt()">关联问题</el-button>
           </el-col>
 
           <div class="text">
@@ -128,38 +136,47 @@
     </el-dialog>
     <!-- 关联问题 -->
     <el-dialog title="关联问题"
-               width="40%"
+               width="60%"
                popper-class="status_data_dlag_verify"
                :visible.sync="dlag_Correlation_wt"
                style="padding-bottom: 59px">
       <div class="dlag_conter3">
         <!-- 表单 -->
-        <el-table :data="tableData1"
+        <el-table :data="tableData2_list"
                   ref="multipleTable"
                   tooltip-effect="dark"
                   v-loading="loading"
                   style="width: 100%"
-                  @selection-change="handleSelectionChange_zb">
+                  @selection-change="handleSelectionChange_wt">
           >
           <el-table-column type="selection"
                            width="55">
           </el-table-column>
-          <el-table-column prop="name"
-                           label="指标类型"> </el-table-column>
+          <el-table-column prop="field"
+                           label="领域"> </el-table-column>
 
-          <el-table-column prop="name"
+          <el-table-column prop="problem"
+                           label="问题"> </el-table-column>
+
+          <el-table-column prop="basis"
                            label="依据"> </el-table-column>
 
-          <el-table-column prop="name"
-                           label="单位"> </el-table-column>
+          <el-table-column prop="describe"
+                           label="描述">
+          </el-table-column>
+          <el-table-column prop="problemDiscoveryTime"
+                           label="发现日期">
+            <template slot-scope="scope">
+              <p>{{scope.row.problemDiscoveryTime|filtedate}}</p>
+            </template>
 
-          <el-table-column prop="name"
-                           label="资料提供部门"> </el-table-column>
-          <el-table-column prop="name"
+          </el-table-column>
+          <el-table-column prop="riskAmount"
+                           label="风险金额（元）"> </el-table-column>
+          <el-table-column prop="managementAdvice"
                            label="管理建议"> </el-table-column>
-
-          <el-table-column prop="name"
-                           label="指标值"> </el-table-column>
+          <el-table-column prop="problemFindPeople"
+                           label="发现人"> </el-table-column>
         </el-table>
 
         <span slot="footer"
@@ -179,10 +196,22 @@
 </template>
 
 <script>
+
+import { task_pageList_wt } from '@SDMOBILE/api/shandong/AuditReport'
+import { fmtDate } from '@SDMOBILE/model/time.js';
+
 export default {
   components: {},
   data () {
     return {
+      // tt: [
+      //   { name: 11 },
+      //   { name: 22 },
+      //   { name: 33 },
+      //   { name: 44 },
+      //   { name: 55 }
+      // ],//title
+
       loading: false,
       dlag_Correlation_zb: false,//添加关联指标
       dlag_Correlation_wt: false,//添加关联问题
@@ -211,12 +240,39 @@ export default {
 
         },
       ],
+      managementProjectUuid: 'string',//项目管理id
 
+      // 模糊查询
+      query: {
+        problem: '',//模糊查询
+      },
+      tableData2: [],//关联问题
+      tableData2_list: [],//关联问题 list
+      wt_listl: [],//问题 选择
     }
   },
   computed: {},
   watch: {},
+  created () {
+
+  },
+  mounted () {
+
+  },
+  filters: {
+    filtedate: function (date) {
+      let t = new Date(date);
+      return fmtDate(t, 'yyyy-MM-dd ');
+    }
+  },
   methods: {
+
+    // listTop (item, index) {
+    //   this.tt.splice(index, 1)
+    //   this.tt.unshift(item)
+    // },
+
+
     // 添加关联指标
     Correlation_zb () {
       this.dlag_Correlation_zb = true;//添加关联指标
@@ -234,7 +290,21 @@ export default {
 
     // 添加关联问题
     Correlation_wt () {
+      let params = {
+        condition: {
+          managementProjectUuid: this.managementProjectUuid,//项目id
+        },
+        problem: this.query.problem,//模糊查询
+      }
       this.dlag_Correlation_wt = true;//添加关联问题
+      task_pageList_wt(params).then(resp => {
+        console.log(resp.data);
+        this.tableData2 = resp.data;
+        this.tableData2_list = resp.data.records;
+      })
+    },
+    handleSelectionChange_wt () {
+      this.wt_list = val;
     },
 
     // 指标确认保存
@@ -254,12 +324,7 @@ export default {
 
 
   },
-  created () {
 
-  },
-  mounted () {
-
-  },
 }
 </script>
 
@@ -296,6 +361,7 @@ export default {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  padding-bottom: 25px;
   margin-top: 20px;
 }
 .bottom {

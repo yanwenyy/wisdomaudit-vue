@@ -89,34 +89,18 @@
             <!-- 专题和领域 -->
             <el-table-column prop="belongSpcial"
                              label="专题">
-              <!-- <template slot-scope="scope">
-                <el-button @click="data_num_click(scope.row)"
-                           type="text"
-                           style="color: #1371cc"
-                           size="small">
-                  {{ scope.row.belongSpcial }}
-                </el-button>
-              </template> -->
             </el-table-column>
 
             <!-- 领域 -->
             <el-table-column prop="belongField"
                              label="领域">
-              <!-- <template slot-scope="scope">
-                <el-button @click="data_num_click(scope.row)"
-                           type="text"
-                           style="color: #1371cc"
-                           size="small">
-                  {{ scope.row.belongField }}
-                </el-button>
-              </template> -->
             </el-table-column>
 
             <!-- 结果数 -->
             <el-table-column prop="resultsNumber"
                              label="结果数">
               <template slot-scope="scope">
-                <el-button @click="data_num_click(scope.row.runStatus)"
+                <el-button @click="data_num_click(scope.row)"
                            type="text"
                            style="color: #1371cc"
                            size="small">
@@ -128,7 +112,7 @@
             <el-table-column prop="problemsNumber"
                              label="问题数">
               <template slot-scope="scope">
-                <el-button @click="probleNum_click(scope.row.auditTaskUuid)"
+                <el-button @click="probleNum_click(scope.row.auditTaskUuid,scope.row.auditModelName)"
                            type="text"
                            style="color: #1371cc"
                            size="small">
@@ -161,8 +145,7 @@
                     : scope.row.runStatus == 1
                     ? "执行中"
                     : scope.row.runStatus == 2
-                    ? "已完成"
-                    : "待开始"
+                    ? "已完成":'运行失败'
                 }}
               </template>
             </el-table-column>
@@ -324,16 +307,25 @@
         <el-row :gutter="24">
           <!-- 结果分类  -->
           <ul class="status_data">
-            <li v-for="(item,index) in status_data">
+            <li v-for="(item,index) in status_data"
+                :key="index">
               <el-button type="primary"
-                         @click="select_data()">{{item.name}}</el-button>
+                         v-if="item.tableType==1"
+                         :class="data_active == index ? 'active':''"
+                         @click="select_data(index)">主表</el-button>
+              <el-button type="primary"
+                         v-if="item.tableType!==1"
+                         :class="data_active == index ? 'active':''"
+                         @click="select_data(index)">附表{{index}}</el-button>
             </li>
 
           </ul>
         </el-row>
+
+        <!-- 结果操作 -->
         <div class="cxjg"
              style="margin: 20px 0; display: flex">
-          <el-col> 模型线索结果（XXX模型） </el-col>
+          <el-col> 模型线索结果（{{jg_title}}模型） </el-col>
           <el-col style="display: contents">
             <el-button type="primary"
                        @click="task_verify()">核实</el-button>
@@ -344,100 +336,18 @@
           </el-col>
         </div>
         <!-- 表单 -->
-        <el-table :data="tableData1"
+        <el-table :data="status_data_list[0].result"
                   ref="multipleTable"
                   tooltip-effect="dark"
                   v-loading="loading"
                   style="width: 100%"
                   @selection-change="handleSelectionChange_operation">
           >
-          <el-table-column type="selection"
-                           width="55">
-          </el-table-column>
-          <!-- <el-table-column prop="date"
-                           label="序号">
-          </el-table-column> -->
-          <el-table-column prop="name"
-                           label="合同名称"> </el-table-column>
-          <el-table-column prop="resultDetailId"
-                           label="合同标题">
-            <template slot-scope="scope">
-              {{
-                scope.row.type == 0
-                  ? "个人"
-                  : scope.row.type == 1
-                  ? "企业"
-                  : scope.row.type == 2
-                  ? "财务"
-                  : "其他"
-              }}
-            </template>
-          </el-table-column>
-          <el-table-column prop="name"
-                           label="地区编码">
-            <template slot-scope="scope">
-              <el-button @click="data_num_click(scope.$index, tableData)"
-                         type="text"
-                         style="color: #1371cc"
-                         size="small">
-                {{ scope.row.data_num }}
-              </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column prop="name"
-                           label="签约厂家">
-
-          </el-table-column>
-          <el-table-column prop="name"
-                           label="盖章时间">
-          </el-table-column>
-
-          <el-table-column prop="ing"
-                           label="合同起草时间">
-            <template slot-scope="scope">
-              {{
-                scope.row.ing == 0
-                  ? "未开始"
-                  : scope.row.ing == 1
-                  ? "已完成"
-                  : scope.row.ing == 2
-                  ? "执行中"
-                  : "待开始"
-              }}
-            </template>
-          </el-table-column>
-          <el-table-column prop="name"
-                           label="合同金额">
-          </el-table-column>
-          <el-table-column prop="name"
-                           label="合同履行时间">
-          </el-table-column>
-
-          <el-table-column prop="name"
-                           label="合同履行结束时间">
-          </el-table-column>
-
-          <el-table-column prop="edit"
-                           label="滞后天数">
-
-          </el-table-column>
-          <el-table-column prop="edit"
-                           label="是否问题">
-
-          </el-table-column>
-
-          <el-table-column prop="edit"
-                           label="核实人">
-
-          </el-table-column>
-
-          <el-table-column prop="edit"
-                           label="核实信息">
-
-          </el-table-column>
-          <el-table-column prop="edit"
-                           label="附件">
-
+          <el-table-column v-for="(item,key) in status_data_list[0].columns"
+                           :key="key"
+                           :prop="item"
+                           :label="item"
+                           align="center">
           </el-table-column>
         </el-table>
         <!-- 表单 end-->
@@ -446,8 +356,11 @@
         <div class="page">
           <el-pagination background
                          layout="prev, pager, next"
-                         :total="1000">
-          </el-pagination>
+                         :current-page="this.status_data_list_data.current"
+                         @current-change="handleCurrentChange_toatl"
+                         :page-size="this.status_data_list_data.size"
+                         :total="this.status_data_list_data.total"></el-pagination>
+
         </div>
         <!-- 分页 end-->
       </div>
@@ -524,7 +437,7 @@
                width="70%">
       <el-row style="margin-top:3%;background:#F2F2F2;padding:15px">
         <el-col :span="18"
-                class="tableTitle">xxx模型审计发现列表</el-col>
+                class="tableTitle">{{wt_title}}模型审计发现列表</el-col>
         <el-col :span="6">
           <el-button size="small"
                      type="primary"
@@ -933,7 +846,7 @@
 
 <script>
 import {
-  task_pageList, task_model_pageList, task_selectModel, task_selectTable, quoteModel, task_add, task_remove, task_update, task_details, task_select_people, task_setChargePeople, task_data_verify,
+  task_pageList, task_model_pageList, quoteModel, task_add, task_remove, task_update, task_details, task_select_people, task_setChargePeople, task_data_verify,
   task_problems_list,//问题列表 
   task_problems_save,//问题保存 
   task_problems_update,//问题编辑 
@@ -946,7 +859,7 @@ import {
   '@SDMOBILE/api/shandong/task'
 
 //task_findModelList_all
-import { Task_run, Task_data_status, task_findModelList, } from '@SDMOBILE/api/shandong/task_setting'
+import { Task_run, Task_data_status, task_findModelList, task_selectModel, task_selectTable, } from '@SDMOBILE/api/shandong/task_setting'
 
 import { fmtDate } from '@SDMOBILE/model/time.js';
 import Paramdrawnew from '@/components/workbench/AuditTask/paramdrawnew'//参数设置
@@ -1193,6 +1106,7 @@ export default {
       problems_title: '',//问题 新增 编辑  标题
 
       // 问题 新增
+      wt_title: '',//问题数title
       problems_form: {
         field: '',//领域
         problem: '',//问题
@@ -1218,12 +1132,20 @@ export default {
       paramDrawUuid: '',
       runTaskRelUuid: '',//参数任务id
       systemTime: '',//当前时间
+      paramTaskUuid: '',//列表的 runTaskRelUuid  id
 
+      status_data: [],//结果数分类 
 
-      status_data: [
-        { name: "结果1" },
-        { name: '结果2' }
-      ],// 
+      status_data_list_data: [],//外层
+      status_data_list: [
+        {
+          result: [],//内容
+          columns: [],//表头
+        }
+      ],// 结果数list
+      jg_title: '',//结果数模型title
+
+      data_active: '',//选中
     }
   },
   computed: {},
@@ -1256,7 +1178,7 @@ export default {
         managementProjectUuid: this.managementProjectUuid,
       },
       pageNo: 1,
-      pageSize: 3,
+      pageSize: 10,
     }
     this.select_people(params_people)//请求责任人数据
 
@@ -1379,23 +1301,130 @@ export default {
       })
     },
 
+    // 结果数=========================================
     // 结果数列表 里的全选
     handleSelectionChange_operation (val) {
       this.multipleSelection_data_list = val;
     },
+
     // 查看结果数
-    data_num_click (status) {
-      if (status == 2) {
+    data_num_click (data) {
+      this.paramTaskUuid = data.paramTaskUuid
+      if (data.runStatus == 2) {
         this.dialogVisible_data_num = true;//显示结果数
-        this.data_tab();//结果分类tab
+        this.jg_title = data.auditModelName
+        let params2 = {
+          runTaskRelUuid: this.paramTaskUuid,
+          // runTaskRelUuid: '3b7f19bedac4cd4bf3d9e0bd0eafd211',
+        }
+        this.data_tab(params2);//结果分类
+
+
       } else {
         this.$message.info("请选择已经完成的查看");
       }
     },
-    // 问题数===================================
-    probleNum_click (id) {
+
+    // 结果弹窗 结果分类tab
+    data_tab (params) {
+      task_selectModel(params).then(resp => {
+        if (resp.code == 0) {
+          this.status_data = resp.data.reverse();
+
+          // let datas = resp.data[0]
+          // 结果列表
+          let params3 = {
+            basePageParam: {
+              condition: {
+                keyword: null,
+                runResultTableUuid: this.status_data[0].runResultTableUuid,
+                runTaskRelUuid: this.status_data[0].runTaskRelUuid,
+                runTaskRelUuid: this.status_data[0].paramTaskUuid,
+                resultTableName: this.status_data[0].resultTableName,//- 实际表名
+                resultShowName: this.status_data[0].resultShowName,
+                tableType: 1,//  主副表标识, 主表 = 1、副表1 = 2、副表2 = 3···
+                dataCount: 1
+              },
+              pageNo: 1, //当前页数
+              pageSize: 10 //分页数量
+            },
+            filterSql: "undefined",
+          }
+
+
+          this.data_tab_list(params3)// 结果列表
+        }
+      })
+    },
+
+    // 切换结果分类
+    select_data (index) {
+      this.date_index = index
+
+      this.data_active = index
+      console.log(this.date_index);
+      // 结果列表
+      let params3 = {
+        basePageParam: {
+          condition: {
+            keyword: null,
+            runResultTableUuid: this.status_data[this.date_index].runResultTableUuid,
+            runTaskRelUuid: this.status_data[this.date_index].runTaskRelUuid,
+            runTaskRelUuid: this.status_data[this.date_index].paramTaskUuid,
+            resultTableName: this.status_data[this.date_index].resultTableName,//- 实际表名
+            resultShowName: this.status_data[this.date_index].resultShowName,
+            tableType: this.status_data[this.date_index].tableType,//  主副表标识, 主表 = 1、副表1 = 2、副表2 = 3···
+            dataCount: 1
+          },
+          pageNo: 1, //当前页数
+          pageSize: 10 //分页数量
+        },
+        filterSql: "undefined",
+      }
+      this.data_tab_list(params3)// 结果列表
+
+    },
+
+
+    // 结果弹窗 结果列表
+    data_tab_list (params) {
+      task_selectTable(params).then(resp => {
+        // this.loading = true
+        this.status_data_list_data = resp.data;
+        this.status_data_list = resp.data.records
+        console.log(this.status_data_list);
+        // this.loading = false
+
+      })
+    },
+    // 结果分页
+    handleCurrentChange_toatl (val) {
+      // 结果列表
+      let params3 = {
+        basePageParam: {
+          condition: {
+            keyword: null,
+            runResultTableUuid: this.status_data[this.date_index].runResultTableUuid,
+            runTaskRelUuid: this.status_data[this.date_index].runTaskRelUuid,
+            runTaskRelUuid: this.status_data[this.date_index].paramTaskUuid,
+            resultTableName: this.status_data[this.date_index].resultTableName,//- 实际表名
+            resultShowName: this.status_data[this.date_index].resultShowName,
+            tableType: this.status_data[this.date_index].tableType,//  主副表标识, 主表 = 1、副表1 = 2、副表2 = 3···
+            dataCount: 1
+          },
+          pageNo: val, //当前页数
+          pageSize: 10 //分页数量
+        },
+        filterSql: "undefined",
+      }
+      this.data_tab_list(params3)// 结果列表
+    },
+
+    // 问题数==============================================
+    probleNum_click (id, name) {
       this.problemsDialogVisible = true;//显示问题数弹窗
       this.auditTaskUuid = id
+      this.wt_title = name
       let params = {
         condition: {
           auditTaskUuid: this.auditTaskUuid,
@@ -1403,7 +1432,8 @@ export default {
         pageNo: this.probleNum.pageNo,
         pageSize: this.probleNum.pageSize,
       };
-      this.task_problems_data(params);
+      this.task_problems_data(params);//问题数列表
+
     },
     // 问题数列表
     task_problems_data (params) {
@@ -1493,10 +1523,6 @@ export default {
       this.problems_form.associatedTask = val
     },
 
-    // 切换结果分类
-    select_data () {
-
-    },
 
 
     // 编辑
@@ -1631,8 +1657,7 @@ export default {
       this.setParametersDialogVisible = true;//显示设置参数
       this.modelId = data.modelId;
       this.auditTaskUuid = data.auditTaskUuid;
-
-      // this.auditModelUuid = '9903ce3a78c00744b57a30a759e79808';
+      this.auditModelUuid = data.paramTaskUuid;
       let modelUuids = [this.modelId];
       task_findModelList(modelUuids).then(resp => {
         this.arr = [JSON.parse(resp.data[0].parammModelRel[0].paramValue)];
@@ -1670,7 +1695,7 @@ export default {
         paramsArr: this.arr,
       }
       let runTaskRel = {
-        sourceUuid: this.auditModelUuid,
+        sourceUuid: this.modelId,
         settingInfo: JSON.stringify(settingInfo)
       }
       this.run(runTaskRel);//运行
@@ -1679,30 +1704,33 @@ export default {
     // 运行
     run (runTaskRel) {
       Task_run(runTaskRel).then(resp => {
+        console.log(resp.data);
         this.runTaskRelUuid = resp.data;//参数任务id
         if (resp.code == 0) {
           this.$message({
-            message: "运行成功",
+            message: "运行成功,请等待执行完成进行手动刷新",
             type: "success",
           });
           this.setParametersDialogVisible = false;//关闭设置参数
 
           // 获取时间
-          let yy = new Date().getFullYear();
-          let mm = new Date().getMonth() + 1;
-          let dd = new Date().getDate();
-          let hh = new Date().getHours();
-          let mf = new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes();
-          let ss = new Date().getSeconds() < 10 ? '0' + new Date().getSeconds() : new Date().getSeconds();
-          this.systemTime = yy + '-' + mm + '-' + dd + ' ' + hh + ':' + mf + ':' + ss;
+          // let yy = new Date().getFullYear();
+          // let mm = new Date().getMonth() + 1;
+          // let dd = new Date().getDate();
+          // let hh = new Date().getHours();
+          // let mf = new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes();
+          // let ss = new Date().getSeconds() < 10 ? '0' + new Date().getSeconds() : new Date().getSeconds();
+          // this.systemTime = yy + '-' + mm + '-' + dd + ' ' + hh + ':' + mf + ':' + ss;
+
+          this.systemTime = new Date()
           let params2 = {
             // auditTask: {
             // paramTaskContent:,
             auditTaskUuid: this.auditTaskUuid,//当前对象id
             // auditTaskUuid: "9903ce3a78c00744b57a30a759e79808",
             paramTaskUuid: this.runTaskRelUuid,
-            runStatus: 1,
-            // taskStartTime: this.systemTime
+            // runStatus: 1,
+            taskStartTime: this.systemTime
             // }
           }
           this.update_setting(params2)//update
@@ -1733,7 +1761,7 @@ export default {
               auditModelCategory: this.params.auditModelCategory,
               managementProjectUuid: this.managementProjectUuid,
               taskName: this.params.taskName,
-              taskType: 1
+              taskType: 1,
             }
           }
           this.list_data(params);//刷新列表
@@ -1753,17 +1781,6 @@ export default {
       })
     },
 
-
-    // 结果弹窗 结果分类tab
-    data_tab (params) {
-      //   task_selectModel(params).then(resp => {
-      //     this.loading = true
-      //     // this.tableData = resp.data;
-      //     // this.tableData_list = resp.data.records
-      //     this.loading = false
-      //     console.log(resp.data);
-      // })
-    },
 
     // 核实
     task_verify () {
@@ -1829,7 +1846,7 @@ export default {
           modelName: this.params2.condition.modelName,
         }
       }
-      this.add_model_list(params)
+      this.add_model_list(params)//模型列表
     },
 
 
@@ -1848,7 +1865,7 @@ export default {
 
       let params = {
         auditModelList: array1,
-        projectId: "3757f078afa6161474430894936de6ed",
+        projectId: this.managementProjectUuid,
       };
 
       // this.quoteModel_btn(params);//确认引用
@@ -2464,5 +2481,9 @@ export default {
 
 .dlag_conter3 >>> .el-form-item__error {
   left: 80px;
+}
+
+.active {
+  background: #1371cc !important;
 }
 </style>
