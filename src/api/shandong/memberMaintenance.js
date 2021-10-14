@@ -109,7 +109,7 @@ export function editmodelPerson(data){
 
 
 
-// 
+
 // 模型任务删除
 export function deletmodelTask(id){
     return request({
@@ -140,3 +140,27 @@ export function isModel(data){
     data
     })
 }
+
+
+// 修改项目状态
+export function editProjectCode(data){
+    return request({
+    baseURL: baseURL,
+    url: `/managementProject/updateProjectNoRole`,
+    method: 'put',
+    data
+    })
+}
+
+//获取初始化项目
+export function initProject(data){
+    return request({
+    baseURL: baseURL,
+    url: `/projectMembership/pageListInUse`,
+    method: 'post',
+    data
+    })
+}
+
+
+
