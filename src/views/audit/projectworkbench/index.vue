@@ -139,26 +139,26 @@
         <el-col>
           <!-- 组员及任务维护 -->
           <div class="routerView" v-if="index == '1-1'">
-            <TeamPersonTask ref="temPersonRef" />
+            <TeamPersonTask ref="temPersonRef" :projectInitUuid = projectInitUuid />
           </div>
           <!-- 审计资料 -->
           <div class="routerView" v-else-if="index == '2-1'">
-            <AuditData></AuditData>
+            <AuditData :projectInitUuid = projectInitUuid></AuditData>
           </div>
           <!-- 审计任务 -->
           <div class="routerView" v-else-if="index == '2-2'">
-            <AuditTask></AuditTask>
+            <AuditTask :projectInitUuid = projectInitUuid></AuditTask>
           </div>
           <div class="routerView" v-else-if="index == '2-3'">
-            <Auditproblem></Auditproblem>
+            <Auditproblem :projectInitUuid = projectInitUuid></Auditproblem>
           </div>
           <div class="routerView" v-else-if="index == '2-4'">3</div>
           <div class="routerView" v-else-if="index == '3-1'">
             <!-- 审计报告 -->
-            <AuditReport></AuditReport>
+            <AuditReport :projectInitUuid = projectInitUuid></AuditReport>
           </div>
           <div class="routerView" v-else>
-            <Businessindicator></Businessindicator>
+            <Businessindicator :projectInitUuid = projectInitUuid></Businessindicator>
           </div>
         </el-col>
       </div>
@@ -509,12 +509,12 @@ import {
   quoteModel,
   editprojectMembershipList,
   selfTaskFunction,
-  isModel,
   editProjectCode,
   initProject,
   modelTaskList,
   editmodelPerson,
-  deletmodelTask
+  deletmodelTask,
+  isModel
 } from "@WISDOMAUDIT/api/shandong/memberMaintenance.js";
 
 export default {
@@ -816,7 +816,7 @@ export default {
         });
       }
       this.selectauditModelList.projectId = this.managementProjectUuid;
-      // console.log(this.selectauditModelList);
+      
     },
     // 自建任务责任人下拉框事件
     selectChangePerson(val) {
