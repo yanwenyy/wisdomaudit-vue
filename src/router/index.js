@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
+import store from '@WISDOMAUDIT/store/index.js'
 
 import wisdomauditRouter from './modules/wisdomaudit'
 //审计整改模块
@@ -14,11 +14,16 @@ import systemmanagement from './modules/systemmanagement'
 
 Vue.use(Router)
 
+// if(sessionStorage.getItem("TOKEN")){
+
+//   store.commit("set_token",sessionStorage.getItem("TOKEN"))
+// }
 /* Layout */
 import Layout from '@/layout/index'
 import {
   AppMain
 } from "@/layout/components";
+
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -47,7 +52,6 @@ import {
 export const constantRoutes = [{
     path: '/login',
     component: () => import('@WISDOMAUDIT/views/login'),
-    hidden: true
   },
 
   {

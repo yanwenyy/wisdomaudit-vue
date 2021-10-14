@@ -63,7 +63,7 @@
 <script>
 import { validUsername } from "@/utils/validate";
 import { cacheDict } from "../../api/base/sys-dict";
-
+import axios from "axios"
 export default {
   name: "Login",
   data() {
@@ -124,10 +124,18 @@ export default {
       });
     },
     handleLogin() {
-      this.$router.push({
+      axios({
+        url: `/wisdomaudit/loginsd/login?appAcctId=1&flag=1&loginNode=A1&token=4atoken`,
+        method: "post",
+      }).then((res) => {
+        console.log(res.data)
+        sessionStorage.setItem("TOKEN",res.data.data)
+        this.$router.push({
         path: this.redirect || "/audit",
         query: this.otherQuery,
       });
+      })
+      
       return;
       this.$refs.loginForm.validate((valid) => {
         // if (valid) {
