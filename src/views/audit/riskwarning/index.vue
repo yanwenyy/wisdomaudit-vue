@@ -167,7 +167,7 @@
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { listByPage, save, update, del, listProjectByPage } from '@SDMOBILE/api/sdmobile/riskwarning'
+import { listByPage, save, update, del, listProjectByPage } from '@WISDOMAUDIT/api/wisdomaudit/riskwarning'
 import QueryField from '@/components/public/query-field/index'
 import _ from 'lodash'
 import axios from 'axios'
@@ -430,7 +430,7 @@ export default {
       formData.append('uploadFileContentType', suffix)
       var num = Math.random()
       axios({
-        url: `/sdmobile/riskWarning/importFiles?${num}`,
+        url: `/wisdomaudit/riskWarning/importFiles?${num}`,
         method: 'post',
         data: formData
       }).then((res) => {
@@ -466,7 +466,7 @@ export default {
       // 下载风险提示模板excel
       axios({
         method: 'get',
-        url: `/sdmobile/riskWarning/downloadRiskWarningTemplate`,
+        url: `/wisdomaudit/riskWarning/downloadRiskWarningTemplate`,
         responseType: 'blob'
       }).then((res) => {
         // if (res.code !== 0) this.$message.error(res.msg)

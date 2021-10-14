@@ -109,11 +109,11 @@
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { listByPage, del } from '@SDMOBILE/api/sdmobile/problem'
+import { listByPage, del } from '@WISDOMAUDIT/api/wisdomaudit/problem'
 import QueryField from '@/components/public/query-field/index'
 import _ from 'lodash'
 import axios from 'axios'
-import ProblemPopover from '@SDMOBILE/components/ProblemPopover'
+import ProblemPopover from '@WISDOMAUDIT/components/ProblemPopover'
 export default {
   components: { Pagination, QueryField, ProblemPopover },
   data() {
@@ -342,7 +342,7 @@ export default {
       // 下载问题模板excel
       axios({
         method: 'get',
-        url: `/sdmobile/problem/downloadProblemTemplate`,
+        url: `/wisdomaudit/problem/downloadProblemTemplate`,
         responseType: 'blob'
       }).then((res) => {
         // if (res.code !== 0) this.$message.error(res.msg)
@@ -385,7 +385,7 @@ export default {
       formData.append('uploadFileContentType', suffix)
       var num = Math.random()
       axios({
-        url: `/sdmobile/problem/importFiles?${num}`,
+        url: `/wisdomaudit/problem/importFiles?${num}`,
         method: 'post',
         data: formData
       }).then((res) => {

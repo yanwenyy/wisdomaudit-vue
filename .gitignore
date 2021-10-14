@@ -1,3 +1,13 @@
+# 忽略Idea生成的项目文件
+.idea/
+*.iml
+
+# 忽略node module的项目文件
+node_modules/
+dist/
+*.zip
+
+
 HELP.md
 **/target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -42,3 +52,4 @@ build/
 **/.env.development
 /wisdomaudit-vue/node_modules/
 *.log
+

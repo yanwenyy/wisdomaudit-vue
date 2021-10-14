@@ -3,12 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-		<groupId>com.icss.sdmobile</groupId>
-		<artifactId>sdmobile</artifactId>
+		<groupId>com.icss.wisdomaudit</groupId>
+		<artifactId>wisdomaudit</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <groupId>com.icss.sdmobile</groupId>
-    <artifactId>sdmobile-vue</artifactId>
+    <groupId>com.icss.wisdomaudit</groupId>
+    <artifactId>wisdomaudit-vue</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <packaging>pom</packaging>

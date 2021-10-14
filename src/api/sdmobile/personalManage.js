@@ -1,7 +1,8 @@
 import request from '@/utils/request'
 
 const baseURL = 'base'
-const sdmobileURL = 'sdmobile'
+const wisdomauditURL = 'wisdomaudit'
+
 // 人员分页
 export function listByPage(data) {
   return request({
@@ -14,7 +15,7 @@ export function listByPage(data) {
 // 人员统计
 export function personReportList(data) {
   return request({
-    baseURL: sdmobileURL,
+    baseURL: wisdomauditURL,
     url: `/report/personReportList`,
     method: 'post',
     data
@@ -98,7 +99,7 @@ export function authorityForPerson(id,roleIds) {
 // 获取所有的审计机构
 export function getOrgList(data) {
   return request({
-    baseURL: sdmobileURL,
+    baseURL: wisdomauditURL,
     url: `/roOrg/pageList`,
     method: 'post',
     data
@@ -118,7 +119,7 @@ export function getRoleList(data) {
 // 获取系统所有职务
 export function getPositionList(data) {
   return request({
-    baseURL: sdmobileURL,
+    baseURL: wisdomauditURL,
     url: `/personPosition/pageList`,
     method: 'post',
     data

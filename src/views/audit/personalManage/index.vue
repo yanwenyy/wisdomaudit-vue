@@ -1,5 +1,8 @@
 <template>
   <div class="page-container">
+    <div v-if="false">
+      
+    
     <div class="filter-container">
       <QueryField
         ref="queryfield"
@@ -476,6 +479,9 @@
         <el-button type="primary" @click="authorityForPerson()">保存</el-button>
       </div>
     </el-dialog>
+</div>
+     <router-view  v-else/>
+
   </div>
 
 </template>
@@ -483,7 +489,7 @@
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { listByPage, save, update, del, getOrgList, startPerson, logoutPerson, unlockPerson, getRoleList, getById, authorityForPerson, getPositionList} from
-  '@SDMOBILE/api/sdmobile/personalManage'
+  '@WISDOMAUDIT/api/wisdomaudit/personalManage'
 import QueryField from '@/components/public/query-field/index'
 import axios from 'axios'
 export default {

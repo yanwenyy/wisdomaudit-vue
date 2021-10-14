@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 
-const baseURL = 'sdmobile'
+const baseURL = 'wisdomaudit'
+
 // 问题分页
 export function listByPage(data) {
   return request({

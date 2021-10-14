@@ -167,7 +167,7 @@
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { listByPage, save, update, del, listProjectByPage } from '@SDMOBILE/api/sdmobile/managesuggest'
+import { listByPage, save, update, del, listProjectByPage } from '@WISDOMAUDIT/api/wisdomaudit/managesuggest'
 import QueryField from '@/components/public/query-field/index'
 import _ from 'lodash'
 import axios from 'axios'
@@ -432,7 +432,7 @@ export default {
       formData.append('uploadFileContentType', suffix)
       var num = Math.random()
       axios({
-        url: `/sdmobile/manageSuggest/importFiles?${num}`,
+        url: `/wisdomaudit/manageSuggest/importFiles?${num}`,
         method: 'post',
         data: formData
       }).then((res) => {
@@ -468,7 +468,7 @@ export default {
       // 下载管理建议模板excel
       axios({
         method: 'get',
-        url: `/sdmobile/manageSuggest/downloadManageSuggestTemplate`,
+        url: `/wisdomaudit/manageSuggest/downloadManageSuggestTemplate`,
         responseType: 'blob'
       }).then((res) => {
         // if (res.code !== 0) this.$message.error(res.msg)
