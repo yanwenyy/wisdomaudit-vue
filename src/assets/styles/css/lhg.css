@@ -1,5 +1,5 @@
 /* 入场动画 */
-. {
+.anmition_show {
   animation: go_in_show 1s;
   -moz-animation: go_in_show 1s;
   -webkit-animation: go_in_show 1s;
