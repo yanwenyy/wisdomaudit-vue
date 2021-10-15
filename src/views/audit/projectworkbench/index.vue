@@ -1,5 +1,5 @@
 <template>
-  <div class="projectWorkbench">
+  <div class="projectWorkbench" style="background:#fff">
     <div class="title">未初始化项目</div>
     <ul class="projectInit">
       <li
@@ -63,7 +63,7 @@
       </ul>
     </el-drawer>
 
-    <div class="initializeProject">
+    <div class="initializeProject" v-if="active_project">
       <div class="title">初始化项目</div>
       <ul>
         <li
@@ -82,8 +82,8 @@
       </ul>
     </div>
 
-    <!-- <el-empty description="描述文字" ></el-empty> -->
-    <el-row class="tac">
+    <el-empty description="暂无数据" v-if="!active_project" style="margin-top:5%;border:2px solid #EBF0F6;height:600px"></el-empty>
+    <el-row class="tac" v-else>
       <!-- 左侧导航 -->
       <div class="left_menu">
         <el-col>
@@ -965,6 +965,7 @@ export default {
     }
   },
   created() {
+    console.log(this.active_project);
     this.getprojectList(this.queryManage);
     this.getInitProject(this.queryProject);
     this.thematicSelect(this.thematic);
@@ -982,7 +983,7 @@ export default {
       this.ifshow = true
       initProject(data).then((resp) => {
         this.projectInit = resp.data.records;
-        this.active_project = resp.data.records[0].managementProjectUuid;
+        // this.active_project = resp.data.records[0].managementProjectUuid;
         this.ifshow = false
       });
     },

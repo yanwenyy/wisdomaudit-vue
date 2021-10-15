@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const baseURL = 'sdmobile'
+const baseURL = 'wisdomaudit'
 
 // 根获取项目资料树
 export function getTaskNodeTree() {

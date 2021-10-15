@@ -470,7 +470,7 @@
 </template>
 <script>
 import { getDictList } from '@/utils'
-import { save, update, del, personList, getProjectList, toTreeData } from '@SDMOBILE/api/sdmobile/problem'
+import { save, update, del, personList, getProjectList, toTreeData } from '@WISDOMAUDIT/api/wisdomaudit/problem'
 export default {
   props: {
     closeStatus: false,

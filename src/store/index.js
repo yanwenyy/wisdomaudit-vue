@@ -30,6 +30,19 @@ const modules = modulesFiles.keys().reduce((modules, modulePath) => {
 }, {})
 
 const store = new Vuex.Store({
+  state:{
+    TOKEN:''
+  },
+  mutations:{
+    set_token(state,token){
+      state.TOKEN = token
+      sessionStorage.TOKEN = token
+    },
+    del_token(state,token){
+      state.TOKEN = ""
+      sessionStorage.removeItem("TOKEN")
+    }
+  },
   modules,
   getters
 })

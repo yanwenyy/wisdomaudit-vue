@@ -86,6 +86,15 @@ export function Task_update_status (data) {
   })
 }
 
+// 判断是否有重复的  判断否存在
+export function task_select_repeat (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/auditTask/pageList`,
+    method: 'post',
+    data,
+  })
+}
 
 
 // 责任人

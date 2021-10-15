@@ -193,7 +193,7 @@
     </el-dialog>
 
     <!-- 分配责任人 -->
-    <el-dialog
+    <el-dialog 
       :visible.sync="assignPersonDialogVisible"
       width="60%"
     >
@@ -217,7 +217,7 @@
                 <el-option label="2022" value="2022"></el-option>
                 <el-option label="2023" value="2023"></el-option>
                 <el-option label="2024" value="2024"></el-option>
-
+                
               </el-select>
             </el-form-item>
           </el-col>
@@ -258,7 +258,7 @@
         </el-table-column>
         <el-table-column label="指标名称" prop="name">
         </el-table-column>
-        <el-table-column label="年份" prop="year">
+        <el-table-column label="年份" prop="year"> 
         </el-table-column>
         <el-table-column label="区域" prop="place">
         </el-table-column>
@@ -279,7 +279,7 @@
       </el-card>
       <el-card class="parameters">
         <i class="el-icon-s-grid"></i>
-         请输入参数值
+         请输入参数值 
       </el-card>
       <el-card class="parametersTab">
         <el-form label-width="100px" >
@@ -326,7 +326,7 @@ export default {
           role: "组员",
           name: "一一",
           mobile: "13999999999",
-          affUnit: "审计系统",
+          affUnit: "山东移动",
           department: "内审部",
           contactPerson: "是",
         },
@@ -334,7 +334,7 @@ export default {
           role: "组员",
           name: "二二",
           mobile: "13999999999",
-          affUnit: "审计系统",
+          affUnit: "山东移动",
           department: "内审部",
           contactPerson: "否",
         },
@@ -482,7 +482,7 @@ export default {
         role: "组员",
         name: "lisi",
         mobile: "13999999999",
-        affUnit: "审计系统",
+        affUnit: "山东移动",
         department: "内审部",
         contactPerson: "否",
       });

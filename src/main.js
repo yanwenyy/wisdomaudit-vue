@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 import Cookies from 'js-cookie'
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
-
+import axios from "axios"
 import ElementUI from 'element-ui'
 
 import 'element-ui/lib/theme-chalk/index.css'
@@ -19,7 +19,7 @@ import VueAnimateNumber from 'vue-animate-number'
 Vue.use(VueAnimateNumber)
 // Ace end
 
-
+Vue.prototype.$axios = axios
 import qs from 'qs'//请求数据
 Vue.prototype.$qs = qs;//请求数据
 import '@/styles/index.scss' // global css
@@ -57,7 +57,7 @@ Vue.use(ElementUI, {
 // Vue.use(ElementUI)
 
 Vue.config.productionTip = false
-
+axios.defaults.headers.common['TOKEN'] = sessionStorage.getItem('TOKEN');
 new Vue({
   el: '#app',
   router,

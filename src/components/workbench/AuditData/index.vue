@@ -27,7 +27,7 @@
             </el-table-column>
             <!-- <el-table-column prop="dataTaskNumber"
                              label="流水单号"> -->
-            </el-table-column>
+            <!-- </el-table-column> -->
             <el-table-column prop="title"
                              label="标题">
             </el-table-column>
@@ -38,7 +38,7 @@
                              label="发起日期">
 
               <template slot-scope="scope">
-                {{  scope.row.addTime |filtedate }}
+                {{  scope.row.createTime|filtedate }}
               </template>
 
             </el-table-column>
@@ -49,7 +49,7 @@
                   scope.row.status == 0
                     ? "未开始"
                     : scope.row.status == 1
-                    ? "已完成":"执行中"
+                    ? "进行中":""
                 }}
               </template>
             </el-table-column>
@@ -69,12 +69,7 @@
                              size="small">
                     下发
                   </el-button>
-                  <el-button @click="operation(scope.row)"
-                             type="text"
-                             style="color:#1371CC"
-                             size="small">
-                    操作
-                  </el-button>
+
                   <el-button @click="deleteRow(scope.row)"
                              type="text"
                              style="color:red"
@@ -90,6 +85,12 @@
                              size="small">
                     审批
                   </el-button> -->
+                  <el-button @click="operation(scope.row)"
+                             type="text"
+                             style="color:#1371CC"
+                             size="small">
+                    操作
+                  </el-button>
                   <el-button @click="deleteRow(scope.row)"
                              type="text"
                              style="color:red"
@@ -273,6 +274,17 @@
 
             </el-table>
           </el-form>
+          <!-- 分页 -->
+          <div class="page">
+            <el-pagination background
+                           layout="prev, pager, next"
+                           :current-page="this.task_list.current"
+                           @current-change="handleCurrentChange_csh"
+                           :page-size="this.task_list.size"
+                           :total="this.task_list.total"></el-pagination>
+
+          </div>
+          <!-- 分页 end-->
         </div>
 
         <!-- 模版列表 编辑 -->
@@ -290,7 +302,7 @@
               </el-table-column>
               <el-table-column prop="dataCategory"
                                label="类别">
-                <!-- <template slot-scope="scope">{{ scope.row.dataCategory }}</template> -->
+
               </el-table-column>
               <el-table-column prop="dataNumber"
                                label="编号">
@@ -313,20 +325,19 @@
               </el-table-column>
             </el-table>
           </el-form>
+          <div class="page">
+
+            <el-pagination background
+                           layout="prev, pager, next"
+                           :current-page="this.edit_details.pageCurrent"
+                           @current-change="handleCurrentChange_details"
+                           :page-size="this.edit_details.pageSize"
+                           :total="this.edit_details.pageTotal"></el-pagination>
+
+          </div>
+          <!-- 分页 end-->
         </div>
 
-        <!-- 分页 -->
-        <div class="page">
-
-          <el-pagination background
-                         layout="prev, pager, next"
-                         :current-page="this.task_list.current"
-                         @current-change="handleCurrentChange_csh"
-                         :page-size="this.task_list.size"
-                         :total="this.task_list.total"></el-pagination>
-
-        </div>
-        <!-- 分页 end-->
       </div>
       <span slot="footer">
         <el-button size="small"
@@ -747,7 +758,7 @@ export default {
 
 
 
-      projectNumber: '项目001',//项目id 编号
+      projectNumber: '',//项目id 编号
       projectType: '1111',//项目类型
       addDataTaskUuid: '',//任务类型id
       // 未完成
@@ -768,8 +779,10 @@ export default {
 
       multipleSelection_list: [], // 新增 任务弹窗里的全选
       task_list: [],// 新增任务初始化 数据
+
       task_list_records: [],//新增任务初始化 列表
       task_list_records_details: [],//编辑任务初始化 列表
+
       // 新增任务初始化  传递参数
       params_add: {
         pageNo: 1,
@@ -785,12 +798,18 @@ export default {
         pageNo: 1,
         pageSize: 10,
       },
-
+      // 编辑资料模版 
+      edit_details_query: {
+        pageNo: 1,
+        pageSize: 10,
+      },
     }
   },
   computed: {},
   watch: {},
   created () {
+    this.projectNumber = this.active_project;
+
     // 资料 未完成列表 
     let params = {
       pageNo: this.params.pageNo,
@@ -818,6 +837,8 @@ export default {
   mounted () {
 
   },
+  props: ['active_project'],
+
   filters: {
     filtedate: function (date) {
       let t = new Date(date);
@@ -912,6 +933,7 @@ export default {
       }
       this.add_add_csh(params)
     },
+
 
     // 新增任务列表 里的全选
     handleSelectionChange_query (val) {
@@ -1493,11 +1515,20 @@ export default {
 
       // 资料任务id 
       this.addDataTaskUuid = data.addDataTaskUuid
-      let params = {
-        id: this.addDataTaskUuid
-      }
+
+      let params_query = {
+        condition: {
+          addDataTaskUuid: this.addDataTaskUuid
+        },
+        pageNo: this.edit_details_query.pageNo,
+        pageSize: this.edit_details_query.pageSize,
+      };
+      this.edut_details(params_query);//编辑详情
+    },
+
+    edut_details (params_query) {
       // 显示编辑 详情
-      data_edit_details(params).then(resp => {
+      data_edit_details(params_query).then(resp => {
         // let data = resp.data.demandDataList;
         this.edit_details = resp.data
         this.add_form.title = this.edit_details.title;
@@ -1521,6 +1552,17 @@ export default {
       });
     },
 
+    // 编辑分页
+    handleCurrentChange_details (val) {
+      let params = {
+        condition: {
+          addDataTaskUuid: this.addDataTaskUuid
+        },
+        pageNo: val,
+        pageSize: this.edit_details_query.pageSize,
+      };
+      this.edut_details(params);
+    },
     // 已完成==========================
     // 已完成列表
     list_data_end (params2) {

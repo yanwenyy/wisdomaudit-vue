@@ -244,10 +244,10 @@ import QueryField from "@/components/public/query-field/index";
 import {
   personReportList,
   exportPersonReportExcel,
-} from "@SDMOBILE/api/sdmobile/personalManage";
-import { projectReportList } from "@SDMOBILE/api/sdmobile/project";
+} from "@WISDOMAUDIT/api/wisdomaudit/personalManage";
+import { projectReportList } from "@WISDOMAUDIT/api/wisdomaudit/project";
 import axios from "axios";
-import { getPositionList } from '@SDMOBILE/api/sdmobile/personalManage'
+import { getPositionList } from '@WISDOMAUDIT/api/wisdomaudit/personalManage'
 export default {
   components: { QueryField },
   data() {
@@ -428,7 +428,7 @@ export default {
       // 下载项目模板excel
       axios({
         method: "post",
-        url: `/sdmobile/report/exportPersonReportExcel`,
+        url: `/wisdomaudit/report/exportPersonReportExcel`,
         responseType: "blob",
         data: {
           entryOrgTimeEnd: this.$refs.queryfield1.query.entryOrgTimeEnd,
@@ -465,7 +465,7 @@ export default {
       // 下载项目模板excel
       axios({
         method: "post",
-        url: `/sdmobile/report/auditItemReportExcel`,
+        url: `/wisdomaudit/report/auditItemReportExcel`,
         responseType: "blob",
         data: {
           auditStartTimeEnd: this.$refs.queryfield2.query.auditStartTimeEnd,
