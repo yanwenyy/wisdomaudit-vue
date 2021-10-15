@@ -6,11 +6,12 @@ import wisdomauditRouter from './modules/wisdomaudit'
 //审计整改模块
 import auditCorrective from './modules/auditCorrective'
 //模型管理模块
-import modelManagement from './modules/modelManagement'
+import modelManagement from './modules/modelmanagement'
 // 数据管理
 import datamanagement from './modules/datamanagement'
 // 系统管理
 import systemmanagement from './modules/systemmanagement'
+
 
 Vue.use(Router)
 
@@ -50,214 +51,214 @@ import {
  * all roles can be accessed
  */
 export const constantRoutes = [{
-    path: '/login',
-    component: () => import('@WISDOMAUDIT/views/login'),
-  },
+  path: '/login',
+  component: () => import('@WISDOMAUDIT/views/login'),
+},
 
-  {
-    path: '/404',
-    component: () => import('@WISDOMAUDIT/views/404'),
-    hidden: true
-  },
+{
+  path: '/404',
+  component: () => import('@WISDOMAUDIT/views/404'),
+  hidden: true
+},
 
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/audit/home',
-    // children:[
-    //   {
-    //     path:'/audit/accountableAdd',
-    //     component: () => import('@/views/audit/project/accountableAdd.vue')
-    //   }
-    // ]
-  },
+{
+  path: '/',
+  component: Layout,
+  redirect: '/audit/home',
+  // children:[
+  //   {
+  //     path:'/audit/accountableAdd',
+  //     component: () => import('@/views/audit/project/accountableAdd.vue')
+  //   }
+  // ]
+},
 
-  {
+{
+  path: "/audit/home",
+  name: "home",
+  component: Layout,
+
+  children: [{
     path: "/audit/home",
     name: "home",
-    component: Layout,
+    component: () => import("@WISDOMAUDIT/views/audit/home"),
+    meta: {
+      title: "首页"
+    }
+  }]
 
-    children: [{
-      path: "/audit/home",
-      name: "home",
-      component: () => import("@WISDOMAUDIT/views/audit/home"),
+},
+
+{
+  path: "/project",
+  name: "project",
+  component: Layout,
+  meta: {
+    title: "审计概览"
+  },
+  children: [
+    {
+      path: "/project",
+      name: "project",
+      component: () => import("@WISDOMAUDIT/views/audit/project"),
       meta: {
-        title: "首页"
+        title: "审计概览"
       }
-    }]
+    }
+  ]
 
+},
+{
+  path: "/Newpage",
+  name: "Newpage",
+  component: () => import("@WISDOMAUDIT/views/audit/project"),
+  hidden: true,
+  meta: {
+    title: "审计概览"
+  }
+},
+{
+  path: "/audit/riskMonitoring",
+  name: "riskMonitoring",
+  redirect: "/riskMonitoring/riskScan/personal",
+  component: Layout,
+  meta: {
+    title: "风险监控"
   },
-
-  {
-    path: "/project",
-    name: "project",
-    component: Layout,
+  children: [{
+    path: "riskScan",
+    name: "riskScan",
+    component: () => import("@/layout/blank"),
+    // component: () => import('@WISDOMAUDIT/views/audit/accountableAdd'),
+    // wisdomaudit-vue\src\views\audit\riskScan\personal
     meta: {
-      title: "审计概览"
+      title: "风险扫描"
     },
-    children:[
-      {
-        path: "/project",
-        name: "project",
-        component: () => import("@WISDOMAUDIT/views/audit/project"),
-        meta: {
-          title: "审计概览"
-        }
+    children: [{
+      path: "/personal",
+      name: "personal",
+      component: () =>
+        import("@WISDOMAUDIT/views/audit/riskScan/personal"),
+      meta: {
+        title: "个人"
       }
+    },
+    {
+      path: "/enterprise",
+      name: "enterprise",
+      component: () =>
+        import("@WISDOMAUDIT/views/audit/riskScan/enterprise"),
+      meta: {
+        title: "政企"
+      }
+    }
     ]
-    
+  }]
+},
+
+{
+  path: "/audit/auditItems",
+  name: "auditItems",
+  component: Layout,
+  meta: {
+    title: "审计项目"
   },
-  {
-    path: "/Newpage",
-    name: "Newpage",
-    component: () => import("@WISDOMAUDIT/views/audit/project"),
-    hidden:true,
+  children: [{
+    path: "application",
+    name: "application",
+    component: () => import("@WISDOMAUDIT/views/audit/projectmanagement"),
     meta: {
-      title: "审计概览"
+      title: "项目管理"
     }
   },
   {
-    path: "/audit/riskMonitoring",
-    name: "riskMonitoring",
-    redirect: "/riskMonitoring/riskScan/personal",
-    component: Layout,
+    path: "projectWorkbench",
+    name: "projectWorkbench",
+    component: () => import("@WISDOMAUDIT/views/audit/projectworkbench"),
     meta: {
-      title: "风险监控"
-    },
-    children: [{
-      path: "riskScan",
-      name: "riskScan",
-      component: () => import("@/layout/blank"),
-      // component: () => import('@WISDOMAUDIT/views/audit/accountableAdd'),
-      // wisdomaudit-vue\src\views\audit\riskScan\personal
-      meta: {
-        title: "风险扫描"
-      },
-      children: [{
-          path: "/personal",
-          name: "personal",
-          component: () =>
-            import("@WISDOMAUDIT/views/audit/riskScan/personal"),
-          meta: {
-            title: "个人"
-          }
-        },
-        {
-          path: "/enterprise",
-          name: "enterprise",
-          component: () =>
-            import("@WISDOMAUDIT/views/audit/riskScan/enterprise"),
-          meta: {
-            title: "政企"
-          }
-        }
-      ]
-    }]
+      title: "项目工作台"
+    }
   },
-
   {
-    path: "/audit/auditItems",
-    name: "auditItems",
-    component: Layout,
+    path: "feedback",
+    name: "Feedback",
+    component: () => import("@WISDOMAUDIT/views/audit/feedback"),
     meta: {
-      title: "审计项目"
-    },
-    children: [{
-        path: "application",
-        name: "application",
-        component: () => import("@WISDOMAUDIT/views/audit/projectmanagement"),
-        meta: {
-          title: "项目管理"
-        }
-      },
-      {
-        path: "projectWorkbench",
-        name: "projectWorkbench",
-        component: () => import("@WISDOMAUDIT/views/audit/projectworkbench"),
-        meta: {
-          title: "项目工作台"
-        }
-      },
-      {
-        path: "feedback",
-        name: "Feedback",
-        component: () => import("@WISDOMAUDIT/views/audit/feedback"),
-        meta: {
-          title: "反馈审计资料"
-        }
-      }
-    ]
-  },
+      title: "反馈审计资料"
+    }
+  }
+  ]
+},
   auditCorrective,
-  {
-    path: "/audit/personalManage",
-    name: "personalManage",
-    component: Layout,
-    // component: () => import('@WISDOMAUDIT/views/audit/personalManage'),
-    meta: {
-      title: "知识库"
-    },
-    children: [{
-        path: "auditbasis",
-        name: "Auditbasis",
-        component: () => import("@WISDOMAUDIT/views/audit/auditbasis"),
-        meta: {
-          title: "审计依据"
-        }
-      },
-      {
-        path: "excellentcases",
-        name: "Excellentcases",
-        component: () => import("@WISDOMAUDIT/views/audit/excellentcases"),
-        meta: {
-          title: "优秀案例及内参"
-        }
-      },
-      {
-        path: "ModelList",
-        name: "ModelList",
-        component: () => import("@WISDOMAUDIT/views/audit/ModelList"),
-        meta: {
-          title: "模型清单"
-        }
-      },
-      {
-        path: "auditHistory",
-        name: "auditHistory",
-        component: () => import("@WISDOMAUDIT/views/audit/auditHistory"),
-        meta: {
-          title: "省内历史审计发现"
-        }
-      }
-    ]
+{
+  path: "/audit/personalManage",
+  name: "personalManage",
+  component: Layout,
+  // component: () => import('@WISDOMAUDIT/views/audit/personalManage'),
+  meta: {
+    title: "知识库"
   },
+  children: [{
+    path: "auditbasis",
+    name: "Auditbasis",
+    component: () => import("@WISDOMAUDIT/views/audit/auditbasis"),
+    meta: {
+      title: "审计依据"
+    }
+  },
+  {
+    path: "excellentcases",
+    name: "Excellentcases",
+    component: () => import("@WISDOMAUDIT/views/audit/excellentcases"),
+    meta: {
+      title: "优秀案例及内参"
+    }
+  },
+  {
+    path: "ModelList",
+    name: "ModelList",
+    component: () => import("@WISDOMAUDIT/views/audit/ModelList"),
+    meta: {
+      title: "模型清单"
+    }
+  },
+  {
+    path: "auditHistory",
+    name: "auditHistory",
+    component: () => import("@WISDOMAUDIT/views/audit/auditHistory"),
+    meta: {
+      title: "省内历史审计发现"
+    }
+  }
+  ]
+},
 
   wisdomauditRouter,
   modelManagement,
   datamanagement,
-  {
+{
+  path: '/systemmanagement',
+  component: Layout,
+  redirect: '/systemmanagement',
+  name: 'modelManagement',
+  meta: {
+    title: '系统管理',
+  },
+  children: [{
     path: '/systemmanagement',
-    component: Layout,
-    redirect: '/systemmanagement',
+    component: () => import("@WISDOMAUDIT/views/systemmanagement"),
     name: 'modelManagement',
     meta: {
       title: '系统管理',
     },
-    children: [{
-      path: '/systemmanagement',
-      component: () => import("@WISDOMAUDIT/views/systemmanagement"),
-      name: 'modelManagement',
-      meta: {
-        title: '系统管理',
-      },
-    }]
-  },
-  // 404 page must be placed at the end !!!
-  {
-    path: '*',
-    redirect: '/404',
-    hidden: true
-  }
+  }]
+},
+// 404 page must be placed at the end !!!
+{
+  path: '*',
+  redirect: '/404',
+  hidden: true
+}
 ]
 
 const createRouter = () => new Router({
