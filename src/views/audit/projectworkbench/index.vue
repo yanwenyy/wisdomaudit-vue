@@ -983,7 +983,7 @@ export default {
       this.ifshow = true
       initProject(data).then((resp) => {
         this.projectInit = resp.data.records;
-        // this.active_project = resp.data.records[0].managementProjectUuid;
+        this.active_project = resp.data.records[0].managementProjectUuid;
         this.ifshow = false
       });
     },
