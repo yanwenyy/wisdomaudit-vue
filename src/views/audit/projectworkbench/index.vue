@@ -82,6 +82,7 @@
       </ul>
     </div>
 
+    <!-- <el-empty description="描述文字" ></el-empty> -->
     <el-row class="tac">
       <!-- 左侧导航 -->
       <div class="left_menu">
@@ -952,10 +953,11 @@ export default {
       editTaskSelfDialogVisible: false, //编辑自建任务窗口
       taskSelfTab:[],//自建任务列表
     };
-  },watch: {
+  },
+  watch: {
     'active_project' (val) { 
       this.refreash = true
-      console.log('-----------------------'+this.active_project)
+      // console.log('-----------------------'+this.active_project)
       let _this = this
       setTimeout(function name() {
         _this.refreash = false

@@ -109,7 +109,7 @@
         <!-- 分页 end-->
       </el-tab-pane>
       <el-tab-pane label="审计任务维护" name="second">
-        <TaskMaintenance />
+        <TaskMaintenance :active_project="active_project"/>
       </el-tab-pane>
     </el-tabs>
 
@@ -517,8 +517,7 @@ export default {
       taskData: [], //获取数据库模型任务数据
       queryInfo: {
         condition: {
-          managementProjectUuid: "8351286cd70c3f41c92f59ed425a4659",
-          taskType: "1",
+          managementProjectUuid: ""
         },
         pageNo: 1,
         pageSize: 5,
@@ -536,11 +535,15 @@ export default {
     };
   },
   created() {
-    // console.log(this.active_project)
+    console.log(this.active_project)
     this.query.condition.managementProjectUuid = this.active_project;
+    // 组员维护接口
     this.projectMember(this.query);
+
     this.getSelectData(this.select);
-    this.getmodelTaskList(this.queryInfo);
+    
+    // this.queryInfo.condition.managementProjectUuid = this.active_project;
+    // this.getmodelTaskList(this.queryInfo);
   },
   methods: {
     // 获取数据库模型任务数据
@@ -585,8 +588,9 @@ export default {
      saveGroupMember(){
        editprojectMembershipList(this.peopleSelection).then((resp) => {
         this.$message.success("修改成功！");
+         this.addgroupDialog = false;
        });
-       this.addgroupDialog = false;
+      
      },
     // 删除当前人员
     deleteRow(row, rows) {
@@ -778,12 +782,14 @@ export default {
     },
     // 组员选中事件
     handleSelectionChange(val) {
+      console.log(this.personMes);
       if (val.length == this.personMes.length) {
         for (let o = 0; o < val.length; o++) {
           this.peopleSelection.push({
             peopleRole: 2,
             isLiaison: 0,
             peopleTableUuid: val[o].peopleTableUuid,
+            managementProjectUuid: this.active_project,
             peopleTable: {
               peopleTableUuid: val[o].peopleTableUuid,
               peopleName: val[o].peopleName,
@@ -805,6 +811,7 @@ export default {
         this.peopleSelection.push({
           peopleRole: 2,
           isLiaison: 0,
+          managementProjectUuid: this.active_project,
           peopleTableUuid: val[val.length - 1].peopleTableUuid,
           peopleTable: {
             peopleTableUuid: val[val.length - 1].peopleTableUuid,
@@ -823,6 +830,7 @@ export default {
         }
         this.peopleSelection = result;
       }
+      console.log(this.peopleSelection);
     },
     // 模糊查询任务模型
     queryModel() {
