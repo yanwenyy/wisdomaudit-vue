@@ -67,14 +67,15 @@
             </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <!-- <el-button
+                <el-button
                   type="text"
                   style="color: #1371cc"
                   size="small"
-                  @click.native.prevent="editModel()"
+                   v-if="scope.row.taskType == 2"
+                  @click.native.prevent="editModel(scope.row)"
                 >
                   编辑
-                </el-button> -->
+                </el-button>
                 <el-button
                   type="text"
                   style="color: #db454b"
@@ -107,19 +108,28 @@
     </div>
 
     <!-- 审计任务维护编辑弹框 -->
-    <el-dialog title="增加" :visible.sync="editModelDialogVisible" width="50%">
-      <el-form label-width="80px" class="selfTask">
+    <el-dialog title="编辑" :visible.sync="editModelDialogVisible" width="50%">
+      <el-form label-width="80px" class="selfTask" :model="editTask">
         <el-form-item label="自建任务名称：">
-          <el-input placeholder="请输入"></el-input>
+          <el-input placeholder="请输入" v-model="editTask.taskName"></el-input>
         </el-form-item>
         <el-form-item label="责任人：">
-          <el-select placeholder="请选择" class="auditeeInput" v-model="value">
-            <el-option label="是" value="shi"></el-option>
-            <el-option label="否" value="fou"></el-option>
-          </el-select>
+           <el-select
+              v-model="editTask.peopleTableUuid"
+              filterable
+              @change="personLiableSelect"
+            >
+              <el-option
+                v-for="item in tableData"
+                :key="item.peopleTable.peopleTableUuid"
+                :label="item.peopleTable.peopleName"
+                :value="item.peopleTable.peopleTableUuid"
+              >
+              </el-option>
+            </el-select>
         </el-form-item>
         <el-form-item label="任务描述：">
-          <el-input type="textarea" style="top: -35px; width: 400px"></el-input>
+          <el-input type="textarea" style="top: -35px; width: 400px" v-model="editTask.taskDescription"></el-input>
         </el-form-item>
         <el-form-item label="上传附件：">
           <el-upload
@@ -138,12 +148,12 @@
           </el-upload>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="editModelDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="editModelDialogVisible = false"
-          >确 定</el-button
-        >
-      </span>
+      <div class="stepBtn">
+          <el-button @click="resBtn">取消</el-button>
+          <el-button style="background: #0c87d6; color: #fff" @click="editTaskSelfBtn"
+            >完成</el-button
+          >
+        </div>
     </el-dialog>
 
     <!-- 审计任务维护新增弹框 -->
@@ -154,7 +164,7 @@
     >
       <div class="taskTitle">新增任务(请先选择任务类型)</div>
       <div class="taskAdd" v-if="task == '1'">
-        <el-form label-width="80px" :model="taskSelf">
+        <el-form label-width="80px" :model="taskSelf" style="margin-left:20%">
           <el-form-item label="自建任务名称：">
             <el-input
               placeholder="请输入"
@@ -286,12 +296,6 @@
           >
         </div>
       </div>
-      <!-- <div class="stepBtn">
-        <el-button @click="resBtn">取消</el-button>
-        <el-button style="background: #0c87d6; color: #fff" @click="saveTask"
-          >完成</el-button
-        >
-      </div> -->
     </el-dialog>
   </div>
 </template>
@@ -311,6 +315,8 @@ import {
   deletmodelTask,
   selfTaskFunction,
   isModel,
+  editTaskSelf,
+  editTaskSelfInfo
 } from "@WISDOMAUDIT/api/shandong/memberMaintenance.js";
 export default {
   props: ["active_project"],
@@ -443,6 +449,14 @@ export default {
           label: "否",
         },
       ],
+      editTask:{
+        managementProjectUuid: "",
+        peopleName: "",
+        peopleTableUuid: "",
+        taskDescription: "",
+        taskName: "",
+        taskType: "",
+      }
     };
   },
   computed: {},
@@ -480,8 +494,13 @@ export default {
         personCharge: "",
       });
     },
-    editModel() {
+    editModel(row) {
       this.editModelDialogVisible = true;
+      editTaskSelf(row.auditTaskUuid).then((resp)=>{
+        // console.log(resp);
+        this.editTask = resp.data
+        console.log(this.editTask);
+      })
     },
 
     // 列表显示
@@ -662,8 +681,19 @@ export default {
           this.$message.error("项目中已存在该模型！");
         }
       });
-      // for(let i=0;i<val.length;i++){
-
+      // for(let i =0; i<val.length;i++){
+      //   // alert(123)
+      //    this.ismodelList.condition.auditModelUuid =
+      //   val[val.length - 1].auditModelUuid;
+      // this.ismodelList.condition.managementProjectUuid = this.active_project;
+      // // 判断项目中模型是否存在
+      // isModel(this.ismodelList).then((resp) => {
+      //   // console.log(resp);
+      //   if (resp.data.total > 0) {
+      //     this.$refs.multipleModelRef.toggleRowSelection(val[i]);
+      //     this.$message.error("项目中已存在该模型！");
+      //   }
+      // });
       // }
     },
     // 弹框页面组员删除
@@ -713,9 +743,11 @@ export default {
     //创建任务责任人下拉框的事件
     personLiableSelect(val) {
       this.taskSelf.peopleTableUuid = val;
+      this.editTask.peopleTableUuid = val;
       for (let i = 0; i < this.tableData.length; i++) {
         if (val == this.tableData[i].peopleTable.peopleTableUuid) {
           this.taskSelf.peopleName = this.tableData[i].peopleTable.peopleName;
+          this.editTask.peopleName = this.tableData[i].peopleTable.peopleName;
         }
       }
     },
@@ -782,14 +814,23 @@ export default {
       this.TaskDialogVisible = false;
       this.task = 1
     },
+    // 选择任务类型切换页面
     taskTypeSelect(val) {
-      console.log(val);
+      // console.log(val);
       if (val == 1) {
         this.task = 2;
       } else {
         this.task = 1;
       }
     },
+    // 编辑成功按钮
+    editTaskSelfBtn(){
+      editTaskSelfInfo(this.editTask).then((resp)=>{
+        this.editModelDialogVisible = false;
+         this.queryInfo.condition.managementProjectUuid = this.active_project;
+        this.getmodelTaskList(this.queryInfo);
+      })
+    }
   },
   created() {
     // console.log(this.active_project);
