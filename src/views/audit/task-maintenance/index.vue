@@ -146,236 +146,6 @@
       </span>
     </el-dialog>
 
-    <!-- 审计任务维护添加弹框 -->
-    <!-- <el-dialog
-      :visible.sync="addDialogVisible"
-      width="60%"
-      @closeTask"
-    >
-      <div class="title">2021年泰安分公司xxx领导经责审计</div>
-      <div class="addPerson" v-if="step == 1">
-        <el-row>
-          <div class="stepNew">
-            <div class="stepOneN">
-              <div>1.第一步：添加组员</div>
-              <span></span>
-            </div>
-            <div class="stepTwoN">
-              <span></span>
-              <div>2.第二步：添加审计任务</div>
-              <span></span>
-            </div>
-          </div>
-        </el-row>
-        <el-row>
-          <div class="text">请选择组员，可多选</div>
-        </el-row>
-        <el-row>
-          <el-col :span="10">
-            <div class="personMessage">
-              <el-table
-                :data="personMes"
-                @selection-change="handleSelectionChange"
-                ref="personRef"
-              >
-                <el-table-column type="selection"></el-table-column>
-                <el-table-column label="全选组员">
-                  <template slot-scope="scope">
-                    {{ scope.row.peopleName }} {{ scope.row.memberPhone }}
-                    {{ scope.row.memberDepartment }}
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-          </el-col>
-          <el-col :span="13">
-            <div class="editPerson">
-              <el-table :data="peopleSelection">
-                <el-table-column label="已选组员">
-                  <template slot-scope="scope">
-                    {{ scope.row.peopleTable.peopleName }}
-                    {{ scope.row.peopleTable.memberPhone }}
-                    {{ scope.row.peopleTable.memberDepartment }}
-                  </template>
-                </el-table-column>
-                <el-table-column label="项目接口人">
-                  <template slot-scope="scope">
-                    <el-form>
-                      <el-form-item>
-                        <el-select
-                          v-model="scope.row.isLiaison"
-                          placeholder="请选择"
-                        >
-                          <el-option
-                            v-for="item in isconperOptions"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value"
-                          >
-                          </el-option>
-                        </el-select>
-                      </el-form-item>
-                    </el-form>
-                  </template>
-                </el-table-column>
-                <el-table-column label="操作" width="100">
-                  <template slot-scope="scope">
-                    <el-button
-                      type="text"
-                      style="color: #db454b"
-                      size="small"
-                      @click.native.prevent="
-                        deletePerson(scope.$index, peopleSelection, scope.row)
-                      "
-                    >
-                      删除
-                    </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-          </el-col>
-        </el-row>
-
-        <div class="stepBtn">
-          <el-button @click="addDialogVisible = false">取消</el-button>
-          <el-button class="nextBtn" @click="nextBtn">下一步</el-button>
-        </div>
-      </div>
-
-      <div class="addAudit" v-else-if="step == 2">
-        <div class="stepNew">
-          <div class="auditStepOneN">
-            <div>1.第一步：添加组员</div>
-            <span></span>
-          </div>
-          <div class="auditStepTwoN">
-            <span></span>
-            <div>2.第二步：添加审计任务</div>
-            <span></span>
-          </div>
-        </div>
-        <div class="optionBtn" v-if="radio == '1'">
-          <span>类型：</span>
-          <el-radio v-model="radio" label="1">模型任务</el-radio>
-          <el-radio v-model="radio" label="2">自建任务</el-radio>
-          <el-row style="margin-top: 10px">
-            <el-col :span="15">
-              <div style="margin-top: 2.5%; color: #5f6165">
-                请选择想要引用的模型(可多选)
-              </div>
-            </el-col>
-            <el-col :span="9">
-              <el-input
-                placeholder="请输入内容"
-                v-model="modelQuery.condition.modelName"
-                class="input-with-select"
-              >
-                <el-button
-                  slot="append"
-                  icon="el-icon-search"
-                  @click="queryModel"
-                ></el-button>
-              </el-input>
-            </el-col>
-          </el-row>
-          <el-table
-            :data="modelTableData"
-            style="width: 100%"
-            @selection-change="handleSelectionChangeModel"
-            ref="modelRefs"
-          >
-            <el-table-column type="selection"> </el-table-column>
-            <el-table-column prop="auditModelUuid" label="模型编号">
-            </el-table-column>
-            <el-table-column prop="belongField" label="所属领域">
-            </el-table-column>
-            <el-table-column prop="belongSpcial" label="所属专题">
-            </el-table-column>
-            <el-table-column prop="modelName" label="模型名称">
-            </el-table-column>
-            <el-table-column prop="address" label="说明" width="300">
-            </el-table-column>
-            <el-table-column prop="ruleDescription" label="规则" width="300">
-            </el-table-column>
-          </el-table>
-
-     
-          <div class="page">
-            <el-pagination
-              background
-              :hide-on-single-page="false"
-              layout="prev, pager, next"
-              :page-sizes="[2, 4, 6, 8]"
-              :current-page="modelSize.current"
-              @current-change="handleCurrentChangeModel"
-              :page-size="modelSize.size"
-              :total="modelSize.total"
-            ></el-pagination>
-          </div>
-
-        </div>
-        <div v-else-if="radio == '2'" class="selfTask">
-          <el-form label-width="80px" :model="taskSelf">
-            <el-form-item label="类型：" style="margin-bottom: 50px">
-              <div style="margin-top: -7.7%; margin-bottom: 20px">
-                <el-radio v-model="radio" label="1">模型任务</el-radio>
-                <el-radio v-model="radio" label="2">自建任务</el-radio>
-              </div>
-            </el-form-item>
-            <el-form-item label="自建任务名称：">
-              <el-input
-                placeholder="请输入"
-                v-model="taskSelf.taskName"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="责任人：">
-              <el-select
-                v-model="tableData.peopleTableUuid"
-                filterable
-              >
-                <el-option
-                  v-for="item in tableData"
-                  :key="item.peopleTable.peopleTableUuid"
-                  :label="item.peopleTable.peopleName"
-                  :value="item.peopleTable.peopleTableUuid"
-                >
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="任务描述：">
-              <el-input
-                type="textarea"
-                style="top: -35px; width: 400px"
-                v-model="taskSelf.taskDescription"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="上传附件：">
-              <el-upload
-                class="upload-demo"
-                drag
-                action="https://jsonplaceholder.typicode.com/posts/"
-                multiple
-              >
-                <i class="el-icon-upload"></i>
-                <div class="el-upload__text">
-                  将文件拖到此处，或<em>点击上传</em>
-                </div>
-                <div class="el-upload__tip" slot="tip">
-                  只能上传jpg/png文件，且不超过500kb
-                </div>
-              </el-upload>
-            </el-form-item>
-          </el-form>
-        </div>
-
-        <div class="stepBtn">
-          <el-button @click="prevoius">上一步</el-button>
-          <el-button class="nextBtn" @click="saveBtn">完成</el-button>
-        </div>
-      </div>
-    </el-dialog> -->
-
     <!-- 审计任务维护新增弹框 -->
     <el-dialog
       :visible.sync="TaskDialogVisible"
@@ -453,7 +223,7 @@
         </div>
       </div>
       <div class="model_Info" v-else-if="task == '2'">
-        <el-row style="margin-top: 10px">
+        <el-row style="margin-top: 50px">
           <el-col :span="15">
             <div style="margin-top: 2.5%; color: #5f6165; margin-top: 10px">
               请选择想要引用的模型
@@ -482,14 +252,14 @@
         >
           <el-table-column type="selection" :reserve-selection="true">
           </el-table-column>
-          <el-table-column prop="auditModelUuid" label="模型编号">
+          <el-table-column type="index" label="模型编号" width="80">
           </el-table-column>
           <el-table-column prop="belongField" label="所属领域">
           </el-table-column>
           <el-table-column prop="belongSpcial" label="所属专题">
           </el-table-column>
           <el-table-column prop="modelName" label="模型名称"> </el-table-column>
-          <el-table-column prop="address" label="说明" width="300">
+          <el-table-column prop="address" label="说明" width="250">
           </el-table-column>
           <el-table-column prop="ruleDescription" label="规则" width="300">
           </el-table-column>
@@ -892,6 +662,9 @@ export default {
           this.$message.error("项目中已存在该模型！");
         }
       });
+      // for(let i=0;i<val.length;i++){
+
+      // }
     },
     // 弹框页面组员删除
     deletePerson(index, rows, obj) {
@@ -954,6 +727,7 @@ export default {
         this.TaskDialogVisible = false;
         this.queryInfo.condition.managementProjectUuid = this.active_project;
         this.getmodelTaskList(this.queryInfo);
+        this.task = 1
       });
     },
     //  完成按钮
@@ -1006,6 +780,7 @@ export default {
     TaskDialogClosed() {
       this.taskSelf = [];
       this.TaskDialogVisible = false;
+      this.task = 1
     },
     taskTypeSelect(val) {
       console.log(val);
