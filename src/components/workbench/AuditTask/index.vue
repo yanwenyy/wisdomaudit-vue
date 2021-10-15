@@ -1923,21 +1923,34 @@ export default {
         return false;
       }
 
-
-      // this.quoteModel_btn(params);//确认引用
       //做比较的两个数组
-
       // console.log(array3); // 1, 3
       // if (array3.length !== 0) {
       //   this.$message.info("请不要重复选择引入的模型");
       //   return false
       // } else {
-
       // auditModelList: array1,
       // }
-      // this.repeat(params);//重复
 
 
+      let array1 = [];//数组1
+      this.multipleSelection.forEach((item) => {
+        array1.push(item);
+      });
+      let array2 = this.tableData_list;//数组2
+      let array3 = [];//储存合并的值
+      for (var s in array1) {
+        for (var x in array2) {
+          if (array1[s].modelName == array2[x].auditModelName) {
+            array3.push(array1[s].modelName);
+          }
+        }
+      }
+      let params2 = {
+        auditModelList: array1,
+        projectId: this.managementProjectUuid,
+      };
+      this.quoteModel_btn(params2);//确认引用
     },
 
     //选择模型列表分页  全选
@@ -1959,28 +1972,12 @@ export default {
           this.$refs.multipleTable.toggleRowSelection(val[val.length - 1]);
           this.$message.error("项目中已存在该模型！");
           return false
-        } else {
-          // 没有重复
-
-          let array1 = [];//数组1
-          this.multipleSelection.forEach((item) => {
-            array1.push(item);
-          });
-          let array2 = this.tableData_list;//数组2
-          let array3 = [];//储存合并的值
-          for (var s in array1) {
-            for (var x in array2) {
-              if (array1[s].modelName == array2[x].auditModelName) {
-                array3.push(array1[s].modelName);
-              }
-            }
-          }
-          let params2 = {
-            auditModelList: array1,
-            projectId: this.managementProjectUuid,
-          };
-          this.quoteModel_btn(params2);//确认引用
         }
+        // else {
+        // 没有重复
+
+
+        // }
       });
     },
 
