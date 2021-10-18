@@ -25,6 +25,8 @@
 import request from '@/utils/request'
 
 const baseURL = '/base'
+
+
 export function login(data) {
   return request({
     baseURL: baseURL,
@@ -53,6 +55,106 @@ export function logout() {
   return request({
     url: '/logout',
     method: 'post'
+  })
+}
+
+
+
+
+
+
+export function searchRole(params) {
+  return request({
+    url: '/role/listRoleInfo',
+    method: 'get',
+    params
+  })
+}
+export function getPermission() {
+  return request({
+    url: '/permission/getUserPermissionList',
+    method: 'get'
+  })
+}
+export function addRole(data) {
+  return request({
+    url: '/role/addRole',
+    method: 'POST',
+    data
+  })
+}
+export function getRoleData(params) {
+  return request({
+    url: '/role/getRoleInfoByRoleId',
+    method: 'get',
+    params
+  })
+}
+
+export function removeRole(data) {
+  return request({
+    url: '/role/deleteRole',
+    method: 'POST',
+    params:data
+  })
+}
+
+export function modifyRole(data) {
+  return request({
+    url: '/role/updateRole',
+    method: 'POST',
+    data
+  })
+}
+
+
+
+export function getUserList(params) {
+  return request({
+    url: '/user/listUserInfo',
+    method: 'get',
+    params
+  })
+}
+
+export function removeUser(data) {
+  return request({
+    url: '/user/deleteUser',
+    method: 'POST',
+    params:data
+  })
+}
+export function getUserTree() {
+  return request({
+    url: '/ecoOrg/tree',
+    method: 'get',
+  })
+}
+
+export function addUser(data) {
+  return request({
+    url: '/user/addUser',
+    method: 'post',
+    data
+
+  })
+}
+
+export function obtainUser(params) {
+  return request({
+    url: '/user/getUserByUserId',
+    method: 'get',
+    params
+
+  })
+}
+
+export function modifyUser(data) {
+  return request({
+    url: '/user/updateUser',
+    method: 'post',
+    data
+
   })
 }
 
