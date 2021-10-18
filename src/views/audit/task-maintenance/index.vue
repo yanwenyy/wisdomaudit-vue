@@ -459,7 +459,8 @@ export default {
         taskDescription: "",
         taskName: "",
         taskType: "",
-      }
+      },
+      modelTableData:[]
     };
   },
   computed: {},

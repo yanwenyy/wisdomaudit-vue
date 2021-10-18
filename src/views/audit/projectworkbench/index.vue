@@ -807,7 +807,6 @@ export default {
         projectId: "",
       },
       project: [],
-      modelTableData: [],
       taskSelf: {
         //创建自建任务传参
         managementProjectUuid: "",
