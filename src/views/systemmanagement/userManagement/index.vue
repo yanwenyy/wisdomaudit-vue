@@ -6,15 +6,11 @@
           <el-row class="titleMes" type="flex" justify="space-between">
             <el-col :span="7">
               <div class="search">
-                <el-input
-                  placeholder="请输入角色名称搜索"
-                  v-model="queryInfo.roleName"
-                >
-                </el-input>
-                <el-button class="search_icon" @click="searchName">
+                <el-input placeholder="请输入角色名称搜索" v-model="queryInfo.userName"> </el-input>
+                <el-button class="search_icon" @click="searchUser">
                   <i class="el-icon-search" style="color: #fff"></i>
                 </el-button>
-                <el-button type="primary" @click="searchName">搜索</el-button>
+                <el-button type="primary" @click="searchUser">搜索</el-button>
               </div>
             </el-col>
             <el-col :span="2">
@@ -28,17 +24,19 @@
           </el-row>
           <!-- 表单 -->
           <el-table :data="tableData" style="width: 100%">
-            <el-table-column prop="roleName" label="角色名称">
+            <el-table-column prop="userName" label="用户账户">
             </el-table-column>
-            <el-table-column prop="roleDesc" label="角色描述">
+            <el-table-column prop="mobile" label="OA账号"> </el-table-column>
+            <el-table-column prop="realName" label="真实姓名">
+            </el-table-column>
+            <el-table-column prop="email" label="邮箱"> </el-table-column>
+            <el-table-column prop="roleName" label="角色名称">
             </el-table-column>
             <el-table-column prop="createTime" label="创建时间">
             </el-table-column>
             <el-table-column prop="address" label="操作">
               <template slot-scope="scope">
-                <el-link
-                  type="primary"
-                  @click.native.prevent="det_obj(scope.row.id)"
+                <el-link type="primary" @click.native.prevent="det_obj(scope.row.id)"
                   >编辑</el-link
                 >
                 <el-link
@@ -69,7 +67,7 @@
 </template>
 
 <script>
-import { searchRole, removeRole } from "../../api/user";
+import { getUserList ,removeUser} from "../../../api/user";
 import Pagination from "@/components/Pagination";
 export default {
   components: { Pagination },
@@ -112,37 +110,43 @@ export default {
       value2: "",
       total: "1",
       queryInfo: {
-        roleName: "",
+        userName: "",
         // 当前页数
         pageCurrent: 1,
         // 每页显示多少条
         pageSize: 10,
-   
       },
     };
   },
   computed: {},
   watch: {},
   methods: {
-   async searchName(){
-      let data = {
+   async searchUser(){
+       let data = {
         pageCurrent: this.queryInfo.pageCurrent,
         pageSize: this.queryInfo.pageSize,
-        roleName: this.queryInfo.roleName,
+        userName: this.queryInfo.userName,
       };
-        let res = await searchRole(data);
-      console.log(res, "ss");
+        let res = await getUserList(data);
        this.tableData = res.data.list;
     },
-  async  handleSizeChange(val) {
-       let data = {
+    async getUserLists() {
+      let res = await getUserList();
+      console.log(res, 111);
+      this.tableData = res.data.list;
+      this.total = res.data.total;
+      this.pageSize = res.data.pageSize;
+    },
+
+    async handleSizeChange(val) {
+      let data = {
         pageCurrent: this.queryInfo.pageCurrent,
         pageSize: val,
         // roleName: this.queryInfo.roleName,
       };
-      let res = await searchRole(data);
+      let res = await getUserList(data);
       console.log(res, "翻页");
-       this.tableData = res.data.list;
+      this.tableData = res.data.list;
     },
     async handleCurrentChange(val) {
       let data = {
@@ -150,27 +154,44 @@ export default {
         pageSize: this.queryInfo.pageSize,
         // roleName: this.queryInfo.roleName,
       };
-      let res = await searchRole(data);
-       this.tableData = res.data.list;
+      let res = await getUserList(data);
+      this.tableData = res.data.list;
     },
-
+    // 新增
+    new_add() {
+      this.$router.push({
+        name: "newUserManagement",
+      });
+    },
+    // 编辑
+    det_obj(id) {
+      console.log(id);
+      this.$router.push({
+        name: "editUserManagement",
+         query: {
+          id: id,
+        },
+      });
+    },
+    // 删除
     deleteRow(id) {
-      this.$confirm("是否删除?", "提示", {
+        console.log(id);
+         this.$confirm("是否删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(async () => {
           let ids = {
-            roleId: id,
+            userId:id,
           };
-          let res = await removeRole(ids);
+          let res = await removeUser(ids);
           if (res.status == 0) {
             this.$message({
               message: "删除成功",
               type: "success",
             });
-            this.getRole();
+            this.getUserLists();
           } else {
             this.$message({
               message: "删除失败",
@@ -184,34 +205,8 @@ export default {
             message: "已取消删除",
           });
         });
-      console.log(res, "删除");
-    },
-    // 获取角色人员
-    async getRole() {
-      let res = await searchRole();
-      console.log(res);
-      this.tableData = res.data.list;
-      this.total = res.data.total;
-      this.pageSize = res.data.pageSize;
-      console.log(this.tableData);
-    },
-    // 创建用户
-    new_add() {
-      this.$router.push({
-        name: "newRoleManagement",
-      });
-    },
-    // 编辑
-    det_obj(id) {
-      this.$router.push({
-        name: "editRoleManagement",
-        query: {
-          id: id,
-        },
-      });
-    },
-    // 删除
 
+    },
     // 查看结果
     see_val() {
       this.detDialogVisible = true;
@@ -222,7 +217,7 @@ export default {
     },
   },
   created() {
-    this.getRole();
+    this.getUserLists();
   },
   mounted() {},
 };
