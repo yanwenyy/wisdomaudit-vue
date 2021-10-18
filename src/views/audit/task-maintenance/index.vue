@@ -6,7 +6,10 @@
         <div class="projectTab">
           <el-row :gutter="24" class="titleMes">
             <el-col :span="1.5">
-              <el-button type="primary" @click="addTask()">新增任务</el-button>
+              <el-button type="primary" @click="addModel()">新增模型任务</el-button>
+            </el-col>
+             <el-col :span="5">
+              <el-button type="primary" @click="addTask()">新增自建任务</el-button>
             </el-col>
           </el-row>
           <!-- 表单 -->
@@ -260,7 +263,7 @@
           ref="multipleModelRef"
           v-loading="loading"
         >
-          <el-table-column type="selection" :reserve-selection="true">
+          <el-table-column type="selection">
           </el-table-column>
           <el-table-column type="index" label="模型编号" width="80">
           </el-table-column>
@@ -456,7 +459,8 @@ export default {
         taskDescription: "",
         taskName: "",
         taskType: "",
-      }
+      },
+      modelTableData:[]
     };
   },
   computed: {},
@@ -532,7 +536,7 @@ export default {
           });
         });
     },
-
+  
     handleCurrentChangeTask(val) {
       let query = {
         pageNo: val,
@@ -567,10 +571,23 @@ export default {
         this.$message.success("设置成功！");
       });
     },
-    // 添加人员页面
+    // 添加模型任务按钮
+    addModel(){
+      this.TaskDialogVisible = true;
+      this.task = 2;
+       this.loading = true;
+      auditModelList(this.model_QueryInfo).then((resp) => {
+        console.log(resp);
+        this.modelTableData = resp.data.records;
+        this.modelSize = resp.data;
+        this.loading = false;
+      });
+    },
+    // 添加自建任务页面
     addTask() {
       this.TaskDialogVisible = true;
-      this.loading = true;
+      this.taskSelf.taskType = 2;
+       this.loading = true;
       auditModelList(this.model_QueryInfo).then((resp) => {
         console.log(resp);
         this.modelTableData = resp.data.records;
@@ -806,13 +823,16 @@ export default {
     },
     // 模型取消按钮
     returnStep() {
-      this.task = 1;
-      this.taskSelf.taskType = 2;
+       for (let i = 0; i < this.modelTableData.length; i++) {
+        this.$refs.multipleModelRef.toggleRowSelection(this.modelTableData[i], false);
+      }
+      this.TaskDialogVisible = false;
     },
+    // 增加任务弹框关闭事件
     TaskDialogClosed() {
       this.taskSelf = [];
       this.TaskDialogVisible = false;
-      this.task = 1
+      this.task = 1;
     },
     // 选择任务类型切换页面
     taskTypeSelect(val) {
