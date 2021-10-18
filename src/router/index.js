@@ -53,6 +53,7 @@ import {
 export const constantRoutes = [{
   path: '/login',
   component: () => import('@WISDOMAUDIT/views/login'),
+  hidden: true
 },
 
 {
