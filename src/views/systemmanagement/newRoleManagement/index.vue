@@ -1,0 +1,465 @@
+<template>
+  <div class="new-user-management-g-wrapper">
+    <!-- 面包屑导航 -->
+    <!-- <com-bread-crumb :items="breadCrumdItems" /> -->
+
+    <el-form
+      ref="newRoleManagementForm"
+      :model="form"
+      :rules="rules"
+      label-position="right"
+      label-width="108px"
+      class="g-form"
+    >
+      <el-form-item class="u-margin-top-20" label="角色名称：" prop="roleName">
+        <el-input
+          minlength="2"
+          maxlength="50"
+          class="m-input-normal"
+          placeholder="请输入"
+          v-model="form.roleName"
+        ></el-input>
+      </el-form-item>
+      <el-form-item class="u-margin-top-20" label="角色描述：" prop="roleDesc">
+        <el-input
+          minlength="2"
+          maxlength="200"
+          class="m-input-normal"
+          placeholder="请输入"
+          v-model="form.roleDesc"
+          type="textarea"
+          resize="none"
+          row="4"
+        ></el-input>
+      </el-form-item>
+      <el-form-item  label="角色权限：" prop="permissionIdList">
+        <el-tree
+          :data="permissionIdList"
+          show-checkbox
+          node-key="permissionId"
+          ref="tree"
+          highlight-current
+           @check="handleNodeClick"
+          :check-strictly="false"
+          :props="defaultProps"
+          :default-expand-all="false"
+        ></el-tree>
+      </el-form-item>
+      <el-form-item>
+        <el-row class="g-footer">
+          <el-button class="m-button-normal" @click="submit($event)">确定</el-button>
+          <el-button class="m-button-normal u-margin-left-20" @click="cancle()">取消</el-button>
+        </el-row>
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+
+<script>
+import {getPermission ,addRole}  from "../../../api/user";
+
+/**
+ * 
+ * @name: newRoleManagement.vue
+ * @description: 角色新建
+ * @author: Shan Youjing(mail)
+ * @update: 2019-01-28
+ */
+// 通用组件引入
+// import {
+//   comBreadCrumb,
+//   comTitleDivider,
+//   comSingleSelect,
+//   comShowOverFlowTip
+// } from '@/components/commons'
+// // 混入引入
+// import { CascaderAreaCounty } from '@/assets/js/mixins'
+// // 接口引入
+// import { GetRoleListInfo, AddRole, PermissionTree } from '@/api'
+export default {
+  name: 'newRoleManagement',
+  // mixins: [CascaderAreaCounty],
+  data() {
+    return {
+      breadCrumdItems: [
+        {
+          name: '角色管理'
+        },
+        {
+          name: '新增角色'
+        }
+      ],
+      form: {
+        roleName: '',
+        roleDesc: '',
+        permissionIds: []
+      },
+      rules: {
+        roleName: [
+          {
+            required: true,
+            message: '请输入角色名称',
+            trigger: 'blur'
+          },
+          {
+            min: 2,
+            max: 50,
+            message: '最短2个字符，最长50个字符',
+            trigger: 'blur'
+          }
+        ],
+        roleDesc: [
+          {
+            required: true,
+            message: '请输入角色描述',
+            trigger: 'blur'
+          },
+          {
+            min: 2,
+            max: 200,
+            message: '最短2个字符，最长200个字符',
+            trigger: 'blur'
+          }
+        ]
+      },
+      permissionIdList :[],
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      }
+    }
+  },
+  created() {
+    // this.getPermissionList()
+    this.addPermission()
+
+  },
+  methods: {
+    /**
+     * 获取权限列表
+     */
+    async addPermission() {
+      let _self = this
+     let res =await getPermission()
+     console.log(res);
+     this.permissionIdList=res.data
+    // //  this.permissionIdList=res.data
+    //     // 获取最外层1级元素
+    //     res.data.forEach(item => {
+    //       if (item.type == 0) {
+    //         _self.permissionIdList.push({
+    //           id: item.permissionId,
+    //           label: item.name,
+    //           children: []
+    //         })
+    //       }
+    //     })
+    //     console.log(this.permissionIdList);
+    //     res.data.forEach(item => {
+    //       _self.permissionIdList.forEach(val => {
+            
+    //           val.children.push({
+    //             id: val.id,
+    //             label: val.name,
+    //             children: []
+    //           })
+            
+    //       })
+    //     })
+    //     res.data.forEach(item => {
+    //       _self.permissionIdList.forEach(subItem => {
+    //         if (subItem.children.length == 0) return
+    //         subItem.children.forEach(thirdItem => {
+    //             thirdItem.children.push({
+    //               id: thirdItem.id,
+    //               label: thirdItem.name,
+    //               children: []
+    //             })
+    //         })
+    //       })
+    //     })
+    //     console.log(_self.permissionIdList)
+    
+    },
+    /**
+     * 复选框点击事件
+     * @param {Object} param1 该节点所对应的对象
+     * @param {Object} param2 树目前的选中状态对象
+     *
+     */
+    handleNodeClick() {
+      let res = this.$refs.tree.getCheckedKeys().concat(this.$refs.tree.getHalfCheckedKeys())
+        this.form.permissionIds=[...res]
+        console.log( this.form.permissionIds)
+
+      // console.log(param1);
+      // 获取除基础功能外的所有三级节点
+      // let thirdIdList = []
+      // this.permissionIdList.forEach(item => {
+      //   if (item.children.length > 0) {
+      //     item.children.forEach(subItem => {
+      //       if (subItem.children.length > 0) {
+      //         subItem.children.forEach(thirdItem => {
+      //           if (thirdItem.label !== '基础功能') {
+      //             thirdIdList.push(thirdItem.id)
+      //           }
+      //         })
+      //       }
+      //     })
+      //   }
+      // })
+  
+      // if (thirdIdList.includes(param1.id) && param2) {
+      //   // 获取选中节点的父级节点
+      //   let parentObj = {}
+      //   this.permissionIdList.forEach(item => {
+      //     item.children.forEach(subItem => {
+      //       subItem.children.forEach(thirdItem => {
+      //         if (thirdItem.id == param1.id) {
+      //           parentObj = subItem
+      //         }
+      //       })
+      //     })
+      //   })
+      //   // 设置基础功能选中
+      //   if (Object.keys(parentObj) == 0) return
+      //   let basicFunctionId = parentObj.children.find(item => {
+      //     return (item.label = '基础功能')
+      //   }).id
+      //   this.$refs.tree.setChecked(basicFunctionId, true)
+      // }
+
+      // // 如果有其它三级权限的按钮选中，阻止用户手动取消基础功能
+      // if (param1.label == '基础功能' && !param2) {
+      //   console.log(param1.label, param2)
+      //   let parentObj = {}
+      //   this.permissionIdList.forEach(item => {
+      //     item.children.forEach(subItem => {
+      //       subItem.children.forEach(thirdItem => {
+      //         if (thirdItem.id == param1.id) {
+      //           parentObj = subItem
+      //         }
+      //       })
+      //     })
+      //   })
+      //   let flag = false
+      //   let checkedIdList = this.$refs.tree.getCheckedKeys() // 获取当前被选中的节点数组
+      //   parentObj.children.forEach(item => {
+      //     if (checkedIdList.includes(item.id)) {
+      //       flag = true
+      //     }
+      //   })
+      //   if (flag) {
+      //     this.$refs.tree.setChecked(param1.id, true)
+      //     this.common.showErrorToast('有三级按钮选中时，必须选中基础功能')
+      //   }
+      // }
+    },
+    /**
+     * 确定按钮点击事件
+     * @param { Object } e 提交点击事件对象
+     */
+     submit() {
+      // this.form.permissionIds = this.$refs.tree.getCheckedKeys()
+      // let target = e.target
+      // console.log(target);
+      let _self = this
+      _self.$refs.newRoleManagementForm.validate( async valid => {
+        if (!valid) {
+          return
+        }
+        // console.log(1);
+
+        let data = {
+          roleName: this.form.roleName,
+          roleDesc: this.form.roleDesc,
+          permissionIds: this.form.permissionIds
+        }
+        let  res= await addRole(data)
+        console.log(res);
+        if(res.status==0){
+           this.$message({
+          message: '添加成功',
+          type: 'success'
+        });
+           _self.$router.go(-1)
+        }else{
+          this.$message({
+          message: '添加失败',
+          type: 'warning'
+        });
+        }
+        // console.log(data)
+        // _self.$http.post(AddRole, data).then(
+        //   res => {
+        //     console.log(res)
+        //     _self.$router.go(-1)
+        //   },
+        //   err => {
+        //     console.log('err', err)
+        //     this.common.showErrorToast(err.message)
+        //   }
+        // )
+      })
+    },
+    /**
+     * 取消按钮点击事件
+     */
+    cancle() {
+      this.$router.go(-1)
+    }
+  },
+  // components: {
+  //   comBreadCrumb,
+  //   comTitleDivider,
+  //   comSingleSelect,
+  //   comShowOverFlowTip
+  // }
+}
+</script>
+
+<style scoped lang='scss'>
+.el-tree {
+  border: 1px solid #dadde4;
+  border-radius: 0px;
+  background-color: #fff;
+}
+.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+    background-color: #ffff !important ;
+}
+
+.sidebar-g-container {
+  overflow-x: hidden;
+}
+
+.new-user-management-g-wrapper .g-form .el-checkbox {
+  width: 24px !important;
+}
+
+.new-user-management-g-wrapper .g-form {
+  width: 450px;
+  text-align: left;
+  margin: 0 auto;
+}
+
+.new-user-management-g-wrapper .g-form .g-form-item {
+  width: 500px;
+}
+
+.new-user-management-g-wrapper .g-form .line {
+  text-align: center;
+}
+
+.new-user-management-g-wrapper .g-form .el-date-editor.el-input,
+.new-user-management-g-wrapper .g-form .el-date-editor.el-input__inner {
+  width: auto;
+}
+
+.new-user-management-g-wrapper .g-form .el-input__prefix {
+  left: auto;
+  right: 0;
+}
+
+.new-user-management-g-wrapper .g-form .g-upload {
+  display: inline;
+  height: 40px;
+  line-height: 55px;
+}
+
+.new-user-management-g-wrapper .g-form .el-upload-button {
+  padding: 0 15px;
+  height: 28px !important;
+  line-height: 28px;
+}
+
+.new-user-management-g-wrapper .g-form .show-off-class .g-divider {
+  margin-right: 10px;
+}
+
+.new-user-management-g-wrapper .g-form .show-off-class .iconfont {
+  cursor: pointer;
+}
+
+.new-user-management-g-wrapper .g-form .high-setup-class {
+  margin-top: 10px;
+  min-height: 200px;
+  border: 1px dashed #888;
+  background: rgba(245, 247, 253, 1);
+}
+
+.new-user-management-g-wrapper .g-form .el-checkbox {
+  width: 130px;
+}
+
+.new-user-management-g-wrapper .g-form .g-checkbox .el-checkbox__label {
+  vertical-align: middle;
+}
+
+.new-user-management-g-wrapper .g-form .g-checkbox .tool-tip-g-content {
+  width: 105px;
+}
+
+.new-user-management-g-wrapper .g-form .g-check-box-class {
+  margin-left: 0;
+}
+
+.new-user-management-g-wrapper .g-form .g-footer {
+  text-align: center;
+}
+
+.g-footer .m-button-normal {
+  float: unset;
+  width: 88px;
+}
+
+.g-footer button:first-child {
+  color: #fff;
+  background: #3f6acb;
+}
+
+.new-user-management-g-wrapper .g-search-select {
+  width: 132px;
+}
+
+.el-upload-filelist-wrapper {
+  text-align: left;
+}
+
+.el-upload-filelist {
+  display: block;
+  float: left;
+  width: 270px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  line-height: 36px;
+  color: #2aa3f0;
+}
+
+.el-upload-close {
+  color: #606266;
+  font-size: 14px;
+  float: right;
+  line-height: 36px;
+}
+
+.buttom-upload {
+  width: 68px !important;
+}
+.auditInfoForm {
+  margin-top: 5%;
+  margin-left: 30%;
+  .el-input,.el-select{
+    position: relative;
+    top:-35px ;
+    width: 30%;
+    /* left: -30px; */
+  }
+  .el-button{
+     position: relative;
+    margin-top: 30px;
+     left:-35%;
+  }
+  }
+</style>
