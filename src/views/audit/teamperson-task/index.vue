@@ -1,87 +1,69 @@
 <template>
   <div>
-    <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="组员维护" name="first">
+    <el-tabs v-model="activeName"
+             @tab-click="handleClick">
+      <el-tab-pane label="组员维护"
+                   name="first">
         <!-- <el-button  type="success" class="add">添加</el-button> -->
         <!-- 组员维护列表 -->
         <el-form>
-          <el-table
-            ref="singleTable"
-            :data="tableData"
-            style="width: 100%"
-            border
-            v-loading="loading"
-          >
-            <el-table-column label="角色" width="200">组员 </el-table-column>
-            <el-table-column
-              label="姓名"
-              width="280"
-              prop="peopleTable.peopleName"
-            >
+          <el-table ref="singleTable"
+                    :data="tableData"
+                    style="width: 100%"
+                    border
+                    v-loading="loading">
+            <el-table-column label="角色"
+                             width="200">组员 </el-table-column>
+            <el-table-column label="姓名"
+                             width="280"
+                             prop="peopleTable.peopleName">
               <template slot-scope="scope">
                 <el-form-item>
-                  <el-select
-                    v-model="scope.row.peopleTable.peopleName"
-                    filterable
-                    @change="selectChange(scope.row)"
-                  >
-                    <el-option
-                      v-for="item in form"
-                      :key="item.peopleTableUuid"
-                      :label="item.peopleName"
-                      :value="item.peopleName"
-                    >
+                  <el-select v-model="scope.row.peopleTable.peopleName"
+                             filterable
+                             @change="selectChange(scope.row)">
+                    <el-option v-for="item in form"
+                               :key="item.peopleTableUuid"
+                               :label="item.peopleName"
+                               :value="item.peopleName">
                     </el-option>
                   </el-select>
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column
-              property="peopleTable.memberPhone"
-              label="联系方式"
-            >
+            <el-table-column property="peopleTable.memberPhone"
+                             label="联系方式">
             </el-table-column>
-            <el-table-column
-              property="peopleTable.memberCompany"
-              label="所属单位"
-            >
+            <el-table-column property="peopleTable.memberCompany"
+                             label="所属单位">
             </el-table-column>
-            <el-table-column
-              property="peopleTable.memberDepartment"
-              label="所属部门"
-            >
+            <el-table-column property="peopleTable.memberDepartment"
+                             label="所属部门">
             </el-table-column>
-            <el-table-column
-              property="isLiaison"
-              label="是否接口人"
-              width="150"
-            >
+            <el-table-column property="isLiaison"
+                             label="是否接口人"
+                             width="150">
               <template slot-scope="scope">
                 <el-form-item>
-                  <el-select
-                    v-model="scope.row.isLiaison"
-                    placeholder="请选择"
-                    @change="selectisLiaison(scope.row)"
-                  >
-                    <el-option
-                      v-for="item in isconperOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    >
+                  <el-select v-model="scope.row.isLiaison"
+                             placeholder="请选择"
+                             @change="selectisLiaison(scope.row)">
+                    <el-option v-for="item in isconperOptions"
+                               :key="item.value"
+                               :label="item.label"
+                               :value="item.value">
                     </el-option>
                   </el-select>
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="150">
+            <el-table-column label="操作"
+                             width="150">
               <template slot-scope="scope">
-                <el-button
-                  type="text"
-                  style="color: #db454b"
-                  size="small"
-                  @click.native.prevent="deleteRow(scope.row, tableData)"
-                >
+                <el-button type="text"
+                           style="color: #db454b"
+                           size="small"
+                           @click.native.prevent="deleteRow(scope.row, tableData)">
                   删除
                 </el-button>
               </template>
@@ -89,7 +71,8 @@
           </el-table>
         </el-form>
 
-        <div class="addBtn" @click="addgroupMember()">
+        <div class="addBtn"
+             @click="addgroupMember()">
           <i class="el-icon-plus"></i>
           <span>新增</span>
         </div>
@@ -108,30 +91,28 @@
         </div> -->
         <!-- 分页 end-->
       </el-tab-pane>
-      <el-tab-pane label="审计任务维护" name="second">
+      <el-tab-pane label="审计任务维护"
+                   name="second">
         <TaskMaintenance :active_project="active_project" />
       </el-tab-pane>
     </el-tabs>
 
     <!-- 添加组员维护弹框 -->
-    <el-dialog
-      :visible.sync="addgroupDialog"
-      @close="addDialogClosed"
-      width="60%"
-    >
+    <el-dialog :visible.sync="addgroupDialog"
+               @close="addDialogClosed"
+               width="60%">
       <div class="title">组员维护</div>
       <div class="addPerson">
         <el-row>
-          <div class="text" style="margin-top: 20px">请选择组员，可多选</div>
+          <div class="text"
+               style="margin-top: 20px">请选择组员，可多选</div>
         </el-row>
         <el-row>
           <el-col :span="10">
             <div class="personMessage">
-              <el-table
-                :data="personMes"
-                @selection-change="handleSelectionChange"
-                ref="personRef"
-              >
+              <el-table :data="personMes"
+                        @selection-change="handleSelectionChange"
+                        ref="personRef">
                 <el-table-column type="selection"></el-table-column>
                 <el-table-column label="全选组员">
                   <template slot-scope="scope">
@@ -144,7 +125,8 @@
           </el-col>
           <el-col :span="13">
             <div class="editPerson">
-              <el-table :data="peopleSelection" ref="editPerson">
+              <el-table :data="peopleSelection"
+                        ref="editPerson">
                 <el-table-column label="已选组员">
                   <template slot-scope="scope">
                     {{ scope.row.peopleTable.peopleName }}
@@ -156,32 +138,27 @@
                   <template slot-scope="scope">
                     <el-form>
                       <el-form-item>
-                        <el-select
-                          v-model="scope.row.isLiaison"
-                          placeholder="请选择"
-                        >
-                          <el-option
-                            v-for="item in isconperOptions"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value"
-                          >
+                        <el-select v-model="scope.row.isLiaison"
+                                   placeholder="请选择">
+                          <el-option v-for="item in isconperOptions"
+                                     :key="item.value"
+                                     :label="item.label"
+                                     :value="item.value">
                           </el-option>
                         </el-select>
                       </el-form-item>
                     </el-form>
                   </template>
                 </el-table-column>
-                <el-table-column label="操作" width="100">
+                <el-table-column label="操作"
+                                 width="100">
                   <template slot-scope="scope">
-                    <el-button
-                      type="text"
-                      style="color: #db454b"
-                      size="small"
-                      @click.native.prevent="
+                    <el-button type="text"
+                               style="color: #db454b"
+                               size="small"
+                               @click.native.prevent="
                         deletePerson(scope.$index, peopleSelection, scope.row)
-                      "
-                    >
+                      ">
                       删除
                     </el-button>
                   </template>
@@ -194,7 +171,8 @@
 
       <div class="stepBtn">
         <el-button @click="addgroupDialog = false">取消</el-button>
-        <el-button type="primary" @click="saveGroupMember">确认</el-button>
+        <el-button type="primary"
+                   @click="saveGroupMember">确认</el-button>
       </div>
     </el-dialog>
   </div>
@@ -224,7 +202,7 @@ export default {
   //   projectNum:[],
   // },
   props: ["active_project"],
-  data() {
+  data () {
     return {
       managementProjectUuid: "",
       modelTableData: [],
@@ -301,7 +279,7 @@ export default {
       groupMemberEcho: [], //组员选框回显
     };
   },
-  created() {
+  created () {
     console.log(this.active_project);
     this.query.condition.managementProjectUuid = this.active_project;
     // 组员维护接口
@@ -314,19 +292,19 @@ export default {
   },
   methods: {
     // 获取数据库模型任务数据
-    getmodelTaskList(data) {
+    getmodelTaskList (data) {
       modelTaskList(data).then((resp) => {
         this.taskData = resp.data.records;
       });
     },
-    addDialogClosed() {
+    addDialogClosed () {
       // this.$router.go(0);
     },
-    handleClick(tab, event) {
+    handleClick (tab, event) {
       console.log(tab, event);
     },
     // 新增组员弹框事件
-    addgroupMember() {
+    addgroupMember () {
       this.addgroupDialog = true;
       this.getSelectData(this.select);
       this.personMes = this.form;
@@ -352,7 +330,7 @@ export default {
       }
     },
     //新增组员确认事件
-    saveGroupMember() {
+    saveGroupMember () {
       editprojectMembershipList(this.peopleSelection).then((resp) => {
         this.$message.success("添加成功！");
         this.addgroupDialog = false;
@@ -362,14 +340,14 @@ export default {
       });
     },
     // 删除当前人员
-    deleteRow(row, rows) {
+    deleteRow (row, rows) {
       this.$confirm("你将删除数据库中的组员数据", "提示", {
         distinguishCancelAndClose: true,
         confirmButtonText: "确定",
         cancelButtonText: "放弃删除",
       })
         .then(() => {
-          deletprojectMembership(row.projectMembershipUuid).then((resp) => {});
+          deletprojectMembership(row.projectMembershipUuid).then((resp) => { });
           this.projectMember(this.query);
           this.message.success("删除成功！");
         })
@@ -381,7 +359,7 @@ export default {
         });
     },
     // 弹框页面组员删除
-    deletePerson(index, rows, obj) {
+    deletePerson (index, rows, obj) {
       console.log(obj);
       if (!obj.projectMembershipUuid) {
         rows.splice(index, 1);
@@ -400,7 +378,7 @@ export default {
         })
           .then(() => {
             deletprojectMembership(obj.projectMembershipUuid).then(
-              (resp) => {}
+              (resp) => { }
             );
             this.projectMember(this.query);
             this.$message.success("删除成功！");
@@ -426,7 +404,7 @@ export default {
       }
     },
     // 添加一行新数据
-    addData() {
+    addData () {
       var id = 0;
       id++,
         this.tableData.push({
@@ -443,7 +421,7 @@ export default {
         });
     },
     // 组员维护页面展示
-    projectMember(data) {
+    projectMember (data) {
       this.loading = true;
       projectMembership(data).then((resp) => {
         this.tableData = resp.data.records;
@@ -454,13 +432,13 @@ export default {
       });
     },
     // 组员查询
-    getSelectData(data) {
+    getSelectData (data) {
       getProjectMember(data).then((resp) => {
         this.form = resp.data.records;
       });
     },
     // 姓名下拉框的方法
-    selectChange(obj) {
+    selectChange (obj) {
       for (var i = 0; i < this.form.length; i++) {
         if (obj.peopleTable.peopleName == this.form[i].peopleName) {
           this.editId = this.form[i].peopleTableUuid;
@@ -469,9 +447,9 @@ export default {
       for (var i = 0; i < this.tableData.length; i++) {
         if (
           obj.peopleTable.peopleName ==
-            this.tableData[i].peopleTable.peopleName &&
+          this.tableData[i].peopleTable.peopleName &&
           obj.peopleTable.peopleTableUuid !==
-            this.tableData[i].peopleTable.peopleTableUuid
+          this.tableData[i].peopleTable.peopleTableUuid
         ) {
           this.$message.warning("请勿选择相同组员");
           return this.projectMember(this.query);
@@ -499,7 +477,7 @@ export default {
     },
 
     //  是否接口人下拉框
-    selectisLiaison(obj, val) {
+    selectisLiaison (obj, val) {
       // console.log(obj);
       // console.log(val);
       if (!obj.peopleTableUuid) {
@@ -516,7 +494,7 @@ export default {
     },
 
     // 添加未初始化项目弹框
-    addPerson() {
+    addPerson () {
       this.addDialogVisible = true;
       this.getSelectData(this.select);
       this.personMes = this.form;
@@ -543,14 +521,14 @@ export default {
       }
     },
     // 下一步按钮事件
-    nextBtn() {
+    nextBtn () {
       this.step = 2;
     },
-    prevoius() {
+    prevoius () {
       this.step = 1;
     },
     // 组员选中事件
-    handleSelectionChange(val) {
+    handleSelectionChange (val) {
       console.log(this.personMes);
       if (val.length == this.personMes.length) {
         for (let o = 0; o < val.length; o++) {
@@ -602,14 +580,14 @@ export default {
       console.log(this.peopleSelection);
     },
     // 模糊查询任务模型
-    queryModel() {
+    queryModel () {
       auditModelList(this.modelQuery).then((resp) => {
         // console.log(resp);
         this.modelTableData = resp.data.records;
       });
     },
     // 分页跳转事件
-    handleCurrentChangeModel(val) {
+    handleCurrentChangeModel (val) {
       let query = {
         pageNo: val,
         pageSize: 5,
@@ -624,7 +602,7 @@ export default {
       });
     },
     //引入模型选择事件
-    handleSelectionChangeModel(val) {
+    handleSelectionChangeModel (val) {
       this.ismodelList.condition.auditModelUuid = "";
       // let replist = []
       for (let i = 0; i < val.length; i++) {
@@ -650,7 +628,7 @@ export default {
       });
     },
     // 自建任务责任人下拉框事件
-    selectChangePerson(val) {
+    selectChangePerson (val) {
       // console.log(val);
       // console.log(this.tableData);
       this.taskSelf.peopleTableUuid = val;
@@ -661,7 +639,7 @@ export default {
       }
     },
     //  完成按钮
-    saveBtn() {
+    saveBtn () {
       //判断是模型任务还是自建任务
       // console.log(this.selectauditModelList.auditModelList);
       if (
