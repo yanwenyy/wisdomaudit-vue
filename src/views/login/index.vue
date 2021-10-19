@@ -53,7 +53,7 @@
         :loading="loading"
         type="primary"
         style="width: 100%; margin-bottom: 30px"
-        @click.native.prevent="ifdev?handleLogin():loginFourA()"
+        @click.native.prevent="loginFourA()"
         >登录</el-button
       >
     </el-form>
@@ -119,7 +119,10 @@ export default {
    }else{
      this.ifdev = false
    }
-   this.handleLogin()
+   if(this.$route.query.appAcctId && this.$route.query.flag && this.$route.query.loginNode && encodeURI(this.$route.query.token)){
+     this.handleLogin()
+   }
+   
   },
   methods: {
     loginFourA(){
@@ -137,7 +140,7 @@ export default {
     },
     handleLogin() {
       axios({
-        url: `/wisdomaudit/loginsd/login?appAcctId=`+(this.$route.query.appAcctId||'1')+`&flag=`+(this.$route.query.flag||'1')+`&loginNode=`+(this.$route.query.loginNode||'A1')+`&token=`+(encodeURI(this.$route.query.token)||'4atoken'),
+        url: `/wisdomaudit/loginsd/login?appAcctId=`+(this.$route.query.appAcctId)+`&flag=`+(this.$route.query.flag)+`&loginNode=`+(this.$route.query.loginNode)+`&token=`+(encodeURI(this.$route.query.token)),
         method: "post",
       }).then((res) => {
         sessionStorage.setItem("TOKEN",res.data.data)

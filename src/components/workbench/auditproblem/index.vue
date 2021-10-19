@@ -3,7 +3,6 @@
     <div class="filter-container">
       <el-button type="primary" @click="add()">新增</el-button>
       <div class="auditproblem-btn-box">
-        <el-button type="primary" @click="del()">删除</el-button>
       </div>
     </div>
     <!-- @sort-change="sortChange"
@@ -35,21 +34,25 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="依据" show-overflow-tooltip prop="basis" />
-      <el-table-column label="描述" align="center" prop="describe" />
-      <el-table-column label="发现日期">
-        <template slot-scope="scope">
-          {{ repDate(scope.row.problemDiscoveryTime) }}
-        </template>
-      </el-table-column>
+      <el-table-column label="专题" prop="field" />
       <el-table-column
         label="风险金额（万元）"
         width="180px"
         align="center"
         prop="riskAmount"
       />
-      <el-table-column label="管理建议" prop="managementAdvice" />
+      <el-table-column label="发现日期">
+        <template slot-scope="scope">
+          {{ repDate(scope.row.problemDiscoveryTime) }}
+        </template>
+      </el-table-column>
       <el-table-column label="发现人" prop="problemFindPeople" />
+      <el-table-column label="操作" width="200">
+        <template slot-scope="scope">
+          <el-button @click="checkDetail(scope.row.problemListUuid)">查看</el-button>
+          <el-button @click="del(scope.row.problemListUuid)" style="color:red;">删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <pagination
       v-show="total > 0"
@@ -324,7 +327,7 @@
         </el-form-item> -->
     </el-form>
       <div slot="footer">
-        <el-button type="primary" @click="updateData()"
+        <el-button type="primary" @click="updateData()" v-if="ifupdata"
           >保存修改</el-button
         >
         <el-button type="primary" @click="dialogDetailVisible = false"
@@ -379,6 +382,7 @@ export default {
       },
       selections: [],
       dialogFormVisible: false,
+      ifupdata:false,
       dialogDetailVisible: false,
       dialogStatus: "",
       textMap: {
@@ -424,10 +428,23 @@ export default {
         method: "get",
         data: {},
       }).then((res) => {
-        console.log(res) 
         this.dqProblem = res.data.data;
         this.dqProblem.associatedTask = this.dqProblem.associatedTask.split(',')
         this.dqProblem.basis = this.dqProblem.basis.split(',')
+        this.ifupdata = true
+        this.dialogDetailVisible = true;
+      })
+    },
+    checkDetail(pid){
+      axios({
+        url: `/wisdomaudit/problemList/getById/`+pid,
+        method: "get",
+        data: {},
+      }).then((res) => {
+        this.dqProblem = res.data.data;
+        this.dqProblem.associatedTask = this.dqProblem.associatedTask.split(',')
+        this.dqProblem.basis = this.dqProblem.basis.split(',')
+        this.ifupdata = false
         this.dialogDetailVisible = true;
       })
     },
@@ -469,15 +486,15 @@ export default {
     handleSelectionChange (val) {
       this.problemtableSelection = val;
     },
-    del(){
-      console.log(this.problemtableSelection)
+    del(pid){
+      console.log(pid)
       let rep = []
-      for(let i = 0;i<this.problemtableSelection.length;i++){
-        rep.push(this.problemtableSelection[i].problemListUuid)
-      }
-      rep =  rep.join(",")
+      // for(let i = 0;i<this.problemtableSelection.length;i++){
+      //   rep.push(this.problemtableSelection[i].problemListUuid)
+      // }
+      // rep =  rep.join(",")
       axios({
-        url: `/wisdomaudit/problemList/delete/`+rep,
+        url: `/wisdomaudit/problemList/delete/`+pid,
         method: "delete",
         data: {},
       }).then((res) => {
