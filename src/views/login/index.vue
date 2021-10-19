@@ -97,7 +97,7 @@ export default {
       loading: false,
       passwordType: "password",
       redirect: undefined,
-      ifdev:true
+      ifdev:false
     };
   },
   watch: {
@@ -106,7 +106,7 @@ export default {
         // this.redirect = route.query && route.query.redirect
         const query = route.query;
         if (query) {
-          this.redirect = query.redirect;
+          this.redirect = query.redirect || '/audit';
           this.otherQuery = this.getOtherQuery(query);
         }
       },
@@ -114,10 +114,11 @@ export default {
     },
   },
   created(){
+    console.log(this.$route.query)
    if(process.env.ENV === "development" ) {
      this.ifdev = false
    }else{
-     this.ifdev = true
+     this.ifdev = false
    }
    this.handleLogin()
   },
@@ -137,7 +138,7 @@ export default {
     },
     handleLogin() {
       axios({
-        url: `/wisdomaudit/loginsd/login?appAcctId=1&flag=1&loginNode=A1&token=4atoken`,
+        url: `/wisdomaudit/loginsd/login?appAcctId=`+(this.$route.query.appAcctId||'1')+`&flag=`+(this.$route.query.flag||'1')+`&loginNode=`+(this.$route.query.loginNode||'A1')+`&token=`+(encodeURI(this.$route.query.token)||'4atoken'),
         method: "post",
       }).then((res) => {
         console.log(res.data)
@@ -146,6 +147,8 @@ export default {
         path: this.redirect || "/audit",
         query: this.otherQuery,
       });
+      }).catch((err)=>{
+        console.log(err)
       })
       
       return;
