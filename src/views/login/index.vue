@@ -96,7 +96,7 @@ export default {
       },
       loading: false,
       passwordType: "password",
-      redirect: undefined,
+      redirect: '/',
       ifdev:false
     };
   },
@@ -106,7 +106,7 @@ export default {
         // this.redirect = route.query && route.query.redirect
         const query = route.query;
         if (query) {
-          this.redirect = query.redirect || '/audit';
+          this.redirect = query.redirect || '/';
           this.otherQuery = this.getOtherQuery(query);
         }
       },
@@ -114,7 +114,6 @@ export default {
     },
   },
   created(){
-    console.log(this.$route.query)
    if(process.env.ENV === "development" ) {
      this.ifdev = false
    }else{
@@ -141,10 +140,9 @@ export default {
         url: `/wisdomaudit/loginsd/login?appAcctId=`+(this.$route.query.appAcctId||'1')+`&flag=`+(this.$route.query.flag||'1')+`&loginNode=`+(this.$route.query.loginNode||'A1')+`&token=`+(encodeURI(this.$route.query.token)||'4atoken'),
         method: "post",
       }).then((res) => {
-        console.log(res.data)
         sessionStorage.setItem("TOKEN",res.data.data)
         this.$router.push({
-        path: this.redirect || "/audit",
+        path: this.redirect || "/",
         query: this.otherQuery,
       });
       }).catch((err)=>{
