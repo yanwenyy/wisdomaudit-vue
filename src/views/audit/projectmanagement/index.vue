@@ -1089,7 +1089,7 @@ export default {
         ],
         auditOrgLeader: [
           { required: true, message: "请填写被审计领导", trigger: "blur" },
-          { max: 5, message: "项目名称在5个字符之内", trigger: "change" },
+          { max: 5, message: "被审计领导在5个字符之内", trigger: "change" },
         ],
         projectChargemanName: [
           { required: true, message: "请选择项目组长", trigger: "change" },

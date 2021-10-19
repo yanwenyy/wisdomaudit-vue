@@ -27,7 +27,7 @@
         </el-row>
       </li>
       <span style="cursor: pointer;color: #12579a;"
-            v-if="projectNum.length>5"
+            v-if="projectAll.length>4"
             @click="moreProject()">更多>></span>
     </ul>
 
@@ -80,7 +80,7 @@
           {{ item.projectName }}
         </li>
         <span @click="project_more()"
-              v-if="projectInit.length>6">更多>></span>
+              v-if="projectInitMore.length>6">更多>></span>
       </ul>
       <ul v-else>
         暂无更多初始化项目...
@@ -539,12 +539,14 @@
       <div class="selfTask">
         <el-form label-width="80px"
                  :model="taskSelf"
-                 ref="selfTaskRef">
-          <el-form-item label="自建任务名称：">
+                 ref="selfTaskRef"
+                 :rules="taskSelfRules"
+                 >
+          <el-form-item label="自建任务名称：" prop="taskName">
             <el-input placeholder="请输入"
                       v-model="taskSelf.taskName"></el-input>
           </el-form-item>
-          <el-form-item label="责任人：">
+          <el-form-item label="责任人：" prop="peopleName">
             <el-select v-model="tableData.peopleTableUuid"
                        filterable
                        @change="selectChangePerson">
@@ -577,7 +579,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="任务描述：">
+          <el-form-item label="任务描述：" prop="taskDescription">
             <el-input type="textarea"
                       style="top: -35px; width: 400px"
                       v-model="taskSelf.taskDescription"></el-input>
@@ -601,7 +603,7 @@
         <div class="stepBtn">
           <el-button @click="TaskSelf_res">取消</el-button>
           <el-button type="primary"
-                     @click="taskSelfInfo">确认</el-button>
+                     @click="taskSelfInfo('selfTaskRef')">确认</el-button>
         </div>
       </div>
     </el-dialog>
@@ -889,6 +891,24 @@ export default {
       },
       editTaskSelfDialogVisible: false, //编辑自建任务窗口
       taskSelfTab: [],//自建任务列表
+      // 自建任务校验
+      taskSelfRules:{
+       taskName: [
+            { required: true, message: '请输入自建任务名称', trigger: 'blur' }
+       ],
+       peopleName: [
+          { required: true, message: '请选择责任人', trigger: 'change' }
+       ],
+        belongSpcial: [
+          { required: true, message: '请选择专题', trigger: 'change' }
+       ],
+       belongField: [
+         { required: true, message: '请选择领域', trigger: 'change' }
+       ],
+       taskDescription:[
+          { required: true, message: '请输入任务描述', trigger: 'change' }
+       ]
+      }
     };
   },
   watch: {
@@ -1175,12 +1195,12 @@ export default {
     // 新增自建任务弹框取消按钮
     TaskSelf_res(){
        this.taskSelfDialogVisible = false;
-       this.taskSelf = []
+       this.taskSelf = {}
       this.addDialogVisible = true;
     },
     // 新增自建任务弹框关闭事件
     TaskDialogClosed(){
-       this.taskSelf = [];
+       this.taskSelf = {};
        this.taskSelfDialogVisible = false;
        this.addDialogVisible = true;
     },
@@ -1266,16 +1286,24 @@ export default {
       });
     },
     // 确定自建任务
-    taskSelfInfo () {
-      this.taskSelf.managementProjectUuid = this.managementProjectUuid;
-      selfTaskFunction(this.taskSelf).then((resp) => {
-        this.$message.success("自建任务创建成功！");
-        this.taskSelfDialogVisible = false;
-        this.addDialogVisible = true;
-        this.getTaskSelfList.condition.managementProjectUuid =
-          this.managementProjectUuid;
-        this.getTaskSelf(this.getTaskSelfList);
-      });
+    taskSelfInfo (selfTaskRef) {
+       this.$refs[selfTaskRef].validate((valid) => {
+          if (valid) {
+            this.taskSelf.managementProjectUuid = this.managementProjectUuid;
+            selfTaskFunction(this.taskSelf).then((resp) => {
+              this.$message.success("自建任务创建成功！");
+              this.taskSelfDialogVisible = false;
+              this.addDialogVisible = true;
+              this.getTaskSelfList.condition.managementProjectUuid =
+                this.managementProjectUuid;
+              this.getTaskSelf(this.getTaskSelfList);
+            });
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      
     },
     // 自建任务列表渲染
     getTaskSelf (data) {
@@ -1736,6 +1764,10 @@ export default {
   width: 60%;
   margin: 10px auto;
   // border: 1px solid red; 
+}
+.selfTask .el-form-item__error{
+  top: -58%;
+  left: 279px;
 }
 .selfTask .el-input {
   position: relative;
