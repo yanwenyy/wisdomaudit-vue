@@ -22,7 +22,7 @@ service.interceptors.request.use(
       
       // config.headers['X-Token'] = getToken()
 
-      // config.headers.Token  = 'Bearer#eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbjoxcWF6WFNXQCIsImF1ZCI6ImF1ZCIsInBhc3N3b3JkIjoiMXFhelhTV0AiLCJuYmYiOjE2MzI5Njc1MDAsImlzcyI6Ik1haUtlQmFpIiwiZXhwIjoxNjMzODMxNTAwLCJpYXQiOjE2MzI5Njc1MDAsImp0aSI6IlRodSBTZXAgMzAgMTA6MDU6MDAgQ1NUIDIwMjEiLCJ1c2VybmFtZSI6ImFkbWluIn0.Mjn6l2vBLOKzxqOWplqZo0ZquL-oPHjnQWuKA8ZKI5s'
+      config.headers.TOKEN  = sessionStorage.getItem('TOKEN');
     // }
     return config
   },
