@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import qs from 'qs'
 
-const baseURL = '/wisdomaudit'
+const baseURL = '/wisdomaudit_data'
 // 资料列表 未完成
 export function data_pageList (data) {
   return request({
@@ -142,7 +142,6 @@ export function operation_record_list (data) {
   })
 }
 
-
 // 操作   审核
 export function operation_audit (data) {
   return request({
@@ -153,7 +152,6 @@ export function operation_audit (data) {
   })
 }
 
-
 // 操作   提交
 export function operation_uploadData (data) {
   return request({
@@ -163,3 +161,30 @@ export function operation_uploadData (data) {
     data
   })
 }
+
+// 根据类型查看新增的  资料信息
+export function select_user_data (data) {
+  // let id = data.id
+  return request({
+    baseURL: baseURL,
+    url: `/auditPreviousData/addNumber`,
+    method: 'post',
+    data
+  })
+}
+
+
+// 附件详情
+export function enclosure_details (data) {
+  // let id = data.id
+  // return request({
+  //   baseURL: baseURL,
+  //   url: '/auditPreviousDemandData/sysLogById/' + id + '',
+  //   method: 'post',
+  //   data
+  // })
+}
+
+
+
+

@@ -91,8 +91,9 @@
         </div> -->
         <!-- 分页 end-->
       </el-tab-pane>
-      <el-tab-pane label="审计任务维护" name="second">
-        <TaskMaintenance :active_project="active_project"/>
+      <el-tab-pane label="审计任务维护"
+                   name="second">
+        <TaskMaintenance :active_project="active_project" />
       </el-tab-pane>
     </el-tabs>
 
@@ -512,14 +513,14 @@ export default {
       groupMemberEcho: [], //组员选框回显
     };
   },
-  created() {
+  created () {
     console.log(this.active_project)
     this.query.condition.managementProjectUuid = this.active_project;
     // 组员维护接口
     this.projectMember(this.query);
 
     this.getSelectData(this.select);
-    
+
     // this.queryInfo.condition.managementProjectUuid = this.active_project;
     // this.getmodelTaskList(this.queryInfo);
   },
@@ -566,10 +567,10 @@ export default {
     saveGroupMember () {
       editprojectMembershipList(this.peopleSelection).then((resp) => {
         this.$message.success("修改成功！");
-         this.addgroupDialog = false;
-       });
-      
-     },
+        this.addgroupDialog = false;
+      });
+
+    },
     // 删除当前人员
     deleteRow (row, rows) {
       this.$confirm("你将删除数据库中的组员数据", "提示", {
@@ -759,7 +760,7 @@ export default {
       this.step = 1;
     },
     // 组员选中事件
-    handleSelectionChange(val) {
+    handleSelectionChange (val) {
       console.log(this.personMes);
       if (val.length == this.personMes.length) {
         for (let o = 0; o < val.length; o++) {

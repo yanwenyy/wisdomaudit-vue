@@ -2,6 +2,19 @@ import request from '@/utils/request'
 const baseURL = '/wisdomaudit_son'
 import qs from 'qs'
 
+// 附件详情
+export function enclosure_details (data) {
+  // let id = data.id
+  // return request({
+  //   baseURL: baseURL,
+  //   url: '/auditPreviousDemandData/sysLogById/' + id + '',
+  //   method: 'post',
+  //   data
+  // })
+}
+
+
+
 // 模型任务 自建任务
 export function task_pageList (data) {
   return request({
