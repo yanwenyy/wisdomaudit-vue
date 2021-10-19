@@ -39,7 +39,7 @@ const modelManagement = {
           meta: {
             title: '模型参数'
           },
-        }, 
+        },
       ]
     },
     {
@@ -71,7 +71,7 @@ const modelManagement = {
           meta: {
             title: '预警阀值管理'
           },
-        }, 
+        },
       ]
     },
     {
@@ -90,7 +90,7 @@ const modelManagement = {
           meta: {
             title: '线索核实'
           },
-        }, 
+        },
       ]
     },
     {
@@ -115,7 +115,7 @@ const modelManagement = {
           meta: {
             title: '图形化建模'
           },
-        }, 
+        },
       ]
     },
   ]

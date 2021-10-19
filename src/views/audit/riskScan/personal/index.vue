@@ -19,9 +19,10 @@
         <el-col :span="20">
           <div style="margin-top: 20px">
             <el-radio-group v-model="radio2" size="medium">
-              <el-radio-button label="未邀请"></el-radio-button>
+              <el-radio-button label="未缴清欠款在开卡"></el-radio-button>
               <el-radio-button label="使用多卡"></el-radio-button>
               <el-radio-button label="再开卡"></el-radio-button>
+              
             </el-radio-group>
           </div>
         </el-col>
