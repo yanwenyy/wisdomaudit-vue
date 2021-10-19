@@ -3,6 +3,7 @@
        ref="inputParamContent"
        class="paramadrawnew">
     <div ref="nodeParam"
+         v-if="paramInfoArr"
          style="overflow:auto;max-height:62vh"
          class="detail-form">
       <el-row v-for="(paramInfo,ind) in paramInfoArr"
@@ -76,12 +77,20 @@
           <div style="color: red;display: inline-block;font-weight: bold;font-size: 20px;">*</div>
         </el-col>
       </el-row>
+
       <!-- 分隔线 -->
       <!-- <el-divider v-if="paramInfoArr.length>0"></el-divider> -->
+    </div>
+    <div style="overflow:auto;max-height:62vh"
+         class="detail-form"
+         v-else>
+      暂无...
+
     </div>
   </div>
 </template>
 <script>
+import '@SDMOBILE/assets/styles/css/loading.css'
 import $ from "jquery"
 import {
   removeJcCssfile,
@@ -651,6 +660,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// @import "../../../assets/styles/css/loading.css";
+
 .paramadrawnew >>> .el-collapse-item__wrap {
   overflow: scroll;
 }

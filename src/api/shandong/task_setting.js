@@ -8,7 +8,8 @@ import qs from 'qs'
 export function task_findModelList (data) {
   return request({
     baseURL: baseURL,
-    url: `/modelController/findModelList`,
+    // url: `/modelController/findModelList`,
+    url: `/modelController/sdFindModelList`,
     method: 'post',
     data,
   })

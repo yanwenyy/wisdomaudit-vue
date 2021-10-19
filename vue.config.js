@@ -80,6 +80,15 @@ module.exports = {
           '^/wisdomaudit_task/': '/'
         }
       },
+      '/wisdomaudit_data/': {
+        timeout: 1800000,
+        target: process.env.WEIGE_API,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/wisdomaudit_data/': '/'
+        }
+      },
+
       // '/wisdomaudit/': {
       //   timeout: 1800000,
       //   target: process.env.MODEL_API,
