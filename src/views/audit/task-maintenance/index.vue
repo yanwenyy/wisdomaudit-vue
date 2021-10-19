@@ -889,32 +889,6 @@ export default {
         this.task = 1;
       });
     },
-    //  完成按钮
-    // saveBtn() {
-    //   //判断是模型任务还是自建任务
-    //   if (
-    //     this.radio == 1 &&
-    //     this.selectauditModelList.auditModelList.length !== 0
-    //   ) {
-    //     quoteModel(this.selectauditModelList).then((resp) => {
-    //       this.$message.success("创建成功！");
-    //     });
-    //   }
-
-    //   if (this.radio == 2) {
-    //     selfTaskFunction(this.taskSelf).then((resp) => {
-    //       this.$message.success("自建任务创建成功！");
-    //     });
-    //   }
-
-    //   editprojectMembershipList(this.peopleSelection).then((resp) => {
-    //     this.$message.success("修改成功！");
-    //   });
-
-    //   setInterval(() => {
-    //     this.addDialogVisible = false;
-    //   }, 3000);
-    // },
 
     //新增任务完成按钮
     saveTask(selfTaskRef) {

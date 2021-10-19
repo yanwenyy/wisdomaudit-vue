@@ -298,7 +298,9 @@ export default {
       });
     },
     addDialogClosed () {
-      // this.$router.go(0);
+       this.query.condition.managementProjectUuid = this.active_project;
+        // 组员维护接口
+        this.projectMember(this.query);
     },
     handleClick (tab, event) {
       console.log(tab, event);
@@ -530,6 +532,7 @@ export default {
     // 组员选中事件
     handleSelectionChange (val) {
       console.log(this.personMes);
+      console.log(val);
       if (val.length == this.personMes.length) {
         for (let o = 0; o < val.length; o++) {
           this.peopleSelection.push({

@@ -27,8 +27,8 @@
         </el-row>
       </li>
       <span style="cursor: pointer;color: #12579a;"
-            v-if="projectAll.length>4"
-            @click="moreProject()">更多>></span>
+             v-if="projectAll.length >4"
+            @click="moreProjectBtn()">更多>></span>
     </ul>
 
     <ul class="projectInit"
@@ -159,7 +159,9 @@
             <Auditproblem :active_project="active_project"></Auditproblem>
           </div>
           <div class="routerView"
-               v-else-if="index == '2-4'">3</div>
+               v-else-if="index == '2-4'">
+            <AuditConfirmation :active_project="active_project"></AuditConfirmation>
+          </div>
           <div class="routerView"
                v-else-if="index == '3-1'">
             <!-- 审计报告 -->
@@ -697,6 +699,7 @@ import AuditTask from "@/components/workbench/AuditTask/index"; //审计任务
 import Auditproblem from "@/components/workbench/auditproblem/index"; //审计问题
 import Businessindicator from "@/components/workbench/businessindicator/index"; //经营指标
 import AuditReport from "@/components/workbench/AuditReport/index"; //审计问题
+import AuditConfirmation from "@WISDOMAUDIT/views/audit/auditconfirmationform/index"
 import {
   projectList,
   thematicAreas,
@@ -729,6 +732,7 @@ export default {
     Auditproblem, //审计问题
     Businessindicator, //经营指标
     AuditReport, //审计报告
+    AuditConfirmation //审计确认单
   },
   data () {
     return {
@@ -927,6 +931,7 @@ export default {
     this.getInitProject(this.queryProject);
     this.thematicSelect(this.thematic);
     this.areasSelect(this.areas);
+    this.moreProject(this.queryManageAll);
   },
   methods: {
     //查询项目
@@ -1007,12 +1012,16 @@ export default {
       this.getTaskSelf(this.getTaskSelfList);
     },
     // 更多
-    moreProject () {
-      this.drawer = true;
-      projectList(this.queryManageAll).then((resp) => {
+    moreProject (data) {
+      projectList(data).then((resp) => {
         this.projectAll = resp.data.records;
         // console.log(this.projectAll);
       });
+    },
+    // 更多按钮
+   
+    moreProjectBtn(){
+       this.drawer = true;
     },
     // 选择组员事件
     handleSelectionChange (val) {
