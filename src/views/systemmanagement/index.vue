@@ -56,8 +56,8 @@
         <div class="page">
           <pagination
             :total="total"
-            :page.sync="pageNo"
-            :limit.sync="pageSize"
+            :page.sync="queryInfo.pageCurrent"
+            :limit.sync="queryInfo.pageSize"
             @handleSizeChange="handleSizeChange"
             @handleCurrentChange="handleCurrentChange"
           />
@@ -110,7 +110,7 @@ export default {
       tableData: [],
       value1: "",
       value2: "",
-      total: "1",
+      total: 1,
       queryInfo: {
         roleName: "",
         // 当前页数
