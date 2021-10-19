@@ -69,13 +69,57 @@
         >
       </el-table-column>
     </el-table>
-<!-- 新增确认单弹出框 -->
+    <!-- 新增确认单弹出框 -->
     <el-dialog
       :visible.sync="confirmationDialogVisible"
-      width="30%"
+      width="50%"
       :before-close="handleClose"
     >
-      <span></span>
+      <div class="title">新增确认单</div>
+      <el-form class="formData" label-width="130px">
+        <el-row :gutter="24">
+          <el-col :span="10">
+            <el-form-item label="审计项目名称:"
+              >2021年泰纳分公司经责审计</el-form-item
+            >
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="被审计单位:">泰安分公司领导</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-form-item label="审计（调查）事项:">
+            <el-input type="textarea"></el-input>
+          </el-form-item>
+        </el-row>
+        <el-row>
+          <el-form-item label="审计(调查)事项描述:">
+            <el-button>关联问题</el-button>
+            <el-input type="textarea"></el-input>
+          </el-form-item>
+        </el-row>
+        <el-row>
+          <el-col :span="7">
+            <el-form-item label="审计人员:">
+              <el-input placeholder="请输入"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7">
+            <el-form-item label="复核人:">
+              <el-input placeholder="请输入"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7">
+            <el-form-item label="编织日期:">
+              <el-date-picker
+                type="date"
+                placeholder="选择日期"
+                style="width: 100%"
+              ></el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="confirmationDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogVisible = false"
@@ -112,7 +156,7 @@ export default {
           problemNum: "5",
         },
       ],
-      confirmationDialogVisible:false, //新增确认单弹框
+      confirmationDialogVisible: false, //新增确认单弹框
     };
   },
   created() {},
@@ -122,7 +166,7 @@ export default {
       this.confirmationDialogVisible = true;
     },
     // 增加弹出框关闭事件
-    handleClose(){},
+    handleClose() {},
   },
 };
 </script>
@@ -155,4 +199,40 @@ export default {
     border: 0px;
   }
 }
+.title {
+  border-bottom: 1px solid #d2d2d2;
+  padding: 10px;
+  text-align: center;
+}
+.formData {
+  // border: 1px solid red;
+  padding: 2%;
+  .el-button{
+      border-color: #ECECEC;
+      color: #9E9E9F;
+  }
+  
+}
+</style>
+<style scoped>
+/deep/.formData .el-form-item__content {
+    position: relative;
+    top: -36px;
+    left: 0%;
+  }
+ /deep/ .formData .el-textarea__inner{
+     position: relative;
+     top: 8px;
+     left: 0%;
+     width: 700px;
+  }
+  /deep/ .formData .el-input__inner{
+     position: relative;
+     width: 185px;
+  }
+  /deep/ .formData label {
+    display: inline-block;
+    width:500px;
+    text-align: right;
+  }
 </style>
