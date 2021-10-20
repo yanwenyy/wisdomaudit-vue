@@ -26,7 +26,13 @@
           {{ scope.$index + 1 }}
         </template>
       </el-table-column>
-      <el-table-column label="领域" prop="field" />
+      <el-table-column label="领域" prop="field" >
+        <template slot-scope="scope">
+          <div>
+            {{ fieldFilter(scope.row.field) }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="问题">
         <template slot-scope="scope">
           <div class="canclick" @click="openDetail(scope.$index)">
@@ -34,7 +40,13 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="专题" prop="field" />
+      <el-table-column label="专题" prop="special">
+        <template slot-scope="scope">
+          <div>
+            {{ specialFilter(scope.row.special) }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column
         label="风险金额（万元）"
         width="180px"
@@ -77,7 +89,7 @@
         <el-form-item label="领域" prop="field">
           <el-select v-model="temp.field" placeholder="请选择领域">
             <el-option
-              v-for="item in options"
+              v-for="item in CategoryList"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -85,10 +97,10 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="专题" prop="field">
-          <el-select v-model="temp.field" placeholder="请选择专题">
+        <el-form-item label="专题" prop="special">
+          <el-select v-model="temp.special" placeholder="请选择专题">
             <el-option
-              v-for="item in options"
+              v-for="item in SPECIALList"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -124,17 +136,17 @@
         <el-form-item label="风险金额（万元）" prop="riskAmount">
           <el-input v-model="temp.riskAmount" placeholder="请输入风险金额" />
         </el-form-item>
-        <el-form-item label="关联任务" prop="associatedTask">
+        <el-form-item label="关联任务" prop="auditTaskUuid">
           <el-select
-            v-model="temp.associatedTask"
+            v-model="temp.auditTaskUuid"
             multiple
             placeholder="请选择"
           >
             <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in auditTasklList"
+              :key="item.auditTaskUuid"
+              :label="item.taskName"
+              :value="item.auditTaskUuid"
             >
             </el-option>
           </el-select>
@@ -197,7 +209,7 @@
         <el-form-item label="领域" prop="field">
           <el-select v-model="dqProblem.field" placeholder="请选择领域">
             <el-option
-              v-for="item in options"
+              v-for="item in CategoryList"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -234,17 +246,18 @@
         <el-form-item label="风险金额（万元）" prop="riskAmount">
           <el-input v-model="dqProblem.riskAmount" placeholder="请输入风险金额" />
         </el-form-item>
-        <el-form-item label="关联任务" prop="associatedTask">
+        <el-form-item label="关联任务" prop="auditTaskUuid">
           <el-select
-            v-model="dqProblem.associatedTask"
+            disabled
+            v-model="dqProblem.auditTaskUuid"
             multiple
             placeholder="请选择"
           >
             <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in auditTasklList"
+              :key="item.auditTaskUuid"
+              :label="item.taskName"
+              :value="item.auditTaskUuid"
             >
             </el-option>
           </el-select>
@@ -311,9 +324,9 @@
             placeholder="请输入风险金额"
           />
         </el-form-item>
-        <el-form-item label="关联任务" prop="associatedTask">
+        <el-form-item label="关联任务" prop="auditTaskUuid">
           <el-input
-            v-model="dqProblem.associatedTask"
+            v-model="dqProblem.auditTaskUuid"
             disabled
             placeholder="请输入关联任务"
           />
@@ -343,6 +356,7 @@ import Pagination from "@WISDOMAUDIT/components/Pagination"; // secondary packag
 import _ from "lodash";
 import axios from "axios";
 export default {
+  props:['active_project'],
   components: { Pagination },
   filters: {},
   data() {
@@ -357,20 +371,22 @@ export default {
       total: 0,
       listLoading: false,
       pageQuery: {
-        condition: {},
+        condition: {
+          managementProjectUuid: this.active_project
+        },
         pageNo: 1,
         pageSize: 20,
         sortBy: "",
         sortName: "",
       },
       temp: {
+        managementProjectUuid: this.active_project,
         // 业务分类
-        associatedTask: "",
-        auditTaskUuid: "1",
+        auditTaskUuid: [],
         basis: "",
         describe: "",
-        enclosure: "",
         field: "",
+        special: "",
         isDeleted: 0,
         problem: "",
         problemDiscoveryTime: "",
@@ -414,14 +430,67 @@ export default {
       downloadLoading: false,
       headers: { "Content-Type": "multipart/form-data" },
       file: "",
-      problemtableSelection:[]
+      problemtableSelection:[],
+      CategoryList:[],
+      SPECIALList:[],
+      auditTasklList:[]
     };
   },
   watch: {},
   created() {
+    this.getloadcascader('Category')
+    this.getloadcascader('SPECIAL')
+    this.getSelectTask()
     this.getList();
   },
   methods: {
+    //领域返显
+    fieldFilter(str){
+      let rep = ''
+      this.CategoryList.forEach( e =>{
+       if(e.value == str) {
+         rep = e.label
+       }
+      })
+      return rep
+    },
+    //专题返显
+    specialFilter(str){
+      let rep = ''
+      this.SPECIALList.forEach( e =>{
+       if(e.value == str) {
+         rep = e.label
+       }
+      })
+      return rep
+    },
+    getSelectTask(){
+      axios({
+        url: `/wisdomaudit/auditTask/selectTask`,
+        method: "post",
+        data: {
+          managementProjectUuid: this.active_project
+        },
+      }).then((res) => {
+        this.auditTasklList = res.data.data
+      })
+    },
+    getloadcascader(str){
+      axios({
+        url: `/wisdomaudit/init/loadcascader`,
+        method: "post",
+        data: {
+          "typecode": str
+        },
+      }).then((res) => {
+        if(str=='Category'){
+          this.CategoryList = res.data.data
+        }else if(str=='SPECIAL'){
+          this.SPECIALList = res.data.data
+        }
+      })
+
+    },
     openDetail(int) {
       axios({
         url: `/wisdomaudit/problemList/getById/`+this.list[int].problemListUuid,
@@ -429,7 +498,7 @@ export default {
         data: {},
       }).then((res) => {
         this.dqProblem = res.data.data;
-        this.dqProblem.associatedTask = this.dqProblem.associatedTask.split(',')
+        this.dqProblem.auditTaskUuid = this.dqProblem.auditTaskUuid.split(',')
         this.dqProblem.basis = this.dqProblem.basis.split(',')
         this.ifupdata = true
         this.dialogDetailVisible = true;
@@ -442,7 +511,7 @@ export default {
         data: {},
       }).then((res) => {
         this.dqProblem = res.data.data;
-        this.dqProblem.associatedTask = this.dqProblem.associatedTask.split(',')
+        this.dqProblem.auditTaskUuid = this.dqProblem.auditTaskUuid.split(',')
         this.dqProblem.basis = this.dqProblem.basis.split(',')
         this.ifupdata = false
         this.dialogDetailVisible = true;
@@ -509,7 +578,7 @@ export default {
     },
     createData() {
       let rep = this.temp;
-      rep.associatedTask = rep.associatedTask.join(",");
+      rep.auditTaskUuid = rep.auditTaskUuid.join(",");
       rep.basis = rep.basis.join(",");
       axios({
         url: `/wisdomaudit/problemList/save`,
@@ -522,7 +591,7 @@ export default {
             type: "success",
           });
           this.dialogFormVisible = false;
-          this.temp.associatedTask = '';
+          this.temp.auditTaskUuid = [];
           this.temp.basis = '';
           this.temp.describe = '';
           this.temp.field = '';
@@ -531,13 +600,14 @@ export default {
           this.temp.problemFindPeople = '';
           this.temp.managementAdvice = '';
           this.temp.riskAmount = '';
+          this.temp.special = '';
           this.getList()
         }
       });
     },
     updateData() {
       let rep = this.dqProblem
-      rep.associatedTask = rep.associatedTask.join(",");
+      rep.auditTaskUuid = rep.auditTaskUuid.join(",");
       rep.basis = rep.basis.join(",");
       axios({
         url: `/wisdomaudit/problemList/update`,
