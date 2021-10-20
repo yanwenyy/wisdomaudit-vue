@@ -693,12 +693,12 @@
 </template>
 
 <script>
-import TeamPersonTask from "@/views/audit/teamperson-task/index";
-import AuditData from "@/components/workbench/AuditData/index"; //审计资料
-import AuditTask from "@/components/workbench/AuditTask/index"; //审计任务
-import Auditproblem from "@/components/workbench/auditproblem/index"; //审计问题
-import Businessindicator from "@/components/workbench/businessindicator/index"; //经营指标
-import AuditReport from "@/components/workbench/AuditReport/index"; //审计问题
+import TeamPersonTask from "@WISDOMAUDIT/views/audit/teamperson-task/index";
+import AuditData from "@WISDOMAUDIT/components/workbench/AuditData/index"; //审计资料
+import AuditTask from "@WISDOMAUDIT/components/workbench/AuditTask/index"; //审计任务
+import Auditproblem from "@WISDOMAUDIT/components/workbench/auditproblem/index"; //审计问题
+import Businessindicator from "@WISDOMAUDIT/components/workbench/businessindicator/index"; //经营指标
+import AuditReport from "@WISDOMAUDIT/components/workbench/AuditReport/index"; //审计问题
 import AuditConfirmation from "@WISDOMAUDIT/views/audit/auditconfirmationform/index"
 import {
   projectList,

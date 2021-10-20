@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import cases from '@/components/workbench/cases/index'
+import cases from '@WISDOMAUDIT/components/workbench/cases/index'
 export default {
     components:{
         cases

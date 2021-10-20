@@ -4,18 +4,18 @@ import store from '@WISDOMAUDIT/store/index.js'
 
 import wisdomauditRouter from './modules/wisdomaudit'
 //审计整改模块
-import auditCorrective from './modules/auditCorrective'
+import auditCorrective from '@WISDOMAUDIT/router/modules/auditCorrective'
 //模型管理模块
-import modelManagement from './modules/modelmanagement'
+import modelManagement from '@WISDOMAUDIT/router/modules/modelmanagement'
 
 // 数据管理
-import datamanagement from './modules/datamanagement'
+import datamanagement from '@WISDOMAUDIT/router/modules/datamanagement'
 // 系统管理
-import systemmanagement from './modules/systemmanagement'
+import systemmanagement from '@WISDOMAUDIT/router/modules/systemmanagement'
 Vue.use(Router)
 
 /* Layout */
-import Layout from '@/layout/index'
+import Layout from '@WISDOMAUDIT/layout/index'
 import {
   AppMain
 } from "@/layout/components";
@@ -123,7 +123,7 @@ export const constantRoutes = [{
     children: [{
       path: "riskScan",
       name: "riskScan",
-      component: () => import("@/layout/blank"),
+      component: () => import("@WISDOMAUDIT/layout/blank"),
       // component: () => import('@WISDOMAUDIT/views/audit/accountableAdd'),
       // wisdomaudit-vue\src\views\audit\riskScan\personal
       meta: {
@@ -151,7 +151,7 @@ export const constantRoutes = [{
     },{
       path: "Riskmonitoringnotification",
       name: "Riskmonitoringnotification",
-      component: () => import("@/views/audit/riskScan/Riskmonitoring"),
+      component: () => import("@WISDOMAUDIT/views/audit/riskScan/Riskmonitoring"),
       // component: () => import('@WISDOMAUDIT/views/audit/accountableAdd'),
       // wisdomaudit-vue\src\views\audit\riskScan\personal
       meta: {
