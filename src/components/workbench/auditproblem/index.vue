@@ -546,6 +546,7 @@ export default {
         this.listLoading = false
         if (res.data.code == 0) {
           this.list = res.data.data.records;
+          this.total = res.data.data.total
         }
       });
     },
