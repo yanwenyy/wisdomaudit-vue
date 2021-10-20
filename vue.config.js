@@ -88,14 +88,6 @@ module.exports = {
           '^/wisdomaudit_data/': '/'
         }
       },
-      '/wisdomaudit_ls/': {
-        timeout: 1800000,
-        target: process.env.LS_API,
-        changeOrigin: true,
-        pathRewrite: {
-          '^/wisdomaudit_ls/': '/'
-        }
-      },
 
       // '/wisdomaudit/': {
       //   timeout: 1800000,

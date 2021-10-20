@@ -44,12 +44,12 @@
       <el-row :gutter="20">
         <el-col :span="14">
           <div class="item-wapper">
-            <img src="@/assets/personal/echart-bar.jpg" />
+            <img src="@WISDOMAUDIT/assets/personal/echart-bar.jpg" />
           </div>
         </el-col>
         <el-col :span="10">
           <div class="item-wapper">
-            <img src="@/assets/personal/echart-map.jpg" />
+            <img src="@WISDOMAUDIT/assets/personal/echart-map.jpg" />
           </div>
         </el-col>
       </el-row>

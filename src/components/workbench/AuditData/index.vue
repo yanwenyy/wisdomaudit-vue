@@ -63,7 +63,13 @@
                              size="small">
                     编辑
                   </el-button>
-                  <el-button @click="list_push(scope.row)"
+                  <!-- <el-button @click="list_push(scope.row)"
+                             type="text"
+                             style="color:#1371CC"
+                             size="small">
+                    下发
+                  </el-button> -->
+                  <el-button @click="yes_push(scope.row)"
                              type="text"
                              style="color:#1371CC"
                              size="small">
@@ -168,7 +174,7 @@
                     </svg>
                   </div>
                   <!-- <span @click="open_enclosure_details(scope.row.addDataTaskUuid)">{{scope.row.enclosureCount}}</span> -->
-                  <span @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)">11</span>
+                  <span @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid,'已完成')">11</span>
 
                 </div>
               </template>
@@ -409,6 +415,7 @@
             </el-form-item>
           </div>
           <div class="son">
+
             <el-form-item label-width="80px"
                           prop="department">
               <p>部门：</p>
@@ -458,21 +465,23 @@
                 </el-date-picker>
               </div>
             </el-form-item>
+
           </div>
           <div class="son cd">
 
-            <el-form-item label-width="80px"
+            <el-form-item label-width="100px"
                           prop="status">
-              <p style="padding:0">是否沉淀为常规需求资料：</p>
+              <p style="padding:0 0 0 30px;">是否沉淀为常规需求资料：</p>
               <el-radio-group v-model="add_data.status"
                               @change="changeHandler">
                 <el-radio label="1">否</el-radio>
                 <el-radio label="2">是</el-radio>
               </el-radio-group>
             </el-form-item>
+
           </div>
 
-          <div class="son">
+          <div class="son cd">
 
             <el-form-item label-width="80px"
                           prop="remarks">
@@ -480,6 +489,35 @@
               <el-input type="textarea"
                         v-model="add_data.remarks"
                         placeholder=""></el-input>
+            </el-form-item>
+          </div>
+
+          <div class="son cd">
+
+            <el-form-item label-width="80px"
+                          class="up">
+              <p>模版新增：</p>
+              <!-- <el-input type="textarea"
+                        v-model="add_data.file"
+                        placeholder=""></el-input> -->
+
+              <el-upload class="upload-demo"
+                         drag
+                         :show-file-list="true"
+                         :limit="1"
+                         :on-success="handleAvatarSuccess"
+                         :on-exceed="update_stop"
+                         :before-upload="beforeAvatarUpload"
+                         accept=".doc,.xls,.txt,.xlsx,.zip"
+                         action="/wisdomaudit/auditPreviousDemandData/uploadData">
+
+                <!-- multiple//多选 -->
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                <!-- <div class="el-upload__tip"
+                     slot="tip">只能上传jpg/png文件，且不超过500kb</div> -->
+              </el-upload>
+
             </el-form-item>
           </div>
 
@@ -587,6 +625,27 @@
           <el-table-column prop="enclosureCount"
                            label="附件"
                            show-overflow-tooltip>
+            <template slot-scope="scope">
+              <div class="update">
+                <i class="update_icon">
+                  <svg t="1631877671204"
+                       class="icon"
+                       viewBox="0 0 1024 1024"
+                       version="1.1"
+                       xmlns="http://www.w3.org/2000/svg"
+                       p-id="9939"
+                       width="200"
+                       height="200">
+                    <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
+                          fill="#FD9D27"
+                          p-id="9940"></path>
+                  </svg>
+                </i>
+                <span @click="open_enclosure_details(scope.row,'操作')">2</span>
+
+              </div>
+            </template>
+
           </el-table-column>
           <el-table-column prop="address"
                            label="操作">
@@ -700,6 +759,26 @@
       </el-table>
     </el-dialog>
 
+    <!-- 确认是否下发 -->
+    <div class="whether"
+         v-if="whether==true"
+         style="padding-bottom: 10px; ">
+      <div>
+        <span class="close"
+              @click="whether = false">×</span>
+        <p>是否确认下发</p>
+        <span slot="footer">
+          <el-button size="small"
+                     type="primary"
+                     @click="list_push()">确认</el-button>
+
+          <el-button size="small"
+                     @click="whether = false">取 消</el-button>
+        </span>
+      </div>
+
+    </div>
+
   </div>
 </template>
 
@@ -719,6 +798,7 @@ export default {
       // color: '',   // 上传文件icon 颜色
       dialogVisibl_enclosure_details: false,//附件详情
       loading: false,
+      whether: false,//是否下发
 
 
       sensitiveOptions: [],//添加资料 类型
@@ -741,6 +821,9 @@ export default {
         addPeople: '',//添加人
         status: '',  // 是否沉淀
         addTime: '',//添加日期 
+        // file: '',//文件模版
+        Url: '',// 上传模版url
+
       },
       // 添加日期
       pickerOptions: {
@@ -752,13 +835,13 @@ export default {
       rules: {
         dataCategory: [{ required: true, message: '请选择类别', trigger: 'change' }],
         dataName: [{ required: true, message: '请输入资料名称', trigger: 'blur' }],
-        dataNumber: [{ required: true, message: '请输入资料编号', trigger: 'blur' }],
-        secondLevelDataNumber: [{ required: true, message: '请输入二级编号', trigger: 'blur' }],
+        // dataNumber: [{ required: true, message: '请输入资料编号', trigger: 'blur' }],
+        // secondLevelDataNumber: [{ required: true, message: '请输入二级编号', trigger: 'blur' }],
         department: [{ required: true, message: '请选择部门', trigger: 'change' }],
         source: [{ required: true, message: '请选择来源', trigger: 'change' }],
-        remarks: [{ required: true, message: '请输入备注', trigger: 'blur' }],
+        // remarks: [{ required: true, message: '请输入备注', trigger: 'blur' }],
         status: [{ required: true, message: '请选择是否沉淀', trigger: 'change' }],
-        addTime: [{ required: true, message: '请设置添加日期', trigger: 'change' }],
+        // addTime: [{ required: true, message: '请设置添加日期', trigger: 'change' }],
       },
       operation_table: [],//操作  资料列表
       operation_tableData: [],//操作  资料列表
@@ -801,6 +884,9 @@ export default {
         name: '',//发起人
       },
 
+      // 下发
+      push_id: '',
+
 
       multipleSelection_list: [], // 新增 任务弹窗里的全选
       task_list: [],// 新增任务初始化 数据
@@ -835,6 +921,9 @@ export default {
         { name: '22' }
       ],//附件详情
       disabled: true,
+
+      // actionUrl: '/auditPreviousDemandData/uploadData',
+
     }
   },
   computed: {},
@@ -880,6 +969,48 @@ export default {
   },
 
   methods: {
+    // 文件超出个数限制
+    update_stop (res, file) {
+      console.log(res);
+      console.log(file);
+    },
+    // 上传成功回调
+    handleAvatarSuccess (res, file) {
+      console.log(res);
+      console.log(file);
+      if (res.code == 0) {
+        this.add_data.Url = URL.createObjectURL(file.raw);
+        this.$message({
+          message: '更换成功',
+          type: 'success'
+        });
+        this.user_data_bag = res.backgroundPUrl;
+        this.header_ucenter_user()
+      } else {
+        this.$message({
+          message: resp.msg,
+          type: 'error'
+        });
+      }
+
+
+
+    },
+    // 上传中回调
+    beforeAvatarUpload (file) {
+      // const isJPG = file.type === 'image/jpeg';
+      const isLt2M = file.size / 1024 / 1024 < 50;
+
+      // if (!isJPG) {
+      //   this.$message.error('上传头像图片只能是 JPG 格式!');
+      // }
+      if (!isLt2M) {
+        this.$message.error('上传模版不能超过 50MB!');
+      }
+      return isLt2M;
+    },
+
+
     // 顶部tab 切换事件
     handleClick (val, event) {
       if (val.index == 0) {
@@ -949,20 +1080,33 @@ export default {
       this.title = '新增资料任务';
     },
     // 查看附件详情
-    open_enclosure_details (id) {
+    open_enclosure_details (id, name) {
       console.log(id);
-      this.dialogVisibl_enclosure_details = true;
-      return false
-      let params = {
-        ids: id,
-      };
-      enclosure_details(params).then(resp => {
-        this.enclosure_details_list = resp.data
-        console.log(this.enclosure_details_list);
-      })
-
+      if (name == '已完成') {
+        this.dialogVisibl_enclosure_details = true;
+        return false
+        let params = {
+          ids: id,
+        };
+        // 附件详情
+        enclosure_details(params).then(resp => {
+          this.enclosure_details_list = resp.data
+          console.log(this.enclosure_details_list);
+        })
+      } else {
+        console.log('操作的附件详情');
+      }
     },
 
+    // 附件下载
+    enclosure_download () {
+      let params = {
+
+      }
+      download(params).then(resp => {
+        console.log(resp);
+      })
+    },
 
     // 添加资料
     add_data_click () {
@@ -1186,9 +1330,6 @@ export default {
       });
     },
 
-
-
-
     // 添加资料   部门
     post_select_loadcascader_bm () {
       let params = {
@@ -1274,13 +1415,16 @@ export default {
         }
       });
     },
+    // 显示下发 确认
+    yes_push (data) {
+      this.push_id = data.addDataTaskUuid
+      this.whether = true;//显示确认下发
+    },
 
-
-
-    // 未完成列表 任务下发
-    list_push (data) {
+    // 未完成列表 确认任务下发
+    list_push () {
       let params = {
-        taskId: data.addDataTaskUuid
+        taskId: this.push_id,
       }
       data_push_ing(params).then(resp => {
         // console.log(resp.data);
@@ -1289,6 +1433,7 @@ export default {
             message: "下发成功",
             type: "success",
           });
+          this.whether = false;//显示确认下发
           // 未完成
           let params = {
             pageNo: this.params.pageNo,
@@ -1658,9 +1803,50 @@ export default {
 
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
-.projectTab >>> .el-table th.el-table__cell > .cell,
+/* 确认下发 */
+.whether {
+  position: fixed;
+  transform: none;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  margin-top: 15vh;
+  width: 170px;
+  min-width: auto;
+  background: #ffffff;
+  border-radius: 8px !important;
+  z-index: 9999;
+  box-sizing: border-box;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
+}
+.whether div {
+  position: relative;
+}
+.whether div p {
+  width: 100%;
+  padding: 10px 0;
+  margin-bottom: 10px;
+
+  box-sizing: border-box;
+}
+.whether div .close {
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  cursor: pointer;
+  font-size: 20px;
+  color: rgba(0, 0, 0, 0.5);
+  transition: all 0.3s;
+}
+.whether div .close:hover {
+  color: rgba(0, 0, 0, 0.8);
+}
+.whether .projectTab >>> .el-table th.el-table__cell > .cell,
+.projectTab >>> .has-gutter .cell,
 .projectTab >>> .el-table td.el-table__cell div {
   text-align: center;
+  justify-content: center !important;
 }
 .projectTab >>> .el-table {
   min-height: 500px;
@@ -1694,6 +1880,10 @@ export default {
 }
 .sjzl >>> .el-table__header {
   border-top: none !important;
+}
+.dlag_conter2 >>> .el-table .cell {
+  display: flex;
+  justify-content: center !important;
 }
 /* 附件详情 */
 
@@ -1836,7 +2026,7 @@ export default {
   left: 120px;
 }
 .cd >>> .el-form-item__error {
-  left: 165px;
+  left: 205px;
 }
 .remarks {
   width: 100%;
@@ -1851,5 +2041,23 @@ export default {
   background-color: rgba(0, 0, 0, 0.2) !important;
   background: none;
   opacity: 0.5;
+}
+
+/* 上传模版 */
+.dlag_conter2 >>> .up .el-form-item__content {
+  display: flex;
+  align-items: flex-start !important;
+}
+.cd >>> .el-form-item {
+  width: 100%;
+}
+.cd >>> .el-form-item__content p {
+  /* border: 1px solid red; */
+  width: 210px;
+  box-sizing: border-box;
+}
+
+.cd >>> .el-upload-dragger {
+  width: 500px !important;
 }
 </style>

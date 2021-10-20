@@ -9,7 +9,7 @@
 export default {
   data() {
     return {
-      imgUrl: require("@/assets/styles/image/Auditoverview.png"),
+      imgUrl: require("@WISDOMAUDIT/assets/styles/image/Auditoverview.png"),
     };
   },
   mounted(){

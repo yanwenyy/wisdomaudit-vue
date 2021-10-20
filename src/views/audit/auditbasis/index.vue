@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import auditbasis from '@/components/workbench/auditbasis/index'
+import auditbasis from '@WISDOMAUDIT/components/workbench/auditbasis/index'
 export default {
     components:{
         auditbasis
