@@ -7,26 +7,7 @@
         <el-row :gutter="24"
                 class="titleMes">
 
-          <!-- 自建任务 / 模型任务 -->
-          <!-- <el-col :span="1.5">
-              <el-button type="primary"
-                         :class="task_type == 0 ? 'active_tab':''"
-                         @click="on_Task(0)">模型任务</el-button>
-              <el-button type="primary"
-                         :class="task_type == 1 ? 'active_tab':''"
-                         @click="on_Task(1)">自建任务</el-button>
-
-            </el-col> -->
-          <!-- 自建任务 /  模型任务 end-->
-
-          <!-- 模型引用 -->
-          <!-- <el-col :span="1.5"
-                    v-if="task_type == 0">
-              <el-button type="primary"
-                         @click="new_add_model()">选择模型</el-button>
-            </el-col> -->
-
-          <!-- 自建新增   v-if="task_type == 1"-->
+          <!-- 自建新增   -->
           <el-col :span="1.5">
             <el-button type="primary"
                        @click="new_add_zj()">新增</el-button>
@@ -45,30 +26,6 @@
           </div>
         </el-row>
         <!-- tab end-->
-
-        <!-- 操作 -->
-        <!-- <el-table-column prop="edit"
-                             label="操作">
-              <template slot-scope="scope">
-                <el-button @click="setParameters(scope.row)"
-                           type="text"
-                           style="color: #1371cc"
-                           size="small">
-                  设置
-                </el-button>
-
-                <el-button @click="delete_model(scope.row.auditTaskUuid)"
-                           type="
-                           text"
-                           style="color: red"
-                           size="small">
-                  删除
-                </el-button>
-              </template>
-
-            </el-table-column> -->
-        <!-- 表单 end-->
-        <!-- 模型任务 end-->
 
         <!-- 自建任务 -->
         <div class="task_type">
@@ -103,7 +60,7 @@
             <!-- 责任人 -->
             <el-table-column prop="peopleName"
                              label="责任人 ">
-              <template slot-scope="scope">
+              <!-- <template slot-scope="scope">
                 <el-select v-model="scope.row.peopleName"
                            @change="changeHeader(scope.row)">
                   <el-option v-for="item in select_list"
@@ -112,7 +69,7 @@
                              :value="item.peopleTable.peopleName">
                   </el-option>
                 </el-select>
-              </template>
+              </template> -->
             </el-table-column>
 
             <!-- 问题数 -->
@@ -141,7 +98,7 @@
                 </el-button>
               </template>
             </el-table-column>
-
+            <!-- 附件 -->
             <el-table-column prop="address"
                              label="附件"
                              width="90">
@@ -212,9 +169,7 @@
                 <el-button @click="edit_data(scope.row)"
                            type="text"
                            style="color:#1371CC"
-                           size="small">
-                  编辑
-                </el-button>
+                           size="small">编辑</el-button>
 
                 <!-- 删除 -->
                 <el-button @click="delete_model(scope.row.auditTaskUuid)"
@@ -1496,7 +1451,7 @@ export default {
 
     // 引用知识库
     quote_knowledge () {
-      alert('引用知识库')
+      console.log('引用知识库');
     },
 
 
