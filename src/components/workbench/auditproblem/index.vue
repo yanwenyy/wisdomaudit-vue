@@ -429,11 +429,11 @@ export default {
         auditTaskUuid: [
           { required: true, message: "请选择关联任务", trigger: "change" },
         ],
-        basis: [{ required: true, message: "请填写依据", trigger: "change" }],
+        basis: [{ required: true, message: "请选择依据", trigger: "change" }],
         describe: [
           { required: true, message: "请填写描述", trigger: "change" },
         ],
-        field: [{ required: true, message: "请填写领域", trigger: "change" }],
+        field: [{ required: true, message: "请选择领域", trigger: "change" }],
         managementAdvice: [
           { required: true, message: "请填写意见", trigger: "change" },
         ],
@@ -444,7 +444,7 @@ export default {
         problemFindPeople: [
           { required: true, message: "请填写发现人", trigger: "change" },
         ],
-        special: [{ required: true, message: "请填写专题", trigger: "change" }],
+        special: [{ required: true, message: "请选择专题", trigger: "change" }],
         riskAmount: [
           { required: true, message: "请填写风险金额", trigger: "change" },
         ],
