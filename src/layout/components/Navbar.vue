@@ -34,8 +34,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
-import Hamburger from '@/components/Hamburger'
+import Breadcrumb from '@WISDOMAUDIT/components/Breadcrumb'
+import Hamburger from '@WISDOMAUDIT/components/Hamburger'
 
 export default {
   components: {

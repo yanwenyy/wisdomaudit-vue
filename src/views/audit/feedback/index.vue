@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import OperatingIndicatorsTow from "@/components/workbench/OperatingIndicatorsTow/index"; //经营指标
+import OperatingIndicatorsTow from "@WISDOMAUDIT/components/workbench/OperatingIndicatorsTow/index"; //经营指标
 
 export default {
   components: {

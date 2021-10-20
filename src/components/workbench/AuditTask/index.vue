@@ -850,7 +850,7 @@ import {
 import { Task_run, Task_data_status, task_findModelList, task_selectModel, task_selectTable, } from '@SDMOBILE/api/shandong/task_setting'
 
 import { fmtDate } from '@SDMOBILE/model/time.js';
-import Paramdrawnew from '@/components/workbench/AuditTask/paramdrawnew'//参数设置
+import Paramdrawnew from '@WISDOMAUDIT/components/workbench/AuditTask/paramdrawnew'//参数设置
 
 export default {
   components: {

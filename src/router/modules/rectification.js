@@ -1,5 +1,5 @@
-import { AppMain } from '@/layout/components'
-import Layout from '@/layout/index'
+import { AppMain } from '@WISDOMAUDIT/layout/components'
+import Layout from '@WISDOMAUDIT/layout/index'
 
 
 const riskmonitoringRouter =

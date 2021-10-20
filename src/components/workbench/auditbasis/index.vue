@@ -155,7 +155,7 @@
 </template>
 
 <script>
-import '@/styles/from.scss'
+import '@WISDOMAUDIT/styles/from.scss'
 export default {
   components: {},
   data() {
