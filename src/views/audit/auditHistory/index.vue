@@ -82,8 +82,8 @@
 </template>
 
 <script>
-import AuditHistoryAdd from "@/components/repository/AuditHistoryAdd/index";
-import AuditHistoryEdit from "@/components/repository/AuditHistoryEdit/index";
+import AuditHistoryAdd from "@WISDOMAUDIT/components/repository/AuditHistoryAdd/index";
+import AuditHistoryEdit from "@WISDOMAUDIT/components/repository/AuditHistoryEdit/index";
 export default {
   components: {
     AuditHistoryAdd,
