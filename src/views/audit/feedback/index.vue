@@ -60,14 +60,10 @@
 </template>
 
 <script>
-<<<<<<< HEAD
 import {
   data_pageList
 } from
   '@SDMOBILE/api/shandong/feedback'
-=======
-import OperatingIndicatorsTow from "@WISDOMAUDIT/components/workbench/OperatingIndicatorsTow/index"; //经营指标
->>>>>>> 2fa9ade958802c7be923e50ca5351317be6aa073
 
 export default {
   components: {
