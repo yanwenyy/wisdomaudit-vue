@@ -140,11 +140,11 @@
           </el-col>
         </el-row>
 
-        
+
             <el-form-item label="附件内容:" :label-width="formLabelWidth">
               <el-input type="textarea" v-model="text" :rows="4" style="flex:1;"></el-input>
             </el-form-item>
-       
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="isAdd = false">取 消</el-button>
@@ -155,6 +155,8 @@
 </template>
 
 <script>
+  import { data_pageList } from
+      '@SDMOBILE/api/shandong/ls'
 import '@/styles/from.scss'
 export default {
   components: {},
@@ -280,6 +282,13 @@ export default {
           state: "3",
         },
       ],
+      params: {
+        pageNo: 1,
+        pageSize: 10,
+      },
+      searchForm:{
+
+      }
     };
   },
   computed: {},
@@ -307,10 +316,30 @@ export default {
     edit(){
        this.isAdd = true;
       this.title = "编辑审计依据";
-    }
+    },
+    //列表数据
+    list_data_start (params) {
+      this.loading = true
+      data_pageList(params).then(resp => {
+        console.log(resp.data)
+        // this.tableData = resp.data;
+        // this.tableData_list = resp.data.records
+        // this.loading = false
+      })
+    },
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.list_data_start({
+      pageNo: this.params.pageNo,
+      pageSize: this.params.pageSize,
+      condition: {
+        basyName: this.searchForm.basyName,
+        issueDate: this.searchForm.issueDate,
+        publishDepartment: this.searchForm.publishDepartment,
+      }
+    })
+  },
 };
 </script>
 
