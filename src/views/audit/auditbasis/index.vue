@@ -1,20 +1,20 @@
 <template>
   <div>
-   
+
         <el-row type="flex" :gutter="20">
      <div>
-       <el-col :span="6"> <div class="kuan">资料名称:</div> <el-input v-model="name" placeholder="请输入关键字"></el-input></el-col>
+       <el-col :span="6"> <div class="kuan">资料名称:</div> <el-input v-model="searchForm.basyName" placeholder="请输入关键字"></el-input></el-col>
         <el-col :span="6"> <div  class="kuan">发文时间:</div>  <el-date-picker
-      v-model="value1"
+      v-model="searchForm.issueDate"
       type="date"
       placeholder="选择日期">
     </el-date-picker></el-col>
-     <el-col :span="6">  <div  class="kuan">发文部门:</div> <el-input  v-model="input" placeholder="请输入关键字"></el-input></el-col>
-     <el-col :span="3">  <el-button type="primary">查询</el-button></el-col>
+     <el-col :span="6">  <div  class="kuan">发文部门:</div> <el-input  v-model="searchForm.publishDepartment" placeholder="请输入关键字"></el-input></el-col>
+     <el-col :span="3">  <el-button type="primary" @click="getData">查询</el-button></el-col>
     </div>
     </el-row>
-    <auditbasis></auditbasis>
-   
+    <auditbasis ref="listShow"></auditbasis>
+
   </div>
 </template>
 
@@ -26,9 +26,22 @@ export default {
     },
     data(){
         return{
+          searchForm:{
+            basyName:'',
+            issueDate:'',
+            publishDepartment:''
+          },
             input:'',
             name:''
         }
+    },
+    methods:{
+      //查询按钮点击
+      getData(){
+        this.$nextTick(() => {
+          this.$refs.listShow.getSearchForm(this.searchForm);
+        })
+      },
     }
 };
 </script>

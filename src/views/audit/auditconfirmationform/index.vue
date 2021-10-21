@@ -131,7 +131,10 @@
 </template>
 
 <script>
+  import { auditConfirmation_pageList} from
+      '@SDMOBILE/api/shandong/ls'
 export default {
+  props:['active_project'],
   data() {
     return {
       confirmaryData: [
@@ -159,8 +162,33 @@ export default {
       confirmationDialogVisible: false, //新增确认单弹框
     };
   },
-  created() {},
+  created() {
+    console.log(this.active_project)
+  },
   methods: {
+    //列表数据
+    list_data_start () {
+      let params={
+        pageNo: this.searchForm.pageNo,
+        pageSize: this.searchForm.pageSize,
+        condition: {
+          basyName: this.searchForm.basyName,
+          issueDate: this.searchForm.issueDate,
+          publishDepartment: this.searchForm.publishDepartment,
+        }
+      };
+      this.loading = true
+      auditConfirmation_pageList(params).then(resp => {
+        var datas=resp.data;
+        this.tableData = datas.records;
+        this.page={
+          current:datas.current,
+          size:datas.size,
+          total:datas.total
+        };
+        this.loading = false
+      })
+    },
     //   新增确认单按钮事件
     addConfirmation() {
       this.confirmationDialogVisible = true;
@@ -211,7 +239,7 @@ export default {
       border-color: #ECECEC;
       color: #9E9E9F;
   }
-  
+
 }
 </style>
 <style scoped>
