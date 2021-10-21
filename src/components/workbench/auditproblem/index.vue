@@ -2,8 +2,7 @@
   <div class="page-container auditproblem">
     <div class="filter-container">
       <el-button type="primary" @click="add()">新增</el-button>
-      <div class="auditproblem-btn-box">
-      </div>
+      <div class="auditproblem-btn-box"></div>
     </div>
     <!-- @sort-change="sortChange"
        -->
@@ -26,7 +25,6 @@
           {{ scope.$index + 1 }}
         </template>
       </el-table-column>
-      <el-table-column label="领域" prop="field" />
       <el-table-column label="问题">
         <template slot-scope="scope">
           <div class="canclick" @click="openDetail(scope.$index)">
@@ -34,7 +32,20 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="专题" prop="field" />
+      <el-table-column label="领域" prop="field">
+        <template slot-scope="scope">
+          <div>
+            {{ fieldFilter(scope.row.field) }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="专题" prop="special">
+        <template slot-scope="scope">
+          <div>
+            {{ specialFilter(scope.row.special) }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column
         label="风险金额（万元）"
         width="180px"
@@ -49,8 +60,12 @@
       <el-table-column label="发现人" prop="problemFindPeople" />
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
-          <el-button @click="checkDetail(scope.row.problemListUuid)">查看</el-button>
-          <el-button @click="del(scope.row.problemListUuid)" style="color:red;">删除</el-button>
+          <el-button @click="checkDetail(scope.row.problemListUuid)"
+            >查看</el-button
+          >
+          <el-button @click="del(scope.row.problemListUuid)" style="color: red"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -63,7 +78,7 @@
     />
     <!-- 新增和编辑的弹框 -->
     <el-dialog
-      :title="textMap[dialogStatus]"
+      title="新增问题"
       :visible.sync="dialogFormVisible"
       :close-on-click-modal="false"
     >
@@ -74,10 +89,13 @@
         label-position="right"
         class="detail-form"
       >
+        <el-form-item label="问题" prop="problem">
+          <el-input v-model="temp.problem" placeholder="请输入问题" />
+        </el-form-item>
         <el-form-item label="领域" prop="field">
           <el-select v-model="temp.field" placeholder="请选择领域">
             <el-option
-              v-for="item in options"
+              v-for="item in CategoryList"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -85,19 +103,16 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="专题" prop="field">
-          <el-select v-model="temp.field" placeholder="请选择专题">
+        <el-form-item label="专题" prop="special">
+          <el-select v-model="temp.special" placeholder="请选择专题">
             <el-option
-              v-for="item in options"
+              v-for="item in SPECIALList"
               :key="item.value"
               :label="item.label"
               :value="item.value"
             >
             </el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="问题" prop="problem">
-          <el-input v-model="temp.problem" placeholder="请输入问题" />
         </el-form-item>
         <el-form-item label="描述" prop="describe">
           <el-input v-model="temp.describe" placeholder="请输入描述" />
@@ -109,11 +124,17 @@
           />
         </el-form-item>
         <el-form-item label="发现日期" prop="problemDiscoveryTime">
-          <el-input
+          <!-- <el-input
             v-model="temp.problemDiscoveryTime"
             type="date"
             placeholder="请输入发现日期"
-          />
+          /> -->
+          <el-date-picker
+            type="date"
+            placeholder="选择日期"
+            v-model="temp.problemDiscoveryTime"
+            style="width: 100%"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="发现人" prop="problemFindPeople">
           <el-input
@@ -122,25 +143,23 @@
           />
         </el-form-item>
         <el-form-item label="风险金额（万元）" prop="riskAmount">
-          <el-input v-model="temp.riskAmount" placeholder="请输入风险金额" />
+          <el-input
+            v-model.number="temp.riskAmount"
+            placeholder="请输入风险金额"
+          />
         </el-form-item>
-        <el-form-item label="关联任务" prop="associatedTask">
-          <el-select
-            v-model="temp.associatedTask"
-            multiple
-            placeholder="请选择"
-          >
+        <el-form-item label="关联任务" prop="auditTaskUuid">
+          <el-select v-model="temp.auditTaskUuid" multiple placeholder="请选择">
             <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in auditTasklList"
+              :key="item.auditTaskUuid"
+              :label="item.taskName"
+              :value="item.auditTaskUuid"
             >
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item>
-        </el-form-item>
+        <el-form-item> </el-form-item>
         <el-form-item label="依据" prop="basis">
           <el-select v-model="temp.basis" multiple placeholder="请选择">
             <el-option
@@ -188,16 +207,20 @@
       :visible.sync="dialogDetailVisible"
       :close-on-click-modal="false"
     >
-    <el-form
-        ref="dataForm"
+      <el-form
+        ref="detailForm"
         :model="dqProblem"
+        :rules="rules"
         label-position="right"
         class="detail-form"
       >
+        <el-form-item label="问题" prop="problem">
+          <el-input v-model="dqProblem.problem" placeholder="请输入问题" />
+        </el-form-item>
         <el-form-item label="领域" prop="field">
           <el-select v-model="dqProblem.field" placeholder="请选择领域">
             <el-option
-              v-for="item in options"
+              v-for="item in CategoryList"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -205,8 +228,16 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="问题" prop="problem">
-          <el-input v-model="dqProblem.problem" placeholder="请输入问题" />
+        <el-form-item label="专题" prop="special">
+          <el-select v-model="dqProblem.special" placeholder="请选择专题">
+            <el-option
+              v-for="item in SPECIALList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="描述" prop="describe">
           <el-input v-model="dqProblem.describe" placeholder="请输入描述" />
@@ -218,12 +249,12 @@
           />
         </el-form-item>
         <el-form-item label="发现日期" prop="problemDiscoveryTime">
-          <el-input v-model="dqProblem.problemDiscoveryTime"/>
-          <el-input
-            v-model="dqProblem.problemDiscoveryTime"
+          <el-date-picker
             type="date"
-            placeholder="请输入发现日期"
-          />
+            placeholder="选择日期"
+            v-model="dqProblem.problemDiscoveryTime"
+            style="width: 100%"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="发现人" prop="problemFindPeople">
           <el-input
@@ -232,23 +263,28 @@
           />
         </el-form-item>
         <el-form-item label="风险金额（万元）" prop="riskAmount">
-          <el-input v-model="dqProblem.riskAmount" placeholder="请输入风险金额" />
+          <el-input
+            v-model.number="dqProblem.riskAmount"
+            placeholder="请输入风险金额"
+          />
         </el-form-item>
-        <el-form-item label="关联任务" prop="associatedTask">
+        <el-form-item label="关联任务" prop="auditTaskUuid">
           <el-select
-            v-model="dqProblem.associatedTask"
+            disabled
+            v-model="dqProblem.auditTaskUuid"
             multiple
             placeholder="请选择"
           >
             <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in auditTasklList"
+              :key="item.auditTaskUuid"
+              :label="item.taskName"
+              :value="item.auditTaskUuid"
             >
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item> </el-form-item>
         <el-form-item label="依据" prop="basis">
           <el-select v-model="dqProblem.basis" multiple placeholder="请选择">
             <el-option
@@ -311,9 +347,9 @@
             placeholder="请输入风险金额"
           />
         </el-form-item>
-        <el-form-item label="关联任务" prop="associatedTask">
+        <el-form-item label="关联任务" prop="auditTaskUuid">
           <el-input
-            v-model="dqProblem.associatedTask"
+            v-model="dqProblem.auditTaskUuid"
             disabled
             placeholder="请输入关联任务"
           />
@@ -325,7 +361,7 @@
             placeholder="请输入依据"
           />
         </el-form-item> -->
-    </el-form>
+      </el-form>
       <div slot="footer">
         <el-button type="primary" @click="updateData()" v-if="ifupdata"
           >保存修改</el-button
@@ -343,6 +379,7 @@ import Pagination from "@WISDOMAUDIT/components/Pagination"; // secondary packag
 import _ from "lodash";
 import axios from "axios";
 export default {
+  props: ["active_project"],
   components: { Pagination },
   filters: {},
   data() {
@@ -357,20 +394,22 @@ export default {
       total: 0,
       listLoading: false,
       pageQuery: {
-        condition: {},
+        condition: {
+          managementProjectUuid: this.active_project,
+        },
         pageNo: 1,
         pageSize: 20,
         sortBy: "",
         sortName: "",
       },
       temp: {
+        managementProjectUuid: this.active_project,
         // 业务分类
-        associatedTask: "",
-        auditTaskUuid: "1",
+        auditTaskUuid: [],
         basis: "",
         describe: "",
-        enclosure: "",
         field: "",
+        special: "",
         isDeleted: 0,
         problem: "",
         problemDiscoveryTime: "",
@@ -382,71 +421,130 @@ export default {
       },
       selections: [],
       dialogFormVisible: false,
-      ifupdata:false,
+      ifupdata: false,
       dialogDetailVisible: false,
       dialogStatus: "",
-      textMap: {
-        update: "修改指标",
-        create: "新增指标",
-        show: "查看指标",
-      },
       // 新增的表单验证
       rules: {
-        type: [
-          { required: true, message: "请填写指标类型", trigger: "change" },
+        auditTaskUuid: [
+          { required: true, message: "请选择关联任务", trigger: "change" },
         ],
-        name: [
-          { required: true, message: "请填写指标名称", trigger: "change" },
+        basis: [{ required: true, message: "请选择依据", trigger: "change" }],
+        describe: [
+          { required: true, message: "请填写描述", trigger: "change" },
         ],
-        danwei: [{ required: false, message: "请填写单位", trigger: "change" }],
-        bumen: [
-          { required: false, message: "请填写资料提供部门", trigger: "change" },
+        field: [{ required: true, message: "请选择领域", trigger: "change" }],
+        managementAdvice: [
+          { required: true, message: "请填写意见", trigger: "change" },
         ],
-        gongshi: [
-          {
-            required: false,
-            message: "请填写取数口径或公式",
-            trigger: "change",
-          },
+        problem: [{ required: true, message: "请填写问题", trigger: "change" }],
+        problemDiscoveryTime: [
+          { required: true, message: "请填写发现时间", trigger: "change" },
+        ],
+        problemFindPeople: [
+          { required: true, message: "请填写发现人", trigger: "change" },
+        ],
+        special: [{ required: true, message: "请选择专题", trigger: "change" }],
+        riskAmount: [
+          { required: true, message: "请填写风险金额", trigger: "change" },
         ],
       },
       closeStatus: false,
       downloadLoading: false,
       headers: { "Content-Type": "multipart/form-data" },
       file: "",
-      problemtableSelection:[]
+      problemtableSelection: [],
+      CategoryList: [],
+      SPECIALList: [],
+      auditTasklList: [],
     };
   },
   watch: {},
   created() {
+    this.getloadcascader("Category");
+    this.getloadcascader("SPECIAL");
+    this.getSelectTask();
     this.getList();
   },
   methods: {
+    //领域返显
+    fieldFilter(str) {
+      let rep = "";
+      this.CategoryList.forEach((e) => {
+        if (e.value == str) {
+          rep = e.label;
+        }
+      });
+      return rep;
+    },
+    //专题返显
+    specialFilter(str) {
+      let rep = "";
+      this.SPECIALList.forEach((e) => {
+        if (e.value == str) {
+          rep = e.label;
+        }
+      });
+      return rep;
+    },
+    getSelectTask() {
+      axios({
+        url: `/wisdomaudit/auditTask/selectTask`,
+        method: "post",
+        data: {
+          managementProjectUuid: this.active_project,
+        },
+      }).then((res) => {
+        this.auditTasklList = res.data.data;
+      });
+    },
+    getloadcascader(str) {
+      axios({
+        url: `/wisdomaudit/init/loadcascader`,
+        method: "post",
+        data: {
+          typecode: str,
+        },
+      }).then((res) => {
+        if (str == "Category") {
+          this.CategoryList = res.data.data;
+        } else if (str == "SPECIAL") {
+          this.SPECIALList = res.data.data;
+        }
+      });
+    },
     openDetail(int) {
       axios({
-        url: `/wisdomaudit/problemList/getById/`+this.list[int].problemListUuid,
+        url:
+          `/wisdomaudit/problemList/getById/` + this.list[int].problemListUuid,
         method: "get",
         data: {},
       }).then((res) => {
         this.dqProblem = res.data.data;
-        this.dqProblem.associatedTask = this.dqProblem.associatedTask.split(',')
-        this.dqProblem.basis = this.dqProblem.basis.split(',')
-        this.ifupdata = true
+        this.dqProblem.auditTaskUuid = this.dqProblem.auditTaskUuid.split(",");
+        this.dqProblem.basis = this.dqProblem.basis.split(",");
+        this.ifupdata = true;
         this.dialogDetailVisible = true;
-      })
+        this.$nextTick(() => {
+          this.$refs["detailForm"].clearValidate();
+        });
+      });
     },
-    checkDetail(pid){
+    checkDetail(pid) {
       axios({
-        url: `/wisdomaudit/problemList/getById/`+pid,
+        url: `/wisdomaudit/problemList/getById/` + pid,
         method: "get",
         data: {},
       }).then((res) => {
         this.dqProblem = res.data.data;
-        this.dqProblem.associatedTask = this.dqProblem.associatedTask.split(',')
-        this.dqProblem.basis = this.dqProblem.basis.split(',')
-        this.ifupdata = false
+        this.dqProblem.auditTaskUuid = this.dqProblem.auditTaskUuid.split(",");
+        this.dqProblem.basis = this.dqProblem.basis.split(",");
+        this.ifupdata = false;
         this.dialogDetailVisible = true;
-      })
+        this.$nextTick(() => {
+          this.$refs["detailForm"].clearValidate();
+        });
+      });
     },
     repDate(data) {
       let date = new Date(data);
@@ -467,92 +565,112 @@ export default {
       return Y + M + D;
     },
     getList() {
-      this.listLoading = true
+      this.listLoading = true;
       axios({
         url: `/wisdomaudit/problemList/pageList`,
         method: "post",
         data: this.pageQuery,
       }).then((res) => {
         console.log(res.data.data);
-        this.listLoading = false
+        this.listLoading = false;
         if (res.data.code == 0) {
           this.list = res.data.data.records;
+          this.total = res.data.data.total;
         }
       });
     },
     add() {
       this.dialogFormVisible = true;
+      this.$nextTick(() => {
+        this.$refs["dataForm"].clearValidate();
+      });
     },
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
       this.problemtableSelection = val;
     },
-    del(pid){
-      console.log(pid)
-      let rep = []
+    del(pid) {
+      this.$confirm("确认删除该条数据吗?删除后数据不可恢复?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        axios({
+          url: `/wisdomaudit/problemList/delete/` + pid,
+          method: "delete",
+          data: {},
+        }).then((res) => {
+          if (res.data.code == 0) {
+            this.$message({
+              message: "删除成功",
+              type: "success",
+            });
+            this.getList();
+          }
+        });
+      });
+      let rep = [];
       // for(let i = 0;i<this.problemtableSelection.length;i++){
       //   rep.push(this.problemtableSelection[i].problemListUuid)
       // }
       // rep =  rep.join(",")
-      axios({
-        url: `/wisdomaudit/problemList/delete/`+pid,
-        method: "delete",
-        data: {},
-      }).then((res) => {
-        if (res.data.code == 0) {
-          this.$message({
-            message: "删除成功",
-            type: "success",
-          });
-          this.getList()
-        }
-      })
     },
     createData() {
-      let rep = this.temp;
-      rep.associatedTask = rep.associatedTask.join(",");
-      rep.basis = rep.basis.join(",");
-      axios({
-        url: `/wisdomaudit/problemList/save`,
-        method: "post",
-        data: rep,
-      }).then((res) => {
-        if (res.data.code == 0) {
-          this.$message({
-            message: "新增成功",
-            type: "success",
+      this.$refs["dataForm"].validate((valid) => {
+        if (valid) {
+          let rep = this.temp;
+          rep.auditTaskUuid = rep.auditTaskUuid.join(",");
+          rep.basis = rep.basis.join(",");
+          axios({
+            url: `/wisdomaudit/problemList/save`,
+            method: "post",
+            data: rep,
+          }).then((res) => {
+            if (res.data.code == 0) {
+              this.$message({
+                message: "新增成功",
+                type: "success",
+              });
+              this.dialogFormVisible = false;
+              this.temp.auditTaskUuid = [];
+              this.temp.basis = "";
+              this.temp.describe = "";
+              this.temp.field = "";
+              this.temp.problem = "";
+              this.temp.problemDiscoveryTime = "";
+              this.temp.problemFindPeople = "";
+              this.temp.managementAdvice = "";
+              this.temp.riskAmount = "";
+              this.temp.special = "";
+              this.getList();
+            }
           });
-          this.dialogFormVisible = false;
-          this.temp.associatedTask = '';
-          this.temp.basis = '';
-          this.temp.describe = '';
-          this.temp.field = '';
-          this.temp.problem = '';
-          this.temp.problemDiscoveryTime = '';
-          this.temp.problemFindPeople = '';
-          this.temp.managementAdvice = '';
-          this.temp.riskAmount = '';
-          this.getList()
+        } else {
+          return false;
         }
       });
     },
     updateData() {
-      let rep = this.dqProblem
-      rep.associatedTask = rep.associatedTask.join(",");
-      rep.basis = rep.basis.join(",");
-      axios({
-        url: `/wisdomaudit/problemList/update`,
-        method: "put",
-        data: rep,
-      }).then((res) => {
-        if (res.data.code == 0) {
-          this.$message({
-            message: "编辑成功",
-            type: "success",
+      this.$refs["detailForm"].validate((valid) => {
+        if (valid) {
+          let rep = this.dqProblem;
+          rep.auditTaskUuid = rep.auditTaskUuid.join(",");
+          rep.basis = rep.basis.join(",");
+          axios({
+            url: `/wisdomaudit/problemList/update`,
+            method: "put",
+            data: rep,
+          }).then((res) => {
+            if (res.data.code == 0) {
+              this.$message({
+                message: "编辑成功",
+                type: "success",
+              });
+              this.dialogDetailVisible = false;
+              this.getList();
+            }
           });
-          this.dialogDetailVisible = false;
-          this.getList()
         }
-      })
+      });
     },
   },
 };
