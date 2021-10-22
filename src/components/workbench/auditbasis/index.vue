@@ -241,12 +241,13 @@ export default {
       this.title = "编辑审计依据";
       auditBasy_getDetail(row.basyUuid).then(resp => {
         var datas=resp.data;
-        this.formState.basyName=datas.basyName;
-        this.formState.basySymbol=datas.basySymbol;
-        this.formState.keyClauses=datas.keyClauses;
-        this.formState.issueDate=datas.issueDate;
-        this.formState.publishDepartment=datas.publishDepartment;
-        this.formState.content=this.setContent(datas.treeData.arr);
+        this.formState=datas;
+        // this.formState.basyName=datas.basyName;
+        // this.formState.basySymbol=datas.basySymbol;
+        // this.formState.keyClauses=datas.keyClauses;
+        // this.formState.issueDate=datas.issueDate;
+        // this.formState.publishDepartment=datas.publishDepartment;
+        // this.formState.content=this.setContent(datas.treeData.arr);
         datas.attachmentList.forEach((item)=>{
           var v={
             name:item.file_name,
@@ -358,6 +359,11 @@ export default {
       this.apkFiles.forEach((item)=>{
         attachmentUuidList.push(item.attachmentUuid)
       });
+      if(this.formState.attachmentList){
+        this.apkFiles.forEach((item)=>{
+          attachmentUuidList.push(item.attachment_uuid)
+        });
+      }
       this.formState.attachmentUuidList=attachmentUuidList;
       auditBasy_save(this.formState).then(resp => {
         if (resp.code == 0) {
