@@ -103,7 +103,7 @@
                      default-active="1-1">
               <el-submenu index="1">
                 <template slot="title">
-                  <span style="margin-left: 20px; font-weight: 400">审计准备</span>
+                  <span style="font-weight: 400">审计准备</span>
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="1-1">组员及任务维护 <span></span></el-menu-item>
@@ -111,7 +111,7 @@
               </el-submenu>
               <el-submenu index="2">
                 <template slot="title">
-                  <span style="margin-left: 20px; font-weight: 400">审计实施</span>
+                  <span style="font-weight: 400">审计实施</span>
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="2-1">审计资料<span></span></el-menu-item>
@@ -122,7 +122,7 @@
               </el-submenu>
               <el-submenu index="3">
                 <template slot="title">
-                  <span style="margin-left: 20px; font-weight: 400">报告阶段</span>
+                  <span style="font-weight: 400">报告阶段</span>
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="3-1">审计报告<span></span></el-menu-item>
@@ -968,6 +968,7 @@ export default {
       this.project_data = false;
     },
     look_project (index, item) {
+      console.log(item)
       this.active_project = item.managementProjectUuid; //点击选择添加高亮
       this.projectInit.splice(index, 1);
       this.projectInit.unshift(item);
@@ -1019,7 +1020,7 @@ export default {
       });
     },
     // 更多按钮
-   
+
     moreProjectBtn(){
        this.drawer = true;
     },
@@ -1312,7 +1313,7 @@ export default {
             return false;
           }
         });
-      
+
     },
     // 自建任务列表渲染
     getTaskSelf (data) {
@@ -1378,6 +1379,7 @@ export default {
 // 选中高亮
 ::v-deep.el-menu .el-menu-item {
   position: relative;
+  font-size: 12px;
 }
 // 新增高亮样式
 ::v-deep.el-menu .el-menu-item span {
@@ -1765,14 +1767,14 @@ export default {
   }
 }
 .optionBtn {
-  // border: 1px solid red; 
+  // border: 1px solid red;
   margin-top: -2%;
   padding: 2%;
 }
 .selfTask {
   width: 60%;
   margin: 10px auto;
-  // border: 1px solid red; 
+  // border: 1px solid red;
 }
 .selfTask .el-form-item__error{
   top: -58%;
