@@ -1404,10 +1404,19 @@ export default {
 
     // 删除
     remove_list (id) {
-      let params = {
-        ids: id,
-      }
-      this.task_problems_delete_btn(params);
+      this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          let params = {
+            ids: id,
+          }
+          this.task_problems_delete_btn(params);
+        })
+        .catch(() => { });
+
     },
     // 删除接口
     task_problems_delete_btn (params) {
@@ -1817,35 +1826,48 @@ export default {
 
     // 模型/自建 任务--删除
     delete_model (ids) {
-      let params = {
-        ids: ids
-      }
-      task_remove(params).then(resp => {
-        console.log(resp);
-        if (resp.code == 0) {
-          this.$message({
-            message: '删除成功',
-            type: 'success'
-          });
-          // 刷新自建列表
-          let params = {
-            pageNo: this.params.pageNo,
-            pageSize: this.params.pageSize,
-            condition: {
-              auditModelCategory: this.params.auditModelCategory,
-              managementProjectUuid: this.managementProjectUuid,
-              taskName: this.params.taskName,
-              // taskType: ''
-            }
-          }
-          this.list_data(params);
-        } else {
-          this.$message({
-            message: resp.msg,
-            type: 'error'
-          });
-        }
+
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
+        .then(() => {
+          let params = {
+            ids: ids
+          }
+          task_remove(params).then(resp => {
+            console.log(resp);
+            if (resp.code == 0) {
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              });
+              // 刷新自建列表
+              let params = {
+                pageNo: this.params.pageNo,
+                pageSize: this.params.pageSize,
+                condition: {
+                  auditModelCategory: this.params.auditModelCategory,
+                  managementProjectUuid: this.managementProjectUuid,
+                  taskName: this.params.taskName,
+                  // taskType: ''
+                }
+              }
+              this.list_data(params);
+            } else {
+              this.$message({
+                message: resp.msg,
+                type: 'error'
+              });
+            }
+          })
+        })
+        .catch(() => { });
+
+
+
+
     },
 
     //  关闭清空  

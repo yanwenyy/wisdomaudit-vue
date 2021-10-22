@@ -1,7 +1,8 @@
 import request from '@/utils/request'
 import qs from 'qs'
 
-const baseURL = '/wisdomaudit'
+const baseURL = '/wisdomaudit_wei'
+
 // 资料列表 未完成
 export function data_pageList (data) {
   return request({

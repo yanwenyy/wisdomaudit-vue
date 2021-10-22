@@ -12,7 +12,20 @@
 
         <el-table :data="tableData" style="width: 100%" @select="Selects">
           <el-table-column type="index" label="编号"> </el-table-column>
-          <el-table-column prop="basyName" label="资料名称"> </el-table-column>
+          <el-table-column prop="basyName" label="资料名称">
+            <template slot-scope="scope">
+              <el-popover
+                placement="bottom"
+                width="200"
+                @show="getFileList(scope.row.basyUuid)"
+                trigger="click">
+                <ul>
+                  <li v-for="item in tableFileList">文件名称</li>
+                </ul>
+                <div slot="reference" class="pointer blue">{{scope.row.basyName}}</div>
+              </el-popover>
+            </template>
+          </el-table-column>
           <el-table-column prop="basySymbol" label="文号"> </el-table-column>
           <el-table-column prop="publishDepartment" label="发文部门"> </el-table-column>
           <el-table-column prop="issueDate" label="发文日期">
@@ -138,7 +151,7 @@
 </template>
 
 <script>
-  import { auditBasy_pageList,auditBasy_save,auditBasy_delete ,auditBasy_getDetail} from
+  import { auditBasy_pageList,auditBasy_save,auditBasy_delete ,auditBasy_getDetail,auditBasy_getFileList} from
       '@SDMOBILE/api/shandong/ls'
 import '@/styles/from.scss'
 export default {
@@ -163,6 +176,7 @@ export default {
       tableData: [
 
       ],
+      tableFileList:[],
       searchForm:{
         pageNo: 1,
         pageSize: 20,
@@ -332,6 +346,13 @@ export default {
         publishDepartment: "",
         content: "",
       }
+    },
+    //点击资料名称显示附件列表
+    getFileList(id){
+      this.tableFileList=[];
+      auditBasy_getFileList(id).then(resp => {
+        this.tableFileList=resp.data;
+      })
     }
   },
   created() {},
@@ -409,4 +430,10 @@ export default {
 .update_icon svg{
   margin-top: 5px;
 }
+  .pointer{
+    cursor: pointer;
+  }
+  .blue{
+    color: blue;
+  }
 </style>

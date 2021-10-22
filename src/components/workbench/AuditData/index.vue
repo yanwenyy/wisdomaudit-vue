@@ -240,7 +240,7 @@
         </el-form>
 
         <!-- 模版列表 新增-->
-        <div v-if="title =='新增资料任务' ">
+        <div v-if="title =='新增审计资料任务' ">
           <el-form label-width="80px">
             <el-table ref="multipleTable"
                       row-key="id"
@@ -349,7 +349,7 @@
         <!-- 新增保存 -->
         <el-button size="small"
                    type="primary"
-                   v-if="title=='新增资料任务'"
+                   v-if="title=='新增审计资料任务'"
                    @click="query_add_form(1)">保存</el-button>
         <!-- 编辑保存 -->
         <el-button size="small"
@@ -474,8 +474,8 @@
               <p style="padding:0 0 0 30px;">是否沉淀为常规需求资料：</p>
               <el-radio-group v-model="add_data.status"
                               @change="changeHandler">
-                <el-radio label="1">否</el-radio>
-                <el-radio label="2">是</el-radio>
+                <el-radio label="2">否</el-radio>
+                <el-radio label="1">是</el-radio>
               </el-radio-group>
             </el-form-item>
 
@@ -495,6 +495,7 @@
           <div class="son cd">
 
             <el-form-item label-width="80px"
+                          style="margin-bottom:0!important"
                           class="up">
               <p>模版新增：</p>
               <!-- <el-input type="textarea"
@@ -503,13 +504,15 @@
 
               <el-upload class="upload-demo"
                          drag
-                         :show-file-list="true"
                          :limit="1"
+                         ref="upload"
+                         :show-file-list="true"
+                         :on-progress="up_ing"
                          :on-success="handleAvatarSuccess"
-                         :on-exceed="update_stop"
                          :before-upload="beforeAvatarUpload"
                          accept=".doc,.xls,.txt,.xlsx,.zip"
-                         action="/wisdomaudit/auditPreviousDemandData/uploadData">
+                         action="http://10.10.113.196:1095/wisdomaudit/auditPreviousData/fileUpload">
+                <!-- action="/wisdomaudit/attachment/fileUpload2"> -->
 
                 <!-- multiple//多选 -->
                 <i class="el-icon-upload"></i>
@@ -526,10 +529,14 @@
       <span slot="footer">
         <el-button size="small"
                    @click="dialogVisible2 = false">取 消</el-button>
+
         <el-button size="small"
                    type="primary"
+                   v-if="success_btn==0"
                    @click="save_data_btn('add_data')">确定</el-button>
-
+        <el-button type="primary"
+                   v-if="success_btn==1"
+                   :loading="true">上传中</el-button>
       </span>
     </el-dialog>
 
@@ -698,8 +705,8 @@
                              label="备注">
             </el-table-column>
             <!-- <el-table-column prop="enclosurePath"
-                             label="附件"> -->
-            </el-table-column>
+                             label="附件"> 
+            </el-table-column>-->
 
           </el-table>
         </div>
@@ -791,7 +798,7 @@ export default {
   data () {
     return {
       activeName: 0,
-      title: '新增资料任务',
+      title: '新增审计资料任务',
       dialogVisible: false,//新增弹窗
       dialogVisible2: false,//添加资料
       dialogVisibl_operation: false,//操作
@@ -799,13 +806,9 @@ export default {
       dialogVisibl_enclosure_details: false,//附件详情
       loading: false,
       whether: false,//是否下发
-
-
       sensitiveOptions: [],//添加资料 类型
       sensitiveDepartment: [],//添加资料 部门
       sensitiveDataSource: [],//添加资料 来源
-
-
       // addPeople: '',//添加人
       // 添加资料
       add_data: {
@@ -921,9 +924,9 @@ export default {
         { name: '22' }
       ],//附件详情
       disabled: true,
-
-      // actionUrl: '/auditPreviousDemandData/uploadData',
-
+      update_path: '',//上传后的文件返回
+      filePath: "/auditData/temp/",//分路径
+      success_btn: 0,//文件上传完成
     }
   },
   computed: {},
@@ -955,11 +958,8 @@ export default {
     this.post_select_loadcascader_ly();//添加资料   领域 数据
 
   },
-  mounted () {
-
-  },
+  mounted () { },
   props: ['active_project'],
-
   filters: {
     filtedate: function (date) {
       let t = new Date(date);
@@ -970,47 +970,44 @@ export default {
 
   methods: {
     // 文件超出个数限制
-    update_stop (res, file) {
-      console.log(res);
-      console.log(file);
+    // update_stop (res, file) {
+    //   console.log(res);
+    //   console.log(file);
+    // },
+    // 上传中回调
+    beforeAvatarUpload (file) {
+      // const isJPG = file.type === 'image/jpeg';
+      const isLt50M = file.size / 1024 / 1024 < 50;
+      // if (!isJPG) {
+      //   this.$message.error('上传头像图片只能是 JPG 格式!');
+      // }
+      if (!isLt50M) {
+        this.$message.error('上传模版不能超过 50MB!');
+      }
+      return isLt50M;
+    },
+    // 上传时
+    up_ing () {
+      this.success_btn = 1;//显示加载按钮  0成功  1 loaging
     },
     // 上传成功回调
-    handleAvatarSuccess (res, file) {
-      console.log(res);
-      console.log(file);
-      if (res.code == 0) {
+    handleAvatarSuccess (resp, file) {
+      this.update_path = resp.data.filePath
+      if (resp.code == 0) {
         this.add_data.Url = URL.createObjectURL(file.raw);
         this.$message({
-          message: '更换成功',
+          message: '上传成功',
           type: 'success'
         });
-        this.user_data_bag = res.backgroundPUrl;
-        this.header_ucenter_user()
+        this.success_btn = 0;//隐藏加载按钮
+        return false
       } else {
         this.$message({
           message: resp.msg,
           type: 'error'
         });
       }
-
-
-
     },
-    // 上传中回调
-    beforeAvatarUpload (file) {
-      // const isJPG = file.type === 'image/jpeg';
-      const isLt2M = file.size / 1024 / 1024 < 50;
-
-      // if (!isJPG) {
-      //   this.$message.error('上传头像图片只能是 JPG 格式!');
-      // }
-      if (!isLt2M) {
-        this.$message.error('上传模版不能超过 50MB!');
-      }
-      return isLt2M;
-    },
-
-
     // 顶部tab 切换事件
     handleClick (val, event) {
       if (val.index == 0) {
@@ -1077,7 +1074,7 @@ export default {
       this.add_form.title = '';//清空title
       // this.$refs.multipleTable.clearSelection();//清空
       this.dialogVisible = true
-      this.title = '新增资料任务';
+      this.title = '新增审计资料任务';
     },
     // 查看附件详情
     open_enclosure_details (id, name) {
@@ -1369,6 +1366,8 @@ export default {
     //添加资料 关闭清空 
     resetForm (formName) {
       this.$refs[formName].resetFields();//清空添加的值
+      this.$refs.upload.clearFiles();
+
     },
     //添加资料 保存按钮
     save_data_btn (formName) {
@@ -1385,6 +1384,9 @@ export default {
             addPeople: this.addPeople,//添加人 
             addTime: this.add_data.addTime,//添加时间
             status: this.add_data.status,//是否沉淀
+            dataModulId: this.update_path//回调上传的文件路径
+            // enclosure: '111',//回调上传的文件路径
+
           }
           saveTemp(params).then(resp => {
             console.log(resp.data);
@@ -1459,7 +1461,7 @@ export default {
     },
     // 删除
     deleteRow (data) {
-      console.log(data);
+      // console.log(data);
       this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -1719,7 +1721,7 @@ export default {
       this.add_form.name = '';//清空name
       this.add_form.title = '';//清空title
       // this.$refs.multipleTable.clearSelection();//清空
-      this.title = '编辑资料任务';
+      this.title = '编辑审计资料任务';
       this.dialogVisible = true;//显示编辑
 
       // 资料任务id 
@@ -1939,7 +1941,7 @@ export default {
 }
 /* 新增资料 */
 .dlag_conter2 {
-  padding: 20px;
+  padding: 20px 20px 0 20px;
 }
 .dlag_conter2 p {
   padding-top: 10px;
