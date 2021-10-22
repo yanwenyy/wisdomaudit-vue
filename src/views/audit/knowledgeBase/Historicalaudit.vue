@@ -564,6 +564,9 @@ export default {
 </script>
 
 <style scoped>
+.app-main {
+  background-color: #fff;
+}
 .header {
   display: flex;
   padding: 20px;

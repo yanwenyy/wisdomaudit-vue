@@ -54,7 +54,7 @@
         type="primary"
         style="width: 100%; margin-bottom: 30px"
         @click.native.prevent="loginFourA()"
-        >登录</el-button
+        >前往4A登录</el-button
       >
     </el-form>
   </div>
@@ -126,7 +126,7 @@ export default {
   },
   methods: {
     loginFourA(){
-      location.href = "/4aurl"
+      window.location.href = "http://www.sd4a.com/uac/web3/jsp/login/login.jsp";
     },
     showPwd() {
       if (this.passwordType === "password") {

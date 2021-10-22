@@ -1,13 +1,73 @@
 import request from '@/utils/request'
 import qs from 'qs'
 
-const baseURL = '/wisdomaudit'
+const baseURL = '/wisdomaudit_wei'
 // 反馈列表
 export function data_pageList (data) {
-  // return request({
-  //   baseURL: baseURL,
-  //   url: `/addDataTask/pageListDoing`,
-  //   method: 'post',
-  //   data
-  // })
+  return request({
+    baseURL: baseURL,
+    url: `/addDataTask/pageListBuyUser`,
+    method: 'post',
+    data
+  })
+}
+
+
+
+// 反馈列表   弹窗资料列表
+export function feedback_pageList (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/auditPreviousDemandData/pageList
+    `,
+    method: 'post',
+    data
+  })
+}
+
+
+
+// 操作   操作记录
+export function operation_record_list (data) {
+  let id = data.id
+  return request({
+    baseURL: baseURL,
+    url: '/auditPreviousDemandData/sysLogById/' + id + '',
+    method: 'post',
+    data
+  })
+}
+
+// 反馈列表  操作记录
+// export function feedback_pageList (data) {
+//   return request({
+//     baseURL: baseURL,
+//     url: `/auditPreviousDemandData/pageList
+//     `,
+//     method: 'post',
+//     data
+//   })
+// }
+
+
+
+//模版下载
+export function operation_download (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/auditPreviousDemandData/downloadByBid`,
+    method: 'post',
+    responseType: 'blob',
+    data: qs.stringify(data),
+  })
+}
+
+// 上传
+export function operation_uploadData (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/auditPreviousDemandData/uploadData`,
+    method: 'post',
+    data: qs.stringify(data),
+  })
 }
