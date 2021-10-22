@@ -255,12 +255,12 @@ export default {
       title: '',
       tableData: [],//列表
       tableData_list: [],//列表
-      historyAuditFindUuid: '',//id 删除 编辑 
+      historyAuditFindUuid: '',//id 删除 编辑
 
       query: {
         pageNo: 1,
         pageSize: 10,
-        findPeople: '',//发现人 
+        findPeople: '',//发现人
         historyAuditFindDescribe: '',//描述
       },
 
@@ -540,20 +540,20 @@ export default {
       this.add.auditedEntity = val
     },
 
-    // 领域change  
+    // 领域change
     changeHeader_ly (val) {
       this.add.field = val
     },
-    // 专题change  
+    // 专题change
     changeHeader_zt (val) {
       this.add.special = val
     },
 
-    // 依据change  
+    // 依据change
     changeHeader_yj (val) {
       this.add.auditBasis = val
     },
-    // 年份change  
+    // 年份change
     changeHeader_nf (val) {
       this.add.year = val
     },

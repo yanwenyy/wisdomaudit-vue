@@ -2,14 +2,8 @@
   <div class="sjzl">
     <!-- tab 切换 -->
 
-    <el-tabs v-model="activeName" @tab-click="handleClick">
+    <div>
       <div class="projectTab">
-        <el-row class="titleMes">
-          <el-col :span="1.5">
-            <el-button type="primary" @click="addlist">新增依据</el-button>
-          </el-col>
-        </el-row>
-
         <el-table :data="tableData" style="width: 100%" @select="Selects">
           <el-table-column type="index" label="编号"> </el-table-column>
           <el-table-column prop="basyName" label="资料名称">
@@ -19,8 +13,8 @@
                 width="200"
                 @show="getFileList(scope.row.basyUuid)"
                 trigger="click">
-                <ul>
-                  <li v-for="item in tableFileList">文件名称</li>
+                <ul v-if="tableFileList!=''">
+                  <li v-for="item in tableFileList" class="pointer blue" @click="downFile(item.attachment_uuid)">{{item.file_name}}</li>
                 </ul>
                 <div slot="reference" class="pointer blue">{{scope.row.basyName}}</div>
               </el-popover>
@@ -55,7 +49,7 @@
         ></el-pagination>
       </div>
       <!-- 分页 end-->
-    </el-tabs>
+    </div>
     <el-dialog
       @close="close"
       :title="title"
@@ -119,12 +113,11 @@
               <el-upload
                 class="upload-demo"
                 drag
-                action="#"
-                :on-change="handleChangePic"
-                :on-remove="handleRemoveApk"
+                action="/wisdomaudit/attachment/filesUpload"
+                :on-success="handleChangePic"
+                :before-remove="handleRemoveApk"
                 accept=".zip,.doc"
                 :file-list="fileList"
-                :auto-upload="false"
                 multiple
               >
                 <i class="el-icon-upload"></i>
@@ -151,7 +144,7 @@
 </template>
 
 <script>
-  import { auditBasy_pageList,auditBasy_save,auditBasy_delete ,auditBasy_getDetail,auditBasy_getFileList} from
+  import {down_file, del_file,auditBasy_pageList,auditBasy_save,auditBasy_delete ,auditBasy_getDetail,auditBasy_getFileList} from
       '@SDMOBILE/api/shandong/ls'
 import '@/styles/from.scss'
 export default {
@@ -198,14 +191,14 @@ export default {
   methods: {
     //删除
     deletes(val){
-      console.log(val)
+      // console.log(val)
       this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         auditBasy_delete(val).then(resp => {
-          console.log(resp.data);
+          // console.log(resp.data);
           if (resp.code == 0) {
             this.$message({
               message: "删除成功",
@@ -227,13 +220,9 @@ export default {
       this.title = "新增审计依据";
     },
     Selects(selection, row) {
-      console.log(selection, row);
+      // console.log(selection, row);
       this.btn = !this.btn;
     },
-    handleClick(tab, event) {
-      console.log(tab, event);
-    },
-
     deleteRow(index, rows) {
       rows.splice(index, 1);
     },
@@ -258,6 +247,13 @@ export default {
         this.formState.issueDate=datas.issueDate;
         this.formState.publishDepartment=datas.publishDepartment;
         this.formState.content=this.setContent(datas.treeData.arr);
+        datas.attachmentList.forEach((item)=>{
+          var v={
+            name:item.file_name,
+            url:item.file_path
+          }
+          this.fileList.push(v);
+        })
       })
 
     },
@@ -300,20 +296,69 @@ export default {
       this.searchForm.pageNo= val;
       this.getData();
     },
-    handleChangePic(file, fileList) {
-      if (fileList.length > 1) {
-        fileList.splice(0, 1);
+    //附件上传成功
+    handleChangePic(response, file, fileList) {
+      if (response && response.code === 0) {
+        this.$message({
+          message: '上传成功',
+          type: 'success',
+          duration: 1500,
+          onClose: () => {
+            this.apkFiles.push(response.data);
+          }
+        })
+      } else {
+        this.$message({
+          message: '上传失败',
+          type: 'error',
+          duration: 1500,
+          onClose: () => {
+
+          }
+        })
       }
-      // this.apkFiles = fileList[0].raw;
-      this.apkFiles = fileList;
-      console.log(this.apkFiles)
     },
+    //附件删除
     handleRemoveApk(file, fileList) {
-      console.log(file, fileList);
-      this.apkFiles = fileList;
+      var ifDel=true;
+      return new Promise(function(resolve, reject){
+        del_file(file.response.data.attachmentUuid).then(resp => {
+          if (resp.code == 0) {
+            this.$message({
+              message: "删除成功",
+              type: "success",
+            });
+            this.apkFiles.remove(file.response.data);
+
+          } else {
+            this.$message({
+              message: resp.data.msg,
+              type: "error",
+            });
+            ifDel=false;
+            resolve(ifDel);
+            return ifDel;
+          }
+        });
+      }).then(function(val){
+        reject(val);
+        return val
+      })
+    },
+    //附件下载
+    downFile(id){
+      down_file(id).then(resp => {
+        var datas=resp.data;
+        console.log(datas)
+      })
     },
     //保存数据
     sub(){
+      var attachmentUuidList=[];
+      this.apkFiles.forEach((item)=>{
+        attachmentUuidList.push(item.attachmentUuid)
+      });
+      this.formState.attachmentUuidList=attachmentUuidList;
       auditBasy_save(this.formState).then(resp => {
         if (resp.code == 0) {
           this.$message({
@@ -335,6 +380,23 @@ export default {
     close(){
       this.isAdd = false;
       this.clearForm();
+      var ids=[];
+      this.apkFiles.forEach((item)=>{
+        ids.push(item.attachmentUuid)
+      });
+      del_file(ids.join(",")).then(resp => {
+        if (resp.code == 0) {
+          this.$message({
+            message: "删除成功",
+            type: "success",
+          });
+        } else {
+          this.$message({
+            message: resp.data.msg,
+            type: "error",
+          });
+        }
+      });
     },
     //清除数据
     clearForm(){
@@ -375,6 +437,9 @@ export default {
 .delete {
   margin-left: 10px;
 }
+.sjzl{
+  margin-top: 10px;
+}
 .sjzl .conter {
   width: 100%;
   float: left;
@@ -391,7 +456,6 @@ export default {
   border: none;
 }
 .titleMes {
-  padding: 10px 0 0;
   box-sizing: border-box;
 }
 .table {
