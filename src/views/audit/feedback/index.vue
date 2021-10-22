@@ -465,39 +465,29 @@ export default {
       // })
 
 
-
-      function createDownload (fileName, content) {
-        var blob = new Blob([content]);
-        var link = document.createElement("a");
-        link.innerHTML = fileName;
-        link.download = fileName;
-        link.href = URL.createObjectURL(blob);
-        document.getElementsByTagName("body")[0].appendChild(link);
-      }
+      // function createDownload (fileName, content) {
+      //   var blob = new Blob([content]);
+      //   var link = document.createElement("a");
+      //   link.innerHTML = fileName;
+      //   link.download = fileName;
+      //   link.href = URL.createObjectURL(blob);
+      //   document.getElementsByTagName("body")[0].appendChild(link);
+      // }
 
 
       this.$axios({
         method: 'post',
         url: 'http://localhost:9529/wisdomaudit_wei/auditPreviousDemandData/downloadByBid',
         data: params,
+        // responseType: 'arraybuffer',
         responseType: 'blob',
       }).then((res) => {
-        // const content = res.data
-        const blob = res.data
-        // const blob = new Blob([content],
-        // { type: "application/zip" })
+        const content = res.data;
+        const blob = new Blob([content],
+          { type: "application/zip" })
         // var timestamp = (new Date()).valueOf();
-        console.log(res);
+        console.log(blob);
         const fileName = 22 + '.zip'//定义下载好的名称
-        let downloadelemnt = document.createElement('a')
-        let href = window.URL.createObjectURL(blob)
-        downloadelemnt.href = href
-        downloadelemnt.download = fileName
-        document.body.appendChild(downloadelemnt);
-        downloadelemnt.click()
-        document.body.removeChild(downloadelemnt);
-        window.URL.revokeObjectURL(href)
-        return
         if ('download' in document.createElement('a')) {
           // 非IE下载  
           const elink = document.createElement('a')
