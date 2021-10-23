@@ -1,7 +1,24 @@
 import request from '@/utils/request'
 import qs from 'qs'
 
-const baseURL = '/wisdomaudit'
+const baseURL = '/wisdomaudit';
+//附件删除
+export function del_file(data) {
+  return request({
+    baseURL: baseURL,
+    url: '/attachment/delete/' + data + '',
+    method: 'delete',
+    data
+  })
+}
+//附件下载
+export function down_file(data) {
+  return request({
+    baseURL: baseURL,
+    url: `/attachment/fileDownload?fileId=`+data,
+    method: 'post',
+  })
+}
 //审计依据列表
 export function auditBasy_pageList(data) {
   return request({

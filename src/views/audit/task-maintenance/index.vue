@@ -37,9 +37,9 @@
                     >
                       <el-option
                         v-for="item in tableData"
-                        :key="item.peopleTable.peopleTableUuid"
-                        :label="item.peopleTable.peopleName"
-                        :value="item.peopleTable.peopleTableUuid"
+                        :key="item.peopleTableUuid"
+                        :label="item.peopleName"
+                        :value="item.peopleTableUuid"
                       >
                       </el-option>
                     </el-select>
@@ -128,9 +128,9 @@
           >
             <el-option
               v-for="item in tableData"
-              :key="item.peopleTable.peopleTableUuid"
-              :label="item.peopleTable.peopleName"
-              :value="item.peopleTable.peopleTableUuid"
+              :key="item.peopleTableUuid"
+              :label="item.peopleName"
+              :value="item.peopleTableUuid"
             >
             </el-option>
           </el-select>
@@ -214,15 +214,15 @@
           </el-form-item>
           <el-form-item label="责任人：" prop="peopleName">
             <el-select
-              v-model="taskSelf.peopleTableUuid"
+              v-model="taskSelf.peopleName"
               filterable
               @change="personLiableSelect"
             >
               <el-option
                 v-for="item in tableData"
-                :key="item.peopleTable.peopleTableUuid"
-                :label="item.peopleTable.peopleName"
-                :value="item.peopleTable.peopleTableUuid"
+                :key="item.peopleTableUuid"
+                :label="item.peopleName"
+                :value="item.peopleTableUuid"
               >
               </el-option>
             </el-select>
@@ -632,8 +632,9 @@ export default {
         cancelButtonText: "放弃删除",
       })
         .then(() => {
-          deletmodelTask(row.auditTaskUuid).then((resp) => {});
+          deletmodelTask(row.auditTaskUuid).then((resp) => {
           this.getmodelTaskList(this.queryInfo);
+          });
           this.loading = false;
         })
         .catch((action) => {
@@ -667,10 +668,10 @@ export default {
       this.modelPerson.managementProjectUuid = rows.managementProjectUuid;
       this.modelPerson.peopleTableUuid = rows.peopleTableUuid;
       this.modelPerson.auditTaskUuid = rows.auditTaskUuid;
-      for (var i = 0; i < this.tableData.length; i++) {
+      for (let i = 0; i < this.tableData.length; i++) {
         if (rows.peopleTableUuid == this.tableData[i].peopleTableUuid) {
           this.modelPerson.peopleName =
-            this.tableData[i].peopleTable.peopleName;
+            this.tableData[i].peopleName;
         }
       }
       // console.log(this.modelPerson);
@@ -869,12 +870,13 @@ export default {
     },
     //创建任务责任人下拉框的事件
     personLiableSelect(val) {
+      console.log(val);
       this.taskSelf.peopleTableUuid = val;
       this.editTask.peopleTableUuid = val;
       for (let i = 0; i < this.tableData.length; i++) {
-        if (val == this.tableData[i].peopleTable.peopleTableUuid) {
-          this.taskSelf.peopleName = this.tableData[i].peopleTable.peopleName;
-          this.editTask.peopleName = this.tableData[i].peopleTable.peopleName;
+        if (val == this.tableData[i].peopleTableUuid) {
+          this.taskSelf.peopleName = this.tableData[i].peopleName;
+          this.editTask.peopleName = this.tableData[i].peopleName;
         }
       }
     },
@@ -951,7 +953,8 @@ export default {
     // console.log(this.active_project);
     this.queryInfo.condition.managementProjectUuid = this.active_project;
     this.getmodelTaskList(this.queryInfo);
-    this.getSelectData(this.select);
+    // this.getSelectData(this.select);
+    //已选组员接口
     this.query.condition.managementProjectUuid = this.active_project;
     this.projectMember(this.query);
   },
@@ -966,10 +969,10 @@ export default {
   padding: 10px;
 }
 /* 内容  按钮 */
-.sjzl >>> .el-button--primary {
+/* .sjzl >>> .el-button--primary {
   background-color: #42d7a5 !important;
   border: none;
-}
+} */
 .titleMes {
   box-sizing: border-box;
 }

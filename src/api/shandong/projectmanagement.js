@@ -13,6 +13,16 @@ export function projectList(data) {
     })
   }
 
+// 根据用户查询项目列表
+export function projectListByuser(data) {
+  return request({
+    baseURL: baseURL,
+    url: `/managementProject/pageListByUser`,
+    method: 'post',
+    data
+  })
+}
+
 
 // 项目类型下拉框数据
 export function projectType(data) {
@@ -105,6 +115,26 @@ export function thematicAreas(data) {
     url: `/init/loadcascader`,
     method: 'post',
     data
+  })
+}
+
+
+// 更新当前项目接口
+export function setprojectInit(id){
+  return request({
+  baseURL: baseURL,
+  url: `/peopleTable/setCurrentProject?`+`managementProjectUuid=`+id+'',
+  method: 'put',
+  })
+}
+
+
+// 负责人，组长下拉框接口
+export function getProjectMember(num,size){
+  return request({
+  baseURL: baseURL,
+  url: `/user/listUserInfo?`+`pageCurrent=`+num+`&pageSize=`+size,
+  method: 'get',
   })
 }
 

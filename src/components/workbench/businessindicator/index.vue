@@ -4,68 +4,74 @@
       <el-button type="primary" v-if="ifprojectmanage" @click="add()"
         >新增指标</el-button
       >
-      <div class="indocator-btn-box" v-if="!ifprojectmanage">
-        <el-button class="gary-border">提交</el-button>
-        <el-button class="gary-border" @click="importData()">导入</el-button>
-        <el-button class="gary-border" @click="exportData()">导出</el-button>
-      </div>
-      <div class="indocator-btn-box" v-else>
-        <el-button class="gary-border" @click="openExamine()">审核</el-button>
-        <el-button class="gary-border" @click="issued()">下发</el-button>
-        <!-- <el-button class="gary-border" @click="deleteData()">删除</el-button> -->
-      </div>
+      <!--<div class="indocator-btn-box" v-if="!ifprojectmanage">-->
+        <!--<el-button class="gary-border">提交</el-button>-->
+        <!--<el-button class="gary-border" @click="importData()">导入</el-button>-->
+        <!--<el-button class="gary-border" @click="exportData()">导出</el-button>-->
+      <!--</div>-->
+      <!--<div class="indocator-btn-box" v-else>-->
+        <!--<el-button class="gary-border" @click="openExamine()">审核</el-button>-->
+        <!--<el-button class="gary-border" @click="issued()">下发</el-button>-->
+        <!--&lt;!&ndash; <el-button class="gary-border" @click="deleteData()">删除</el-button> &ndash;&gt;-->
+      <!--</div>-->
     </div>
     <!-- @sort-change="sortChange" -->
-    <el-table
-      :key="tableKey"
-      v-loading="listLoading"
-      fit
-      style="width: 100%"
-      :data="list"
-      border
-      highlight-current-row
-      height="calc(100vh - 300px)"
-      max-height="calc(100vh - 300px)"
-      @selection-change="handleSelectionChange"
-    >
-      <el-table-column type="selection" align="center" />
-      <el-table-column label="指标类型" prop="indexType" />
-      <el-table-column label="指标名称" prop="indexName">
-        <template slot-scope="scope">
-          <div class="canclick" @click="openDetail(scope.$index)">
-            {{ scope.row.indexName }}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="单位" show-overflow-tooltip prop="indexUnit" />
-      <el-table-column
-        label="资料提供部门"
-        align="center"
-        prop="dataProvideDepartment"
-      />
-      <el-table-column label="取数口径或公式" prop="accessCaliber" />
-      <el-table-column
-        label="指标值"
-        width="180px"
-        align="center"
-        prop="indexValue"
-      >
-        <template slot-scope="scope">
-          <el-input v-model="scope.row.indexValue" />
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" prop="status">
-        <template slot-scope="scope">
-          {{
-            scope.row.status == 1
-              ? "启用"
-              : scope.row.status == 0
-              ? "停用"
-              : "--"
-          }}
-        </template>
-      </el-table-column>
-    </el-table>
+    <!--<el-table-->
+      <!--:key="tableKey"-->
+      <!--v-loading="listLoading"-->
+      <!--fit-->
+      <!--style="width: 100%"-->
+      <!--:data="list"-->
+      <!--border-->
+      <!--highlight-current-row-->
+      <!--height="calc(100vh - 300px)"-->
+      <!--max-height="calc(100vh - 300px)"-->
+      <!--@selection-change="handleSelectionChange"-->
+    <!--&gt;-->
+      <!--<el-table-column type="selection" align="center" />-->
+      <!--<el-table-column label="指标类型" prop="indexType" />-->
+      <!--<el-table-column label="指标名称" prop="indexName">-->
+        <!--<template slot-scope="scope">-->
+          <!--<div class="canclick" @click="openDetail(scope.$index)">-->
+            <!--{{ scope.row.indexName }}-->
+          <!--</div>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
+      <!--<el-table-column label="单位" show-overflow-tooltip prop="indexUnit" />-->
+      <!--<el-table-column-->
+        <!--label="资料提供部门"-->
+        <!--align="center"-->
+        <!--prop="dataProvideDepartment"-->
+      <!--/>-->
+      <!--<el-table-column label="取数口径或公式" prop="accessCaliber" />-->
+      <!--<el-table-column-->
+        <!--label="指标值"-->
+        <!--width="180px"-->
+        <!--align="center"-->
+        <!--prop="indexValue"-->
+      <!--&gt;-->
+        <!--<template slot-scope="scope">-->
+          <!--<el-input v-model="scope.row.indexValue" />-->
+        <!--</template>-->
+      <!--</el-table-column>-->
+      <!--<el-table-column label="状态" prop="status">-->
+        <!--<template slot-scope="scope">-->
+          <!--{{-->
+            <!--scope.row.status == 1-->
+              <!--? "启用"-->
+              <!--: scope.row.status == 0-->
+              <!--? "停用"-->
+              <!--: "&#45;&#45;"-->
+          <!--}}-->
+        <!--</template>-->
+      <!--</el-table-column>-->
+    <!--</el-table>-->
+
+    <table class="jyzb">
+      <tr>
+        <th>指标分类</th>
+      </tr>
+    </table>
     <pagination
       v-show="total > 0"
       :total="total"

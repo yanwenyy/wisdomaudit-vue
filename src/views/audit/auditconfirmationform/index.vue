@@ -231,35 +231,35 @@
         <table class="zxTabel">
           <tr>
             <td>项目名称</td>
-            <td>山东省移动工程项目管理专项审计项目</td>
+            <td colspan="5">{{formDetail.managementProjectName}}</td>
           </tr>
           <tr>
             <td>被审计(调查)单位</td>
-            <td>山东省移动工程项目管理专项审计项目</td>
+            <td colspan="5">{{formDetail.auditOrgName	}}</td>
           </tr>
           <tr>
             <td>审计(调查)事项描述</td>
-            <td><el-input type="textarea"></el-input></td>
+            <td colspan="5"><el-input type="textarea" v-model="formDetail.matterDetail"></el-input></td>
           </tr>
           <tr>
             <td>审计人员(签名)</td>
-            <td width="20%">张贺</td>
+            <td width="20%">{{formDetail.auditorsName}}</td>
             <td>复审人(签名)</td>
-            <td  width="20%"></td>
+            <td  width="20%">{{formDetail.reviewerName}}</td>
             <td>编制日期</td>
-            <td>2021-02-23</td>
+            <td>{{formDetail.compileDate}}</td>
           </tr>
           <tr>
             <td>被审计(调查)单位确认意见</td>
-            <td><el-input type="textarea" :rows="10"></el-input></td>
+            <td colspan="5"><el-input type="textarea" v-model="formDetail.auditOrgOpinion"></el-input></td>
           </tr>
           <tr>
             <td>相关负责人(签名)</td>
-            <td>张贺</td>
+            <td><el-input v-model="formDetail.principalName"></el-input></td>
             <td>职务</td>
-            <td></td>
-            <td>编制日期</td>
-            <td>2021-02-23</td>
+            <td><el-input v-model="formDetail.principalPost"></el-input></td>
+            <td>日期</td>
+            <td><el-input v-model="formDetail.signatureDate"></el-input></td>
           </tr>
         </table>
       </div>
@@ -342,7 +342,12 @@ export default {
       auditConfirmation_getDetail(row.auditConfirmationUuid).then(resp => {
         var datas=resp.data;
         this.formDetail=datas;
-        this.confirmationDialogVisible=true;
+        if(this.projectType=='jzsj'){
+          this.confirmationDialogVisible=true;
+        }else if(this.projectType=='zxsj'){
+          this.confirmationDialogVisibleZx=true;
+        }
+
       })
     },
     //列表数据
@@ -371,6 +376,7 @@ export default {
     // 增加弹出框关闭事件
     handleClose() {
       this.confirmationDialogVisible = false
+      this.confirmationDialogVisibleZx = false
     },
     //关联问题点击
     getRelationQues(){
