@@ -64,6 +64,15 @@ module.exports = {
           '^/wisdomaudit/': '/'
         }
       },
+      '/wisdomaudit_wei/': {
+        timeout: 1800000,
+        target: process.env.WEI,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/wisdomaudit_wei/': '/'
+        }
+      },
+
       // '/r1/': {
       //   target: process.env.R1_LOCATION,
       //   changeOrigin: true,

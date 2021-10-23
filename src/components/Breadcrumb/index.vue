@@ -40,6 +40,8 @@ export default {
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
       var sysDict = JSON.parse(sessionStorage.getItem('sysDict'))
       if (sysDict == null) {
+        //暂时注掉
+        return
         cacheDict().then(resp => {
           sessionStorage.setItem('sysDict', JSON.stringify(resp.data))
         })

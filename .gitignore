@@ -6,7 +6,8 @@
 node_modules/
 dist/
 *.zip
-
+**/env.development
+**/vue.config.js
 
 HELP.md
 **/target/

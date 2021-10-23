@@ -70,6 +70,8 @@ const actions = {
         commit('SET_CODE', data.userid)
         var sysDict = JSON.parse(sessionStorage.getItem('sysDict'))
         if (sysDict == null) {
+          //暂时注掉
+          return
           cacheDict().then(resp => {
             sessionStorage.setItem('sysDict', JSON.stringify(resp.data))
           })
@@ -83,6 +85,8 @@ const actions = {
   },
 
   getInfo({ commit, state }) {
+    //暂时注掉
+    return
     return new Promise((resolve, reject) => {
       // console.log(state);
       /* var personuuid = state.id;
