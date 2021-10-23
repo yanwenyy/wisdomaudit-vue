@@ -135,28 +135,28 @@
             </el-option>
           </el-select>
         </el-form-item>
-         <el-form-item label="专  题:"
-                        prop="belongSpcial">
-            <el-select placeholder="请选择"
-                       v-model="editTask.belongSpcial">
-              <el-option v-for="item in thematicOption"
-                         :key="item.value"
-                         :label="item.label"
-                         :value="item.label">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="领   域:"
-                        prop="belongField">
-            <el-select placeholder="请选择"
-                       v-model="editTask.belongField">
-              <el-option v-for="item in areasOption"
-                         :key="item.value"
-                         :label="item.label"
-                         :value="item.label">
-              </el-option>
-            </el-select>
-          </el-form-item>
+        <el-form-item label="专  题:" prop="belongSpcial">
+          <el-select placeholder="请选择" v-model="editTask.belongSpcial">
+            <el-option
+              v-for="item in thematicOption"
+              :key="item.value"
+              :label="item.label"
+              :value="item.label"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="领   域:" prop="belongField">
+          <el-select placeholder="请选择" v-model="editTask.belongField">
+            <el-option
+              v-for="item in areasOption"
+              :key="item.value"
+              :label="item.label"
+              :value="item.label"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="任务描述：">
           <el-input
             type="textarea"
@@ -254,6 +254,7 @@
               v-model="taskSelf.taskType"
               filterable
               @change="taskTypeSelect"
+              disabled
             >
               <el-option
                 v-for="item in taskTypeList"
@@ -275,7 +276,11 @@
             <el-upload
               class="upload-demo"
               drag
-              action="https://jsonplaceholder.typicode.com/posts/"
+              action="#"
+              v-model="taskSelf.enclosure"
+              :on-change="handleChangePic"
+              :file-list="fileList"
+              :auto-upload="false"
               multiple
             >
               <i class="el-icon-upload"></i>
@@ -382,7 +387,7 @@ import {
   editTaskSelf,
   editTaskSelfInfo,
 } from "@WISDOMAUDIT/api/shandong/memberMaintenance.js";
-import { thematicAreas } from "@WISDOMAUDIT/api/shandong/projectmanagement.js"  
+import { thematicAreas } from "@WISDOMAUDIT/api/shandong/projectmanagement.js";
 export default {
   props: ["active_project"],
   data() {
@@ -485,6 +490,9 @@ export default {
         auditModelList: [],
         projectId: "",
       },
+      fileList: [], //上传的文件
+      file: [], //
+      Upload_file:[],//上传文件更新id
       taskSelf: {
         //创建自建任务传参
         managementProjectUuid: "",
@@ -495,6 +503,8 @@ export default {
         taskType: "",
         belongField: "",
         belongSpcial: "",
+        enclosure: "", //附件
+        attachmentList:[]
       },
       modelSize: [],
       ismodelList: {
@@ -611,7 +621,7 @@ export default {
         this.editTask = resp.data;
       });
       this.thematicSelect(this.thematic);
-    this.areasSelect(this.areas);
+      this.areasSelect(this.areas);
     },
 
     // 列表显示
@@ -633,7 +643,7 @@ export default {
       })
         .then(() => {
           deletmodelTask(row.auditTaskUuid).then((resp) => {
-          this.getmodelTaskList(this.queryInfo);
+            this.getmodelTaskList(this.queryInfo);
           });
           this.loading = false;
         })
@@ -670,8 +680,7 @@ export default {
       this.modelPerson.auditTaskUuid = rows.auditTaskUuid;
       for (let i = 0; i < this.tableData.length; i++) {
         if (rows.peopleTableUuid == this.tableData[i].peopleTableUuid) {
-          this.modelPerson.peopleName =
-            this.tableData[i].peopleName;
+          this.modelPerson.peopleName = this.tableData[i].peopleName;
         }
       }
       // console.log(this.modelPerson);
@@ -891,19 +900,54 @@ export default {
         this.task = 1;
       });
     },
-
-    //新增任务完成按钮
+    //新增自建任务上传附件
+    handleChangePic(file, fileList) {
+      this.fileList = fileList;
+      this.file = file.raw;
+      console.log(this.fileList);
+      console.log(this.file);
+    },
+    //新增自建任务完成按钮
     saveTask(selfTaskRef) {
       this.$refs[selfTaskRef].validate((valid) => {
         if (valid) {
-          this.taskSelf.managementProjectUuid = this.active_project;
-          selfTaskFunction(this.taskSelf).then((resp) => {
-            this.$message.success("新增任务成功！");
-            this.TaskDialogVisible = false;
-            this.queryInfo.condition.managementProjectUuid =
-              this.active_project;
-            this.getmodelTaskList(this.queryInfo);
-            this.loading = false;
+          let formData = new FormData();
+          formData.append("file", this.file.raw);
+          this.fileList.forEach((item) => {
+            formData.append("files", item.raw);
+          });
+
+          this.$axios({
+            method: "post",
+            url: "http://10.10.112.56:1095/wisdomaudit/attachment/fileUploads",
+            data: formData,
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }).then((resp) => {
+            if (resp.data.code == 0) {
+              this.$message.success("上传成功！");
+              console.log(resp.data);
+              this.Upload_file = resp.data.data;
+
+
+              //新增自建任务接口
+              this.taskSelf.attachmentList = this.Upload_file;
+              this.taskSelf.managementProjectUuid = this.active_project;
+              selfTaskFunction(this.taskSelf).then((resp) => {
+                this.$message.success("新增任务成功！");
+                this.TaskDialogVisible = false;
+                this.queryInfo.condition.managementProjectUuid =
+                  this.active_project;
+                this.getmodelTaskList(this.queryInfo);
+                this.loading = false;
+              });
+            } else {
+              this.$message({
+                message: resp.msg,
+                type: "error",
+              });
+            }
           });
         } else {
           console.log("error submit!!");

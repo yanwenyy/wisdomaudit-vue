@@ -65,7 +65,7 @@
         <template slot-scope="scope">
           <el-button
             type="text"
-            style="color: #44a3df"
+            style="color: #44a3df;background: none; border: 0;"
             size="small"
             @click="editDialog(scope.row)"
           >
@@ -300,7 +300,7 @@
               <template slot-scope="scope">
                 <el-button
                   type="text"
-                  style="color: #db454b"
+                  style="color: #db454b;background: none; border: 0;"
                   size="small"
                   @click.native.prevent="
                     deleteRow(scope.$index, addProjectManagement.auditList)
@@ -704,7 +704,7 @@
                 <template slot-scope="scope">
                   <el-button
                     type="text"
-                    style="color: #db454b"
+                    style="color: #db454b;background: none; border: 0;"
                     size="small"
                     @click.native.prevent="
                       deleteProjectrow(

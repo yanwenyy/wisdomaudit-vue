@@ -48,24 +48,13 @@
                   >
                   </el-switch>
                 </el-tooltip>
-                <!-- <el-form-item>
-                  <el-select v-model="scope.row.isLiaison"
-                             placeholder="请选择"
-                             @change="selectisLiaison(scope.row)">
-                    <el-option v-for="item in isconperOptions"
-                               :key="item.value"
-                               :label="item.label"
-                               :value="item.value">
-                    </el-option>
-                  </el-select>
-                </el-form-item> -->
               </template>
             </el-table-column>
             <el-table-column label="操作" width="150">
               <template slot-scope="scope">
                 <el-button
                   type="text"
-                  style="color: #db454b"
+                  style="color: #db454b;background: none; border: 0;"
                   size="small"
                   @click.native.prevent="deleteRow(scope.row, tableData)"
                 >
@@ -76,25 +65,20 @@
           </el-table>
         </el-form>
 
-        <!-- <div class="addBtn"
-             @click="addgroupMember()">
-          <i class="el-icon-plus"></i>
-          <span>新增</span>
-        </div> -->
         <!-- 分页 -->
-        <!-- <div class="page">
+        <div class="page">
           <el-pagination
             background
             :hide-on-single-page="false"
             layout="prev, pager, next"
             :page-sizes="[2, 4, 6, 8]"
-            :current-page="this.tableData.current"
-            @current-change="handleCurrentChange"
-            :page-size="this.tableData.size"
-            :total="this.tableData.total"
+            :current-page="this.personTableList.current"
+            @current-change="handleCurrentChangePersonList"
+            :page-size="this.personTableList.size"
+            :total="this.personTableList.total"
           ></el-pagination>
-        </div> -->
-        <!-- 分页 end-->
+        </div>
+        <!-- 分页 end -->
       </el-tab-pane>
       <el-tab-pane label="审计任务维护" name="second">
         <TaskMaintenance :active_project="active_project" />
@@ -241,6 +225,7 @@ export default {
 
         ]
       },
+      personTableList:[],//组员分页
     };
   },
   created() {
@@ -322,6 +307,8 @@ export default {
       this.loading = true;
       projectMembership(data).then((resp) => {
         this.tableData = resp.data.records;
+        this.personTableList =resp.data;
+        console.log(this.personTableList);
         for(let i =0;i<this.tableData.length;i++){
           this.tableData[i].isLiaison = this.tableData[i].isLiaison+'';
         }
@@ -341,6 +328,17 @@ export default {
         });
         this.loading = false;
       });
+    },
+    //组员列表分页点击事件
+    handleCurrentChangePersonList(val){
+      let query = {
+         condition: {
+          managementProjectUuid: this.active_project,
+        },
+         pageNo: val,
+        pageSize: 5,
+      }
+      this.projectMember(query);
     },
     // 全部组员查询
     getSelectData(num,size) {
@@ -483,7 +481,7 @@ export default {
       });
     },
     // 分页跳转事件
-    handleCurrentChangeModel(val) {
+    PersonListModel(val) {
       let query = {
         pageNo: val,
         pageSize: 5,
