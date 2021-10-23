@@ -114,13 +114,9 @@
             >
               <el-submenu index="1">
                 <template slot="title">
-<<<<<<< HEAD
                   <span style="margin-left: 20px; font-weight: 400"
                     >审计准备</span
                   >
-=======
-                  <span style="font-weight: 400">审计准备</span>
->>>>>>> fd2f5660074b4aca2169d46cace1111381614487
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="1-1"
@@ -130,13 +126,9 @@
               </el-submenu>
               <el-submenu index="2">
                 <template slot="title">
-<<<<<<< HEAD
                   <span style="margin-left: 20px; font-weight: 400"
                     >审计实施</span
                   >
-=======
-                  <span style="font-weight: 400">审计实施</span>
->>>>>>> fd2f5660074b4aca2169d46cace1111381614487
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="2-1">审计资料<span></span></el-menu-item>
@@ -149,13 +141,9 @@
               </el-submenu>
               <el-submenu index="3">
                 <template slot="title">
-<<<<<<< HEAD
                   <span style="margin-left: 20px; font-weight: 400"
                     >报告阶段</span
                   >
-=======
-                  <span style="font-weight: 400">报告阶段</span>
->>>>>>> fd2f5660074b4aca2169d46cace1111381614487
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="3-1">审计报告<span></span></el-menu-item>
@@ -1030,13 +1018,8 @@ export default {
     },
     // 更多按钮
 
-<<<<<<< HEAD
     moreProjectBtn() {
       this.drawer = true;
-=======
-    moreProjectBtn(){
-       this.drawer = true;
->>>>>>> fd2f5660074b4aca2169d46cace1111381614487
     },
     // 选择组员事件
     selectMember(val) {
@@ -1336,7 +1319,6 @@ export default {
       });
     },
     // 确定自建任务
-<<<<<<< HEAD
     taskSelfInfo(selfTaskRef) {
       this.$refs[selfTaskRef].validate((valid) => {
         if (valid) {
@@ -1355,26 +1337,6 @@ export default {
           return false;
         }
       });
-=======
-    taskSelfInfo (selfTaskRef) {
-       this.$refs[selfTaskRef].validate((valid) => {
-          if (valid) {
-            this.taskSelf.managementProjectUuid = this.managementProjectUuid;
-            selfTaskFunction(this.taskSelf).then((resp) => {
-              this.$message.success("自建任务创建成功！");
-              this.taskSelfDialogVisible = false;
-              this.addDialogVisible = true;
-              this.getTaskSelfList.condition.managementProjectUuid =
-                this.managementProjectUuid;
-              this.getTaskSelf(this.getTaskSelfList);
-            });
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-
->>>>>>> fd2f5660074b4aca2169d46cace1111381614487
     },
     // 自建任务列表渲染
     getTaskSelf(data) {
@@ -1894,11 +1856,7 @@ export default {
 .projectWorkbench >>> .el-menu-item:hover {
   background-color: rgb(12, 135, 214, 0.3) !important;
 }
-<<<<<<< HEAD
 .el-transfer /deep/ .el-transfer-panel {
   width: 400px;
 }
 </style>
-=======
-</style>
->>>>>>> fd2f5660074b4aca2169d46cace1111381614487
