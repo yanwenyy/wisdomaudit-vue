@@ -672,13 +672,13 @@
 
       <div class="dlag_conter">
         <el-form ref="save_zj_query"
-                 :inline="false"
-                 :rules='rules_task'
-                 :model="save_zj_query">
+                 :model="save_zj_query"
+                 :inline="false">
 
           <!-- 任务名称 -->
           <el-form-item label-width="80px"
                         style="margin-bottom:20px!important"
+                        prop="taskName"
                         :rules="{
               required: true,
               message: '此项不能为空',
@@ -690,8 +690,14 @@
           </el-form-item>
           <!-- 责任人 -->
           <el-form-item label-width="80px"
-                        style="margin-bottom:20px!important"
-                        prop="peopleName">
+                        v-if="select_list"
+                        prop="peopleName"
+                        :rules="{
+              required: true,
+              message: '此项不能为空',
+              trigger: 'blur',
+            }"
+                        style="margin-bottom:20px!important">
             <p>责任人：</p>
             <el-select v-model="save_zj_query.peopleName"
                        @change="changeHeader2">
@@ -705,8 +711,13 @@
 
           <!-- 领域 -->
           <el-form-item label-width="80px"
-                        style="margin-bottom:20px!important"
-                        prop="belongSpcial">
+                        prop="belongSpcial"
+                        :rules="{
+              required: true,
+              message: '此项不能为空',
+              trigger: 'blur',
+            }"
+                        style="margin-bottom:20px!important">
             <p>领域：</p>
             <el-select v-model="save_zj_query.belongSpcial"
                        @change="changeHeader_zj_ly">
@@ -720,8 +731,13 @@
 
           <!-- 专题 -->
           <el-form-item label-width="80px"
-                        style="margin-bottom:20px!important"
-                        prop="belongField">
+                        prop="belongField"
+                        :rules="{
+              required: true,
+              message: '此项不能为空',
+              trigger: 'blur',
+            }"
+                        style="margin-bottom:20px!important">
             <p>专题：</p>
             <el-select v-model="save_zj_query.belongField "
                        @change="changeHeader_zj_zt">
@@ -735,16 +751,20 @@
 
           <!-- 任务描述 -->
           <el-form-item label-width="80px"
-                        style="margin-bottom:20px!important"
-                        prop="taskDescription">
+                        prop="taskDescription"
+                        :rules="{
+              required: true,
+              message: '此项不能为空',
+              trigger: 'blur',
+            }"
+                        style="margin-bottom:20px!important">
             <p>任务描述：</p>
             <el-input v-model="save_zj_query.taskDescription"
                       placeholder="请输入任务描述"></el-input>
           </el-form-item>
           <!-- 上传附件 -->
           <el-form-item label-width="80px"
-                        style="margin-bottom:20px!important"
-                        prop="taskDescription">
+                        style="margin-bottom:20px!important">
             <p>上传附件：</p>
             <el-upload class="upload-demo"
                        drag
@@ -1090,7 +1110,7 @@ export default {
       //自建任务 新增 
       this.dialogVisible_zj = true;
       this.title = '新增';
-      this.save_zj_query = [];
+      // this.save_zj_query = [];
     },
 
     // 新增自建任务 保存
