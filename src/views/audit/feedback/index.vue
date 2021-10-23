@@ -188,10 +188,10 @@
                     上传
                   </el-button> -->
                   <div class="update_cell">
-
                     <el-upload class="upload-demo"
                                style="width:50px"
-                               v-if=" scope.row.status !== 3"
+                               :on-progress="up_ing"
+                               v-if="scope.row.status !== 3"
                                action="http://10.10.113.196:1095/wisdomaudit/auditPreviousDemandData/uploadData"
                                :show-file-list="false"
                                :http-request="handleUploadForm"
@@ -275,7 +275,13 @@
       <div slot="footer"
            v-if="see_data==false">
         <el-button @click="dialogVisible = false">取 消</el-button>
+
         <el-button type="primary"
+                   v-if="success_btn==1"
+                   :loading="true">上传中</el-button>
+
+        <el-button type="primary"
+                   v-if="success_btn==0"
                    @click="post()">确 定</el-button>
       </div>
     </el-dialog>
@@ -356,6 +362,8 @@ export default {
       see_data: false,// 查看状态
       dialogVisibl_enclosure_details: false,//附件详情
       findFile_list: [],//附件详情
+      success_btn: 0,//文件上传完成
+
     }
   },
   filters: {
@@ -391,7 +399,7 @@ export default {
 
     // 查看
     see () {
-      this.see_data = true
+      this.see_data = true;
       this.dialogVisible = true;//显示反馈
       console.log(data);
       this.projectNumber = data.projectNumber;// 项目名称：
@@ -412,6 +420,7 @@ export default {
 
     // 反馈
     feedback_tag (data) {
+      this.see_data = false;
       this.projectNumber = data.projectNumber;// 项目名称：
       this.addPeople = data.addPeople;// 审计期间
       this.title = data.title;//标题
@@ -520,10 +529,12 @@ export default {
       this.auditPreviousDemandDataUuid = data.auditPreviousDemandDataUuid
       this.status = data.status
     },
-
+    // 上传时
+    up_ing (file) {
+      this.success_btn = 1;//显示加载按钮  0成功  1 loaging
+    },
     // 上传
     handleUploadForm (file) {
-      console.log(file.file);
       let formData = new FormData()
       formData.append('status', this.status)
       formData.append('auditPreviousDemandDataUuid', this.auditPreviousDemandDataUuid)
@@ -542,6 +553,7 @@ export default {
             message: '上传成功',
             type: 'success'
           });
+          this.success_btn = 0;//隐藏加载按钮
           //刷新列表
           let params = {
             pageNo: this.data_query.pageNo,
@@ -583,7 +595,6 @@ export default {
       console.log(this.check_data_list);
     },
     // 提交
-
     post () {
       if (this.check_data_list.length == 0) {
         this.$message.info("请选择至少一条数据进行提交！");

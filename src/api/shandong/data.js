@@ -58,7 +58,16 @@ export function data_push_ing (data) {
 }
 
 // 资料新增 直接下发
-export function data_savePush (data) {
+export function data_add_savePush (data) {
+  return request({
+    baseURL: baseURL,
+    url: '/addDataTask/savePush',
+    method: 'post',
+    data
+  })
+}
+// 资料编辑 直接下发
+export function data_edit_savePush (data) {
   return request({
     baseURL: baseURL,
     // url: '/addDataTask/savePush',

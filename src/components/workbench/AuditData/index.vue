@@ -539,7 +539,7 @@
       </span>
     </el-dialog>
 
-    <!-- 操作 -->
+    <!-- 操作 审批-->
     <el-dialog title="操作"
                width="90%"
                :visible.sync="dialogVisibl_operation"
@@ -632,7 +632,8 @@
                            label="附件"
                            show-overflow-tooltip>
             <template slot-scope="scope">
-              <div class="update">
+              <div class="update"
+                   @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid,'操作')">
                 <i class="update_icon">
                   <svg t="1631877671204"
                        class="icon"
@@ -647,7 +648,7 @@
                           p-id="9940"></path>
                   </svg>
                 </i>
-                <span @click="open_enclosure_details(scope.row,'操作')">2</span>
+                <span>{{scope.row.enclosureCount}}</span>
 
               </div>
             </template>
@@ -797,7 +798,7 @@
 </template>
 
 <script>
-import { data_pageList, data_push, data_save, add_pageList, data_pageListDone, data_delete, data_push_ing, data_edit_details, data_update, data_savePush, loadcascader, saveTemp, operation_list_data, operation_record_list, operation_audit, operation_uploadData, select_loadcascader, enclosure_details, select_user_data, enclosure_details_file, enclosure_downloadByFileId } from
+import { data_pageList, data_push, data_save, add_pageList, data_pageListDone, data_delete, data_push_ing, data_edit_details, data_update, data_add_savePush, data_edit_savePush, loadcascader, saveTemp, operation_list_data, operation_record_list, operation_audit, operation_uploadData, select_loadcascader, enclosure_details, select_user_data, enclosure_details_file, enclosure_downloadByFileId } from
   '@SDMOBILE/api/shandong/data'
 import { fmtDate } from '@SDMOBILE/model/time.js';
 export default {
@@ -1078,11 +1079,24 @@ export default {
     },
     // 查看附件详情
     open_enclosure_details (id, name) {
-      console.log(id);
-      console.log(name);
       // 已完成列表 查看详情
       if (name == '已完成') {
-        this.dialogVisibl_enclosure_details = true;
+        let params = {
+          id: id,
+        };
+        // 附件详情
+        enclosure_details_file(params).then(resp => {
+          this.enclosure_details_list = resp.data
+
+          if (this.enclosure_details_list.length == 0) {
+            this.$message('暂无上传的附件');
+            return false
+          } else {
+            this.dialogVisibl_enclosure_details = true;
+
+          }
+        })
+      } else {
         let params = {
           id: id,
         };
@@ -1090,25 +1104,22 @@ export default {
         enclosure_details_file(params).then(resp => {
           this.enclosure_details_list = resp.data
           console.log(this.enclosure_details_list);
+          if (this.enclosure_details_list.length == 0) {
+            this.$message('暂无上传的附件');
+            return false
+          } else {
+            this.dialogVisibl_enclosure_details = true;
+          }
         })
-      } else {
-
-        console.log('操作的附件详情');
       }
     },
 
-    // 附件下载  已完成列表点击附件
+    //   已完成列表点击附件
     download (id) {
       // let prarms = {
       //   fileId: id
       // }
-      // enclosure_downloadByFileId(prarms).then(resp => {
-      //   console.log(resp);
-      // })
-      //   // let params = {
-      //   //   uuid: id
-      //   // };
-      //   //模版下载
+      //附件下载
       let formData = new FormData()
       formData.append('fileId', id)
       this.$axios({
@@ -1238,43 +1249,83 @@ export default {
       });
       // this.array1 = array1
 
-      let params_push = {
-        demandDataList: array1,
-        title: this.add_form.title,
-        launchPeople: this.add_form.name,
-        projectNumber: this.projectNumber,
-        addDataTaskUuid: this.addDataTaskUuid,
-      };
-      // 新增 直接下发
-      data_savePush(params_push).then(resp => {
-        console.log(resp);
-        if (resp.code == 0) {
-          this.$message({
-            message: "新增成功",
-            type: "success",
-          });
-          // 未完成
-          let params = {
-            pageNo: this.params.pageNo,
-            pageSize: this.params.pageSize,
-            condition: {
-              projectNumber: this.projectNumber,
+      if (this.title == '新增审计资料任务') {
+        let params_push = {
+          demandDataList: array1,
+          title: this.add_form.title,
+          launchPeople: this.add_form.name,
+          projectNumber: this.projectNumber,
+          // addDataTaskUuid: this.addDataTaskUuid,
+        };
+        // 新增 直接下发
+        data_add_savePush(params_push).then(resp => {
+          console.log(resp);
+          if (resp.code == 0) {
+            this.$message({
+              message: "下发成功",
+              type: "success",
+            });
+            // 未完成
+            let params = {
+              pageNo: this.params.pageNo,
+              pageSize: this.params.pageSize,
+              condition: {
+                projectNumber: this.projectNumber,
+              }
             }
+            this.list_data_start(params)//未完成列表
+            this.dialogVisible = false;//关闭新增弹窗
+            this.add_form.name = '';//清空name
+            this.add_form.title = '';//清空name
+            array1 = [];//清空
+
+          } else {
+            this.$message({
+              message: resp.msg,
+              type: "error",
+            });
           }
-          this.list_data_start(params)//未完成列表
-          this.dialogVisible = false;//关闭新增弹窗
-          this.add_form.name = '';//清空name
-          this.add_form.title = '';//清空name
-          array1 = [];//清空
+        })
+      } else {
+        let params_push = {
+          demandDataList: array1,
+          title: this.add_form.title,
+          launchPeople: this.add_form.name,
+          projectNumber: this.projectNumber,
+          addDataTaskUuid: this.addDataTaskUuid,
+        };
 
-        } else {
-          this.$message({
-            message: resp.msg,
-            type: "error",
-          });
-        }
+        // 编辑下发
+        data_edit_savePush(params_push).then(resp => {
+          console.log(resp);
+          if (resp.code == 0) {
+            this.$message({
+              message: "下发成功",
+              type: "success",
+            });
+            // 未完成
+            let params = {
+              pageNo: this.params.pageNo,
+              pageSize: this.params.pageSize,
+              condition: {
+                projectNumber: this.projectNumber,
+              }
+            }
+            this.list_data_start(params)//未完成列表
+            this.dialogVisible = false;//关闭新增弹窗
+            this.add_form.name = '';//清空name
+            this.add_form.title = '';//清空name
+            array1 = [];//清空
 
-      })
+          } else {
+            this.$message({
+              message: resp.msg,
+              type: "error",
+            });
+          }
+
+        })
+      }
 
     },
     // 新增确认
@@ -1793,6 +1844,7 @@ export default {
     },
     // 已完成==========================
     // 已完成列表
+    // 已完成列表
     list_data_end (params2) {
       this.loading = true
       data_pageListDone(params2).then(resp => {
@@ -1815,7 +1867,7 @@ export default {
     },
 
 
-  },
+  }
 
 }
 </script>
