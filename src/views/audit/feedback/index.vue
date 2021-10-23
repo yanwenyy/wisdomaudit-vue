@@ -27,7 +27,7 @@
           <template slot-scope="scope">
             {{
                   scope.row.status == 0
-                    ? "进行中"
+                    ? "待下发"
                     : scope.row.status == 1
                     ? "进行中"
                     : scope.row.status ==2
@@ -104,11 +104,6 @@
               <el-table-column type="selection"
                                width="55">
               </el-table-column>
-              <!-- <el-table-column type="index"
-                               label="序号"
-                               width="50">
-              </el-table-column> -->
-
               <el-table-column prop="dataNumber"
                                label="编号">
               </el-table-column>
@@ -147,8 +142,10 @@
                     ? "待提交"
                     : scope.row.status == 1
                     ? "待审核"
-                    : scope.row.status ==2
-                    ?'驳回待修改 ':'审核通过'
+                    : scope.row.status == 2
+                    ?'驳回待修改'
+                    : scope.row.status == 3
+                    ? "审核通过":'暂无'
                 }}
                 </template>
               </el-table-column>
@@ -171,8 +168,8 @@
                               p-id="9940"></path>
                       </svg>
                     </div>
-                    <!-- <span @click="open_enclosure_details(scope.row.addDataTaskUuid)">{{scope.row.enclosureCount}}</span> -->
-                    <span @click="open_enclosure_details(scope.row)">{{scope.row.enclosureCount}}</span>
+                    <span
+                          @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)">{{scope.row.enclosureCount}}</span>
                   </div>
                 </template>
               </el-table-column>
@@ -196,8 +193,8 @@
                                style="width:50px"
                                v-if=" scope.row.status !== 3"
                                action="http://10.10.113.196:1095/wisdomaudit/auditPreviousDemandData/uploadData"
-                               :http-request="handleUploadForm"
                                :show-file-list="false"
+                               :http-request="handleUploadForm"
                                :before-upload="beforeAvatarUpload"
                                :file-list="fileList"
                                accept=".doc,.xls,.txt,.xlsx,.zip">
@@ -278,15 +275,38 @@
       <div slot="footer"
            v-if="see_data==false">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <!-- <el-button type="primary"
-                   @click="dialogVisible = false">确 定</el-button> -->
+        <el-button type="primary"
+                   @click="post()">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 附件详情 -->
+    <el-dialog title="附件详情"
+               width="40%"
+               :visible.sync="dialogVisibl_enclosure_details"
+               style="padding-bottom: 59px; ">
+      <el-table :data="findFile_list"
+                style="width: 100%;">
+        <!-- <el-table-column prop="dataTaskNumber"
+                             label="流水单号">
+            </el-table-column> -->
+        <el-table-column type="index"
+                         label="序号">
+        </el-table-column>
+        <el-table-column prop="name"
+                         label="资料类型">
+        </el-table-column>
+        <el-table-column prop="name"
+                         label="文件名称">
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-import { data_pageList, feedback_pageList, operation_record_list, operation_download, operation_uploadData } from
+import { data_pageList, feedback_pageList, operation_record_list, operation_download, operation_uploadData, operation_findFile, operation_reportData } from
   '@SDMOBILE/api/shandong/feedback'
 import { fmtDate } from '@SDMOBILE/model/time.js';
 
@@ -332,7 +352,10 @@ export default {
       auditPreviousDemandDataUuid: '',//上传的id
       status: '',//上传的状态
 
+
       see_data: false,// 查看状态
+      dialogVisibl_enclosure_details: false,//附件详情
+      findFile_list: [],//附件详情
     }
   },
   filters: {
@@ -389,7 +412,6 @@ export default {
 
     // 反馈
     feedback_tag (data) {
-      console.log(data);
       this.projectNumber = data.projectNumber;// 项目名称：
       this.addPeople = data.addPeople;// 审计期间
       this.title = data.title;//标题
@@ -430,68 +452,35 @@ export default {
       this.feedback_post(params)//资料列表
     },
 
-    // 资料列表 选中
-    handleSelectionChange_query (val) {
-      this.check_data_list = val
-    },
+
     // 查看下载模版
     enclosure (id) {
-      let params = {
-        uuid: id
-      };
-      //下载
-      // operation_download(params).then(resp => {
-      //   console.log(resp);
-      //   // this.down_url = url;
-      //   // window.location.href = 'down_url';
-      // })
-      // this.$axios({
-      //   method: 'post',
-      //   url: 'http://localhost:9529/wisdomaudit_wei/auditPreviousDemandData/downloadByBid',
-      //   data: params,
-      //   responseType: 'blob',
-      //   // headers: { // 这里需要使用form-data格式数据发送请求
-      //   //   'Content-Type': 'application/json'
-      //   // },
-      // }).then(resp => {
-      //   console.log(resp);
-      //   let blob = new Blob([resp], {
-      //     type: 'application/vnd.ms-excel'
-      //     // type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-      //   });
-      //   let url = window.URL.createObjectURL(blob);
-      //   window.location.href = url;
-      //   console.log(blob);
-      // })
-
-
-      // function createDownload (fileName, content) {
-      //   var blob = new Blob([content]);
-      //   var link = document.createElement("a");
-      //   link.innerHTML = fileName;
-      //   link.download = fileName;
-      //   link.href = URL.createObjectURL(blob);
-      //   document.getElementsByTagName("body")[0].appendChild(link);
-      // }
-
-
+      // let params = {
+      //   uuid: id
+      // };
+      //模版下载
+      let formData = new FormData()
+      formData.append('uuid', id)
       this.$axios({
         method: 'post',
         url: 'http://localhost:9529/wisdomaudit_wei/auditPreviousDemandData/downloadByBid',
-        data: params,
-        // responseType: 'arraybuffer',
+        data: formData,
         responseType: 'blob',
       }).then((res) => {
         const content = res.data;
+        console.log(res);
         const blob = new Blob([content],
-          { type: "application/zip" })
+          // { type: "application/xlsx" }
+          // { type: res.data.type }
+          { type: 'application/octet-stream,charset=UTF-8' }
+        )
         // var timestamp = (new Date()).valueOf();
-        console.log(blob);
-        const fileName = 22 + '.zip'//定义下载好的名称
+        const fileName = res.headers["content-disposition"].split("fileName*=utf-8''")[1];
+        const filteType = res.headers["content-disposition"].split('.')[1];
         if ('download' in document.createElement('a')) {
           // 非IE下载  
           const elink = document.createElement('a')
-          elink.download = fileName
+          elink.download = fileName //下载后文件名
           elink.style.display = 'none'
           elink.href = window.URL.createObjectURL(blob)
           document.body.appendChild(elink)
@@ -505,15 +494,17 @@ export default {
       }).catch((err) => {
         console.log(err);
       })
-
-      // let params_down = {
-      //   url: this.down_url
-      // }
     },
     // 查看附件 
     open_enclosure_details () {
-
-
+      this.dialogVisibl_enclosure_details = true;//显示附件详情
+      let params = {
+        id: this.auditPreviousDemandDataUuid
+      }
+      operation_findFile(params).then(resp => {
+        console.log(resp.data);
+        this.findFile_list = resp.data
+      })
     },
 
     // 上传中回调
@@ -584,11 +575,56 @@ export default {
         this.record_log = resp.data
       })
     },
+    // 反馈确认
 
+    // 资料列表 选中
+    handleSelectionChange_query (val) {
+      this.check_data_list = val
+      console.log(this.check_data_list);
+    },
+    // 提交
 
-  },
+    post () {
+      if (this.check_data_list.length == 0) {
+        this.$message.info("请选择至少一条数据进行提交！");
+        return false;
+      }
+      // let array1 = [];//数组1
+      // this.check_data_list.forEach((item) => {
+      //   array1.push(item);
+      // });
+      // console.log(array1);
+      // return false
+      // auditPreviousDemandDataUuid
 
-};
+      let params = {
+        dataTaskNumber: this.check_data_list[0].dataTaskNumber,//id
+        ids: this.check_data_list,//选择的数组
+        remarks: this.post_remarks,//备注
+      }
+      // 提交数据接口
+      operation_reportData(params).then(resp => {
+        console.log(resp);
+        if (resp.code == 0) {
+          this.$message({
+            message: "提交成功",
+            type: "success",
+          });
+          this.dialogVisible = false;//关闭弹窗
+          let params = {
+            pageNo: this.data_query.pageNo,
+            pageSize: this.data_query.pageSize,
+            condition: {
+              dataTaskNumber: this.data_query.condition.dataTaskNumber,
+            }
+          }
+          this.feedback_post(params)//资料列表
+        }
+      })
+    },
+
+  }
+}
 </script>
 
 <style  scoped>

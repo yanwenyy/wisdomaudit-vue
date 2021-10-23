@@ -133,6 +133,9 @@
                              label="序号"
                              width="50">
             </el-table-column>
+            <el-table-column prop="dataName"
+                             label="资料名称">
+            </el-table-column>
             <el-table-column prop="createTime"
                              label="反馈日期">
 
@@ -146,9 +149,7 @@
             <el-table-column prop="secondLevelDataNumber"
                              label="二级编号">
             </el-table-column>
-            <el-table-column prop="dataName"
-                             label="资料名称">
-            </el-table-column>
+
             <el-table-column prop="department"
                              label="部门">
             </el-table-column>
@@ -158,7 +159,8 @@
             <el-table-column prop=""
                              label=附件>
               <template slot-scope="scope">
-                <div class="update">
+                <div class="update"
+                     @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid,'已完成')">
                   <div class="update_icon">
                     <svg t="1631877671204"
                          class="icon"
@@ -173,8 +175,7 @@
                             p-id="9940"></path>
                     </svg>
                   </div>
-                  <!-- <span @click="open_enclosure_details(scope.row.addDataTaskUuid)">{{scope.row.enclosureCount}}</span> -->
-                  <span @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid,'已完成')">11</span>
+                  <span>{{scope.row.enclosureCount}}</span>
 
                 </div>
               </template>
@@ -510,15 +511,13 @@
                          :on-progress="up_ing"
                          :on-success="handleAvatarSuccess"
                          :before-upload="beforeAvatarUpload"
-                         accept=".doc,.xls,.txt,.xlsx,.zip"
                          action="http://10.10.113.196:1095/wisdomaudit/auditPreviousData/fileUpload">
+                <!-- accept=".doc,.xls,.txt,.xlsx,.zip,.doc" -->
                 <!-- action="/wisdomaudit/attachment/fileUpload2"> -->
-
                 <!-- multiple//多选 -->
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                <!-- <div class="el-upload__tip"
-                     slot="tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                <!-- <div class="el-upload__text">支持.xlsx.xls.txt.zip.doc.xls</div> -->
               </el-upload>
 
             </el-form-item>
@@ -660,9 +659,9 @@
               <el-button size="small"
                          type="primary"
                          @click="look_record(scope.row)">查看</el-button>
-              <el-button size="small"
+              <!-- <el-button size="small"
                          type="primary"
-                         @click="post(scope.row)">提交</el-button>
+                         @click="post(scope.row)">提交</el-button> -->
             </template>
           </el-table-column>
 
@@ -757,11 +756,19 @@
         <el-table-column type="index"
                          label="序号">
         </el-table-column>
-        <el-table-column prop="name"
+        <el-table-column prop="fiileType"
                          label="资料类型">
         </el-table-column>
-        <el-table-column prop="name"
+        <el-table-column prop="fileName"
                          label="文件名称">
+          <template slot-scope="scope">
+            <el-button @click="download(scope.row.attachmentUuid)"
+                       type="text"
+                       style="color: #1371cc"
+                       size="small">
+              {{ scope.row.fileName }}
+            </el-button>
+          </template>
         </el-table-column>
       </el-table>
     </el-dialog>
@@ -790,7 +797,7 @@
 </template>
 
 <script>
-import { data_pageList, data_push, data_save, add_pageList, data_pageListDone, data_delete, data_push_ing, data_edit_details, data_update, data_savePush, loadcascader, saveTemp, operation_list_data, operation_record_list, operation_audit, operation_uploadData, select_loadcascader, enclosure_details, select_user_data } from
+import { data_pageList, data_push, data_save, add_pageList, data_pageListDone, data_delete, data_push_ing, data_edit_details, data_update, data_savePush, loadcascader, saveTemp, operation_list_data, operation_record_list, operation_audit, operation_uploadData, select_loadcascader, enclosure_details, select_user_data, enclosure_details_file, enclosure_downloadByFileId } from
   '@SDMOBILE/api/shandong/data'
 import { fmtDate } from '@SDMOBILE/model/time.js';
 export default {
@@ -919,10 +926,7 @@ export default {
       },
 
       // 附件详情
-      enclosure_details_list: [
-        { name: '11' },
-        { name: '22' }
-      ],//附件详情
+      enclosure_details_list: [],//附件详情
       disabled: true,
       update_path: '',//上传后的文件返回
       filePath: "/auditData/temp/",//分路径
@@ -947,7 +951,7 @@ export default {
     let params2 = {
       pageNo: this.params_add.pageNo,
       pageSize: this.params_add.pageSize,
-      projectType: this.projectType,
+      projectType: this.projectNumber,//项目id
     }
     // 新增未完成任务列表
     this.add_add_csh(params2);
@@ -969,11 +973,7 @@ export default {
   },
 
   methods: {
-    // 文件超出个数限制
-    // update_stop (res, file) {
-    //   console.log(res);
-    //   console.log(file);
-    // },
+
     // 上传中回调
     beforeAvatarUpload (file) {
       // const isJPG = file.type === 'image/jpeg';
@@ -1079,29 +1079,70 @@ export default {
     // 查看附件详情
     open_enclosure_details (id, name) {
       console.log(id);
+      console.log(name);
+      // 已完成列表 查看详情
       if (name == '已完成') {
         this.dialogVisibl_enclosure_details = true;
-        return false
         let params = {
-          ids: id,
+          id: id,
         };
         // 附件详情
-        enclosure_details(params).then(resp => {
+        enclosure_details_file(params).then(resp => {
           this.enclosure_details_list = resp.data
           console.log(this.enclosure_details_list);
         })
       } else {
+
         console.log('操作的附件详情');
       }
     },
 
-    // 附件下载
-    enclosure_download () {
-      let params = {
-
-      }
-      download(params).then(resp => {
-        console.log(resp);
+    // 附件下载  已完成列表点击附件
+    download (id) {
+      // let prarms = {
+      //   fileId: id
+      // }
+      // enclosure_downloadByFileId(prarms).then(resp => {
+      //   console.log(resp);
+      // })
+      //   // let params = {
+      //   //   uuid: id
+      //   // };
+      //   //模版下载
+      let formData = new FormData()
+      formData.append('fileId', id)
+      this.$axios({
+        method: 'post',
+        url: 'http://localhost:9529/wisdomaudit_wei/auditPreviousDemandData/downloadByFileId',
+        data: formData,
+        responseType: 'blob',
+      }).then((res) => {
+        const content = res.data;
+        console.log(res);
+        const blob = new Blob([content],
+          // { type: "application/xlsx" }
+          // { type: res.data.type }
+          { type: 'application/octet-stream,charset=UTF-8' }
+        )
+        // var timestamp = (new Date()).valueOf();
+        const fileName = res.headers["content-disposition"].split("fileName*=utf-8''")[1];
+        const filteType = res.headers["content-disposition"].split('.')[1];
+        if ('download' in document.createElement('a')) {
+          // 非IE下载  
+          const elink = document.createElement('a')
+          elink.download = fileName //下载后文件名
+          elink.style.display = 'none'
+          elink.href = window.URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象  
+          document.body.removeChild(elink)
+        } else {
+          // IE10+下载 
+          navigator.msSaveBlob(blob, fileName)
+        }
+      }).catch((err) => {
+        console.log(err);
       })
     },
 
@@ -1122,7 +1163,7 @@ export default {
       let params = {
         pageNo: val,
         pageSize: this.params_add.pageSize,
-        projectType: this.projectType,
+        projectType: this.projectNumber,//项目id
       }
       this.add_add_csh(params)
     },
@@ -1202,6 +1243,7 @@ export default {
         title: this.add_form.title,
         launchPeople: this.add_form.name,
         projectNumber: this.projectNumber,
+        addDataTaskUuid: this.addDataTaskUuid,
       };
       // 新增 直接下发
       data_savePush(params_push).then(resp => {
@@ -1384,8 +1426,9 @@ export default {
             addPeople: this.addPeople,//添加人 
             addTime: this.add_data.addTime,//添加时间
             status: this.add_data.status,//是否沉淀
-            dataModulId: this.update_path//回调上传的文件路径
+            dataModulId: this.update_path,//回调上传的文件路径
             // enclosure: '111',//回调上传的文件路径
+            projectType: this.projectNumber,//项目id
 
           }
           saveTemp(params).then(resp => {
@@ -1399,7 +1442,7 @@ export default {
               let params2 = {
                 pageNo: this.params_add.pageNo,
                 pageSize: this.params_add.pageSize,
-                projectType: this.projectType,
+                projectType: this.projectNumber,//项目id
               }
               // 新增未完成任务列表
               this.add_add_csh(params2);
@@ -1604,44 +1647,14 @@ export default {
       });
 
       let params2 = {
-        status: 3,
+        status: 2,//
         note: this.audit_query.posy_remarks,
         auditPreviousDemandData: array1,
       }
       this.audit(2, params2)//2:驳回  3:通过
     },
 
-    // 提交
-    post () {
-      if (this.multipleSelection_operation.length > 1 || this.multipleSelection_operation.length == 0) {
-        this.$message.info("请选择一条进行提交");
-        return false
-      }
-      let params = {
-        auditPreviousDemandDataUuid: this.multipleSelection_operation[0].auditPreviousDemandDataUuid,
-        status: this.multipleSelection_operation[0].status,
-      }
-      // 提交数据接口
-      operation_uploadData(params).then(resp => {
-        console.log(resp);
-        if (resp.code == 0) {
-          this.$message({
-            message: "提交成功",
-            type: "success",
-          });
-          let params2 = {
-            pageNo: this.operation_query.pageNo,
-            pageSize: this.operation_query.pageSize,
-            condition: {
-              dataName: this.operation_query.dataName,
-              dataCategory: this.operation_query.dataCategory,
-              dataTaskNumber: this.addDataTaskUuid,
-            }
-          };
-          this.operation_list(params2); // 操作 资料列表
-        }
-      })
-    },
+
     // 审核
     audit (index, params) {
       // 驳回
@@ -1662,6 +1675,7 @@ export default {
                 dataTaskNumber: this.addDataTaskUuid,
               }
             };
+            this.audit_query.posy_remarks = ''//清空备注
             this.operation_list(params2); // 操作 资料列表
           } else {
             this.$message({
@@ -1690,6 +1704,7 @@ export default {
               }
             };
             this.operation_list(params2); // 操作 资料列表
+            this.audit_query.posy_remarks = ''//清空备注
 
           } else {
             this.$message({
@@ -1729,7 +1744,8 @@ export default {
 
       let params_query = {
         condition: {
-          addDataTaskUuid: this.addDataTaskUuid
+          addDataTaskUuid: this.addDataTaskUuid,
+          projectType: this.active_project,
         },
         pageNo: this.edit_details_query.pageNo,
         pageSize: this.edit_details_query.pageSize,
@@ -1767,7 +1783,8 @@ export default {
     handleCurrentChange_details (val) {
       let params = {
         condition: {
-          addDataTaskUuid: this.addDataTaskUuid
+          addDataTaskUuid: this.addDataTaskUuid,
+          projectType: this.active_project,
         },
         pageNo: val,
         pageSize: this.edit_details_query.pageSize,
