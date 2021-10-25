@@ -160,6 +160,7 @@ export default {
       query: {
         condition: {
           managementProjectUuid: "",
+          peopleRole: "2"
         },
         pageNo: 1,
         pageSize: 5,

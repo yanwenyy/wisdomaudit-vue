@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const baseURL = '/base'
+const baseURL = '/wisdomaudit'
 
 export function cacheDict() {
   return request({
