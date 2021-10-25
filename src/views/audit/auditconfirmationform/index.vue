@@ -12,38 +12,18 @@
       <el-table-column label="责任人" prop="liablePerson"></el-table-column>
       <el-table-column label="问题数" prop="problemsNumber"></el-table-column>
       <el-table-column label="确认单附件">
-        <!--<div class="update">-->
-          <!--<i class="update_icon">-->
-            <!--<svg-->
-              <!--t="1631877671204"-->
-              <!--class="icon"-->
-              <!--viewBox="0 0 1024 1024"-->
-              <!--version="1.1"-->
-              <!--xmlns="http://www.w3.org/2000/svg"-->
-              <!--p-id="9939"-->
-              <!--width="15"-->
-              <!--height="15"-->
-            <!--&gt;-->
-              <!--<path-->
-                <!--d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"-->
-                <!--fill="#FD9D27"-->
-                <!--p-id="9940"-->
-              <!--&gt;</path>-->
-            <!--</svg>-->
-          <!--</i>-->
-          <!--<span>2</span>-->
-        <!--</div>-->
-        <el-popover
-          placement="bottom"
-          width="200"
-          trigger="click">
-          <ul>
-            <li>文件名称</li>
-            <li>文件名称</li>
-            <li>1111</li>
-          </ul>
-          <el-button slot="reference" class="list-folder-btn"><i class="el-icon-folder-opened list-folder"></i>2</el-button>
-        </el-popover>
+        <template slot-scope="scope">
+          <el-popover
+            placement="bottom"
+            width="200"
+            @show="getFileList(scope.row.auditConfirmationUuid)"
+            trigger="click">
+            <ul v-if="tableFileList!=''">
+              <li v-for="item in tableFileList" class="pointer blue" @click="downFile(item.attachment_uuid,item.file_name)"><i class="orange el-icon-folder-opened"></i>{{item.file_name}}</li>
+            </ul>
+            <div slot="reference" class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.confirmationFileNumber}}</div>
+          </el-popover>
+        </template>
       </el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
@@ -52,16 +32,16 @@
             type="text"
             class="btnStyle"
             style="color: #1371cc"
-            @click="edit(scope.row)"
-            >编辑</el-button
+            @click="edit(scope.row)">编辑</el-button
           >
-          <el-button
-            size="small"
-            type="text"
-            class="btnStyle"
-            style="color: #1371cc"
-            >上传附件</el-button
-          >
+          <el-upload
+            :show-file-list="false"
+            class="upload-demo inline-block btnStyle"
+            :action="'/wisdomaudit/auditConfirmation/fileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid+'&confirmationFileNumber='+(scope.row.confirmationFileNumber||'')"
+            :on-success="list_data_start"
+            accept=".zip,.doc">
+            <el-button size="small" type="text"  style="color: blue;background: transparent">上传附件</el-button>
+          </el-upload>
           <el-button
             size="small"
             type="text"
@@ -73,13 +53,28 @@
         </template>
       </el-table-column>
       <el-table-column label="最终版扫描件"  align="center">
-        <el-button
-          size="small"
-          type="text"
-          class="btnStyle"
-          style="color: #1371cc"
-          >上传</el-button
-        >
+        <template slot-scope="scope">
+          <el-button
+            size="small"
+            type="text"
+            class="btnStyle"
+            style="color: #1371cc"
+          >
+            <el-upload
+              v-if="scope.row.endConfirmationFile==''||scope.row.endConfirmationFile==null"
+              :show-file-list="false"
+              class="upload-demo inline-block btnStyle"
+              :action="'/wisdomaudit/auditConfirmation/endFileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid"
+              :on-success="list_data_start"
+              accept=".zip,.doc">
+              <el-button size="small" type="text"  style="color: blue;background: transparent">上传</el-button>
+            </el-upload>
+            <el-tooltip placement="bottom"  effect="light" v-if="scope.row.endConfirmationFile">
+              <div class="pointer" slot="content">{{scope.row.endConfirmationFile}}</div>
+              <span><i class="el-icon-folder-opened list-folder"></i>1</span>
+            </el-tooltip>
+          </el-button>
+        </template>
       </el-table-column>
     </el-table>
     <!-- 新增确认单弹出框 -->
@@ -272,7 +267,7 @@
 </template>
 
 <script>
-  import { auditConfirmation_pageList,auditConfirmation_save,auditConfirmation_delete,auditConfirmation_getDetail,auditConfirmation_update} from
+  import { auditBasy_getFileList,auditConfirmation_pageList,auditConfirmation_save,auditConfirmation_delete,auditConfirmation_getDetail,auditConfirmation_update} from
       '@SDMOBILE/api/shandong/ls'
   import { task_pageList_wt} from
       '@SDMOBILE/api/shandong/AuditReport'
@@ -304,12 +299,20 @@ export default {
       managementProjectName:'',//审计项目名称
       auditOrgName:'',//被审计单位
       projectType:'',//项目类型 jzsj经责审计  zxsj专项审计
+      tableFileList:[],//确认单附件列表
     };
   },
   created() {
     this.list_data_start();
   },
   methods: {
+    //点击确认单附件显示附件列表
+    getFileList(id){
+      this.tableFileList=[];
+      auditBasy_getFileList(id).then(resp => {
+        this.tableFileList=resp.data;
+      })
+    },
     //删除
     deletes(val){
       this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, '提示', {
@@ -493,6 +496,7 @@ export default {
   .btnStyle {
     background: none;
     border: 0px;
+    margin: 0 3px;
   }
 }
 .title {
@@ -578,5 +582,14 @@ export default {
   }
   .zxTabel td:not(:last-child){
     border-right:1px solid #ddd;
+  }
+  .inline-block{
+    display: inline-block!important;
+  }
+  .blue{
+    color: blue;
+  }
+  .orange{
+    color:orange;
   }
 </style>

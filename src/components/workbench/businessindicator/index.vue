@@ -66,12 +66,39 @@
         <!--</template>-->
       <!--</el-table-column>-->
     <!--</el-table>-->
-
-    <table class="jyzb">
-      <tr>
-        <th>指标分类</th>
-      </tr>
-    </table>
+    <div class="jyzb-div">
+      <table class="jyzb">
+        <tr>
+          <th width="150">指标分类</th>
+          <th width="150">指标名称</th>
+          <th width="100">单位</th>
+          <th width="100">2018年4月初</th>
+          <th width="100" v-for="item in yearRange">{{item}}</th>
+          <th width="100">2020年8月</th>
+          <th width="150">资料提供部门</th>
+          <th width="100">联系人</th>
+          <th colspan="2" width="150">操作</th>
+        </tr>
+        <tr>
+          <td>考核得分指标</td>
+        </tr>
+        <tr v-for="item in 2">
+          <td></td>
+          <td>业绩考核得分</td>
+          <td>分</td>
+          <td></td>
+          <td v-for="item in yearRange"></td>
+          <td></td>
+          <td>财务部</td>
+          <td>方静</td>
+          <td><el-button type="text" class="blue">编辑</el-button></td>
+          <td><el-button type="text" class="red">删除</el-button></td>
+        </tr>
+        <tr>
+          <td>收益及收入结构指标</td>
+        </tr>
+      </table>
+    </div>
     <pagination
       v-show="total > 0"
       :total="total"
@@ -80,105 +107,6 @@
       @pagination="getList"
     />
     <!-- 新增和编辑的弹框 -->
-    <el-dialog
-      :title="textMap[dialogStatus]"
-      :visible.sync="dialogFormVisible"
-      :close-on-click-modal="false"
-    >
-      <el-form
-        ref="dataForm"
-        :rules="rules"
-        :model="temp"
-        label-position="right"
-        class="detail-form"
-      >
-        <el-form-item label="指标名称" prop="indexName">
-          <el-input
-            v-model="temp.indexName"
-            placeholder="请输入指标名称"
-            :disabled="dialogStatus == 'show'"
-          />
-        </el-form-item>
-
-        <el-form-item label="父指标名" prop="parentIndexName">
-          <el-input
-            v-model="temp.parentIndexName"
-            placeholder="请输入父指标名"
-            :disabled="dialogStatus == 'show'"
-          />
-        </el-form-item>
-        <el-form-item label="指标类型" prop="indexType">
-          <el-input
-            v-model="temp.indexType"
-            placeholder="请输入指标类型"
-            :disabled="dialogStatus == 'show'"
-          />
-        </el-form-item>
-        <el-form-item label="指标单位" prop="indexUnit">
-          <!-- <el-input
-            v-model="temp.indexUnit"
-            placeholder="请输入单位"
-            :disabled="dialogStatus == 'show'"
-          /> -->
-          <el-select v-model="temp.indexUnit" placeholder="请选择指标单位">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="资料提供部门" prop="dataProvideDepartment">
-          <!-- <el-input
-            v-model="temp.dataProvideDepartment"
-            placeholder="请输入资料提供部门"
-            :disabled="dialogStatus == 'show'"
-          /> -->
-          <el-select
-            v-model="temp.dataProvideDepartment"
-            placeholder="请选择资料提供部门"
-          >
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="取数口径或公式" prop="accessCaliber">
-          <el-input
-            v-model="temp.accessCaliber"
-            placeholder="请输入取数口径或公式"
-            :disabled="dialogStatus == 'show'"
-          />
-        </el-form-item>
-        <el-form-item label="指标状态" prop="status">
-          <el-radio-group v-model="temp.status">
-            <el-radio :label="1">启用</el-radio>
-            <el-radio :label="0">停用</el-radio>
-          </el-radio-group>
-        </el-form-item>
-      </el-form>
-      <div slot="footer">
-        <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button
-          v-if="dialogStatus === 'show'"
-          type="primary"
-          @click="dialogFormVisible = false"
-          >关闭</el-button
-        >
-        <el-button
-          v-if="dialogStatus != 'show'"
-          type="primary"
-          @click="dialogStatus === 'create' ? createData() : updateData()"
-          >保存</el-button
-        >
-      </div>
-    </el-dialog>
     <el-dialog
       title="经营指标审批"
       :visible.sync="dialogtextVisible"
@@ -240,18 +168,21 @@
         <el-button type="primary" @click="importSave()">确定</el-button>
       </div>
     </el-dialog>
+    <search-list ref="searchTabel"></search-list>
   </div>
 </template>
 
 <script>
 import Pagination from "@WISDOMAUDIT/components/Pagination"; // secondary package based on el-pagination
+import SearchList from "./searchList"
 import _ from "lodash";
 import axios from "axios";
 export default {
-  components: { Pagination },
+  components: { Pagination ,SearchList},
   filters: {},
   data() {
     return {
+      yearRange:['2018','2019','2020'],
       tableKey: "indicator",
       list: null,
       total: 0,
@@ -367,19 +298,22 @@ export default {
       this.kutableSelection = val;
     },
     add() {
-      this.temp = {
-        indexType: null,
-        indexName: null,
-        indexUnit: null,
-        dataProvideDepartment: null,
-        accessCaliber: null,
-        status: 1,
-        managementProjectUuid: this.pageQuery.condition.managementProjectUuid,
-      };
-      this.dialogStatus = "create";
-      this.dialogFormVisible = true;
+      // this.temp = {
+      //   indexType: null,
+      //   indexName: null,
+      //   indexUnit: null,
+      //   dataProvideDepartment: null,
+      //   accessCaliber: null,
+      //   status: 1,
+      //   managementProjectUuid: this.pageQuery.condition.managementProjectUuid,
+      // };
+      // this.dialogStatus = "create";
+      // this.dialogFormVisible = true;
+      // this.$nextTick(() => {
+      //   this.$refs.dataForm.clearValidate();
+      // });
       this.$nextTick(() => {
-        this.$refs.dataForm.clearValidate();
+        this.$refs.searchTabel.init();
       });
     },
     openDetail(int) {
@@ -528,5 +462,33 @@ export default {
   color: rgb(27, 168, 250);
   cursor: pointer;
 }
+  .jyzb-div{
+    width:100%;
+    overflow:scroll;
+  }
+  .jyzb{
+    border: 1px solid #ddd;
+    min-width: 100vw;
+    width: auto;
+    overflow-x: auto;
+    box-sizing: border-box;
+  }
+  .jyzb tr:not(:last-child){
+    border-bottom: 1px solid #ddd;
+  }
+  .jyzb td:not(:last-child),.jyzb th:not(:last-child){
+     border-right: 1px solid #ddd;
+   }
+  .jyzb td,.jyzb th{
+    padding: 10px;
+    background: #fff;
+    text-align: center;
+  }
+  .blue{
+    color: blue;
+  }
+  .red{
+    color:red;
+  }
 </style>
 

@@ -6,8 +6,17 @@ const baseURL = '/wisdomaudit';
 export function del_file(data) {
   return request({
     baseURL: baseURL,
-    url: '/attachment/delete/' + data + '',
-    method: 'delete',
+    url:'/attachment/fileRemove?fileId=' + data + '',
+    method: 'post',
+    data
+  })
+}
+//附件批量删除
+export function del_file_batch(data) {
+  return request({
+    baseURL: baseURL,
+    url:'/auditBasy/deleteFilesByAttachmentUuid/' + data + '',
+    method: 'post',
     data
   })
 }
@@ -15,8 +24,9 @@ export function del_file(data) {
 export function down_file(data) {
   return request({
     baseURL: baseURL,
-    url: `/auditPreviousDemandData/downloadByFileId?fileId=`+data,
+    url: `/auditPreviousDemandData/downloadByFileId?fileId=${data}`,
     ifDownFile:true,
+    responseType:'blob',
     method: 'post',
   })
 }
