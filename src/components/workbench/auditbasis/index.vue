@@ -247,7 +247,7 @@ export default {
         // this.formState.keyClauses=datas.keyClauses;
         // this.formState.issueDate=datas.issueDate;
         // this.formState.publishDepartment=datas.publishDepartment;
-        // this.formState.content=this.setContent(datas.treeData.arr);
+        this.formState.content=this.setContent(datas.treeData.arr);
         datas.attachmentList.forEach((item)=>{
           var v={
             name:item.file_name,
