@@ -14,7 +14,7 @@
                 @show="getFileList(scope.row.basyUuid)"
                 trigger="click">
                 <ul v-if="tableFileList!=''">
-                  <li v-for="item in tableFileList" class="pointer blue" @click="downFile(item.attachment_uuid)">{{item.file_name}}</li>
+                  <li v-for="item in tableFileList" class="pointer blue" @click="downFile(item.attachment_uuid,item.file_name)"><span></span>{{item.file_name}}</li>
                 </ul>
                 <div slot="reference" class="pointer blue">{{scope.row.basyName}}</div>
               </el-popover>
@@ -347,10 +347,22 @@ export default {
       })
     },
     //附件下载
-    downFile(id){
+    downFile(id,fileName){
       down_file(id).then(resp => {
-        var datas=resp.data;
-        console.log(datas)
+        const content = resp.data;
+        const blob = new Blob([content])
+        if ('download' in document.createElement('a')) { // 非IE下载
+          const elink = document.createElement('a')
+          elink.download = fileName
+          elink.style.display = 'none'
+          elink.href = URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          URL.revokeObjectURL(elink.href) // 释放URL 对象
+          document.body.removeChild(elink)
+        } else { // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
       })
     },
     //保存数据

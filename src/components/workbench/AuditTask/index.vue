@@ -670,41 +670,40 @@
                @close="resetForm('save_zj_query')"
                style="padding-bottom: 59px">
 
-      <div class="dlag_conter">
+      <div class="dlag_conter new">
         <el-form ref="save_zj_query"
                  :model="save_zj_query"
                  :inline="false">
 
           <!-- 任务名称 -->
           <el-form-item label-width="80px"
-                        style="margin-bottom:20px!important"
+                        style="margin-bottom:30px!important"
                         prop="taskName"
                         :rules="{
               required: true,
               message: '此项不能为空',
               trigger: 'blur',
             }">
-            <p>任务名称：</p>
+            <p><span>*</span>任务名称：</p>
             <el-input v-model="save_zj_query.taskName"
                       placeholder="请输入任务新增"></el-input>
           </el-form-item>
           <!-- 责任人 -->
           <el-form-item label-width="80px"
-                        v-if="select_list"
-                        prop="peopleName"
+                        prop="peopleTableUuid"
                         :rules="{
               required: true,
               message: '此项不能为空',
               trigger: 'blur',
             }"
-                        style="margin-bottom:20px!important">
-            <p>责任人：</p>
-            <el-select v-model="save_zj_query.peopleName"
+                        style="margin-bottom:30px!important">
+            <p><span>*</span>责任人：</p>
+            <el-select v-model="save_zj_query.peopleTableUuid"
                        @change="changeHeader2">
               <el-option v-for="item in select_list"
-                         :key="item.peopleTable.peopleTableUuid"
-                         :label="item.peopleTable.peopleName"
-                         :value="item.peopleTable.peopleName">
+                         :key="item.peopleTableUuid"
+                         :label="item.peopleName"
+                         :value="item.peopleTableUuid">
               </el-option>
             </el-select>
           </el-form-item>
@@ -717,8 +716,8 @@
               message: '此项不能为空',
               trigger: 'blur',
             }"
-                        style="margin-bottom:20px!important">
-            <p>领域：</p>
+                        style="margin-bottom:30px!important">
+            <p><span>*</span>领域：</p>
             <el-select v-model="save_zj_query.belongSpcial"
                        @change="changeHeader_zj_ly">
               <el-option v-for="item in problems_slect"
@@ -737,8 +736,8 @@
               message: '此项不能为空',
               trigger: 'blur',
             }"
-                        style="margin-bottom:20px!important">
-            <p>专题：</p>
+                        style="margin-bottom:30px!important">
+            <p><span>*</span>专题：</p>
             <el-select v-model="save_zj_query.belongField "
                        @change="changeHeader_zj_zt">
               <el-option v-for="item in zt_slect"
@@ -751,25 +750,21 @@
 
           <!-- 任务描述 -->
           <el-form-item label-width="80px"
-                        prop="taskDescription"
-                        :rules="{
-              required: true,
-              message: '此项不能为空',
-              trigger: 'blur',
-            }"
-                        style="margin-bottom:20px!important">
+                        style="margin-bottom:30px!important">
             <p>任务描述：</p>
             <el-input v-model="save_zj_query.taskDescription"
                       placeholder="请输入任务描述"></el-input>
           </el-form-item>
           <!-- 上传附件 -->
           <el-form-item label-width="80px"
-                        style="margin-bottom:20px!important">
-            <p>上传附件：</p>
+                        prop="fileList"
+                        style="margin-bottom:30px!important">
+            <p><span>*</span>上传附件：</p>
             <el-upload class="upload-demo"
                        drag
                        ref="upload"
                        action="#"
+                       :before-upload="beforeAvatarUpload"
                        v-model="save_zj_query.enclosure"
                        :on-change="handleChangePic"
                        :file-list="fileList"
@@ -781,6 +776,8 @@
                 支持上传或者拖拽文件到这里<em>点击上传</em>
               </div>
             </el-upload>
+            <p class="el-form-item__error"
+               v-if="!fileList">请上传文件</p>
           </el-form-item>
         </el-form>
       </div>
@@ -1047,6 +1044,8 @@ export default {
       success_btn: 0,//文件上传完成
       fileList: [],
       Upload_file: [],//上传后返回文件数组
+      isClientCertFile: true,
+
     }
   },
   computed: {},
@@ -1113,14 +1112,47 @@ export default {
       // this.save_zj_query = [];
     },
 
+    // 新增上传附件
+    handleChangePic (file, fileList, name) {
+      this.fileList = fileList;
+      this.file = file.raw
+
+      // this.imgFile["file"] = fileList;
+      // console.log();
+      //   if (typeof this.imgFile.file != "undefined" && this.imgFile.file.length > 0) {
+      //     this.isClientCertFile = false;
+      //   } else {
+      //     this.isClientCertFile = true;
+      //   }
+    },
+    // 上传验证 上传前调用
+    beforeAvatarUpload (file) {
+      this.success_btn = 1;//显示加载按钮  0成功  1 loaging
+      this.fileList.append('file', file)
+      return false
+    },
+    // 上传时
+    up_ing (resp, file, fileList) {
+      this.success_btn = 1;//显示加载按钮  0成功  1 loaging
+    },
+
     // 新增自建任务 保存
     save_zj (index, save_zj_query) {
       // 1:新增  2:编辑
       if (index == 1) {
         this.$refs[save_zj_query].validate((valid) => {
+
+          // if (this.fileList) {
+          //   // this.$message.error("请上传文件")
+          //   this.$refs.upload.focus()
+          //   return
+          // }
+
           if (valid) {
             this.title = '新增';
 
+
+            // 上传
             let formData = new FormData()
             formData.append('file', this.file.raw)
             this.fileList.forEach((item) => {
@@ -1267,16 +1299,6 @@ export default {
       })
     },
 
-    // 新增上传附件
-    handleChangePic (file, fileList) {
-      this.fileList = fileList;
-      this.file = file.raw
-    },
-
-    // 上传时
-    up_ing (resp, file, fileList) {
-      this.success_btn = 1;//显示加载按钮  0成功  1 loaging
-    },
     // 查看附件详情
     open_enclosure_details (id) {
       console.log(id);
@@ -1297,7 +1319,8 @@ export default {
     select_people (params_people) {
       task_select_people(params_people).then(resp => {
         this.select_list = resp.data.records;
-        // console.log(this.select_list);
+        console.log(resp.data);
+        console.log(this.select_list);
       })
     },
 
@@ -1934,13 +1957,24 @@ export default {
 
     // 自建人物 设置责任人
     changeHeader2 (val) {
-      this.select_list.find((item) => {
-        if (item.peopleTable.peopleName === val) {//筛选出匹配数据
-          let peopleTableUuid = item.peopleTable.peopleTableUuid.replace('{', '').replace('}', '').trim();
-          this.save_zj_query.peopleTableUuid = peopleTableUuid;
-          console.log(this.save_zj_query.peopleTableUuid);
+      console.log(val);
+      this.save_zj_query.peopleTableUuid = val;
+
+      // this.select_list.find((item) => {
+      //   if (item.peopleTable.peopleName === val) {//筛选出匹配数据
+      //     let peopleTableUuid = item.peopleTable.peopleTableUuid.replace('{', '').replace('}', '').trim();
+      //     this.save_zj_query.peopleTableUuid = peopleTableUuid;
+      //     console.log(this.save_zj_query.peopleTableUuid);
+      //   }
+      // })
+      for (let i = 0; i < this.select_list.length; i++) {
+        if (val == this.select_list[i].peopleTableUuid) {
+          this.save_zj_query.peopleName = this.select_list[i].peopleName;
         }
-      })
+      }
+
+
+
     },
 
 
@@ -2276,5 +2310,14 @@ export default {
 
 .active {
   background: #1371cc !important;
+}
+.new >>> .el-form .el-form-item__error {
+  left: 100px;
+}
+.new >>> .el-form p span {
+  color: red;
+}
+.new >>> .el-upload-dragger:focus {
+  border: 1px dashed red;
 }
 </style>
