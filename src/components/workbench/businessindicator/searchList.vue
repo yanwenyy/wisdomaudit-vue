@@ -70,7 +70,7 @@
       </div>
     </el-dialog>
     <el-dialog
-      :title="新增指标"
+      :title="新增指标 "
       :visible.sync="dialogFormVisible"
       :close-on-click-modal="false"
     >
