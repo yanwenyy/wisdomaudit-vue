@@ -114,7 +114,7 @@
             >
               <el-submenu index="1">
                 <template slot="title">
-                  <span style="margin-left: 20px; font-weight: 400"
+                  <span style=" font-weight: 400"
                     >审计准备</span
                   >
                 </template>
@@ -126,7 +126,7 @@
               </el-submenu>
               <el-submenu index="2">
                 <template slot="title">
-                  <span style="margin-left: 20px; font-weight: 400"
+                  <span style="font-weight: 400"
                     >审计实施</span
                   >
                 </template>
@@ -141,7 +141,7 @@
               </el-submenu>
               <el-submenu index="3">
                 <template slot="title">
-                  <span style="margin-left: 20px; font-weight: 400"
+                  <span style=" font-weight: 400"
                     >报告阶段</span
                   >
                 </template>
@@ -963,7 +963,7 @@ export default {
       })
 
     },
-   
+
     //责任人选择事件
     selectChange(row) {
       console.log(row);
@@ -1008,7 +1008,7 @@ export default {
 
 
       this.query.condition.managementProjectUuid = this.managementProjectUuid;
-      
+
     },
     // 更多未初始化项目
     moreProject(data) {
@@ -1086,13 +1086,13 @@ export default {
 
       //下一步 保存组员
       editprojectMembershipList(this.updataPerson).then((resp) => {
-        this.$message.success("添加成功！"); 
+        this.$message.success("添加成功！");
          this.query.condition.managementProjectUuid = this.managementProjectUuid;
       this.projectMember(this.query);
 
-       
+
       });
-    
+
      this.getModelList.condition.managementProjectUuid =
         this.managementProjectUuid;
       // console.log(this.getModelList);
@@ -1199,7 +1199,7 @@ export default {
 
     //  完成按钮
     saveBtn() {
-     
+
       this.projectCode.managementProjectUuid = this.managementProjectUuid;
       // this.projectCode.projectType = this.notInitType;
       editProjectCode(this.projectCode).then((resp) => {

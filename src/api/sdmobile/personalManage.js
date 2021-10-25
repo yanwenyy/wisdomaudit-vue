@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const baseURL = 'base'
+const baseURL = 'wisdomaudit'
 const wisdomauditURL = 'wisdomaudit'
 // 人员分页
 export function listByPage(data) {
