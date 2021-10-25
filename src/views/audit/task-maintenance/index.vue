@@ -50,27 +50,33 @@
             <el-table-column prop="taskDescription" label="任务描述">
             </el-table-column>
             <el-table-column prop="address" label="附件" width="90">
-              <div class="update">
-                <i class="update_icon">
-                  <svg
-                    t="1631877671204"
-                    class="icon"
-                    viewBox="0 0 1024 1024"
-                    version="1.1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    p-id="9939"
-                    width="200"
-                    height="200"
-                  >
-                    <path
-                      d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                      fill="#FD9D27"
-                      p-id="9940"
-                    ></path>
-                  </svg>
-                </i>
-                <span>2</span>
-              </div>
+              <template slot-scope="scope">
+                <div
+                  class="update"
+                  style="margin-left: -40px; cursor: pointer"
+                  @click="nearbyDetails(scope.row)"
+                >
+                  <i class="update_icon" style="margin-top: -3px">
+                    <svg
+                      t="1631877671204"
+                      class="icon"
+                      viewBox="0 0 1024 1024"
+                      version="1.1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      p-id="9939"
+                      width="200"
+                      height="200"
+                    >
+                      <path
+                        d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
+                        fill="#FD9D27"
+                        p-id="9940"
+                      ></path>
+                    </svg>
+                  </i>
+                  <span>{{ scope.row.count }}</span>
+                </div>
+              </template>
             </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
@@ -168,7 +174,11 @@
           <el-upload
             class="upload-demo"
             drag
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action="#"
+            v-model="editTask.enclosure"
+            :on-change="handleChangePic"
+            :file-list="fileList"
+            :auto-upload="false"
             multiple
           >
             <i class="el-icon-upload"></i>
@@ -366,6 +376,36 @@
         </div>
       </div>
     </el-dialog>
+
+    <!-- 附件详情 -->
+    <el-dialog
+      title="附件详情"
+      width="40%"
+      :visible.sync="nearbyDialogVisible"
+      style="padding-bottom: 59px"
+    >
+      <el-table
+        :data="enclosure_details_list"
+        style="width: 100%"
+        v-loading="nearbyLoading"
+      >
+        <!-- <el-table-column prop="dataTaskNumber"
+                             label="流水单号">
+            </el-table-column> -->
+        <el-table-column type="index" label="序号"> </el-table-column>
+        <el-table-column prop="fiileType" label="文件类型"> </el-table-column>
+        <el-table-column prop="fileName" label="文件名称">
+          <template slot-scope="scope">
+            <el-link
+              type="primary"
+              style=""
+              @click="enclosureDownload(scope.row.attachmentUuid)"
+              >{{ scope.row.fileName }}</el-link
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -387,13 +427,17 @@ import {
   editTaskSelf,
   editTaskSelfInfo,
 } from "@WISDOMAUDIT/api/shandong/memberMaintenance.js";
-import { thematicAreas } from "@WISDOMAUDIT/api/shandong/projectmanagement.js";
+import {
+  thematicAreas,
+  attachmentEcho,
+} from "@WISDOMAUDIT/api/shandong/projectmanagement.js";
 export default {
   props: ["active_project"],
   data() {
     return {
       task: 1,
       loading: false,
+      nearbyLoading: false,
       taskData: [],
       radio: "1",
       project: "",
@@ -492,7 +536,7 @@ export default {
       },
       fileList: [], //上传的文件
       file: [], //
-      Upload_file:[],//上传文件更新id
+      Upload_file: [], //上传文件更新id
       taskSelf: {
         //创建自建任务传参
         managementProjectUuid: "",
@@ -504,7 +548,7 @@ export default {
         belongField: "",
         belongSpcial: "",
         enclosure: "", //附件
-        attachmentList:[]
+        attachmentList: [],
       },
       modelSize: [],
       ismodelList: {
@@ -535,6 +579,8 @@ export default {
         taskType: "",
         belongField: "",
         belongSpcial: "",
+        enclosure: "", //附件
+        attachmentList: [], //附件上传入参
       },
       modelTableData: [],
       thematicOption: [],
@@ -544,6 +590,17 @@ export default {
       },
       areas: {
         typecode: "Category",
+      },
+      nearbyDialogVisible: false, //附件详情弹框
+      enclosure_details_list: [], //附件table数据
+      enclosureInfo: {
+        condition: {
+          businessUuid: "",
+        },
+        pageNo: 1,
+        pageSize: 10,
+        sortBy: "string",
+        sortName: "string",
       },
       // 自建任务校验
       taskSelfRules: {
@@ -904,8 +961,6 @@ export default {
     handleChangePic(file, fileList) {
       this.fileList = fileList;
       this.file = file.raw;
-      console.log(this.fileList);
-      console.log(this.file);
     },
     //新增自建任务完成按钮
     saveTask(selfTaskRef) {
@@ -930,7 +985,6 @@ export default {
               console.log(resp.data);
               this.Upload_file = resp.data.data;
 
-
               //新增自建任务接口
               this.taskSelf.attachmentList = this.Upload_file;
               this.taskSelf.managementProjectUuid = this.active_project;
@@ -952,6 +1006,44 @@ export default {
         } else {
           console.log("error submit!!");
           return false;
+        }
+      });
+    },
+    // 编辑成功按钮
+    editTaskSelfBtn() {
+      let formData = new FormData();
+      formData.append("file", this.file.raw);
+      this.fileList.forEach((item) => {
+        formData.append("files", item.raw);
+      });
+
+      this.$axios({
+        method: "post",
+        url: "http://10.10.112.56:1095/wisdomaudit/attachment/fileUploads",
+        data: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }).then((resp) => {
+        if (resp.data.code == 0) {
+          this.$message.success("上传成功！");
+          console.log(resp.data);
+          this.Upload_file = resp.data.data;
+
+          //新增自建任务接口
+          this.editTask.attachmentList = this.Upload_file;
+          // this.editTask.managementProjectUuid = this.active_project;
+          editTaskSelfInfo(this.editTask).then((resp) => {
+            this.editModelDialogVisible = false;
+            this.queryInfo.condition.managementProjectUuid =
+              this.active_project;
+            this.getmodelTaskList(this.queryInfo);
+          });
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: "error",
+          });
         }
       });
     },
@@ -984,13 +1076,54 @@ export default {
         this.task = 1;
       }
     },
-    // 编辑成功按钮
-    editTaskSelfBtn() {
-      editTaskSelfInfo(this.editTask).then((resp) => {
-        this.editModelDialogVisible = false;
-        this.queryInfo.condition.managementProjectUuid = this.active_project;
-        this.getmodelTaskList(this.queryInfo);
+    // 附件点击弹框事件
+    nearbyDetails(rows) {
+      console.log(rows);
+      this.nearbyDialogVisible = true;
+      this.enclosureInfo.condition.businessUuid = rows.auditTaskUuid;
+      this.nearbyLoading = true;
+      attachmentEcho(this.enclosureInfo).then((resp) => {
+        this.enclosure_details_list = resp.data;
+        console.log(this.enclosure_details_list);
+        this.nearbyLoading = false;
       });
+    },
+
+   // 附件下载
+    enclosureDownload(id){
+      console.log(id);
+      let formData = new FormData()
+      formData.append('fileId', id)
+      this.$axios({
+        method: 'post',
+        url: 'http://localhost:9529/wisdomaudit/auditPreviousDemandData/downloadByFileId',
+        data: formData,
+        responseType: 'blob',
+      }).then((res) => {
+        const content = res.data;
+        console.log(res);
+        const blob = new Blob([content],
+          { type: 'application/octet-stream,charset=UTF-8' }
+        )
+        const fileName = res.headers["content-disposition"].split("fileName*=utf-8''")[1];
+        const filteType = res.headers["content-disposition"].split('.')[1];
+        if ('download' in document.createElement('a')) {
+          // 非IE下载  
+          const elink = document.createElement('a')
+          elink.download = fileName //下载后文件名
+          elink.style.display = 'none'
+          elink.href = window.URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象  
+          document.body.removeChild(elink)
+        } else {
+          // IE10+下载 
+          navigator.msSaveBlob(blob, fileName)
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
     },
   },
   created() {

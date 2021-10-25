@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 const baseURL = 'wisdomaudit'
-const personURL = '/base'
+const personURL = 'wisdomaudit'
 // 分页
 export function listByPage(data) {
   return request({

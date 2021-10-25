@@ -111,7 +111,7 @@
 
       <div class="stepBtn">
         <el-button @click="addgroupDialog = false">取消</el-button>
-        <el-button type="primary" @click="saveGroupMember">确认</el-button>
+        <el-button type="primary" @click="saveGroupMember" :disabled="savedisabled">确认</el-button>
       </div>
     </el-dialog>
   </div>
@@ -144,6 +144,7 @@ export default {
   props: ["active_project"],
   data() {
     return {
+      savedisabled:false,
       data: [],
       value: [],
       managementProjectUuid: "",
@@ -160,6 +161,7 @@ export default {
       query: {
         condition: {
           managementProjectUuid: "",
+          peopleRole: "2"
         },
         pageNo: 1,
         pageSize: 5,
@@ -269,6 +271,7 @@ export default {
     },
     //新增组员确认事件
     saveGroupMember() {
+      this.savedisabled = true;
       editprojectMembershipList(this.updataPerson).then((resp) => {
         this.$message.success("修改成功！");
         this.addgroupDialog = false;
