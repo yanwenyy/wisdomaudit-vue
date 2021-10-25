@@ -1,8 +1,38 @@
 import axios from 'axios'
+import Vue from "vue";
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 var ifDown=false;
+
+let loading;
+let needLoadingRequestCount = 0; // 声明一个对象用于存储请求个数
+function startLoading() {
+  loading = Vue.prototype.$loading({
+    lock: true,
+    // text: "努力加载中...",
+    // background: 'rgba(0,0,0,0.3)',
+    background:'transparent',
+    customClass: 'loadingIcon',
+    target: document.querySelector(".loading-area") // 设置加载动画区域
+  });
+}
+function endLoading() {
+  loading.close();
+}
+function showFullScreenLoading() {
+  if (needLoadingRequestCount === 0) {
+    startLoading();
+  }
+  needLoadingRequestCount++;
+}
+function hideFullScreenLoading() {
+  if (needLoadingRequestCount <= 0) return;
+  needLoadingRequestCount--;
+  if (needLoadingRequestCount === 0) {
+    endLoading();
+  }
+}
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -24,6 +54,10 @@ service.interceptors.request.use(
       if(config.ifDownFile){
         ifDown=true;
       }
+    if (config.isLoading !== false) {
+      // 如果配置了isLoading: false，则不显示loading
+      showFullScreenLoading();
+    }
       config.headers.TOKEN  = sessionStorage.getItem('TOKEN');
     // }
     return config
@@ -31,6 +65,7 @@ service.interceptors.request.use(
   error => {
     // do something with request error
     console.log(error) // for debug
+    hideFullScreenLoading();
     return Promise.reject(error)
   }
 )
@@ -48,6 +83,7 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
+    hideFullScreenLoading();
     const res = response.data
 
     // if the custom code is not 20000, it is judged as an error.
@@ -79,6 +115,7 @@ service.interceptors.response.use(
   },
   error => {
     console.log('err' + error) // for debug
+    hideFullScreenLoading();
     Message({
       message: error.msg,
       type: 'error',

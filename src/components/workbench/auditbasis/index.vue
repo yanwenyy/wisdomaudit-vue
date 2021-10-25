@@ -14,7 +14,7 @@
                 @show="getFileList(scope.row.basyUuid)"
                 trigger="click">
                 <ul v-if="tableFileList!=''">
-                  <li v-for="item in tableFileList" class="pointer blue" @click="downFile(item.attachment_uuid,item.file_name)"><span></span>{{item.file_name}}</li>
+                  <li v-for="item in tableFileList" class="pointer blue" @click="downFile(item.attachment_uuid,item.file_name)"><i class="orange el-icon-folder-opened"></i>{{item.file_name}}</li>
                 </ul>
                 <div slot="reference" class="pointer blue">{{scope.row.basyName}}</div>
               </el-popover>
@@ -119,6 +119,7 @@
                 accept=".zip,.doc"
                 :file-list="fileList"
                 multiple
+                :key="key"
               >
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">
@@ -144,13 +145,14 @@
 </template>
 
 <script>
-  import {down_file, del_file,auditBasy_pageList,auditBasy_save,auditBasy_delete ,auditBasy_getDetail,auditBasy_getFileList} from
+  import {del_file_batch,down_file, del_file,auditBasy_pageList,auditBasy_save,auditBasy_delete ,auditBasy_getDetail,auditBasy_getFileList} from
       '@SDMOBILE/api/shandong/ls'
 import '@/styles/from.scss'
 export default {
   components: {},
   data() {
     return {
+      key:0,
       title: "",
       formState: {
         basyName: "",
@@ -251,7 +253,8 @@ export default {
         datas.attachmentList.forEach((item)=>{
           var v={
             name:item.file_name,
-            url:item.file_path
+            url:item.file_path,
+            attachmentUuid:item.attachment_uuid
           }
           this.fileList.push(v);
         })
@@ -306,6 +309,7 @@ export default {
           duration: 1500,
           onClose: () => {
             this.apkFiles.push(response.data);
+            // console.log(this.apkFiles,3333)
           }
         })
       } else {
@@ -321,18 +325,25 @@ export default {
     },
     //附件删除
     handleRemoveApk(file, fileList) {
-      var ifDel=true;
+      var ifDel=true,that=this;
+      var id=file.response?file.response.data.attachmentUuid:file.attachmentUuid;
       return new Promise(function(resolve, reject){
-        del_file(file.response.data.attachmentUuid).then(resp => {
+        del_file(id).then(resp => {
           if (resp.code == 0) {
-            this.$message({
+            that.$message({
               message: "删除成功",
               type: "success",
             });
-            this.apkFiles.remove(file.response.data);
+            if(file.response){
+              that.apkFiles.remove(file.response.data);
+              that.key=Math.random();
+            }else{
+              that.fileList.remove(file);
+            }
+            return true;
 
           } else {
-            this.$message({
+            that.$message({
               message: resp.data.msg,
               type: "error",
             });
@@ -348,6 +359,8 @@ export default {
     },
     //附件下载
     downFile(id,fileName){
+      let formData = new FormData()
+      formData.append('fileId', id)
       down_file(id).then(resp => {
         const content = resp.data;
         const blob = new Blob([content])
@@ -397,24 +410,25 @@ export default {
     //关闭弹窗
     close(){
       this.isAdd = false;
-      this.clearForm();
       var ids=[];
       this.apkFiles.forEach((item)=>{
         ids.push(item.attachmentUuid)
       });
-      del_file(ids.join(",")).then(resp => {
-        if (resp.code == 0) {
-          this.$message({
-            message: "删除成功",
-            type: "success",
-          });
-        } else {
-          this.$message({
-            message: resp.data.msg,
-            type: "error",
-          });
-        }
+      // console.log(this.apkFiles,ids)
+      del_file_batch(ids.join(",")).then(resp => {
+        // if (resp.code == 0) {
+        //   this.$message({
+        //     message: "删除成功",
+        //     type: "success",
+        //   });
+        // } else {
+        //   this.$message({
+        //     message: resp.data.msg,
+        //     type: "error",
+        //   });
+        // }
       });
+      this.clearForm();
     },
     //清除数据
     clearForm(){
@@ -426,6 +440,8 @@ export default {
         publishDepartment: "",
         content: "",
       }
+      this.fileList=[];
+      this.apkFiles=[];
     },
     //点击资料名称显示附件列表
     getFileList(id){
@@ -517,5 +533,8 @@ export default {
   }
   .blue{
     color: blue;
+  }
+  .orange{
+    color:orange;
   }
 </style>
