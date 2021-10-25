@@ -15,7 +15,8 @@ export function del_file(data) {
 export function down_file(data) {
   return request({
     baseURL: baseURL,
-    url: `/attachment/fileDownload?fileId=`+data,
+    url: `/auditPreviousDemandData/downloadByFileId?fileId=`+data,
+    ifDownFile:true,
     method: 'post',
   })
 }
