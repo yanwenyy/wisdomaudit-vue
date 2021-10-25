@@ -1,8 +1,23 @@
 <template>
   <div class="page-container auditproblem">
     <div class="filter-container">
-      <el-button type="primary" @click="add()">新增</el-button>
-      <div class="auditproblem-btn-box"></div>
+      <el-row :gutter="24" class="titleMes">
+        <!-- 自建新增   -->
+        <el-col :span="1.5">
+          <el-button type="primary" @click="add()">新增审计问题</el-button>
+        </el-col>
+
+        <div class="search">
+          <el-input placeholder="请输入" v-model="pageQuery.condition.problem">
+          </el-input>
+          <div class="search_icon">
+            <i class="el-icon-search" style="color: rgba(0, 0, 0, 0.5)"></i>
+          </div>
+          <el-button type="primary" @click="getList">筛选</el-button>
+        </div>
+      </el-row>
+
+      <!-- <div class="auditproblem-btn-box"></div> -->
     </div>
     <!-- @sort-change="sortChange"
        -->
@@ -60,10 +75,16 @@
       <el-table-column label="发现人" prop="problemFindPeople" />
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
-          <el-button @click="checkDetail(scope.row.problemListUuid)"
+          <el-button
+            @click="checkDetail(scope.row.problemListUuid)"
+            type="text"
+            style="color: #1371cc"
             >查看</el-button
           >
-          <el-button @click="del(scope.row.problemListUuid)" style="color: red"
+          <el-button
+            @click="del(scope.row.problemListUuid)"
+            type="text"
+            style="color: red"
             >删除</el-button
           >
         </template>
@@ -114,10 +135,23 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="描述" prop="describe">
+        <el-form-item> </el-form-item>
+        <el-form-item label="依据" prop="basis" class="long">
+          <el-select v-model="temp.basis" multiple placeholder="请选择" >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-button type="primary" class="citebtn" @click="openbasis()">引用审计依据</el-button>
+        <el-form-item label="描述" prop="describe" class="long">
           <el-input v-model="temp.describe" placeholder="请输入描述" />
         </el-form-item>
-        <el-form-item label="管理建议" prop="managementAdvice">
+        <el-form-item label="管理建议" prop="managementAdvice" class="long">
           <el-input
             v-model="temp.managementAdvice"
             placeholder="请输入管理建议"
@@ -159,19 +193,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item> </el-form-item>
-        <el-form-item label="依据" prop="basis">
-          <el-select v-model="temp.basis" multiple placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-button type="primary" class="citebtn">引用知识库</el-button>
+        
         <!-- <el-form-item label="上传附件" prop="int">
           <el-upload
             class="upload-demo"
@@ -371,6 +393,16 @@
         >
       </div>
     </el-dialog>
+    <el-dialog
+  title="引用审计依据"
+  :visible.sync="basisdialog"
+  width="80%">
+  <span>审计依据正在完善</span>
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="basisdialog = false">取 消</el-button>
+    <el-button type="primary" @click="basisdialog = false">确 定</el-button>
+  </span>
+</el-dialog>
   </div>
 </template>
 
@@ -396,6 +428,7 @@ export default {
       pageQuery: {
         condition: {
           managementProjectUuid: this.active_project,
+          problem: "",
         },
         pageNo: 1,
         pageSize: 20,
@@ -457,6 +490,7 @@ export default {
       CategoryList: [],
       SPECIALList: [],
       auditTasklList: [],
+      basisdialog:false
     };
   },
   watch: {},
@@ -467,6 +501,10 @@ export default {
     this.getList();
   },
   methods: {
+    //打开依据
+    openbasis(){
+      this.basisdialog = true
+    },
     //领域返显
     fieldFilter(str) {
       let rep = "";
@@ -684,6 +722,10 @@ export default {
 }
 </style>
 <style>
+.auditproblem .el-button {
+  background: none;
+  border: none;
+}
 .auditproblem .el-form-item {
   width: 49%;
   margin-right: 1%;
@@ -703,6 +745,43 @@ export default {
 .canclick {
   color: rgb(27, 168, 250);
   cursor: pointer;
+}
+.search {
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+}
+.search .el-input__inner {
+  width: 220px !important;
+  border-radius: 5px 0 0 5px;
+}
+.search .el-input__inner {
+  width: 180px;
+  display: flex;
+  float: right;
+}
+.search .search_icon {
+  position: absolute;
+  top: 0;
+  right: 70px;
+  width: 37px;
+  height: 37px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+.search .el-button {
+  border-radius: 0 5px 5px 0;
+  /* background: #1371cc !important; */
+}
+.long {
+  width: 70% !important;
 }
 </style>
 

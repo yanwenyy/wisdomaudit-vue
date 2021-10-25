@@ -11,92 +11,32 @@
           >
         </div>
 
-        <div class="project-wapper">
-          <div class="project-item">
-            <h3>XX分公司原总经理离任审计</h3>
-            <ul>
+        <div class="project-wapper" >
+          <div class="project-item" v-for="(item,index) in projectlist" :key="'project'+index" >
+            <h3>{{item.projectName || '--'}}</h3>
+            <ul :style="index==0?'':'border-left:1px solid #ccc;'">
               <li @click="projectEvent('1')">
                 <div class="icon-wapper">
                   <svg-icon icon-class="model" /><br />
-                  <span>模型任务33</span>
+                  <span>模型任务 {{item.mxCount}}</span>
                 </div>
               </li>
               <li @click="projectEvent('2')">
                 <div class="icon-wapper">
                   <svg-icon icon-class="task-list" /><br />
-                  <span>自建任务43</span>
+                  <span>自建任务 {{item.zjCount}}</span>
                 </div>
               </li>
               <li @click="projectEvent('3')">
                 <div class="icon-wapper">
                   <svg-icon icon-class="problem" /><br />
-                  <span>问题33</span>
+                  <span>问题 {{item.wtCount}}</span>
                 </div>
               </li>
               <li @click="projectEvent('4')">
                 <div class="icon-wapper">
                   <svg-icon icon-class="list" /><br />
-                  <span>审计确认单33</span>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <el-divider direction="vertical"></el-divider>
-          <div class="project-item">
-            <h3>XX分公司原总经理离任审计</h3>
-            <ul>
-              <li>
-                <div class="icon-wapper">
-                  <svg-icon icon-class="model" /><br />
-                  <span>任务模型33</span>
-                </div>
-              </li>
-              <li>
-                <div class="icon-wapper">
-                  <svg-icon icon-class="task-list" /><br />
-                  <span>自选任务43</span>
-                </div>
-              </li>
-              <li>
-                <div class="icon-wapper">
-                  <svg-icon icon-class="problem" /><br />
-                  <span>问题33</span>
-                </div>
-              </li>
-              <li>
-                <div class="icon-wapper">
-                  <svg-icon icon-class="list" /><br />
-                  <span>审计确认单33</span>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <el-divider direction="vertical"></el-divider>
-          <div class="project-item">
-            <h3>XX分公司原总经理离任审计</h3>
-            <ul>
-              <li>
-                <div class="icon-wapper">
-                  <svg-icon icon-class="model" /><br />
-                  <span>任务模型33</span>
-                </div>
-              </li>
-              <li>
-                <div class="icon-wapper">
-                  <svg-icon icon-class="task-list" /><br />
-                  <span>自选任务43</span>
-                </div>
-              </li>
-              <li>
-                <div class="icon-wapper">
-                  <svg-icon icon-class="problem" /><br />
-                  <span>问题33</span>
-                </div>
-              </li>
-              <li>
-                <div class="icon-wapper">
-                  <svg-icon icon-class="list" /><br />
-                  <span>审计确认单33</span>
+                  <span>审计确认单 {{item.qrdCount}}</span>
                 </div>
               </li>
             </ul>
@@ -111,67 +51,15 @@
               <span> <svg-icon icon-class="task" />我的模型任务</span>
             </div>
 
-            <ul style="height: 506px" class="odd-even" @click="taskModelEvent">
-              <li>
+            <ul style="height: 466px;overflow:scroll;" class="odd-even" @click="taskModelEvent">
+              <li v-for="(item,index) in modellist" :key="'model'+index">
                 <div class="li-item">
-                  <h5>XX分公司原总经理离任审计</h5>
-                  <span>2021-09-19 22:09:22</span>
+                  <h5>{{item.projectName || '--'}}</h5>
+                  <span>{{item.updateTime || '--'}}</span>
                 </div>
                 <el-divider></el-divider>
                 <div class="li-item">
-                  <p>【个人】违规操作记录</p>
-                  <el-button type="primary" size="mini"
-                    >前去处理<i class="el-icon-d-arrow-right el-icon--right"></i
-                  ></el-button>
-                </div>
-              </li>
-              <li>
-                <div class="li-item">
-                  <h5>XX分公司原总经理离任审计</h5>
-                  <span>2021-09-19 22:09:22</span>
-                </div>
-                <el-divider></el-divider>
-                <div class="li-item">
-                  <p>【个人】违规操作记录</p>
-                  <el-button type="primary" size="mini"
-                    >前去处理<i class="el-icon-d-arrow-right el-icon--right"></i
-                  ></el-button>
-                </div>
-              </li>
-              <li>
-                <div class="li-item">
-                  <h5>XX分公司原总经理离任审计</h5>
-                  <span>2021-09-19 22:09:22</span>
-                </div>
-                <el-divider></el-divider>
-                <div class="li-item">
-                  <p>【个人】违规操作记录</p>
-                  <el-button type="primary" size="mini"
-                    >前去处理<i class="el-icon-d-arrow-right el-icon--right"></i
-                  ></el-button>
-                </div>
-              </li>
-              <li>
-                <div class="li-item">
-                  <h5>XX分公司原总经理离任审计</h5>
-                  <span>2021-09-19 22:09:22</span>
-                </div>
-                <el-divider></el-divider>
-                <div class="li-item">
-                  <p>【个人】违规操作记录</p>
-                  <el-button type="primary" size="mini"
-                    >前去处理<i class="el-icon-d-arrow-right el-icon--right"></i
-                  ></el-button>
-                </div>
-              </li>
-              <li>
-                <div class="li-item">
-                  <h5>XX分公司原总经理离任审计</h5>
-                  <span>2021-09-19 22:09:22</span>
-                </div>
-                <el-divider></el-divider>
-                <div class="li-item">
-                  <p>【个人】违规操作记录</p>
+                  <p>{{item.taskName || '--'}}</p>
                   <el-button type="primary" size="mini"
                     >前去处理<i class="el-icon-d-arrow-right el-icon--right"></i
                   ></el-button>
@@ -186,45 +74,15 @@
               <span> <svg-icon icon-class="view" />审计资料</span>
             </div>
 
-            <ul style="height: 245px" class="odd-even" @click="auditInfoEvent">
-              <li>
+            <ul style="height: 245px;overflow:scroll;" class="odd-even" @click="auditInfoEvent">
+              <li v-for="(item,index) in datalist" :key="'data'+index">
                 <div class="li-item">
-                  <h5>XX分公司原总经理离任审计</h5>
-                  <span>2021-09-19 22:09:22</span>
+                  <h5>{{item.projectName || '--'}}</h5>
+                  <span>{{item.createTime || '--'}}</span>
                 </div>
                 <el-divider></el-divider>
                 <div class="li-item">
-                  <p>【个人】违规操作记录</p>
-                </div>
-              </li>
-              <li>
-                <div class="li-item">
-                  <h5>XX分公司原总经理离任审计</h5>
-                  <span>2021-09-19 22:09:22</span>
-                </div>
-                <el-divider></el-divider>
-                <div class="li-item">
-                  <p>【个人】违规操作记录</p>
-                </div>
-              </li>
-              <li>
-                <div class="li-item">
-                  <h5>XX分公司原总经理离任审计</h5>
-                  <span>2021-09-19 22:09:22</span>
-                </div>
-                <el-divider></el-divider>
-                <div class="li-item">
-                  <p>【个人】违规操作记录</p>
-                </div>
-              </li>
-              <li>
-                <div class="li-item">
-                  <h5>XX分公司原总经理离任审计</h5>
-                  <span>2021-09-19 22:09:22</span>
-                </div>
-                <el-divider></el-divider>
-                <div class="li-item">
-                  <p>【个人】违规操作记录</p>
+                  <p>{{item.title || '--'}}</p>
                 </div>
               </li>
             </ul>
@@ -273,11 +131,53 @@
 </template>
 
 <script>
+import axios from "axios"
 export default {
   data() {
-    return {};
+    return {
+      modellist:[],
+      projectlist:[],
+      datalist:[]
+    };
+  },
+  created(){
+    this.getmodellist()
+    this.getprojectlist()
+    this.getdatalist()
   },
   methods: {
+    getmodellist(){
+      axios({
+        url: `/wisdomaudit/homePage/homeMxList`,
+        method: "post",
+        data: {},
+      }).then((res) => {
+        console.log(res.data.data)
+        this.modellist = res.data.data || ''
+      });
+    },
+    getprojectlist(){
+      axios({
+        url: `/wisdomaudit/homePage/homeProjectList`,
+        method: "post",
+        data: {},
+      }).then((res) => {
+        console.log(res.data.data.homePageDtoList)
+        if(res.data.data.homePageDtoList){
+          this.projectlist = res.data.data.homePageDtoList.slice(0,3) || ''
+        }
+      });
+    },
+    getdatalist(){
+      axios({
+        url: `/wisdomaudit/homePage/homeZlList`,
+        method: "post",
+        data: {},
+      }).then((res) => {
+        console.log(res.data.data)
+        this.datalist = res.data.data || ''
+      });
+    },
     projectEvent(type) {
       // this.$router.push({
       //   path: "/audit/auditItems/projectWorkbench",
@@ -363,7 +263,7 @@ export default {
 
 <style lang="scss"  scoped>
 .el-card {
-  padding: 20px;
+  padding: 0 20px;
 }
 
 .project-wapper {
@@ -374,7 +274,7 @@ export default {
   }
 
   .project-item {
-    width: 30%;
+    width: 33%;
     font-size: 0;
     height: 270px;
 
@@ -446,11 +346,12 @@ export default {
 .odd-even {
   font-size: 18px;
   li:nth-of-type(even) {
-    background: #ccc;
+    background: #eee;
   }
 
   li {
     margin-bottom: 5px;
+    padding: 10px;
     .el-divider {
       margin: 5px 0;
     }
@@ -505,6 +406,13 @@ export default {
       background-color: red;
     }
   }
+}
+</style>
+<style lang="scss">
+.el-card .el-card__header{
+  font-size: 15px;
+  font-weight: bold;
+  color: #439bd8;
 }
 </style>
 
