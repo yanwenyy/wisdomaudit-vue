@@ -13,13 +13,12 @@ export function projectMembership(data){
     data
     })
 }
-// 下拉框接口
-export function getProjectMember(data){
+// 组员人员下拉框接口
+export function getProjectMember(num,size){
     return request({
     baseURL: baseURL,
-    url: `/peopleTable/pageList`,
-    method: 'post',
-    data
+    url: `/user/listUserInfo?`+`pageCurrent=`+num+`&pageSize=`+size,
+    method: 'get',
     })
 }
 
@@ -180,6 +179,15 @@ export function editTaskSelfInfo(data){
     url: `/auditTask/update`,
     method: 'put',
     data
+    })
+}
+
+//设置接口人
+export function setinterFaceperson(isperson,projectId,memberid){
+    return request({
+    baseURL: baseURL,
+    url: `/projectMembership/setIsLiaison?`+`isLiaison=`+ isperson+`&managmentProjectId=` +projectId+`&projectMembershipUuid=`+memberid ,
+    method: 'put',
     })
 }
 

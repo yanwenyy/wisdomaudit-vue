@@ -58,11 +58,20 @@ export function data_push_ing (data) {
 }
 
 // 资料新增 直接下发
-export function data_savePush (data) {
-
+export function data_add_savePush (data) {
   return request({
     baseURL: baseURL,
     url: '/addDataTask/savePush',
+    method: 'post',
+    data
+  })
+}
+// 资料编辑 直接下发
+export function data_edit_savePush (data) {
+  return request({
+    baseURL: baseURL,
+    // url: '/addDataTask/savePush',
+    url: '/addDataTask/updatePush',
     method: 'post',
     data
   })
@@ -176,16 +185,24 @@ export function select_user_data (data) {
 
 
 // 附件详情
-export function enclosure_details (data) {
-  // let id = data.id
-  // return request({
-  //   baseURL: baseURL,
-  //   url: '/auditPreviousDemandData/sysLogById/' + id + '',
-  //   method: 'post',
-  //   data
-  // })
+export function enclosure_details_file (data) {
+  let id = data.id
+  return request({
+    baseURL: baseURL,
+    url: '/auditPreviousDemandData/findFile/' + id + '',
+    method: 'post',
+    data
+  })
 }
 
 
 
-
+// 获取下载 流
+export function enclosure_downloadByFileId (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/auditPreviousDemandData/downloadByFileId`,
+    method: 'post',
+    data: qs.stringify(data),
+  })
+}

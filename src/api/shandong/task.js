@@ -13,7 +13,16 @@ export function enclosure_details (data) {
   // })
 }
 
-
+// 新增上传附件
+export function enclosure_update (data) {
+  let id = data.id
+  return request({
+    baseURL: baseURL,
+    url: '/auditPreviousDemandData/sysLogById/' + id + '',
+    method: 'post',
+    data
+  })
+}
 
 // 模型任务 自建任务
 export function task_pageList (data) {
@@ -35,7 +44,6 @@ export function quoteModel (data) {
   })
 }
 
-
 // 模型任务新增 模型列表
 export function task_model_pageList (data) {
   return request({
@@ -45,8 +53,6 @@ export function task_model_pageList (data) {
     data,
   })
 }
-
-
 // 自建任务新增
 export function task_add (data) {
   return request({
@@ -66,8 +72,6 @@ export function task_details (data) {
     data,
   })
 }
-
-
 // 自建任务编辑 保存
 export function task_update (data) {
   return request({
@@ -77,7 +81,6 @@ export function task_update (data) {
     data,
   })
 }
-
 // 自建任务删除
 export function task_remove (data) {
   let ids = data.ids
@@ -88,7 +91,6 @@ export function task_remove (data) {
     data,
   })
 }
-
 // 更新状态
 export function Task_update_status (data) {
   return request({
@@ -98,7 +100,6 @@ export function Task_update_status (data) {
     data,
   })
 }
-
 // 判断是否有重复的  判断否存在
 export function task_select_repeat (data) {
   return request({
@@ -108,8 +109,6 @@ export function task_select_repeat (data) {
     data,
   })
 }
-
-
 // 责任人
 export function task_select_people (data) {
   return request({
@@ -119,8 +118,6 @@ export function task_select_people (data) {
     data,
   })
 }
-
-
 // 责任人 保存
 export function task_setChargePeople (data) {
   return request({
@@ -130,8 +127,6 @@ export function task_setChargePeople (data) {
     data,
   })
 }
-
-
 // 查看结果  核实
 export function task_data_verify (data) {
   return request({
@@ -141,8 +136,6 @@ export function task_data_verify (data) {
     data,
   })
 }
-
-
 // 问题数
 // 列表
 export function task_problems_list (data) {
@@ -153,8 +146,6 @@ export function task_problems_list (data) {
     data,
   })
 }
-
-
 // 新增
 export function task_problems_save (data) {
   return request({
@@ -164,7 +155,6 @@ export function task_problems_save (data) {
     data,
   })
 }
-
 // 删除
 export function task_problems_delete (data) {
   let ids = data.ids
@@ -175,7 +165,6 @@ export function task_problems_delete (data) {
     data,
   })
 }
-
 // 编辑 回显
 export function task_problems_details (data) {
   let id = data.id
@@ -186,7 +175,6 @@ export function task_problems_details (data) {
     data,
   })
 }
-
 // 编辑修改
 export function task_problems_update (data) {
   return request({
@@ -196,8 +184,6 @@ export function task_problems_update (data) {
     data,
   })
 }
-
-
 // 领域 select
 export function task_problems_loadcascader (data) {
   return request({
@@ -207,8 +193,6 @@ export function task_problems_loadcascader (data) {
     data,
   })
 }
-
-
 // 关联任务
 export function task_problems_relation (data) {
   return request({
