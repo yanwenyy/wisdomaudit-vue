@@ -29,7 +29,7 @@ router.beforeEach(async(to, from, next) => {
       next({ path: '/' })
       NProgress.done() // hack: https://github.com/PanJiaChen/vue-element-admin/pull/2939
     } else {
-      await store.dispatch('user/getInfo')
+      // await store.dispatch('user/getInfo')
       // determine whether the user has obtained his permission roles through getInfo
       next()
     }
