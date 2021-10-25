@@ -138,6 +138,17 @@ export function getProjectMember(num,size){
   })
 }
 
+//附件回显接口
+export function attachmentEcho(data){
+  return request({
+  baseURL: baseURL,
+  url: `/attachment/pageList`,
+  method: 'post',
+  data
+  })
+}
+
+
 
 
 
