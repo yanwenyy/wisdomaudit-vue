@@ -4,9 +4,9 @@
 
     <div>
       <div class="projectTab">
-        <el-table :header-cell-style="{'background-color': '#F4FAFF',}" :data="tableData" style="width: 100%" @select="Selects">
+        <el-table :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}" :data="tableData" style="width: 100%" @select="Selects">
           <el-table-column align="center" type="index" label="编号"> </el-table-column>
-          <el-table-column align="center" prop="basyName" label="资料名称">
+          <el-table-column align="left" prop="basyName" label="资料名称">
             <template slot-scope="scope">
               <el-popover
                 placement="bottom"
