@@ -852,6 +852,7 @@ export default {
           let rep = this.dqProblem;
           rep.auditTaskUuid = rep.auditTaskUuid.join(",");
           rep.basis = rep.basis.join(",");
+          this.dialogDetailVisible = false;
           axios({
             url: `/wisdomaudit/problemList/update`,
             method: "put",
@@ -862,7 +863,6 @@ export default {
                 message: "编辑成功",
                 type: "success",
               });
-              this.dialogDetailVisible = false;
               this.getList();
             }
           });
