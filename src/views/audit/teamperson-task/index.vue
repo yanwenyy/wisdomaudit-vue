@@ -2,7 +2,7 @@
   <div>
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="组员维护" name="first" style="padding: 1%">
-        <el-button type="primary" @click="addgroupMember()">添加</el-button>
+        <el-button type="primary" @click="addgroupMember()">组员维护</el-button>
         <!-- 组员维护列表 -->
         <el-form>
           <el-table

@@ -4,17 +4,18 @@
     <el-row>
       <el-col :span="18">
         <!-- 添加按钮 -->
-        <el-button type="primary" @click="addProject">新增审计项目</el-button>
+        <el-button type="primary" @click="addProject">新增项目</el-button>
       </el-col>
       <el-col :span="5">
         <el-input
-          placeholder="请输入内容"
+          placeholder="请输入项目名称"
           v-model="query.condition.projectName"
           class="input-with-select"
           @keyup.enter.native="queryName"
         >
           <el-button
             slot="append"
+            type="primary"
             icon="el-icon-search"
             @click="queryName"
           ></el-button>
@@ -65,7 +66,7 @@
         <template slot-scope="scope">
           <el-button
             type="text"
-            style="color: #44a3df;background: none; border: 0;"
+            style="color: #44a3df; background: none; border: 0"
             size="small"
             @click="editDialog(scope.row)"
           >
@@ -93,9 +94,10 @@
     <!-- 新增页面 -->
     <el-dialog
       :visible.sync="addDialogVisible"
-      width="50%"
+      width="47%"
       @close="addDialogClosed"
     >
+      <div class="title">新增项目</div>
       <!-- 新增专项的页面 -->
       <div class="addzhuanForm" v-if="prjType == 1">
         <el-form
@@ -103,7 +105,7 @@
           :rules="rules"
           :model="addProjectManagement"
           ref="form"
-           v-loading="loadingForm"
+          v-loading="loadingForm"
         >
           <el-row>
             <el-form-item label="项目编号:" prop="projectCode">
@@ -209,7 +211,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item prop="auditFinishData" style="margin-left:-5px">
+                <el-form-item prop="auditFinishData" style="margin-left: -5px">
                   <el-date-picker
                     type="date"
                     placeholder="请选择"
@@ -217,7 +219,7 @@
                     style="margin-left: 5px"
                     :picker-options="pickerOptions2"
                     @focus="changeTime"
-                    :disabled = "isdisabled"
+                    :disabled="isdisabled"
                   ></el-date-picker>
                 </el-form-item>
               </el-col>
@@ -262,10 +264,10 @@
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="角色" width="60">组长 </el-table-column>
+            <!-- <el-table-column label="角色" width="60">组长 </el-table-column> -->
             <el-table-column
               prop="projectChargemanName"
-              label="负责人"
+              label="分配组长"
               width="330"
             >
               <template slot-scope="scope">
@@ -299,7 +301,7 @@
               <template slot-scope="scope">
                 <el-button
                   type="text"
-                  style="color: #db454b;background: none; border: 0;"
+                  style="color: #db454b; background: none; border: 0"
                   size="small"
                   @click.native.prevent="
                     deleteRow(scope.$index, addProjectManagement.auditList)
@@ -317,7 +319,9 @@
         </el-form>
 
         <div class="addzhuanBtn">
-          <el-button @click="addDialogVisible = false">取消</el-button>
+          <el-button @click="addDialogVisible = false" class="cancel"
+            >取消</el-button
+          >
           <el-button class="nextBtn" @click="addSave('form')">确认</el-button>
         </div>
       </div>
@@ -474,11 +478,11 @@
                     type="date"
                     placeholder="请选择"
                     v-model="addprojectjing.auditStartData"
-                     @change="changStartTime"
+                    @change="changStartTime"
                   ></el-date-picker>
                 </el-form-item>
               </el-col>
-              <el-col :span="8" style="margin-left:-5px">
+              <el-col :span="8" style="margin-left: -5px">
                 <el-form-item prop="auditFinishData">
                   <el-date-picker
                     type="date"
@@ -487,13 +491,13 @@
                     style="margin-left: 3px"
                     :picker-options="pickerOptions1"
                     @focus="changeTime"
-                    :disabled = "isdisabled"
+                    :disabled="isdisabled"
                   ></el-date-picker>
                 </el-form-item>
               </el-col>
             </el-form-item>
           </el-row>
-          <el-row>
+          <!-- <el-row>
             <el-form-item label="地市接口人:" prop="areaUserName">
               <el-input
                 placeholder="请输入"
@@ -501,14 +505,16 @@
               >
               </el-input>
             </el-form-item>
-          </el-row>
+          </el-row> -->
         </el-form>
         <div class="stepBtn">
-        <el-button @click="addDialogVisible = false">取消</el-button>
-        <el-button class="nextBtn" @click="nextBtn('addjingForm')"
-          >确认</el-button
-        >
-      </div>
+          <el-button @click="addDialogVisible = false" class="cancel"
+            >取消</el-button
+          >
+          <el-button class="nextBtn" @click="nextBtn('addjingForm')"
+            >确认</el-button
+          >
+        </div>
       </div>
     </el-dialog>
 
@@ -623,20 +629,20 @@
                     type="date"
                     placeholder="请选择"
                     v-model="addProjectManagement.auditStartData"
-                     @change="changStartTime"
+                    @change="changStartTime"
                   ></el-date-picker>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item prop="auditFinishData" style="margin-left:-5px">
+                <el-form-item prop="auditFinishData" style="margin-left: -5px">
                   <el-date-picker
                     type="date"
                     placeholder="请选择"
                     v-model="addProjectManagement.auditFinishData"
                     style="margin-left: 5px"
-                     :picker-options="pickerOptions2"
+                    :picker-options="pickerOptions2"
                     @focus="changeTime"
-                    :disabled = "isdisabled"
+                    :disabled="isdisabled"
                   ></el-date-picker>
                 </el-form-item>
               </el-col>
@@ -703,7 +709,7 @@
                 <template slot-scope="scope">
                   <el-button
                     type="text"
-                    style="color: #db454b;background: none; border: 0;"
+                    style="color: #db454b; background: none; border: 0"
                     size="small"
                     @click.native.prevent="
                       deleteProjectrow(
@@ -878,20 +884,20 @@
                     type="date"
                     placeholder="请选择"
                     v-model="addprojectjing.auditStartData"
-                     @change="changStartTime"
+                    @change="changStartTime"
                   ></el-date-picker>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item prop="auditFinishData" style="margin-left:-5px">
+                <el-form-item prop="auditFinishData" style="margin-left: -5px">
                   <el-date-picker
                     type="date"
                     placeholder="请选择"
                     v-model="addprojectjing.auditFinishData"
                     style="margin-left: 3px"
-                     :picker-options="pickerOptions1"
+                    :picker-options="pickerOptions1"
                     @focus="changeTime"
-                    :disabled = "isdisabled"
+                    :disabled="isdisabled"
                   ></el-date-picker>
                 </el-form-item>
               </el-col>
@@ -929,15 +935,15 @@ import {
   editProjectUpdata,
   deleteProject,
   thematicAreas,
-  getProjectMember
+  getProjectMember,
 } from "@WISDOMAUDIT/api/shandong/projectmanagement.js";
 
 export default {
   data() {
     return {
-      isdisabled:true,
+      isdisabled: true,
       loading: false,
-      loadingForm:false,
+      loadingForm: false,
       selectprojectPeopleNum: {},
       prjType: "2", //判断项目类型
       projectTypeNum: {
@@ -1007,8 +1013,8 @@ export default {
         },
       ],
       //编辑专项表单数据
-      editProjectManagement:{
-         projectCode: "",
+      editProjectManagement: {
+        projectCode: "",
         projectType: "",
         projectTypeName: "",
         projectName: "",
@@ -1089,8 +1095,8 @@ export default {
       areas: {
         typecode: "Category",
       },
-       pickerOptions1: {}, //新增经责审计期间判断
-        pickerOptions2: {}, //新增专项审计期间判断
+      pickerOptions1: {}, //新增经责审计期间判断
+      pickerOptions2: {}, //新增专项审计期间判断
       // 新增专项的表单验证
       rules: {
         projectTypeName: [
@@ -1180,24 +1186,27 @@ export default {
     this.areasSelect(this.areas);
   },
   methods: {
-    changStartTime(){
+
+    changStartTime() {
       this.isdisabled = false;
     },
     //审计期间禁用判断
-    changeTime(){
+    changeTime() {
       let _this = this;
-       this.pickerOptions1 = {
-          disabledDate(time) {
-            // console.log(time.getTime());
-            return time.getTime() < _this.addprojectjing.auditStartData.getTime();
-          },
-       }
-       this.pickerOptions2 = {
-          disabledDate(time) {
-            // console.log(time.getTime());
-            return time.getTime() < _this.addProjectManagement.auditStartData.getTime();
-          },
-       }
+      this.pickerOptions1 = {
+        disabledDate(time) {
+          // console.log(time.getTime());
+          return time.getTime() < _this.addprojectjing.auditStartData.getTime();
+        },
+      };
+      this.pickerOptions2 = {
+        disabledDate(time) {
+          // console.log(time.getTime());
+          return (
+            time.getTime() < _this.addProjectManagement.auditStartData.getTime()
+          );
+        },
+      };
     },
     //项目列表
     projectData(data) {
@@ -1229,13 +1238,13 @@ export default {
       });
     },
     //项目负责人接口
-    selectprojectPeople(num,size){
+    selectprojectPeople(num, size) {
       this.loadingForm = true;
-       getProjectMember(num,size).then((resp)=>{
-         this.projectpeopleoptions = resp.data.list;
-         console.log(this.projectpeopleoptions);
-         this.loadingForm =false;
-    })
+      getProjectMember(num, size).then((resp) => {
+        this.projectpeopleoptions = resp.data.list;
+        console.log(this.projectpeopleoptions);
+        this.loadingForm = false;
+      });
     },
     // selectprojectPeople(data) {
     //   projectPeople(data).then((resp) => {
@@ -1251,8 +1260,7 @@ export default {
     //新增项目按钮事件
     addProject() {
       this.addDialogVisible = true;
-      this.selectprojectPeople(1,1000);
-      
+      this.selectprojectPeople(1, 1000);
     },
     addData() {
       // alert(11);
@@ -1414,24 +1422,19 @@ export default {
     //专项项目负责人下拉框事件
     LeaderSelect(row) {
       for (let i = 0; i < this.projectpeopleoptions.length; i++) {
-        if (
-          row.projectChargemanID == this.projectpeopleoptions[i].id
-        ) {
+        if (row.projectChargemanID == this.projectpeopleoptions[i].id) {
           row.projectChargemanName = this.projectpeopleoptions[i].realName;
         }
       }
-     
     },
     // 编辑专项项目table负责人下拉框事件
-    LeaderSelectEdit(row){
-        for (let j = 0; j < this.projectpeopleoptions.length; j++) {
-        if (
-          row.projectChargemanName == this.projectpeopleoptions[j].realName
-        ) {
+    LeaderSelectEdit(row) {
+      for (let j = 0; j < this.projectpeopleoptions.length; j++) {
+        if (row.projectChargemanName == this.projectpeopleoptions[j].realName) {
           row.projectChargemanID = this.projectpeopleoptions[j].id;
         }
       }
-     console.log(this.addProjectManagement);
+      console.log(this.addProjectManagement);
     },
 
     addSave(form) {
@@ -1452,7 +1455,7 @@ export default {
     // 编辑
     editDialog(rows) {
       this.editDialogVisible = true;
-       this.selectprojectPeople(1,1000);
+      this.selectprojectPeople(1, 1000);
       if (rows.projectType == "zxsj") {
         this.prjType = 1;
         editProject(rows.managementProjectUuid).then((resp) => {
@@ -1532,7 +1535,7 @@ export default {
   }
   .addIcon {
     background-color: #fff;
-    width: 100%;
+    width: 95%;
     padding: 10px;
     color: #128ad7;
     text-align: center;
@@ -1554,7 +1557,7 @@ export default {
   }
   .addIcon {
     background-color: #fff;
-    width: 100%;
+    width: 98.5%;
     padding: 10px;
     color: #128ad7;
     text-align: center;
@@ -1563,20 +1566,20 @@ export default {
     margin-bottom: 5%;
   }
 }
-.addzhuanBtn{
+.addzhuanBtn {
   //  border: 1px solid red;
   margin-top: 3%;
-  text-align: center;
+  text-align: right;
   .nextBtn {
     background: #508ce6 !important;
     color: #fff;
   }
 }
 .stepBtn {
-  width: 68%;
+  width: 100%;
   // border: 1px solid red;
   margin-top: 3%;
-  text-align: center;
+  text-align: right;
   .nextBtn {
     background: #508ce6 !important;
     color: #fff;
@@ -1585,8 +1588,8 @@ export default {
 .dataTime .el-input {
   width: 96%;
 }
-.zhuandataTime .el-input{
-  width:93%;
+.zhuandataTime .el-input {
+  width: 93%;
 }
 .editdataTime .el-input {
   width: 94%;
@@ -1596,6 +1599,15 @@ export default {
     width: 200px;
     margin: 45px 0 0 -100px;
   }
+}
+.title {
+  border-bottom: 1px solid #d2d2d2;
+  padding: 10px;
+  text-align: left;
+  margin-bottom: 3%;
+}
+.cancel {
+  border: 1px solid #d2d2d2;
 }
 </style>
 <style scoped>

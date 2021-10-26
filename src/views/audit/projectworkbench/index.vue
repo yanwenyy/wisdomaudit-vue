@@ -114,9 +114,7 @@
             >
               <el-submenu index="1">
                 <template slot="title">
-                  <span style=" font-weight: 400"
-                    >审计准备</span
-                  >
+                  <span style="font-weight: 400">审计准备</span>
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="1-1"
@@ -126,9 +124,7 @@
               </el-submenu>
               <el-submenu index="2">
                 <template slot="title">
-                  <span style="font-weight: 400"
-                    >审计实施</span
-                  >
+                  <span style="font-weight: 400">审计实施</span>
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="2-1">审计资料<span></span></el-menu-item>
@@ -141,9 +137,7 @@
               </el-submenu>
               <el-submenu index="3">
                 <template slot="title">
-                  <span style=" font-weight: 400"
-                    >报告阶段</span
-                  >
+                  <span style="font-weight: 400">报告阶段</span>
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="3-1">审计报告<span></span></el-menu-item>
@@ -420,8 +414,10 @@
       <el-table
         :data="modelTableData"
         style="width: 100%"
+        :row-key="index + 1"
         @selection-change="handleSelectionChangeModel"
         ref="multipleModelRef"
+        v-loading="modelLoading"
       >
         <el-table-column type="selection" :reserve-selection="true">
         </el-table-column>
@@ -653,7 +649,7 @@ import {
   projectList,
   projectListByuser,
   thematicAreas,
-  setprojectInit
+  setprojectInit,
 } from "@WISDOMAUDIT/api/shandong/projectmanagement.js";
 import {
   projectMembership,
@@ -689,6 +685,7 @@ export default {
     return {
       data: [],
       value: [],
+      modelLoading: false, //模型列表loading
       loading: false,
       ifshow: false,
       refreash: false,
@@ -858,17 +855,15 @@ export default {
       query: {
         condition: {
           managementProjectUuid: "",
-          peopleRole: "2"
+          peopleRole: "2",
         },
         pageNo: 1,
         pageSize: 1000,
       },
-      updataPerson:{
-        projectId:'',
-        projectMembershipUuid:'',
-        projectMemberships:[
-
-        ]
+      updataPerson: {
+        projectId: "",
+        projectMembershipUuid: "",
+        projectMemberships: [],
       },
       // 自建任务校验
       taskSelfRules: {
@@ -953,16 +948,15 @@ export default {
 
       if (index > 6) {
         this.projectInitUuid =
-        this.projectInitMore[index].managementProjectUuid;
+          this.projectInitMore[index].managementProjectUuid;
       } else {
         this.projectInitUuid = this.projectInit[index].managementProjectUuid;
       }
 
       // 更新项目接口
-      setprojectInit(this.active_project).then((resp)=>{
+      setprojectInit(this.active_project).then((resp) => {
         console.log(resp);
-      })
-
+      });
     },
 
     //责任人选择事件
@@ -997,19 +991,13 @@ export default {
       // console.log(this.managementProjectUuid);
       this.addDialogVisible = true;
       this.getSelectData(1, 1000);
-      auditModelList(this.modelQuery).then((resp) => {
-        this.modelTableData = resp.data.records;
-        this.modelSize = resp.data;
-      });
       // console.log(this.managementProjectUuid);
       this.getTaskSelfList.condition.managementProjectUuid =
         this.managementProjectUuid;
       this.getTaskSelf(this.getTaskSelfList);
       this.drawer = false;
 
-
       this.query.condition.managementProjectUuid = this.managementProjectUuid;
-
     },
     // 更多未初始化项目
     moreProject(data) {
@@ -1026,7 +1014,7 @@ export default {
     // 选择组员事件
     selectMember(val) {
       console.log(val);
-      this.updataPerson.projectId  =this.managementProjectUuid;
+      this.updataPerson.projectId = this.managementProjectUuid;
       this.updataPerson.projectMemberships = [];
       for (let i = 0; i < val.length; i++) {
         this.updataPerson.projectMemberships.push({
@@ -1034,12 +1022,12 @@ export default {
           isLiaison: 0,
           managementProjectUuid: this.managementProjectUuid,
           peopleTableUuid: val[i],
-          projectMembershipUuid:val[i].projectMembershipUuid
+          projectMembershipUuid: val[i].projectMembershipUuid,
         });
       }
       console.log(this.updataPerson);
     },
-     // 组员查询
+    // 组员查询
     getSelectData(num, size) {
       this.loading = true;
       getProjectMember(num, size).then((resp) => {
@@ -1051,7 +1039,7 @@ export default {
           this.data.push({
             key: String(e.id),
             label: e.realName + e.mobile,
-             disabled: false
+            disabled: false,
           });
           this.projectMember(this.query);
         });
@@ -1065,10 +1053,10 @@ export default {
         this.tableData = resp.data.records;
         this.value = [];
         this.peopleSelection.forEach((e) => {
-          if(e.isCanDelete==0){
-            for(let j =0;j<this.data.length;j++){
-              if(this.data[j].key == e.peopleTableUuid){
-                this.data[j].disabled = true
+          if (e.isCanDelete == 0) {
+            for (let j = 0; j < this.data.length; j++) {
+              if (this.data[j].key == e.peopleTableUuid) {
+                this.data[j].disabled = true;
               }
             }
           }
@@ -1089,20 +1077,17 @@ export default {
       //下一步 保存组员
       editprojectMembershipList(this.updataPerson).then((resp) => {
         this.$message.success("添加成功！");
-         this.query.condition.managementProjectUuid = this.managementProjectUuid;
-      this.projectMember(this.query);
-
-
+        this.query.condition.managementProjectUuid = this.managementProjectUuid;
+        this.projectMember(this.query);
       });
 
-     this.getModelList.condition.managementProjectUuid =
+      this.getModelList.condition.managementProjectUuid =
         this.managementProjectUuid;
       // console.log(this.getModelList);
       this.getauditModelList(this.getModelList);
-
     },
     //删除任务按钮事件
-      deleteModel(row) {
+    deleteModel(row) {
       this.$confirm("你将删除引入的模型任务分配", "提示", {
         distinguishCancelAndClose: true,
         confirmButtonText: "确定",
@@ -1110,10 +1095,10 @@ export default {
       })
         .then(() => {
           deletmodelTask(row.auditTaskUuid).then((resp) => {});
-           this.getModelList.condition.managementProjectUuid =
-        this.managementProjectUuid;
-      // console.log(this.getModelList);
-      this.getauditModelList(this.getModelList);
+          this.getModelList.condition.managementProjectUuid =
+            this.managementProjectUuid;
+          // console.log(this.getModelList);
+          this.getauditModelList(this.getModelList);
         })
         .catch((action) => {
           this.$message({
@@ -1201,20 +1186,35 @@ export default {
 
     //  完成按钮
     saveBtn() {
-
       this.projectCode.managementProjectUuid = this.managementProjectUuid;
       // this.projectCode.projectType = this.notInitType;
       editProjectCode(this.projectCode).then((resp) => {
-        this.$message.success("初始化项目完成！")
+        this.$message.success("初始化项目完成！");
       });
 
       setInterval(() => {
         this.$router.go(0);
       }, 1000);
     },
+    //新增模型任务按钮事件
     selectModel() {
       this.addDialogVisible = false;
       this.modelDialog = true;
+      this.modelLoading = true;
+
+       for (let i = 0; i < this.modelTableData.length; i++) {
+        this.$refs.multipleModelRef.toggleRowSelection(
+          this.modelTableData[i],
+          false
+        );
+      }
+
+      auditModelList(this.modelQuery).then((resp) => {
+        console.log(resp);
+        this.modelTableData = resp.data.records;
+        this.modelSize = resp.data;
+        this.modelLoading = false;
+      });
     },
     // 未初始化弹框关闭事件
     addClosed() {
@@ -1223,17 +1223,7 @@ export default {
       this.data = this.personMes;
       this.value = [];
     },
-    // 新增模型任务弹框取消按钮
-    res() {
-      this.modelDialog = false;
-      this.addDialogVisible = true;
-      for (let i = 0; i < this.modelTableData.length; i++) {
-        this.$refs.multipleModelRef.toggleRowSelection(
-          this.modelTableData[i],
-          false
-        );
-      }
-    },
+
     // 新增自建任务弹框取消按钮
     TaskSelf_res() {
       this.taskSelfDialogVisible = false;
@@ -1246,13 +1236,24 @@ export default {
       this.taskSelfDialogVisible = false;
       this.addDialogVisible = true;
     },
-    // 新增自建任务弹框关闭事件
-    MedolDialogClosed() {
+    // 新增模型任务弹框取消按钮
+    res() {
       this.modelDialog = false;
       this.addDialogVisible = true;
       for (let i = 0; i < this.modelTableData.length; i++) {
         this.$refs.multipleModelRef.toggleRowSelection(
           this.modelTableData[i],
+          false
+        );
+      }
+    },
+    // 模型任务弹框关闭事件
+    MedolDialogClosed() {
+      this.modelDialog = false;
+      this.addDialogVisible = true;
+      for (let p = 0; p < this.modelTableData.length; p++) {
+        this.$refs.multipleModelRef.toggleRowSelection(
+          this.modelTableData[p],
           false
         );
       }
@@ -1373,7 +1374,7 @@ export default {
         }
       });
       this.addDialogVisible = true;
-     this.getModelList.condition.managementProjectUuid =
+      this.getModelList.condition.managementProjectUuid =
         this.managementProjectUuid;
       // console.log(this.getModelList);
       this.getauditModelList(this.getModelList);
@@ -1443,9 +1444,11 @@ export default {
 .projectWorkbench {
   padding: 2%;
   .title {
+    padding: 10px;
     font-weight: 700;
     font-size: 15px;
     margin-bottom: 1%;
+    border-bottom: 1px solid #d2d2d2;
   }
   // .text {
   //   background: #fff;

@@ -121,7 +121,8 @@
     </div>
 
     <!-- 审计任务维护编辑弹框 -->
-    <el-dialog title="编辑" :visible.sync="editModelDialogVisible" width="50%">
+    <el-dialog :visible.sync="editModelDialogVisible" width="50%">
+      <div class="title">编辑任务</div>
       <el-form label-width="80px" class="selfTask" :model="editTask">
         <el-form-item label="自建任务名称：">
           <el-input placeholder="请输入" v-model="editTask.taskName"></el-input>
@@ -207,12 +208,12 @@
       width="50%"
       :before-close="TaskDialogClosed"
     >
-      <div class="taskTitle">新增任务(请先选择任务类型)</div>
+      <div class="taskTitle">新增任务</div>
       <div class="taskAdd" v-if="task == '1'">
         <el-form
-          label-width="80px"
+          label-width="90px"
           :model="taskSelf"
-          style="margin-left: 20%"
+          style="margin-left: 20%;margin-top:5%"
           ref="selfTaskRef"
           :rules="taskSelfRules"
         >
@@ -313,7 +314,7 @@
         </div>
       </div>
       <div class="model_Info" v-else-if="task == '2'">
-        <el-row style="margin-top: 50px">
+        <el-row style="margin-top: 30px">
           <el-col :span="15">
             <div style="margin-top: 2.5%; color: #5f6165; margin-top: 10px">
               请选择想要引用的模型
@@ -679,6 +680,11 @@ export default {
       });
       this.thematicSelect(this.thematic);
       this.areasSelect(this.areas);
+
+       this.enclosureInfo.condition.businessUuid = row.auditTaskUuid;
+      attachmentEcho(this.enclosureInfo).then((resp) => {
+        console.log(resp);
+      });
     },
 
     // 列表显示
@@ -751,7 +757,6 @@ export default {
       this.task = 2;
       this.loading = true;
       auditModelList(this.model_QueryInfo).then((resp) => {
-        console.log(resp);
         this.modelTableData = resp.data.records;
         this.modelSize = resp.data;
         this.loading = false;
@@ -961,12 +966,15 @@ export default {
     handleChangePic(file, fileList) {
       this.fileList = fileList;
       this.file = file.raw;
+      console.log(this.fileList);
+      console.log(this.file);
     },
     //新增自建任务完成按钮
     saveTask(selfTaskRef) {
       this.$refs[selfTaskRef].validate((valid) => {
         if (valid) {
-          let formData = new FormData();
+          if(this.fileList.length>0){
+            let formData = new FormData();
           formData.append("file", this.file.raw);
           this.fileList.forEach((item) => {
             formData.append("files", item.raw);
@@ -991,6 +999,7 @@ export default {
               selfTaskFunction(this.taskSelf).then((resp) => {
                 this.$message.success("新增任务成功！");
                 this.TaskDialogVisible = false;
+                this.taskSelf = {};
                 this.queryInfo.condition.managementProjectUuid =
                   this.active_project;
                 this.getmodelTaskList(this.queryInfo);
@@ -1003,6 +1012,20 @@ export default {
               });
             }
           });
+          }else{
+             this.taskSelf.managementProjectUuid = this.active_project;
+              selfTaskFunction(this.taskSelf).then((resp) => {
+                this.$message.success("新增任务成功！");
+                this.TaskDialogVisible = false;
+                this.taskSelf = {};
+                this.queryInfo.condition.managementProjectUuid =
+                  this.active_project;
+                this.getmodelTaskList(this.queryInfo);
+                this.loading = false;
+
+              });
+          }
+          
         } else {
           console.log("error submit!!");
           return false;
@@ -1415,7 +1438,7 @@ export default {
 }
 .taskAdd {
   width: 70%;
-  margin: 20px auto;
+  margin: 10px auto;
   /* border: 1px solid red; */
 }
 .taskAdd .el-input {
@@ -1460,7 +1483,16 @@ export default {
 }
 .taskTitle {
   text-align: center;
+  padding: 10px;
   color: #000;
+  font-weight: 700;
+ border-bottom: 1px solid #d2d2d2;
+}
+.title {
+  border-bottom: 1px solid #d2d2d2;
+  padding: 10px;
+  text-align: center;
+  margin-bottom: 3%;
   font-weight: 700;
 }
 </style>
