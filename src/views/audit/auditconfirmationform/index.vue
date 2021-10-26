@@ -46,8 +46,7 @@
           <el-button
             size="small"
             type="text"
-            class="btnStyle"
-            style="color: #db454b"
+            class="btnStyle red"
             @click="deletes(scope.row.auditConfirmationUuid)"
             >删除</el-button
           >
