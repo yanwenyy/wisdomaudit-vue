@@ -95,7 +95,7 @@
                   size="small"
                   @click.native.prevent="deleteModel(scope.row)"
                 >
-                  移除
+                  删除
                 </el-button>
               </template>
             </el-table-column>
