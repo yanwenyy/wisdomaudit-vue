@@ -752,7 +752,7 @@
                        v-model="save_zj_query.enclosure"
                        :on-change="handleChangePic"
                        :on-success="handleAvatarSuccess"
-                       :on-progress="up_ing"
+                       :on-preview="up_ing"
                        :file-list="fileList"
                        :auto-upload="false"
                        multiple>
@@ -1147,7 +1147,8 @@ export default {
               this.fileList.forEach((item) => {
                 formData.append('files', item.raw);
               })
-
+              console.log(formData);
+              console.log(this.file);
               this.$axios({
                 method: 'post',
                 url: 'http://localhost:9529/wisdomaudit/attachment/fileUploads',
@@ -1333,45 +1334,41 @@ export default {
       task_details(params).then(resp => {
         this.edit_details = resp.data
         this.save_zj_query = this.edit_details
-        console.log(this.edit_details);
-      })
-      // 
-      let params2 = {
-        pageNo: 1,
-        pageSize: 10,
-        condition: {
-          businessUuid: data.auditTaskUuid
+        // console.log(this.edit_details);
+        let params2 = {
+          pageNo: 1,
+          pageSize: 10,
+          condition: {
+            businessUuid: data.auditTaskUuid
+          }
         }
-      }
-      this.file_details(params, 1);
+        this.file_details(params2, 1);//附件详情
+      })
     },
-
-
     // 查看附件详情
     open_enclosure_details (id) {
-      console.log(id);
       this.auditTaskUuid = id
       this.dialogVisibl_enclosure_details = true;//显示附件详情
-      let params = {
+      let params2 = {
         pageNo: 1,
         pageSize: 10,
         condition: {
           businessUuid: this.auditTaskUuid
         }
       }
-      this.file_details(params, 2);
+      this.file_details(params2, 2);
     },
 
     // 附件详情
-    file_details (params, index) {
-      task_problems_uopload_details(params).then(resp => {
+    file_details (params2, index) {
+      task_problems_uopload_details(params2).then(resp => {
         // index=1  列表查看附件详情
         if (index == 2) {
           this.enclosure_details_list = resp.data
-          // console.log(this.enclosure_details_list);
         } else {
+          console.log(this.Upload_file);
           // 编辑回显
-          resp.data = this.fileList
+          resp.data = this.Upload_file
         }
 
       })

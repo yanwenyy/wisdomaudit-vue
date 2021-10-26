@@ -1,8 +1,6 @@
 <template>
   <div class="page-container">
     <div v-if="false">
-      
-    
     <div class="filter-container">
       <QueryField
         ref="queryfield"

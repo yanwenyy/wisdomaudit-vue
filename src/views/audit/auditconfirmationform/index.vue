@@ -3,17 +3,19 @@
     <el-button type="primary" @click="addConfirmation()">新增确认单</el-button>
     <!-- 审计确认单列表 -->
     <el-table
+      :header-cell-style="{'background-color': '#F4FAFF',}"
       :data="confirmaryData"
       style="margin-top: 1%"
       class="confirmaryTable"
     >
-      <el-table-column type="index" label="序号"></el-table-column>
-      <el-table-column label="审计(调查)事项" prop="matter"></el-table-column>
-      <el-table-column label="责任人" prop="liablePerson"></el-table-column>
-      <el-table-column label="问题数" prop="problemsNumber"></el-table-column>
-      <el-table-column label="确认单附件">
+      <el-table-column align="center" type="index" label="序号"></el-table-column>
+      <el-table-column align="center" label="审计(调查)事项" prop="matter"></el-table-column>
+      <el-table-column align="center" label="责任人" prop="liablePerson"></el-table-column>
+      <el-table-column align="center" label="问题数" prop="problemsNumber"></el-table-column>
+      <el-table-column align="center" label="确认单附件">
         <template slot-scope="scope">
           <el-popover
+            v-if="scope.row.confirmationFileNumber"
             placement="bottom"
             width="200"
             @show="getFileList(scope.row.auditConfirmationUuid)"
@@ -30,8 +32,7 @@
           <el-button
             size="small"
             type="text"
-            class="btnStyle"
-            style="color: #1371cc"
+            class="btnStyle editBtn"
             @click="edit(scope.row)">编辑</el-button
           >
           <el-upload
@@ -40,7 +41,7 @@
             :action="'/wisdomaudit/auditConfirmation/fileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid+'&confirmationFileNumber='+(scope.row.confirmationFileNumber||'')"
             :on-success="list_data_start"
             accept=".zip,.doc">
-            <el-button size="small" type="text"  style="color: blue;background: transparent">上传附件</el-button>
+            <el-button size="small" type="text"  style="background: transparent;" class="editBtn">上传附件</el-button>
           </el-upload>
           <el-button
             size="small"
@@ -67,11 +68,11 @@
               :action="'/wisdomaudit/auditConfirmation/endFileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid"
               :on-success="list_data_start"
               accept=".zip,.doc">
-              <el-button size="small" type="text"  style="color: blue;background: transparent">上传</el-button>
+              <el-button size="small" type="text"  style="background: transparent;padding:0" class="editBtn">上传</el-button>
             </el-upload>
             <el-tooltip placement="bottom"  effect="light" v-if="scope.row.endConfirmationFile">
               <div class="pointer" slot="content">{{scope.row.endConfirmationFile}}</div>
-              <span><i class="el-icon-folder-opened list-folder"></i>1</span>
+              <span class="editBtn"><i class="el-icon-folder-opened list-folder"></i>1</span>
             </el-tooltip>
           </el-button>
         </template>
@@ -85,131 +86,33 @@
     >
       <div class="title">{{confirmationDialogTitle}}</div>
       <el-form class="formData" label-width="130px"  :model="formDetail">
-        <el-row :gutter="24">
-          <el-col :span="10">
-            <el-form-item label="审计项目名称:"
-              >{{managementProjectName}}</el-form-item
-            >
-          </el-col>
-          <el-col :span="10">
-            <el-form-item label="被审计单位:">{{auditOrgName}}</el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-form-item label="审计（调查）事项:">
-            <el-input type="textarea" v-model="formDetail.matter"></el-input>
-          </el-form-item>
-        </el-row>
-        <el-row>
-          <el-form-item label="审计(调查)事项描述:">
-            <el-button @click="getRelationQues">关联问题</el-button>
-            <div class="relation-div" v-if="relationStatus">
-              <div class="relation-div-search">
-                <el-form :inline="true" :model="searchform" @keyup.enter.native="getRelationQues()" class="queryForm">
-                  <el-form-item>
-                    <el-input v-model="searchform.problem" placeholder="问题名称" clearable>
-                      <el-button slot="append" icon="el-icon-search" @click="getRelationQues"></el-button>
-                    </el-input>
-                  </el-form-item>
-                </el-form>
-              </div>
-              <el-table
-                :header-cell-style="{'text-align': 'center','background-color': 'whitesmoke',}"
-                ref="multipleTable"
-                :data="relationTabel"
-                class="relationTabelClass"
-                tooltip-effect="dark"
-                style="width: 100%"
-                @selection-change="relationTabelSel">
-                <el-table-column type="selection" align="center" />
-                <el-table-column
-                  align="center"
-                  type="index"
-                  label="序号">
-                </el-table-column>
-                <el-table-column
-                  align="center"
-                  prop="field"
-                  label="领域"
-                  width="180">
-                </el-table-column>
-                <el-table-column
-                  align="center"
-                  prop="problem"
-                  label="问题"
-                  width="180">
-                </el-table-column>
-                <el-table-column
-                  align="center"
-                  prop="basis"
-                  width="180"
-                  label="依据">
-                </el-table-column>
-                <el-table-column
-                  align="center"
-                  prop="describe"
-                  width="200"
-                  label="描述">
-                </el-table-column>
-                <el-table-column
-                  align="center"
-                  prop="problemDiscoveryTime"
-                  width="150"
-                  label="发现日期">
-                  <template slot-scope="scope">{{
-                    scope.row.problemDiscoveryTime | dateformat
-                    }}</template>
-                </el-table-column>
-                <el-table-column
-                  align="center"
-                  prop="riskAmount"
-                  width="150"
-                  label="风险金额">
-                </el-table-column>
-                <el-table-column
-                  align="center"
-                  prop="managementAdvice"
-                  width="150"
-                  label="管理建议">
-                </el-table-column>
-                <el-table-column
-                  align="center"
-                  prop="problemFindPeople"
-                  width="150"
-                  label="发现人">
-                </el-table-column>
-              </el-table>
-              <div class="relation-div-footer">
-                <el-button @click="relationStatus=false">取消</el-button>
-                <el-button  type="primary" @click="setRelation">生成</el-button>
-              </div>
-            </div>
-            <el-input type="textarea" v-model="formDetail.matterDetail"></el-input>
-          </el-form-item>
-        </el-row>
-        <el-row>
-          <el-col :span="7">
-            <el-form-item label="审计人员:">
-              <el-input placeholder="请输入"  v-model="formDetail.auditorsName"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="7">
-            <el-form-item label="复核人:">
-              <el-input placeholder="请输入" v-model="formDetail.reviewerName"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="7">
-            <el-form-item label="编制日期:">
-              <el-date-picker
-                v-model="formDetail.compileDate"
-                type="date"
-                placeholder="选择日期"
-                value-format="yyyy-MM-dd"
-                style="width: 100%"
-              ></el-date-picker>
-            </el-form-item>
-          </el-col>
-        </el-row>
+        <el-form-item class="itemTwo" label="审计项目名称:"
+        >{{managementProjectName}}</el-form-item
+        >
+        <el-form-item class="itemTwo" label="被审计单位:">{{auditOrgName}}</el-form-item>
+        <el-form-item label="审计（调查）事项:">
+          <el-input type="textarea" v-model="formDetail.matter"></el-input>
+        </el-form-item>
+        <el-form-item label="审计(调查)事项描述:">
+          <el-button @click="getRelationQues">关联问题</el-button>
+
+          <el-input type="textarea" v-model="formDetail.matterDetail"></el-input>
+        </el-form-item>
+        <el-form-item class="itemThree" label="审计人员:">
+          <el-input placeholder="请输入"  v-model="formDetail.auditorsName"></el-input>
+        </el-form-item>
+        <el-form-item class="itemThree" label="复核人:">
+          <el-input placeholder="请输入" v-model="formDetail.reviewerName"></el-input>
+        </el-form-item>
+        <el-form-item class="itemThree" label="编制日期:">
+          <el-date-picker
+            v-model="formDetail.compileDate"
+            type="date"
+            placeholder="选择日期"
+            value-format="yyyy-MM-dd"
+            style="width: 100%"
+          ></el-date-picker>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="handleClose">取 消</el-button>
@@ -263,6 +166,7 @@
         <el-button type="primary" @click="saveForm">确 定</el-button>
       </span>
     </el-dialog>
+    <search-list ref="searchTabel" @refreshSearch="getSearchInfo"></search-list>
   </div>
 </template>
 
@@ -271,7 +175,9 @@
       '@SDMOBILE/api/shandong/ls'
   import { task_pageList_wt} from
       '@SDMOBILE/api/shandong/AuditReport'
+  import SearchList from "./searchList"
 export default {
+  components: {SearchList},
   props:['active_project'],
   data() {
     return {
@@ -293,9 +199,7 @@ export default {
       relationTabel:[],//关联问题
       relationStatus:false,//关联问题显示状态
       multipleSelection:[],//关联问题列表已选
-      searchform:{
-        problem:''
-      },//关联问题搜索
+
       managementProjectName:'',//审计项目名称
       auditOrgName:'',//被审计单位
       projectType:'',//项目类型 jzsj经责审计  zxsj专项审计
@@ -383,36 +287,18 @@ export default {
     },
     //关联问题点击
     getRelationQues(){
-      var params={
-        condition:{
-          managementProjectUuid:this.active_project,
-          problem:this.searchform.problem
-        }
-      };
-      task_pageList_wt(params).then(resp => {
-        var datas=resp.data;
-        this.relationTabel=datas.records;
-        this.relationStatus = true
-      })
+      this.$nextTick(() => {
+        this.$refs.searchTabel.init(this.active_project);
+      });
+
     },
-    //关联问题多选的时候
-    relationTabelSel(row){
-      this.multipleSelection =row
+    //获取关联的问题
+    getSearchInfo(data){
+      this.formDetail.matterDetail=data.str;
+      this.formDetail.problemListUuidList=data.problemListUuidList;
+      this.formDetail.problemsNumber=data.multipleSelection.length;
     },
-    //生成关联问题
-    setRelation(){
-      if(this.multipleSelection.length>0){
-        var str='',problemListUuidList=[];
-        this.multipleSelection.forEach((item)=>{
-          str+=item.problem+'\n';
-          problemListUuidList.push(item.problemListUuid)
-        });
-        this.formDetail.matterDetail=str;
-        this.formDetail.problemListUuidList=problemListUuidList;
-        this.formDetail.problemsNumber=this.multipleSelection.length;
-      }
-      this.relationStatus = false;
-    },
+
     //保存审计确认单
     saveForm(){
       if(this.confirmationDialogTitle=='新增确认单'){
@@ -471,9 +357,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.auditConfirmation {
-  padding: 1%;
-}
 .confirmaryTable {
   .update {
     display: flex;
@@ -515,26 +398,7 @@ export default {
 }
 </style>
 <style scoped>
-/deep/.formData .el-form-item__content {
-    position: relative;
-    top: -36px;
-    left: 0%;
-  }
- /deep/ .formData .el-textarea__inner{
-     position: relative;
-     top: 8px;
-     left: 0%;
-     width: 700px;
-  }
-  /deep/ .formData .el-input__inner{
-     position: relative;
-     width: 185px;
-  }
-  /deep/ .formData label {
-    display: inline-block;
-    width:500px;
-    text-align: right;
-  }
+  @import '../../../assets/styles/css/yw.css';
   .list-folder{
     color:orange;
     margin-right: 5px;
@@ -544,30 +408,6 @@ export default {
     background: transparent;
     border: none;
     color:blue;
-  }
-  .relation-div-footer{
-    margin-top: 10px;
-    text-align: center;
-  }
-  >>>.relation-div-footer button{
-    margin-left: 10px;
-  }
-  .relation-div{
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #999;
-    border-radius: 4px;
-    margin-top: 10px;
-  }
-  >>>.relationTabelClass label{
-    width: auto!important;
-  }
-  >>>.relation-div-search .el-form-item__content{
-    position: static!important;
-  }
-  .relation-div-search{
-    text-align: right;
-    clear: both;
   }
   .zxTabel{
     border: 1px solid #ddd;

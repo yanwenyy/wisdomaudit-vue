@@ -15,7 +15,7 @@
           @current-change="handleCurrentChange"
           :header-cell-style="{
           'text-align': 'center',
-          'background-color': 'whitesmoke',
+          'background-color': '#F4FAFF',
         }"
           style="width: 100%;">
           <el-table-column
@@ -70,9 +70,11 @@
       </div>
     </el-dialog>
     <el-dialog
-      :title="新增指标 "
+      center
+      title="新增指标 "
       :visible.sync="dialogFormVisible"
       :close-on-click-modal="false"
+      width="50%"
     >
       <el-form
         ref="dataForm"
@@ -157,7 +159,7 @@
     data() {
       return {
         visible: false,
-        dialogFormVisible:true,
+        dialogFormVisible:false,
         temp:{},
         dataList: [],
         page: {
@@ -186,16 +188,26 @@
 </script>
 
 <style scoped>
+  @import "../../../assets/styles/css/yw.css";
+  .zb-form{
+    margin-top: 20px;
+  }
   >>>.zb-form .el-form-item{
-    margin-bottom: 10px!important;
+    margin-bottom: 15px!important;
   }
   >>>.zb-form .el-form-item__content{
-    width: 30%;
+    width: 60%;
     display: inline-block;
+  }
+  >>>.zb-form .el-form-item__content .el-input,>>>.zb-form .el-form-item__content .el-select {
+    width: 100%;
   }
   >>>.zb-form .el-form-item__label{
     width: 20%!important;
     text-align: right!important;
     display: inline-block;
+  }
+  .page{
+    text-align: right;
   }
 </style>

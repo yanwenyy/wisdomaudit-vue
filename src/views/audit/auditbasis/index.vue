@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="sjyj-body">
 
     <el-row type="flex" :gutter="20">
       <div>
@@ -74,5 +74,8 @@
 
   .el-row {
     padding: 10px 0 0 1%;
+  }
+  .sjyj-body{
+    background: #fff;
   }
 </style>>
