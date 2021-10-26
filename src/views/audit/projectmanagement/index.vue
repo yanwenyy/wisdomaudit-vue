@@ -1109,13 +1109,13 @@ export default {
           { required: true, message: "请填写项目名称", trigger: "blur" },
         ],
         projectLeaderName: [
-          { required: true, message: "请选择项目负责人", trigger: "change" },
+          { required: true, message: "请选择项目负责人", trigger: ["blur","change"] },
         ],
         specialName: [
-          { required: true, message: "请选择专题", trigger: "change" },
+          { required: true, message: "请选择专题", trigger: ["blur","change"] },
         ],
         fieldName: [
-          { required: true, message: "请选择领域", trigger: "change" },
+          { required: true, message: "请选择领域", trigger: ["blur","change"] },
         ],
         auditStartData: [
           {
@@ -1141,16 +1141,16 @@ export default {
           { required: true, message: "请选择项目类型", trigger: "change" },
         ],
         projectLeaderName: [
-          { required: true, message: "请选择项目负责人", trigger: "change" },
+          { required: true, message: "请选择项目负责人", trigger:  ["blur","change"]  },
         ],
         specialName: [
-          { required: true, message: "请选择专题", trigger: "change" },
+          { required: true, message: "请选择专题", trigger:  ["blur","change"]  },
         ],
         fieldName: [
-          { required: true, message: "请选择领域", trigger: "change" },
+          { required: true, message: "请选择领域", trigger:  ["blur","change"] },
         ],
         auditOrgName: [
-          { required: true, message: "请选择被审计单位", trigger: "change" },
+          { required: true, message: "请选择被审计单位", trigger:  ["blur","change"]  },
         ],
         auditOrgLeader: [
           { required: true, message: "请填写被审计领导", trigger: "blur" },
@@ -1318,6 +1318,7 @@ export default {
     },
     // 项目分类下拉框事件
     selectprojectType(val) {
+
       // 如果不是专项分类
       if (val !== "zxsj") {
         this.prjType = 2;
@@ -1350,6 +1351,16 @@ export default {
         getItemId(this.projectTypeSelect).then((resp) => {
           this.addProjectManagement.projectCode = resp.data;
           this.addProjectManagement.auditList[0].projectCode = resp.data;
+        });
+      }
+      var that=this;
+      if(val){
+        this.$nextTick(() => {
+          if(that.$refs['addjingForm']!=undefined){
+            that.$refs['addjingForm'].clearValidate()
+          }else{
+            that.$refs['form'].clearValidate()
+          }
         });
       }
     },
