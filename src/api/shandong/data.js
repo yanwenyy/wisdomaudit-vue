@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import qs from 'qs'
 
-const baseURL = '/wisdomaudit'
+const baseURL = '/wisdomaudit_wei'
 
 // 资料列表 未完成
 export function data_pageList (data) {
@@ -204,5 +204,17 @@ export function enclosure_downloadByFileId (data) {
     url: `/auditPreviousDemandData/downloadByFileId`,
     method: 'post',
     data: qs.stringify(data),
+  })
+}
+
+
+// 附件详情
+export function enclosure_sysLogById (data) {
+  let id = data.id
+  return request({
+    baseURL: baseURL,
+    url: '/addDataTask/sysLogById/' + id + '',
+    method: 'post',
+    data
   })
 }
