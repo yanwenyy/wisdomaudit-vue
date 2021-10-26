@@ -303,7 +303,6 @@ export default {
     },
     // 组员维护列表回显展示
     projectMember(data) {
-      this.loading = true;
       projectMembership(data).then((resp) => {
         this.tableData = resp.data.records;
         this.personTableList = resp.data;
@@ -325,7 +324,6 @@ export default {
           }
           this.value.push(e.peopleTableUuid);
         });
-        this.loading = false;
       });
     },
     //组员列表分页点击事件

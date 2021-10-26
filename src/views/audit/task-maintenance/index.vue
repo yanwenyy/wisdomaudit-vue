@@ -756,6 +756,7 @@ export default {
       this.TaskDialogVisible = true;
       this.task = 2;
       this.loading = true;
+      this.model_QueryInfo.condition.modelName = "";
       auditModelList(this.model_QueryInfo).then((resp) => {
         this.modelTableData = resp.data.records;
         this.modelSize = resp.data;
@@ -852,12 +853,10 @@ export default {
     },
     //模型模糊查询
     queryModel() {
-      this.loading = true;
       auditModelList(this.model_QueryInfo).then((resp) => {
         // console.log(resp);
         this.modelTableData = resp.data.records;
         this.modelSize = resp.data;
-        this.loading = false;
       });
     },
     //引入模型选择事件
@@ -1072,6 +1071,7 @@ export default {
     },
     // 自建取消按钮
     resBtn() {
+      this.taskSelf = [];
       this.TaskDialogVisible = false;
     },
     // 模型取消按钮
@@ -1401,7 +1401,7 @@ export default {
 .stepBtn {
   /* border: 1px solid red; */
   margin-top: 5%;
-  text-align: center;
+  text-align: right;
 }
 .addAudit .nextBtn {
   background: #508ce6 !important;
@@ -1482,7 +1482,7 @@ export default {
   border-radius: 5px;
 }
 .taskTitle {
-  text-align: center;
+  text-align: left;
   padding: 10px;
   color: #000;
   font-weight: 700;
