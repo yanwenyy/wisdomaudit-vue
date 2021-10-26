@@ -206,3 +206,15 @@ export function enclosure_downloadByFileId (data) {
     data: qs.stringify(data),
   })
 }
+
+
+// 附件详情
+export function enclosure_sysLogById (data) {
+  let id = data.id
+  return request({
+    baseURL: baseURL,
+    url: '/addDataTask/sysLogById/' + id + '',
+    method: 'post',
+    data
+  })
+}

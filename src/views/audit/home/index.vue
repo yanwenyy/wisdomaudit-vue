@@ -17,7 +17,9 @@
             <ul :style="index==0?'':'border-left:1px solid #ccc;'">
               <li @click="projectEvent('1')">
                 <div class="icon-wapper">
-                  <svg-icon icon-class="model" /><br />
+                  <div class="homep-icon homep-icon1"></div>
+                  <!-- <svg-icon icon-class="model" /> -->
+                  <br />
                   <span>模型任务 {{item.mxCount}}</span>
                 </div>
               </li>
@@ -346,7 +348,7 @@ export default {
 .odd-even {
   font-size: 18px;
   li:nth-of-type(even) {
-    background: #eee;
+    background: #F4F4F4;
   }
 
   li {
@@ -413,6 +415,15 @@ export default {
   font-size: 15px;
   font-weight: bold;
   color: #439bd8;
+}
+.homep-icon{
+  height: 40px;
+  width: 30px;
+  margin: auto;
+  background-size: 100% 100%;
+}
+.homep-icon1{
+  background-image: url('./img/trask.png');
 }
 </style>
 
