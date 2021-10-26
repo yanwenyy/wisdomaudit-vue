@@ -4,9 +4,9 @@
 
     <div>
       <div class="projectTab">
-        <el-table :data="tableData" style="width: 100%" @select="Selects">
-          <el-table-column type="index" label="编号"> </el-table-column>
-          <el-table-column prop="basyName" label="资料名称">
+        <el-table :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}" :data="tableData" style="width: 100%" @select="Selects">
+          <el-table-column align="center" type="index" label="编号"> </el-table-column>
+          <el-table-column align="left" prop="basyName" label="资料名称">
             <template slot-scope="scope">
               <el-popover
                 placement="bottom"
@@ -20,18 +20,18 @@
               </el-popover>
             </template>
           </el-table-column>
-          <el-table-column prop="basySymbol" label="文号"> </el-table-column>
-          <el-table-column prop="publishDepartment" label="发文部门"> </el-table-column>
-          <el-table-column prop="issueDate" label="发文日期">
+          <el-table-column align="center" prop="basySymbol" label="文号"> </el-table-column>
+          <el-table-column align="center" prop="publishDepartment" label="发文部门"> </el-table-column>
+          <el-table-column align="center" prop="issueDate" label="发文日期">
             <template slot-scope="scope">{{
               scope.row.issueDate | dateformat
               }}</template>
           </el-table-column>
-          <el-table-column prop="keyClauses" label="重点条款"> </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column align="center" prop="keyClauses" label="重点条款"> </el-table-column>
+          <el-table-column align="center" label="操作">
             <template slot-scope="scope">
-              <el-link type="primary" @click="edit(scope.row)">编辑</el-link>
-              <el-link type="primary" class="delete" @click="deletes(scope.row.basyUuid)">删除</el-link>
+              <el-link type="primary blue" @click="edit(scope.row)">编辑</el-link>
+              <el-link type="primary" class="delete red" @click="deletes(scope.row.basyUuid)">删除</el-link>
             </template>
           </el-table-column>
         </el-table>
@@ -41,7 +41,7 @@
         <el-pagination
           :current-page="page.current"
           :page-size="page.size"
-          :page-sizes="[20, 50, 100]"
+          :page-sizes="[10, 50, 100]"
           :total="page.total"
           @current-change="handleCurrentChange"
           @size-change="handleSizeChange"
@@ -56,85 +56,59 @@
       :visible.sync="isAdd"
       v-if="isAdd"
       :destroy-on-close="true"
-      width="800px"
+      width="70%"
       center
     > <el-divider></el-divider>
-      <el-form :model="formState">
-        <el-row :gutter="80">
-          <el-col :span="12">
-            <el-form-item label="资料名称:">
-              <el-input
-                v-model="formState.basyName"
-                placeholder="请输入"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="12">
-            <el-form-item label="文号:">
-              <el-input
-                v-model="formState.basySymbol"
-                placeholder="请输入"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="80">
-          <el-col :span="12">
-            <el-form-item label="重点条款:" >
-              <el-input
-                v-model="formState.keyClauses"
-                placeholder="请输入"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="12">
-            <el-form-item label="发文日期:" >
-              <el-date-picker v-model="formState.issueDate" type="date"  placeholder="请选择" value-format="yyyy-MM-dd">
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="80">
-          <el-col :span="12">
-            <el-form-item label="发文部门:" >
-              <el-input
-                v-model="formState.publishDepartment"
-                placeholder="请输入"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row :gutter="80">
-          <el-col :span="18">
-            <el-form-item label="上传到附件:" >
-              <el-upload
-                class="upload-demo"
-                drag
-                action="/wisdomaudit/attachment/filesUpload"
-                :on-success="handleChangePic"
-                :before-remove="handleRemoveApk"
-                accept=".zip,.doc"
-                :file-list="fileList"
-                multiple
-                :key="key"
-              >
-                <i class="el-icon-upload"></i>
-                <div class="el-upload__text">
-                  点击上传或将文件拖到虚线框<br />支持.zip .doc
-                </div>
-              </el-upload>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-
-            <el-form-item label="附件内容:" >
-              <el-input type="textarea" v-model="formState.content" :rows="4" style="flex:1;" :placeholder="'模板:\n第一章 货币资金审计\n第一节 现金盘点\n第一条 现金的账实是否属实\n1.确定所有现金存放地点和用途\n2.现场键盘库存现金'"></el-input>
-            </el-form-item>
-
+      <el-form :model="formState" class="formData"  label-width="100px">
+        <el-form-item class="itemTwo" label="资料名称:">
+          <el-input
+            v-model="formState.basyName"
+            placeholder="请输入"
+          ></el-input>
+        </el-form-item>
+        <el-form-item class="itemTwo" label="文号:">
+          <el-input
+            v-model="formState.basySymbol"
+            placeholder="请输入"
+          ></el-input>
+        </el-form-item>
+        <el-form-item class="itemTwo" label="重点条款:" >
+          <el-input
+            v-model="formState.keyClauses"
+            placeholder="请输入"
+          ></el-input>
+        </el-form-item>
+        <el-form-item class="itemTwo" label="发文日期:" >
+          <el-date-picker v-model="formState.issueDate" type="date"  placeholder="请选择" value-format="yyyy-MM-dd">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item class="itemTwo" label="发文部门:" >
+          <el-input
+            v-model="formState.publishDepartment"
+            placeholder="请输入"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="上传到附件:" >
+          <el-upload
+            class="upload-demo"
+            drag
+            action="/wisdomaudit/attachment/filesUpload"
+            :on-success="handleChangePic"
+            :before-remove="handleRemoveApk"
+            accept=".zip,.doc"
+            :file-list="fileList"
+            multiple
+            :key="key"
+          >
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">
+              点击上传或将文件拖到虚线框<br />支持.zip .doc
+            </div>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="附件内容:" >
+          <el-input type="textarea" v-model="formState.content" :rows="6" style="flex:1;" :placeholder="'模板:\n第一章 货币资金审计\n第一节 现金盘点\n第一条 现金的账实是否属实\n1.确定所有现金存放地点和用途\n2.现场键盘库存现金'"></el-input>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="close">取 消</el-button>
@@ -174,7 +148,7 @@ export default {
       tableFileList:[],
       searchForm:{
         pageNo: 1,
-        pageSize: 20,
+        pageSize: 10,
         basyName:'',
         issueDate:'',
         publishDepartment:''
@@ -294,11 +268,11 @@ export default {
     //分页点击
     handleSizeChange(val) {
       this.searchForm.pageSize = val;
-      this.getData();
+      this.list_data_start();
     },
     handleCurrentChange(val) {
       this.searchForm.pageNo= val;
-      this.getData();
+      this.list_data_start();
     },
     //附件上传成功
     handleChangePic(response, file, fileList) {
@@ -459,6 +433,7 @@ export default {
 </script>
 
 <style scoped>
+  @import '../../../assets/styles/css/yw.css';
 .el-tabs{
   padding: 1%;
 }
@@ -473,6 +448,7 @@ export default {
 }
 .sjzl{
   margin-top: 10px;
+  padding: 10px;
 }
 .sjzl .conter {
   width: 100%;
@@ -491,12 +467,6 @@ export default {
 }
 .titleMes {
   box-sizing: border-box;
-}
-.table {
-}
-.sjzl >>> .el-button {
-  background: none;
-  border: none;
 }
 .sjzl >>> .el-table__header {
   border-top: none !important;
@@ -528,13 +498,5 @@ export default {
 .update_icon svg{
   margin-top: 5px;
 }
-  .pointer{
-    cursor: pointer;
-  }
-  .blue{
-    color: blue;
-  }
-  .orange{
-    color:orange;
-  }
+
 </style>

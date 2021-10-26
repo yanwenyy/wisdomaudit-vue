@@ -226,4 +226,12 @@ export function task_problems_uopload_details (data) {
 }
 
 
-
+// 删除附件
+export function task_fileRemove (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/attachment/fileRemove`,
+    method: 'post',
+    data,
+  })
+}

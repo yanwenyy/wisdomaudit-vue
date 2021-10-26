@@ -1,5 +1,5 @@
 <template>
-  <div class="page-container indocator">
+  <div class="indocator">
     <div class="filter-container">
       <el-button type="primary" v-if="ifprojectmanage" @click="add()"
         >新增指标</el-button
@@ -452,6 +452,9 @@ export default {
 };
 </script>
 <style scoped>
+  .indocator{
+    height: 100%;
+  }
 .indocator-btn-box {
   float: right;
 }
