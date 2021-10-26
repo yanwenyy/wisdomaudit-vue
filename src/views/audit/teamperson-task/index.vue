@@ -15,21 +15,11 @@
             <el-table-column label="姓名" width="150" prop="peopleName">
             </el-table-column>
             <el-table-column label="角色" width="100">组员 </el-table-column>
-            <el-table-column
-              property="userMobile"
-              label="联系方式"
-              width="200"
-            >
+            <el-table-column property="userMobile" label="联系方式" width="200">
             </el-table-column>
-            <el-table-column
-              property="belongCompany"
-              label="所属单位"
-            >
+            <el-table-column property="belongCompany" label="所属单位">
             </el-table-column>
-            <el-table-column
-              property="belongDept"
-              label="所属部门"
-            >
+            <el-table-column property="belongDept" label="所属部门">
             </el-table-column>
             <el-table-column
               property="isLiaison"
@@ -37,24 +27,22 @@
               width="150"
             >
               <template slot-scope="scope">
-                <el-tooltip :content="'Switch value: ' + value" placement="top">
-                  <el-switch
-                    v-model="scope.row.isLiaison"
-                    active-color="#13ce66"
-                    inactive-color="#ff4949"
-                    active-value=1
-                    inactive-value=0
-                    @change="switchChange(scope.row)"
-                  >
-                  </el-switch>
-                </el-tooltip>
+                <el-switch
+                  v-model="scope.row.isLiaison"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949"
+                  active-value="1"
+                  inactive-value="0"
+                  @change="switchChange(scope.row)"
+                >
+                </el-switch>
               </template>
             </el-table-column>
             <el-table-column label="操作" width="150">
               <template slot-scope="scope">
                 <el-button
                   type="text"
-                  style="color: #db454b;background: none; border: 0;"
+                  style="color: #db454b; background: none; border: 0"
                   size="small"
                   @click.native.prevent="deleteRow(scope.row, tableData)"
                 >
@@ -103,15 +91,20 @@
           v-model="value"
           :titles="['组员列表', '已选组员']"
           :data="data"
-          v-loading ="loading"
-           @change="selectMember"
+          v-loading="loading"
+          @change="selectMember"
         >
         </el-transfer>
       </div>
 
       <div class="stepBtn">
         <el-button @click="addgroupDialog = false">取消</el-button>
-        <el-button type="primary" @click="saveGroupMember" :disabled="savedisabled">确认</el-button>
+        <el-button
+          type="primary"
+          @click="saveGroupMember"
+          :disabled="savedisabled"
+          >确认</el-button
+        >
       </div>
     </el-dialog>
   </div>
@@ -131,7 +124,7 @@ import {
   selfTaskFunction,
   modelTaskList,
   isModel,
-  setinterFaceperson
+  setinterFaceperson,
 } from "@WISDOMAUDIT/api/shandong/memberMaintenance.js";
 
 export default {
@@ -144,7 +137,7 @@ export default {
   props: ["active_project"],
   data() {
     return {
-      savedisabled:false,
+      savedisabled: false,
       data: [],
       value: [],
       managementProjectUuid: "",
@@ -161,7 +154,7 @@ export default {
       query: {
         condition: {
           managementProjectUuid: "",
-          peopleRole: "2"
+          peopleRole: "2",
         },
         pageNo: 1,
         pageSize: 5,
@@ -221,13 +214,12 @@ export default {
         pageSize: 5,
       },
       groupMemberEcho: [], //组员选框回显
-       updataPerson:{ //更新组员
-        projectId:'',
-        projectMemberships:[
-
-        ]
+      updataPerson: {
+        //更新组员
+        projectId: "",
+        projectMemberships: [],
       },
-      personTableList:[],//组员分页
+      personTableList: [], //组员分页
     };
   },
   created() {
@@ -262,7 +254,8 @@ export default {
     // 新增组员弹框事件
     addgroupMember() {
       this.addgroupDialog = true;
-      this.getSelectData(1,1000);
+      this.savedisabled = false;
+      this.getSelectData(1, 1000);
       this.personMes = this.form;
       auditModelList(this.modelQuery).then((resp) => {
         this.modelTableData = resp.data.records;
@@ -289,14 +282,15 @@ export default {
         cancelButtonText: "放弃删除",
       })
         .then(() => {
-          if(row.isCanDelete == 0){
-            this.$message.info("此用户已被分配任务，不允许删除！")
-          }else{
-            deletprojectMembership(row.projectMembershipUuid).then((resp) => {});
+          if (row.isCanDelete == 0) {
+            this.$message.info("此用户已被分配任务，不允许删除！");
+          } else {
+            deletprojectMembership(row.projectMembershipUuid).then(
+              (resp) => {}
+            );
             this.projectMember(this.query);
             this.message.success("删除成功！");
           }
-         
         })
         .catch((action) => {
           // this.$message({
@@ -310,20 +304,20 @@ export default {
       this.loading = true;
       projectMembership(data).then((resp) => {
         this.tableData = resp.data.records;
-        this.personTableList =resp.data;
+        this.personTableList = resp.data;
         console.log(this.personTableList);
-        for(let i =0;i<this.tableData.length;i++){
-          this.tableData[i].isLiaison = this.tableData[i].isLiaison+'';
+        for (let i = 0; i < this.tableData.length; i++) {
+          this.tableData[i].isLiaison = this.tableData[i].isLiaison + "";
         }
         console.log(this.tableData);
         this.peopleSelection = resp.data.records;
         // console.log(this.peopleSelection);
         this.value = [];
         this.peopleSelection.forEach((e) => {
-          if(e.isCanDelete==0){
-            for(let j =0;j<this.data.length;j++){
-              if(this.data[j].key == e.peopleTableUuid){
-                this.data[j].disabled = true
+          if (e.isCanDelete == 0) {
+            for (let j = 0; j < this.data.length; j++) {
+              if (this.data[j].key == e.peopleTableUuid) {
+                this.data[j].disabled = true;
               }
             }
           }
@@ -333,51 +327,54 @@ export default {
       });
     },
     //组员列表分页点击事件
-    handleCurrentChangePersonList(val){
+    handleCurrentChangePersonList(val) {
       let query = {
-         condition: {
+        condition: {
           managementProjectUuid: this.active_project,
         },
-         pageNo: val,
+        pageNo: val,
         pageSize: 5,
-      }
+      };
       this.projectMember(query);
     },
     // 全部组员查询
-    getSelectData(num,size) {
-      this.loading = true
-      getProjectMember(num,size).then((resp) => {
+    getSelectData(num, size) {
+      this.loading = true;
+      getProjectMember(num, size).then((resp) => {
         this.form = resp.data.list;
         this.data = [];
         resp.data.list.forEach((e) => {
           this.data.push({
             key: String(e.id),
             label: e.realName + e.mobile,
-             disabled: false
+            disabled: false,
           });
-           this.query.condition.managementProjectUuid = this.active_project;
-           this.projectMember(this.query);
+          this.query.condition.managementProjectUuid = this.active_project;
+          this.projectMember(this.query);
         });
         // console.log(this.tableData);
         this.loading = false;
       });
     },
     //swicth 改变事件
-    switchChange(row){
-      
-       var Data = {
-           managmentProjectId: this.active_project,
-          isLiaison: row.isLiaison,
-          projectMembershipUuid: row.projectMembershipUuid,
-        };
-        setinterFaceperson(row.isLiaison,this.active_project,row.projectMembershipUuid).then((resp)=>{
-            this.$message.success("修改成功！");
-            this.projectMember(this.query);
-        })
-        // editprojectMembership(Data).then((resp) => {
-        //   this.$message.success("修改成功！");
-        //   this.projectMember(this.query);
-        // });
+    switchChange(row) {
+      var Data = {
+        managmentProjectId: this.active_project,
+        isLiaison: row.isLiaison,
+        projectMembershipUuid: row.projectMembershipUuid,
+      };
+      setinterFaceperson(
+        row.isLiaison,
+        this.active_project,
+        row.projectMembershipUuid
+      ).then((resp) => {
+        this.$message.success("修改成功！");
+        this.projectMember(this.query);
+      });
+      // editprojectMembership(Data).then((resp) => {
+      //   this.$message.success("修改成功！");
+      //   this.projectMember(this.query);
+      // });
     },
     // 姓名下拉框的方法
     selectChange(obj) {
@@ -465,15 +462,16 @@ export default {
     // 选择组员事件
     selectMember(val) {
       console.log(val);
-      this.updataPerson.projectId  =this.active_project;
+      console.log(this.tableData);
+      this.updataPerson.projectId = this.active_project;
       this.updataPerson.projectMemberships = [];
       for (let i = 0; i < val.length; i++) {
-        this.updataPerson.projectMemberships.push({
-          peopleRole: 2,
-          isLiaison: 0,
-          managementProjectUuid: this.active_project,
-          peopleTableUuid: val[i],
-        });
+            this.updataPerson.projectMemberships.push({
+              peopleRole: 2,
+              isLiaison: 0,
+              managementProjectUuid: this.active_project,
+              peopleTableUuid: val[i]
+            });
       }
     },
     // 模糊查询任务模型

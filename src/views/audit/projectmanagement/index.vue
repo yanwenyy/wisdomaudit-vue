@@ -92,7 +92,6 @@
 
     <!-- 新增页面 -->
     <el-dialog
-      title="新增审计项目"
       :visible.sync="addDialogVisible"
       width="50%"
       @close="addDialogClosed"
@@ -198,8 +197,8 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="审计期间:" class="dataTime">
-              <el-col :span="6">
+            <el-form-item label="审计期间:" class="zhuandataTime">
+              <el-col :span="8">
                 <el-form-item prop="auditStartData">
                   <el-date-picker
                     type="date"
@@ -209,8 +208,8 @@
                   ></el-date-picker>
                 </el-form-item>
               </el-col>
-              <el-col :span="6">
-                <el-form-item prop="auditFinishData">
+              <el-col :span="8">
+                <el-form-item prop="auditFinishData" style="margin-left:-5px">
                   <el-date-picker
                     type="date"
                     placeholder="请选择"
@@ -617,8 +616,8 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="审计期间:" class="dataTime">
-              <el-col :span="6">
+            <el-form-item label="审计期间:" class="zhuandataTime">
+              <el-col :span="8">
                 <el-form-item prop="auditStartData">
                   <el-date-picker
                     type="date"
@@ -628,8 +627,8 @@
                   ></el-date-picker>
                 </el-form-item>
               </el-col>
-              <el-col :span="6">
-                <el-form-item prop="auditFinishData">
+              <el-col :span="8">
+                <el-form-item prop="auditFinishData" style="margin-left:-5px">
                   <el-date-picker
                     type="date"
                     placeholder="请选择"
@@ -872,7 +871,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="审计期间:" class="dataTime">
+            <el-form-item label="审计期间:" class="editdataTime">
               <el-col :span="8">
                 <el-form-item prop="auditStartData">
                   <el-date-picker
@@ -884,7 +883,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item prop="auditFinishData">
+                <el-form-item prop="auditFinishData" style="margin-left:-5px">
                   <el-date-picker
                     type="date"
                     placeholder="请选择"
@@ -1526,18 +1525,10 @@ export default {
   .el-input {
     position: relative;
     top: -35px;
-    width: 400px;
+    width: 65%;
   }
   .el-form-item {
     margin-bottom: -25px !important;
-  }
-  .auditeeInput {
-    position: relative;
-    top: 0px !important;
-    left: -110px !important;
-    height: 100%;
-    width: 200px;
-    height: 64px;
   }
   .addIcon {
     background-color: #fff;
@@ -1556,18 +1547,10 @@ export default {
   .el-input {
     position: relative;
     top: -35px;
-    width: 400px;
+    width: 65%;
   }
   .el-form-item {
     margin-bottom: -25px !important;
-  }
-  .auditeeInput {
-    position: relative;
-    top: 0px !important;
-    left: -110px !important;
-    height: 100%;
-    width: 200px;
-    height: 64px;
   }
   .addIcon {
     background-color: #fff;
@@ -1600,7 +1583,13 @@ export default {
   }
 }
 .dataTime .el-input {
-  width: 190px;
+  width: 96%;
+}
+.zhuandataTime .el-input{
+  width:93%;
+}
+.editdataTime .el-input {
+  width: 94%;
 }
 .projectTable {
   .el-select {

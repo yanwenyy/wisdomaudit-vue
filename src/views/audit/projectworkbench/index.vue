@@ -362,7 +362,7 @@
                   size="small"
                   @click.native.prevent="deleteModel(scope.row)"
                 >
-                  移除
+                  删除
                 </el-button>
               </template>
             </el-table-column>
@@ -865,6 +865,7 @@ export default {
       },
       updataPerson:{
         projectId:'',
+        projectMembershipUuid:'',
         projectMemberships:[
 
         ]
@@ -1033,6 +1034,7 @@ export default {
           isLiaison: 0,
           managementProjectUuid: this.managementProjectUuid,
           peopleTableUuid: val[i],
+          projectMembershipUuid:val[i].projectMembershipUuid
         });
       }
       console.log(this.updataPerson);

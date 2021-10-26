@@ -122,7 +122,8 @@
                 <template slot-scope="scope">
                   <el-link type="primary"
                            style=""
-                           @click="enclosure(scope.row.dataModulId)">{{scope.row.enclosure}}</el-link>
+                           @click="enclosure(scope.row.dataModulId,scope.row.enclosure)">{{scope.row.enclosure}}
+                  </el-link>
                 </template>
               </el-table-column>
               <el-table-column prop="remarks"
@@ -192,7 +193,7 @@
                                style="width:50px"
                                :on-progress="up_ing"
                                v-if="scope.row.status !== 3"
-                               action="http://10.10.113.196:1095/wisdomaudit/auditPreviousDemandData/uploadData"
+                               action="http://localhost:9529/wisdomaudit/auditPreviousDemandData/uploadData"
                                :show-file-list="false"
                                :http-request="handleUploadForm"
                                :before-upload="beforeAvatarUpload"
@@ -463,16 +464,18 @@ export default {
 
 
     // 查看下载模版
-    enclosure (id) {
+    enclosure (id, name) {
       // let params = {
       //   uuid: id
       // };
+      const fileName = name.split('.')[0];
       //模版下载
       let formData = new FormData()
       formData.append('uuid', id)
       this.$axios({
         method: 'post',
-        url: 'http://localhost:9529/wisdomaudit_wei/auditPreviousDemandData/downloadByBid',
+        url: 'http://localhost:9529/wisdomaudit/auditPreviousDemandData/downloadByFileId',
+        // url: 'http://localhost:9529/wisdomaudit/auditPreviousDemandData/downloadByBid',
         data: formData,
         responseType: 'blob',
       }).then((res) => {
@@ -484,8 +487,8 @@ export default {
           { type: 'application/octet-stream,charset=UTF-8' }
         )
         // var timestamp = (new Date()).valueOf();
-        const fileName = res.headers["content-disposition"].split("fileName*=utf-8''")[1];
-        const filteType = res.headers["content-disposition"].split('.')[1];
+        // const fileName = res.headers["content-disposition"].split("fileName*=utf-8''")[1];
+        // const filteType = res.headers["content-disposition"].split('.')[1];
         if ('download' in document.createElement('a')) {
           // 非IE下载  
           const elink = document.createElement('a')
@@ -541,7 +544,7 @@ export default {
       formData.append('file', file.file)
       this.$axios({
         method: 'post',
-        url: 'http://localhost:9529/wisdomaudit_wei/auditPreviousDemandData/uploadData',
+        url: 'http://localhost:9529/wisdomaudit/auditPreviousDemandData/uploadData',
         data: formData,
         headers: {
           'Content-Type': 'multipart/form-data'

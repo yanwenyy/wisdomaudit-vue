@@ -763,7 +763,7 @@
         <el-table-column prop="fileName"
                          label="文件名称">
           <template slot-scope="scope">
-            <el-button @click="download(scope.row.attachmentUuid)"
+            <el-button @click="download(scope.row.attachmentUuid,scope.row.fileName)"
                        type="text"
                        style="color: #1371cc"
                        size="small">
@@ -1115,7 +1115,7 @@ export default {
     },
 
     //   已完成列表点击附件
-    download (id) {
+    download (id, name) {
       // let prarms = {
       //   fileId: id
       // }
@@ -1124,7 +1124,10 @@ export default {
       formData.append('fileId', id)
       this.$axios({
         method: 'post',
-        url: 'http://localhost:9529/wisdomaudit_wei/auditPreviousDemandData/downloadByFileId',
+        url: 'http://localhost:9529/wisdomaudit/auditPreviousDemandData/downloadByFileId',
+        // url: 'http://10.10.113.196:1095/wisdomaudit/auditPreviousDemandData/downloadByFileId',
+        // url: 'http://localhost:9529/wisdomaudit/attachment/fileDownload',
+
         data: formData,
         responseType: 'blob',
       }).then((res) => {
@@ -1136,12 +1139,12 @@ export default {
           { type: 'application/octet-stream,charset=UTF-8' }
         )
         // var timestamp = (new Date()).valueOf();
-        const fileName = res.headers["content-disposition"].split("fileName*=utf-8''")[1];
-        const filteType = res.headers["content-disposition"].split('.')[1];
+        // const fileName = res.headers["content-disposition"].split("fileName*=utf-8''")[1];
+        // const filteType = res.headers["content-disposition"].split('.')[1];
         if ('download' in document.createElement('a')) {
           // 非IE下载  
           const elink = document.createElement('a')
-          elink.download = fileName //下载后文件名
+          elink.download = name //下载后文件名
           elink.style.display = 'none'
           elink.href = window.URL.createObjectURL(blob)
           document.body.appendChild(elink)
@@ -1717,6 +1720,7 @@ export default {
               message: "驳回",
               type: "success",
             });
+            this.dialogVisibl_operation = false
             let params2 = {
               pageNo: this.operation_query.pageNo,
               pageSize: this.operation_query.pageSize,
@@ -1745,6 +1749,8 @@ export default {
               message: "通过",
               type: "success",
             });
+            this.dialogVisibl_operation = false
+
             let params2 = {
               pageNo: this.operation_query.pageNo,
               pageSize: this.operation_query.pageSize,
@@ -2056,7 +2062,7 @@ export default {
 .dlag_conter2 >>> .el-form-item__content {
 }
 .dlag_conter2 >>> .el-textarea {
-  width: 500px;
+  width: 80%;
 }
 
 .operation_header {
@@ -2122,13 +2128,23 @@ export default {
 .cd >>> .el-form-item {
   width: 100%;
 }
-.cd >>> .el-form-item__content p {
-  /* border: 1px solid red; */
-  width: 210px;
-  box-sizing: border-box;
-}
 
+.cd >>> .upload-demo {
+  width: 80% !important;
+}
+.cd >>> .el-upload,
 .cd >>> .el-upload-dragger {
-  width: 500px !important;
+  width: 100% !important;
+}
+@media screen and (min-width: 1920px) {
+  .cd >>> .el-form-item__content p {
+    width: 210px;
+    box-sizing: border-box;
+  }
+}
+@media screen and (max-width: 1920px) {
+  .cd >>> .el-form-item__content p {
+    box-sizing: border-box;
+  }
 }
 </style>
