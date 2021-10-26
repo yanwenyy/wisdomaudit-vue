@@ -284,7 +284,9 @@
         <el-form label-width="80px">
           <div style="display:flex;align-items: center;padding:10px 0;box-sizing: border-box;">
             <p>获取资料清单：</p>
-            <el-button type="primary"
+            <el-button plain
+                       style="background: #FFFFFF;
+    border: 1px solid #DCDFE6;"
                        @click="add_data_click()">添加资料</el-button>
           </div>
         </el-form>
