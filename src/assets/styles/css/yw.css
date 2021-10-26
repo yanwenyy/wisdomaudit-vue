@@ -1,0 +1,64 @@
+
+.el-table__header{
+  border-top:none!important;
+}
+table tr:nth-child(odd){
+  background: #fff;
+}
+.el-table__row{
+  border-bottom:1px solid #eee!important;
+}
+.el-table__body{
+  border-collapse:collapse;
+}
+.blue{
+  color: #79BDF0!important;
+}
+.red{
+  color: #ff8a72 !important;
+}
+.pointer{
+  cursor: pointer;
+}
+
+.orange{
+  color:orange;
+}
+.editBtn{
+  color:#49BAE8!important;
+  border: none!important;
+}
+.el-button{
+  border: 1px solid #DCDFE6;
+}
+ .formData .el-form-item{
+  margin: 10px 0;
+}
+.formData .el-form-item__label {
+  display: inline-block;
+  text-align: right;
+  width: 20%;
+  vertical-align: top;
+}
+.formData .el-form-item__content{
+  display: inline-block;
+  margin-left: 10px!important;
+  width: 82%;
+}
+.formData .el-form-item__content .el-input{
+  width: 100%;
+}
+.itemTwo{
+  width: 50%;
+  display: inline-block;
+}
+.itemThree{
+  width: 33%;
+  display: inline-block;
+}
+.itemTwo .el-form-item__content{
+  width: 60%;
+}
+.itemThree .el-form-item__content{
+  width: 50%;
+}
