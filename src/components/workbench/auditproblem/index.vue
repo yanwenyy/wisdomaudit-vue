@@ -42,7 +42,7 @@
       </el-table-column>
       <el-table-column label="问题">
         <template slot-scope="scope">
-          <div class="canclick" @click="openDetail(scope.$index)">
+          <div class="canclick" @click="checkDetail(scope.row.problemListUuid)">
             {{ scope.row.problem }}
           </div>
         </template>
@@ -76,10 +76,10 @@
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <el-button
-            @click="checkDetail(scope.row.problemListUuid)"
+            @click="openDetail(scope.$index)"
             type="text"
             style="color: #1371cc"
-            >查看</el-button
+            >编辑</el-button
           >
           <el-button
             @click="del(scope.row.problemListUuid)"
@@ -108,7 +108,8 @@
         :rules="rules"
         :model="temp"
         label-position="right"
-        class="detail-form"
+        label-width="120px"
+        class="problem-form"
       >
         <el-form-item label="问题" prop="problem">
           <el-input v-model="temp.problem" placeholder="请输入问题" />
@@ -137,17 +138,22 @@
         </el-form-item>
         <el-form-item> </el-form-item>
         <el-form-item label="依据" prop="basis" class="long">
-          <el-select v-model="temp.basis" multiple placeholder="请选择" >
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
+          <el-select
+            v-model="temp.basis"
+            multiple
+            @visible-change="toopen"
+            placeholder="请选择"
+            no-data-text="请点击引用审计依据"
+          >
           </el-select>
         </el-form-item>
-        <el-button type="primary" class="citebtn" @click="openbasis()">引用审计依据</el-button>
+        <el-button
+          type="primary"
+          ref="basisbtn0"
+          class="citebtn"
+          @click="openbasis()"
+          >引用审计依据</el-button
+        >
         <el-form-item label="描述" prop="describe" class="long">
           <el-input v-model="temp.describe" placeholder="请输入描述" />
         </el-form-item>
@@ -193,7 +199,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        
+
         <!-- <el-form-item label="上传附件" prop="int">
           <el-upload
             class="upload-demo"
@@ -234,7 +240,8 @@
         :model="dqProblem"
         :rules="rules"
         label-position="right"
-        class="detail-form"
+        label-width="120px"
+        class="problem-form"
       >
         <el-form-item label="问题" prop="problem">
           <el-input v-model="dqProblem.problem" placeholder="请输入问题" />
@@ -261,10 +268,28 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="描述" prop="describe">
+        <el-form-item></el-form-item>
+        <el-form-item label="依据" prop="basis" class="long">
+          <el-select
+            v-model="dqProblem.basis"
+            multiple
+            @visible-change="toopen"
+            placeholder="请选择"
+            no-data-text="请点击引用审计依据"
+          >
+          </el-select>
+        </el-form-item>
+        <el-button
+          type="primary"
+          ref="basisbtn0"
+          class="citebtn"
+          @click="openbasis()"
+          >引用审计依据</el-button
+        >
+        <el-form-item label="描述" prop="describe" class="long">
           <el-input v-model="dqProblem.describe" placeholder="请输入描述" />
         </el-form-item>
-        <el-form-item label="管理建议" prop="managementAdvice">
+        <el-form-item label="管理建议" prop="managementAdvice" class="long">
           <el-input
             v-model="dqProblem.managementAdvice"
             placeholder="请输入管理建议"
@@ -306,19 +331,6 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item> </el-form-item>
-        <el-form-item label="依据" prop="basis">
-          <el-select v-model="dqProblem.basis" multiple placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-button type="primary" class="citebtn">引用知识库</el-button>
 
         <!-- <el-form-item label="领域" prop="field">
           <el-input
@@ -394,15 +406,88 @@
       </div>
     </el-dialog>
     <el-dialog
-  title="引用审计依据"
-  :visible.sync="basisdialog"
-  width="80%">
-  <span>审计依据正在完善</span>
-  <span slot="footer" class="dialog-footer">
-    <el-button @click="basisdialog = false">取 消</el-button>
-    <el-button type="primary" @click="basisdialog = false">确 定</el-button>
-  </span>
-</el-dialog>
+      title="引用审计依据"
+      :visible.sync="basisdialog"
+      width="60%"
+      custom-class="outmax"
+    >
+      <div style="display: flex; height: 100%; padding: 20px">
+        <div style="max-height: 60vh; width: 50%; overflow: scroll">
+          <el-form ref="basisform" class="problem-form" :model="dqbasis" label-width="120px" label-position="right">
+            <el-form-item label="审计依据名称" class="long">
+              <el-select
+                v-model="dqbasis.val"
+                placeholder="请选择依据名称"
+                @change="getbasisdetail(dqbasis.val)"
+              >
+                <el-option
+                  v-for="item in basislist"
+                  :key="item.basy_uuid"
+                  :label="item.basy_name"
+                  :value="item.basy_uuid"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-form>
+          <el-card
+            class="box-card"
+            style="width: 70%; min-height: 300px; margin: auto"
+          >
+            <el-tree
+              :data="dqbasis.info.tree"
+              :props="defaultProps"
+              @node-click="treeNodeClick"
+              default-expand-all
+              v-loading="basisload"
+            ></el-tree>
+          </el-card>
+          <!-- <div
+            v-for="(item, index) in basislist"
+            :key="'basis' + index"
+            style="line-height:40px;height:40px;border-bottom:1px solid #ddd;cursor:pointer;"
+            @click="getbasisdetail(item.basy_uuid)"
+          >
+            {{ item.basy_name }}
+          </div> -->
+        </div>
+        <el-card
+          class="box-card basiscard"
+          style="width: 50%"
+          v-loading="basisload"
+        >
+          <div
+            v-for="(item, index) in dqbasis.info.arr"
+            :key="'dqbasisarr' + index"
+          >
+            <div slot="header" class="clearfix">
+              <span
+                style="font-weight: bold"
+                :style="
+                  item.contentLev == 1
+                    ? 'font-size:18px;'
+                    : item.contentLev == 2
+                    ? 'font-size:16px;'
+                    : 'font-size:14px;'
+                "
+                >{{ item.label }}</span
+              >
+              <el-button
+                style="padding: 3px 0 3px 20px; color: #ffba00"
+                v-if="item.contentLev == 2"
+                @click="choosebasis(item.label)"
+                >引用</el-button
+              >
+            </div>
+            <p class="">{{ item.attachmentContent }}</p>
+          </div>
+        </el-card>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="basisdialog = false">取 消</el-button>
+        <el-button type="primary" @click="surebasis()">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -410,6 +495,7 @@
 import Pagination from "@WISDOMAUDIT/components/Pagination"; // secondary package based on el-pagination
 import _ from "lodash";
 import axios from "axios";
+import $ from "jquery";
 export default {
   props: ["active_project"],
   components: { Pagination },
@@ -490,7 +576,19 @@ export default {
       CategoryList: [],
       SPECIALList: [],
       auditTasklList: [],
-      basisdialog:false
+      basisdialog: false,
+      basislist: [],
+      dqbasis: {
+        val: "",
+        info: "",
+        choose: [],
+      },
+      defaultProps: {
+        children: "children",
+        label: "label",
+      },
+      basisload: false,
+      ifadd: 0,
     };
   },
   watch: {},
@@ -499,11 +597,69 @@ export default {
     this.getloadcascader("SPECIAL");
     this.getSelectTask();
     this.getList();
+    this.getbasis();
   },
   methods: {
+    toopen(val) {
+      console.log(val);
+      if (val) {
+        let _this = this;
+        setTimeout(function () {
+          _this.$refs["basisbtn0"].handleClick();
+        }, 100);
+
+        console.log(_this.$refs["basisbtn0"]);
+        return false;
+      }
+    },
+    //确定选择依据
+    surebasis() {
+      this.basisdialog = false;
+      if (this.ifadd == 0) {
+        this.temp.basis = this.dqbasis.choose;
+      } else {
+        this.dqProblem.basis = this.dqbasis.choose;
+      }
+      this.dqbasis.choose = [];
+    },
+    //选择依据
+    choosebasis(val) {
+      if (this.dqbasis.choose.indexOf(val) > -1) {
+        return;
+      } else {
+        this.dqbasis.choose.push(val);
+      }
+    },
+    //依据树
+    treeNodeClick() {},
     //打开依据
-    openbasis(){
-      this.basisdialog = true
+    openbasis() {
+      this.basisdialog = true;
+      this.dqbasis.choose = [];
+    },
+    //获取依据
+    getbasis() {
+      axios({
+        url: `/wisdomaudit/auditBasy/getAuditbasyList`,
+        method: "get",
+        data: {},
+      }).then((res) => {
+        this.basislist = res.data.data;
+        console.log(res);
+      });
+    },
+    //获取依据详情
+    getbasisdetail(bid) {
+      this.basisload = true;
+      axios({
+        url: `/wisdomaudit/auditBasy/getById/` + bid + ``,
+        method: "get",
+        data: {},
+      }).then((res) => {
+        this.dqbasis.info = res.data.data.treeData;
+        this.dqbasis.choose = [];
+        this.basisload = false;
+      });
     },
     //领域返显
     fieldFilter(str) {
@@ -552,6 +708,7 @@ export default {
       });
     },
     openDetail(int) {
+      this.ifadd = 1;
       axios({
         url:
           `/wisdomaudit/problemList/getById/` + this.list[int].problemListUuid,
@@ -569,6 +726,7 @@ export default {
       });
     },
     checkDetail(pid) {
+      this.ifadd = 1;
       axios({
         url: `/wisdomaudit/problemList/getById/` + pid,
         method: "get",
@@ -619,6 +777,7 @@ export default {
     },
     add() {
       this.dialogFormVisible = true;
+      this.ifadd = 0;
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
       });
@@ -728,13 +887,16 @@ export default {
 }
 .auditproblem .el-form-item {
   width: 49%;
-  margin-right: 1%;
+  margin:10px 1% 10px 0 !important;
 }
-.auditproblem .detail-form {
+.auditproblem .problem-form {
   display: flex;
   flex-direction: row;
   align-items: flex-end;
   flex-wrap: wrap;
+}
+.problem-form .el-form-item__label{
+  float: left !important;
 }
 .auditproblem .el-select {
   width: 100%;
@@ -782,6 +944,9 @@ export default {
 }
 .long {
   width: 70% !important;
+}
+.basiscard p {
+  padding: 10px 0 10px 20px;
 }
 </style>
 
