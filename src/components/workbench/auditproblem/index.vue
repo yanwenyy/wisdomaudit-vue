@@ -34,7 +34,6 @@
       max-height="calc(100vh - 300px)"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" align="center" />
       <el-table-column label="序号">
         <template slot-scope="scope">
           {{ scope.$index + 1 }}
@@ -276,10 +275,12 @@
             @visible-change="toopen"
             placeholder="请选择"
             no-data-text="请点击引用审计依据"
+            :disabled="ifadd!=2?false:true"
           >
           </el-select>
         </el-form-item>
         <el-button
+          v-if="ifadd!=2?true:false"
           type="primary"
           ref="basisbtn0"
           class="citebtn"
@@ -726,7 +727,7 @@ export default {
       });
     },
     checkDetail(pid) {
-      this.ifadd = 1;
+      this.ifadd = 2;
       axios({
         url: `/wisdomaudit/problemList/getById/` + pid,
         method: "get",

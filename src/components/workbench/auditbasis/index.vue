@@ -147,7 +147,7 @@
 <script>
   import {del_file_batch,down_file, del_file,auditBasy_pageList,auditBasy_save,auditBasy_delete ,auditBasy_getDetail,auditBasy_getFileList} from
       '@SDMOBILE/api/shandong/ls'
-import '@/styles/from.scss'
+import '@WISDOMAUDIT/styles/from.scss'
 export default {
   components: {},
   data() {
