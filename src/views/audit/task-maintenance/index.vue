@@ -206,7 +206,7 @@
     <el-dialog
       :visible.sync="TaskDialogVisible"
       width="50%"
-      :before-close="TaskDialogClosed"
+      @close="resetForm2('selfTaskRef')"
     >
       <div class="taskTitle">新增任务</div>
       <div class="taskAdd" v-if="task == '1'">
@@ -304,7 +304,7 @@
             </el-upload>
           </el-form-item>
         </el-form>
-        <div class="stepBtn">
+        <div class="temBtn">
           <el-button @click="resBtn">取消</el-button>
           <el-button
             style="background: #0c87d6; color: #fff"
@@ -339,7 +339,6 @@
           style="width: 100%"
           @selection-change="handleSelectionChangeModel"
           ref="multipleModelRef"
-          v-loading="loading"
         >
           <el-table-column type="selection"> </el-table-column>
           <el-table-column type="index" label="模型编号" width="80">
@@ -1148,6 +1147,10 @@ export default {
         console.log(err);
       })
     },
+
+    resetForm2(resetForm2){
+      this.$refs[resetForm2].resetFields();
+    }
   },
   created() {
     // console.log(this.active_project);
@@ -1400,6 +1403,12 @@ export default {
 
 .stepBtn {
   /* border: 1px solid red; */
+  margin-top: 5%;
+  text-align: right;
+}
+.temBtn{
+  width: 120%;
+   /* border: 1px solid red; */
   margin-top: 5%;
   text-align: right;
 }

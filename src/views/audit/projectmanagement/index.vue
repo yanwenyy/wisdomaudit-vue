@@ -37,7 +37,6 @@
       style="margin-top: 1%; width: 100%"
       border
       stripe
-      v-loading="loading"
       :header-cell-style="{'background-color': '#F4FAFF',}"
     >
       <el-table-column type="selection" width="55"> </el-table-column>
