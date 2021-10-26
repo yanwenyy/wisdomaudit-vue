@@ -202,3 +202,28 @@ export function task_problems_relation (data) {
     data,
   })
 }
+
+
+
+// 新建任务上传
+// export function task_problems_uopload (data) {
+//   return request({
+//     baseURL: baseURL,
+//     url: '/attachment/fileUploads',
+//     method: 'post',
+//     data: qs.stringify(data),
+//   })
+// }
+
+// 附件详情
+export function task_problems_uopload_details (data) {
+  return request({
+    baseURL: baseURL,
+    url: '/attachment/pageList',
+    method: 'post',
+    data,
+  })
+}
+
+
+
