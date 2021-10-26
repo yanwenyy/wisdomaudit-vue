@@ -3,15 +3,16 @@
     <el-button type="primary" @click="addConfirmation()">新增确认单</el-button>
     <!-- 审计确认单列表 -->
     <el-table
+      :header-cell-style="{'background-color': '#F4FAFF',}"
       :data="confirmaryData"
       style="margin-top: 1%"
       class="confirmaryTable"
     >
-      <el-table-column type="index" label="序号"></el-table-column>
-      <el-table-column label="审计(调查)事项" prop="matter"></el-table-column>
-      <el-table-column label="责任人" prop="liablePerson"></el-table-column>
-      <el-table-column label="问题数" prop="problemsNumber"></el-table-column>
-      <el-table-column label="确认单附件">
+      <el-table-column align="center" type="index" label="序号"></el-table-column>
+      <el-table-column align="center" label="审计(调查)事项" prop="matter"></el-table-column>
+      <el-table-column align="center" label="责任人" prop="liablePerson"></el-table-column>
+      <el-table-column align="center" label="问题数" prop="problemsNumber"></el-table-column>
+      <el-table-column align="center" label="确认单附件">
         <template slot-scope="scope">
           <el-popover
             placement="bottom"
@@ -30,8 +31,7 @@
           <el-button
             size="small"
             type="text"
-            class="btnStyle"
-            style="color: #1371cc"
+            class="btnStyle editBtn"
             @click="edit(scope.row)">编辑</el-button
           >
           <el-upload
@@ -40,7 +40,7 @@
             :action="'/wisdomaudit/auditConfirmation/fileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid+'&confirmationFileNumber='+(scope.row.confirmationFileNumber||'')"
             :on-success="list_data_start"
             accept=".zip,.doc">
-            <el-button size="small" type="text"  style="color: blue;background: transparent">上传附件</el-button>
+            <el-button size="small" type="text"  style="background: transparent" class="editBtn">上传附件</el-button>
           </el-upload>
           <el-button
             size="small"
@@ -67,11 +67,11 @@
               :action="'/wisdomaudit/auditConfirmation/endFileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid"
               :on-success="list_data_start"
               accept=".zip,.doc">
-              <el-button size="small" type="text"  style="color: blue;background: transparent">上传</el-button>
+              <el-button size="small" type="text"  style="background: transparent;padding:0" class="editBtn">上传</el-button>
             </el-upload>
             <el-tooltip placement="bottom"  effect="light" v-if="scope.row.endConfirmationFile">
               <div class="pointer" slot="content">{{scope.row.endConfirmationFile}}</div>
-              <span><i class="el-icon-folder-opened list-folder"></i>1</span>
+              <span class="editBtn"><i class="el-icon-folder-opened list-folder"></i>1</span>
             </el-tooltip>
           </el-button>
         </template>
@@ -471,9 +471,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.auditConfirmation {
-  padding: 1%;
-}
 .confirmaryTable {
   .update {
     display: flex;
@@ -591,5 +588,21 @@ export default {
   }
   .orange{
     color:orange;
+  }
+  /*样式调整*/
+  >>>.el-table__header{
+    border-top:none!important;
+  }
+  >>>table tr:nth-child(odd){
+    background: #fff;
+  }
+  >>>.el-table__row{
+    border-bottom:1px solid #eee!important;
+  }
+  >>>.el-table__body{
+    border-collapse:collapse;
+  }
+  .editBtn{
+    color:#49BAE8!important;
   }
 </style>

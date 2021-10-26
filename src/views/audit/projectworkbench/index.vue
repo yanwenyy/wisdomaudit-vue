@@ -1534,7 +1534,7 @@ export default {
   }
   .routerView {
     // border: 1px solid red;
-    padding: 10px;
+    padding:0 10px;
   }
 }
 // 展示更多项目
