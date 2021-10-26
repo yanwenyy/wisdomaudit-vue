@@ -34,7 +34,6 @@
           <!-- 表单 -->
           <el-table :data="tableData_list"
                     :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
-                    v-loading="loading"
                     style="width: 100%">
 
             <!-- <el-table-column type="index"
@@ -254,7 +253,6 @@
         <el-table :data="status_data_list[0].result"
                   ref="multipleTable"
                   tooltip-effect="dark"
-                  v-loading="loading"
                   style="width: 100%"
                   :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                   @selection-change="handleSelectionChange_operation">

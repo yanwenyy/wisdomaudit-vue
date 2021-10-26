@@ -843,7 +843,7 @@ export default {
   },
   watch: {
     active_project (val) {
-      this.refreash = true;
+      this.refreash = true;// loading
       // console.log('-----------------------'+this.active_project)
       let _this = this;
       setTimeout(function name () {
@@ -1350,9 +1350,15 @@ export default {
 
 <style lang="scss" scoped>
 @import "../../../assets/styles/css/lhg.css";
-
+::v-deep.el-menu .el-submenu__title {
+  padding: 0 !important;
+}
 // 二级导航 穿透样式
 // 选中高亮
+::v-deep.el-menu .el-submenu__title span {
+  margin-left: 20px;
+  // padding-left: 20px !important;
+}
 ::v-deep.el-menu .el-menu-item,
 ::v-deep.el-menu .el-submenu__title {
   position: relative;
