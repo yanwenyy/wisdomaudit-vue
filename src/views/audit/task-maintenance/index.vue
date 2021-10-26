@@ -17,7 +17,7 @@
             </el-col>
           </el-row>
           <!-- 表单 -->
-          <el-table :data="taskData" style="width: 100%" v-loading="loading">
+          <el-table :data="taskData" style="width: 100%" :header-cell-style="{'background-color': '#F4FAFF',}">
             <el-table-column prop="taskName" label="模型任务名称">
             </el-table-column>
             <el-table-column prop="taskType" label="任务类型">

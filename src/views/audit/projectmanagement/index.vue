@@ -38,29 +38,30 @@
       border
       stripe
       v-loading="loading"
+      :header-cell-style="{'background-color': '#F4FAFF',}"
     >
       <el-table-column type="selection" width="55"> </el-table-column>
-      <el-table-column prop="projectCode" label="项目编号" width="180">
+      <el-table-column align="center" prop="projectCode" label="项目编号" width="180">
       </el-table-column>
-      <el-table-column prop="projectName" label="审计项目名称" width="180">
+      <el-table-column align="center" prop="projectName" label="审计项目名称" width="180">
       </el-table-column>
-      <el-table-column prop="auditOrgName" label="被审计对象">
+      <el-table-column align="center" prop="auditOrgName" label="被审计对象">
       </el-table-column>
-      <el-table-column prop="projectTypeName" label="项目类型">
+      <el-table-column align="center" prop="projectTypeName" label="项目类型">
       </el-table-column>
-      <el-table-column prop="specialName" label="专题"></el-table-column>
-      <el-table-column prop="fieldName" label="领域"></el-table-column>
-      <el-table-column prop="projectLeaderName" label="项目负责人">
+      <el-table-column align="center" prop="specialName" label="专题"></el-table-column>
+      <el-table-column align="center" prop="fieldName" label="领域"></el-table-column>
+      <el-table-column align="center" prop="projectLeaderName" label="项目负责人">
       </el-table-column>
-      <el-table-column prop="projectChargemanName" label="项目组长">
+      <el-table-column align="center" prop="projectChargemanName" label="项目组长">
       </el-table-column>
-      <el-table-column prop="auditStartData" label="审计期间" width="250">
+      <el-table-column align="center" prop="auditStartData" label="审计期间" width="250">
         <template slot-scope="scope">
           {{ scope.row.auditStartData }} - {{ scope.row.auditFinishData }}
         </template>
       </el-table-column>
-      <el-table-column prop="createUserName" label="创建人"> </el-table-column>
-      <el-table-column prop="createTime" label="创建日期" width="250">
+      <el-table-column align="center" prop="createUserName" label="创建人"> </el-table-column>
+      <el-table-column align="center" prop="createTime" label="创建日期" width="250">
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -233,10 +234,11 @@
             style="width: 100%"
             border
             class="projectTable"
+            :header-cell-style="{'background-color': '#F4FAFF',}"
           >
-            <el-table-column label="项目编号" prop="projectCode" width="110">
+            <el-table-column align="center" label="项目编号" prop="projectCode" width="110">
             </el-table-column>
-            <el-table-column prop="auditOrgName" label="被审计单位" width="330">
+            <el-table-column align="center" prop="auditOrgName" label="被审计单位" width="330">
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'auditList.' + scope.$index + '.auditOrgName'"
@@ -269,6 +271,7 @@
               prop="projectChargemanName"
               label="分配组长"
               width="330"
+              align="center"
             >
               <template slot-scope="scope">
                 <el-form-item
@@ -1131,7 +1134,7 @@ export default {
       },
       // 添加经责表单校验
       addprojectjingRules: {
-        projectName: [
+        projectName1: [
           { required: true, message: "请填写项目名称", trigger: "blur" },
         ],
         projectTypeName: [
@@ -1611,6 +1614,7 @@ export default {
 }
 </style>
 <style scoped>
+  @import '../../../assets/styles/css/yw.css';
 .addForm /deep/ .el-form-item__error {
   position: absolute;
   top: -70%;
@@ -1631,5 +1635,12 @@ export default {
   padding: 20px 10px;
   display: flex;
   justify-content: flex-end;
+}
+.projectmanagement{
+  background: #FFF;
+}
+>>>.el-input.is-disabled .el-input__inner{
+  background: #F5F7FA!important;
+  color:#C0C4CC!important;
 }
 </style>
