@@ -1073,7 +1073,8 @@ export default {
       disabled: true,//责任人点击
 
       fileList2: [],// 核实文件上传
-      verify_files: []//核实文件
+      verify_files: [],//核实文件
+      fileList_Delet: [],//删除  储存
     }
   },
   computed: {},
@@ -1157,15 +1158,14 @@ export default {
 
     // 删除
     handleRemove (file, index) {
-      console.log(file);
-      console.log(this.edit_file_list);
       if (file.response) {
         this.fileList.remove(file.response.data);
         this.key = Math.random();
       } else {
         this.edit_file_list.remove(file);
+        file.isDeleted = 1;
+        this.fileList_Delet.push(file)
       }
-
     },
     // 删除 接口
     fileRemove (params) {
@@ -1201,6 +1201,9 @@ export default {
                   this.success_btn = 0;//显示加载按钮  0成功  1 loaging
                   // console.log(resp.data.data);
                   this.Upload_file = resp.data.data;//上传成功大的文件
+
+
+
                   // 提交步骤
                   let params1 = {
                     managementProjectUuid: this.managementProjectUuid,//项目id
@@ -1278,7 +1281,22 @@ export default {
               // console.log(resp.data.data);
               this.Upload_file = resp.data.data;//上传成功大的文件
               var upList = this.edit_file_list.concat(this.Upload_file);
-              console.log(upList);
+
+              if (this.Upload_file) {
+                for (let p = 0; p < this.Upload_file.length; p++) {
+                  this.Upload_file[p].isDeleted = 2
+                }
+              }
+
+
+              this.edit_file_list.forEach((item) => {
+                item.status = null;
+              })
+              this.fileList_Delet.forEach((item) => {
+                item.status = null;
+              })
+              var upList = this.edit_file_list.concat(this.Upload_file).concat(this.fileList_Delet);
+
               // 编辑
               let params2 = {
                 taskType: 2,//任务类型
@@ -1306,6 +1324,16 @@ export default {
             }
           })
         } else {
+
+          this.edit_file_list.forEach((item) => {
+            item.status = null;
+          })
+          this.fileList_Delet.forEach((item) => {
+            item.status = null;
+          })
+          var upList = this.edit_file_list.concat(this.fileList_Delet);
+
+
           // 编辑未上传文件
           // 编辑
           let params2 = {
@@ -1319,7 +1347,7 @@ export default {
             peopleTableUuid: this.save_zj_query.peopleTableUuid,//责任人id
             belongSpcial: this.save_zj_query.belongSpcial,//领域
             belongField: this.save_zj_query.belongField,//专题
-            attachmentList: this.edit_file_list,//上传成功de 的文件
+            attachmentList: upList,//上传成功de 的文件
           }
           this.edit_data_update(params2);//编辑
         }
@@ -1427,6 +1455,11 @@ export default {
       this.save_zj_query.auditTaskUuid = data.auditTaskUuid;
       this.save_zj_query.peopleName = data.peopleName;//责任人
 
+      this.edit_file_list = [];//清回显
+      this.fileList = [];
+      this.fileList_Delet = [];
+
+
       let params = {
         id: data.auditTaskUuid,//任务id
       }
@@ -1476,9 +1509,10 @@ export default {
             this.edit_file_list = [];
             // 回显
             list.forEach(item => {
+              item.isDeleted = 0;
               item.url = item.filePath;
               item.name = item.fileName;
-              this.edit_file_list.push(item)
+              this.edit_file_list.push(item);
             })
           }
 
