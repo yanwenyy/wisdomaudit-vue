@@ -7,48 +7,49 @@
       :visible.sync="visible"
       :append-to-body="true">
       <div>
-        <el-button @click="" type="primary" @click="dialogFormVisible=true">新增指标</el-button>
+        <el-button @click="" type="primary" @click="addIndex">新增指标</el-button>
         <el-table
           :data="dataList"
           border
           highlight-current-row
-          @current-change="handleCurrentChange"
+          @selection-change="selList"
           :header-cell-style="{
           'text-align': 'center',
           'background-color': '#F4FAFF',
         }"
           style="width: 100%;">
           <el-table-column
+            align="center"
             type="selection"
             width="55">
           </el-table-column>
           <el-table-column
-            prop="moduleName"
+            prop="indexTypeName"
             show-overflow-tooltip
             label="指标类型">
           </el-table-column>
           <el-table-column
-            prop="contractName"
+            prop="indexName"
             header-align="center"
-            align="center"
+            align="left"
             label="指标名称">
           </el-table-column>
           <el-table-column
-            prop="contractCode"
+            prop="numericSymbolName"
             header-align="center"
             align="center"
             label="单位">
           </el-table-column>
           <el-table-column
-            prop="createOrgName"
+            prop="dataProvidingDepartmentName"
             header-align="center"
             align="center"
             label="资料提供部门">
           </el-table-column>
           <el-table-column
-            prop="createUserName"
+            prop="accessCaliberFormulaName"
             header-align="center"
-            align="center"
+            align="left"
             label="取数口径或公式">
           </el-table-column>
         </el-table>
@@ -66,7 +67,7 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="visible = false">取消</el-button>
-        <el-button type="primary" @click="sub()">确定</el-button>
+        <el-button type="primary" @click="sub">确定</el-button>
       </div>
     </el-dialog>
     <el-dialog
@@ -75,6 +76,7 @@
       :visible.sync="dialogFormVisible"
       :close-on-click-modal="false"
       width="50%"
+      @close="dialogFormVisible = false,clearTemp()"
     >
       <el-form
         ref="dataForm"
@@ -83,10 +85,17 @@
         label-position="right"
         class="zb-form"
       >
-        <el-form-item label="指标类型" prop="indexName">
-          <el-select v-model="temp.indexUnit" placeholder="请选择">
+        <el-form-item label="指标类型" prop="indexType">
+          <el-select v-model="temp.indexType" placeholder="请选择"
+                     @change="
+                      getName(
+                        temp.indexType,
+                        selectList.zblx,
+                        'indexTypeName',
+                      )
+                    ">
             <el-option
-              v-for="item in options"
+              v-for="item in selectList.zblx"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -100,10 +109,17 @@
             placeholder="请输入指标名称"
           />
         </el-form-item>
-        <el-form-item label="单位" prop="indexName">
-          <el-select v-model="temp.indexUnit" placeholder="请选择">
+        <el-form-item label="单位" prop="numericSymbol	">
+          <el-select v-model="temp.numericSymbol	" placeholder="请选择"
+                     @change="
+                      getName(
+                        temp.numericSymbol	,
+                        selectList.dw,
+                        'numericSymbolName',
+                      )
+                    ">
             <el-option
-              v-for="item in options"
+              v-for="item in selectList.dw"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -111,10 +127,17 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="资料提供部门" prop="indexName">
-          <el-select v-model="temp.indexUnit" placeholder="请选择">
+        <el-form-item label="资料提供部门" prop="dataProvidingDepartment">
+          <el-select v-model="temp.dataProvidingDepartment" placeholder="请选择"
+                     @change="
+                      getName(
+                        temp.dataProvidingDepartment	,
+                        selectList.zltgbm,
+                        'dataProvidingDepartmentName',
+                      )
+                    ">
             <el-option
-              v-for="item in options"
+              v-for="item in selectList.zltgbm"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -122,10 +145,17 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="取数口径或公式" prop="indexName">
-          <el-select v-model="temp.indexUnit" placeholder="请选择">
+        <el-form-item label="取数口径或公式" prop="accessCaliberFormula">
+          <el-select v-model="temp.accessCaliberFormula" placeholder="请选择"
+                     @change="
+                      getName(
+                        temp.accessCaliberFormula	,
+                        selectList.qskjgs,
+                        'accessCaliberFormulaName',
+                      )
+                    ">
             <el-option
-              v-for="item in options"
+              v-for="item in selectList.qskjgs"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -133,18 +163,18 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="是否同步到指标库" prop="status">
-          <el-radio-group v-model="temp.status">
-            <el-radio :label="1">是</el-radio>
-            <el-radio :label="0">否</el-radio>
+        <el-form-item label="是否同步到指标库" prop="isAddIndex">
+          <el-radio-group v-model="temp.isAddIndex">
+            <el-radio :label="true">是</el-radio>
+            <el-radio :label="false">否</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
       <div slot="footer">
-        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button @click="dialogFormVisible = false,clearTemp()">取消</el-button>
         <el-button
           type="primary"
-          @click="dialogFormVisible=false"
+          @click="addSave"
         >保存</el-button
         >
       </div>
@@ -154,25 +184,178 @@
 </template>
 
 <script>
+  import {indexManagement_addList,indexManagement_save,indexManagement_addSave} from
+      '@SDMOBILE/api/shandong/ls'
+  import {select_loadcascader} from
+      '@SDMOBILE/api/shandong/data'
   export default {
     name: "search-list",
     data() {
       return {
+        selListShow:[],
+        managementProjectUuid:'',
         visible: false,
         dialogFormVisible:false,
-        temp:{},
+        temp:{
+          indexType:'',
+          indexTypeName:'',
+          indexName:'',
+          numericSymbol:'',
+          numericSymbolName:'',
+          numericSymbolName:'',
+          dataProvidingDepartment:'',
+          dataProvidingDepartmentName:'',
+          accessCaliberFormula:'',
+          accessCaliberFormulaName:'',
+          isAddIndex:false
+        },
         dataList: [],
+        searchForm:{
+          pageNo: 1,
+          pageSize: 10,
+        },
         page: {
           current: 1,
           size: 10,
           total: 0
         },
+        selectList:{
+          zblx:[],//指标类型
+          dw:[],//单位
+          zltgbm:[],//资料提供部门
+          qskjgs:[],//取数口径或公式
+        },
+
+        options: [
+          { value: "xxx1", label: "xxx1" },
+          { value: "xxx2", label: "xxx2" },
+        ],
+        // 新增的表单验证
+        rules: {
+          indexType: [
+            { required: true, message: "请填写指标类型", trigger: "change" },
+          ],
+          indexName: [
+            { required: true, message: "请填写指标名称", trigger: "change" },
+          ],
+          numericSymbol: [
+            { required: true, message: "请填写单位", trigger: "change" },
+          ],
+          dataProvidingDepartment: [
+            { required: true, message: "请填写资料提供部门", trigger: "change" },
+          ],
+          accessCaliberFormula: [
+            {
+              required: true,
+              message: "请填写取数口径或公式",
+              trigger: "change",
+            },
+          ],
+          isAddIndex: [
+            {
+              required: true,
+              message: "请填写是否同步到指标库",
+              trigger: "change",
+            },
+          ],
+        },
       }
     },
     methods: {
+      //获取下拉框的name
+      getName(id,list,name){
+        if(id){
+          this.$forceUpdate();
+          this.temp[name] = list.find(
+            (item) => item.value == id
+          ).label;
+        }
+      },
+      //指标新增确定按钮点击
+      addSave(){
+        indexManagement_addSave(this.temp).then(resp => {
+          if (resp.code == 0) {
+            this.$message({
+              message: "保存成功",
+              type: "success",
+            });
+            this.dialogFormVisible=false;
+            this.init(this.managementProjectUuid);
+            this.clearTemp();
+          } else {
+            this.$message({
+              message: resp.data.msg,
+              type: "error",
+            });
+          }
+        })
+      },
+      //清空指标新增数据
+      clearTemp(){
+        this.$refs['dataForm'].resetFields();
+        this.temp={
+          indexType:'',
+          indexName:'',
+          numericSymbolName:'',
+          dataProvidingDepartmentName:'',
+          accessCaliberFormulaName:'',
+          isAddIndex:true,
+        }
+      },
+      //新增指标点击
+      addIndex(){
+        this.dialogFormVisible=true;
+        this.getSelList("indexType",'zblx')
+        this.getSelList("IndexUnit",'dw')
+        this.getSelList("Department",'zltgbm')
+        this.getSelList("caliberFormula",'qskjgs')
+      },
       // 初始化
-      init() {
+      init(id) {
+        this.managementProjectUuid=id;
         this.visible = true;
+        let params={
+          pageNo: this.searchForm.pageNo,
+          pageSize: this.searchForm.pageSize,
+        };
+        this.loading = true
+        indexManagement_addList(params).then(resp => {
+          var datas=resp.data;
+          this.dataList = datas.records;
+          this.page={
+            current:datas.current,
+            size:datas.size,
+            total:datas.total
+          };
+          this.loading = false
+        })
+      },
+      //列表选择
+      selList(row){
+        this.selListShow=row
+      },
+      //生成经营指标
+      sub(){
+        let params={
+          indexManagementList: this.selListShow,
+          managementProjectUuid: this.managementProjectUuid,
+        };
+        this.loading = true
+        indexManagement_save(params).then(resp => {
+          if (resp.code == 0) {
+            this.$message({
+              message: "保存成功",
+              type: "success",
+            });
+            this.visible=false;
+            this.$emit('refreshAdd')
+          } else {
+            this.$message({
+              message: resp.data.msg,
+              type: "error",
+            });
+          }
+        })
       },
       //分页点击
       handleSizeChange(val) {
@@ -183,7 +366,14 @@
         this.searchForm.pageNo = val;
         this.getData();
       },
-    }
+      //获取下拉列表
+      getSelList(type,list){
+        select_loadcascader({typecode:type}).then(resp => {
+          var datas=resp.data;
+          this.selectList[list]=datas;
+        })
+      }
+    },
   }
 </script>
 
