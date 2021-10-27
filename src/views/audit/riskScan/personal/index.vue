@@ -2,7 +2,7 @@
   <div class="page-container">
     <div class="filter-container">
       <el-row>
-        <el-col>
+        <el-col :span='3'>
           <el-select v-model="value" placeholder="请选择">
             <el-option
               v-for="item in options"
@@ -13,16 +13,24 @@
             </el-option>
           </el-select>
         </el-col>
+        <el-col :span='3'>
+          <el-date-picker
+      v-model="value2"
+      type="month"
+      value-format='yyyyMM'
+      placeholder="选择月"
+      @change="changesj"
+      >
+    </el-date-picker>
+        </el-col>
       </el-row>
 
       <el-row>
         <el-col :span="20">
           <div style="margin-top: 20px">
-            <el-radio-group v-model="radio2" size="medium">
-              <el-radio-button label="未缴清欠款在开卡"></el-radio-button>
-              <el-radio-button label="使用多卡"></el-radio-button>
-              <el-radio-button label="再开卡"></el-radio-button>
-              
+            <el-radio-group v-model="radio2" size="medium" @change="changemx">
+              <el-radio-button label="95"  size="medium">员工违规销户余额转移</el-radio-button>
+              <el-radio-button label="96"  size="medium">异常批量办理业务</el-radio-button>
             </el-radio-group>
           </div>
         </el-col>
@@ -41,7 +49,15 @@
         </el-col>
       </el-row>
 
-      <el-row :gutter="20">
+  <el-row >
+      <el-col :span="20">
+      <frameset cols="87%,*" rows="*" frameborder="NO" border="0" framespacing="0" onload="load()">
+    <frame id="linkHtml" :src='formdates'  />
+</frameset>
+      </el-col>
+  </el-row>
+
+      <!-- <el-row :gutter="20">
         <el-col :span="14">
           <div class="item-wapper">
             <img src="@WISDOMAUDIT/assets/personal/echart-bar.jpg" />
@@ -114,7 +130,7 @@
             </el-card>
           </div>
         </el-col>
-      </el-row>
+      </el-row> -->
     </div>
   </div>
 </template>
@@ -127,13 +143,18 @@ export default {
     return {
       options: [
         {
-          value: "欠费",
-          label: "欠费",
+          value: "95",
+          label: "员工违规",
+        },
+        {
+          value: "96",
+          label: "营销活动",
         },
       ],
-      value: "欠费",
+      value: "95",
+      value2:'202010',
 
-      radio2: "未邀请",
+      radio2: "95",
 
       activeName: "first",
 
@@ -164,13 +185,28 @@ export default {
         },
       ],
 
-      value2: "2021-04",
+      value2: "202104",
+      a:'201010',
+      b:'96',
+
+      formdates:'http://10.8.17.4:8080/webroot/decision/view/form?viewlet=Form17.frm&tab=95&month=202010'
     };
+  },
+  mounted() {
+
   },
   methods: {
     handleClick(tab, event) {
       console.log(tab, event);
     },
+    changemx(){
+    this.formdates=`http://10.8.17.4:8080/webroot/decision/view/form?viewlet=Form17.frm&tab=${this.radio2}&month=${this.value2}`
+    },
+    changesj(){
+     this.formdates=`http://10.8.17.4:8080/webroot/decision/view/form?viewlet=Form17.frm&tab=${this.radio2}&month=${this.value2}`
+
+    }
+
   },
 };
 </script>

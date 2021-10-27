@@ -3,9 +3,9 @@
     <div class="filter-container">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
-          <span> <svg-icon icon-class="edit" /> 审计项目</span>
+          <span> <svg-icon icon-class="edit" class="homepage-icon"/> 审计项目</span>
           <el-button
-            style="float: right; padding: 3px 0; color: blue"
+            style="float: right; padding: 3px 0; color: blue; font-size:18px;"
             type="text"
             >···</el-button
           >
@@ -17,27 +17,26 @@
             <ul :style="index==0?'':'border-left:1px solid #ccc;'">
               <li @click="projectEvent('1')">
                 <div class="icon-wapper">
-                  <div class="homep-icon homep-icon1"></div>
-                  <!-- <svg-icon icon-class="model" /> -->
+                  <svg-icon icon-class="fmodel" />
                   <br />
                   <span>模型任务 {{item.mxCount}}</span>
                 </div>
               </li>
               <li @click="projectEvent('2')">
                 <div class="icon-wapper">
-                  <svg-icon icon-class="task-list" /><br />
+                  <svg-icon icon-class="ftrask" /><br />
                   <span>自建任务 {{item.zjCount}}</span>
                 </div>
               </li>
               <li @click="projectEvent('3')">
                 <div class="icon-wapper">
-                  <svg-icon icon-class="problem" /><br />
+                  <svg-icon icon-class="fproblem" /><br />
                   <span>问题 {{item.wtCount}}</span>
                 </div>
               </li>
               <li @click="projectEvent('4')">
                 <div class="icon-wapper">
-                  <svg-icon icon-class="list" /><br />
+                  <svg-icon icon-class="fconfirm" /><br />
                   <span>审计确认单 {{item.qrdCount}}</span>
                 </div>
               </li>
@@ -50,7 +49,7 @@
         <el-col :span="14">
           <el-card class="body-padding">
             <div slot="header" class="clearfix">
-              <span> <svg-icon icon-class="task" />我的模型任务</span>
+              <span> <svg-icon icon-class="task" class="homepage-icon"/>我的模型任务</span>
             </div>
 
             <ul style="height: 466px;overflow:scroll;" class="odd-even" @click="taskModelEvent">
@@ -73,7 +72,7 @@
         <el-col :span="10">
           <el-card>
             <div slot="header" class="clearfix">
-              <span> <svg-icon icon-class="view" />审计资料</span>
+              <span> <svg-icon icon-class="view" class="homepage-icon"/>审计资料</span>
             </div>
 
             <ul style="height: 245px;overflow:scroll;" class="odd-even" @click="auditInfoEvent">
@@ -92,11 +91,11 @@
 
           <el-card style="margin-top: 20px">
             <div slot="header" class="clearfix">
-              <span> <svg-icon icon-class="star" />快捷功能</span>
+              <span> <svg-icon icon-class="star" class="homepage-icon"/>快捷功能</span>
               <el-button
                 style="float: right; padding: 3px 0; color: blue"
                 type="text"
-                ><i class="el-icon-setting"></i
+                ><i class="el-icon-setting" style="font-size:18px;"></i
               ></el-button>
             </div>
             <ul style="height: 100px" class="shortcut-wapper">
@@ -113,7 +112,7 @@
                 项目工作台
               </li>
               <li @click="shortcutEvent('4')">
-                <span class="item-icon"></span>
+                <span class="item-icon icon-green"></span>
                 模型化建模
               </li>
               <li @click="shortcutEvent('5')">
@@ -121,7 +120,7 @@
                 数据导入
               </li>
               <li @click="shortcutEvent('6')">
-                <span class="item-icon"></span>
+                <span class="item-icon icon-blue"></span>
                 审计依据
               </li>
             </ul>
@@ -302,13 +301,13 @@ export default {
 
       .icon-wapper {
         height: 100px;
-        width: 120px;
+        width: 110px;
         margin: 10px auto;
 
-        padding: 10px;
+        padding: 10px 2px;
 
         border: 1px solid #ccc;
-        border-radius: 5px;
+        border-radius: 10px;
 
         text-align: center;
 
@@ -322,7 +321,7 @@ export default {
           margin-top: 15px;
           font-size: 16px;
 
-          width: 100px;
+          width: 106px;
 
           white-space: nowrap;
           overflow: hidden;
@@ -331,7 +330,7 @@ export default {
       }
 
       .icon-wapper:hover {
-        background-color: rgb(90, 155, 245);
+        background-image: linear-gradient(#a0ccf0, #5D89FD);
         color: #fff;
       }
     }
@@ -396,16 +395,24 @@ export default {
       height: 18px;
 
       border-radius: 8px;
-      background-color: green;
+      background-image: linear-gradient(#E0A6FB, #8478F3);
       margin-right: 5px;
     }
 
     span.item-icon.icon-warning {
-      background-color: chocolate;
+      background-image: linear-gradient(#FFE8A7, #FF9D3A);
     }
 
     span.item-icon.icon-error {
-      background-color: red;
+      background-image: linear-gradient(#FEAAD1, #F24C76);
+    }
+
+    span.item-icon.icon-green {
+      background-image: linear-gradient(#85F4EA, #03CDBB);
+    }
+
+    span.item-icon.icon-blue {
+      background-image: linear-gradient(#67BAEE, #5584FC);
     }
   }
 }
@@ -416,14 +423,11 @@ export default {
   font-weight: bold;
   color: #439bd8;
 }
-.homep-icon{
-  height: 40px;
-  width: 30px;
-  margin: auto;
-  background-size: 100% 100%;
-}
-.homep-icon1{
-  background-image: url('./img/trask.png');
+.homepage-icon{
+  margin-right:3px;
+  height:1.2rem !important;
+  width:1.2rem !important;
+  vertical-align:-0.3em !important;
 }
 </style>
 
