@@ -681,6 +681,9 @@ export default {
     },
     //编辑任务
     editModel(row) {
+      this.edit_file_list=[];
+      this.Upload_file=[];
+      this.fileList_Delet=[];
       this.editModelDialogVisible = true;
       editTaskSelf(row.auditTaskUuid).then((resp) => {
         this.editTask = resp.data;
@@ -1047,9 +1050,12 @@ export default {
       // console.log(this.edit_file_list);
  if(this.fileList.length>0){
           let formData = new FormData();
-          formData.append("file", this.file.raw);
+          // formData.append("file", this.file.raw);
           this.fileList.forEach((item) => {
-            formData.append("files", item.raw);
+            if(item.raw){
+              formData.append("files", item.raw);
+            }
+            
           });
 
       this.$axios({
@@ -1070,13 +1076,13 @@ export default {
           for(let p=0;p<this.Upload_file.length;p++){
             this.Upload_file[p].isDeleted = 2
           }
-           for(let k=0;k<this.deletFileList.length;k++){
-             this.Upload_file.push(this.deletFileList[k].url);
-          }
-          //
-          for(let m=0;m<this.fileList_Delet.length;m++){
-             this.Upload_file.push(this.fileList_Delet[m].url);
-          }
+          //  for(let k=0;k<this.deletFileList.length;k++){
+          //    this.Upload_file.push(this.deletFileList[k].url);
+          // }
+          // //
+          // for(let m=0;m<this.fileList_Delet.length;m++){
+          //    this.Upload_file.push(this.fileList_Delet[m].url);
+          // }
         }
           
 
@@ -1119,6 +1125,9 @@ export default {
           this.edit_file_list.forEach((item)=>{
             item.status=null;
           })
+          this.fileList_Delet.forEach((item)=>{
+            item.status=null;
+          })
           var upList = this.edit_file_list.concat(this.Upload_file).concat(this.fileList_Delet);
           this.editTask.attachmentList = upList;
           // console.log(this.Upload_file);
@@ -1137,6 +1146,14 @@ export default {
         }
       });
     }else{
+       this.edit_file_list.forEach((item)=>{
+            item.status=null;
+          })
+           this.fileList_Delet.forEach((item)=>{
+            item.status=null;
+          })
+          var upList = this.edit_file_list.concat(this.fileList_Delet);
+           this.editTask.attachmentList = upList;
          this.editTask.managementProjectUuid = this.active_project;
           editTaskSelfInfo(this.editTask).then((resp) => {
             this.editModelDialogVisible = false;
