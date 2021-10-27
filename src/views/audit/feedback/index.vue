@@ -96,9 +96,9 @@
           <el-form label-width="80px">
             <el-table ref="multipleTable"
                       row-key="id"
+                      v-loading="loading"
                       :data="feedback_list.records"
                       tooltip-effect="dark"
-                      v-loading="loading"
                       style="width: 100%"
                       @selection-change="handleSelectionChange_query">
               <el-table-column type="selection"
@@ -154,7 +154,8 @@
               <el-table-column prop="dataNumber"
                                label="附件">
                 <template slot-scope="scope">
-                  <div class="update">
+                  <div class="update"
+                       @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)">
                     <div class="update_icon">
                       <svg t="1631877671204"
                            class="icon"
@@ -169,8 +170,7 @@
                               p-id="9940"></path>
                       </svg>
                     </div>
-                    <span
-                          @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)">{{scope.row.enclosureCount}}</span>
+                    <span>{{scope.row.enclosureCount}}</span>
                   </div>
                 </template>
               </el-table-column>
@@ -193,7 +193,7 @@
                                style="width:50px"
                                :on-progress="up_ing"
                                v-if="scope.row.status !== 3"
-                               action="http://localhost:9529/wisdomaudit/auditPreviousDemandData/uploadData"
+                               action="/wisdomaudit/auditPreviousDemandData/uploadData"
                                :show-file-list="false"
                                :http-request="handleUploadForm"
                                :before-upload="beforeAvatarUpload"
@@ -399,7 +399,7 @@ export default {
     },
 
     // 查看
-    see () {
+    see (data) {
       this.see_data = true;
       this.dialogVisible = true;//显示反馈
       console.log(data);
@@ -508,10 +508,10 @@ export default {
       })
     },
     // 查看附件 
-    open_enclosure_details () {
+    open_enclosure_details (id) {
       this.dialogVisibl_enclosure_details = true;//显示附件详情
       let params = {
-        id: this.auditPreviousDemandDataUuid
+        id: id
       }
       operation_findFile(params).then(resp => {
         console.log(resp.data);

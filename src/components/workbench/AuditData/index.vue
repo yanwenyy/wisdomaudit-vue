@@ -1151,7 +1151,7 @@ export default {
         // 已完成
         // 已完成
         let params2 = {
-          pageNo: val,
+          pageNo: this.params.pageNo,
           pageSize: this.params2.pageSize,
           condition: {
             dataTaskNumber: this.projectNumber,
