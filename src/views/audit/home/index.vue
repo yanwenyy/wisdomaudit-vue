@@ -5,7 +5,7 @@
         <div slot="header" class="clearfix">
           <span> <svg-icon icon-class="edit" class="homepage-icon"/> 审计项目</span>
           <el-button
-            style="float: right; padding: 3px 0; color: blue"
+            style="float: right; padding: 3px 0; color: blue; font-size:18px;"
             type="text"
             >···</el-button
           >
@@ -95,7 +95,7 @@
               <el-button
                 style="float: right; padding: 3px 0; color: blue"
                 type="text"
-                ><i class="el-icon-setting"></i
+                ><i class="el-icon-setting" style="font-size:18px;"></i
               ></el-button>
             </div>
             <ul style="height: 100px" class="shortcut-wapper">
@@ -301,13 +301,13 @@ export default {
 
       .icon-wapper {
         height: 100px;
-        width: 120px;
+        width: 110px;
         margin: 10px auto;
 
-        padding: 10px;
+        padding: 10px 2px;
 
         border: 1px solid #ccc;
-        border-radius: 5px;
+        border-radius: 10px;
 
         text-align: center;
 
@@ -321,7 +321,7 @@ export default {
           margin-top: 15px;
           font-size: 16px;
 
-          width: 100px;
+          width: 106px;
 
           white-space: nowrap;
           overflow: hidden;
@@ -330,7 +330,7 @@ export default {
       }
 
       .icon-wapper:hover {
-        background-color: rgb(90, 155, 245);
+        background-image: linear-gradient(#a0ccf0, #5D89FD);
         color: #fff;
       }
     }
