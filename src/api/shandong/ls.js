@@ -120,3 +120,57 @@ export function auditConfirmation_getDetail (data) {
     data
   })
 }
+//经营指标列表
+export function indexManagement_pageList(data) {
+  return request({
+    baseURL: baseURL,
+    url:'/operatingIndicators/list',
+    method: 'post',
+    data
+  })
+}
+//经营指标编辑
+export function indexManagement_edit(data) {
+  return request({
+    baseURL: baseURL,
+    url:'/operatingIndicators/updateValue',
+    method: 'put',
+    data
+  })
+}
+//新增指标分页查询
+export function indexManagement_addList(data) {
+  return request({
+    baseURL: baseURL,
+    url:'/indexManagement/pageList',
+    method: 'post',
+    data
+  })
+}
+//新增指标新增
+export function indexManagement_addSave(data) {
+  return request({
+    baseURL: baseURL,
+    url:'/indexManagement/save',
+    method: 'post',
+    data
+  })
+}
+//生成经营指标
+export function indexManagement_save(data) {
+  return request({
+    baseURL: baseURL,
+    url:'/operatingIndicators/cite',
+    method: 'post',
+    data
+  })
+}
+//经营指标删除
+export function indexManagement_delete (data) {
+  return request({
+    baseURL: baseURL,
+    url: '/operatingIndicators/delete/' + data + '',
+    method: 'delete',
+    data
+  })
+}

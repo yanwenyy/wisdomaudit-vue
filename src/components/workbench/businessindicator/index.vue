@@ -1,7 +1,7 @@
 <template>
   <div class="indocator">
     <div class="filter-container">
-      <el-button type="primary" v-if="ifprojectmanage" @click="add()"
+      <el-button type="primary" @click="add()"
         >新增指标</el-button
       >
       <!--<div class="indocator-btn-box" v-if="!ifprojectmanage">-->
@@ -15,87 +15,35 @@
         <!--&lt;!&ndash; <el-button class="gary-border" @click="deleteData()">删除</el-button> &ndash;&gt;-->
       <!--</div>-->
     </div>
-    <!-- @sort-change="sortChange" -->
-    <!--<el-table-->
-      <!--:key="tableKey"-->
-      <!--v-loading="listLoading"-->
-      <!--fit-->
-      <!--style="width: 100%"-->
-      <!--:data="list"-->
-      <!--border-->
-      <!--highlight-current-row-->
-      <!--height="calc(100vh - 300px)"-->
-      <!--max-height="calc(100vh - 300px)"-->
-      <!--@selection-change="handleSelectionChange"-->
-    <!--&gt;-->
-      <!--<el-table-column type="selection" align="center" />-->
-      <!--<el-table-column label="指标类型" prop="indexType" />-->
-      <!--<el-table-column label="指标名称" prop="indexName">-->
-        <!--<template slot-scope="scope">-->
-          <!--<div class="canclick" @click="openDetail(scope.$index)">-->
-            <!--{{ scope.row.indexName }}-->
-          <!--</div>-->
-        <!--</template>-->
-      <!--</el-table-column>-->
-      <!--<el-table-column label="单位" show-overflow-tooltip prop="indexUnit" />-->
-      <!--<el-table-column-->
-        <!--label="资料提供部门"-->
-        <!--align="center"-->
-        <!--prop="dataProvideDepartment"-->
-      <!--/>-->
-      <!--<el-table-column label="取数口径或公式" prop="accessCaliber" />-->
-      <!--<el-table-column-->
-        <!--label="指标值"-->
-        <!--width="180px"-->
-        <!--align="center"-->
-        <!--prop="indexValue"-->
-      <!--&gt;-->
-        <!--<template slot-scope="scope">-->
-          <!--<el-input v-model="scope.row.indexValue" />-->
-        <!--</template>-->
-      <!--</el-table-column>-->
-      <!--<el-table-column label="状态" prop="status">-->
-        <!--<template slot-scope="scope">-->
-          <!--{{-->
-            <!--scope.row.status == 1-->
-              <!--? "启用"-->
-              <!--: scope.row.status == 0-->
-              <!--? "停用"-->
-              <!--: "&#45;&#45;"-->
-          <!--}}-->
-        <!--</template>-->
-      <!--</el-table-column>-->
-    <!--</el-table>-->
     <div class="jyzb-div">
       <table class="jyzb">
         <tr>
           <th width="150">指标分类</th>
           <th width="150">指标名称</th>
           <th width="100">单位</th>
-          <th width="100">2018年4月初</th>
-          <th width="100" v-for="item in yearRange">{{item}}</th>
-          <th width="100">2020年8月</th>
+          <th width="150" v-for="item in yearRange">{{item}}</th>
           <th width="150">资料提供部门</th>
           <th width="100">联系人</th>
-          <th colspan="2" width="150">操作</th>
+          <th width="160">操作</th>
         </tr>
+      </table>
+      <table class="jyzb" v-for="item in dataList">
         <tr>
-          <td>考核得分指标</td>
+          <td class="jyzb-tr-title" colspan="7">{{item.indexType}}</td>
         </tr>
-        <tr v-for="item in 2">
-          <td></td>
-          <td>业绩考核得分</td>
-          <td>分</td>
-          <td></td>
-          <td v-for="item in yearRange"></td>
-          <td></td>
-          <td>财务部</td>
-          <td>方静</td>
-          <td><el-button type="text" class="blue">编辑</el-button></td>
-          <td><el-button type="text" class="red">删除</el-button></td>
-        </tr>
-        <tr>
-          <td>收益及收入结构指标</td>
+        <tr v-for="vtem in item.children">
+          <td width="150"></td>
+          <td width="150">{{vtem.indexName}}</td>
+          <td width="100">{{vtem.indexUnit}}</td>
+          <td width="150" v-for="y in vtem.operatingIndicatorsValueList">
+            <span v-if="yearRange.indexOf(y.indexDate)!=-1">{{y.indexValue}}</span>
+          </td>
+          <td width="150">{{vtem.dataProvideDepartmentName}}</td>
+          <td width="100">{{vtem.contactPerson}}</td>
+          <td width="160">
+            <el-button type="text" class="blue" @click="edit(vtem)">编辑</el-button>
+            <el-button type="text" class="red" @click="del(vtem)">删除</el-button>
+          </td>
         </tr>
       </table>
     </div>
@@ -168,7 +116,25 @@
         <el-button type="primary" @click="importSave()">确定</el-button>
       </div>
     </el-dialog>
-    <search-list ref="searchTabel"></search-list>
+    <el-dialog
+      title="编辑"
+      :visible.sync="editVisible"
+      :close-on-click-modal="false"
+    >
+      <el-form :model="formState" class="formData"  label-width="100px">
+        <el-form-item v-for="item in formState.operatingIndicatorsValueList" :label="item.indexDate">
+          <el-input
+            v-model="item.indexValue"
+            placeholder="请输入"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer">
+        <el-button @click="dialoglistVisible = false">取消</el-button>
+        <el-button type="primary" @click="editSave">确定</el-button>
+      </div>
+    </el-dialog>
+    <search-list ref="searchTabel" @refreshAdd="getAddInfo"></search-list>
   </div>
 </template>
 
@@ -177,22 +143,24 @@ import Pagination from "@WISDOMAUDIT/components/Pagination"; // secondary packag
 import SearchList from "./searchList"
 import _ from "lodash";
 import axios from "axios";
+import {indexManagement_pageList,indexManagement_edit,indexManagement_delete} from
+    '@SDMOBILE/api/shandong/ls'
 export default {
   components: { Pagination ,SearchList},
   filters: {},
+  props:['active_project'],
   data() {
     return {
+      editVisible:false,//编辑经营指标
+      formState:{},//编辑的form
       yearRange:['2018','2019','2020'],
       tableKey: "indicator",
       list: null,
       total: 0,
       listLoading: false,
+      dataList:[],
       pageQuery: {
-        condition: {
-          managementProjectUuid: "", //项目管理主键
-          auditStartData: "", //项目周期
-          auditFinishData: "", //项目周期
-        },
+        managementProjectUuid: "", //项目管理主键
         pageNo: 1,
         pageSize: 20,
       },
@@ -261,77 +229,99 @@ export default {
     };
   },
   watch: {},
-  created() {
-    this.pageQuery.condition.managementProjectUuid =
-      "a1sa0d13as5d13asd1a3s00001";
-    this.pageQuery.condition.auditStartData = "2016-02-22T01:39:34.665Z";
-    this.pageQuery.condition.auditFinishData = "2016-02-22T01:39:34.665Z";
+  mounted() {
     this.getList();
-    this.getManage();
   },
   methods: {
-    getManage() {
-      this.ifprojectmanage = true;
+    //start
+    //删除
+    del(row){
+      this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        indexManagement_delete(val).then(resp => {
+          // console.log(resp.data);
+          if (resp.code == 0) {
+            this.$message({
+              message: "删除成功",
+              type: "success",
+            });
+            this.getList();
+          } else {
+            this.$message({
+              message: resp.data.msg,
+              type: "error",
+            });
+          }
+        });
+      }).catch(() => {})
+    },
+    //编辑按钮点击
+    edit(row){
+      this.formState=row;
+      this.editVisible=true;
+    },
+    //编辑保存
+    editSave(){
+      console.log(JSON.stringify(this.formState))
+      indexManagement_edit(this.formState).then(resp => {
+        if (resp.code == 0) {
+          this.$message({
+            message: "修改成功",
+            type: "success",
+          });
+          this.editVisible=false;
+          this.getList();
+        } else {
+          this.$message({
+            message: resp.data.msg,
+            type: "error",
+          });
+        }
+      })
     },
     getList() {
-      this.listLoading = true
-      axios({
-        url: `/wisdomaudit/operatingIndicators/pageList`,
-        method: "post",
-        data: this.pageQuery,
-      }).then((res) => {
-        console.log(res);
-        this.listLoading = false
-        if (res.data.code == 0) {
-          this.list = res.data.data.data;
-          this.total = res.data.data.total;
-        }
-      });
+      console.log(this.active_project)
+      this.listLoading = true;
+      this.pageQuery.managementProjectUuid=this.active_project;
+      indexManagement_pageList(this.pageQuery).then(resp => {
+        var datas=resp.data;
+        this.dataList=datas.dataList;
+        this.yearRange=datas.titleHeadList;
+        this.loading = false
+      })
+      // axios({
+      //   url: `/wisdomaudit/operatingIndicators/pageList`,
+      //   method: "post",
+      //   data: this.pageQuery,
+      // }).then((res) => {
+      //   console.log(res);
+      //   this.listLoading = false
+      //   if (res.data.code == 0) {
+      //     this.list = res.data.data.data;
+      //     this.total = res.data.data.total;
+      //   }
+      // });
     },
+    //end
+
     openExamine() {
       this.dialogtextVisible = true;
-    },
-    handleSelectionChange(val) {
-      this.indicatortableSelection = val;
     },
     kulistSelectionChange(val) {
       this.kutableSelection = val;
     },
     add() {
-      // this.temp = {
-      //   indexType: null,
-      //   indexName: null,
-      //   indexUnit: null,
-      //   dataProvideDepartment: null,
-      //   accessCaliber: null,
-      //   status: 1,
-      //   managementProjectUuid: this.pageQuery.condition.managementProjectUuid,
-      // };
-      // this.dialogStatus = "create";
-      // this.dialogFormVisible = true;
-      // this.$nextTick(() => {
-      //   this.$refs.dataForm.clearValidate();
-      // });
       this.$nextTick(() => {
-        this.$refs.searchTabel.init();
+        this.$refs.searchTabel.init(this.active_project);
       });
     },
-    openDetail(int) {
-      this.temp = this.list[int];
-      this.dialogStatus = "show";
-      this.dialogFormVisible = true;
-      return;
-      axios({
-        url:
-          `/wisdomaudit/operatingIndicators/getById/` +
-          this.list[int].problemListUuid,
-        method: "get",
-        data: {},
-      }).then((res) => {
-        console.log(res);
-        this.temp = res.data.data;
-        this.dialogDetailVisible = true;
-      });
+    //生成经营指标点击后事件
+    getAddInfo(){
+      console.log(111)
+      this.getList();
     },
     importData() {
       this.getkulist();
@@ -452,6 +442,9 @@ export default {
 };
 </script>
 <style scoped>
+  .jyzb-tr-title{
+    text-align: left!important;
+  }
   .indocator{
     height: 100%;
   }
@@ -492,6 +485,9 @@ export default {
   }
   .red{
     color:red;
+  }
+  .jyzb button{
+    border: none!important;
   }
 </style>
 
