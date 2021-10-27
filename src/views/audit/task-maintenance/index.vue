@@ -183,7 +183,7 @@
             v-model="editTask.enclosure"
             :on-change="handleChangePic"
             :on-remove="handleRemove"
-            :file-list="fileList"
+            :file-list="edit_file_list"
             :auto-upload="false"
             multiple
           >
@@ -591,6 +591,7 @@ export default {
       thematicOption: [],
       areasOption: [],
       deletFileList:[],
+      fileList_Delet:[],//删除本条数据
       thematic: {
         typecode: "SPECIAL",
       },
@@ -1043,20 +1044,12 @@ export default {
       // console.log(this.deletFileList);
       // console.log(this.fileList);
       // console.log(this.edit_file_list);
-      if(this.fileList.length == this.edit_file_list.length && this.deletFileList.length== 0){
-        this.editTask.managementProjectUuid = this.active_project;
-          editTaskSelfInfo(this.editTask).then((resp) => {
-            this.editModelDialogVisible = false;
-            this.queryInfo.condition.managementProjectUuid =
-              this.active_project;
-            this.getmodelTaskList(this.queryInfo);
-          });
-      }else{
+ if(this.fileList.length>0){
           let formData = new FormData();
-      formData.append("file", this.file.raw);
-      this.fileList.forEach((item) => {
-        formData.append("files", item.raw);
-      });
+          formData.append("file", this.file.raw);
+          this.fileList.forEach((item) => {
+            formData.append("files", item.raw);
+          });
 
       this.$axios({
         method: "post",
@@ -1068,30 +1061,63 @@ export default {
       }).then((resp) => {
         if (resp.data.code == 0) {
           this.$message.success("上传成功！");
-          console.log(resp.data);
           this.Upload_file = resp.data.data;
+          console.log(this.Upload_file);
+
+
+        if(this.Upload_file){
+          for(let p=0;p<this.Upload_file.length;p++){
+            this.Upload_file[p].isDeleted = 2
+          }
+           for(let k=0;k<this.deletFileList.length;k++){
+             this.Upload_file.push(this.deletFileList[k].url);
+          }
+          //
+          for(let m=0;m<this.fileList_Delet.length;m++){
+             this.Upload_file.push(this.fileList_Delet[m].url);
+          }
+        }
+          
+
+          
+         
         
         // 判断是否进行删除上传附件
-         if(this.deletFileList.length>0){
-            console.log(this.edit_file_list);
-          for(let j=0;j<this.edit_file_list.length;j++){
-            for(let k =0; k <this.deletFileList.length;k++){
-              if(this.deletFileList[k].status == "success"){
-                 if(this.edit_file_list[j].attachmentUuid == this.deletFileList[k].url.attachmentUuid){
-                this.Upload_file.push(this.edit_file_list[j]);
-              }
-              }
-            }
-          }
-         }else{
-           for(let p=0;p<this.edit_file_list.length;p++){
-             this.Upload_file.push(this.edit_file_list[p]);
-           }
-         }
+        //  if(this.deletFileList.length>0){
+        //     console.log(this.edit_file_list);
+        //   for(let j=0;j<this.edit_file_list.length;j++){
+        //     for(let k =0; k <this.deletFileList.length;k++){
+        //       if(this.deletFileList[k].status == "success"){
+        //          if(this.edit_file_list[j].attachmentUuid == this.deletFileList[k].url.attachmentUuid){
+        //         this.Upload_file.push(this.edit_file_list[j]);
+        //       }
+        //       }
+        //     }
+        //   }
+        //  }else{
+        //    for(let p=0;p<this.edit_file_list.length;p++){
+        //      this.Upload_file.push(this.edit_file_list[p]);
+        //    }
+        //  }
+         
+         
+          //  for(let p=0;p<this.Upload_file.length;p++){
+          //   if(this.Upload_file[p].status == "ready"){
+          //     this.Upload_file[p].isDeleted = 2
+          //   }
+          // }
 
-          this.editTask.attachmentList = this.Upload_file;
+
           // this.editTask.attachmentList = this.Upload_file;
-          console.log(this.Upload_file);
+
+          // for(let i=0;i<this.Upload_file.length;i++){
+          //   if(this.Upload_file[i] !== null){
+          //     this.editTask.attachmentList.push(this.Upload_file[i])
+          //   }
+          // }
+          var upList = this.edit_file_list.concat(this.Upload_file).concat(this.fileList_Delet);
+          this.editTask.attachmentList = upList;
+          // console.log(this.Upload_file);
           this.editTask.managementProjectUuid = this.active_project;
           editTaskSelfInfo(this.editTask).then((resp) => {
             this.editModelDialogVisible = false;
@@ -1106,8 +1132,15 @@ export default {
           });
         }
       });
-      }
-    
+    }else{
+         this.editTask.managementProjectUuid = this.active_project;
+          editTaskSelfInfo(this.editTask).then((resp) => {
+            this.editModelDialogVisible = false;
+            this.queryInfo.condition.managementProjectUuid =
+              this.active_project;
+            this.getmodelTaskList(this.queryInfo);
+          });
+    }
     },
     // 自建取消按钮
     resBtn() {
@@ -1163,18 +1196,19 @@ export default {
             this.nearbyDialogVisible = true;
           }
         }else{
-          this.edit_file_list = resp.data  //编辑回显
-           if (this.edit_file_list) {
-            this.fileList = [];
-            this.edit_file_list.forEach(element => {
-              let obj = new Object();
-              obj.url = element;
-              let fileName = element.fileName; //文件名
-              this.$set(obj, 'name', fileName);
-              this.$set(obj, 'url', element);  //files（name,url）
-              this.fileList.push(obj);
-            });
+           var list = resp.data//
+          // 编辑回显
+          if (list) {
+            this.edit_file_list = [];
+            // 回显
+            list.forEach(item => {
+              item.isDeleted=0;
+              item.url = item.filePath;
+              item.name = item.fileName;
+              this.edit_file_list.push(item)
+            })
           }
+
         }
       });
     },
@@ -1221,10 +1255,24 @@ export default {
       this.$refs[resetForm2].resetFields();
       this.fileList = [];
     },
+    //
      handleRemove(file, fileList) {
-        console.log(fileList);
-        this.deletFileList = fileList;
 
+        // this.deletFileList = fileList;
+        // this.fileList_Delet.push(file);
+        // // this.fileList_Delet.url.isDeleted = 1;
+        // for(let o= 0;o<this.fileList_Delet.length;o++){
+        //   this.fileList_Delet[o].url.isDeleted = 1;
+        // }
+        // console.log(this.fileList_Delet);
+        if (file.response) {
+        this.fileList.remove(file.response.data);
+        this.key = Math.random();
+      } else {
+        this.edit_file_list.remove(file);
+        file.isDeleted=1;
+        this.fileList_Delet.push(file)
+      }
       },
   },
   created() {

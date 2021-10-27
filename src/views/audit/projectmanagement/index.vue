@@ -1490,8 +1490,8 @@ export default {
           editProjectUpdata(this.addProjectManagement).then((resp) => {
             this.$message.success("修改成功！");
             this.projectData(this.query);
-          });
-          this.editDialogVisible = false;
+            this.editDialogVisible = false;
+          });    
         } else {
           console.log("error submit!!");
           return false;
