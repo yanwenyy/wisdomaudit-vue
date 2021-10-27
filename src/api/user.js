@@ -65,6 +65,7 @@ export function logout() {
 
 export function searchRole(params) {
   return request({
+    baseURL: baseURL,
     url: '/role/listRoleInfo',
     method: 'get',
     params
@@ -72,12 +73,14 @@ export function searchRole(params) {
 }
 export function getPermission() {
   return request({
+    baseURL: baseURL,
     url: '/permission/getUserPermissionList',
     method: 'get'
   })
 }
 export function addRole(data) {
   return request({
+    baseURL: baseURL,
     url: '/role/addRole',
     method: 'POST',
     data
@@ -85,6 +88,7 @@ export function addRole(data) {
 }
 export function getRoleData(params) {
   return request({
+    baseURL: baseURL,
     url: '/role/getRoleInfoByRoleId',
     method: 'get',
     params
@@ -93,6 +97,7 @@ export function getRoleData(params) {
 
 export function removeRole(data) {
   return request({
+    baseURL: baseURL,
     url: '/role/deleteRole',
     method: 'POST',
     params:data
@@ -101,6 +106,7 @@ export function removeRole(data) {
 
 export function modifyRole(data) {
   return request({
+    baseURL: baseURL,
     url: '/role/updateRole',
     method: 'POST',
     data
@@ -111,6 +117,7 @@ export function modifyRole(data) {
 
 export function getUserList(params) {
   return request({
+    baseURL: baseURL,
     url: '/user/listUserInfo',
     method: 'get',
     params
@@ -119,6 +126,7 @@ export function getUserList(params) {
 
 export function removeUser(data) {
   return request({
+    baseURL: baseURL,
     url: '/user/deleteUser',
     method: 'POST',
     params:data
@@ -126,6 +134,7 @@ export function removeUser(data) {
 }
 export function getUserTree() {
   return request({
+    baseURL: baseURL,
     url: '/ecoOrg/tree',
     method: 'get',
   })
@@ -133,6 +142,7 @@ export function getUserTree() {
 
 export function addUser(data) {
   return request({
+    baseURL: baseURL,
     url: '/user/addUser',
     method: 'post',
     data
@@ -142,6 +152,7 @@ export function addUser(data) {
 
 export function obtainUser(params) {
   return request({
+    baseURL: baseURL,
     url: '/user/getUserByUserId',
     method: 'get',
     params
@@ -151,6 +162,7 @@ export function obtainUser(params) {
 
 export function modifyUser(data) {
   return request({
+    baseURL: baseURL,
     url: '/user/updateUser',
     method: 'post',
     data
