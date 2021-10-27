@@ -112,7 +112,7 @@
                 项目工作台
               </li>
               <li @click="shortcutEvent('4')">
-                <span class="item-icon"></span>
+                <span class="item-icon icon-green"></span>
                 模型化建模
               </li>
               <li @click="shortcutEvent('5')">
@@ -120,7 +120,7 @@
                 数据导入
               </li>
               <li @click="shortcutEvent('6')">
-                <span class="item-icon"></span>
+                <span class="item-icon icon-blue"></span>
                 审计依据
               </li>
             </ul>
@@ -395,16 +395,24 @@ export default {
       height: 18px;
 
       border-radius: 8px;
-      background-color: green;
+      background-image: linear-gradient(#E0A6FB, #8478F3);
       margin-right: 5px;
     }
 
     span.item-icon.icon-warning {
-      background-color: chocolate;
+      background-image: linear-gradient(#FFE8A7, #FF9D3A);
     }
 
     span.item-icon.icon-error {
-      background-color: red;
+      background-image: linear-gradient(#FEAAD1, #F24C76);
+    }
+
+    span.item-icon.icon-green {
+      background-image: linear-gradient(#85F4EA, #03CDBB);
+    }
+
+    span.item-icon.icon-blue {
+      background-image: linear-gradient(#67BAEE, #5584FC);
     }
   }
 }
