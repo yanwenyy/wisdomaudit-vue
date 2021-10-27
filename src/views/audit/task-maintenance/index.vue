@@ -1005,6 +1005,7 @@ export default {
                 //新增自建任务接口
                 this.taskSelf.attachmentList = this.Upload_file;
                 this.taskSelf.managementProjectUuid = this.active_project;
+                console.log(this.taskSelf);
                 selfTaskFunction(this.taskSelf).then((resp) => {
                   this.$message.success("新增任务成功！");
                   this.TaskDialogVisible = false;
@@ -1115,6 +1116,9 @@ export default {
           //     this.editTask.attachmentList.push(this.Upload_file[i])
           //   }
           // }
+          this.edit_file_list.forEach((item)=>{
+            item.status=null;
+          })
           var upList = this.edit_file_list.concat(this.Upload_file).concat(this.fileList_Delet);
           this.editTask.attachmentList = upList;
           // console.log(this.Upload_file);
@@ -1205,7 +1209,7 @@ export default {
               item.isDeleted=0;
               item.url = item.filePath;
               item.name = item.fileName;
-              this.edit_file_list.push(item)
+              this.edit_file_list.push(item);
             })
           }
 
