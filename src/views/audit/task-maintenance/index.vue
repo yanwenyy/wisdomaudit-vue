@@ -17,7 +17,11 @@
             </el-col>
           </el-row>
           <!-- 表单 -->
-          <el-table :data="taskData" style="width: 100%" :header-cell-style="{'background-color': '#F4FAFF',}">
+          <el-table
+            :data="taskData"
+            style="width: 100%"
+            :header-cell-style="{ 'background-color': '#F4FAFF' }"
+          >
             <el-table-column prop="taskName" label="模型任务名称">
             </el-table-column>
             <el-table-column prop="taskType" label="任务类型">
@@ -178,6 +182,7 @@
             action="#"
             v-model="editTask.enclosure"
             :on-change="handleChangePic"
+            :on-remove="handleRemove"
             :file-list="fileList"
             :auto-upload="false"
             multiple
@@ -213,7 +218,7 @@
         <el-form
           label-width="90px"
           :model="taskSelf"
-          style="margin-left: 20%;margin-top:5%"
+          style="margin-left: 20%; margin-top: 5%"
           ref="selfTaskRef"
           :rules="taskSelfRules"
         >
@@ -585,6 +590,7 @@ export default {
       modelTableData: [],
       thematicOption: [],
       areasOption: [],
+      deletFileList:[],
       thematic: {
         typecode: "SPECIAL",
       },
@@ -593,6 +599,7 @@ export default {
       },
       nearbyDialogVisible: false, //附件详情弹框
       enclosure_details_list: [], //附件table数据
+      edit_file_list: [],// 编辑回显 上传文件
       enclosureInfo: {
         condition: {
           businessUuid: "",
@@ -680,10 +687,15 @@ export default {
       this.thematicSelect(this.thematic);
       this.areasSelect(this.areas);
 
-       this.enclosureInfo.condition.businessUuid = row.auditTaskUuid;
-      attachmentEcho(this.enclosureInfo).then((resp) => {
-        console.log(resp);
-      });
+       let params = {
+         pageNo: 1,
+        pageSize: 10,
+        condition: {
+          businessUuid: row.auditTaskUuid
+        }
+      }
+      this.file_details(params,1)
+      this.deletFileList = [];
     },
 
     // 列表显示
@@ -964,66 +976,62 @@ export default {
     handleChangePic(file, fileList) {
       this.fileList = fileList;
       this.file = file.raw;
-      console.log(this.fileList);
-      console.log(this.file);
     },
     //新增自建任务完成按钮
     saveTask(selfTaskRef) {
       this.$refs[selfTaskRef].validate((valid) => {
         if (valid) {
-          if(this.fileList.length>0){
+          if (this.fileList.length > 0) {
             let formData = new FormData();
-          formData.append("file", this.file.raw);
-          this.fileList.forEach((item) => {
-            formData.append("files", item.raw);
-          });
+            formData.append("file", this.file.raw);
+            this.fileList.forEach((item) => {
+              formData.append("files", item.raw);
+            });
 
-          this.$axios({
-            method: "post",
-            url: "http://10.10.112.56:1095/wisdomaudit/attachment/fileUploads",
-            data: formData,
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }).then((resp) => {
-            if (resp.data.code == 0) {
-              this.$message.success("上传成功！");
-              console.log(resp.data);
-              this.Upload_file = resp.data.data;
+            this.$axios({
+              method: "post",
+              url: "http://10.10.112.56:1095/wisdomaudit/attachment/fileUploads",
+              data: formData,
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }).then((resp) => {
+              if (resp.data.code == 0) {
+                this.$message.success("上传成功！");
+                console.log(resp.data);
+                this.Upload_file = resp.data.data;
 
-              //新增自建任务接口
-              this.taskSelf.attachmentList = this.Upload_file;
-              this.taskSelf.managementProjectUuid = this.active_project;
-              selfTaskFunction(this.taskSelf).then((resp) => {
-                this.$message.success("新增任务成功！");
-                this.TaskDialogVisible = false;
-                this.taskSelf = {};
-                this.queryInfo.condition.managementProjectUuid =
-                  this.active_project;
-                this.getmodelTaskList(this.queryInfo);
-                this.loading = false;
-              });
-            } else {
-              this.$message({
-                message: resp.msg,
-                type: "error",
-              });
-            }
-          });
-          }else{
-             this.taskSelf.managementProjectUuid = this.active_project;
-              selfTaskFunction(this.taskSelf).then((resp) => {
-                this.$message.success("新增任务成功！");
-                this.TaskDialogVisible = false;
-                this.taskSelf = {};
-                this.queryInfo.condition.managementProjectUuid =
-                  this.active_project;
-                this.getmodelTaskList(this.queryInfo);
-                this.loading = false;
-
-              });
+                //新增自建任务接口
+                this.taskSelf.attachmentList = this.Upload_file;
+                this.taskSelf.managementProjectUuid = this.active_project;
+                selfTaskFunction(this.taskSelf).then((resp) => {
+                  this.$message.success("新增任务成功！");
+                  this.TaskDialogVisible = false;
+                  this.taskSelf = {};
+                  this.queryInfo.condition.managementProjectUuid =
+                    this.active_project;
+                  this.getmodelTaskList(this.queryInfo);
+                  this.loading = false;
+                });
+              } else {
+                this.$message({
+                  message: resp.msg,
+                  type: "error",
+                });
+              }
+            });
+          } else {
+            this.taskSelf.managementProjectUuid = this.active_project;
+            selfTaskFunction(this.taskSelf).then((resp) => {
+              this.$message.success("新增任务成功！");
+              this.TaskDialogVisible = false;
+              this.taskSelf = {};
+              this.queryInfo.condition.managementProjectUuid =
+                this.active_project;
+              this.getmodelTaskList(this.queryInfo);
+              this.loading = false;
+            });
           }
-          
         } else {
           console.log("error submit!!");
           return false;
@@ -1032,7 +1040,19 @@ export default {
     },
     // 编辑成功按钮
     editTaskSelfBtn() {
-      let formData = new FormData();
+      // console.log(this.deletFileList);
+      // console.log(this.fileList);
+      // console.log(this.edit_file_list);
+      if(this.fileList.length == this.edit_file_list.length && this.deletFileList.length== 0){
+        this.editTask.managementProjectUuid = this.active_project;
+          editTaskSelfInfo(this.editTask).then((resp) => {
+            this.editModelDialogVisible = false;
+            this.queryInfo.condition.managementProjectUuid =
+              this.active_project;
+            this.getmodelTaskList(this.queryInfo);
+          });
+      }else{
+          let formData = new FormData();
       formData.append("file", this.file.raw);
       this.fileList.forEach((item) => {
         formData.append("files", item.raw);
@@ -1050,10 +1070,29 @@ export default {
           this.$message.success("上传成功！");
           console.log(resp.data);
           this.Upload_file = resp.data.data;
+        
+        // 判断是否进行删除上传附件
+         if(this.deletFileList.length>0){
+            console.log(this.edit_file_list);
+          for(let j=0;j<this.edit_file_list.length;j++){
+            for(let k =0; k <this.deletFileList.length;k++){
+              if(this.deletFileList[k].status == "success"){
+                 if(this.edit_file_list[j].attachmentUuid == this.deletFileList[k].url.attachmentUuid){
+                this.Upload_file.push(this.edit_file_list[j]);
+              }
+              }
+            }
+          }
+         }else{
+           for(let p=0;p<this.edit_file_list.length;p++){
+             this.Upload_file.push(this.edit_file_list[p]);
+           }
+         }
 
-          //新增自建任务接口
           this.editTask.attachmentList = this.Upload_file;
-          // this.editTask.managementProjectUuid = this.active_project;
+          // this.editTask.attachmentList = this.Upload_file;
+          console.log(this.Upload_file);
+          this.editTask.managementProjectUuid = this.active_project;
           editTaskSelfInfo(this.editTask).then((resp) => {
             this.editModelDialogVisible = false;
             this.queryInfo.condition.managementProjectUuid =
@@ -1067,6 +1106,8 @@ export default {
           });
         }
       });
+      }
+    
     },
     // 自建取消按钮
     resBtn() {
@@ -1100,57 +1141,91 @@ export default {
     },
     // 附件点击弹框事件
     nearbyDetails(rows) {
-      console.log(rows);
-      this.nearbyDialogVisible = true;
-      this.enclosureInfo.condition.businessUuid = rows.auditTaskUuid;
-      this.nearbyLoading = true;
-      attachmentEcho(this.enclosureInfo).then((resp) => {
-        this.enclosure_details_list = resp.data;
-        console.log(this.enclosure_details_list);
-        this.nearbyLoading = false;
+      let params = {
+         pageNo: 1,
+        pageSize: 10,
+        condition: {
+          businessUuid: rows.auditTaskUuid
+        }
+      }
+      this.file_details(params,2)
+    },
+    //附件详情
+    file_details(params, index) {
+      attachmentEcho(params).then((resp) => {
+        // index=1  列表查看附件详情
+        if (index == 2) {
+          this.enclosure_details_list = resp.data;
+          if (this.enclosure_details_list.length == 0) {
+            this.$message("暂无上传的附件");
+            return false;
+          } else {
+            this.nearbyDialogVisible = true;
+          }
+        }else{
+          this.edit_file_list = resp.data  //编辑回显
+           if (this.edit_file_list) {
+            this.fileList = [];
+            this.edit_file_list.forEach(element => {
+              let obj = new Object();
+              obj.url = element;
+              let fileName = element.fileName; //文件名
+              this.$set(obj, 'name', fileName);
+              this.$set(obj, 'url', element);  //files（name,url）
+              this.fileList.push(obj);
+            });
+          }
+        }
       });
     },
-
-   // 附件下载
-    enclosureDownload(id){
+    // 附件下载
+    enclosureDownload(id) {
       console.log(id);
-      let formData = new FormData()
-      formData.append('fileId', id)
+      let formData = new FormData();
+      formData.append("fileId", id);
       this.$axios({
-        method: 'post',
-        url: 'http://localhost:9529/wisdomaudit/auditPreviousDemandData/downloadByFileId',
+        method: "post",
+        url: "http://localhost:9529/wisdomaudit/auditPreviousDemandData/downloadByFileId",
         data: formData,
-        responseType: 'blob',
-      }).then((res) => {
-        const content = res.data;
-        console.log(res);
-        const blob = new Blob([content],
-          { type: 'application/octet-stream,charset=UTF-8' }
-        )
-        const fileName = res.headers["content-disposition"].split("fileName*=utf-8''")[1];
-        const filteType = res.headers["content-disposition"].split('.')[1];
-        if ('download' in document.createElement('a')) {
-          // 非IE下载  
-          const elink = document.createElement('a')
-          elink.download = fileName //下载后文件名
-          elink.style.display = 'none'
-          elink.href = window.URL.createObjectURL(blob)
-          document.body.appendChild(elink)
-          elink.click()
-          window.URL.revokeObjectURL(elink.href) // 释放URL 对象  
-          document.body.removeChild(elink)
-        } else {
-          // IE10+下载 
-          navigator.msSaveBlob(blob, fileName)
-        }
-      }).catch((err) => {
-        console.log(err);
+        responseType: "blob",
       })
+        .then((res) => {
+          const content = res.data;
+          console.log(res);
+          const blob = new Blob([content], {
+            type: "application/octet-stream,charset=UTF-8",
+          });
+          const fileName =
+            res.headers["content-disposition"].split("fileName*=utf-8''")[1];
+          const filteType = res.headers["content-disposition"].split(".")[1];
+          if ("download" in document.createElement("a")) {
+            // 非IE下载
+            const elink = document.createElement("a");
+            elink.download = fileName; //下载后文件名
+            elink.style.display = "none";
+            elink.href = window.URL.createObjectURL(blob);
+            document.body.appendChild(elink);
+            elink.click();
+            window.URL.revokeObjectURL(elink.href); // 释放URL 对象
+            document.body.removeChild(elink);
+          } else {
+            // IE10+下载
+            navigator.msSaveBlob(blob, fileName);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
-
-    resetForm2(resetForm2){
+    resetForm2(resetForm2) {
       this.$refs[resetForm2].resetFields();
-    }
+      this.fileList = [];
+    },
+     handleRemove(file, fileList) {
+        console.log(fileList);
+        this.deletFileList = fileList;
+
+      },
   },
   created() {
     // console.log(this.active_project);
@@ -1406,9 +1481,9 @@ export default {
   margin-top: 5%;
   text-align: right;
 }
-.temBtn{
+.temBtn {
   width: 120%;
-   /* border: 1px solid red; */
+  /* border: 1px solid red; */
   margin-top: 5%;
   text-align: right;
 }
@@ -1495,7 +1570,7 @@ export default {
   padding: 10px;
   color: #000;
   font-weight: 700;
- border-bottom: 1px solid #d2d2d2;
+  border-bottom: 1px solid #d2d2d2;
 }
 .title {
   border-bottom: 1px solid #d2d2d2;
