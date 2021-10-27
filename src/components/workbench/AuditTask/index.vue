@@ -15,13 +15,13 @@
 
           <!--自建任务 模型任务 筛选 -->
           <div class="search">
-            <el-input placeholder="请输入"
+            <el-input placeholder="请输入模型或自建任务名称"
                       v-model="params.taskName"> </el-input>
             <div class="search_icon"
                  style=" background: rgb(12, 135, 214) !important;"
                  @click="search_list(1)">
               <i class="el-icon-search"
-                 style="color: rgba(0, 0, 0, 0.5);   "></i>
+                 style="color: white;   "></i>
             </div>
             <!-- <el-button type="primary"
                       >筛选</el-button> -->
@@ -34,7 +34,6 @@
           <!-- 表单 -->
           <el-table :data="tableData_list"
                     :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
-                    v-loading="loading"
                     style="width: 100%">
 
             <!-- <el-table-column type="index"
@@ -254,7 +253,6 @@
         <el-table :data="status_data_list[0].result"
                   ref="multipleTable"
                   tooltip-effect="dark"
-                  v-loading="loading"
                   style="width: 100%"
                   :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                   @selection-change="handleSelectionChange_operation">
@@ -2209,6 +2207,9 @@ export default {
 .active_tab {
   background: #1371cc !important;
 }
+.task_type {
+  margin-top: 10px;
+}
 .task_type >>> .el-table {
   min-height: 500px;
 }
@@ -2298,16 +2299,20 @@ export default {
   border-radius: 5px 0 0 5px;
 }
 .search >>> .el-input__inner {
-  width: 180px;
+  width: 250px !important;
   display: flex;
   float: right;
+  border-radius: 0 !important;
+}
+.titleMes .el-button {
+  border-radius: 0 !important;
 }
 .search >>> .search_icon {
   position: absolute;
   top: 0;
   right: 0;
-  width: 37px;
-  height: 37px;
+  width: 36px;
+  height: 36px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -2427,7 +2432,7 @@ export default {
 .dlag_conter3 >>> .foot {
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   flex-wrap: wrap;
   margin-top: 20px;
 }

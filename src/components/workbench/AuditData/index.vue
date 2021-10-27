@@ -29,7 +29,6 @@
             </div>
           </el-row>
           <el-table :data="tableData_list"
-                    v-loading="loading"
                     style="width: 100%;"
                     :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}">
             <!-- <el-table-column type="selection"
@@ -168,7 +167,6 @@
         <div class="projectTab anmition_show">
 
           <el-table :data="tableData_list2"
-                    v-loading="loading"
                     style="width: 100%;"
                     :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}">
             <!-- <el-table-column prop="dataTaskNumber"
@@ -286,7 +284,9 @@
         <el-form label-width="80px">
           <div style="display:flex;align-items: center;padding:10px 0;box-sizing: border-box;">
             <p>获取资料清单：</p>
-            <el-button type="primary"
+            <el-button plain
+                       style="background: #FFFFFF;
+    border: 1px solid #DCDFE6;"
                        @click="add_data_click()">添加资料</el-button>
           </div>
         </el-form>
@@ -299,7 +299,6 @@
                       row-key="id"
                       :data="task_list_records"
                       tooltip-effect="dark"
-                      v-loading="loading"
                       style="width: 100%"
                       @selection-change="handleSelectionChange_query">
               <el-table-column type="selection"
@@ -376,7 +375,6 @@
                       row-key="id"
                       :data="task_list_records_details"
                       tooltip-effect="dark"
-                      v-loading="loading"
                       style="width: 100%"
                       @selection-change="handleSelectionChange_query">
               <el-table-column type="selection"
@@ -650,7 +648,6 @@
         <el-table ref="multipleTable"
                   :data="operation_tableData"
                   tooltip-effect="dark"
-                  v-loading="loading"
                   style="width: 100%"
                   :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                   @selection-change="handleSelectionChange_operation">

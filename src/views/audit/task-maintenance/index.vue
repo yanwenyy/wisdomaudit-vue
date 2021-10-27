@@ -17,7 +17,7 @@
             </el-col>
           </el-row>
           <!-- 表单 -->
-          <el-table :data="taskData" style="width: 100%" v-loading="loading">
+          <el-table :data="taskData" style="width: 100%" :header-cell-style="{'background-color': '#F4FAFF',}">
             <el-table-column prop="taskName" label="模型任务名称">
             </el-table-column>
             <el-table-column prop="taskType" label="任务类型">
@@ -121,7 +121,8 @@
     </div>
 
     <!-- 审计任务维护编辑弹框 -->
-    <el-dialog title="编辑" :visible.sync="editModelDialogVisible" width="50%">
+    <el-dialog :visible.sync="editModelDialogVisible" width="50%">
+      <div class="title">编辑任务</div>
       <el-form label-width="80px" class="selfTask" :model="editTask">
         <el-form-item label="自建任务名称：">
           <el-input placeholder="请输入" v-model="editTask.taskName"></el-input>
@@ -205,14 +206,14 @@
     <el-dialog
       :visible.sync="TaskDialogVisible"
       width="50%"
-      :before-close="TaskDialogClosed"
+      @close="resetForm2('selfTaskRef')"
     >
-      <div class="taskTitle">新增任务(请先选择任务类型)</div>
+      <div class="taskTitle">新增任务</div>
       <div class="taskAdd" v-if="task == '1'">
         <el-form
-          label-width="80px"
+          label-width="90px"
           :model="taskSelf"
-          style="margin-left: 20%"
+          style="margin-left: 20%;margin-top:5%"
           ref="selfTaskRef"
           :rules="taskSelfRules"
         >
@@ -303,7 +304,7 @@
             </el-upload>
           </el-form-item>
         </el-form>
-        <div class="stepBtn">
+        <div class="temBtn">
           <el-button @click="resBtn">取消</el-button>
           <el-button
             style="background: #0c87d6; color: #fff"
@@ -313,7 +314,7 @@
         </div>
       </div>
       <div class="model_Info" v-else-if="task == '2'">
-        <el-row style="margin-top: 50px">
+        <el-row style="margin-top: 30px">
           <el-col :span="15">
             <div style="margin-top: 2.5%; color: #5f6165; margin-top: 10px">
               请选择想要引用的模型
@@ -338,7 +339,6 @@
           style="width: 100%"
           @selection-change="handleSelectionChangeModel"
           ref="multipleModelRef"
-          v-loading="loading"
         >
           <el-table-column type="selection"> </el-table-column>
           <el-table-column type="index" label="模型编号" width="80">
@@ -679,6 +679,11 @@ export default {
       });
       this.thematicSelect(this.thematic);
       this.areasSelect(this.areas);
+
+       this.enclosureInfo.condition.businessUuid = row.auditTaskUuid;
+      attachmentEcho(this.enclosureInfo).then((resp) => {
+        console.log(resp);
+      });
     },
 
     // 列表显示
@@ -750,8 +755,8 @@ export default {
       this.TaskDialogVisible = true;
       this.task = 2;
       this.loading = true;
+      this.model_QueryInfo.condition.modelName = "";
       auditModelList(this.model_QueryInfo).then((resp) => {
-        console.log(resp);
         this.modelTableData = resp.data.records;
         this.modelSize = resp.data;
         this.loading = false;
@@ -847,12 +852,10 @@ export default {
     },
     //模型模糊查询
     queryModel() {
-      this.loading = true;
       auditModelList(this.model_QueryInfo).then((resp) => {
         // console.log(resp);
         this.modelTableData = resp.data.records;
         this.modelSize = resp.data;
-        this.loading = false;
       });
     },
     //引入模型选择事件
@@ -961,12 +964,15 @@ export default {
     handleChangePic(file, fileList) {
       this.fileList = fileList;
       this.file = file.raw;
+      console.log(this.fileList);
+      console.log(this.file);
     },
     //新增自建任务完成按钮
     saveTask(selfTaskRef) {
       this.$refs[selfTaskRef].validate((valid) => {
         if (valid) {
-          let formData = new FormData();
+          if(this.fileList.length>0){
+            let formData = new FormData();
           formData.append("file", this.file.raw);
           this.fileList.forEach((item) => {
             formData.append("files", item.raw);
@@ -991,6 +997,7 @@ export default {
               selfTaskFunction(this.taskSelf).then((resp) => {
                 this.$message.success("新增任务成功！");
                 this.TaskDialogVisible = false;
+                this.taskSelf = {};
                 this.queryInfo.condition.managementProjectUuid =
                   this.active_project;
                 this.getmodelTaskList(this.queryInfo);
@@ -1003,6 +1010,20 @@ export default {
               });
             }
           });
+          }else{
+             this.taskSelf.managementProjectUuid = this.active_project;
+              selfTaskFunction(this.taskSelf).then((resp) => {
+                this.$message.success("新增任务成功！");
+                this.TaskDialogVisible = false;
+                this.taskSelf = {};
+                this.queryInfo.condition.managementProjectUuid =
+                  this.active_project;
+                this.getmodelTaskList(this.queryInfo);
+                this.loading = false;
+
+              });
+          }
+          
         } else {
           console.log("error submit!!");
           return false;
@@ -1049,6 +1070,7 @@ export default {
     },
     // 自建取消按钮
     resBtn() {
+      this.taskSelf = [];
       this.TaskDialogVisible = false;
     },
     // 模型取消按钮
@@ -1125,6 +1147,10 @@ export default {
         console.log(err);
       })
     },
+
+    resetForm2(resetForm2){
+      this.$refs[resetForm2].resetFields();
+    }
   },
   created() {
     // console.log(this.active_project);
@@ -1378,7 +1404,13 @@ export default {
 .stepBtn {
   /* border: 1px solid red; */
   margin-top: 5%;
-  text-align: center;
+  text-align: right;
+}
+.temBtn{
+  width: 120%;
+   /* border: 1px solid red; */
+  margin-top: 5%;
+  text-align: right;
 }
 .addAudit .nextBtn {
   background: #508ce6 !important;
@@ -1415,7 +1447,7 @@ export default {
 }
 .taskAdd {
   width: 70%;
-  margin: 20px auto;
+  margin: 10px auto;
   /* border: 1px solid red; */
 }
 .taskAdd .el-input {
@@ -1459,8 +1491,17 @@ export default {
   border-radius: 5px;
 }
 .taskTitle {
-  text-align: center;
+  text-align: left;
+  padding: 10px;
   color: #000;
+  font-weight: 700;
+ border-bottom: 1px solid #d2d2d2;
+}
+.title {
+  border-bottom: 1px solid #d2d2d2;
+  padding: 10px;
+  text-align: center;
+  margin-bottom: 3%;
   font-weight: 700;
 }
 </style>

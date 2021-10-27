@@ -22,12 +22,14 @@
         <el-row>
           <el-col>
             <p>经营评价：</p>
-            <el-button type="primary"
+            <el-button plain
                        @click="Correlation_zb()">关联指标</el-button>
           </el-col>
 
           <div class="text">
             <el-input type="textarea"
+                      resize="none"
+                      disabled
                       v-model="administrativeAdvice">
               1.23o239139219830921832390131
             </el-input>
@@ -41,12 +43,14 @@
         <el-row>
           <el-col>
             <p>管理建议：</p>
-            <el-button type="primary"
+            <el-button plain
                        @click="Correlation_wt()">关联问题</el-button>
           </el-col>
 
           <div class="text">
             <el-input type="textarea"
+                      disabled
+                      resize="none"
                       v-model="businessEvaluation">
               1.23o239139219830921832390131
             </el-input>
@@ -69,8 +73,8 @@
         <div class="flex_end">
           <p>附件：</p>
           <ul>
-            <li> <a href="#">22222222222222222222</a><span>版本1.0</span><span>时间2011-1102</span></li>
-            <li> <a href="#">222222222222</a><span>版本1.0</span><span>时间2011-1102</span></li>
+            <li> <a href="#">关于引发的文件.zip</a><span>版本1.0</span><span>时间2011-1102</span></li>
+            <li> <a href="#">关于引发的文件.zip</a><span>版本1.0</span><span>时间2011-1102</span></li>
 
           </ul>
 
@@ -92,26 +96,33 @@
                   tooltip-effect="dark"
                   v-loading="loading"
                   style="width: 100%"
+                  :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                   @selection-change="handleSelectionChange_zb">
           >
           <el-table-column type="selection"
                            width="55">
           </el-table-column>
           <el-table-column prop="name"
+                           align="center"
                            label="指标类型"> </el-table-column>
 
           <el-table-column prop="name"
+                           align="center"
                            label="依据"> </el-table-column>
 
           <el-table-column prop="name"
+                           align="center"
                            label="单位"> </el-table-column>
 
           <el-table-column prop="name"
+                           align="center"
                            label="资料提供部门"> </el-table-column>
           <el-table-column prop="name"
+                           align="center"
                            label="管理建议"> </el-table-column>
 
           <el-table-column prop="name"
+                           align="center"
                            label="指标值"> </el-table-column>
         </el-table>
 
@@ -139,24 +150,30 @@
                   tooltip-effect="dark"
                   v-loading="loading"
                   style="width: 100%"
+                  :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                   @selection-change="handleSelectionChange_wt">
           >
           <el-table-column type="selection"
                            width="55">
           </el-table-column>
           <el-table-column prop="field"
+                           align="center"
                            label="领域"> </el-table-column>
 
           <el-table-column prop="problem"
+                           align="center"
                            label="问题"> </el-table-column>
 
           <el-table-column prop="basis"
+                           align="center"
                            label="依据"> </el-table-column>
 
           <el-table-column prop="describe"
+                           align="center"
                            label="描述">
           </el-table-column>
           <el-table-column prop="problemDiscoveryTime"
+                           align="center"
                            label="发现日期">
             <template slot-scope="scope">
               <p>{{scope.row.problemDiscoveryTime|filtedate}}</p>
@@ -164,10 +181,13 @@
 
           </el-table-column>
           <el-table-column prop="riskAmount"
+                           align="center"
                            label="风险金额（元）"> </el-table-column>
           <el-table-column prop="managementAdvice"
+                           align="center"
                            label="管理建议"> </el-table-column>
           <el-table-column prop="problemFindPeople"
+                           align="center"
                            label="发现人"> </el-table-column>
         </el-table>
 
@@ -374,7 +394,19 @@ export default {
   display: flex;
   align-items: center;
 }
-
+.report >>> .el-textarea__inner {
+  min-height: 250px !important;
+  padding: 10px;
+  box-sizing: border-box;
+}
+.report >>> .el-textarea.is-disabled,
+.el-textarea__inner {
+  background-color: #f5f7fa;
+  border-color: #dfe4ed;
+  color: #c0c4cc;
+  cursor: n-resize;
+  background: #fff;
+}
 .text {
   width: 100%;
   float: left;
@@ -384,7 +416,7 @@ export default {
 .dlag_conter3 >>> .foot {
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   flex-wrap: wrap;
   padding-bottom: 25px;
   margin-top: 20px;
@@ -392,6 +424,8 @@ export default {
 .bottom {
   display: flex;
   flex-wrap: wrap;
+  padding: 10px 20px;
+  box-sizing: border-box;
 }
 .bottom p {
   display: flex;
@@ -413,6 +447,7 @@ export default {
 }
 .flex_end ul li span {
   margin: 0 10px;
-  color: rgba(0, 0, 0, 0.7);
+  color: rgba(0, 0, 0, 1);
+  font-weight: 400;
 }
 </style>

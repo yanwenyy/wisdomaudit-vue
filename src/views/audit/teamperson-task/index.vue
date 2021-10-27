@@ -2,7 +2,7 @@
   <div>
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="组员维护" name="first" style="padding: 1%">
-        <el-button type="primary" @click="addgroupMember()">添加</el-button>
+        <el-button type="primary" @click="addgroupMember()">组员维护</el-button>
         <!-- 组员维护列表 -->
         <el-form>
           <el-table
@@ -10,21 +10,23 @@
             :data="tableData"
             style="width: 100%"
             border
-            v-loading="loading"
+            align="center"
+            :header-cell-style="{'background-color': '#F4FAFF',}"
           >
-            <el-table-column label="姓名" width="150" prop="peopleName">
+            <el-table-column align="center"  label="姓名" width="150" prop="peopleName">
             </el-table-column>
-            <el-table-column label="角色" width="100">组员 </el-table-column>
-            <el-table-column property="userMobile" label="联系方式" width="200">
+            <el-table-column align="center" label="角色" width="100">组员 </el-table-column>
+            <el-table-column align="center" property="userMobile" label="联系方式" width="200">
             </el-table-column>
-            <el-table-column property="belongCompany" label="所属单位">
+            <el-table-column align="center" property="belongCompany" label="所属单位">
             </el-table-column>
-            <el-table-column property="belongDept" label="所属部门">
+            <el-table-column align="center" property="belongDept" label="所属部门">
             </el-table-column>
             <el-table-column
               property="isLiaison"
               label="是否接口人"
               width="150"
+              align="center"
             >
               <template slot-scope="scope">
                 <el-switch
@@ -301,7 +303,6 @@ export default {
     },
     // 组员维护列表回显展示
     projectMember(data) {
-      this.loading = true;
       projectMembership(data).then((resp) => {
         this.tableData = resp.data.records;
         this.personTableList = resp.data;
@@ -323,7 +324,6 @@ export default {
           }
           this.value.push(e.peopleTableUuid);
         });
-        this.loading = false;
       });
     },
     //组员列表分页点击事件
@@ -588,7 +588,7 @@ export default {
 .title {
   border-bottom: 1px solid #d2d2d2;
   padding: 10px;
-  text-align: center;
+  text-align: left;
 }
 /* 方法二 */
 .stepNew {
@@ -746,7 +746,7 @@ export default {
 .stepBtn {
   /* border: 1px solid red; */
   margin-top: 5%;
-  text-align: center;
+  text-align: right;
 }
 .addAudit .nextBtn {
   background: #508ce6 !important;
