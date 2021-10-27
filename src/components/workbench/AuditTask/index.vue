@@ -696,25 +696,25 @@
 
           <!-- 任务名称 -->
           <el-form-item label-width="80px"
-                        style="margin-bottom:30px!important"
-                        prop="taskName">
-            <p><span>*</span>任务名称：</p>
+                        style="margin-bottom:30px!important">
+            <p>任务名称：</p>
             <el-input v-model="save_zj_query.taskName"
                       placeholder="请输入任务新增"></el-input>
           </el-form-item>
           <!-- 责任人 -->
           <el-form-item label-width="80px"
-                        prop="peopleTableUuid"
                         style="margin-bottom:30px!important">
-            <p><span>*</span>责任人：</p>
-            <el-select v-model="save_zj_query.peopleTableUuid"
+            <p>责任人：</p>
+            <!-- <el-select v-model="save_zj_query.peopleTableUuid"
                        @change="changeHeader2">
               <el-option v-for="item in select_list"
                          :key="item.peopleTableUuid"
                          :label="item.peopleName"
                          :value="item.peopleTableUuid">
               </el-option>
-            </el-select>
+            </el-select> -->
+            <el-input v-model="save_zj_query.peopleTableUuid"
+                      :disabled="disabled"></el-input>
           </el-form-item>
 
           <!-- 领域 -->
@@ -759,19 +759,15 @@
           <el-form-item label-width="80px"
                         prop="fileList"
                         style="margin-bottom:30px!important">
-            <p><span>*</span>上传附件：</p>
+            <p>上传附件：</p>
             <el-upload class="upload-demo"
-                       :class="isClientCertFile ==true ?'style_focus':''"
                        drag
                        ref="upload"
                        action="#"
-                       :before-upload="beforeAvatarUpload"
                        v-model="save_zj_query.enclosure"
                        :on-change="handleChangePic"
-                       :on-success="handleAvatarSuccess"
-                       :on-preview="up_ing"
                        :on-remove="handleRemove"
-                       :file-list="fileList"
+                       :file-list="edit_file_list"
                        :auto-upload="false"
                        multiple>
               <i class="el-icon-upload"></i>
@@ -780,9 +776,9 @@
                 支持上传或者拖拽文件到这里<em>点击上传</em>
               </div>
             </el-upload>
-            <p v-if="isClientCertFile ==true"
+            <!-- <p v-if="isClientCertFile ==true"
                style="left:60px!important"
-               class="el-form-item__error">请上传文件</p>
+               class="el-form-item__error">请上传文件</p> -->
           </el-form-item>
         </el-form>
       </div>
@@ -796,7 +792,7 @@
              v-if="success_btn==0">
           <el-button size="small"
                      type="primary"
-                     v-if="title=='新增'"
+                     v-if="title=='新增任务'"
                      @click="save_zj(1,'save_zj_query')">确 定</el-button>
           <el-button size="small"
                      type="primary"
@@ -810,8 +806,7 @@
     </el-dialog>
 
     <!-- 附件详情 -->
-    <el-dialog title="附件详情"
-               width="40%"
+    <el-dialog width="20%"
                :visible.sync="dialogVisibl_enclosure_details"
                style="padding-bottom: 59px; ">
       <el-table :data="enclosure_details_list"
@@ -820,21 +815,21 @@
         <!-- <el-table-column prop="dataTaskNumber"
                              label="流水单号">
             </el-table-column> -->
-        <el-table-column type="index"
+        <!-- <el-table-column type="index"
                          align="center"
                          label="序号">
         </el-table-column>
         <el-table-column prop="fiileType"
                          align="center"
                          label="资料类型">
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column prop="fileName"
                          align="center"
                          label="文件名称">
           <template slot-scope="scope">
             <el-button @click="download_click(scope.row.attachmentUuid,scope.row.fileName)"
                        type="text"
-                       style="color: #1371cc"
+                       class="file_name"
                        size="small">
               {{ scope.row.fileName }}
             </el-button>
@@ -868,6 +863,7 @@ import {
   enclosure_details,//附件详情
   task_problems_uopload,//上传
   task_problems_uopload_details,//附件列表  编辑回显
+  task_personLiable,//责任人
 } from
   '@SDMOBILE/api/shandong/task'
 
@@ -987,16 +983,14 @@ export default {
 
       // 新增任务验证
       rules_task: {
-        taskName: [{ required: true, message: '请输入任务名称', trigger: 'blur' }],
-        peopleTableUuid: [{ required: true, message: '请选择责任人', trigger: 'change' }],
+        // taskName: [{ required: true, message: '请输入任务名称', trigger: 'blur' }],
+        // peopleTableUuid: [{ required: true, message: '请选择责任人', trigger: 'change' }],
         belongSpcial: [{ required: true, message: '请选择领域', trigger: 'change' }],
         belongField: [{ required: true, message: '请选择专题', trigger: 'change' }],
         // taskDescription: [{ required: true, message: '请输入任务描述', trigger: 'blur' }],
         // fileList: [{ required: true, message: '请上传文件', trigger: 'change' }],
 
       },
-
-
 
       // 问题数
       probleNum: {
@@ -1054,11 +1048,13 @@ export default {
       enclosure_details_list: [],//附件详情
 
       success_btn: 0,//文件上传完成
-      fileList: [],
       Upload_file: [],//上传后返回文件数组
       isClientCertFile: false,//判断是否上传文件 
 
       edit_file_list: [],// 编辑回显 上传文件
+      disabled: true,//责任人点击
+
+
 
     }
   },
@@ -1088,15 +1084,17 @@ export default {
 
 
     // 请求 责任人
-    let params_people = {
-      condition: {
-        managementProjectUuid: this.managementProjectUuid,
-      },
-      pageNo: 1,
-      pageSize: 10,
-    }
-    this.select_people(params_people)//请求责任人数据
+    // let params_people = {
+    //   condition: {
+    //     managementProjectUuid: this.managementProjectUuid,
+    //   },
+    //   pageNo: 1,
+    //   pageSize: 10,
+    // }
+    // this.select_people(params_people)//请求责任人数据
 
+    // 获取请求人
+    this.task_personLiable_data();
 
     let params2 = {
       typecode: 'Category',
@@ -1115,48 +1113,54 @@ export default {
     }
     this.task_problems_relation_data(params4);//关联任务
 
+
   },
   methods: {
+    // 获取责任人
+    task_personLiable_data () {
+      task_personLiable().then(resp => {
+        this.save_zj_query.peopleTableUuid = resp.data.userName
+        this.disabled = true
+      })
+    },
     // 新增弹窗
     new_add_zj (index) {
       // 1:新增  2:编辑
       //自建任务 新增 
       this.dialogVisible_zj = true;
-      this.title = '新增';
-      // this.save_zj_query = [];
+      this.title = '新增任务';
     },
-
     // 新增上传附件
     handleChangePic (file, fileList, name) {
       this.fileList = fileList;
       this.file = file.raw
       this.isClientCertFile = false;//上传为空判断
     },
-    // 上传验证 上传前调用
-    beforeAvatarUpload (file) {
-      this.success_btn = 1;//显示加载按钮  0成功  1 loaging
-    },
-    // 上传时
-    up_ing (resp, file, fileList) {
-      this.success_btn = 1;//显示加载按钮  0成功  1 loaging
-    },
-    // 上传成功
-    handleAvatarSuccess (resp, file, fileList) {
-      console.log(file);
-      console.log('上传成功');
-    },
+    // // 上传验证 上传前调用
+    // beforeAvatarUpload (file) {
+    //   alert(1)
+    //   this.success_btn = 1;//显示加载按钮  0成功  1 loaging
+    // },
+    // // 上传时
+    // up_ing (resp, file, fileList) {
+    //   alert(2)
+    //   this.success_btn = 1;//显示加载按钮  0成功  1 loaging
+    // },
+    // // 上传成功
+    // handleAvatarSuccess (resp, file, fileList) {
+    //   console.log(file);
+    //   console.log('上传成功');
+    //   alert(3)
+    // },
     // 删除
-    handleRemove (file, fileList) {
-      console.log(file);
-      console.log(fileList);
-      return false
-
-      this.file.splice(fileList.index, 1)
-
-      let params = {
-        fileId: id
+    handleRemove (file) {
+      if (file.response) {
+        this.fileList.remove(file.response.data);
+        this.key = Math.random();
+      } else {
+        this.edit_file_list.remove(file);
       }
-      this.fileRemove(params);//删除
+
     },
     // 删除 接口
     fileRemove (params) {
@@ -1164,15 +1168,13 @@ export default {
         console.log(resp);
       })
     },
-
-
     // 新增自建任务 保存
     save_zj (index, save_zj_query) {
       // 1:新增  2:编辑
       if (index == 1) {
         this.$refs[save_zj_query].validate((valid) => {
           if (valid) {
-            this.title = '新增';
+            this.title = '新增任务';
             if (this.fileList.length > 0) {
               this.success_btn = 1;//显示加载按钮  0成功  1 loaging
               // 上传
@@ -1181,8 +1183,6 @@ export default {
               this.fileList.forEach((item) => {
                 formData.append('files', item.raw);
               })
-              console.log(formData);
-
               this.$axios({
                 method: 'post',
                 url: 'http://localhost:9529/wisdomaudit/attachment/fileUploads',
@@ -1193,10 +1193,6 @@ export default {
               }).then(resp => {
                 // 上传成功
                 if (resp.data.code == 0) {
-                  // this.$message({
-                  //   message: '上传成功',
-                  //   type: 'success'
-                  // });
                   this.success_btn = 0;//显示加载按钮  0成功  1 loaging
                   // console.log(resp.data.data);
                   this.Upload_file = resp.data.data;//上传成功大的文件
@@ -1205,7 +1201,7 @@ export default {
                     managementProjectUuid: this.managementProjectUuid,//项目id
                     taskDescription: this.save_zj_query.taskDescription,//描述
                     taskName: this.save_zj_query.taskName,//名称
-                    taskType: 2,//任务类型
+                    // taskType: 2,//任务类型
                     enclosure: this.save_zj_query.enclosure,//附件
                     peopleName: this.save_zj_query.peopleName,//责任人
                     peopleTableUuid: this.save_zj_query.peopleTableUuid,//责任人id
@@ -1214,78 +1210,114 @@ export default {
                     attachmentList: this.Upload_file,//上传成功de 的文件
                   }
                   this.new_add(params1)//新增上传
-                }//上传成功 end
-
-                // 上传失败
-                if (resp.data.code !== 0) {
+                  //上传成功 end
+                } else {
+                  // 上传失败
                   this.$message({
-                    message: resp.msg,
+                    message: resp.data.msg,
                     type: 'error'
                   });
                   this.success_btn = 1;//显示加载按钮  0成功  1 loaging
+
                 }
-                //上传失败
               })//上传 end
             } else {
-              this.isClientCertFile = true;//上传为空判断
-              return false
+              //未上传文件 提交步骤
+              let params1 = {
+                managementProjectUuid: this.managementProjectUuid,//项目id
+                taskDescription: this.save_zj_query.taskDescription,//描述
+                taskName: this.save_zj_query.taskName,//名称
+                // taskType: 2,//任务类型
+                enclosure: this.save_zj_query.enclosure,//附件
+                peopleName: this.save_zj_query.peopleName,//责任人
+                peopleTableUuid: this.save_zj_query.peopleTableUuid,//责任人id
+                belongSpcial: this.save_zj_query.belongSpcial,//领域
+                belongField: this.save_zj_query.belongField,//专题
+                // attachmentList: this.Upload_file,//上传成功de 的文件
+              }
+              this.new_add(params1)//新增上传
             }
           } else {
             this.isClientCertFile = true;//上传为空判断
             this.$message.info("请填写信息");
             return false;
           };//判断为空
-        })
+        })//验证 end 
         //  新增 end
       } else {
-        console.log(this.fileList);
-        // 上传
-        let formData = new FormData()
-        formData.append('file', this.fileList)
-        this.fileList.forEach((item) => {
-          console.log(item);
-          if (item.raw) {
-            formData.append('files', item.raw);
-          }
-        })
-        console.log(formData);
-        this.$axios({
-          method: 'post',
-          url: 'http://localhost:9529/wisdomaudit/attachment/fileUploads',
-          data: formData,
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }).then(resp => {
-          // 上传成功
-          if (resp.data.code == 0) {
-            this.$message({
-              message: '上传成功',
-              type: 'success'
-            });
-
-            console.log(resp.data.data);
-            this.Upload_file = resp.data.data;//上传成功大的文件
-
-            // 编辑
-            let params2 = {
-              taskType: 2,//任务类型
-              auditTaskUuid: this.save_zj_query.auditTaskUuid,//项目id
-              taskDescription: this.save_zj_query.taskDescription,
-              taskName: this.save_zj_query.taskName,
-              taskType: this.save_zj_query.taskType,//任务类型
-              enclosure: this.save_zj_query.enclosure,//附件
-              peopleName: this.save_zj_query.peopleName,//责任人
-              peopleTableUuid: this.save_zj_query.peopleTableUuid,//责任人id
-              belongSpcial: this.save_zj_query.belongSpcial,//领域
-              belongField: this.save_zj_query.belongField,//专题
-              attachmentList: this.Upload_file,//上传成功de 的文件
+        // 编辑
+        if (this.fileList.length > 0) {
+          this.success_btn = 1;//显示加载按钮  0成功  1 loaging
+          // 上传
+          let formData = new FormData()
+          formData.append('file', this.fileList)
+          this.fileList.forEach((item) => {
+            console.log(item);
+            if (item.raw) {
+              formData.append('files', item.raw);
             }
-            console.log(params2);
-            console.log(this.fileList);
-            this.edit_data(params2);//编辑
+          })
+
+          this.$axios({
+            method: 'post',
+            url: 'http://localhost:9529/wisdomaudit/attachment/fileUploads',
+            data: formData,
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }).then(resp => {
+            // 上传成功
+            if (resp.data.code == 0) {
+              this.success_btn = 0;//显示加载按钮  0成功  1 loaging
+              // console.log(resp.data.data);
+              this.Upload_file = resp.data.data;//上传成功大的文件
+              var upList = this.edit_file_list.concat(this.Upload_file);
+              console.log(upList);
+              // 编辑
+              let params2 = {
+                // taskType: 2,//任务类型
+                auditTaskUuid: this.save_zj_query.auditTaskUuid,//项目id
+                taskDescription: this.save_zj_query.taskDescription,
+                taskName: this.save_zj_query.taskName,
+                taskType: this.save_zj_query.taskType,//任务类型
+                enclosure: this.save_zj_query.enclosure,//附件
+                peopleName: this.save_zj_query.peopleName,//责任人
+                peopleTableUuid: this.save_zj_query.peopleTableUuid,//责任人id
+                belongSpcial: this.save_zj_query.belongSpcial,//领域
+                belongField: this.save_zj_query.belongField,//专题
+                attachmentList: upList,//上传成功de 的文件
+              }
+
+              this.edit_data_update(params2);//编辑
+            } else {
+              console.log(resp);
+              // 上传失败
+              this.$message({
+                message: resp.data.msg,
+                type: 'error'
+              });
+              this.success_btn = 0;//显示加载按钮  0成功  1 loaging
+            }
+          })
+        } else {
+          // 编辑未上传文件
+          // 编辑
+          let params2 = {
+            // taskType: 2,//任务类型
+            auditTaskUuid: this.save_zj_query.auditTaskUuid,//项目id
+            taskDescription: this.save_zj_query.taskDescription,
+            taskName: this.save_zj_query.taskName,
+            taskType: this.save_zj_query.taskType,//任务类型
+            enclosure: this.save_zj_query.enclosure,//附件
+            peopleName: this.save_zj_query.peopleName,//责任人
+            peopleTableUuid: this.save_zj_query.peopleTableUuid,//责任人id
+            belongSpcial: this.save_zj_query.belongSpcial,//领域
+            belongField: this.save_zj_query.belongField,//专题
+            attachmentList: this.edit_file_list,//上传成功de 的文件
           }
-        })
+          this.edit_data_update(params2);//编辑
+        }
+
       }
     },
     // 新增上传
@@ -1320,7 +1352,7 @@ export default {
       })
     },
     // 编辑上传
-    edit_data (params) {
+    edit_data_update (params) {
       // 编辑保存  
       task_update(params).then(resp => {
         if (resp.code == 0) {
@@ -1353,14 +1385,15 @@ export default {
     // 新增任务关闭
     resetForm2 (save_zj_query) {
       this.$refs[save_zj_query].resetFields();
-      this.$refs.upload.clearFiles()
-      this.save_zj_query.taskDescription = ''//清空备忘录
+      this.$refs.upload.clearFiles();
+      this.save_zj_query.taskDescription = '';//清空备忘录
       this.isClientCertFile = false;//上传为空判断
+      this.save_zj_query.taskName = '';//清空name
+      this.success_btn = 0;//显示加载按钮  0成功  1 loaging
     },
-
     // 自建 任务--显示编辑详情
     edit_data (data) {
-      this.title = '编辑';
+      this.title = '编辑任务';
       this.dialogVisible_zj = true;//显示新增编辑 弹窗
       this.save_zj_query.auditTaskUuid = data.auditTaskUuid;
       this.save_zj_query.peopleName = data.peopleName;//责任人
@@ -1395,7 +1428,6 @@ export default {
       }
       this.file_details(params2, 2);
     },
-
     // 附件详情
     file_details (params2, index) {
       task_problems_uopload_details(params2).then(resp => {
@@ -1409,25 +1441,22 @@ export default {
             this.dialogVisibl_enclosure_details = true;
           }
         } else {
-          this.edit_file_list = resp.data//
+          var list = resp.data//
           // 编辑回显
-          if (this.edit_file_list) {
-            this.fileList = [];
-            this.edit_file_list.forEach(element => {
-              let obj = new Object();
-              obj.url = element;
-              let fileName = element.fileName; //文件名
-              this.$set(obj, 'name', fileName);
-              this.$set(obj, 'url', element);  //files（name,url）
-              this.fileList.push(obj);
-            });
+          if (list) {
+            this.edit_file_list = [];
+            // 回显
+            list.forEach(item => {
+              item.url = item.filePath;
+              item.name = item.fileName;
+              this.edit_file_list.push(item)
+            })
           }
 
         }
 
       })
     },
-
     //   已完成列表点击附件
     download_click (id, name) {
       const fileName = name.split('.')[0];
@@ -1472,12 +1501,12 @@ export default {
     },
 
     // 请求责任人 select数据
-    select_people (params_people) {
-      task_select_people(params_people).then(resp => {
-        this.select_list = resp.data.records;
+    // select_people (params_people) {
+    //   task_select_people(params_people).then(resp => {
+    //     this.select_list = resp.data.records;
 
-      })
-    },
+    //   })
+    // },
 
     // 模型任务列表 自建任务 筛选
     search_list () {
@@ -1503,14 +1532,11 @@ export default {
         this.loading = false
       })
     },
-
-
     // 结果数=========================================
     // 结果数列表 里的全选
     handleSelectionChange_operation (val) {
       this.multipleSelection_data_list = val;
     },
-
     // 查看结果数
     data_num_click (data) {
       this.paramTaskUuid = data.paramTaskUuid
@@ -1526,7 +1552,6 @@ export default {
         this.$message.info("请选择已经完成的查看");
       }
     },
-
     // 结果弹窗 结果分类tab
     data_tab (params) {
       task_selectModel(params).then(resp => {
@@ -1558,11 +1583,9 @@ export default {
         }
       })
     },
-
     // 切换结果分类
     select_data (index) {
       this.date_index = index
-
       this.data_active = index
       console.log(this.date_index);
       // 结果列表
@@ -1586,8 +1609,6 @@ export default {
       this.data_tab_list(params3)// 结果列表
 
     },
-
-
     // 结果弹窗 结果列表
     data_tab_list (params) {
       task_selectTable(params).then(resp => {
@@ -1621,7 +1642,6 @@ export default {
       }
       this.data_tab_list(params3)// 结果列表
     },
-
     // 问题数==============================================
     probleNum_click (id, name) {
       this.problemsDialogVisible = true;//显示问题数弹窗
@@ -1680,8 +1700,6 @@ export default {
     changeHeader_zj_zt (val) {
       this.save_zj_query.belongField = val
     },
-
-
     // 新增  问题数 保存
     add_list_save (formName) {
       this.$refs[formName].validate((valid) => {
@@ -1740,9 +1758,6 @@ export default {
     problems_task_change (val) {
       this.problems_form.associatedTask = val
     },
-
-
-
     // 编辑
     edit_list (id) {
       this.dialogVisible_add_list = true;
@@ -1812,7 +1827,6 @@ export default {
     problems_form_change (val) {
       this.problems_form.field = val;
     },
-
     // 删除
     remove_list (id) {
       this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, "提示", {
@@ -1856,25 +1870,20 @@ export default {
         }
       })
     },
-
     // 问题数选择
     handleSelectionChange_wts (val) {
       this.wts_data = val
     },
-
     // 关联任务
     task_problems_relation_data (params) {
       task_problems_relation(params).then(resp => {
         this.relation_task = resp.data
       })
     },
-
     // 引用知识库
     quote_knowledge () {
       console.log('引用知识库');
     },
-
-
     // 设置参数
     setParameters (data) {
       // this.all_setting();// 全部参数
@@ -1909,7 +1918,6 @@ export default {
       })
 
     },
-
     //运行
     play_data () {
       // console.log(this.$refs.paramDrawRefNew.paramInfoArr)
@@ -1934,7 +1942,6 @@ export default {
       }
       this.run(runTaskRel);//运行
     },
-
     // 运行
     run (runTaskRel) {
       Task_run(runTaskRel).then(resp => {
@@ -1946,7 +1953,6 @@ export default {
             type: "success",
           });
           this.setParametersDialogVisible = false;//关闭设置参数
-
           // 获取时间
           // let yy = new Date().getFullYear();
           // let mm = new Date().getMonth() + 1;
@@ -1961,7 +1967,6 @@ export default {
             // auditTask: {
             // paramTaskContent:,
             auditTaskUuid: this.auditTaskUuid,//当前对象id
-            // auditTaskUuid: "9903ce3a78c00744b57a30a759e79808",
             paramTaskUuid: this.runTaskRelUuid,
             // runStatus: 1,
             taskStartTime: this.systemTime
@@ -2002,8 +2007,6 @@ export default {
 
       })
     },
-
-
     //查询任务状态
     task_status () {
       let params = {
@@ -2013,8 +2016,6 @@ export default {
         console.log(resp);
       })
     },
-
-
     // 核实
     task_verify () {
       if (this.multipleSelection_data_list.length == 0) {
@@ -2200,6 +2201,14 @@ export default {
 @import "../../../assets/styles/css/lhg.css";
 @import "../../../assets/styles/css/yw.css";
 
+/* 责任人 */
+.dlag_conter >>> .el-input.is-disabled .el-input__inner {
+  color: #606266 !important;
+  background-color: rgba(0, 0, 0, 0.2) !important;
+  background: none;
+  opacity: 0.5;
+}
+
 .sjzl {
   display: flex;
 }
@@ -2363,9 +2372,9 @@ export default {
   margin-left: 10px !important;
   display: flex;
 }
-.sjzl >>> .el-dialog__footer {
+/* .sjzl >>> .el-dialog__footer {
   text-align: center !important;
-}
+} */
 .dlag_conter >>> .el-upload-dragger {
   width: 300px;
 }
@@ -2468,5 +2477,9 @@ export default {
 }
 .style_focus >>> .el-upload-dragger {
   border: 1px dashed red !important;
+}
+
+.file_name:hover {
+  color: #1371cc;
 }
 </style>
