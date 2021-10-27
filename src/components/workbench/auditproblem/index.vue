@@ -49,7 +49,8 @@
       <el-table-column label="领域" prop="field">
         <template slot-scope="scope">
           <div>
-            {{ fieldFilter(scope.row.field) }}
+            <!-- {{ fieldFilter(scope.row.field) }} -->
+            {{ scope.row.field }}
           </div>
         </template>
       </el-table-column>
@@ -117,9 +118,9 @@
           <el-select v-model="temp.field" placeholder="请选择领域">
             <el-option
               v-for="item in CategoryList"
-              :key="item.value"
+              :key="item.label"
               :label="item.label"
-              :value="item.value"
+              :value="item.label"
             >
             </el-option>
           </el-select>
@@ -249,9 +250,9 @@
           <el-select v-model="dqProblem.field" placeholder="请选择领域">
             <el-option
               v-for="item in CategoryList"
-              :key="item.value"
+              :key="item.label"
               :label="item.label"
-              :value="item.value"
+              :value="item.label"
             >
             </el-option>
           </el-select>
