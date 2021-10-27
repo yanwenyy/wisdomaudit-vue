@@ -235,3 +235,13 @@ export function task_fileRemove (data) {
     data,
   })
 }
+
+// 获取责任人
+export function task_personLiable (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/user/getLoginUserInfo`,
+    method: 'get',
+    data,
+  })
+}

@@ -829,8 +829,7 @@
     </el-dialog>
 
     <!-- 附件详情 -->
-    <el-dialog title="附件详情"
-               width="40%"
+    <el-dialog width="20%"
                :visible.sync="dialogVisibl_enclosure_details"
                style="padding-bottom: 59px; ">
       <el-table :data="enclosure_details_list"
@@ -838,17 +837,18 @@
         <!-- <el-table-column prop="dataTaskNumber"
                              label="流水单号">
             </el-table-column> -->
-        <el-table-column type="index"
+        <!-- <el-table-column type="index"
                          align="center"
                          label="序号">
         </el-table-column>
         <el-table-column prop="fiileType"
                          label="资料类型">
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column prop="fileName"
                          label="文件名称">
           <template slot-scope="scope">
             <el-button @click="download(scope.row.attachmentUuid,scope.row.fileName)"
+                       class="file_name"
                        type="text"
                        style="color: #1371cc"
                        size="small">
@@ -2404,5 +2404,8 @@ export default {
   .cd >>> .el-form-item__content p {
     box-sizing: border-box;
   }
+}
+.file_name:hover {
+  color: #1371cc;
 }
 </style>
