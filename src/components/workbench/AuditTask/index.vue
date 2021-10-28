@@ -446,13 +446,15 @@
 
       <!-- 分页 -->
       <div class="page">
-        <el-pagination background
-                       layout="prev, pager, next"
-                       :page-sizes="[2, 4, 6, 8]"
-                       :current-page="this.probleNum_data.current"
+        <el-pagination @size-change="handleSizeChange_probleNum"
                        @current-change="handleCurrentChange_probleNum"
+                       :current-page="this.probleNum_data.current"
+                       :page-sizes="[100, 200, 300, 400]"
                        :page-size="this.probleNum_data.size"
-                       :total="this.probleNum_data.total"></el-pagination>
+                       layout="total, sizes, prev, pager, next, jumper"
+                       :total="this.probleNum_data.total">
+        </el-pagination>
+
       </div>
       <!-- 分页 end-->
 
@@ -1867,6 +1869,10 @@ export default {
         this.probleNum_data = resp.data
         this.probleNum_list = resp.data.records
       })
+    },
+    // 问题数分页 每页几条
+    handleSizeChange_probleNum (val) {
+      this.probleNum.pageSize = val
     },
     // 问题数分页
     handleCurrentChange_probleNum (val) {

@@ -20,7 +20,7 @@ export function task_findModelList (data) {
 export function task_findModelList_all (data) {
   return request({
     baseURL: baseURL,
-    url: `paramController/findParamsAndModelRelParams`,
+    url: `/paramController/findParamsAndModelRelParams`,
     method: 'post',
     data,
   })

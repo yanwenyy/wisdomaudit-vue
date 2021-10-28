@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-const baseURL = '/WEI'
+const baseURL = '/wisdomaudit'
 import qs from 'qs'
 
 // 附件详情
