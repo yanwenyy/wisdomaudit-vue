@@ -5,7 +5,7 @@
         <div slot="header" class="clearfix">
           <span> <svg-icon icon-class="edit" class="homepage-icon"/> 审计项目</span>
           <el-button
-            style="float: right; padding: 3px 0; color: blue; font-size:18px;"
+            style="float: right; padding: 0; color: #439bd8; font-size:18px;"
             type="text"
             >···</el-button
           >
@@ -52,11 +52,11 @@
               <span> <svg-icon icon-class="task" class="homepage-icon"/>我的模型任务</span>
             </div>
 
-            <ul style="height: 466px;overflow:scroll;" class="odd-even" @click="taskModelEvent">
+            <ul style="height: 406px;overflow:scroll;" class="odd-even" @click="taskModelEvent">
               <li v-for="(item,index) in modellist" :key="'model'+index">
                 <div class="li-item">
                   <h5>{{item.projectName || '--'}}</h5>
-                  <span>{{item.updateTime || '--'}}</span>
+                  <span>{{timefilter(item.updateTime || '')}}</span>
                 </div>
                 <el-divider></el-divider>
                 <div class="li-item">
@@ -75,11 +75,11 @@
               <span> <svg-icon icon-class="view" class="homepage-icon"/>审计资料</span>
             </div>
 
-            <ul style="height: 245px;overflow:scroll;" class="odd-even" @click="auditInfoEvent">
+            <ul style="height: 200px;overflow:scroll;" class="odd-even" @click="auditInfoEvent">
               <li v-for="(item,index) in datalist" :key="'data'+index">
                 <div class="li-item">
                   <h5>{{item.projectName || '--'}}</h5>
-                  <span>{{item.createTime || '--'}}</span>
+                  <span>{{timefilter(item.createTime || '')}}</span>
                 </div>
                 <el-divider></el-divider>
                 <div class="li-item">
@@ -93,7 +93,7 @@
             <div slot="header" class="clearfix">
               <span> <svg-icon icon-class="star" class="homepage-icon"/>快捷功能</span>
               <el-button
-                style="float: right; padding: 3px 0; color: blue"
+                style="float: right; padding: 3px 0; color: #439bd8;"
                 type="text"
                 ><i class="el-icon-setting" style="font-size:18px;"></i
               ></el-button>
@@ -147,6 +147,11 @@ export default {
     this.getdatalist()
   },
   methods: {
+    timefilter(time){
+      let oldTime = (new Date(time)).getTime()
+      let newTime = new Date(oldTime).toLocaleString('zh', { hour12: false });
+      return newTime
+    },
     getmodellist(){
       axios({
         url: `/wisdomaudit/homePage/homeMxList`,
@@ -422,6 +427,7 @@ export default {
   font-size: 15px;
   font-weight: bold;
   color: #439bd8;
+  padding: 10px;
 }
 .homepage-icon{
   margin-right:3px;

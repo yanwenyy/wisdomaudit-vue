@@ -95,14 +95,14 @@
             action="/wisdomaudit/attachment/filesUpload"
             :on-success="handleChangePic"
             :before-remove="handleRemoveApk"
-            accept=".zip,.doc"
+            accept=".docx,.xls,.xlsx,.txt,.zip,.doc"
             :file-list="fileList"
             multiple
             :key="key"
           >
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">
-              点击上传或将文件拖到虚线框<br />支持.zip .doc
+              点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc
             </div>
           </el-upload>
         </el-form-item>
@@ -389,19 +389,21 @@ export default {
         ids.push(item.attachmentUuid)
       });
       // console.log(this.apkFiles,ids)
-      del_file_batch(ids.join(",")).then(resp => {
-        // if (resp.code == 0) {
-        //   this.$message({
-        //     message: "删除成功",
-        //     type: "success",
-        //   });
-        // } else {
-        //   this.$message({
-        //     message: resp.data.msg,
-        //     type: "error",
-        //   });
-        // }
-      });
+      if(ids!=''){
+        del_file_batch(ids.join(",")).then(resp => {
+          // if (resp.code == 0) {
+          //   this.$message({
+          //     message: "删除成功",
+          //     type: "success",
+          //   });
+          // } else {
+          //   this.$message({
+          //     message: resp.data.msg,
+          //     type: "error",
+          //   });
+          // }
+        });
+      }
       this.clearForm();
     },
     //清除数据

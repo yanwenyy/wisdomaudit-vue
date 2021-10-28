@@ -34,7 +34,7 @@
         <tr v-for="vtem in item.children">
           <td width="150"></td>
           <td width="150">{{vtem.indexName}}</td>
-          <td width="100">{{vtem.indexUnit}}</td>
+          <td width="100">{{vtem.indexUnitName}}</td>
           <td width="150" v-for="y in vtem.operatingIndicatorsValueList">
             <span v-if="yearRange.indexOf(y.indexDate)!=-1">{{y.indexValue}}</span>
           </td>
@@ -42,7 +42,7 @@
           <td width="100">{{vtem.contactPerson}}</td>
           <td width="160">
             <el-button type="text" class="blue" @click="edit(vtem)">编辑</el-button>
-            <el-button type="text" class="red" @click="del(vtem)">删除</el-button>
+            <el-button type="text" class="red" @click="del(vtem.operatingIndicatorsUuid)">删除</el-button>
           </td>
         </tr>
       </table>
@@ -122,15 +122,16 @@
       :close-on-click-modal="false"
     >
       <el-form :model="formState" class="formData"  label-width="100px">
-        <el-form-item v-for="item in formState.operatingIndicatorsValueList" :label="item.indexDate">
+        <el-form-item v-for="(item,index) in formState.operatingIndicatorsValueList" :label="item.indexDate" :key="index">
           <el-input
             v-model="item.indexValue"
+            @input="item.indexValue=item.indexValue.replace(/[^\d]/g,'')"
             placeholder="请输入"
           ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer">
-        <el-button @click="dialoglistVisible = false">取消</el-button>
+        <el-button @click="editVisible = false">取消</el-button>
         <el-button type="primary" @click="editSave">确定</el-button>
       </div>
     </el-dialog>
@@ -235,7 +236,7 @@ export default {
   methods: {
     //start
     //删除
-    del(row){
+    del(val){
       this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -265,7 +266,7 @@ export default {
     },
     //编辑保存
     editSave(){
-      console.log(JSON.stringify(this.formState))
+      // console.log(JSON.stringify(this.formState))
       indexManagement_edit(this.formState).then(resp => {
         if (resp.code == 0) {
           this.$message({
@@ -283,14 +284,15 @@ export default {
       })
     },
     getList() {
-      console.log(this.active_project)
+      // console.log(this.active_project)
       this.listLoading = true;
       this.pageQuery.managementProjectUuid=this.active_project;
       indexManagement_pageList(this.pageQuery).then(resp => {
         var datas=resp.data;
         this.dataList=datas.dataList;
         this.yearRange=datas.titleHeadList;
-        this.loading = false
+        this.loading = false;
+        // console.log(JSON.stringify(this.dataList))
       })
       // axios({
       //   url: `/wisdomaudit/operatingIndicators/pageList`,

@@ -40,7 +40,7 @@
             class="upload-demo inline-block btnStyle"
             :action="'/wisdomaudit/auditConfirmation/fileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid+'&confirmationFileNumber='+(scope.row.confirmationFileNumber||'')"
             :on-success="list_data_start"
-            accept=".zip,.doc">
+            accept=".docx,.xls,.xlsx,.txt,.zip,.doc">
             <el-button size="small" type="text"  style="background: transparent;" class="editBtn">上传附件</el-button>
           </el-upload>
           <el-button
@@ -66,11 +66,11 @@
               class="upload-demo inline-block btnStyle"
               :action="'/wisdomaudit/auditConfirmation/endFileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid"
               :on-success="list_data_start"
-              accept=".zip,.doc">
+              accept=".docx,.xls,.xlsx,.txt,.zip,.doc">
               <el-button size="small" type="text"  style="background: transparent;padding:0" class="editBtn">上传</el-button>
             </el-upload>
             <el-tooltip placement="bottom"  effect="light" v-if="scope.row.endConfirmationFile">
-              <div class="pointer" slot="content">{{scope.row.endConfirmationFile}}</div>
+              <div @click="downFile(scope.row.endConfirmationFileId,scope.row.endConfirmationFile)" class="pointer" slot="content">{{scope.row.endConfirmationFile}}</div>
               <span class="editBtn"><i class="el-icon-folder-opened list-folder"></i>1</span>
             </el-tooltip>
           </el-button>
@@ -170,7 +170,7 @@
 </template>
 
 <script>
-  import { auditBasy_getFileList,auditConfirmation_pageList,auditConfirmation_save,auditConfirmation_delete,auditConfirmation_getDetail,auditConfirmation_update} from
+  import {down_file, auditBasy_getFileList,auditConfirmation_pageList,auditConfirmation_save,auditConfirmation_delete,auditConfirmation_getDetail,auditConfirmation_update} from
       '@SDMOBILE/api/shandong/ls'
   import { task_pageList_wt} from
       '@SDMOBILE/api/shandong/AuditReport'
@@ -209,6 +209,27 @@ export default {
     this.list_data_start();
   },
   methods: {
+    //附件下载
+    downFile(id,fileName){
+      let formData = new FormData()
+      formData.append('fileId', id)
+      down_file(id).then(resp => {
+        const content = resp.data;
+        const blob = new Blob([content])
+        if ('download' in document.createElement('a')) { // 非IE下载
+          const elink = document.createElement('a')
+          elink.download = fileName
+          elink.style.display = 'none'
+          elink.href = URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          URL.revokeObjectURL(elink.href) // 释放URL 对象
+          document.body.removeChild(elink)
+        } else { // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
+      })
+    },
     //点击确认单附件显示附件列表
     getFileList(id){
       this.tableFileList=[];

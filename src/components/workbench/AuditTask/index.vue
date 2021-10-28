@@ -169,7 +169,7 @@
             <el-table-column label="操作"
                              align="center"
                              width="250">
-              <template scope="scope">
+              <template solt-scope="scope">
 
                 <!-- 模型 ---------->
                 <!-- 重新执行设置 -->
@@ -875,9 +875,9 @@ import {
   task_select_people,
   task_setChargePeople,
   task_data_verify,
-  task_problems_list,//问题列表 
-  task_problems_save,//问题保存 
-  task_problems_update,//问题编辑 
+  task_problems_list,//问题列表
+  task_problems_save,//问题保存
+  task_problems_update,//问题编辑
   task_problems_delete,//问题删除
   task_problems_details,//问题编辑回显
   task_problems_loadcascader,//公用模版 领域
@@ -1036,7 +1036,7 @@ export default {
       systemTime: '',//当前时间
       paramTaskUuid: '',//列表的 runTaskRelUuid  id
 
-      status_data: [],//结果数分类 
+      status_data: [],//结果数分类
 
       status_data_list_data: [],//外层
       status_data_list: [
@@ -1053,6 +1053,10 @@ export default {
 
       success_btn: 0,//文件上传完成
       Upload_file: [],//上传后返回文件数组
+<<<<<<< HEAD
+=======
+      isClientCertFile: false,//判断是否上传文件
+>>>>>>> 7a9ce5b3dbd438badefb3920ae062e2513adff04
 
       edit_file_list: [],// 编辑回显 上传文件
       disabled: true,//责任人点击
@@ -1178,7 +1182,7 @@ export default {
     // 新增弹窗
     new_add_zj (index) {
       // 1:新增  2:编辑
-      //自建任务 新增 
+      //自建任务 新增
       this.dialogVisible_zj = true;
       this.title = '新增任务';
     },
@@ -1283,7 +1287,7 @@ export default {
             this.$message.info("请填写信息");
             return false;
           };//判断为空
-        })//验证 end 
+        })//验证 end
         //  新增 end
       } else {
         // 编辑
@@ -1418,7 +1422,7 @@ export default {
     },
     // 编辑上传
     edit_data_update (params) {
-      // 编辑保存  
+      // 编辑保存
       task_update(params).then(resp => {
         if (resp.code == 0) {
           this.$message({
@@ -1471,7 +1475,7 @@ export default {
       let params = {
         id: data.auditTaskUuid,//任务id
       }
-      // 编辑 回显 数据渲染 
+      // 编辑 回显 数据渲染
       task_details(params).then(resp => {
         this.edit_details = resp.data
         this.save_zj_query = this.edit_details
@@ -1553,17 +1557,17 @@ export default {
         // const fileName = res.headers["content-disposition"].split("fileName*=utf-8''")[1];
         // const filteType = res.headers["content-disposition"].split('.')[1];
         if ('download' in document.createElement('a')) {
-          // 非IE下载  
+          // 非IE下载
           const elink = document.createElement('a')
           elink.download = name //下载后文件名
           elink.style.display = 'none'
           elink.href = window.URL.createObjectURL(blob)
           document.body.appendChild(elink)
           elink.click()
-          window.URL.revokeObjectURL(elink.href) // 释放URL 对象  
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象
           document.body.removeChild(elink)
         } else {
-          // IE10+下载 
+          // IE10+下载
           navigator.msSaveBlob(blob, fileName)
         }
       }).catch((err) => {
@@ -1592,7 +1596,21 @@ export default {
         }
       };
       // 模型列表 自建任务
+<<<<<<< HEAD
       this.list_data(params2);
+=======
+      this.list_data(params);
+    },
+    // 模型/自建任务列表
+    list_data (params) {
+      this.loading = true
+      task_pageList(params).then(resp => {
+        this.tableData = resp.data;
+        console.log(this.tableData);
+        this.tableData_list = resp.data.records
+        this.loading = false
+      })
+>>>>>>> 7a9ce5b3dbd438badefb3920ae062e2513adff04
     },
 
     // 结果数=========================================
@@ -2216,8 +2234,58 @@ export default {
         console.log(resp);
       })
     },
+<<<<<<< HEAD
 
     // 模型列表 获取责任人 
+=======
+    // 核实
+    task_verify () {
+      // if (this.multipleSelection_data_list.length == 0) {
+      //   this.$message.info("请选择一条进行数据核实");
+      //   return false
+      // }
+      this.dialogVisible_data_verify = true;//显示核实结果
+
+    },
+    // 是否问题 change
+    isProbleam_change (val) {
+      this.verify.isProbleam = val
+    },
+
+    // 核实保存
+    verify_save () {
+      var arr = this.multipleSelection_data_list.map(function (item, index) {
+        return item.resultDetailId;
+      }).join(",");
+      let resultDetailProjectRelDto = {
+        handleIdea: this.verify.handleIdea,//核实信息
+        isProbleam: this.verify.isProbleam, //是否问题（0：否 1：是 ）
+        resultDetailIds: arr,//核实明细结果id （多个）
+      };
+      // 核实保存
+      task_data_verify(resultDetailProjectRelDto).then(resp => {
+        console.log(resp);
+        if (resp.code == 0) {
+          this.$message({
+            message: "核实成功",
+            type: "success",
+          });
+          this.dialogVisible_data_verify = false;//关闭核实  弹窗
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: "error",
+          });
+        }
+      })
+    },
+
+    //核实下载
+    download () {
+
+    },
+    // 模型列表 获取责任人
+>>>>>>> 7a9ce5b3dbd438badefb3920ae062e2513adff04
     changeHeader (val) {
       this.select_list.find((item) => {
         if (item.peopleTable.peopleName === val.peopleName) {//筛选出匹配数据
