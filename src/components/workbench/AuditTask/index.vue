@@ -1053,10 +1053,7 @@ export default {
 
       success_btn: 0,//文件上传完成
       Upload_file: [],//上传后返回文件数组
-<<<<<<< HEAD
-=======
       isClientCertFile: false,//判断是否上传文件
->>>>>>> 7a9ce5b3dbd438badefb3920ae062e2513adff04
 
       edit_file_list: [],// 编辑回显 上传文件
       disabled: true,//责任人点击
