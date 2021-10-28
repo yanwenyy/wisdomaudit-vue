@@ -1,7 +1,7 @@
 
 import request from '@/utils/request'
 
-const baseURL = '/wisdomaudit_wei'
+const baseURL = '/WEI'
 import qs from 'qs'
 
 // 设置参数
@@ -20,7 +20,7 @@ export function task_findModelList (data) {
 export function task_findModelList_all (data) {
   return request({
     baseURL: baseURL,
-    url: `paramController/findParamsAndModelRelParams`,
+    url: `/paramController/findParamsAndModelRelParams`,
     method: 'post',
     data,
   })
