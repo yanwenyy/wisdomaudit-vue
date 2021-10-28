@@ -979,6 +979,7 @@ export default {
       }, 500);
     },
   },
+ 
   created() {
     // console.log(this.active_project);
     this.getprojectList(this.queryManage);
@@ -989,6 +990,7 @@ export default {
     //获取当前登录人信息
     get_userInfo().then((resp) => {
       this.userInfo = resp.data;
+      console.log(this.userInfo);
     });
   },
   methods: {
