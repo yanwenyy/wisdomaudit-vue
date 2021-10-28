@@ -213,7 +213,18 @@ export function enclosure_sysLogById (data) {
 export function operation_record_list (data) {
   return request({
     baseURL: baseURL,
-    url: ` /auditPreviousDemandData/sysLogById`,
+    url: `/auditPreviousDemandData/sysLogById`,
+    method: 'post',
+    data
+  })
+}
+
+
+// 新增资料 关闭弹窗 开启弹窗
+export function operation_addExit (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/addDataTask/addExit`,
     method: 'post',
     data
   })

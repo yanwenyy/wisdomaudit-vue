@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import qs from 'qs'
 
-const baseURL = '/wisdomaudit'
+const baseURL = '/wisdomaudit_wei'
 // 反馈列表
 export function data_pageList (data) {
   return request({
@@ -57,7 +57,7 @@ export function operation_findFile (data) {
   let id = data.id
   return request({
     baseURL: baseURL,
-    url: '/auditPreviousDemandData/findFile' + id + '',
+    url: '/auditPreviousDemandData/findFile/' + id + '',
     method: 'post',
     data
   })
