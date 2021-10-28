@@ -2,6 +2,14 @@ import request from '@/utils/request'
 import qs from 'qs'
 
 const baseURL = '/wisdomaudit';
+//获取用户信息
+export function get_userInfo() {
+  return request({
+    baseURL: baseURL,
+    url:'/init/getCurrentInfo',
+    method: 'get',
+  })
+}
 //附件删除
 export function del_file(data) {
   return request({

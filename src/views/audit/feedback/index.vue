@@ -9,7 +9,7 @@
                 style="width: 100%">
         <el-table-column prop="createTime"
                          label="发起日期">
-          <template scope="scope">
+          <template slot-scope="scope">
             <p>{{scope.row.createTime | filtedate}}</p>
           </template>
         </el-table-column>
@@ -38,7 +38,7 @@
 
         <el-table-column label="操作"
                          width="250">
-          <template scope="scope">
+          <template slot-scope="scope">
             <el-button @click="see(scope.row)"
                        type="primary"
                        style="color:#1371CC"
@@ -255,7 +255,7 @@
                                label="备注">
               </el-table-column>
               <!-- <el-table-column prop="enclosurePath"
-                             label="附件"> 
+                             label="附件">
             </el-table-column>-->
 
             </el-table>
@@ -490,24 +490,24 @@ export default {
         // const fileName = res.headers["content-disposition"].split("fileName*=utf-8''")[1];
         // const filteType = res.headers["content-disposition"].split('.')[1];
         if ('download' in document.createElement('a')) {
-          // 非IE下载  
+          // 非IE下载
           const elink = document.createElement('a')
           elink.download = fileName //下载后文件名
           elink.style.display = 'none'
           elink.href = window.URL.createObjectURL(blob)
           document.body.appendChild(elink)
           elink.click()
-          window.URL.revokeObjectURL(elink.href) // 释放URL 对象  
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象
           document.body.removeChild(elink)
         } else {
-          // IE10+下载 
+          // IE10+下载
           navigator.msSaveBlob(blob, fileName)
         }
       }).catch((err) => {
         console.log(err);
       })
     },
-    // 查看附件 
+    // 查看附件
     open_enclosure_details (id) {
       this.dialogVisibl_enclosure_details = true;//显示附件详情
       let params = {
@@ -584,7 +584,7 @@ export default {
       this.post_operation_record(query_params)//刷新 操作记录 列表
 
     },
-    // 操作记录 
+    // 操作记录
     post_operation_record (query_params) {
       operation_record_list(query_params).then(resp => {
         this.record_log = resp.data

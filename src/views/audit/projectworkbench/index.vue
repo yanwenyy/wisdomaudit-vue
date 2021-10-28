@@ -112,7 +112,7 @@
               background-color="#F1F5FB"
               default-active="1-1"
             >
-              <el-submenu index="1">
+              <el-submenu v-if="userInfo.userRole=='1'||userInfo.userRole=='3'" index="1">
                 <template slot="title">
                   <span style="font-weight: 400">审计准备</span>
                 </template>
@@ -122,7 +122,7 @@
                   ></el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
-              <el-submenu index="2">
+              <el-submenu v-if="userInfo.userRole=='1'||userInfo.userRole=='2'||userInfo.userRole=='3'" index="2">
                 <template slot="title">
                   <span style="font-weight: 400">审计实施</span>
                 </template>
@@ -135,7 +135,7 @@
                   ></el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
-              <el-submenu index="3">
+              <el-submenu v-if="userInfo.userRole=='1'||userInfo.userRole=='3'" index="3">
                 <template slot="title">
                   <span style="font-weight: 400">报告阶段</span>
                 </template>
@@ -157,31 +157,34 @@
             <TeamPersonTask
               ref="temPersonRef"
               :active_project="active_project"
+              :userRole="userInfo.userRole"
             />
           </div>
           <!-- 审计资料 -->
           <div class="routerView" v-else-if="index == '2-1'">
-            <AuditData :active_project="active_project"></AuditData>
+            <AuditData :active_project="active_project" :userRole="userInfo.userRole"></AuditData>
           </div>
           <!-- 审计任务 -->
           <div class="routerView" v-else-if="index == '2-2'">
-            <AuditTask :active_project="active_project"></AuditTask>
+            <AuditTask :active_project="active_project" :userRole="userInfo.userRole"></AuditTask>
           </div>
           <div class="routerView" v-else-if="index == '2-3'">
-            <Auditproblem :active_project="active_project"></Auditproblem>
+            <Auditproblem :active_project="active_project" :userRole="userInfo.userRole"></Auditproblem>
           </div>
           <div class="routerView" v-else-if="index == '2-4'">
             <AuditConfirmation
               :active_project="active_project"
+              :userRole="userInfo.userRole"
             ></AuditConfirmation>
           </div>
           <div class="routerView" v-else-if="index == '3-1'">
             <!-- 审计报告 -->
-            <AuditReport :active_project="active_project"></AuditReport>
+            <AuditReport :active_project="active_project" :userRole="userInfo.userRole"></AuditReport>
           </div>
           <div class="routerView" v-else>
             <Businessindicator
               :active_project="active_project"
+              :userRole="userInfo.userRole"
             ></Businessindicator>
           </div>
         </el-col>
@@ -685,6 +688,8 @@ import Auditproblem from "@WISDOMAUDIT/components/workbench/auditproblem/index";
 import Businessindicator from "@WISDOMAUDIT/components/workbench/businessindicator/index"; //经营指标
 import AuditReport from "@WISDOMAUDIT/components/workbench/AuditReport/index"; //审计问题
 import AuditConfirmation from "@WISDOMAUDIT/views/audit/auditconfirmationform/index";
+import {get_userInfo} from
+    '@SDMOBILE/api/shandong/ls'
 import {
   projectList,
   projectListByuser,
@@ -726,6 +731,7 @@ export default {
     return {
       enclosure_details_list: [],
       nearbyDialogVisible: false, //附件详情
+      userInfo:{},
       data: [],
       value: [],
       loading: false,
@@ -956,6 +962,10 @@ export default {
     this.thematicSelect(this.thematic);
     this.areasSelect(this.areas);
     this.moreProject(this.queryManageAll);
+    //获取当前登录人信息
+    get_userInfo().then((resp) => {
+      this.userInfo=resp.data;
+    });
   },
   methods: {
     filterMethod(query, item) {
@@ -1822,6 +1832,7 @@ export default {
     width: 100%;
     //   border: 1px solid red;
     background: #f1f5fb;
+    overflow-x: hidden;
   }
   .routerView {
     // border: 1px solid red;
