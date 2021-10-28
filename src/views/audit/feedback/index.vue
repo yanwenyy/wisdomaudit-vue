@@ -5,7 +5,8 @@
     <div class="task_type">
       <!-- 表单 -->
       <el-table :data="list_data_list"
-                v-loading="loading"
+                v-loading="list_data_loading"
+                :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                 style="width: 100%">
         <el-table-column prop="createTime"
                          label="发起日期">
@@ -13,16 +14,19 @@
             <p>{{scope.row.createTime | filtedate}}</p>
           </template>
         </el-table-column>
-        <el-table-column prop="createUserName"
+        <el-table-column prop="projectNumber"
                          label="项目名称">
         </el-table-column>
         <el-table-column prop="title"
+                         align="center"
                          label="标题">
         </el-table-column>
         <el-table-column prop="launchPeople"
+                         align="center"
                          label="发起人">
         </el-table-column>
         <el-table-column prop="status"
+                         align="center"
                          label="状态">
           <template slot-scope="scope">
             {{
@@ -37,6 +41,7 @@
         </el-table-column>
 
         <el-table-column label="操作"
+                         align="center"
                          width="250">
           <template slot-scope="scope">
             <el-button @click="see(scope.row)"
@@ -96,10 +101,10 @@
           <el-form label-width="80px">
             <el-table ref="multipleTable"
                       row-key="id"
-                      v-loading="loading"
                       :data="feedback_list.records"
                       tooltip-effect="dark"
                       style="width: 100%"
+                      v-loading="list_loading"
                       @selection-change="handleSelectionChange_query">
               <el-table-column type="selection"
                                width="55">
@@ -198,11 +203,11 @@
                                :http-request="handleUploadForm"
                                :before-upload="beforeAvatarUpload"
                                :file-list="fileList"
-                               accept=".doc,.xls,.txt,.xlsx,.zip">
+                               accept=".zip,.doc,.docx,.xls,.xlsx,.txt">
                       <el-button size="small"
                                  type="primary"
                                  @click="up(scope.row)">上传</el-button>
-                      <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+
                     </el-upload>
 
                     <el-button @click="look_record(scope.row)"
@@ -234,7 +239,8 @@
         <!-- 操作记录 -->
         <div v-if="record_status==true">
           <p>操作记录</p>
-          <el-form label-width="80px">
+          <el-form label-width="80px"
+                   v-loading="record_loading">
             <el-table :data="record_log"
                       style="width: 100%">
               <el-table-column prop="opOperate"
@@ -322,7 +328,7 @@ export default {
   },
   data () {
     return {
-      loading: false,
+      list_data_loading: false,
       tableData_list: [
         { name: 111 },
         { name: 111 },
@@ -343,6 +349,7 @@ export default {
           dataTaskNumber: '',
         }
       },
+      list_loading: false,//资料列表 loading
       feedback_list: [],//反馈资料列表
       check_data_list: [],// 反馈资料列表  多选
 
@@ -352,6 +359,7 @@ export default {
       launchPeople: '',// 发起人
       down_url: '',//下载的url
       post_remarks: '',//反馈备注
+      record_loading: false,//操作记录loading
       record_status: false,//操作记录
       record_log: [],//操作记录
       fileList: [],//上传
@@ -390,11 +398,11 @@ export default {
     },
     // 列表
     list_data_page (params) {
-      this.loading = true;
+      this.list_data_loading = true;
       data_pageList(params).then(resp => {
         this.list_data = resp.data;
         this.list_data_list = resp.data.records;//列表
-        this.loading = false;
+        this.list_data_loading = false;
       })
     },
 
@@ -444,10 +452,10 @@ export default {
     },
     // 资料列表
     feedback_post (params) {
-      this.loading = true
+      this.list_loading = true
       feedback_pageList(params).then(resp => {
         this.feedback_list = resp.data
-        this.loading = false;
+        this.list_loading = false;
       })
     },
     // 反馈资料 分页
@@ -534,6 +542,7 @@ export default {
     },
     // 上传时
     up_ing (file) {
+      alert('1111')
       this.success_btn = 1;//显示加载按钮  0成功  1 loaging
     },
     // 上传
@@ -556,6 +565,7 @@ export default {
             message: '上传成功',
             type: 'success'
           });
+          alert(222)
           this.success_btn = 0;//隐藏加载按钮
           //刷新列表
           let params = {
@@ -586,8 +596,10 @@ export default {
     },
     // 操作记录
     post_operation_record (query_params) {
+      this.record_loading = true;
       operation_record_list(query_params).then(resp => {
         this.record_log = resp.data
+        this.record_loading = false;
       })
     },
     // 反馈确认
