@@ -266,7 +266,7 @@ export default {
     },
     //编辑保存
     editSave(){
-      console.log(JSON.stringify(this.formState))
+      // console.log(JSON.stringify(this.formState))
       indexManagement_edit(this.formState).then(resp => {
         if (resp.code == 0) {
           this.$message({
