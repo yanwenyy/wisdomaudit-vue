@@ -32,7 +32,7 @@ export function del_file_batch(data) {
 export function down_file(data) {
   return request({
     baseURL: baseURL,
-    url: `/auditPreviousDemandData/downloadByFileId?fileId=${data}`,
+    url: `/attachment/fileDownload?fileId=${data}`,
     ifDownFile:true,
     responseType:'blob',
     method: 'post',

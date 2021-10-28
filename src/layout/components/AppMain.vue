@@ -24,8 +24,7 @@ export default {
   width: 100%;
   position: relative;
   overflow: hidden;
-  background-color: rgb(237,238,242);
-  padding: 10px;
+  /* background-color: rgb(237,238,242); */
   box-sizing: border-box;
 }
 .fixed-header+.app-main {

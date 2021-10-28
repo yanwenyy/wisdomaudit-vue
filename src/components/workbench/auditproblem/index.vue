@@ -34,19 +34,19 @@
       max-height="calc(100vh - 300px)"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column label="序号">
+      <el-table-column align="center" label="序号">
         <template slot-scope="scope">
           {{ scope.$index + 1 }}
         </template>
       </el-table-column>
-      <el-table-column label="问题">
+      <el-table-column align="center" label="问题">
         <template slot-scope="scope">
           <div class="canclick" @click="checkDetail(scope.row.problemListUuid)">
             {{ scope.row.problem }}
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="领域" prop="field">
+      <el-table-column align="center" label="领域" prop="field">
         <template slot-scope="scope">
           <div>
             <!-- {{ fieldFilter(scope.row.field) }} -->
@@ -54,7 +54,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="专题" prop="special">
+      <el-table-column align="center" label="专题" prop="special">
         <template slot-scope="scope">
           <div>
             {{ specialFilter(scope.row.special) }}
@@ -67,13 +67,13 @@
         align="center"
         prop="riskAmount"
       />
-      <el-table-column label="发现日期">
+      <el-table-column align="center" label="发现日期">
         <template slot-scope="scope">
           {{ repDate(scope.row.problemDiscoveryTime) }}
         </template>
       </el-table-column>
-      <el-table-column label="发现人" prop="problemFindPeople" />
-      <el-table-column label="操作" width="200">
+      <el-table-column align="center" label="发现人" prop="problemFindPeople" />
+      <el-table-column align="center" label="操作" width="200">
         <template slot-scope="scope">
           <el-button
             @click="openDetail(scope.$index)"
@@ -90,13 +90,17 @@
         </template>
       </el-table-column>
     </el-table>
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      :page.sync="pageQuery.pageNo"
-      :limit.sync="pageQuery.pageSize"
-      @pagination="getList"
-    />
+    <div class="page">
+      <el-pagination
+        :current-page="pageQuery.pageNo"
+        :page-size="pageQuery.pageSize"
+        :page-sizes="[10, 50, 100]"
+        :total="total"
+        @current-change="getList"
+        @size-change="getList"
+        layout="total, sizes, prev, pager, next, jumper"
+      ></el-pagination>
+    </div>
     <!-- 新增和编辑的弹框 -->
     <el-dialog
       title="新增问题"
@@ -276,12 +280,12 @@
             @visible-change="toopen"
             placeholder="请选择"
             no-data-text="请点击引用审计依据"
-            :disabled="ifadd!=2?false:true"
+            :disabled="ifadd != 2 ? false : true"
           >
           </el-select>
         </el-form-item>
         <el-button
-          v-if="ifadd!=2?true:false"
+          v-if="ifadd != 2 ? true : false"
           type="primary"
           ref="basisbtn0"
           class="citebtn"
@@ -415,7 +419,13 @@
     >
       <div style="display: flex; height: 100%; padding: 20px">
         <div style="max-height: 60vh; width: 50%; overflow: scroll">
-          <el-form ref="basisform" class="problem-form" :model="dqbasis" label-width="120px" label-position="right">
+          <el-form
+            ref="basisform"
+            class="problem-form"
+            :model="dqbasis"
+            label-width="120px"
+            label-position="right"
+          >
             <el-form-item label="审计依据名称" class="long">
               <el-select
                 v-model="dqbasis.val"
@@ -889,7 +899,7 @@ export default {
 }
 .auditproblem .el-form-item {
   width: 49%;
-  margin:10px 1% 10px 0 !important;
+  margin: 10px 1% 10px 0 !important;
 }
 .auditproblem .problem-form {
   display: flex;
@@ -897,7 +907,7 @@ export default {
   align-items: flex-end;
   flex-wrap: wrap;
 }
-.problem-form .el-form-item__label{
+.problem-form .el-form-item__label {
   float: left !important;
 }
 .auditproblem .el-select {
@@ -949,6 +959,12 @@ export default {
 }
 .basiscard p {
   padding: 10px 0 10px 20px;
+}
+.page {
+  width: 100%;
+  padding: 20px 10px;
+  display: flex;
+  justify-content: flex-end;
 }
 </style>
 

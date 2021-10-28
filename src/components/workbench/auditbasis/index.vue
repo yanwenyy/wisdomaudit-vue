@@ -95,14 +95,14 @@
             action="/wisdomaudit/attachment/filesUpload"
             :on-success="handleChangePic"
             :before-remove="handleRemoveApk"
-            accept=".zip,.doc"
+            accept=".docx,.xls,.xlsx,.txt,.zip,.doc"
             :file-list="fileList"
             multiple
             :key="key"
           >
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">
-              点击上传或将文件拖到虚线框<br />支持.zip .doc
+              点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc
             </div>
           </el-upload>
         </el-form-item>
