@@ -659,8 +659,7 @@
     </el-dialog>
 
     <!-- 操作 审批-->
-    <el-dialog title="操作"
-               width="90%"
+    <el-dialog width="90%"
                :visible.sync="dialogVisibl_operation"
                style="padding-bottom: 59px; ">
       <div class="title_dlag">操作</div>
@@ -762,7 +761,7 @@
                            show-overflow-tooltip>
             <template slot-scope="scope">
               <div class="update"
-                   @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid,'操作')">
+                   @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)">
                 <i class="update_icon">
                   <svg t="1631877671204"
                        class="icon"
@@ -1468,7 +1467,6 @@ export default {
       this.dialogVisible = true
       this.title = '新增审计资料任务';
       // this.$refs.multipleTable.clearSelection();//
-      this.get_out();//关闭请求的接口
 
     },
     // 查看附件详情
@@ -1542,8 +1540,6 @@ export default {
     add_data_click () {
       this.dialogVisible2 = true;
       this.add_data = {}; //清空
-      this.get_out();//关闭请求的接口
-
     },
     // 新增任务初始化 列表
     add_add_csh (params) {
@@ -1664,7 +1660,6 @@ export default {
             }
             this.list_data_start(params)//未完成列表
             this.dialogVisible = false;//关闭新增弹窗
-            this.get_out();//关闭请求的接口
 
             this.add_form.name = '';//清空name
             this.add_form.title = '';//清空name
@@ -1705,7 +1700,6 @@ export default {
             }
             this.list_data_start(params)//未完成列表
             this.dialogVisible = false;//关闭新增弹窗
-            this.get_out();//关闭请求的接口
 
             this.add_form.name = '';//清空name
             this.add_form.title = '';//清空name
@@ -1742,7 +1736,6 @@ export default {
             }
           }
           this.list_data_start(params)//未完成列表
-          this.get_out();//关闭请求的接口
 
           this.dialogVisible = false;//关闭新增弹窗
           this.add_form.name = '';//清空name
@@ -1776,7 +1769,6 @@ export default {
           }
           this.list_data_start(params)//未完成列表
           this.dialogVisible = false;//关闭新增 编辑弹窗
-          this.get_out();//关闭请求的接口
 
 
 
@@ -2164,6 +2156,10 @@ export default {
     },
     // 通过
     adopt () {
+      if (this.multipleSelection_operation.length == 0) {
+        this.$message.info("请选择一条数据进行操作");
+        return
+      }
       let array1 = [];//数组1
       this.multipleSelection_operation.forEach((item) => {
         array1.push(item);
@@ -2174,9 +2170,22 @@ export default {
         auditPreviousDemandData: array1,
       }
       this.audit(3, params2);//通过
+      let params = {
+        pageNo: this.params.pageNo,
+        pageSize: this.params.pageSize,
+        condition: {
+          projectNumber: this.projectNumber,
+          title: this.search_title,
+        }
+      }
+      this.list_data_start(params)
     },
     // 驳回
     reject () {
+      if (this.multipleSelection_operation.length == 0) {
+        this.$message.info("请选择一条数据进行操作");
+        return
+      }
       // this.dialogVisible2 = false
       let array1 = [];//数组1
       this.multipleSelection_operation.forEach((item) => {
@@ -2189,6 +2198,17 @@ export default {
         auditPreviousDemandData: array1,
       }
       this.audit(2, params2)//2:驳回  3:通过
+
+      let params = {
+        pageNo: this.params.pageNo,
+        pageSize: this.params.pageSize,
+        condition: {
+          projectNumber: this.projectNumber,
+          title: this.search_title,
+        }
+      }
+      this.list_data_start(params)
+
     },
 
 

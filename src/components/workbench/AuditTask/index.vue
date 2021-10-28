@@ -107,7 +107,14 @@
                              label="结果数">
               <template slot-scope="scope">
                 <div v-if=" scope.row.taskType ==1">
-                  <el-button v-if="scope.row.problemsNumber !==0"
+                  <el-button @click="data_num_click(scope.row)"
+                             type="text"
+                             style="color: #1371cc"
+                             size="small">
+                    {{ scope.row.resultsNumber }}
+                  </el-button>
+
+                  <!-- <el-button v-if="scope.row.problemsNumber !==0"
                              @click="data_num_click(scope.row)"
                              type="text"
                              style="color: #1371cc"
@@ -117,7 +124,7 @@
                   <p style="color: #1371cc"
                      v-else>
                     {{ scope.row.resultsNumber }}
-                  </p>
+                  </p> -->
                 </div>
 
               </template>
@@ -261,8 +268,9 @@
           <el-col style="display: contents">
             <el-button plain
                        @click="task_verify()">核实</el-button>
-            <el-button plain
-                       @click="download()">下载</el-button>
+            <!-- 下载核实结果 -->
+            <!-- <el-button plain
+                       @click="download()">下载</el-button> -->
             <!-- <el-button type="primary"
                        @click="dialogVisible_data_num = false">返回</el-button> -->
           </el-col>
@@ -897,7 +905,7 @@ import {
   '@SDMOBILE/api/shandong/task'
 
 //task_findModelList_all
-import { Task_run, Task_data_status, task_findModelList, task_selectModel, task_selectTable, } from '@SDMOBILE/api/shandong/task_setting'
+import { Task_run, Task_data_status, task_findModelList, task_selectModel, task_selectTable } from '@SDMOBILE/api/shandong/task_setting'
 
 import { fmtDate } from '@SDMOBILE/model/time.js';
 import Paramdrawnew from '@WISDOMAUDIT/components/workbench/AuditTask/paramdrawnew'//参数设置
@@ -1142,9 +1150,10 @@ export default {
     }
     this.task_problems_relation_data(params4);//关联任务
 
-
   },
   methods: {
+
+
     // 模型/自建任务列表  
     list_data (params) {
       this.loading = true;
@@ -1704,7 +1713,8 @@ export default {
         this.dialogVisible_data_num = true;//显示结果数
         this.jg_title = data.auditModelName
         let params2 = {
-          runTaskRelUuid: this.paramTaskUuid,
+          // runTaskRelUuid: this.paramTaskUuid,
+          runTaskRelUuid: '8ee17c4b77c51747207aab278d804381'
         }
         this.data_tab(params2);//结果分类
       } else {
@@ -1784,11 +1794,14 @@ export default {
             // console.log(resp.data.data);
             this.Upload_file2 = resp.data.data;//上传成功大的文件
 
+
+
             // 提交
             let resultDetailProjectRelDto = {
               handleIdea: this.verify.handleIdea,//核实信息
               isProbleam: this.verify.isProbleam, //是否问题（0：否 1：是 ）
               resultDetailIds: arr,//核实明细结果id （多个）
+
             };
             this.verify_preservation(resultDetailProjectRelDto)//保存
 
@@ -1850,12 +1863,15 @@ export default {
     // 问题数==============================================
     // 查看问题
     probleNum_click (id, name) {
+
       this.problemsDialogVisible = true;//显示问题数弹窗
       this.auditTaskUuid = id
       this.wt_title = name
       let params = {
+
         condition: {
           auditTaskUuid: this.auditTaskUuid,
+          managementProjectUuid: this.managementProjectUuid,
         },
         pageNo: this.probleNum.pageNo,
         pageSize: this.probleNum.pageSize,
@@ -2100,24 +2116,32 @@ export default {
       this.modelId = data.modelId;
       this.auditTaskUuid = data.auditTaskUuid;
       this.auditModelUuid = data.paramTaskUuid;
-      let modelUuids = [this.modelId];
+      // let modelUuids = [this.modelId];
+      let modelUuids = ['8ee17c4b77c51747207aab278d804381'];
       task_findModelList(modelUuids).then(resp => {
         console.log(resp.data);
         if (resp.code == 0) {
-          this.arr = [JSON.parse(resp.data[0].parammModelRel[0].paramValue)];
-          this.sql = resp.data[0].sqlValue;
-          this.setParametersDialogVisible = true;//显示设置参数
-          //  展现参数输入界面
-          const timestamp = new Date().getTime();
-          this.paramDrawUuid = timestamp;
-          let _this = this
-          setTimeout(() => {
-            _this.$refs.paramDrawRefNew.createParamNodeHtml(
-              _this.paramDrawUuid,
-              "",
-              "notModelPreview"
-            );
-          }, 200);
+          if (resp.data[0].parammModelRel.length !== 0) {
+            console.log(resp);
+            this.arr = [JSON.parse(resp.data[0].parammModelRel[0].paramValue)];
+            this.sql = resp.data[0].sqlValue;
+            this.setParametersDialogVisible = true;//显示设置参数
+            //  展现参数输入界面
+            const timestamp = new Date().getTime();
+            this.paramDrawUuid = timestamp;
+            let _this = this
+            setTimeout(() => {
+              _this.$refs.paramDrawRefNew.createParamNodeHtml(
+                _this.paramDrawUuid,
+                "",
+                "notModelPreview"
+              );
+            }, 200);
+          } else {
+            this.$message({
+              message: '暂无参数设置',
+            });
+          }
         }
         else {
           this.$message({
