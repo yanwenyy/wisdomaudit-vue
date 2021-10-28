@@ -125,9 +125,18 @@
     </div>
 
     <!-- 审计任务维护编辑弹框 -->
-    <el-dialog :visible.sync="editModelDialogVisible" width="50%">
+    <el-dialog
+      :visible.sync="editModelDialogVisible"
+      width="50%"
+      @close="editResetForm2('editTaskRef')"
+    >
       <div class="title">编辑任务</div>
-      <el-form label-width="80px" class="selfTask" :model="editTask">
+      <el-form
+        label-width="80px"
+        class="selfTask"
+        :model="editTask"
+        ref="editTaskRef"
+      >
         <el-form-item label="自建任务名称：">
           <el-input placeholder="请输入" v-model="editTask.taskName"></el-input>
         </el-form-item>
@@ -590,8 +599,8 @@ export default {
       modelTableData: [],
       thematicOption: [],
       areasOption: [],
-      deletFileList:[],
-      fileList_Delet:[],//删除本条数据
+      deletFileList: [],
+      fileList_Delet: [], //删除本条数据
       thematic: {
         typecode: "SPECIAL",
       },
@@ -600,7 +609,7 @@ export default {
       },
       nearbyDialogVisible: false, //附件详情弹框
       enclosure_details_list: [], //附件table数据
-      edit_file_list: [],// 编辑回显 上传文件
+      edit_file_list: [], // 编辑回显 上传文件
       enclosureInfo: {
         condition: {
           businessUuid: "",
@@ -681,9 +690,9 @@ export default {
     },
     //编辑任务
     editModel(row) {
-      this.edit_file_list=[];
-      this.Upload_file=[];
-      this.fileList_Delet=[];
+      this.edit_file_list = [];
+      this.Upload_file = [];
+      this.fileList_Delet = [];
       this.editModelDialogVisible = true;
       editTaskSelf(row.auditTaskUuid).then((resp) => {
         this.editTask = resp.data;
@@ -691,14 +700,14 @@ export default {
       this.thematicSelect(this.thematic);
       this.areasSelect(this.areas);
 
-       let params = {
-         pageNo: 1,
+      let params = {
+        pageNo: 1,
         pageSize: 10,
         condition: {
-          businessUuid: row.auditTaskUuid
-        }
-      }
-      this.file_details(params,1)
+          businessUuid: row.auditTaskUuid,
+        },
+      };
+      this.file_details(params, 1);
       this.deletFileList = [];
     },
 
@@ -956,6 +965,7 @@ export default {
     //创建任务责任人下拉框的事件
     personLiableSelect(val) {
       console.log(val);
+      console.log(this.tableData);
       this.taskSelf.peopleTableUuid = val;
       this.editTask.peopleTableUuid = val;
       for (let i = 0; i < this.tableData.length; i++) {
@@ -964,6 +974,7 @@ export default {
           this.editTask.peopleName = this.tableData[i].peopleName;
         }
       }
+      console.log(this.taskSelf);
     },
     // 模型任务完成按钮
     modelInfoBtn() {
@@ -1008,7 +1019,6 @@ export default {
                 //新增自建任务接口
                 this.taskSelf.attachmentList = this.Upload_file;
                 this.taskSelf.managementProjectUuid = this.active_project;
-                console.log(this.taskSelf);
                 selfTaskFunction(this.taskSelf).then((resp) => {
                   this.$message.success("新增任务成功！");
                   this.TaskDialogVisible = false;
@@ -1045,128 +1055,81 @@ export default {
     },
     // 编辑成功按钮
     editTaskSelfBtn() {
-      // console.log(this.deletFileList);
-      // console.log(this.fileList);
-      // console.log(this.edit_file_list);
- if(this.fileList.length>0){
-          let formData = new FormData();
-          // formData.append("file", this.file.raw);
-          this.fileList.forEach((item) => {
-            if(item.raw){
-              formData.append("files", item.raw);
-            }
-            
-          });
-
-      this.$axios({
-        method: "post",
-        url: "http://10.10.112.56:1095/wisdomaudit/attachment/fileUploads",
-        data: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }).then((resp) => {
-        if (resp.data.code == 0) {
-          this.$message.success("上传成功！");
-          this.Upload_file = resp.data.data;
-          console.log(this.Upload_file);
-
-
-        if(this.Upload_file){
-          for(let p=0;p<this.Upload_file.length;p++){
-            this.Upload_file[p].isDeleted = 2
+      if (this.fileList.length > 0) {
+        let formData = new FormData();
+        // formData.append("file", this.file.raw);
+        this.fileList.forEach((item) => {
+          if (item.raw) {
+            formData.append("files", item.raw);
           }
-          //  for(let k=0;k<this.deletFileList.length;k++){
-          //    this.Upload_file.push(this.deletFileList[k].url);
-          // }
-          // //
-          // for(let m=0;m<this.fileList_Delet.length;m++){
-          //    this.Upload_file.push(this.fileList_Delet[m].url);
-          // }
-        }
-          
+        });
 
-          
-         
-        
-        // 判断是否进行删除上传附件
-        //  if(this.deletFileList.length>0){
-        //     console.log(this.edit_file_list);
-        //   for(let j=0;j<this.edit_file_list.length;j++){
-        //     for(let k =0; k <this.deletFileList.length;k++){
-        //       if(this.deletFileList[k].status == "success"){
-        //          if(this.edit_file_list[j].attachmentUuid == this.deletFileList[k].url.attachmentUuid){
-        //         this.Upload_file.push(this.edit_file_list[j]);
-        //       }
-        //       }
-        //     }
-        //   }
-        //  }else{
-        //    for(let p=0;p<this.edit_file_list.length;p++){
-        //      this.Upload_file.push(this.edit_file_list[p]);
-        //    }
-        //  }
-         
-         
-          //  for(let p=0;p<this.Upload_file.length;p++){
-          //   if(this.Upload_file[p].status == "ready"){
-          //     this.Upload_file[p].isDeleted = 2
-          //   }
-          // }
+        this.$axios({
+          method: "post",
+          url: "http://10.10.112.56:1095/wisdomaudit/attachment/fileUploads",
+          data: formData,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }).then((resp) => {
+          if (resp.data.code == 0) {
+            this.$message.success("上传成功！");
+            this.Upload_file = resp.data.data;
+            console.log(this.Upload_file);
 
+            if (this.Upload_file) {
+              for (let p = 0; p < this.Upload_file.length; p++) {
+                this.Upload_file[p].isDeleted = 2;
+              }
+            }
 
-          // this.editTask.attachmentList = this.Upload_file;
-
-          // for(let i=0;i<this.Upload_file.length;i++){
-          //   if(this.Upload_file[i] !== null){
-          //     this.editTask.attachmentList.push(this.Upload_file[i])
-          //   }
-          // }
-          this.edit_file_list.forEach((item)=>{
-            item.status=null;
-          })
-          this.fileList_Delet.forEach((item)=>{
-            item.status=null;
-          })
-          var upList = this.edit_file_list.concat(this.Upload_file).concat(this.fileList_Delet);
-          this.editTask.attachmentList = upList;
-          // console.log(this.Upload_file);
-          this.editTask.managementProjectUuid = this.active_project;
-          editTaskSelfInfo(this.editTask).then((resp) => {
-            this.editModelDialogVisible = false;
-            this.queryInfo.condition.managementProjectUuid =
-              this.active_project;
-            this.getmodelTaskList(this.queryInfo);
-          });
-        } else {
-          this.$message({
-            message: resp.msg,
-            type: "error",
-          });
-        }
-      });
-    }else{
-       this.edit_file_list.forEach((item)=>{
-            item.status=null;
-          })
-           this.fileList_Delet.forEach((item)=>{
-            item.status=null;
-          })
-          var upList = this.edit_file_list.concat(this.fileList_Delet);
-           this.editTask.attachmentList = upList;
-         this.editTask.managementProjectUuid = this.active_project;
-          editTaskSelfInfo(this.editTask).then((resp) => {
-            this.editModelDialogVisible = false;
-            this.queryInfo.condition.managementProjectUuid =
-              this.active_project;
-            this.getmodelTaskList(this.queryInfo);
-          });
-    }
+            this.edit_file_list.forEach((item) => {
+              item.status = null;
+            });
+            this.fileList_Delet.forEach((item) => {
+              item.status = null;
+            });
+            var upList = this.edit_file_list
+              .concat(this.Upload_file)
+              .concat(this.fileList_Delet);
+            this.editTask.attachmentList = upList;
+            // console.log(this.Upload_file);
+            this.editTask.managementProjectUuid = this.active_project;
+            editTaskSelfInfo(this.editTask).then((resp) => {
+              this.editModelDialogVisible = false;
+              this.queryInfo.condition.managementProjectUuid =
+                this.active_project;
+              this.getmodelTaskList(this.queryInfo);
+            });
+          } else {
+            this.$message({
+              message: resp.msg,
+              type: "error",
+            });
+          }
+        });
+      } else {
+        this.edit_file_list.forEach((item) => {
+          item.status = null;
+        });
+        this.fileList_Delet.forEach((item) => {
+          item.status = null;
+        });
+        var upList = this.edit_file_list.concat(this.fileList_Delet);
+        this.editTask.attachmentList = upList;
+        this.editTask.managementProjectUuid = this.active_project;
+        editTaskSelfInfo(this.editTask).then((resp) => {
+          this.editModelDialogVisible = false;
+          this.queryInfo.condition.managementProjectUuid = this.active_project;
+          this.getmodelTaskList(this.queryInfo);
+        });
+      }
     },
     // 自建取消按钮
     resBtn() {
       this.taskSelf = [];
       this.TaskDialogVisible = false;
+      this.editModelDialogVisible = false;
     },
     // 模型取消按钮
     returnStep() {
@@ -1196,13 +1159,13 @@ export default {
     // 附件点击弹框事件
     nearbyDetails(rows) {
       let params = {
-         pageNo: 1,
+        pageNo: 1,
         pageSize: 10,
         condition: {
-          businessUuid: rows.auditTaskUuid
-        }
-      }
-      this.file_details(params,2)
+          businessUuid: rows.auditTaskUuid,
+        },
+      };
+      this.file_details(params, 2);
     },
     //附件详情
     file_details(params, index) {
@@ -1216,20 +1179,19 @@ export default {
           } else {
             this.nearbyDialogVisible = true;
           }
-        }else{
-           var list = resp.data//
+        } else {
+          var list = resp.data; //
           // 编辑回显
           if (list) {
             this.edit_file_list = [];
             // 回显
-            list.forEach(item => {
-              item.isDeleted=0;
+            list.forEach((item) => {
+              item.isDeleted = 0;
               item.url = item.filePath;
               item.name = item.fileName;
               this.edit_file_list.push(item);
-            })
+            });
           }
-
         }
       });
     },
@@ -1276,25 +1238,21 @@ export default {
       this.$refs[resetForm2].resetFields();
       this.fileList = [];
     },
+    editResetForm2(ref) {
+      this.$refs[ref].resetFields();
+      this.fileList = [];
+    },
     //
-     handleRemove(file, fileList) {
-
-        // this.deletFileList = fileList;
-        // this.fileList_Delet.push(file);
-        // // this.fileList_Delet.url.isDeleted = 1;
-        // for(let o= 0;o<this.fileList_Delet.length;o++){
-        //   this.fileList_Delet[o].url.isDeleted = 1;
-        // }
-        // console.log(this.fileList_Delet);
-        if (file.response) {
+  handleRemove(file, fileList) {
+      if (file.response) {
         this.fileList.remove(file.response.data);
         this.key = Math.random();
       } else {
         this.edit_file_list.remove(file);
-        file.isDeleted=1;
-        this.fileList_Delet.push(file)
+        file.isDeleted = 1;
+        this.fileList_Delet.push(file);
       }
-      },
+    },
   },
   created() {
     // console.log(this.active_project);

@@ -153,7 +153,7 @@
             <el-table-column label="操作"
                              align="center"
                              width="250">
-              <template slot-scope="scope">
+              <template solt-scope="scope">
 
                 <!-- 模型 ---------->
                 <!-- 重新执行设置 -->
