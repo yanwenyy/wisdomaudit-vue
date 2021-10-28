@@ -1593,21 +1593,7 @@ export default {
         }
       };
       // 模型列表 自建任务
-<<<<<<< HEAD
       this.list_data(params2);
-=======
-      this.list_data(params);
-    },
-    // 模型/自建任务列表
-    list_data (params) {
-      this.loading = true
-      task_pageList(params).then(resp => {
-        this.tableData = resp.data;
-        console.log(this.tableData);
-        this.tableData_list = resp.data.records
-        this.loading = false
-      })
->>>>>>> 7a9ce5b3dbd438badefb3920ae062e2513adff04
     },
 
     // 结果数=========================================
@@ -2231,58 +2217,8 @@ export default {
         console.log(resp);
       })
     },
-<<<<<<< HEAD
 
     // 模型列表 获取责任人 
-=======
-    // 核实
-    task_verify () {
-      // if (this.multipleSelection_data_list.length == 0) {
-      //   this.$message.info("请选择一条进行数据核实");
-      //   return false
-      // }
-      this.dialogVisible_data_verify = true;//显示核实结果
-
-    },
-    // 是否问题 change
-    isProbleam_change (val) {
-      this.verify.isProbleam = val
-    },
-
-    // 核实保存
-    verify_save () {
-      var arr = this.multipleSelection_data_list.map(function (item, index) {
-        return item.resultDetailId;
-      }).join(",");
-      let resultDetailProjectRelDto = {
-        handleIdea: this.verify.handleIdea,//核实信息
-        isProbleam: this.verify.isProbleam, //是否问题（0：否 1：是 ）
-        resultDetailIds: arr,//核实明细结果id （多个）
-      };
-      // 核实保存
-      task_data_verify(resultDetailProjectRelDto).then(resp => {
-        console.log(resp);
-        if (resp.code == 0) {
-          this.$message({
-            message: "核实成功",
-            type: "success",
-          });
-          this.dialogVisible_data_verify = false;//关闭核实  弹窗
-        } else {
-          this.$message({
-            message: resp.msg,
-            type: "error",
-          });
-        }
-      })
-    },
-
-    //核实下载
-    download () {
-
-    },
-    // 模型列表 获取责任人
->>>>>>> 7a9ce5b3dbd438badefb3920ae062e2513adff04
     changeHeader (val) {
       this.select_list.find((item) => {
         if (item.peopleTable.peopleName === val.peopleName) {//筛选出匹配数据
