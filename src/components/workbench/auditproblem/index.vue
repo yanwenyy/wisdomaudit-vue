@@ -90,17 +90,13 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="page">
-      <el-pagination
-        :current-page="pageQuery.pageNo"
-        :page-size="pageQuery.pageSize"
-        :page-sizes="[10, 50, 100]"
-        :total="total"
-        @current-change="getList"
-        @size-change="getList"
-        layout="total, sizes, prev, pager, next, jumper"
-      ></el-pagination>
-    </div>
+    <pagination
+      v-show="total > 0"
+      :total="total"
+      :page.sync="pageQuery.pageNo"
+      :limit.sync="pageQuery.pageSize"
+      @pagination="getList"
+    />
     <!-- 新增和编辑的弹框 -->
     <el-dialog
       title="新增问题"
