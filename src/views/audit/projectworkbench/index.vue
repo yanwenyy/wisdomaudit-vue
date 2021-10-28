@@ -112,7 +112,10 @@
               background-color="#F1F5FB"
               default-active="1-1"
             >
-              <el-submenu v-if="userInfo.userRole=='1'||userInfo.userRole=='3'" index="1">
+              <el-submenu
+                v-if="userInfo.userRole == '1' || userInfo.userRole == '3'"
+                index="1"
+              >
                 <template slot="title">
                   <span style="font-weight: 400">审计准备</span>
                 </template>
@@ -122,7 +125,14 @@
                   ></el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
-              <el-submenu v-if="userInfo.userRole=='1'||userInfo.userRole=='2'||userInfo.userRole=='3'" index="2">
+              <el-submenu
+                v-if="
+                  userInfo.userRole == '1' ||
+                  userInfo.userRole == '2' ||
+                  userInfo.userRole == '3'
+                "
+                index="2"
+              >
                 <template slot="title">
                   <span style="font-weight: 400">审计实施</span>
                 </template>
@@ -135,7 +145,10 @@
                   ></el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
-              <el-submenu v-if="userInfo.userRole=='1'||userInfo.userRole=='3'" index="3">
+              <el-submenu
+                v-if="userInfo.userRole == '1' || userInfo.userRole == '3'"
+                index="3"
+              >
                 <template slot="title">
                   <span style="font-weight: 400">报告阶段</span>
                 </template>
@@ -162,14 +175,23 @@
           </div>
           <!-- 审计资料 -->
           <div class="routerView" v-else-if="index == '2-1'">
-            <AuditData :active_project="active_project" :userRole="userInfo.userRole"></AuditData>
+            <AuditData
+              :active_project="active_project"
+              :userRole="userInfo.userRole"
+            ></AuditData>
           </div>
           <!-- 审计任务 -->
           <div class="routerView" v-else-if="index == '2-2'">
-            <AuditTask :active_project="active_project" :userRole="userInfo.userRole"></AuditTask>
+            <AuditTask
+              :active_project="active_project"
+              :userRole="userInfo.userRole"
+            ></AuditTask>
           </div>
           <div class="routerView" v-else-if="index == '2-3'">
-            <Auditproblem :active_project="active_project" :userRole="userInfo.userRole"></Auditproblem>
+            <Auditproblem
+              :active_project="active_project"
+              :userRole="userInfo.userRole"
+            ></Auditproblem>
           </div>
           <div class="routerView" v-else-if="index == '2-4'">
             <AuditConfirmation
@@ -179,7 +201,10 @@
           </div>
           <div class="routerView" v-else-if="index == '3-1'">
             <!-- 审计报告 -->
-            <AuditReport :active_project="active_project" :userRole="userInfo.userRole"></AuditReport>
+            <AuditReport
+              :active_project="active_project"
+              :userRole="userInfo.userRole"
+            ></AuditReport>
           </div>
           <div class="routerView" v-else>
             <Businessindicator
@@ -688,8 +713,7 @@ import Auditproblem from "@WISDOMAUDIT/components/workbench/auditproblem/index";
 import Businessindicator from "@WISDOMAUDIT/components/workbench/businessindicator/index"; //经营指标
 import AuditReport from "@WISDOMAUDIT/components/workbench/AuditReport/index"; //审计问题
 import AuditConfirmation from "@WISDOMAUDIT/views/audit/auditconfirmationform/index";
-import {get_userInfo} from
-    '@SDMOBILE/api/shandong/ls'
+import { get_userInfo } from "@SDMOBILE/api/shandong/ls";
 import {
   projectList,
   projectListByuser,
@@ -731,7 +755,7 @@ export default {
     return {
       enclosure_details_list: [],
       nearbyDialogVisible: false, //附件详情
-      userInfo:{},
+      userInfo: {},
       data: [],
       value: [],
       loading: false,
@@ -964,7 +988,7 @@ export default {
     this.moreProject(this.queryManageAll);
     //获取当前登录人信息
     get_userInfo().then((resp) => {
-      this.userInfo=resp.data;
+      this.userInfo = resp.data;
     });
   },
   methods: {
@@ -1093,10 +1117,11 @@ export default {
           projectMembershipUuid: val[i].projectMembershipUuid,
         });
       }
+      console.log(this.updataPerson);
     },
     // 组员查询
     getSelectData(num, size) {
-      this.loading = true;
+      
       getProjectMember(num, size).then((resp) => {
         this.personMes = resp.data.list;
         console.log(this.personMes);
@@ -1108,13 +1133,13 @@ export default {
             label: e.realName + e.mobile,
             disabled: false,
           });
-          this.projectMember(this.query);
         });
-        this.loading = false;
+         this.projectMember(this.query);
       });
     },
     // 查询已选组员
     projectMember(data) {
+      this.loading = true;
       projectMembership(data).then((resp) => {
         this.peopleSelection = resp.data.records;
         this.tableData = resp.data.records;
@@ -1129,7 +1154,9 @@ export default {
           }
           this.value.push(e.peopleTableUuid);
         });
+         
       });
+      this.loading = false;
     },
     //查询责任人列表
 
@@ -1139,19 +1166,52 @@ export default {
     // 下一步按钮事件
     nextBtn() {
       this.step = 2;
-      console.log(this.modelListTab);
+      console.log(this.updataPerson);
 
-      //下一步 保存组员
-      editprojectMembershipList(this.updataPerson).then((resp) => {
-        this.$message.success("添加成功！");
-        this.query.condition.managementProjectUuid = this.managementProjectUuid;
-        this.projectMember(this.query);
-      });
+      if (this.updataPerson.projectId == "") {
+        this.updataPerson.projectId = this.managementProjectUuid;
+        this.updataPerson.projectMemberships = [];
+        for (let i = 0; i < this.peopleSelection.length; i++) {
+          this.updataPerson.projectMemberships.push({
+            peopleRole: 2,
+            isLiaison: 0,
+            managementProjectUuid: this.managementProjectUuid,
+            peopleTableUuid: this.peopleSelection[i].peopleTableUuid,
+            projectMembershipUuid:
+              this.peopleSelection[i].projectMembershipUuid,
+          });
+        }
 
-      this.getModelList.condition.managementProjectUuid =
-        this.managementProjectUuid;
-      // console.log(this.getModelList);
-      this.getauditModelList(this.getModelList);
+          //下一步 保存组员
+          editprojectMembershipList(this.updataPerson).then((resp) => {
+            // this.$message.success("添加成功！");
+            this.query.condition.managementProjectUuid =
+              this.managementProjectUuid;
+            this.projectMember(this.query);
+          });
+
+          this.getModelList.condition.managementProjectUuid =
+            this.managementProjectUuid;
+          // console.log(this.getModelList);
+          this.getauditModelList(this.getModelList);
+       
+      } else {
+         
+         //下一步 保存组员
+          editprojectMembershipList(this.updataPerson).then((resp) => {
+            this.$message.success("添加成功！");
+            this.query.condition.managementProjectUuid =
+              this.managementProjectUuid;
+            this.projectMember(this.query);
+          });
+
+          this.getModelList.condition.managementProjectUuid =
+            this.managementProjectUuid;
+          // console.log(this.getModelList);
+          this.getauditModelList(this.getModelList);
+
+
+      }
     },
     //删除任务按钮事件
     deleteModel(row) {
@@ -1311,11 +1371,11 @@ export default {
     },
     // 模型列表渲染
     getauditModelList(data) {
-      this.loading = true;
+      
       modelTaskList(data).then((resp) => {
         this.modelListTab = resp.data.records;
         this.modelListTabSize = resp.data;
-        this.loading = false;
+        
         // console.log(this.modelListTab);
       });
     },
@@ -1523,7 +1583,8 @@ export default {
               .concat(this.Upload_file)
               .concat(this.fileList_Delet);
             this.edittaskSelfForm.attachmentList = upList;
-            this.edittaskSelfForm.managementProjectUuid = this.managementProjectUuid;
+            this.edittaskSelfForm.managementProjectUuid =
+              this.managementProjectUuid;
             editTaskSelfInfo(this.edittaskSelfForm).then((resp) => {
               if (resp.code == 0) {
                 this.$message.success("修改自建任务成功！");
@@ -1550,7 +1611,8 @@ export default {
         });
         var upList = this.edit_file_list.concat(this.fileList_Delet);
         this.edittaskSelfForm.attachmentList = upList;
-        this.edittaskSelfForm.managementProjectUuid = this.managementProjectUuid;
+        this.edittaskSelfForm.managementProjectUuid =
+          this.managementProjectUuid;
         editTaskSelfInfo(this.edittaskSelfForm).then((resp) => {
           if (resp.code == 0) {
             this.$message.success("修改自建任务成功！");

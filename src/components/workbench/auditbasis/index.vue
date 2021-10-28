@@ -359,7 +359,7 @@ export default {
         attachmentUuidList.push(item.attachmentUuid)
       });
       if(this.formState.attachmentList){
-        this.apkFiles.forEach((item)=>{
+        this.formState.attachmentList.forEach((item)=>{
           attachmentUuidList.push(item.attachment_uuid)
         });
       }

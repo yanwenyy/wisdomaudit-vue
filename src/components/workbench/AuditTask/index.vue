@@ -16,10 +16,10 @@
           <!--自建任务 模型任务 筛选 -->
           <div class="search">
             <el-input placeholder="请输入模型或自建任务名称"
-                      v-model="params.taskName"> </el-input>
+                      v-model="search_taskName"> </el-input>
             <div class="search_icon"
                  style=" background: rgb(12, 135, 214) !important;"
-                 @click="search_list(1)">
+                 @click="search_list()">
               <i class="el-icon-search"
                  style="color: white;   "></i>
             </div>
@@ -45,7 +45,7 @@
                              width="180"
                              label="任务/自建任务名称"> </el-table-column>
             <!-- 专题 -->
-            <el-table-column prop="belongField"
+            <el-table-column prop="belongSpcial"
                              align="center"
                              label="专题">
             </el-table-column>
@@ -83,12 +83,21 @@
                              align="center"
                              label="问题数">
               <template slot-scope="scope">
-                <el-button @click="probleNum_click(scope.row.auditTaskUuid,scope.row.auditModelName)"
-                           type="text"
-                           style="color: #1371cc"
-                           size="small">
-                  {{ scope.row.problemsNumber }}
-                </el-button>
+                <!-- scope.row.taskType ：1 模型  2自建 -->
+                <div v-if=" scope.row.taskType ==1">
+                  <el-button v-if="scope.row.problemsNumber !==0"
+                             @click="probleNum_click(scope.row.auditTaskUuid,scope.row.auditModelName)"
+                             type="text"
+                             style="color: #1371cc"
+                             size="small">
+                    {{ scope.row.problemsNumber }}
+                  </el-button>
+                  <p style="color: #1371cc"
+                     v-else>
+                    {{ scope.row.problemsNumber }}
+                  </p>
+                </div>
+
               </template>
             </el-table-column>
 
@@ -97,13 +106,20 @@
                              align="center"
                              label="结果数">
               <template slot-scope="scope">
-                <el-button @click="data_num_click(scope.row)"
-                           type="text"
-                           style="color: #1371cc"
-                           size="small">
-                  {{ scope.row.resultsNumber }}
+                <div v-if=" scope.row.taskType ==1">
+                  <el-button v-if="scope.row.problemsNumber !==0"
+                             @click="data_num_click(scope.row)"
+                             type="text"
+                             style="color: #1371cc"
+                             size="small">
+                    {{ scope.row.resultsNumber }}
+                  </el-button>
+                  <p style="color: #1371cc"
+                     v-else>
+                    {{ scope.row.resultsNumber }}
+                  </p>
+                </div>
 
-                </el-button>
               </template>
             </el-table-column>
             <!-- 附件 -->
@@ -153,7 +169,7 @@
             <el-table-column label="操作"
                              align="center"
                              width="250">
-              <template solt-scope="scope">
+              <template slot-scope="scope">
 
                 <!-- 模型 ---------->
                 <!-- 重新执行设置 -->
@@ -220,9 +236,8 @@
                style="padding-bottom: 59px">
 
       <div class="dlag_conter">
-
+        <!-- 结果分类  -->
         <el-row :gutter="24">
-          <!-- 结果分类  -->
           <ul class="status_data">
             <li v-for="(item,index) in status_data"
                 :key="index">
@@ -281,25 +296,27 @@
         </div>
         <!-- 分页 end-->
       </div>
-      <span slot="footer">
+      <!-- <span slot="footer">
         <el-button size="small"
                    plain
                    @click="dialogVisible_data_num = false">上一步</el-button>
         <el-button size="small"
                    type="primary"
                    @click="query()">完成</el-button>
-
-      </span>
+      </span> -->
     </el-dialog>
 
-    <!-- 模型任务 核实明细结果  -->
+    <!-- 结果数 核实明细结果  -->
     <el-dialog title="核实结果"
                width="40%"
+               @close="resetForm_verify('verify')"
+               close=""
                popper-class="status_data_dlag_verify"
                :visible.sync="dialogVisible_data_verify"
                style="padding-bottom: 59px">
       <div class="dlag_conter3 verify">
         <el-form>
+          <!-- 是否问题-->
           <el-form-item prop="isProbleam">
             <p>是否问题：</p>
             <el-select v-model="verify.isProbleam"
@@ -311,43 +328,29 @@
               </el-option>
             </el-select>
           </el-form-item>
-
+          <!-- 核实信息 -->
           <el-form-item prop="dataName">
             <p>核实信息：</p>
             <el-input type="textarea"
                       v-model="verify.handleIdea"
                       placeholder="请输入核实信息"></el-input>
           </el-form-item>
-
+          <!-- 上传文件 -->
           <el-form-item prop="dataName">
             <p>上传文件：</p>
-            <!-- <el-input v-model="verify.uodate_path"
-                      disabled
-                      style="width: 133px;margin-right: 10px;"
-                      placeholder="附件"></el-input> -->
-            <!-- <el-button size="small"
-                       type="primary"
-                       @click="update()">上传</el-button> -->
-
-            <!-- <el-upload class="upload-demo"
-                       action="https://jsonplaceholder.typicode.com/posts/"
-                       :on-change="handleChange"
-                       :file-list="fileList">
-              <el-button size="small"
-                         type="primary">点击上传</el-button>
-            </el-upload> -->
-
             <el-upload class="upload-demo"
                        drag
-                       action="/wisdomaudit/attachment/fileUploads"
-                       :on-success="handleChangePic_verify"
-                       :before-remove="handleRemoveApk"
-                       accept=".zip,.doc"
-                       :file-list="fileList2"
+                       ref="upload2"
+                       action="#"
+                       :on-change="handleChangePic_verify"
+                       :on-remove="handleRemoveApk"
+                       :file-list="edit_file_list2"
+                       :auto-upload="false"
+                       accept=".zip,.doc,.docx,.xls,.xlsx,.txt"
                        multiple>
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">
-                点击上传或将文件拖到虚线框<br />支持.zip .doc
+                点击上传或将文件拖到虚线框<br />支持.zip,.doc,.docx,.xls,.xlsx,.txt
               </div>
             </el-upload>
 
@@ -355,13 +358,19 @@
         </el-form>
         <span slot="footer"
               class="foot">
-          <el-button size="small"
-                     type="primary"
-                     @click="verify_save()">保 存</el-button>
-          <el-button size="small"
-                     @click="dialogVisible_data_verify = false">
-            返回</el-button>
+          <el-button type="primary"
+                     v-if="success_btn2==1"
+                     :loading="true">上传中</el-button>
+          <div class=""
+               v-if="success_btn2==0">
+            <el-button size="small"
+                       type="primary"
+                       @click="verify_save()">保 存</el-button>
+            <el-button size="small"
+                       @click="dialogVisible_data_verify = false">返回</el-button>
+          </div>
         </span>
+
       </div>
     </el-dialog>
 
@@ -382,11 +391,11 @@
       <el-table :data="probleNum_list"
                 :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                 ref="multipleTable"
-                tooltip-effect="dark"
-                style="width: 100%;margin-bottom:2%"
-                @selection-change="handleSelectionChange_wts">
-        <el-table-column type="selection"
-                         align="center"> </el-table-column>
+                style="width: 100%;margin-bottom:2%">
+        <!-- tooltip-effect="dark" -->
+        <!-- @selection-change="handleSelectionChange_wts" -->
+        <!-- <el-table-column type="selection"
+                         align="center"> </el-table-column> -->
         <el-table-column prop="field"
                          align="center"
                          label="领域"> </el-table-column>
@@ -401,6 +410,7 @@
                          label="描述"> </el-table-column>
 
         <el-table-column prop="problemDiscoveryTime"
+                         align="center"
                          label="发现时间">
           <template slot-scope="scope">
             {{scope.row.problemDiscoveryTime |filtedate }}
@@ -446,7 +456,7 @@
     </el-dialog>
 
     <!-- 问题数新增 -->
-    <el-dialog :visible.sync="dialogVisible_add_list"
+    <!-- <el-dialog :visible.sync="dialogVisible_add_list"
                :title="problems_title"
                width="60%">
       <el-row style="margin-top:3%;background:#F2F2F2;border-radius:3px;padding:15px">
@@ -496,14 +506,7 @@
           <div class="son">
             <el-form-item prop="problemDiscoveryTime">
               <p>发现时间：</p>
-              <!-- <el-select v-model="problems_form.problemDiscoveryTime"
-                         @change="isProbleam_change">
-                <el-option v-for="item in isProbleam"
-                           :key="item.value"
-                           :label="item.label"
-                           :value="item.value">
-                </el-option>
-              </el-select> -->
+             
               <el-date-picker v-model="problems_form.problemDiscoveryTime"
                               type="date"
                               placeholder="发现时间">
@@ -536,7 +539,6 @@
             </el-form-item>
           </div>
           <div class="son">
-            <!-- prop="associatedTask" -->
             <el-form-item>
               <p>关联任务：</p>
               <el-select v-model="problems_form.associatedTask"
@@ -589,7 +591,7 @@
         </span>
 
       </div>
-    </el-dialog>
+    </el-dialog> -->
 
     <!-- 模型任务设置参数 -->
     <el-dialog :visible.sync="setParametersDialogVisible"
@@ -735,16 +737,16 @@
                          :value="item.peopleTableUuid">
               </el-option>
             </el-select> -->
-            <el-input v-model="save_zj_query.peopleTableUuid"
+            <el-input v-model="save_zj_query.userName"
                       :disabled="disabled"></el-input>
           </el-form-item>
 
           <!-- 领域 -->
           <el-form-item label-width="80px"
-                        prop="belongSpcial"
+                        prop="belongField "
                         style="margin-bottom:30px!important">
             <p><span>*</span>领域：</p>
-            <el-select v-model="save_zj_query.belongSpcial"
+            <el-select v-model="save_zj_query.belongField"
                        @change="changeHeader_zj_ly">
               <el-option v-for="item in problems_slect"
                          :key="item.value"
@@ -756,10 +758,10 @@
 
           <!-- 专题 -->
           <el-form-item label-width="80px"
-                        prop="belongField"
+                        prop="belongSpcial"
                         style="margin-bottom:30px!important">
             <p><span>*</span>专题：</p>
-            <el-select v-model="save_zj_query.belongField "
+            <el-select v-model="save_zj_query.belongSpcial  "
                        @change="changeHeader_zj_zt">
               <el-option v-for="item in zt_slect"
                          :key="item.value"
@@ -791,11 +793,12 @@
                        :on-remove="handleRemove"
                        :file-list="edit_file_list"
                        :auto-upload="false"
+                       accept=".zip,.doc,.docx,.xls,.xlsx,.txt"
                        multiple>
               <i class="el-icon-upload"></i>
 
               <div class="el-upload__text">
-                支持上传或者拖拽文件到这里<em>点击上传</em>
+                点击上传或将文件拖到虚线框<br />支持.zip,.doc,.docx,.xls,.xlsx,.txt
               </div>
             </el-upload>
             <!-- <p v-if="isClientCertFile ==true"
@@ -806,7 +809,6 @@
       </div>
 
       <span slot="footer">
-
         <el-button type="primary"
                    v-if="success_btn==1"
                    :loading="true">上传中</el-button>
@@ -912,23 +914,7 @@ export default {
       dialogVisible_add_list: false,//问题数新增
       dialogVisibl_enclosure_details: false,//附件详情
       multipleSelection_data_list: [],// 结果数 全选数据
-      verify: {
-        isProbleam: '',//是否问题
-        handleIdea: '',//核实信息
-        resultDetailIds: '',//核实结果id
-        uodat_path: '',
-      },
-      // 是否问题
-      isProbleam: [
-        {
-          value: "0",
-          label: "否",
-        },
-        {
-          value: "1",
-          label: "是",
-        },
-      ],
+
       fileList: [],//上传的文件
       // 设置参数
       modelId: '',//外部引用模型id
@@ -952,9 +938,9 @@ export default {
       loading: false,
       tableData: [],//模型列表
       tableData_list: [],//任务列表数据
+      search_taskName: '',//模糊查询
       // 模型/自建人任务 列表
       params: {
-        taskName: '',//模糊查询
         // taskType: '',//1:模型任务 2:自建任务
         pageNo: 1,
         pageSize: 10,
@@ -982,7 +968,7 @@ export default {
         taskType: 2,//任务类型
         enclosure: '',//附件
         peopleName: '',//责任人name
-        peopleTableUuid: '',//责任人id
+        userName: '',//责任人id
         belongField: '',// 领域
         belongSpcial: '',//专题
 
@@ -1072,10 +1058,31 @@ export default {
       edit_file_list: [],// 编辑回显 上传文件
       disabled: true,//责任人点击
 
+
+      verify: {
+        isProbleam: '',//是否问题
+        handleIdea: '',//核实信息
+        resultDetailIds: '',//核实结果id
+      },
+      // 是否问题
+      isProbleam: [
+        {
+          value: "0",
+          label: "否",
+        },
+        {
+          value: "1",
+          label: "是",
+        },
+      ],
+
+
       fileList2: [],// 核实文件上传
       verify_files: [],//核实文件
       fileList_Delet: [],//删除  储存
-    }
+      success_btn2: 0,//文件上传完成
+      edit_file_list2: [],
+    };
   },
   computed: {},
   filters: {
@@ -1095,12 +1102,11 @@ export default {
       condition: {
         // auditModelCategory: this.params.auditModelCategory,
         managementProjectUuid: this.managementProjectUuid,
-        taskName: this.params.taskName,
+        taskName: this.search_taskName,
         // taskType: ''
       }
     }
     this.list_data(params); // 模型  自建任务列表
-
 
     // 请求 责任人
     // let params_people = {
@@ -1135,10 +1141,38 @@ export default {
 
   },
   methods: {
+    // 模型/自建任务列表  
+    list_data (params) {
+      this.loading = true;
+      task_pageList(params).then(resp => {
+        this.tableData = resp.data;
+        console.log(this.tableData);
+        this.tableData_list = resp.data.records
+        this.loading = false
+      })
+    },
+
+    // 自建任务 列表分页
+    handleCurrentChange_zijian (val) {
+      // 资料列表
+      let params = {
+        pageNo: val,
+        pageSize: this.params.pageSize,
+        condition: {
+          auditModelCategory: this.params.auditModelCategory,
+          managementProjectUuid: this.managementProjectUuid,
+          taskName: this.search_taskName,
+          // taskType: 2//自建任务列表
+        }
+      }
+      this.list_data(params);
+    },
+
     // 获取责任人
     task_personLiable_data () {
       task_personLiable().then(resp => {
-        this.save_zj_query.peopleTableUuid = resp.data.userName
+        this.save_zj_query.userName = resp.data.realName
+        console.log(resp.data);
         this.disabled = true
       })
     },
@@ -1153,10 +1187,9 @@ export default {
     handleChangePic (file, fileList, name) {
       this.fileList = fileList;
       this.file = file.raw
-      this.isClientCertFile = false;//上传为空判断
     },
 
-    // 删除
+    // 自建任务 附件 删除
     handleRemove (file, index) {
       if (file.response) {
         this.fileList.remove(file.response.data);
@@ -1248,7 +1281,6 @@ export default {
               this.new_add(params1)//新增上传
             }
           } else {
-            this.isClientCertFile = true;//上传为空判断
             this.$message.info("请填写信息");
             return false;
           };//判断为空
@@ -1372,7 +1404,7 @@ export default {
             condition: {
               auditModelCategory: this.params.auditModelCategory,
               managementProjectUuid: this.managementProjectUuid,
-              taskName: this.params.taskName,
+              taskName: this.search_taskName,
               // taskType: 2,
             }
           }
@@ -1402,7 +1434,7 @@ export default {
             condition: {
               auditModelCategory: this.params.auditModelCategory,
               managementProjectUuid: this.managementProjectUuid,
-              taskName: this.params.taskName,
+              taskName: this.search_taskName,
               // taskType: 2,
             }
           }
@@ -1421,32 +1453,9 @@ export default {
       this.$refs[save_zj_query].resetFields();
       this.$refs.upload.clearFiles();
       this.save_zj_query.taskDescription = '';//清空备忘录
-      this.isClientCertFile = false;//上传为空判断
       this.save_zj_query.taskName = '';//清空name
       this.success_btn = 0;//显示加载按钮  0成功  1 loaging
     },
-
-    //核实上传  删除
-    handleRemoveApk () {
-
-    },
-    // 核实上传 附件
-    handleChangePic_verify (resp, file, fileList) {
-      if (resp && resp.code === 0) {
-        this.$message({
-          message: '上传成功',
-          type: 'success',
-        })
-      } else {
-        this.$message({
-          message: '上传失败',
-          type: 'error',
-        })
-      }
-    },
-
-
-
 
     // 自建 任务--显示编辑详情
     edit_data (data) {
@@ -1573,49 +1582,21 @@ export default {
 
     // 模型任务列表 自建任务 筛选
     search_list () {
-      let params = {
+      let params2 = {
         pageNo: this.params.pageNo,
         pageSize: this.params.pageSize,
         condition: {
           // auditModelCategory: this.params.auditModelCategory,
           managementProjectUuid: this.managementProjectUuid,
-          taskName: this.params.taskName,
+          taskName: this.search_taskName,
           // taskType: ''
         }
       };
       // 模型列表 自建任务
-      this.list_data(params);
+      this.list_data(params2);
     },
-    // 模型/自建任务列表
-    list_data (params) {
-      this.loading = true
-      task_pageList(params).then(resp => {
-        this.tableData = resp.data;
-        console.log(this.tableData);
-        this.tableData_list = resp.data.records
-        this.loading = false
-      })
-    },
+
     // 结果数=========================================
-    // 结果数列表 里的全选
-    handleSelectionChange_operation (val) {
-      this.multipleSelection_data_list = val;
-    },
-    // 查看结果数
-    data_num_click (data) {
-      this.paramTaskUuid = data.paramTaskUuid
-      data.runStatus = 2
-      if (data.runStatus == 2) {
-        this.dialogVisible_data_num = true;//显示结果数
-        this.jg_title = data.auditModelName
-        let params2 = {
-          runTaskRelUuid: this.paramTaskUuid,
-        }
-        this.data_tab(params2);//结果分类
-      } else {
-        this.$message.info("请选择已经完成的查看");
-      }
-    },
     // 结果弹窗 结果分类tab
     data_tab (params) {
       task_selectModel(params).then(resp => {
@@ -1706,6 +1687,161 @@ export default {
       }
       this.data_tab_list(params3)// 结果列表
     },
+    // 结果数列表 里的全选
+    handleSelectionChange_operation (val) {
+      this.multipleSelection_data_list = val;
+    },
+    // 查看结果数
+    data_num_click (data) {
+      this.paramTaskUuid = data.paramTaskUuid
+      data.runStatus = 2
+      if (data.runStatus == 2) {
+        this.dialogVisible_data_num = true;//显示结果数
+        this.jg_title = data.auditModelName
+        let params2 = {
+          runTaskRelUuid: this.paramTaskUuid,
+        }
+        this.data_tab(params2);//结果分类
+      } else {
+        this.$message.info("请选择已经完成的查看");
+      }
+    },
+    // 结果数 核实上传关闭
+    resetForm_verify (verify) {
+      // this.$refs[verify].resetFields();
+      this.verify = '';//清空输入
+      this.$refs.upload2.clearFiles();
+      // this.save_zj_query.taskDescription = '';//清空备忘录
+      // this.save_zj_query.taskName = '';//清空name
+      this.success_btn2 = 0;//显示加载按钮  0成功  1 loaging
+    },
+
+    // 新增上传附件
+    handleChangePic_verify (file, fileList, name) {
+      this.fileList2 = fileList;
+      this.file = file.raw
+    },
+
+    // 结果数 核实上传  删除
+    handleRemoveApk (file, fileList2) {
+      if (file.response) {
+        this.fileList2.remove(file.response.data);
+        this.key = Math.random();
+        // } else {
+        //   this.edit_file_list.remove(file);
+        //   file.isDeleted = 1;
+        //   this.fileList_Delet.push(file)
+        // }
+      }
+    },
+
+    // 核实保存
+    verify_preservation (resultDetailProjectRelDto) {
+      task_data_verify(resultDetailProjectRelDto).then(resp => {
+        console.log(resp);
+        if (resp.code == 0) {
+          this.$message({
+            message: "核实成功",
+            type: "success",
+          });
+          this.dialogVisible_data_verify = false;//关闭核实  弹窗
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: "error",
+          });
+        }
+      })
+    },
+
+
+    // 核实上传 保存附件
+    verify_save (resp, file, fileList) {
+      if (this.fileList2.length > 0) {
+        this.success_btn2 = 1;//显示加载按钮  0成功  1 loaging
+        // 上传
+        let formData = new FormData()
+        formData.append('file', this.file.raw)
+        this.fileList2.forEach((item) => {
+          formData.append('files', item.raw);
+        })
+        this.$axios({
+          method: 'post',
+          url: 'http://localhost:9529/wisdomaudit/attachment/fileUploads',
+          data: formData,
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then(resp => {
+          // 上传成功
+          if (resp.data.code == 0) {
+            this.success_btn2 = 0;//显示加载按钮  0成功  1 loaging
+            // console.log(resp.data.data);
+            this.Upload_file2 = resp.data.data;//上传成功大的文件
+
+            // 提交
+            let resultDetailProjectRelDto = {
+              handleIdea: this.verify.handleIdea,//核实信息
+              isProbleam: this.verify.isProbleam, //是否问题（0：否 1：是 ）
+              resultDetailIds: arr,//核实明细结果id （多个）
+            };
+            this.verify_preservation(resultDetailProjectRelDto)//保存
+
+
+          } else {
+            // 上传失败
+            this.$message({
+              message: resp.data.msg,
+              type: 'error'
+            });
+            this.success_btn = 1;//显示加载按钮  0成功  1 loaging
+          }
+        })//上传 end
+      } else {
+        console.log('直接保存');
+        // 直接保存
+        var arr = this.multipleSelection_data_list.map(function (item, index) {
+          return item.resultDetailId;
+        }).join(",");
+        let resultDetailProjectRelDto = {
+          handleIdea: this.verify.handleIdea,//核实信息
+          isProbleam: this.verify.isProbleam, //是否问题（0：否 1：是 ）
+          resultDetailIds: arr,//核实明细结果id （多个）
+        };
+        this.verify_preservation(resultDetailProjectRelDto)//保存
+      }
+    },
+    // // 核实 确认
+    // query () {
+    //   if (this.multipleSelection_data_list.length == 0) {
+    //     this.$message.info("请选择一条结果数进行确认");
+    //     return
+    //   }
+    // },
+    // 结果数 核实显示弹窗
+    task_verify () {
+      // if (this.multipleSelection_data_list.length == 0) {
+      //   this.$message.info("请选择一条进行数据核实");
+      //   return false
+      // }
+      this.dialogVisible_data_verify = true;//显示核实结果
+    },
+    // 是否问题 change
+    isProbleam_change (val) {
+      this.verify.isProbleam = val
+    },
+
+
+    //核实下载
+    download () {
+      // if (this.multipleSelection_data_list.length == 0) {
+      //   this.$message.info("请选择一条进行数据核实");
+      //   return false
+      // }
+    },
+
+
+
     // 问题数==============================================
     // 查看问题
     probleNum_click (id, name) {
@@ -1753,7 +1889,7 @@ export default {
     },
     // 领域change
     changeHeader_zj_ly (val) {
-      this.save_zj_query.belongSpcial = val
+      this.save_zj_query.belongField = val
     },
     // 专题select
     zhuanti (params) {
@@ -1763,7 +1899,7 @@ export default {
     },
     // 专题 change
     changeHeader_zj_zt (val) {
-      this.save_zj_query.belongField = val
+      this.save_zj_query.belongSpcial = val
     },
     // 新增  问题数 保存
     add_list_save (formName) {
@@ -2063,7 +2199,7 @@ export default {
             condition: {
               auditModelCategory: this.params.auditModelCategory,
               managementProjectUuid: this.managementProjectUuid,
-              taskName: this.params.taskName,
+              taskName: this.search_taskName,
               // taskType: 1,
             }
           }
@@ -2081,53 +2217,8 @@ export default {
         console.log(resp);
       })
     },
-    // 核实
-    task_verify () {
-      // if (this.multipleSelection_data_list.length == 0) {
-      //   this.$message.info("请选择一条进行数据核实");
-      //   return false
-      // }
-      this.dialogVisible_data_verify = true;//显示核实结果
 
-    },
-    // 是否问题 change
-    isProbleam_change (val) {
-      this.verify.isProbleam = val
-    },
-
-    // 核实保存
-    verify_save () {
-      var arr = this.multipleSelection_data_list.map(function (item, index) {
-        return item.resultDetailId;
-      }).join(",");
-      let resultDetailProjectRelDto = {
-        handleIdea: this.verify.handleIdea,//核实信息
-        isProbleam: this.verify.isProbleam, //是否问题（0：否 1：是 ）
-        resultDetailIds: arr,//核实明细结果id （多个）
-      };
-      // 核实保存
-      task_data_verify(resultDetailProjectRelDto).then(resp => {
-        console.log(resp);
-        if (resp.code == 0) {
-          this.$message({
-            message: "核实成功",
-            type: "success",
-          });
-          this.dialogVisible_data_verify = false;//关闭核实  弹窗
-        } else {
-          this.$message({
-            message: resp.msg,
-            type: "error",
-          });
-        }
-      })
-    },
-
-    //核实下载
-    download () {
-
-    },
-    // 模型列表 获取责任人
+    // 模型列表 获取责任人 
     changeHeader (val) {
       this.select_list.find((item) => {
         if (item.peopleTable.peopleName === val.peopleName) {//筛选出匹配数据
@@ -2157,7 +2248,7 @@ export default {
             condition: {
               auditModelCategory: this.params.auditModelCategory,
               managementProjectUuid: this.managementProjectUuid,
-              taskName: this.params.taskName,
+              taskName: this.search_taskName,
               // taskType: 1
             }
           }
@@ -2187,9 +2278,6 @@ export default {
           this.save_zj_query.peopleName = this.select_list[i].peopleName;
         }
       }
-
-
-
     },
     // 模型/自建 任务--删除
     delete_model (ids) {
@@ -2217,7 +2305,7 @@ export default {
                 condition: {
                   auditModelCategory: this.params.auditModelCategory,
                   managementProjectUuid: this.managementProjectUuid,
-                  taskName: this.params.taskName,
+                  taskName: this.search_taskName,
                   // taskType: ''
                 }
               }
@@ -2232,27 +2320,10 @@ export default {
         })
         .catch(() => { });
     },
-    // 自建任务 列表分页
-    handleCurrentChange_zijian (val) {
-      // 资料列表
-      let params = {
-        pageNo: val,
-        pageSize: this.params.pageSize,
-        condition: {
-          auditModelCategory: this.params.auditModelCategory,
-          managementProjectUuid: this.managementProjectUuid,
-          taskName: this.params.taskName,
-          // taskType: 2//自建任务列表
-        }
-      }
-      this.list_data(params);
-    },
-
-  },
-
+  }
 };
 </script>
-
+  
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
 @import "../../../assets/styles/css/yw.css";

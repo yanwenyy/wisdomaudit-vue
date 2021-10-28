@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import qs from 'qs'
 
-const baseURL = '/wisdomaudit'
+const baseURL = '/wisdomaudit_wei'
 
 // 资料列表 未完成
 export function data_pageList (data) {
@@ -141,16 +141,6 @@ export function operation_list_data (data) {
   })
 }
 
-// 操作   操作记录
-export function operation_record_list (data) {
-  let id = data.id
-  return request({
-    baseURL: baseURL,
-    url: '/auditPreviousDemandData/sysLogById/' + id + '',
-    method: 'post',
-    data
-  })
-}
 
 // 操作   审核
 export function operation_audit (data) {
@@ -208,12 +198,22 @@ export function enclosure_downloadByFileId (data) {
 }
 
 
-// 附件详情
+// 操作记录
 export function enclosure_sysLogById (data) {
   let id = data.id
   return request({
     baseURL: baseURL,
-    url: '/addDataTask/sysLogById/' + id + '',
+    url: `/addDataTask/sysLogById`,
+    method: 'post',
+    data
+  })
+}
+
+// 审批操作   操作记录
+export function operation_record_list (data) {
+  return request({
+    baseURL: baseURL,
+    url: ` /auditPreviousDemandData/sysLogById`,
     method: 'post',
     data
   })
