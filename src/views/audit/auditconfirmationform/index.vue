@@ -39,6 +39,7 @@
             :show-file-list="false"
             class="upload-demo inline-block btnStyle"
             :action="'/wisdomaudit/auditConfirmation/fileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid+'&confirmationFileNumber='+(scope.row.confirmationFileNumber||'')"
+            :on-change="fileChange"
             :on-success="list_data_start"
             accept=".docx,.xls,.xlsx,.txt,.zip,.doc">
             <el-button size="small" type="text"  style="background: transparent;" class="editBtn">上传附件</el-button>
@@ -64,6 +65,7 @@
               v-if="scope.row.endConfirmationFile==''||scope.row.endConfirmationFile==null"
               :show-file-list="false"
               class="upload-demo inline-block btnStyle"
+              :on-change="fileChange"
               :action="'/wisdomaudit/auditConfirmation/endFileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid"
               :on-success="list_data_start"
               accept=".docx,.xls,.xlsx,.txt,.zip,.doc">
@@ -209,6 +211,36 @@ export default {
     this.list_data_start();
   },
   methods: {
+    //附件上传时
+    fileChange(file, fileList){
+      const loading = this.$loading({
+        lock: true,
+        text: '上传中',
+        spinner: 'el-icon-loading',
+        background: 'transparent'
+      });
+      if (file.response && file.response.code === 0) {
+        loading.close();
+        this.$message({
+          message: '上传成功',
+          type: 'success',
+          duration: 1500,
+          onClose: () => {
+
+          }
+        })
+      } else if (file.response && file.response.code!= 0)  {
+        loading.close();
+        this.$message({
+          message: '上传失败',
+          type: 'error',
+          duration: 1500,
+          onClose: () => {
+
+          }
+        })
+      }
+    },
     //附件下载
     downFile(id,fileName){
       let formData = new FormData()
