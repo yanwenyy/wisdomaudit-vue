@@ -122,7 +122,7 @@
       :close-on-click-modal="false"
     >
       <el-form :model="formState" class="formData"  label-width="100px">
-        <el-form-item v-for="item in formState.operatingIndicatorsValueList" :label="item.indexDate">
+        <el-form-item v-for="(item,index) in formState.operatingIndicatorsValueList" :label="item.indexDate" :key="index">
           <el-input
             v-model="item.indexValue"
             placeholder="请输入"
