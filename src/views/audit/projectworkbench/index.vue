@@ -1011,7 +1011,7 @@ export default {
     };
   },
   watch: {
-   
+
     active_project(val) {
       this.refreash = true; // loading
       let _this = this;
@@ -1035,16 +1035,19 @@ export default {
     this.thematicSelect(this.thematic);
     this.areasSelect(this.areas);
     this.moreProject(this.queryManageAll);
-    
+
   },
   mounted(){
-//获取当前登录人信息
-    get_userInfo().then((resp) => {
-      this.userInfo = resp.data;
-      console.log(this.userInfo);
-    });
+    this.get_user();
   },
   methods: {
+    //获取当前登录人信息
+    get_user(){
+      get_userInfo().then((resp) => {
+        this.userInfo = resp.data;
+        console.log(this.userInfo);
+      });
+    },
     filterMethod(query, item) {
        if (!query) return true
       return item.label.indexOf(query) > -1;
@@ -1087,7 +1090,7 @@ export default {
       console.log(this.active_project);
       this.projectInit.splice(index, 1);
       this.projectInit.unshift(item);
-
+      this.get_user();
       if (index > 6) {
         this.projectInitUuid =
           this.projectInitMore[index].managementProjectUuid;
@@ -1305,7 +1308,7 @@ export default {
         this.modelTotal = resp.data.total;
     });
     },
-   
+
     // 分页跳转事件
     handleCurrentChangeModel(val) {
       let query = {
