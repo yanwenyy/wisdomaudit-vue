@@ -307,6 +307,23 @@
                 >新增自建任务</el-button
               >
             </el-col>
+
+            <!-- 条件查询模型名称 -->
+             <el-col :span="6" style="margin-left:40%">
+                <el-input
+                  placeholder="请输入模型任务名称"
+                  v-model="getModelList.condition.taskName"
+                  class="input-with-select"
+                  @keyup.enter.native="queryName"
+                >
+                  <el-button
+                    slot="append"
+                    type="primary"
+                    icon="el-icon-search"
+                    @click="queryName"
+                  ></el-button>
+                </el-input>
+              </el-col>
           </el-row>
           <el-table
             :data="modelListTab"
@@ -396,7 +413,14 @@
             </el-table-column>
           </el-table>
           <!-- 分页 -->
-          <div class="page">
+          <pagination
+            v-show="taskTotal > 0"
+            :total="taskTotal"
+            :page.sync="getModelList.pageNo"
+            :limit.sync="getModelList.pageSize"
+            @pagination="queryName"
+          />
+          <!-- <div class="page">
             <el-pagination
               background
               :hide-on-single-page="false"
@@ -407,7 +431,7 @@
               :page-size="modelListTabSize.size"
               :total="modelListTabSize.total"
             ></el-pagination>
-          </div>
+          </div> -->
           <!-- 分页 end-->
         </div>
 
@@ -450,6 +474,7 @@
         style="width: 100%"
         @selection-change="handleSelectionChangeModel"
         ref="multipleModelRef"
+        :row-key="getRowKey"
       >
         <el-table-column type="selection" :reserve-selection="true">
         </el-table-column>
@@ -465,7 +490,14 @@
         </el-table-column>
       </el-table>
       <!-- 分页 -->
-      <div class="page">
+      <pagination
+      v-show="modelTotal > 0"
+      :total="modelTotal"
+      :page.sync="modelQuery.pageNo"
+      :limit.sync="modelQuery.pageSize"
+      @pagination="queryModel"
+    />
+      <!-- <div class="page">
         <el-pagination
           background
           :hide-on-single-page="false"
@@ -476,7 +508,7 @@
           :page-size="modelSize.size"
           :total="modelSize.total"
         ></el-pagination>
-      </div>
+      </div> -->
       <!-- 分页 end-->
       <div class="stepBtn" style="margin-top: 5px">
         <el-button @click="res">取消</el-button>
@@ -695,7 +727,7 @@
             <el-link
               type="primary"
               style=""
-              @click="enclosureDownload(scope.row.attachmentUuid)"
+              @click="enclosureDownload(scope.row.attachmentUuid,scope.row.fileName)"
               >{{ scope.row.fileName }}</el-link
             >
           </template>
@@ -706,6 +738,7 @@
 </template>
 
 <script>
+import Pagination from "@WISDOMAUDIT/components/Pagination";
 import TeamPersonTask from "@WISDOMAUDIT/views/audit/teamperson-task/index";
 import AuditData from "@WISDOMAUDIT/components/workbench/AuditData/index"; //审计资料
 import AuditTask from "@WISDOMAUDIT/components/workbench/AuditTask/index"; //审计任务
@@ -750,6 +783,7 @@ export default {
     Businessindicator, //经营指标
     AuditReport, //审计报告
     AuditConfirmation, //审计确认单
+    Pagination
   },
   data() {
     return {
@@ -823,12 +857,14 @@ export default {
           label: "否",
         },
       ],
+      modelTotal:0,
       modelQuery: {
         condition: {
+          projectId: "",
           modelName: "",
         },
         pageNo: 1,
-        pageSize: 5,
+        pageSize: 10,
       },
       selectauditModelList: {
         auditModelList: [],
@@ -888,12 +924,14 @@ export default {
       modelTableData: [],
       modelListTabSize: [], //模型分页返回值
       taskSelfTabSize: [], //自建任务分页
+      taskTotal:0,
       getModelList: {
         condition: {
           managementProjectUuid: "",
+          taskName:'',
         },
         pageNo: 1,
-        pageSize: 5,
+        pageSize: 10,
       },
       getTaskSelfList: {
         condition: {
@@ -979,7 +1017,7 @@ export default {
       }, 500);
     },
   },
- 
+
   created() {
     // console.log(this.active_project);
     this.getprojectList(this.queryManage);
@@ -1081,10 +1119,10 @@ export default {
       // console.log(this.managementProjectUuid);
       this.addDialogVisible = true;
       this.getSelectData(1, 1000);
-      auditModelList(this.modelQuery).then((resp) => {
-        this.modelTableData = resp.data.records;
-        this.modelSize = resp.data;
-      });
+      // auditModelList(this.modelQuery).then((resp) => {
+      //   this.modelTableData = resp.data.records;
+      //   this.modelSize = resp.data;
+      // });
       // console.log(this.managementProjectUuid);
       this.getTaskSelfList.condition.managementProjectUuid =
         this.managementProjectUuid;
@@ -1123,10 +1161,11 @@ export default {
     },
     // 组员查询
     getSelectData(num, size) {
-      
+      this.loading = true;
       getProjectMember(num, size).then((resp) => {
         this.personMes = resp.data.list;
-        console.log(this.personMes);
+        // console.log(this.personMes);
+
         // console.log(this.value+'');
         this.data = [];
         resp.data.list.forEach((e) => {
@@ -1136,15 +1175,16 @@ export default {
             disabled: false,
           });
         });
-         this.projectMember(this.query);
+        this.projectMember(this.query);
+        this.loading = false;
       });
     },
     // 查询已选组员
     projectMember(data) {
-      this.loading = true;
       projectMembership(data).then((resp) => {
         this.peopleSelection = resp.data.records;
         this.tableData = resp.data.records;
+
         this.value = [];
         this.peopleSelection.forEach((e) => {
           if (e.isCanDelete == 0) {
@@ -1156,9 +1196,7 @@ export default {
           }
           this.value.push(e.peopleTableUuid);
         });
-         
       });
-      this.loading = false;
     },
     //查询责任人列表
 
@@ -1184,35 +1222,31 @@ export default {
           });
         }
 
-          //下一步 保存组员
-          editprojectMembershipList(this.updataPerson).then((resp) => {
-            // this.$message.success("添加成功！");
-            this.query.condition.managementProjectUuid =
-              this.managementProjectUuid;
-            this.projectMember(this.query);
-          });
-
-          this.getModelList.condition.managementProjectUuid =
+        //下一步 保存组员
+        editprojectMembershipList(this.updataPerson).then((resp) => {
+          // this.$message.success("添加成功！");
+          this.query.condition.managementProjectUuid =
             this.managementProjectUuid;
-          // console.log(this.getModelList);
-          this.getauditModelList(this.getModelList);
-       
+          this.projectMember(this.query);
+        });
+
+        this.getModelList.condition.managementProjectUuid =
+          this.managementProjectUuid;
+        // console.log(this.getModelList);
+        this.getauditModelList(this.getModelList);
       } else {
-         
-         //下一步 保存组员
-          editprojectMembershipList(this.updataPerson).then((resp) => {
-            this.$message.success("添加成功！");
-            this.query.condition.managementProjectUuid =
-              this.managementProjectUuid;
-            this.projectMember(this.query);
-          });
-
-          this.getModelList.condition.managementProjectUuid =
+        //下一步 保存组员
+        editprojectMembershipList(this.updataPerson).then((resp) => {
+          // this.$message.success("添加成功！");
+          this.query.condition.managementProjectUuid =
             this.managementProjectUuid;
-          // console.log(this.getModelList);
-          this.getauditModelList(this.getModelList);
+          this.projectMember(this.query);
+        });
 
-
+        this.getModelList.condition.managementProjectUuid =
+          this.managementProjectUuid;
+        // console.log(this.getModelList);
+        this.getauditModelList(this.getModelList);
       }
     },
     //删除任务按钮事件
@@ -1239,14 +1273,18 @@ export default {
     prevoius() {
       this.step = 1;
     },
-    // 模糊查询任务模型
+    // 模糊查询引入模型名称
     queryModel() {
-      auditModelList(this.modelQuery).then((resp) => {
-        // console.log(resp);
-        this.modelTableData = resp.data.records;
-        // console.log(this.modelTableData);
-      });
+      this.getauditModelListSql(this.modelQuery);
     },
+    // 导入模型列表渲染
+    getauditModelListSql(data){
+       auditModelList(data).then((resp) => {
+        this.modelTableData = resp.data.records;
+        this.modelTotal = resp.data.total;
+    });
+    },
+   
     // 分页跳转事件
     handleCurrentChangeModel(val) {
       let query = {
@@ -1275,17 +1313,6 @@ export default {
         });
       }
       this.selectauditModelList.projectId = this.managementProjectUuid;
-      this.ismodelList.condition.auditModelUuid =
-        val[val.length - 1].auditModelUuid;
-      this.ismodelList.condition.managementProjectUuid =
-        this.managementProjectUuid;
-      isModel(this.ismodelList).then((resp) => {
-        // console.log(resp);
-        if (resp.data.total > 0) {
-          this.$refs.multipleModelRef.toggleRowSelection(val[val.length - 1]);
-          this.$message.error("项目中已存在该模型！");
-        }
-      });
     },
     // 自建任务责任人下拉框事件
     selectChangePerson(val) {
@@ -1326,9 +1353,18 @@ export default {
         this.$router.go(0);
       }, 1000);
     },
+    // 增加模型任务按钮事件
     selectModel() {
       this.addDialogVisible = false;
       this.modelDialog = true;
+      for (let i = 0; i < this.modelTableData.length; i++) {
+        this.$refs.multipleModelRef.toggleRowSelection(
+          this.modelTableData[i],
+          false
+        );
+      }
+      this.modelQuery.condition.projectId = this.managementProjectUuid;
+      this.getauditModelListSql(this.modelQuery);
     },
     // 未初始化弹框关闭事件
     addClosed() {
@@ -1341,12 +1377,6 @@ export default {
     res() {
       this.modelDialog = false;
       this.addDialogVisible = true;
-      for (let i = 0; i < this.modelTableData.length; i++) {
-        this.$refs.multipleModelRef.toggleRowSelection(
-          this.modelTableData[i],
-          false
-        );
-      }
     },
     // 新增自建任务弹框取消按钮
     TaskSelf_res() {
@@ -1364,26 +1394,31 @@ export default {
     MedolDialogClosed() {
       this.modelDialog = false;
       this.addDialogVisible = true;
-      for (let i = 0; i < this.modelTableData.length; i++) {
-        this.$refs.multipleModelRef.toggleRowSelection(
-          this.modelTableData[i],
-          false
-        );
-      }
+    },
+    getRowKey(row){
+      return row.auditModelUuid;
+    },
+    // 分页模糊查询模型列表
+    queryName(){
+      this.modelQuery.condition.projectId = this.managementProjectUuid;
+      this.getauditModelList(this.getModelList);
     },
     // 模型列表渲染
     getauditModelList(data) {
-      
       modelTaskList(data).then((resp) => {
         this.modelListTab = resp.data.records;
         this.modelListTabSize = resp.data;
-        
+        this.taskTotal = resp.data.total;
+
         // console.log(this.modelListTab);
       });
     },
     // 模型引入
     modelInfo() {
-      this.selectauditModelList.projectId = this.managementProjectUuid;
+      // console.log(this.selectauditModelList);
+
+      if(this.selectauditModelList.auditModelList.length >0){
+        this.selectauditModelList.projectId = this.managementProjectUuid;
       quoteModel(this.selectauditModelList).then((resp) => {
         this.$message.success("创建成功！");
         this.modelDialog = false;
@@ -1393,6 +1428,11 @@ export default {
         // console.log(this.getModelList);
         this.getauditModelList(this.getModelList);
       });
+      }else{
+        this.$message.info("请选择要引入的模型!")
+      }
+
+      
     },
     // 模型列表分页事件
     handleCurrentChangeModelTab(val) {
@@ -1405,17 +1445,6 @@ export default {
       };
       this.getauditModelList(getModelList);
     },
-    // handleCurrentChangeTaskTab (val) {
-    //   let getTaskSelfList = {
-    //     condition: {
-    //       managementProjectUuid: this.managementProjectUuid,
-    //       taskType: "2",
-    //     },
-    //     pageNo: val,
-    //     pageSize: 5,
-    //   }
-    //   this.getTaskSelf(getTaskSelfList);
-    // },
     // 新增自建任务
     addTaskSelf() {
       this.addDialogVisible = false;
@@ -1440,6 +1469,12 @@ export default {
       this.$refs[selfTaskRef].validate((valid) => {
         if (valid) {
           if (this.fileList.length > 0) {
+             const loading = this.$loading({
+              lock: true,
+              text: "上传中",
+              spinner: "el-icon-loading",
+              background: "transparent",
+            });
             let formData = new FormData();
             formData.append("file", this.file.raw);
             this.fileList.forEach((item) => {
@@ -1448,7 +1483,7 @@ export default {
 
             this.$axios({
               method: "post",
-              url: "http://10.10.112.56:1095/wisdomaudit/attachment/fileUploads",
+              url: "/wisdomaudit/attachment/fileUploads",
               data: formData,
               headers: {
                 "Content-Type": "multipart/form-data",
@@ -1456,8 +1491,8 @@ export default {
             }).then((resp) => {
               if (resp.data.code == 0) {
                 this.$message.success("上传成功！");
-                console.log(resp.data);
                 this.Upload_file = resp.data.data;
+                loading.close();
 
                 //新增自建任务接口
                 this.taskSelf.attachmentList = this.Upload_file;
@@ -1473,6 +1508,7 @@ export default {
                   this.getauditModelList(this.getModelList);
                 });
               } else {
+                loading.close();
                 this.$message({
                   message: resp.msg,
                   type: "error",
@@ -1527,27 +1563,13 @@ export default {
     },
     // 自建任务编辑完成按钮
     edittaskSelfSave() {
-      // this.editTaskSelfData.auditTaskUuid = this.edittaskSelfForm.auditTaskUuid;
-      // this.editTaskSelfData.peopleName = this.edittaskSelfForm.peopleName;
-      // this.editTaskSelfData.peopleTableUuid =
-      //   this.edittaskSelfForm.peopleTableUuid;
-      // this.editTaskSelfData.taskDescription =
-      //   this.edittaskSelfForm.taskDescription;
-      // this.editTaskSelfData.taskName = this.edittaskSelfForm.taskName;
-      // this.editTaskSelfData.belongSpcial = this.edittaskSelfForm.belongSpcial;
-      // this.editTaskSelfData.belongField = this.edittaskSelfForm.belongField;
-      // editTaskSelfInfo(this.edittaskSelfForm).then((resp) => {
-      //   if (resp.code == 0) {
-      //     this.$message.success("修改自建任务成功！");
-      //     this.editTaskSelfDialogVisible = false;
-      //   }
-      // });
-      // this.addDialogVisible = true;
-      // this.getModelList.condition.managementProjectUuid =
-      //   this.managementProjectUuid;
-      // this.getauditModelList(this.getModelList);
-
       if (this.fileList.length > 0) {
+         const loading = this.$loading({
+              lock: true,
+              text: "上传中",
+              spinner: "el-icon-loading",
+              background: "transparent",
+            });
         let formData = new FormData();
         // formData.append("file", this.file.raw);
         this.fileList.forEach((item) => {
@@ -1558,7 +1580,7 @@ export default {
 
         this.$axios({
           method: "post",
-          url: "http://10.10.112.56:1095/wisdomaudit/attachment/fileUploads",
+          url: "/wisdomaudit/attachment/fileUploads",
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
@@ -1567,7 +1589,7 @@ export default {
           if (resp.data.code == 0) {
             this.$message.success("上传成功！");
             this.Upload_file = resp.data.data;
-            console.log(this.Upload_file);
+             loading.close();
 
             if (this.Upload_file) {
               for (let p = 0; p < this.Upload_file.length; p++) {
@@ -1598,6 +1620,7 @@ export default {
               }
             });
           } else {
+             loading.close();
             this.$message({
               message: resp.msg,
               type: "error",
@@ -1651,13 +1674,13 @@ export default {
       this.file = file.raw;
     },
     // 附件下载
-    enclosureDownload(id) {
-      console.log(id);
+    enclosureDownload(id,name) {
+     const fileName = name.split('.')[0];
       let formData = new FormData();
       formData.append("fileId", id);
       this.$axios({
         method: "post",
-        url: "http://localhost:9529/wisdomaudit/auditPreviousDemandData/downloadByFileId",
+        url: "/wisdomaudit/auditPreviousDemandData/downloadByFileId",
         data: formData,
         responseType: "blob",
       })
@@ -1673,7 +1696,7 @@ export default {
           if ("download" in document.createElement("a")) {
             // 非IE下载
             const elink = document.createElement("a");
-            elink.download = fileName; //下载后文件名
+            elink.download = name; //下载后文件名
             elink.style.display = "none";
             elink.href = window.URL.createObjectURL(blob);
             document.body.appendChild(elink);

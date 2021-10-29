@@ -32,10 +32,11 @@ export function del_file_batch(data) {
 export function down_file(data) {
   return request({
     baseURL: baseURL,
-    url: `/attachment/fileDownload?fileId=${data}`,
+    url: `/auditPreviousDemandData/downloadByFileId`,
     ifDownFile:true,
     responseType:'blob',
     method: 'post',
+    data
   })
 }
 //审计依据列表

@@ -75,9 +75,16 @@
         </template>
       </el-table-column>
     </el-table>
-
     <!-- 分页 -->
-    <div class="page">
+    <pagination
+      v-show="total > 0"
+      :total="total"
+      :page.sync="query.pageNo"
+      :limit.sync="query.pageSize"
+      @pagination="queryName"
+    />
+    <!-- 分页 -->
+    <!-- <div class="page">
       <el-pagination
         background
         :hide-on-single-page="false"
@@ -88,7 +95,7 @@
         :page-size="project.size"
         :total="project.total"
       ></el-pagination>
-    </div>
+    </div> -->
     <!-- 分页 end-->
 
     <!-- 新增页面 -->
@@ -225,7 +232,7 @@
               </el-col>
             </el-form-item>
             <el-col :span="15">
-              <el-form-item label="设置组长">123</el-form-item>
+              <el-form-item label="设置组长">&nbsp;&nbsp;</el-form-item>
             </el-col>
           </el-row>
           <el-table
@@ -235,9 +242,9 @@
             class="projectTable"
             :header-cell-style="{'background-color': '#F4FAFF',}"
           >
-            <el-table-column align="center" label="项目编号" prop="projectCode" width="110">
+            <el-table-column  label="项目编号" prop="projectCode" width="110">
             </el-table-column>
-            <el-table-column align="center" prop="auditOrgName" label="被审计单位" width="330">
+            <el-table-column  prop="auditOrgName" label="被审计单位" width="330">
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'auditList.' + scope.$index + '.auditOrgName'"
@@ -270,7 +277,6 @@
               prop="projectChargemanName"
               label="分配组长"
               width="330"
-              align="center"
             >
               <template slot-scope="scope">
                 <el-form-item
@@ -521,11 +527,11 @@
     </el-dialog>
 
     <el-dialog
-      title="编辑审计项目"
       :visible.sync="editDialogVisible"
       @close="addDialogClosed"
       width="50%"
     >
+      <div class="title">编辑审计项目</div>
       <!-- 专项 -->
       <div class="addzhuanForm" v-if="prjType == 1">
         <el-form
@@ -657,6 +663,7 @@
               style="width: 100%"
               border
               class="projectTable"
+              :header-cell-style="{'background-color': '#F4FAFF',}"
             >
               <el-table-column label="项目编号" prop="projectCode" width="110">
               </el-table-column>
@@ -683,7 +690,6 @@
                   </el-form-item>
                 </template>
               </el-table-column>
-              <el-table-column label="角色" width="60">组长 </el-table-column>
               <el-table-column
                 prop="projectChargemanName"
                 label="负责人"
@@ -905,7 +911,7 @@
               </el-col>
             </el-form-item>
           </el-row>
-          <el-row>
+          <!-- <el-row>
             <el-form-item label="地市接口人:" prop="areaUserName">
               <el-input
                 placeholder="请输入"
@@ -913,7 +919,7 @@
               >
               </el-input>
             </el-form-item>
-          </el-row>
+          </el-row> -->
         </el-form>
 
         <div class="stepBtn">
@@ -926,6 +932,7 @@
 </template>
 
 <script>
+import Pagination from "@WISDOMAUDIT/components/Pagination";
 import {
   projectList,
   projectType,
@@ -941,8 +948,10 @@ import {
 } from "@WISDOMAUDIT/api/shandong/projectmanagement.js";
 
 export default {
+  components: { Pagination },
   data() {
     return {
+      total:0,
       isdisabled: true,
       loading: false,
       loadingForm: false,
@@ -962,58 +971,7 @@ export default {
       editDialogVisible: false,
       input3: "",
       project: [],
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-        },
-      ],
+      tableData: [],
       //编辑专项表单数据
       editProjectManagement: {
         projectCode: "",
@@ -1216,6 +1174,9 @@ export default {
       projectList(data).then((resp) => {
         this.tableData = resp.data.records;
         this.project = resp.data;
+        
+        this.total =resp.data.total;
+        console.log(this.total);
         this.loading = false;
       });
     },
@@ -1301,7 +1262,7 @@ export default {
 
     // 项目管理列表分页
     handleCurrentChangeProject(val) {
-      // console.log(val);
+      console.log(val);
       // 模型列表
       let query = {
         pageNo: val,
@@ -1431,6 +1392,18 @@ export default {
           row.auditOrgName = this.loadaudittorgoptions[i].orgName;
         }
       }
+
+        //添加专项table数组根据某一个字段去重
+      var result = [];
+      var obj = {};
+      for (let i = 0; i < this.addProjectManagement.auditList.length; i++) {
+        if (!obj[this.addProjectManagement.auditList[i].auditOrgUuid] || !obj[this.addProjectManagement.auditList[i].projectChargemanID]) {
+          result.push(this.addProjectManagement.auditList[i]);
+          obj[this.addProjectManagement.auditList[i].auditOrgUuid] = true;
+          obj[this.addProjectManagement.auditList[i].projectChargemanID] = true;
+        }
+      }
+      this.addProjectManagement.auditList = result;
     },
     //专项项目负责人下拉框事件
     LeaderSelect(row) {
@@ -1439,6 +1412,25 @@ export default {
           row.projectChargemanName = this.projectpeopleoptions[i].realName;
         }
       }
+      // console.log(this.addProjectManagement.auditList);
+      // console.log(row);
+      // this.addProjectManagement.auditList.forEach(item =>{
+      //   if(item.auditOrgUuid == row.auditOrgUuid && item.projectChargemanID == row.projectChargemanID){
+      //     alert(123)
+      //   }
+      // })
+      //添加专项table数组根据某一个字段去重
+      var result = [];
+      var obj = {};
+      for (let i = 0; i < this.addProjectManagement.auditList.length; i++) {
+        if (!obj[this.addProjectManagement.auditList[i].auditOrgUuid] || !obj[this.addProjectManagement.auditList[i].projectChargemanID]) {
+          result.push(this.addProjectManagement.auditList[i]);
+          obj[this.addProjectManagement.auditList[i].auditOrgUuid] = true;
+          obj[this.addProjectManagement.auditList[i].projectChargemanID] = true;
+        }
+      }
+      this.addProjectManagement.auditList = result;
+      
     },
     // 编辑专项项目table负责人下拉框事件
     LeaderSelectEdit(row) {
@@ -1447,7 +1439,18 @@ export default {
           row.projectChargemanID = this.projectpeopleoptions[j].id;
         }
       }
-      console.log(this.addProjectManagement);
+
+       //编辑专项table数组根据某一个字段去重
+      var result = [];
+      var obj = {};
+      for (let i = 0; i < this.addProjectManagement.auditList.length; i++) {
+        if (!obj[this.addProjectManagement.auditList[i].auditOrgUuid] || !obj[this.addProjectManagement.auditList[i].projectChargemanID]) {
+          result.push(this.addProjectManagement.auditList[i]);
+          obj[this.addProjectManagement.auditList[i].auditOrgUuid] = true;
+          obj[this.addProjectManagement.auditList[i].projectChargemanID] = true;
+        }
+      }
+      this.addProjectManagement.auditList = result;
     },
 
     addSave(form) {
@@ -1457,6 +1460,7 @@ export default {
             this.$message.success("添加项目成功！");
             this.addDialogVisible = false;
             this.projectData(this.query);
+            
           });
         } else {
           console.log("error submit!!");

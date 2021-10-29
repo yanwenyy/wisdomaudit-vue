@@ -15,6 +15,22 @@
                 >新增自建任务</el-button
               >
             </el-col>
+            <!-- 条件查询模型名称 -->
+            <el-col :span="6" style="margin-left: 40%">
+              <el-input
+                placeholder="请输入模型任务名称"
+                v-model="queryInfo.condition.taskName"
+                class="input-with-select"
+                @keyup.enter.native="queryName"
+              >
+                <el-button
+                  slot="append"
+                  type="primary"
+                  icon="el-icon-search"
+                  @click="queryName"
+                ></el-button>
+              </el-input>
+            </el-col>
           </el-row>
           <!-- 表单 -->
           <el-table
@@ -108,18 +124,13 @@
         </div>
 
         <!-- 分页 -->
-        <div class="page">
-          <el-pagination
-            background
-            :hide-on-single-page="false"
-            layout="prev, pager, next"
-            :page-sizes="[2, 4, 6, 8]"
-            :current-page="project.current"
-            @current-change="handleCurrentChangeTask"
-            :page-size="project.size"
-            :total="project.total"
-          ></el-pagination>
-        </div>
+        <pagination
+          v-show="modelTotal > 0"
+          :total="modelTotal"
+          :page.sync="queryInfo.pageNo"
+          :limit.sync="queryInfo.pageSize"
+          @pagination="queryName"
+        />
         <!-- 分页 end-->
       </div>
     </div>
@@ -219,7 +230,7 @@
     <!-- 审计任务维护新增弹框 -->
     <el-dialog
       :visible.sync="TaskDialogVisible"
-      width="50%"
+      width="55%"
       @close="resetForm2('selfTaskRef')"
     >
       <div class="taskTitle">新增任务</div>
@@ -310,16 +321,16 @@
             >
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">
-                将文件拖到此处，或<em>点击上传</em>
-              </div>
-              <div class="el-upload__tip" slot="tip">
-                只能上传jpg/png文件，且不超过500kb
+                点击上传或将文件拖到虚线框
+                <br />支持.zip,.doc,.docx,.xls,.xlsx,.txt
               </div>
             </el-upload>
           </el-form-item>
         </el-form>
         <div class="temBtn">
-          <el-button @click="resBtn">取消</el-button>
+          <el-button @click="resBtn" style="border: 1px solid #d2d2d2"
+            >取消</el-button
+          >
           <el-button
             style="background: #0c87d6; color: #fff"
             @click="saveTask('selfTaskRef')"
@@ -368,20 +379,17 @@
           </el-table-column>
         </el-table>
         <!-- 分页 -->
-        <div class="page">
-          <el-pagination
-            background
-            :hide-on-single-page="false"
-            layout="prev, pager, next"
-            :page-sizes="[2, 4, 6, 8]"
-            :current-page="modelSize.current"
-            @current-change="handleCurrentChangeModel"
-            :page-size="modelSize.size"
-            :total="modelSize.total"
-          ></el-pagination>
-        </div>
+        <pagination
+          v-show="taskTotal > 0"
+          :total="taskTotal"
+          :page.sync="model_QueryInfo.pageNo"
+          :limit.sync="model_QueryInfo.pageSize"
+          @pagination="queryModel"
+        />
         <div class="stepBtn">
-          <el-button @click="returnStep">取消</el-button>
+          <el-button @click="returnStep" style="border: 1px solid #d2d2d2"
+            >取消</el-button
+          >
           <el-button
             style="background: #0c87d6; color: #fff"
             @click="modelInfoBtn"
@@ -413,7 +421,7 @@
             <el-link
               type="primary"
               style=""
-              @click="enclosureDownload(scope.row.attachmentUuid)"
+              @click="enclosureDownload(scope.row.attachmentUuid,scope.row.fileName)"
               >{{ scope.row.fileName }}</el-link
             >
           </template>
@@ -424,6 +432,7 @@
 </template>
 
 <script>
+import Pagination from "@WISDOMAUDIT/components/Pagination";
 import {
   projectMembership,
   editprojectMembership,
@@ -446,6 +455,7 @@ import {
   attachmentEcho,
 } from "@WISDOMAUDIT/api/shandong/projectmanagement.js";
 export default {
+  components: { Pagination },
   props: ["active_project"],
   data() {
     return {
@@ -470,16 +480,18 @@ export default {
       queryInfo: {
         condition: {
           managementProjectUuid: "",
+          taskName: "",
         },
         pageNo: 1,
-        pageSize: 5,
+        pageSize: 10,
       },
       model_QueryInfo: {
         condition: {
           modelName: "",
+          projectId: "",
         },
         pageNo: 1,
-        pageSize: 5,
+        pageSize: 10,
       },
       tab: [{ name: "审计资料任务列表" }, { name: "已操作的资料列表" }],
       label: "黄金糕",
@@ -524,7 +536,7 @@ export default {
           modelName: "",
         },
         pageNo: 1,
-        pageSize: 5,
+        pageSize: 10,
       },
       personMes: [],
       peopleSelection: [],
@@ -619,6 +631,8 @@ export default {
         sortBy: "string",
         sortName: "string",
       },
+      modelTotal: 0,
+      taskTotal: 0,
       // 自建任务校验
       taskSelfRules: {
         taskName: [
@@ -710,12 +724,15 @@ export default {
       this.file_details(params, 1);
       this.deletFileList = [];
     },
-
+    queryName() {
+      this.getmodelTaskList(this.queryInfo);
+    },
     // 列表显示
     getmodelTaskList(data) {
       this.loading = true;
       modelTaskList(data).then((resp) => {
         this.taskData = resp.data.records;
+        this.modelTotal = resp.data.total;
         console.log(this.taskData);
         this.project = resp.data;
         this.loading = false;
@@ -781,11 +798,8 @@ export default {
       this.task = 2;
       this.loading = true;
       this.model_QueryInfo.condition.modelName = "";
-      auditModelList(this.model_QueryInfo).then((resp) => {
-        this.modelTableData = resp.data.records;
-        this.modelSize = resp.data;
-        this.loading = false;
-      });
+      this.model_QueryInfo.condition.projectId = this.active_project;
+      this.queryModelSql(this.model_QueryInfo);
     },
     // 添加自建任务页面
     addTask() {
@@ -877,12 +891,17 @@ export default {
     },
     //模型模糊查询
     queryModel() {
-      auditModelList(this.model_QueryInfo).then((resp) => {
-        // console.log(resp);
+      this.model_QueryInfo.condition.projectId = this.active_project;
+      this.queryModelSql(this.model_QueryInfo);
+    },
+    queryModelSql(data) {
+      auditModelList(data).then((resp) => {
         this.modelTableData = resp.data.records;
+        this.taskTotal = resp.data.total;
         this.modelSize = resp.data;
       });
     },
+
     //引入模型选择事件
     handleSelectionChangeModel(val) {
       this.selectauditModelList.auditModelList = [];
@@ -978,14 +997,18 @@ export default {
     },
     // 模型任务完成按钮
     modelInfoBtn() {
-      this.selectauditModelList.projectId = this.active_project;
-      quoteModel(this.selectauditModelList).then((resp) => {
-        this.$message.success("创建成功！");
-        this.TaskDialogVisible = false;
-        this.queryInfo.condition.managementProjectUuid = this.active_project;
-        this.getmodelTaskList(this.queryInfo);
-        this.task = 1;
-      });
+      if (this.selectauditModelList.auditModelList.length > 0) {
+        this.selectauditModelList.projectId = this.active_project;
+        quoteModel(this.selectauditModelList).then((resp) => {
+          this.$message.success("创建成功！");
+          this.TaskDialogVisible = false;
+          this.queryInfo.condition.managementProjectUuid = this.active_project;
+          this.getmodelTaskList(this.queryInfo);
+          this.task = 1;
+        });
+      } else {
+        this.$message.info("请选择要引入的模型!")
+      }
     },
     //新增自建任务上传附件
     handleChangePic(file, fileList) {
@@ -996,7 +1019,14 @@ export default {
     saveTask(selfTaskRef) {
       this.$refs[selfTaskRef].validate((valid) => {
         if (valid) {
+          // this.TaskDialogVisible = false;
           if (this.fileList.length > 0) {
+            const loading = this.$loading({
+              lock: true,
+              text: "上传中",
+              spinner: "el-icon-loading",
+              background: "transparent",
+            });
             let formData = new FormData();
             formData.append("file", this.file.raw);
             this.fileList.forEach((item) => {
@@ -1005,7 +1035,7 @@ export default {
 
             this.$axios({
               method: "post",
-              url: "http://10.10.112.56:1095/wisdomaudit/attachment/fileUploads",
+              url: "/wisdomaudit/attachment/fileUploads",
               data: formData,
               headers: {
                 "Content-Type": "multipart/form-data",
@@ -1013,7 +1043,7 @@ export default {
             }).then((resp) => {
               if (resp.data.code == 0) {
                 this.$message.success("上传成功！");
-                console.log(resp.data);
+                loading.close();
                 this.Upload_file = resp.data.data;
 
                 //新增自建任务接口
@@ -1029,6 +1059,7 @@ export default {
                   this.loading = false;
                 });
               } else {
+                loading.close();
                 this.$message({
                   message: resp.msg,
                   type: "error",
@@ -1056,6 +1087,12 @@ export default {
     // 编辑成功按钮
     editTaskSelfBtn() {
       if (this.fileList.length > 0) {
+        const loading = this.$loading({
+          lock: true,
+          text: "上传中",
+          spinner: "el-icon-loading",
+          background: "transparent",
+        });
         let formData = new FormData();
         // formData.append("file", this.file.raw);
         this.fileList.forEach((item) => {
@@ -1066,7 +1103,7 @@ export default {
 
         this.$axios({
           method: "post",
-          url: "http://10.10.112.56:1095/wisdomaudit/attachment/fileUploads",
+          url: "/wisdomaudit/attachment/fileUploads",
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
@@ -1076,6 +1113,7 @@ export default {
             this.$message.success("上传成功！");
             this.Upload_file = resp.data.data;
             console.log(this.Upload_file);
+            loading.close();
 
             if (this.Upload_file) {
               for (let p = 0; p < this.Upload_file.length; p++) {
@@ -1102,6 +1140,7 @@ export default {
               this.getmodelTaskList(this.queryInfo);
             });
           } else {
+            loading.close();
             this.$message({
               message: resp.msg,
               type: "error",
@@ -1196,13 +1235,13 @@ export default {
       });
     },
     // 附件下载
-    enclosureDownload(id) {
-      console.log(id);
+    enclosureDownload(id, name) {
+      const fileName = name.split('.')[0];
       let formData = new FormData();
       formData.append("fileId", id);
       this.$axios({
         method: "post",
-        url: "http://localhost:9529/wisdomaudit/auditPreviousDemandData/downloadByFileId",
+        url: "/wisdomaudit/auditPreviousDemandData/downloadByFileId",
         data: formData,
         responseType: "blob",
       })
@@ -1218,7 +1257,7 @@ export default {
           if ("download" in document.createElement("a")) {
             // 非IE下载
             const elink = document.createElement("a");
-            elink.download = fileName; //下载后文件名
+            elink.download = name; //下载后文件名
             elink.style.display = "none";
             elink.href = window.URL.createObjectURL(blob);
             document.body.appendChild(elink);
@@ -1243,7 +1282,7 @@ export default {
       this.fileList = [];
     },
     //
-  handleRemove(file, fileList) {
+    handleRemove(file, fileList) {
       if (file.response) {
         this.fileList.remove(file.response.data);
         this.key = Math.random();
@@ -1255,7 +1294,6 @@ export default {
     },
   },
   created() {
-    // console.log(this.active_project);
     this.queryInfo.condition.managementProjectUuid = this.active_project;
     this.getmodelTaskList(this.queryInfo);
     // this.getSelectData(this.select);
