@@ -19,6 +19,7 @@
         }"
           style="width: 100%;">
           <el-table-column
+            :selectable="selectable"
             align="center"
             type="selection"
             width="55">
@@ -261,6 +262,13 @@
       }
     },
     methods: {
+      selectable(row, index) {
+        if (row.ifChecked===true) {
+          return false;
+        } else {
+          return true;
+        }
+      },
       //获取下拉框的name
       getName(id,list,name){
         if(id){
@@ -327,6 +335,9 @@
         let params={
           pageNo: this.searchForm.pageNo,
           pageSize: this.searchForm.pageSize,
+          condition:{
+            managementProjectUuid:this.managementProjectUuid
+          }
         };
         this.loading = true
         indexManagement_addList(params).then(resp => {

@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div v-if="userRole ==1">
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="组员维护" name="first" style="padding: 1%">
         <el-row :gutter="24">
-          <el-col :span="15">
+          <el-col :span="17">
             <el-button type="primary" @click="addgroupMember()"
               >组员维护</el-button
             >
@@ -174,7 +174,7 @@ export default {
   // props:{
   //   projectNum:[],
   // },
-  props: ["active_project"],
+  props: ["active_project","userRole"],
   data() {
     return {
       timer: "", //重新刷新子组件
@@ -266,13 +266,18 @@ export default {
     };
   },
   created() {
-    // console.log(this.active_project);
+    console.log(this.userRole);
     this.query.condition.managementProjectUuid = this.active_project;
     // 组员维护组员列表接口
     this.projectMember(this.query);
 
     // this.queryInfo.condition.managementProjectUuid = this.active_project;
     // this.getmodelTaskList(this.queryInfo);
+  },
+  watch:{
+     userRole(newValue,oldValue){
+       this.userRole=newValue;
+      },
   },
   methods: {
     queryName() {

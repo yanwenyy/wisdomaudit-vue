@@ -20,7 +20,7 @@
                         v-model="search_title"> </el-input>
               <div class="search_icon"
                    style="background: rgb(12, 135, 214) !important;"
-                   @click="search_list()">
+                   @click="search_list(1)">
                 <i class="el-icon-search"
                    style="color: rgba(255, 255, 255, 1);"></i>
               </div>
@@ -140,14 +140,7 @@
                          layout="total, sizes, prev, pager, next, jumper"
                          :total="this.tableData.total">
           </el-pagination>
-          <!-- <el-pagination background
-                         :hide-on-single-page="true"
-                         layout="prev, pager, next"
-                         :page-sizes="[2, 4, 6, 8]"
-                         :current-page="this.tableData.current"
-                         @current-change="handleCurrentChange_model"
-                         :page-size="this.tableData.size"
-                         :total="this.tableData.total"></el-pagination> -->
+
         </div>
         <!-- 分页 end-->
       </el-tab-pane>
@@ -283,6 +276,7 @@
 
     <!-- 新增资料 编辑资料-->
     <el-dialog width="60%"
+               @close="close_model"
                :visible.sync="dialogVisible"
                style="padding-bottom: 59px; ">
       <div class="title_dlag">{{title}}</div>
@@ -311,10 +305,14 @@
               message: '此项不能为空',
               trigger: 'blur',
             }">
+
             <el-input v-model="add_form.name"
+                      :disabled="disabled"
                       style="width:260px;"></el-input>
+
           </el-form-item>
         </el-form>
+        <!-- 获取资料清单 -->
         <el-form label-width="80px">
           <div style="display:flex;align-items: center;padding:10px 0;box-sizing: border-box;">
             <p>获取资料清单：</p>
@@ -363,7 +361,7 @@
                 <template slot-scope="scope">
 
                   <div class="update"
-                       @click="open_enclosure_details(scope.row.auditTaskUuid)">
+                       @click="open_file_details(scope.row.attachmentList)">
                     <i class="update_icon">
                       <svg t="1631877671204"
                            class="icon"
@@ -378,7 +376,7 @@
                               p-id="9940"></path>
                       </svg>
                     </i>
-                    <span>{{scope.row.count}}</span>
+                    <span>{{scope.row.attachmentList.length}}</span>
 
                   </div>
                 </template>
@@ -453,19 +451,11 @@
 
             <el-pagination @size-change="handleSizeChange_details"
                            @current-change="handleCurrentChange_details"
-                           :current-page="this.edit_details.current"
-                           :page-size="this.edit_details.size"
-                           layout="total, sizes, prev, pager, next, jumper"
-                           :total="this.edit_details.total">
-            </el-pagination>
-
-            <!-- <el-pagination background
-                           layout="prev, pager, next"
                            :current-page="this.edit_details.pageCurrent"
-                           @current-change="handleCurrentChange_details"
                            :page-size="this.edit_details.pageSize"
-                           :total="this.edit_details.pageTotal"></el-pagination> -->
-
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="this.edit_details.pageTotal">
+            </el-pagination>
           </div>
           <!-- 分页 end-->
         </div>
@@ -488,12 +478,16 @@
       </span>
     </el-dialog>
 
-    <!-- 添加资料 -->
+    <!-- 添加资料  审批的时候  查看详情-->
     <el-dialog @close="resetForm('add_data')"
                :visible.sync="dialogVisible2"
                style="padding-bottom: 59px; ">
-      <div class="title_dlag">添加资料</div>
-      <div class="dlag_conter2">
+      <div class="title_dlag">{{edit_title}} </div>
+      <div class="dlag_conter2 shenhe">
+
+        <!-- 遮罩 -->
+        <div class="mose"></div>
+
         <el-form label-width="80px"
                  :rules="rules"
                  :model="add_data"
@@ -502,7 +496,7 @@
           <div class="son">
             <el-form-item label-width="80px"
                           prop="dataCategory">
-              <p>类别：</p>
+              <p><span style="color:red">*</span>类别：</p>
               <el-select v-model="add_data.dataCategory"
                          @change="PrjType_change"
                          placeholder="请选择类别">
@@ -516,13 +510,14 @@
 
             <el-form-item label-width="80px"
                           prop="dataName">
-              <p>资料名称：</p>
+              <p><span style="color:red">*</span>资料名称：</p>
               <el-input v-model="add_data.dataName"
                         placeholder="请输入资料名称"></el-input>
             </el-form-item>
           </div>
 
-          <div class="son">
+          <div class="son"
+               v-if="user_data">
 
             <el-form-item label-width="80px"
                           prop="dataNumber">
@@ -539,11 +534,26 @@
                         placeholder="请输入二级编号"></el-input>
             </el-form-item>
           </div>
+          <div class="son"
+               v-else>
+            <el-form-item label-width="80px"
+                          prop="dataNumber">
+              <p>编号 ：</p>
+              <el-input :disabled="disabled"
+                        placeholder="请输入编号"></el-input>
+            </el-form-item>
+            <el-form-item label-width="80px"
+                          prop="secondLevelDataNumber">
+              <p>二级编号：</p>
+              <el-input :disabled="disabled"
+                        placeholder="请输入二级编号"></el-input>
+            </el-form-item>
+          </div>
           <div class="son">
 
             <el-form-item label-width="80px"
                           prop="department">
-              <p>部门：</p>
+              <p><span style="color:red">*</span>部门：</p>
               <el-select v-model="add_data.department"
                          @change="Department_change"
                          placeholder="请选择资料部门">
@@ -556,7 +566,7 @@
             </el-form-item>
             <el-form-item label-width="80px"
                           prop="source">
-              <p>来源：</p>
+              <p><span style="color:red">*</span>来源：</p>
               <el-select v-model="add_data.source"
                          @change="DataSource_change"
                          placeholder="请选择来源">
@@ -568,7 +578,8 @@
               </el-select>
             </el-form-item>
           </div>
-          <div class="son">
+          <div class="son"
+               v-if="user_data">
             <el-form-item label-width="80px"
                           prop="addPeople">
               <p>添加人：</p>
@@ -590,13 +601,34 @@
                 </el-date-picker>
               </div>
             </el-form-item>
+          </div>
+          <div class="son"
+               v-else>
+            <el-form-item label-width="80px"
+                          prop="addPeople">
+              <p>添加人：</p>
+              <el-input placeholder="请选择添加人"
+                        class="addPeople"></el-input>
+              <!-- <div class="addPeople">{{add_data.addPeople}}</div> -->
+            </el-form-item>
+
+            <el-form-item label-width="80px"
+                          prop="addTime">
+              <p>添加日期：</p>
+              <div class="block">
+                <el-date-picker type="date"
+                                placeholder="选择日期">
+                </el-date-picker>
+              </div>
+            </el-form-item>
 
           </div>
+
           <div class="son cd">
 
             <el-form-item label-width="100px"
                           prop="status">
-              <p style="padding:0 0 0 30px;">是否沉淀为常规需求资料：</p>
+              <p style="padding:0 0 0 30px;"><span style="color:red">*</span>是否沉淀为常规需求资料：</p>
               <el-radio-group v-model="add_data.status"
                               @change="changeHandler">
                 <el-radio label="2">否</el-radio>
@@ -659,8 +691,7 @@
     </el-dialog>
 
     <!-- 操作 审批-->
-    <el-dialog title="操作"
-               width="90%"
+    <el-dialog width="90%"
                :visible.sync="dialogVisibl_operation"
                style="padding-bottom: 59px; ">
       <div class="title_dlag">操作</div>
@@ -762,7 +793,7 @@
                            show-overflow-tooltip>
             <template slot-scope="scope">
               <div class="update"
-                   @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid,'操作')">
+                   @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)">
                 <i class="update_icon">
                   <svg t="1631877671204"
                        class="icon"
@@ -900,10 +931,10 @@
         </div>
       </div>
       <span slot="footer">
-        <el-button type="primary"
-                   @click="adopt()">通过</el-button>
         <el-button @click="reject()"
                    plain>驳回</el-button>
+        <el-button type="primary"
+                   @click="adopt()">通过</el-button>
 
       </span>
     </el-dialog>
@@ -913,7 +944,29 @@
                :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                :visible.sync="dialogVisibl_enclosure_details"
                style="padding-bottom: 59px; ">
+
+      <!-- 0模版资料 -->
+      <el-table :data="enclosure_moban_list"
+                v-if="moban_list==0"
+                style="width: 100%;">
+        <el-table-column prop="fileName"
+                         align="center"
+                         label="文件名称">
+          <template slot-scope="scope">
+            <el-button @click="download(scope.row.attachmentUuid,scope.row.fileName)"
+                       class="file_name"
+                       type="text"
+                       style="color: #1371cc"
+                       size="small">
+              {{ scope.row.fileName }}
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <!-- 附件资料 -->
       <el-table :data="enclosure_details_list"
+                v-if="moban_list==1"
                 style="width: 100%;">
         <!-- <el-table-column prop="dataTaskNumber"
                              label="流水单号">
@@ -1074,6 +1127,12 @@
 import { data_pageList, data_push, data_save, add_pageList, data_pageListDone, data_delete, data_push_ing, data_edit_details, data_update, data_add_savePush, data_edit_savePush, loadcascader, saveTemp, operation_list_data, operation_record_list, operation_audit, operation_uploadData, select_loadcascader, enclosure_details, select_user_data, enclosure_sysLogById, enclosure_details_file, enclosure_downloadByFileId, operation_addExit } from
   '@SDMOBILE/api/shandong/data'
 import { fmtDate } from '@SDMOBILE/model/time.js';
+import {
+  task_personLiable,//责任人
+} from
+  '@SDMOBILE/api/shandong/task'
+
+
 import { Input } from 'element-ui';
 export default {
   components: {},
@@ -1081,6 +1140,7 @@ export default {
     return {
       activeName: 0,
       title: '新增审计资料任务',
+      edit_title: '',//审核title
       dialogVisible: false,//新增弹窗
       dialogVisible2: false,//添加资料
       dialogVisibl_operation: false,//操作
@@ -1096,6 +1156,8 @@ export default {
 
       search_title: '',//未完成 筛选title
       search_title2: '',//已完成
+
+      disabled: true,//责任人点击
 
       // 添加资料
       add_data: {
@@ -1232,6 +1294,11 @@ export default {
       fileList: [],//上传的文件
 
       edit_file_list: [],
+
+      moban_list: 0,//模版附件
+      enclosure_moban_list: [],//模版资料
+
+      user_data: {},//添加资料回显
     }
   },
   computed: {},
@@ -1261,6 +1328,8 @@ export default {
     this.post_select_loadcascader_bm();//添加资料   部门 数据
     this.post_select_loadcascader_ly();//添加资料   领域 数据
 
+    // 获取请求人
+    this.task_personLiable_data();
   },
   mounted () { },
   props: ['active_project'],
@@ -1273,6 +1342,21 @@ export default {
   },
 
   methods: {
+
+    // 获取责任人
+    task_personLiable_data () {
+      task_personLiable().then(resp => {
+        this.add_form.name = resp.data.realName//责任人name
+        this.disabled = true
+      })
+    },
+
+
+    // 关闭新增
+    close_model () {
+      this.get_out();
+
+    },
     // 新增资料任务时退出
     get_out () {
       operation_addExit().then(resp => {
@@ -1283,6 +1367,8 @@ export default {
     // 资料筛选
     search_list (index) {
       if (index == 1) {
+        // alert('a', this.search_title)
+
         // 未完成
         let params = {
           pageNo: this.params.pageNo,
@@ -1294,10 +1380,10 @@ export default {
         }
         this.list_data_start(params)
       } else {
-        // 已完成
+        // alert('b', this.search_title2)
         // 已完成
         let params2 = {
-          pageNo: this.params.pageNo,
+          pageNo: this.params2.pageNo,
           pageSize: this.params2.pageSize,
           condition: {
             dataTaskNumber: this.projectNumber,
@@ -1423,14 +1509,14 @@ export default {
     close () {
       this.dialogVisible = false;
       this.get_out();//关闭请求的接口
-      this.add_form.name = '';//清空name
+      // this.add_form.name = '';//清空name
       this.add_form.title = '';//清空title
 
       // this.add_data.dataNumber = '';//编号
       // this.add_data.secondLevelDataNumber = '';//二级编号
       // this.add_data.addPeople = '';//添加人
       // this.add_data.addTime = '';//添加日期
-      this.$refs.multipleTable.clearSelection();//清空
+
     },
     // 未完成============================
     // 列表 未完成
@@ -1461,16 +1547,33 @@ export default {
 
     //新增任务 弹窗
     add_data_task () {
-
-      this.add_form.name = '';//清空name
+      // this.add_form.name = '';//清空name
       this.add_form.title = '';//清空title
-      // this.$refs.multipleTable.clearSelection();//清空
       this.dialogVisible = true
       this.title = '新增审计资料任务';
+      this.$nextTick(() => {
+        this.$refs.multipleTable.clearSelection();//清空
+      })
+
       // this.$refs.multipleTable.clearSelection();//
-      this.get_out();//关闭请求的接口
+    },
+
+    // 新增  初始化模版 查看附件
+    open_file_details (list) {
+      console.log(list);
+      this.moban_list = 0;
+      this.enclosure_moban_list = list;//模版资料
+
+      if (this.enclosure_moban_list.length == 0) {
+        this.$message('暂无上传的附件');
+        return false
+      } else {
+        this.dialogVisibl_enclosure_details = true;
+      }
 
     },
+
+
     // 查看附件详情
     open_enclosure_details (id) {
       // 已完成列表 查看详情
@@ -1502,7 +1605,7 @@ export default {
       formData.append('fileId', id)
       this.$axios({
         method: 'post',
-        url: 'http://localhost:9529/wisdomaudit/auditPreviousDemandData/downloadByFileId',
+        url: '/wisdomaudit/auditPreviousDemandData/downloadByFileId',
         // url: 'http://10.10.113.196:1095/wisdomaudit/auditPreviousDemandData/downloadByFileId',
         // url: 'http://localhost:9529/wisdomaudit/attachment/fileDownload',
 
@@ -1541,9 +1644,8 @@ export default {
     // 添加资料
     add_data_click () {
       this.dialogVisible2 = true;
+      this.edit_title = '添加资料'
       this.add_data = {}; //清空
-      this.get_out();//关闭请求的接口
-
     },
     // 新增任务初始化 列表
     add_add_csh (params) {
@@ -1579,10 +1681,11 @@ export default {
         this.$message.info("请输入标题！");
         return false
 
-      } else if (this.add_form.name == '') {
-        this.$message.info("请输入发起人！");
-        return false
       }
+      //  else if (this.add_form.name == '') {
+      //   this.$message.info("请输入发起人！");
+      //   return false
+      // }
       if (this.multipleSelection_list.length == 0) {
         this.$message.info("请选择至少一条数据！");
         return false
@@ -1622,10 +1725,11 @@ export default {
         this.$message.info("请输入标题！");
         return false
 
-      } else if (this.add_form.name == '') {
-        this.$message.info("请输入发起人！");
-        return false
       }
+      // else if (this.add_form.name == '') {
+      //   this.$message.info("请输入发起人！");
+      //   return false
+      // }
       if (this.multipleSelection_list.length == 0) {
         this.$message.info("请选择至少一条数据！");
         return false
@@ -1664,7 +1768,6 @@ export default {
             }
             this.list_data_start(params)//未完成列表
             this.dialogVisible = false;//关闭新增弹窗
-            this.get_out();//关闭请求的接口
 
             this.add_form.name = '';//清空name
             this.add_form.title = '';//清空name
@@ -1705,9 +1808,8 @@ export default {
             }
             this.list_data_start(params)//未完成列表
             this.dialogVisible = false;//关闭新增弹窗
-            this.get_out();//关闭请求的接口
 
-            this.add_form.name = '';//清空name
+            // this.add_form.name = '';//清空name
             this.add_form.title = '';//清空name
             array1 = [];//清空
 
@@ -1742,10 +1844,9 @@ export default {
             }
           }
           this.list_data_start(params)//未完成列表
-          this.get_out();//关闭请求的接口
 
           this.dialogVisible = false;//关闭新增弹窗
-          this.add_form.name = '';//清空name
+          // this.add_form.name = '';//清空name
           this.add_form.title = '';//清空name
           this.array1 = [];//清空
         } else {
@@ -1776,7 +1877,6 @@ export default {
           }
           this.list_data_start(params)//未完成列表
           this.dialogVisible = false;//关闭新增 编辑弹窗
-          this.get_out();//关闭请求的接口
 
 
 
@@ -1806,16 +1906,19 @@ export default {
     PrjType_change (val) {
       console.log(val);
       this.add_data.dataCategory = val;
+
       let params = {
-        dataCategory: val,
+        dataCategory: this.add_data.dataCategory,
       };
+
       //根据类型查看新增的 资料信息
       select_user_data(params).then(resp => {
         console.log(resp.data);
-        this.add_data.dataNumber = resp.data.dataNumber;//编号
-        this.add_data.secondLevelDataNumber = resp.data.secondLevelDataNumber;//二级编号
-        this.add_data.addPeople = resp.data.addPeople;//添加人
-        this.add_data.addTime = resp.data.addTime;//添加日期
+        this.user_data = resp.data
+        this.add_data.dataNumber = this.user_data.dataNumber;//编号
+        this.add_data.secondLevelDataNumber = this.user_data.secondLevelDataNumber;//二级编号
+        this.add_data.addPeople = this.user_data.addPeople;//添加人
+        this.add_data.addTime = this.user_data.addTime;//添加日期
         this.disabled = true;
       });
     },
@@ -1878,7 +1981,7 @@ export default {
             })
             this.$axios({
               method: 'post',
-              url: 'http://localhost:9529/wisdomaudit/attachment/fileUploads',
+              url: '/wisdomaudit/attachment/fileUploads',
               data: formData,
               headers: {
                 'Content-Type': 'multipart/form-data'
@@ -2126,17 +2229,19 @@ export default {
 
     //查看操作 记录
     look_record (data) {
-      this.record_status = true;
+      // this.record_status = true;
       this.record_query.id = data.auditPreviousDemandDataUuid;
+      this.dialogVisible2 = true//显示编辑
+      this.edit_title = '详细信息'
 
-      let query_params = {
-        condition: {
-          logSysActiUuid: this.record_query.id
-        },
-        pageNo: this.record_query.pageNo,
-        pageSize: this.record_query.pageSize
-      }
-      this.post_operation_record(query_params)//刷新 操作记录 列表
+      // let query_params = {
+      //   condition: {
+      //     logSysActiUuid: this.record_query.id
+      //   },
+      //   pageNo: this.record_query.pageNo,
+      //   pageSize: this.record_query.pageSize
+      // }
+      // this.post_operation_record(query_params)//刷新 操作记录 列表
     },
     // 审批操作记录  分页每页条数
     handleSizeChange_record_list (val) {
@@ -2164,6 +2269,10 @@ export default {
     },
     // 通过
     adopt () {
+      if (this.multipleSelection_operation.length == 0) {
+        this.$message.info("请选择一条数据进行操作");
+        return
+      }
       let array1 = [];//数组1
       this.multipleSelection_operation.forEach((item) => {
         array1.push(item);
@@ -2174,9 +2283,22 @@ export default {
         auditPreviousDemandData: array1,
       }
       this.audit(3, params2);//通过
+      let params = {
+        pageNo: this.params.pageNo,
+        pageSize: this.params.pageSize,
+        condition: {
+          projectNumber: this.projectNumber,
+          title: this.search_title,
+        }
+      }
+      this.list_data_start(params)
     },
     // 驳回
     reject () {
+      if (this.multipleSelection_operation.length == 0) {
+        this.$message.info("请选择一条数据进行操作");
+        return
+      }
       // this.dialogVisible2 = false
       let array1 = [];//数组1
       this.multipleSelection_operation.forEach((item) => {
@@ -2189,6 +2311,17 @@ export default {
         auditPreviousDemandData: array1,
       }
       this.audit(2, params2)//2:驳回  3:通过
+
+      let params = {
+        pageNo: this.params.pageNo,
+        pageSize: this.params.pageSize,
+        condition: {
+          projectNumber: this.projectNumber,
+          title: this.search_title,
+        }
+      }
+      this.list_data_start(params)
+
     },
 
 
@@ -2273,7 +2406,7 @@ export default {
 
     // 任务列表 显示编辑
     edit_common (data) {
-      this.add_form.name = '';//清空name
+      // this.add_form.name = '';//清空name
       this.add_form.title = '';//清空title
       // this.$refs.multipleTable.clearSelection();//清空
       this.title = '编辑审计资料任务';
@@ -2292,7 +2425,7 @@ export default {
       };
       this.edut_details(params_query);//编辑详情
     },
-
+    // 编辑
     edut_details (params_query) {
       // 显示编辑 详情
       data_edit_details(params_query).then(resp => {
@@ -2691,5 +2824,19 @@ export default {
 }
 .file_name:hover {
   color: #1371cc;
+}
+
+.shenhe {
+  position: relative;
+  display: flex;
+}
+.mose {
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+  opacity: 0.5;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 </style>

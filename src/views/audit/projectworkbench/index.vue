@@ -1,7 +1,7 @@
 <template>
   <div class="projectWorkbench" style="background: #fff">
-    <div class="title">未初始化项目</div>
-    <ul class="projectInit" v-if="projectNum">
+    <div class="title" v-show="projectNum.length>0">未初始化项目</div>
+    <ul class="projectInit" v-show="projectNum.length>0">
       <li
         @click="projectClick(index)"
         v-for="(value, index) in projectNum"
@@ -33,9 +33,9 @@
       >
     </ul>
 
-    <ul class="projectInit" v-else>
+    <!-- <ul class="projectInit">
       暂无未初始化项目...
-    </ul>
+    </ul> -->
 
     <el-drawer
       title="未初始化项目"
@@ -72,7 +72,7 @@
 
     <!-- 初始化项目 -->
     <div class="initializeProject" v-if="active_project">
-      <div class="title">初始化项目</div>
+      <div class="title" v-show="projectNum.length>0">初始化项目</div>
       <ul v-if="projectInit">
         <li
           v-for="(item, index) in projectInit"
@@ -1011,14 +1011,21 @@ export default {
     };
   },
   watch: {
+   
     active_project(val) {
       this.refreash = true; // loading
-      // console.log('-----------------------'+this.active_project)
       let _this = this;
       setTimeout(function name() {
         _this.refreash = false;
       }, 500);
     },
+    userRole(val) {
+       this.refreash = true; // loading
+      let _this = this;
+      setTimeout(function name() {
+        _this.refreash = false;
+      }, 500);
+    }
   },
 
   created() {
@@ -1028,7 +1035,10 @@ export default {
     this.thematicSelect(this.thematic);
     this.areasSelect(this.areas);
     this.moreProject(this.queryManageAll);
-    //获取当前登录人信息
+    
+  },
+  mounted(){
+//获取当前登录人信息
     get_userInfo().then((resp) => {
       this.userInfo = resp.data;
       console.log(this.userInfo);
@@ -1368,13 +1378,6 @@ export default {
     selectModel() {
       this.addDialogVisible = false;
       this.modelDialog = true;
-      for (let i = 0; i < this.modelTableData.length; i++) {
-        this.$refs.multipleModelRef.toggleRowSelection(
-          this.modelTableData[i],
-          false
-        );
-      }
-      this.modelQuery.condition.projectId = this.managementProjectUuid;
       this.getauditModelListSql(this.modelQuery);
     },
     // 未初始化弹框关闭事件
@@ -1414,6 +1417,10 @@ export default {
       this.modelQuery.condition.projectId = this.managementProjectUuid;
       this.getauditModelList(this.getModelList);
     },
+    // 分页模糊查询模型列表
+    queryName(){
+      this.getauditModelList(this.getModelList);
+    },
     // 模型列表渲染
     getauditModelList(data) {
       modelTaskList(data).then((resp) => {
@@ -1443,7 +1450,7 @@ export default {
         this.$message.info("请选择要引入的模型!")
       }
 
-      
+
     },
     // 模型列表分页事件
     handleCurrentChangeModelTab(val) {
@@ -1839,7 +1846,7 @@ export default {
 // 二级导航 穿透样式 end
 
 .projectWorkbench {
-  padding: 2%;
+  padding: 1%;
   .title {
     font-weight: 700;
     font-size: 15px;
@@ -1847,25 +1854,14 @@ export default {
     border-bottom: 1px solid #d2d2d2;
     padding: 10px;
   }
-  // .text {
-  //   background: #fff;
-  //   border: 1px solid #ebf0f6;
-  //   border-radius: 10px;
-  //   padding: 5%;
-  //   color: #000;
-  //   box-shadow: 0px 15px 10px -15px #dee4e8;
-  //   cursor: pointer;
-  //   .companyName {
-  //     margin-bottom: 5%;
-  //   }
-  // }
 }
 // 未初始化项目
 .projectInit {
   // border: 1px solid red;
+  // display: none;
   min-height: 100px;
   margin-bottom: 2%;
-  display: flex;
+  // display: flex;
   align-items: center;
   li {
     width: 20%;
@@ -1882,7 +1878,7 @@ export default {
   }
 }
 .initializeProject {
-  margin: 2% 1% 1% 0;
+  margin: 0% 1% 1% 0;
   ul {
     width: 100%;
     display: flex;
@@ -2277,5 +2273,9 @@ export default {
   position: absolute;
   top: -70%;
   left: 35%;
+}
+>>>.el-input.is-disabled .el-input__inner{
+  background: #F5F7FA!important;
+  color:#C0C4CC!important;
 }
 </style>
