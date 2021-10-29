@@ -1019,13 +1019,13 @@ export default {
       this.$refs[selfTaskRef].validate((valid) => {
         if (valid) {
           // this.TaskDialogVisible = false;
-           const loading = this.$loading({
-        lock: true,
-        text: '上传中',
-        spinner: 'el-icon-loading',
-        background: 'transparent'
-      });
           if (this.fileList.length > 0) {
+            const loading = this.$loading({
+              lock: true,
+              text: "上传中",
+              spinner: "el-icon-loading",
+              background: "transparent",
+            });
             let formData = new FormData();
             formData.append("file", this.file.raw);
             this.fileList.forEach((item) => {
@@ -1059,6 +1059,7 @@ export default {
                   this.loading = false;
                 });
               } else {
+                loading.close();
                 this.$message({
                   message: resp.msg,
                   type: "error",
@@ -1086,6 +1087,12 @@ export default {
     // 编辑成功按钮
     editTaskSelfBtn() {
       if (this.fileList.length > 0) {
+         const loading = this.$loading({
+              lock: true,
+              text: "上传中",
+              spinner: "el-icon-loading",
+              background: "transparent",
+            });
         let formData = new FormData();
         // formData.append("file", this.file.raw);
         this.fileList.forEach((item) => {
@@ -1106,6 +1113,7 @@ export default {
             this.$message.success("上传成功！");
             this.Upload_file = resp.data.data;
             console.log(this.Upload_file);
+            loading.close();
 
             if (this.Upload_file) {
               for (let p = 0; p < this.Upload_file.length; p++) {
@@ -1132,6 +1140,7 @@ export default {
               this.getmodelTaskList(this.queryInfo);
             });
           } else {
+            loading.close();
             this.$message({
               message: resp.msg,
               type: "error",

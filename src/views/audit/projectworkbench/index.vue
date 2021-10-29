@@ -1482,6 +1482,12 @@ export default {
       this.$refs[selfTaskRef].validate((valid) => {
         if (valid) {
           if (this.fileList.length > 0) {
+             const loading = this.$loading({
+              lock: true,
+              text: "上传中",
+              spinner: "el-icon-loading",
+              background: "transparent",
+            });
             let formData = new FormData();
             formData.append("file", this.file.raw);
             this.fileList.forEach((item) => {
@@ -1498,8 +1504,8 @@ export default {
             }).then((resp) => {
               if (resp.data.code == 0) {
                 this.$message.success("上传成功！");
-                console.log(resp.data);
                 this.Upload_file = resp.data.data;
+                loading.close();
 
                 //新增自建任务接口
                 this.taskSelf.attachmentList = this.Upload_file;
@@ -1515,6 +1521,7 @@ export default {
                   this.getauditModelList(this.getModelList);
                 });
               } else {
+                loading.close();
                 this.$message({
                   message: resp.msg,
                   type: "error",
@@ -1570,6 +1577,12 @@ export default {
     // 自建任务编辑完成按钮
     edittaskSelfSave() {
       if (this.fileList.length > 0) {
+         const loading = this.$loading({
+              lock: true,
+              text: "上传中",
+              spinner: "el-icon-loading",
+              background: "transparent",
+            });
         let formData = new FormData();
         // formData.append("file", this.file.raw);
         this.fileList.forEach((item) => {
@@ -1589,7 +1602,7 @@ export default {
           if (resp.data.code == 0) {
             this.$message.success("上传成功！");
             this.Upload_file = resp.data.data;
-            console.log(this.Upload_file);
+             loading.close();
 
             if (this.Upload_file) {
               for (let p = 0; p < this.Upload_file.length; p++) {
@@ -1620,6 +1633,7 @@ export default {
               }
             });
           } else {
+             loading.close();
             this.$message({
               message: resp.msg,
               type: "error",
