@@ -987,6 +987,7 @@ import {
   task_problems_uopload,//上传
   task_problems_uopload_details,//附件列表  编辑回显
   task_personLiable,//责任人
+  projectRel_pgeList,//核实 新增表头
 } from
   '@SDMOBILE/api/shandong/task'
 
@@ -1194,10 +1195,13 @@ export default {
         handleIdea: [{ required: true, message: '请输入核实信息', trigger: 'blur' }],
       },
 
-      li: [
-        { lhg: '111', id: '1' },
-        { lhg: '222', id: '2' },
-      ],
+
+      // 新增核实 表头
+      params_heshi: {
+        pageNo: 1,
+        pageSize: 10,
+      },
+      projectRel_pgeList_list: [],//核实后的新表单数据
     };
   },
   computed: {},
@@ -1728,7 +1732,7 @@ export default {
                 keyword: null,
                 runResultTableUuid: this.status_data[0].runResultTableUuid,
                 runTaskRelUuid: this.status_data[0].runTaskRelUuid,
-                runTaskRelUuid: this.status_data[0].paramTaskUuid,
+                // runTaskRelUuid: this.status_data[0].paramTaskUuid,
                 resultTableName: this.status_data[0].resultTableName,//- 实际表名
                 resultShowName: this.status_data[0].resultShowName,
                 tableType: 1,//  主副表标识, 主表 = 1、副表1 = 2、副表2 = 3···
@@ -1754,8 +1758,9 @@ export default {
           condition: {
             keyword: null,
             runResultTableUuid: this.status_data[this.date_index].runResultTableUuid,
-            runTaskRelUuid: this.status_data[this.date_index].runTaskRelUuid,
-            runTaskRelUuid: this.status_data[this.date_index].paramTaskUuid,
+            // runTaskRelUuid: this.status_data[this.date_index].runTaskRelUuid,
+            // runTaskRelUuid: this.status_data[this.date_index].paramTaskUuid,
+            runTaskRelUuid: this.paramTaskUuid,
             resultTableName: this.status_data[this.date_index].resultTableName,//- 实际表名
             resultShowName: this.status_data[this.date_index].resultShowName,
             tableType: this.status_data[this.date_index].tableType,//  主副表标识, 主表 = 1、副表1 = 2、副表2 = 3···
@@ -1777,13 +1782,24 @@ export default {
 
         this.status_data_list = resp.data.records
 
-        let arr = this.status_data_list[0].result
-        let arr2 = this.li
 
+        // 新表单
+        let params_query = {
+          condition: {
+            runTaskRelUuid: this.paramTaskUuid,
+          },
+          pageNo: this.params_heshi.pageNo,
+          pageSize: this.params_heshi.pageSize,
+        };
+        this.new_table(params_query);
 
-        if (arr) {
+        let arr = this.status_data_list[0].result //原列表
+        let arr2 = this.projectRel_pgeList_list //新列表
+        // console.log(this.projectRel_pgeList_list);
+
+        if (arr && arr2) {
           arr.forEach(item => {
-            const data = arr2.forEach(i => item.onlyuuid == i.id)
+            const data = arr2.forEach(i => item.onlyuuid == i.resultDetailId)
             return {
               ...item,
               ...data,
@@ -1792,22 +1808,30 @@ export default {
           })
           console.log(arr);
           return
-
         }
 
 
-        this.status_data_list = this.status_data_list.concat(this.lhg)
-        this.status_data_list
+        // this.status_data_list = this.status_data_list.concat(this.lhg)
+        // this.status_data_list
 
-        return
-        this.status_data_list.forEach(item => {
-          this.$set(item, 'yes_no', false)//是否问题
-        })
+        // return
+        // this.status_data_list.forEach(item => {
+        //   this.$set(item, 'yes_no', false)//是否问题
+        // })
         // this.tableData_list = this.tableData_list.concat(this.li)
 
         console.log(this.status_data_list);
         // this.loading = false
 
+      })
+    },
+
+    // 新增核实 表头
+    new_table (params_query) {
+      projectRel_pgeList(params_query).then(resp => {
+
+        this.projectRel_pgeList_list = resp.data.records
+        console.log(this.projectRel_pgeList_list);
       })
     },
 
@@ -1823,8 +1847,9 @@ export default {
           condition: {
             keyword: null,
             runResultTableUuid: this.status_data[this.date_index].runResultTableUuid,
-            runTaskRelUuid: this.status_data[this.date_index].runTaskRelUuid,
-            runTaskRelUuid: this.status_data[this.date_index].paramTaskUuid,
+            // runTaskRelUuid: this.status_data[this.date_index].runTaskRelUuid,
+            // runTaskRelUuid: this.status_data[this.date_index].paramTaskUuid,
+            runTaskRelUuid: this.paramTaskUuid,
             resultTableName: this.status_data[this.date_index].resultTableName,//- 实际表名
             resultShowName: this.status_data[this.date_index].resultShowName,
             tableType: this.status_data[this.date_index].tableType,//  主副表标识, 主表 = 1、副表1 = 2、副表2 = 3···
