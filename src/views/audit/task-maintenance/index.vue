@@ -421,7 +421,7 @@
             <el-link
               type="primary"
               style=""
-              @click="enclosureDownload(scope.row.attachmentUuid)"
+              @click="enclosureDownload(scope.row.attachmentUuid,scope.row.fileName)"
               >{{ scope.row.fileName }}</el-link
             >
           </template>
@@ -488,6 +488,7 @@ export default {
       model_QueryInfo: {
         condition: {
           modelName: "",
+          projectId: "",
         },
         pageNo: 1,
         pageSize: 10,
@@ -797,11 +798,7 @@ export default {
       this.task = 2;
       this.loading = true;
       this.model_QueryInfo.condition.modelName = "";
-      // auditModelList(this.model_QueryInfo).then((resp) => {
-      //   this.modelTableData = resp.data.records;
-      //   this.modelSize = resp.data;
-      //   this.loading = false;
-      // });
+      this.model_QueryInfo.condition.projectId = this.active_project;
       this.queryModelSql(this.model_QueryInfo);
     },
     // 添加自建任务页面
@@ -894,11 +891,11 @@ export default {
     },
     //模型模糊查询
     queryModel() {
+      this.model_QueryInfo.condition.projectId = this.active_project;
       this.queryModelSql(this.model_QueryInfo);
     },
     queryModelSql(data) {
       auditModelList(data).then((resp) => {
-        // console.log(resp);
         this.modelTableData = resp.data.records;
         this.taskTotal = resp.data.total;
         this.modelSize = resp.data;
@@ -1000,14 +997,18 @@ export default {
     },
     // 模型任务完成按钮
     modelInfoBtn() {
-      this.selectauditModelList.projectId = this.active_project;
-      quoteModel(this.selectauditModelList).then((resp) => {
-        this.$message.success("创建成功！");
-        this.TaskDialogVisible = false;
-        this.queryInfo.condition.managementProjectUuid = this.active_project;
-        this.getmodelTaskList(this.queryInfo);
-        this.task = 1;
-      });
+      if (this.selectauditModelList.auditModelList.length > 0) {
+        this.selectauditModelList.projectId = this.active_project;
+        quoteModel(this.selectauditModelList).then((resp) => {
+          this.$message.success("创建成功！");
+          this.TaskDialogVisible = false;
+          this.queryInfo.condition.managementProjectUuid = this.active_project;
+          this.getmodelTaskList(this.queryInfo);
+          this.task = 1;
+        });
+      } else {
+        this.$message.info("请选择要引入的模型!")
+      }
     },
     //新增自建任务上传附件
     handleChangePic(file, fileList) {
@@ -1042,7 +1043,6 @@ export default {
             }).then((resp) => {
               if (resp.data.code == 0) {
                 this.$message.success("上传成功！");
-                console.log(resp.data);
                 loading.close();
                 this.Upload_file = resp.data.data;
 
@@ -1087,12 +1087,12 @@ export default {
     // 编辑成功按钮
     editTaskSelfBtn() {
       if (this.fileList.length > 0) {
-         const loading = this.$loading({
-              lock: true,
-              text: "上传中",
-              spinner: "el-icon-loading",
-              background: "transparent",
-            });
+        const loading = this.$loading({
+          lock: true,
+          text: "上传中",
+          spinner: "el-icon-loading",
+          background: "transparent",
+        });
         let formData = new FormData();
         // formData.append("file", this.file.raw);
         this.fileList.forEach((item) => {
@@ -1235,8 +1235,8 @@ export default {
       });
     },
     // 附件下载
-    enclosureDownload(id) {
-      console.log(id);
+    enclosureDownload(id, name) {
+      const fileName = name.split('.')[0];
       let formData = new FormData();
       formData.append("fileId", id);
       this.$axios({
@@ -1257,7 +1257,7 @@ export default {
           if ("download" in document.createElement("a")) {
             // 非IE下载
             const elink = document.createElement("a");
-            elink.download = fileName; //下载后文件名
+            elink.download = name; //下载后文件名
             elink.style.display = "none";
             elink.href = window.URL.createObjectURL(blob);
             document.body.appendChild(elink);

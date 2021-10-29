@@ -199,7 +199,7 @@ export default {
           peopleName:'',
         },
         pageNo: 1,
-        pageSize: 5,
+        pageSize: 10,
       },
       modelQuery: {
         condition: {
