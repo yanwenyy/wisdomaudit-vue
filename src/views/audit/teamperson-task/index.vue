@@ -4,7 +4,7 @@
       <el-tab-pane label="组员维护" name="first" style="padding: 1%">
         <el-row :gutter="24">
           <el-col :span="15">
-            <el-button v-if="userRole !=1" type="primary" @click="addgroupMember()"
+            <el-button type="primary" @click="addgroupMember()"
               >组员维护</el-button
             >
           </el-col>
