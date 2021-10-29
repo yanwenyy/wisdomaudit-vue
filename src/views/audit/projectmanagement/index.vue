@@ -232,7 +232,7 @@
               </el-col>
             </el-form-item>
             <el-col :span="15">
-              <el-form-item label="设置组长">123</el-form-item>
+              <el-form-item label="设置组长">&nbsp;&nbsp;</el-form-item>
             </el-col>
           </el-row>
           <el-table
@@ -242,9 +242,9 @@
             class="projectTable"
             :header-cell-style="{'background-color': '#F4FAFF',}"
           >
-            <el-table-column align="center" label="项目编号" prop="projectCode" width="110">
+            <el-table-column  label="项目编号" prop="projectCode" width="110">
             </el-table-column>
-            <el-table-column align="center" prop="auditOrgName" label="被审计单位" width="330">
+            <el-table-column  prop="auditOrgName" label="被审计单位" width="330">
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'auditList.' + scope.$index + '.auditOrgName'"
@@ -277,7 +277,6 @@
               prop="projectChargemanName"
               label="分配组长"
               width="330"
-              align="center"
             >
               <template slot-scope="scope">
                 <el-form-item
@@ -972,58 +971,7 @@ export default {
       editDialogVisible: false,
       input3: "",
       project: [],
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-        },
-      ],
+      tableData: [],
       //编辑专项表单数据
       editProjectManagement: {
         projectCode: "",
@@ -1444,6 +1392,18 @@ export default {
           row.auditOrgName = this.loadaudittorgoptions[i].orgName;
         }
       }
+
+        //添加专项table数组根据某一个字段去重
+      var result = [];
+      var obj = {};
+      for (let i = 0; i < this.addProjectManagement.auditList.length; i++) {
+        if (!obj[this.addProjectManagement.auditList[i].auditOrgUuid] || !obj[this.addProjectManagement.auditList[i].projectChargemanID]) {
+          result.push(this.addProjectManagement.auditList[i]);
+          obj[this.addProjectManagement.auditList[i].auditOrgUuid] = true;
+          obj[this.addProjectManagement.auditList[i].projectChargemanID] = true;
+        }
+      }
+      this.addProjectManagement.auditList = result;
     },
     //专项项目负责人下拉框事件
     LeaderSelect(row) {
@@ -1452,6 +1412,25 @@ export default {
           row.projectChargemanName = this.projectpeopleoptions[i].realName;
         }
       }
+      // console.log(this.addProjectManagement.auditList);
+      // console.log(row);
+      // this.addProjectManagement.auditList.forEach(item =>{
+      //   if(item.auditOrgUuid == row.auditOrgUuid && item.projectChargemanID == row.projectChargemanID){
+      //     alert(123)
+      //   }
+      // })
+      //添加专项table数组根据某一个字段去重
+      var result = [];
+      var obj = {};
+      for (let i = 0; i < this.addProjectManagement.auditList.length; i++) {
+        if (!obj[this.addProjectManagement.auditList[i].auditOrgUuid] || !obj[this.addProjectManagement.auditList[i].projectChargemanID]) {
+          result.push(this.addProjectManagement.auditList[i]);
+          obj[this.addProjectManagement.auditList[i].auditOrgUuid] = true;
+          obj[this.addProjectManagement.auditList[i].projectChargemanID] = true;
+        }
+      }
+      this.addProjectManagement.auditList = result;
+      
     },
     // 编辑专项项目table负责人下拉框事件
     LeaderSelectEdit(row) {
@@ -1460,7 +1439,18 @@ export default {
           row.projectChargemanID = this.projectpeopleoptions[j].id;
         }
       }
-      console.log(this.addProjectManagement);
+
+       //编辑专项table数组根据某一个字段去重
+      var result = [];
+      var obj = {};
+      for (let i = 0; i < this.addProjectManagement.auditList.length; i++) {
+        if (!obj[this.addProjectManagement.auditList[i].auditOrgUuid] || !obj[this.addProjectManagement.auditList[i].projectChargemanID]) {
+          result.push(this.addProjectManagement.auditList[i]);
+          obj[this.addProjectManagement.auditList[i].auditOrgUuid] = true;
+          obj[this.addProjectManagement.auditList[i].projectChargemanID] = true;
+        }
+      }
+      this.addProjectManagement.auditList = result;
     },
 
     addSave(form) {

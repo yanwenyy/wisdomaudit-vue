@@ -169,7 +169,7 @@ import {
 export default {
   components: {
     TaskMaintenance,
-    Pagination
+    Pagination,
   },
   // props:{
   //   projectNum:[],
@@ -196,10 +196,10 @@ export default {
         condition: {
           managementProjectUuid: "",
           peopleRole: "2",
-          peopleName:'',
+          peopleName: "",
         },
         pageNo: 1,
-        pageSize: 5,
+        pageSize: 10,
       },
       modelQuery: {
         condition: {
@@ -275,10 +275,10 @@ export default {
     // this.getmodelTaskList(this.queryInfo);
   },
   methods: {
-    queryName(){
-       this.query.condition.managementProjectUuid = this.active_project;
-        // 组员维护组员列表接口
-        this.projectMember(this.query);
+    queryName() {
+      this.query.condition.managementProjectUuid = this.active_project;
+      // 组员维护组员列表接口
+      this.projectMember(this.query);
     },
     filterMethod(query, item) {
       return item.label.indexOf(query) > -1;
@@ -319,14 +319,48 @@ export default {
     },
     //新增组员确认事件
     saveGroupMember() {
-      this.savedisabled = true;
-      editprojectMembershipList(this.updataPerson).then((resp) => {
-        this.$message.success("修改成功！");
-        this.addgroupDialog = false;
-        this.query.condition.managementProjectUuid = this.active_project;
-        // 组员维护接口
-        this.projectMember(this.query);
-      });
+      console.log(this.updataPerson);
+
+      if (this.updataPerson.projectId == "") {
+        this.updataPerson.projectId = this.active_project;
+        this.updataPerson.projectMemberships = [];
+        for (let i = 0; i < this.peopleSelection.length; i++) {
+          this.updataPerson.projectMemberships.push({
+            peopleRole: 2,
+            isLiaison: 0,
+            managementProjectUuid: this.active_project,
+            peopleTableUuid: this.peopleSelection[i].peopleTableUuid,
+            projectMembershipUuid:
+              this.peopleSelection[i].projectMembershipUuid,
+          });
+        }
+        this.savedisabled = true;
+        editprojectMembershipList(this.updataPerson).then((resp) => {
+          this.$message.success("修改成功！");
+          this.addgroupDialog = false;
+          this.query.condition.managementProjectUuid = this.active_project;
+          // 组员维护接口
+          this.projectMember(this.query);
+        });
+      } else {
+        this.savedisabled = true;
+        editprojectMembershipList(this.updataPerson).then((resp) => {
+          this.$message.success("修改成功！");
+          this.addgroupDialog = false;
+          this.query.condition.managementProjectUuid = this.active_project;
+          // 组员维护接口
+          this.projectMember(this.query);
+        });
+      }
+
+      // this.savedisabled = true;
+      // editprojectMembershipList(this.updataPerson).then((resp) => {
+      //   this.$message.success("修改成功！");
+      //   this.addgroupDialog = false;
+      //   this.query.condition.managementProjectUuid = this.active_project;
+      //   // 组员维护接口
+      //   this.projectMember(this.query);
+      // });
     },
     // 删除当前人员
     deleteRow(row, rows) {
@@ -360,7 +394,7 @@ export default {
         this.tableData = resp.data.records;
         this.personTableList = resp.data;
         this.total = resp.data.total;
-        console.log(this.personTableList);
+        // console.log(this.personTableList);
         for (let i = 0; i < this.tableData.length; i++) {
           this.tableData[i].isLiaison = this.tableData[i].isLiaison + "";
         }
@@ -404,8 +438,8 @@ export default {
           });
           this.query.condition.managementProjectUuid = this.active_project;
           this.loading = false;
-          this.projectMember(this.query);
         });
+         this.projectMember(this.query);
         // console.log(this.tableData);
       });
     },
