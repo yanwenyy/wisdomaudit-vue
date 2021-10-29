@@ -159,19 +159,20 @@
             </el-table-column>
 
             <!-- 状态 -->
-            <!-- <el-table-column prop="resultsNumber"
+            <el-table-column prop="resultsNumber"
+                             align="center"
                              label="运行状态">
               <template slot-scope="scope">
                 {{
                   scope.row.runStatus == 0
                     ? "未开始"
                     : scope.row.runStatus == 1
-                    ? "执行中"
+                    ? "运行中"
                     : scope.row.runStatus == 2
                     ? "已完成":'运行失败'
                 }}
               </template>
-            </el-table-column> -->
+            </el-table-column>
 
             <el-table-column label="操作"
                              align="center"
@@ -242,7 +243,7 @@
                style="padding-bottom: 59px">
       <div class="title_dlag">查看结果</div>
 
-      <div class="dlag_conter">
+      <div class="dlag_conter2">
         <!-- 结果分类  -->
         <el-row :gutter="24">
           <ul class="status_data">
@@ -283,23 +284,105 @@
                   :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                   @selection-change="handleSelectionChange_operation">
           >
+          <el-table-column type="selection"
+                           width="55">
+          </el-table-column>
+
+          <!-- 动态 -->
           <el-table-column v-for="(item,key) in status_data_list[0].columns"
                            :key="key"
                            :prop="item"
                            :label="item"
                            align="center">
           </el-table-column>
+
+          <!-- 固定 -->
+          <!-- 是否问题 -->
+          <el-table-column prop="addTime"
+                           align="center"
+                           label="是否问题">
+            <template slot-scope="scope">
+              {{  scope.row.createTime }}
+            </template>
+          </el-table-column>
+
+          <!-- 核实人 -->
+          <el-table-column prop="addTime"
+                           align="center"
+                           label="核实人">
+            <template slot-scope="scope">
+              {{  scope.row.createTime }}
+            </template>
+          </el-table-column>
+
+          <!-- 核实信息-->
+          <el-table-column prop="addTime"
+                           align="center"
+                           label="核实信息">
+            <template slot-scope="scope">
+              {{  scope.row.createTime }}
+            </template>
+          </el-table-column>
+
+          <el-table-column prop=""
+                           align="center"
+                           label=附件>
+            <template slot-scope="scope">
+              <!-- 有附件 -->
+              <div class="update"
+                   v-if="scope.row.enclosureCount !==0"
+                   @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)">
+                <div class="update_icon">
+                  <svg t="1631877671204"
+                       class="icon"
+                       viewBox="0 0 1024 1024"
+                       version="1.1"
+                       xmlns="http://www.w3.org/2000/svg"
+                       p-id="9939"
+                       width="200"
+                       height="200">
+                    <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
+                          fill="#FD9D27"
+                          p-id="9940"></path>
+                  </svg>
+                </div>
+                <span>{{scope.row.enclosureCount}}</span>
+              </div>
+              <!-- 没有附件 -->
+              <div class="update"
+                   v-else>
+                <div class="update_icon">
+                  <svg t="1631877671204"
+                       class="icon"
+                       viewBox="0 0 1024 1024"
+                       version="1.1"
+                       xmlns="http://www.w3.org/2000/svg"
+                       p-id="9939"
+                       width="200"
+                       height="200">
+                    <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
+                          fill="#FD9D27"
+                          p-id="9940"></path>
+                  </svg>
+                </div>
+                <span>{{scope.row.enclosureCount}}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <!-- 固定 end -->
+
         </el-table>
         <!-- 表单 end-->
 
         <!-- 分页 -->
         <div class="page">
-          <el-pagination background
-                         layout="prev, pager, next"
+          <el-pagination @size-change="handleSizeChange_toatl"
                          :current-page="this.status_data_list_data.current"
                          @current-change="handleCurrentChange_toatl"
                          :page-size="this.status_data_list_data.size"
-                         :total="this.status_data_list_data.total"></el-pagination>
+                         :total="this.status_data_list_data.total"
+                         layout="total, sizes, prev, pager, next, jumper">
+          </el-pagination>
 
         </div>
         <!-- 分页 end-->
@@ -317,18 +400,20 @@
     <!-- 结果数 核实明细结果  -->
     <el-dialog width="40%"
                @close="resetForm_verify('verify')"
-               close=""
                popper-class="status_data_dlag_verify"
                :visible.sync="dialogVisible_data_verify"
                style="padding-bottom: 59px">
       <div class="title_dlag">核实结果</div>
 
       <div class="dlag_conter3 verify">
-        <el-form>
+        <el-form ref="verify"
+                 :rules='rules_verify'
+                 :model="verify"
+                 :inline="false">
           <!-- 是否问题-->
-          <el-form-item prop="isProbleam">
-            <p>是否问题：</p>
-            <el-select v-model="verify.isProbleam"
+          <el-form-item prop="isProbleam_data">
+            <p><span>*</span>是否问题：</p>
+            <el-select v-model="verify.isProbleam_data"
                        @change="isProbleam_change">
               <el-option v-for="item in isProbleam"
                          :key="item.value"
@@ -338,7 +423,7 @@
             </el-select>
           </el-form-item>
           <!-- 核实信息 -->
-          <el-form-item prop="dataName">
+          <el-form-item>
             <p>核实信息：</p>
             <el-input type="textarea"
                       v-model="verify.handleIdea"
@@ -374,8 +459,9 @@
                v-if="success_btn2==0">
             <el-button size="small"
                        type="primary"
-                       @click="verify_save()">保 存</el-button>
+                       @click="verify_save('verify')">保 存</el-button>
             <el-button size="small"
+                       plain
                        @click="dialogVisible_data_verify = false">返回</el-button>
           </div>
         </span>
@@ -1072,7 +1158,7 @@ export default {
 
 
       verify: {
-        isProbleam: '',//是否问题
+        isProbleam_data: '',//是否问题
         handleIdea: '',//核实信息
         resultDetailIds: '',//核实结果id
       },
@@ -1094,6 +1180,24 @@ export default {
       fileList_Delet: [],//删除  储存
       success_btn2: 0,//文件上传完成
       edit_file_list2: [],
+
+
+      // 结果数分页
+      basePageParam_query: {
+        pageNo: 1,
+        pageSize: 10,
+      },
+
+      // 核实验证
+      rules_verify: {
+        isProbleam_data: [{ required: true, message: '请选择问题', trigger: 'change' }],
+        handleIdea: [{ required: true, message: '请输入核实信息', trigger: 'blur' }],
+      },
+
+      li: [
+        { lhg: '111', id: '1' },
+        { lhg: '222', id: '2' },
+      ],
     };
   },
   computed: {},
@@ -1152,16 +1256,16 @@ export default {
 
   },
   methods: {
-
-
     // 模型/自建任务列表  
     list_data (params) {
-      this.loading = true;
+      // this.loading = true;
       task_pageList(params).then(resp => {
         this.tableData = resp.data;
-        console.log(this.tableData);
+        // console.log(this.tableData);
         this.tableData_list = resp.data.records
-        this.loading = false
+
+        console.log(this.tableData_list);
+        // this.loading = false
       })
     },
     handleSizeChange_zijian (val) {
@@ -1188,7 +1292,6 @@ export default {
       task_personLiable().then(resp => {
         this.save_zj_query.peopleName = resp.data.realName//责任人name
         this.save_zj_query.peopleTableUuid = resp.data.userId//责任人id
-        console.log(resp.data);
         this.disabled = true
       })
     },
@@ -1239,7 +1342,7 @@ export default {
               })
               this.$axios({
                 method: 'post',
-                url: 'http://localhost:9529/wisdomaudit/attachment/fileUploads',
+                url: '/wisdomaudit/attachment/fileUploads',
                 data: formData,
                 headers: {
                   'Content-Type': 'multipart/form-data'
@@ -1314,7 +1417,7 @@ export default {
 
           this.$axios({
             method: 'post',
-            url: 'http://localhost:9529/wisdomaudit/attachment/fileUploads',
+            url: '/wisdomaudit/attachment/fileUploads',
             data: formData,
             headers: {
               'Content-Type': 'multipart/form-data'
@@ -1552,7 +1655,7 @@ export default {
       formData.append('fileId', id)
       this.$axios({
         method: 'post',
-        url: 'http://localhost:9529/wisdomaudit/auditPreviousDemandData/downloadByFileId',
+        url: '/wisdomaudit/auditPreviousDemandData/downloadByFileId',
         // url: 'http://localhost:9529/wisdomaudit/attachment/xiazai',
         data: formData,
         responseType: 'blob',
@@ -1631,13 +1734,11 @@ export default {
                 tableType: 1,//  主副表标识, 主表 = 1、副表1 = 2、副表2 = 3···
                 dataCount: 1
               },
-              pageNo: 1, //当前页数
-              pageSize: 10 //分页数量
+              pageNo: this.basePageParam_query.pageNo, //当前页数
+              pageSize: this.basePageParam_query.pageSize //分页数量
             },
             filterSql: "undefined",
           }
-
-
           this.data_tab_list(params3)// 结果列表
         }
       })
@@ -1660,8 +1761,8 @@ export default {
             tableType: this.status_data[this.date_index].tableType,//  主副表标识, 主表 = 1、副表1 = 2、副表2 = 3···
             dataCount: 1
           },
-          pageNo: 1, //当前页数
-          pageSize: 10 //分页数量
+          pageNo: this.basePageParam_query.pageNo, //当前页数
+          pageSize: this.basePageParam_query.pageSize //分页数量
         },
         filterSql: "undefined",
       }
@@ -1673,11 +1774,46 @@ export default {
       task_selectTable(params).then(resp => {
         // this.loading = true
         this.status_data_list_data = resp.data;
+
         this.status_data_list = resp.data.records
+
+        let arr = this.status_data_list[0].result
+        let arr2 = this.li
+
+
+        if (arr) {
+          arr.forEach(item => {
+            const data = arr2.forEach(i => item.onlyuuid == i.id)
+            return {
+              ...item,
+              ...data,
+              // products: data ? data.products : []
+            }
+          })
+          console.log(arr);
+          return
+
+        }
+
+
+        this.status_data_list = this.status_data_list.concat(this.lhg)
+        this.status_data_list
+
+        return
+        this.status_data_list.forEach(item => {
+          this.$set(item, 'yes_no', false)//是否问题
+        })
+        // this.tableData_list = this.tableData_list.concat(this.li)
+
         console.log(this.status_data_list);
         // this.loading = false
 
       })
+    },
+
+    // 结果分页
+    handleSizeChange_toatl (val) {
+      this.basePageParam_query.pageSize = val;
     },
     // 结果分页
     handleCurrentChange_toatl (val) {
@@ -1695,7 +1831,7 @@ export default {
             dataCount: 1
           },
           pageNo: val, //当前页数
-          pageSize: 10 //分页数量
+          pageSize: this.basePageParam_query.pageSize //分页数量
         },
         filterSql: "undefined",
       }
@@ -1708,27 +1844,30 @@ export default {
     // 查看结果数
     data_num_click (data) {
       this.paramTaskUuid = data.paramTaskUuid
-      data.runStatus = 2
       if (data.runStatus == 2) {
         this.dialogVisible_data_num = true;//显示结果数
         this.jg_title = data.auditModelName
         let params2 = {
-          // runTaskRelUuid: this.paramTaskUuid,
-          runTaskRelUuid: '8ee17c4b77c51747207aab278d804381'
+          runTaskRelUuid: this.paramTaskUuid,
+          // runTaskRelUuid: '8ee17c4b77c51747207aab278d804381'
         }
         this.data_tab(params2);//结果分类
       } else {
         this.$message.info("请选择已经完成的查看");
+        return
       }
     },
-    // 结果数 核实上传关闭
-    resetForm_verify (verify) {
-      // this.$refs[verify].resetFields();
-      this.verify = '';//清空输入
-      this.$refs.upload2.clearFiles();
-      // this.save_zj_query.taskDescription = '';//清空备忘录
-      // this.save_zj_query.taskName = '';//清空name
-      this.success_btn2 = 0;//显示加载按钮  0成功  1 loaging
+    // 结果数 核实显示弹窗
+    task_verify () {
+      // if (this.multipleSelection_data_list.length == 0) {
+      //   this.$message.info("请选择一条进行数据核实");
+      //   return false
+      // }
+      this.dialogVisible_data_verify = true;//显示核实结果
+    },
+    // 是否问题 change
+    isProbleam_change (val) {
+      this.verify.isProbleam = val
     },
 
     // 新增上传附件
@@ -1748,6 +1887,101 @@ export default {
         //   this.fileList_Delet.push(file)
         // }
       }
+    },
+    // 结果数 核实上传关闭
+    resetForm_verify (verify) {
+      // this.$refs[verify].resetFields();
+      this.verify = '';//清空输入
+      this.$refs.upload2.clearFiles();
+      // this.save_zj_query.taskDescription = '';//清空备忘录
+      // this.save_zj_query.taskName = '';//清空name
+      this.success_btn2 = 0;//显示加载按钮  0成功  1 loaging
+    },
+
+
+    // 核实上传 保存附件
+    verify_save (verify) {
+      this.$refs[verify].validate((valid) => {
+        if (valid) {
+          if (this.fileList2.length > 0) {
+            this.success_btn2 = 1;//显示加载按钮  0成功  1 loaging
+            // 上传
+            let formData = new FormData()
+            formData.append('file', this.file.raw)
+            this.fileList2.forEach((item) => {
+              formData.append('files', item.raw);
+            })
+            this.$axios({
+              method: 'post',
+              url: '/wisdomaudit/attachment/fileUploads',
+              data: formData,
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            }).then(resp => {
+              // 上传成功
+              if (resp.data.code == 0) {
+                this.success_btn2 = 0;//显示加载按钮  0成功  1 loaging
+                // console.log(resp.data.data);
+                this.Upload_file2 = resp.data.data;//上传成功大的文件
+
+                // var arr = this.multipleSelection_data_list.map(function (item, index) {
+                //   return item.resultDetailId;
+                // }).join(",");
+                // console.log(this.multipleSelection_data_list);
+                console.log(this.multipleSelection_data_list);
+                var arr = this.multipleSelection_data_list.map(function (item, index) {
+                  return item.onlyuuid;
+                }).join(",");
+                console.log(arr);
+                // 提交
+                let resultDetailProjectRelDto = {
+                  handleIdea: this.verify.handleIdea,//核实信息
+                  isProbleam: this.verify.isProbleam_data, //是否问题（0：否 1：是 ）
+                  resultDetailIds: arr,//核实明细结果id （多个）
+                  attachmentList: this.Upload_file2,//上传成功de 的文件
+                  projectId: this.managementProjectUuid,
+                  runTaskRelUuid: this.paramTaskUuid,//结果id
+
+                };
+                this.verify_preservation(resultDetailProjectRelDto)//保存
+
+              } else {
+                // 上传失败
+                this.$message({
+                  message: resp.data.msg,
+                  type: 'error'
+                });
+                this.success_btn = 1;//显示加载按钮  0成功  1 loaging
+              }
+            })//上传 end
+          } else {
+            console.log('直接保存');
+            // 直接保存
+
+            console.log(this.multipleSelection_data_list);
+            var arr = this.multipleSelection_data_list.map(function (item, index) {
+              return item.onlyuuid;
+            }).join(",");
+            console.log(arr);
+
+
+            let resultDetailProjectRelDto = {
+              handleIdea: this.verify.handleIdea,//核实信息
+              isProbleam: this.verify.isProbleam_data, //是否问题（0：否 1：是 ）
+              resultDetailIds: arr,//核实明细结果id （多个）
+              attachmentList: this.edit_file_list2,//上传成功的 的文件
+              projectId: this.managementProjectUuid,
+              runTaskRelUuid: this.paramTaskUuid,//结果id
+
+            };
+            this.verify_preservation(resultDetailProjectRelDto)//保存
+          }
+        } else {
+          this.$message.info("请填写信息");
+          return false;
+        }
+      });
     },
 
     // 核实保存
@@ -1770,65 +2004,7 @@ export default {
     },
 
 
-    // 核实上传 保存附件
-    verify_save (resp, file, fileList) {
-      if (this.fileList2.length > 0) {
-        this.success_btn2 = 1;//显示加载按钮  0成功  1 loaging
-        // 上传
-        let formData = new FormData()
-        formData.append('file', this.file.raw)
-        this.fileList2.forEach((item) => {
-          formData.append('files', item.raw);
-        })
-        this.$axios({
-          method: 'post',
-          url: 'http://localhost:9529/wisdomaudit/attachment/fileUploads',
-          data: formData,
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }).then(resp => {
-          // 上传成功
-          if (resp.data.code == 0) {
-            this.success_btn2 = 0;//显示加载按钮  0成功  1 loaging
-            // console.log(resp.data.data);
-            this.Upload_file2 = resp.data.data;//上传成功大的文件
 
-
-
-            // 提交
-            let resultDetailProjectRelDto = {
-              handleIdea: this.verify.handleIdea,//核实信息
-              isProbleam: this.verify.isProbleam, //是否问题（0：否 1：是 ）
-              resultDetailIds: arr,//核实明细结果id （多个）
-
-            };
-            this.verify_preservation(resultDetailProjectRelDto)//保存
-
-
-          } else {
-            // 上传失败
-            this.$message({
-              message: resp.data.msg,
-              type: 'error'
-            });
-            this.success_btn = 1;//显示加载按钮  0成功  1 loaging
-          }
-        })//上传 end
-      } else {
-        console.log('直接保存');
-        // 直接保存
-        var arr = this.multipleSelection_data_list.map(function (item, index) {
-          return item.resultDetailId;
-        }).join(",");
-        let resultDetailProjectRelDto = {
-          handleIdea: this.verify.handleIdea,//核实信息
-          isProbleam: this.verify.isProbleam, //是否问题（0：否 1：是 ）
-          resultDetailIds: arr,//核实明细结果id （多个）
-        };
-        this.verify_preservation(resultDetailProjectRelDto)//保存
-      }
-    },
     // // 核实 确认
     // query () {
     //   if (this.multipleSelection_data_list.length == 0) {
@@ -1836,27 +2012,16 @@ export default {
     //     return
     //   }
     // },
-    // 结果数 核实显示弹窗
-    task_verify () {
-      // if (this.multipleSelection_data_list.length == 0) {
-      //   this.$message.info("请选择一条进行数据核实");
-      //   return false
-      // }
-      this.dialogVisible_data_verify = true;//显示核实结果
-    },
-    // 是否问题 change
-    isProbleam_change (val) {
-      this.verify.isProbleam = val
-    },
+
 
 
     //核实下载
-    download () {
-      // if (this.multipleSelection_data_list.length == 0) {
-      //   this.$message.info("请选择一条进行数据核实");
-      //   return false
-      // }
-    },
+    // download () {
+    // if (this.multipleSelection_data_list.length == 0) {
+    //   this.$message.info("请选择一条进行数据核实");
+    //   return false
+    // }
+    // },
 
 
 
@@ -2107,20 +2272,21 @@ export default {
       })
     },
     // 引用知识库
-    quote_knowledge () {
-      console.log('引用知识库');
-    },
+    // quote_knowledge () {
+    //   console.log('引用知识库');
+    // },
     // 设置参数
     setParameters (data) {
-      // this.all_setting();// 全部参数
       this.modelId = data.modelId;
       this.auditTaskUuid = data.auditTaskUuid;
       this.auditModelUuid = data.paramTaskUuid;
-      // let modelUuids = [this.modelId];
-      let modelUuids = ['8ee17c4b77c51747207aab278d804381'];
+      let modelUuids = [this.modelId];
+      // let modelUuids = ['feee90e402b7b046610870b0df6a7510'];
       task_findModelList(modelUuids).then(resp => {
         console.log(resp.data);
         if (resp.code == 0) {
+
+          // 有设置参数
           if (resp.data[0].parammModelRel.length !== 0) {
             console.log(resp);
             this.arr = [JSON.parse(resp.data[0].parammModelRel[0].paramValue)];
@@ -2138,9 +2304,25 @@ export default {
               );
             }, 200);
           } else {
-            this.$message({
-              message: '暂无参数设置',
-            });
+            // 没有设置参数
+            console.log(resp);
+            this.arr = [];
+            this.sql = resp.data[0].sqlValue;
+            this.setParametersDialogVisible = true;//显示设置参数
+            //  展现参数输入界面
+            const timestamp = new Date().getTime();
+            this.paramDrawUuid = timestamp;
+            let _this = this
+            setTimeout(() => {
+              _this.$refs.paramDrawRefNew.createParamNodeHtml(
+                _this.paramDrawUuid,
+                "",
+                "notModelPreview"
+              );
+            }, 200);
+            // this.$message({
+            //   message: '暂无参数设置',
+            // });
           }
         }
         else {
@@ -2154,7 +2336,6 @@ export default {
     },
     //运行
     play_data () {
-      // console.log(this.$refs.paramDrawRefNew.paramInfoArr)
       let arr1 = this.arr;//
       let arr2 = this.$refs.paramDrawRefNew.paramInfoArr;
       let arr3 = [];//储存合并的值
@@ -2174,10 +2355,8 @@ export default {
         sourceUuid: this.modelId,
         settingInfo: JSON.stringify(settingInfo)
       }
-      this.run(runTaskRel);//运行
-    },
-    // 运行
-    run (runTaskRel) {
+
+      // 运行接口
       Task_run(runTaskRel).then(resp => {
         console.log(resp.data);
         this.runTaskRelUuid = resp.data;//参数任务id
@@ -2187,16 +2366,8 @@ export default {
             type: "success",
           });
           this.setParametersDialogVisible = false;//关闭设置参数
-          // 获取时间
-          // let yy = new Date().getFullYear();
-          // let mm = new Date().getMonth() + 1;
-          // let dd = new Date().getDate();
-          // let hh = new Date().getHours();
-          // let mf = new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes();
-          // let ss = new Date().getSeconds() < 10 ? '0' + new Date().getSeconds() : new Date().getSeconds();
-          // this.systemTime = yy + '-' + mm + '-' + dd + ' ' + hh + ':' + mf + ':' + ss;
 
-          this.systemTime = new Date()
+          this.systemTime = new Date() // 获取时间
           let params2 = {
             // auditTask: {
             // paramTaskContent:,
@@ -2207,6 +2378,8 @@ export default {
             // }
           }
           this.update_setting(params2)//update
+
+
         } else {
           this.$message({
             message: resp.msg,
@@ -2214,6 +2387,7 @@ export default {
           });
         }
       })
+
     },
 
     // 更新状态
@@ -2361,6 +2535,10 @@ export default {
 @import "../../../assets/styles/css/lhg.css";
 @import "../../../assets/styles/css/yw.css";
 
+.sjzl >>> .is-plain {
+  background: #ffffff !important;
+  border: 1px solid #dcdfe6 !important;
+}
 /* 责任人 */
 .dlag_conter >>> .el-input.is-disabled .el-input__inner {
   color: #606266 !important;
@@ -2652,5 +2830,9 @@ export default {
 .cxjg >>> .el-button {
   background: #ffffff;
   border: 1px solid #dcdfe6;
+}
+
+.verify >>> .el-form-item__content span {
+  color: red;
 }
 </style>

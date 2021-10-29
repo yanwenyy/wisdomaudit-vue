@@ -20,7 +20,7 @@
                         v-model="search_title"> </el-input>
               <div class="search_icon"
                    style="background: rgb(12, 135, 214) !important;"
-                   @click="search_list()">
+                   @click="search_list(1)">
                 <i class="el-icon-search"
                    style="color: rgba(255, 255, 255, 1);"></i>
               </div>
@@ -140,14 +140,7 @@
                          layout="total, sizes, prev, pager, next, jumper"
                          :total="this.tableData.total">
           </el-pagination>
-          <!-- <el-pagination background
-                         :hide-on-single-page="true"
-                         layout="prev, pager, next"
-                         :page-sizes="[2, 4, 6, 8]"
-                         :current-page="this.tableData.current"
-                         @current-change="handleCurrentChange_model"
-                         :page-size="this.tableData.size"
-                         :total="this.tableData.total"></el-pagination> -->
+
         </div>
         <!-- 分页 end-->
       </el-tab-pane>
@@ -283,6 +276,7 @@
 
     <!-- 新增资料 编辑资料-->
     <el-dialog width="60%"
+               @close="close_model"
                :visible.sync="dialogVisible"
                style="padding-bottom: 59px; ">
       <div class="title_dlag">{{title}}</div>
@@ -315,6 +309,7 @@
                       style="width:260px;"></el-input>
           </el-form-item>
         </el-form>
+        <!-- 获取资料清单 -->
         <el-form label-width="80px">
           <div style="display:flex;align-items: center;padding:10px 0;box-sizing: border-box;">
             <p>获取资料清单：</p>
@@ -363,7 +358,7 @@
                 <template slot-scope="scope">
 
                   <div class="update"
-                       @click="open_enclosure_details(scope.row.auditTaskUuid)">
+                       @click="open_file_details(scope.row.attachmentList)">
                     <i class="update_icon">
                       <svg t="1631877671204"
                            class="icon"
@@ -378,7 +373,7 @@
                               p-id="9940"></path>
                       </svg>
                     </i>
-                    <span>{{scope.row.count}}</span>
+                    <span>{{scope.row.attachmentList.length}}</span>
 
                   </div>
                 </template>
@@ -453,19 +448,11 @@
 
             <el-pagination @size-change="handleSizeChange_details"
                            @current-change="handleCurrentChange_details"
-                           :current-page="this.edit_details.current"
-                           :page-size="this.edit_details.size"
-                           layout="total, sizes, prev, pager, next, jumper"
-                           :total="this.edit_details.total">
-            </el-pagination>
-
-            <!-- <el-pagination background
-                           layout="prev, pager, next"
                            :current-page="this.edit_details.pageCurrent"
-                           @current-change="handleCurrentChange_details"
                            :page-size="this.edit_details.pageSize"
-                           :total="this.edit_details.pageTotal"></el-pagination> -->
-
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="this.edit_details.pageTotal">
+            </el-pagination>
           </div>
           <!-- 分页 end-->
         </div>
@@ -664,7 +651,8 @@
                style="padding-bottom: 59px; ">
       <div class="title_dlag">操作</div>
 
-      <div class="dlag_conter3">
+      <div class="dlag_conter3"
+           style="border:1px solid green">
 
         <div class="tt">资料列表</div>
 
@@ -912,7 +900,29 @@
                :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                :visible.sync="dialogVisibl_enclosure_details"
                style="padding-bottom: 59px; ">
+
+      <!-- 0模版资料 -->
+      <el-table :data="enclosure_moban_list"
+                v-if="moban_list==0"
+                style="width: 100%;">
+        <el-table-column prop="fileName"
+                         align="center"
+                         label="文件名称">
+          <template slot-scope="scope">
+            <el-button @click="download(scope.row.attachmentUuid,scope.row.fileName)"
+                       class="file_name"
+                       type="text"
+                       style="color: #1371cc"
+                       size="small">
+              {{ scope.row.fileName }}
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <!-- 附件资料 -->
       <el-table :data="enclosure_details_list"
+                v-if="moban_list==1"
                 style="width: 100%;">
         <!-- <el-table-column prop="dataTaskNumber"
                              label="流水单号">
@@ -1231,6 +1241,9 @@ export default {
       fileList: [],//上传的文件
 
       edit_file_list: [],
+
+      moban_list: 0,//模版附件
+      enclosure_moban_list: [],//模版资料
     }
   },
   computed: {},
@@ -1272,6 +1285,11 @@ export default {
   },
 
   methods: {
+    // 关闭新增
+    close_model () {
+      this.get_out();
+
+    },
     // 新增资料任务时退出
     get_out () {
       operation_addExit().then(resp => {
@@ -1282,6 +1300,8 @@ export default {
     // 资料筛选
     search_list (index) {
       if (index == 1) {
+        // alert('a', this.search_title)
+
         // 未完成
         let params = {
           pageNo: this.params.pageNo,
@@ -1293,10 +1313,10 @@ export default {
         }
         this.list_data_start(params)
       } else {
-        // 已完成
+        // alert('b', this.search_title2)
         // 已完成
         let params2 = {
-          pageNo: this.params.pageNo,
+          pageNo: this.params2.pageNo,
           pageSize: this.params2.pageSize,
           condition: {
             dataTaskNumber: this.projectNumber,
@@ -1429,7 +1449,7 @@ export default {
       // this.add_data.secondLevelDataNumber = '';//二级编号
       // this.add_data.addPeople = '';//添加人
       // this.add_data.addTime = '';//添加日期
-      this.$refs.multipleTable.clearSelection();//清空
+
     },
     // 未完成============================
     // 列表 未完成
@@ -1463,12 +1483,31 @@ export default {
 
       this.add_form.name = '';//清空name
       this.add_form.title = '';//清空title
-      // this.$refs.multipleTable.clearSelection();//清空
       this.dialogVisible = true
       this.title = '新增审计资料任务';
+      this.$nextTick(() => {
+        this.$refs.multipleTable.clearSelection();//清空
+      })
+
       // this.$refs.multipleTable.clearSelection();//
+    },
+
+    // 新增  初始化模版 查看附件
+    open_file_details (list) {
+      console.log(list);
+      this.moban_list = 0;
+      this.enclosure_moban_list = list;//模版资料
+
+      if (this.enclosure_moban_list.length == 0) {
+        this.$message('暂无上传的附件');
+        return false
+      } else {
+        this.dialogVisibl_enclosure_details = true;
+      }
 
     },
+
+
     // 查看附件详情
     open_enclosure_details (id) {
       // 已完成列表 查看详情
@@ -1500,7 +1539,7 @@ export default {
       formData.append('fileId', id)
       this.$axios({
         method: 'post',
-        url: 'http://localhost:9529/wisdomaudit/auditPreviousDemandData/downloadByFileId',
+        url: '/wisdomaudit/auditPreviousDemandData/downloadByFileId',
         // url: 'http://10.10.113.196:1095/wisdomaudit/auditPreviousDemandData/downloadByFileId',
         // url: 'http://localhost:9529/wisdomaudit/attachment/fileDownload',
 
@@ -1870,7 +1909,7 @@ export default {
             })
             this.$axios({
               method: 'post',
-              url: 'http://localhost:9529/wisdomaudit/attachment/fileUploads',
+              url: '/wisdomaudit/attachment/fileUploads',
               data: formData,
               headers: {
                 'Content-Type': 'multipart/form-data'
@@ -2312,7 +2351,7 @@ export default {
       };
       this.edut_details(params_query);//编辑详情
     },
-
+    // 编辑
     edut_details (params_query) {
       // 显示编辑 详情
       data_edit_details(params_query).then(resp => {
