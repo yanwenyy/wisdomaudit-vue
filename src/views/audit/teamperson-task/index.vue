@@ -3,7 +3,7 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="组员维护" name="first" style="padding: 1%">
         <el-row :gutter="24">
-          <el-col :span="15">
+          <el-col :span="17">
             <el-button type="primary" @click="addgroupMember()"
               >组员维护</el-button
             >

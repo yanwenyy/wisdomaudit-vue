@@ -4,22 +4,28 @@
     <el-row>
       <el-col :span="18">
         <!-- 添加按钮 -->
-        <el-button type="primary" @click="addProject">新增项目</el-button>
+        <el-button class="queryBtn"  @click="addProject">新增项目</el-button>
       </el-col>
-      <el-col :span="5">
+      <el-col :span="5" class="search">
         <el-input
           placeholder="请输入项目名称"
           v-model="query.condition.projectName"
-          class="input-with-select"
           @keyup.enter.native="queryName"
         >
-          <el-button
+         </el-input>
+          <!-- <el-button
+            class="queryBtn"
             slot="append"
             type="primary"
             icon="el-icon-search"
             @click="queryName"
-          ></el-button>
-        </el-input>
+          ></el-button> -->
+           <div class="search_icon"
+                 style=" background: rgb(12, 135, 214) !important;"
+                 @click="queryName">
+              <i class="el-icon-search"
+                 style="color: white;   "></i>
+            </div>
       </el-col>
       <!-- <el-col :span="2">
         <el-button
@@ -40,27 +46,27 @@
       :header-cell-style="{'background-color': '#F4FAFF',}"
     >
       <el-table-column type="selection" width="55"> </el-table-column>
-      <el-table-column align="center" prop="projectCode" label="项目编号" width="180">
+      <el-table-column align="center" prop="projectCode" width="105" label="项目编号" show-overflow-tooltip >
       </el-table-column>
-      <el-table-column align="center" prop="projectName" label="审计项目名称" width="180">
+      <el-table-column align="center" prop="projectName" label="审计项目名称" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column align="center" prop="auditOrgName" label="被审计对象">
+      <el-table-column align="center" prop="auditOrgName" label="被审计对象" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column align="center" prop="projectTypeName" label="项目类型">
+      <el-table-column align="center" prop="projectTypeName" label="项目类型" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column align="center" prop="specialName" label="专题"></el-table-column>
-      <el-table-column align="center" prop="fieldName" label="领域"></el-table-column>
-      <el-table-column align="center" prop="projectLeaderName" label="项目负责人">
+      <el-table-column align="center" prop="specialName" label="专题" show-overflow-tooltip></el-table-column>
+      <el-table-column align="center" prop="fieldName" label="领域" show-overflow-tooltip></el-table-column>
+      <el-table-column align="center" prop="projectLeaderName" label="项目负责人" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column align="center" prop="projectChargemanName" label="项目组长">
+      <el-table-column align="center" prop="projectChargemanName" label="项目组长" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column align="center" prop="auditStartData" label="审计期间" width="250">
+      <el-table-column  prop="auditStartData" label="审计期间" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.auditStartData }} - {{ scope.row.auditFinishData }}
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="createUserName" label="创建人"> </el-table-column>
-      <el-table-column align="center" prop="createTime" label="创建日期" width="250">
+      <el-table-column align="center" prop="createUserName" label="创建人" show-overflow-tooltip> </el-table-column>
+      <el-table-column align="center" prop="createTime" label="创建日期" show-overflow-tooltip>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -113,9 +119,11 @@
           :model="addProjectManagement"
           ref="form"
           v-loading="loadingForm"
+          label-position="right"
+          hide-required-asterisk
         >
           <el-row>
-            <el-form-item label="项目编号:" prop="projectCode">
+            <el-form-item label="ㅤ项目编号:" prop="projectCode">
               <el-input
                 placeholder=""
                 v-model="addProjectManagement.projectCode"
@@ -124,7 +132,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="项目类型:" prop="projectTypeName">
+            <el-form-item label="ㅤ项目类型:" prop="projectTypeName">
               <el-select
                 placeholder="请选择"
                 v-model="addProjectManagement.projectTypeName"
@@ -143,7 +151,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="项目名称:" prop="projectName">
+            <el-form-item label="ㅤ项目名称:" prop="projectName">
               <el-input
                 placeholder="请输入"
                 v-model="addProjectManagement.projectName"
@@ -170,7 +178,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="专  题:" prop="specialName">
+            <el-form-item label="ㅤㅤㅤ专题:" prop="specialName">
               <el-select
                 placeholder="请选择"
                 v-model="addProjectManagement.specialName"
@@ -188,7 +196,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="领   域:" prop="fieldName">
+            <el-form-item label="ㅤㅤㅤ领域:" prop="fieldName">
               <el-select
                 placeholder="请选择"
                 v-model="addProjectManagement.fieldName"
@@ -206,7 +214,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="审计期间:" class="zhuandataTime">
+            <el-form-item label="ㅤ审计期间:" class="zhuandataTime">
               <el-col :span="8">
                 <el-form-item prop="auditStartData">
                   <el-date-picker
@@ -232,7 +240,7 @@
               </el-col>
             </el-form-item>
             <el-col :span="15">
-              <el-form-item label="设置组长">&nbsp;&nbsp;</el-form-item>
+              <el-form-item label="ㅤ设置组长:">&nbsp;&nbsp;</el-form-item>
             </el-col>
           </el-row>
           <el-table
@@ -341,9 +349,10 @@
           ref="addjingForm"
           :rules="addprojectjingRules"
           v-loading="loadingForm"
+          hide-required-asterisk
         >
           <el-row>
-            <el-form-item label="项目编号:" prop="projectCode">
+            <el-form-item label="ㅤㅤ项目编号:" prop="projectCode">
               <el-input
                 placeholder=""
                 v-model="addprojectjing.projectCode"
@@ -352,7 +361,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="项目类型:" prop="projectTypeName">
+            <el-form-item label="ㅤ项目类型:" prop="projectTypeName">
               <el-select
                 placeholder="请选择"
                 v-model="addprojectjing.projectTypeName"
@@ -371,7 +380,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="项目名称:" prop="projectName">
+            <el-form-item label="ㅤㅤ项目名称:" prop="projectName">
               <el-input
                 placeholder="请输入"
                 v-model="addprojectjing.projectName"
@@ -398,7 +407,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="专  题:" prop="specialName">
+            <el-form-item label="ㅤㅤㅤ专题:" prop="specialName">
               <el-select
                 placeholder="请选择"
                 v-model="addProjectManagement.specialName"
@@ -416,7 +425,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="领   域:" prop="fieldName">
+            <el-form-item label="ㅤㅤㅤ领域:" prop="fieldName">
               <el-select
                 placeholder="请选择"
                 v-model="addProjectManagement.fieldName"
@@ -461,7 +470,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="项目组长:" prop="projectChargemanName">
+            <el-form-item label="ㅤ项目组长:" prop="projectChargemanName">
               <el-select
                 placeholder="请选择"
                 v-model="addprojectjing.projectChargemanName"
@@ -479,7 +488,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="审计期间:" class="dataTime" required>
+            <el-form-item label="ㅤ审计期间:" class="dataTime" required>
               <el-col :span="8">
                 <el-form-item prop="auditStartData">
                   <el-date-picker
@@ -540,9 +549,10 @@
           :model="addProjectManagement"
           ref="form"
           v-loading="loadingForm"
+           hide-required-asterisk
         >
           <el-row>
-            <el-form-item label="项目编号:" prop="projectCode">
+            <el-form-item label="ㅤ项目编号:" prop="projectCode">
               <el-input
                 placeholder=""
                 v-model="addProjectManagement.projectCode"
@@ -551,7 +561,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="项目类型:">
+            <el-form-item label="ㅤ项目类型:">
               <el-select
                 placeholder="请选择"
                 v-model="addProjectManagement.projectTypeName"
@@ -570,7 +580,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="项目名称:" prop="projectName">
+            <el-form-item label="ㅤ项目名称:" prop="projectName">
               <el-input
                 placeholder="请输入"
                 v-model="addProjectManagement.projectName"
@@ -596,7 +606,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="专  题:" prop="specialName">
+            <el-form-item label="ㅤㅤㅤ专题:" prop="specialName">
               <el-select
                 placeholder="请选择"
                 v-model="addProjectManagement.specialName"
@@ -613,7 +623,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="领   域:" prop="fieldName">
+            <el-form-item label="ㅤㅤㅤ领域:" prop="fieldName">
               <el-select
                 placeholder="请选择"
                 v-model="addProjectManagement.fieldName"
@@ -630,7 +640,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="审计期间:" class="zhuandataTime">
+            <el-form-item label="ㅤ审计期间:" class="zhuandataTime">
               <el-col :span="8">
                 <el-form-item prop="auditStartData">
                   <el-date-picker
@@ -656,7 +666,7 @@
               </el-col>
             </el-form-item>
             <el-col :span="15">
-              <el-form-item label="设置组长">123</el-form-item>
+              <el-form-item label="ㅤ设置组长:">123</el-form-item>
             </el-col>
             <el-table
               :data="addProjectManagement.auditList"
@@ -665,7 +675,7 @@
               class="projectTable"
               :header-cell-style="{'background-color': '#F4FAFF',}"
             >
-              <el-table-column label="项目编号" prop="projectCode" width="110">
+              <el-table-column label="项目编号" prop="projectCode" width="160">
               </el-table-column>
               <el-table-column
                 prop="auditOrgName"
@@ -752,9 +762,10 @@
           :rules="addprojectjingRules"
           ref="editform"
           v-loading="loadingForm"
+          hide-required-asterisk
         >
           <el-row>
-            <el-form-item label="项目编号:" prop="projectCode">
+            <el-form-item label="ㅤ项目编号:" prop="projectCode">
               <el-input
                 placeholder=""
                 v-model="addprojectjing.projectCode"
@@ -763,7 +774,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="项目类型:">
+            <el-form-item label="ㅤ项目类型:">
               <el-select
                 placeholder="请选择"
                 v-model="addprojectjing.projectTypeName"
@@ -782,7 +793,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="项目名称:" prop="projectName">
+            <el-form-item label="ㅤ项目名称:" prop="projectName">
               <el-input
                 placeholder="请输入"
                 v-model="addprojectjing.projectName"
@@ -808,7 +819,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="专  题:" prop="specialName">
+            <el-form-item label="ㅤㅤㅤ专题:" prop="specialName">
               <el-select
                 placeholder="请选择"
                 v-model="addprojectjing.specialName"
@@ -825,7 +836,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="领   域:" prop="fieldName">
+            <el-form-item label="ㅤㅤㅤ领域:" prop="fieldName">
               <el-select
                 placeholder="请选择"
                 v-model="addprojectjing.fieldName"
@@ -868,7 +879,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="项目组长:" prop="projectChargemanName">
+            <el-form-item label="ㅤ项目组长:" prop="projectChargemanName">
               <el-select
                 placeholder="请选择"
                 v-model="addprojectjing.projectChargemanName"
@@ -885,7 +896,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="审计期间:" class="editdataTime">
+            <el-form-item label="ㅤ审计期间:" class="editdataTime">
               <el-col :span="8">
                 <el-form-item prop="auditStartData">
                   <el-date-picker
@@ -1562,6 +1573,7 @@ export default {
   }
 }
 .addzhuanForm {
+  padding: 2%;
   margin-top: 2%;
   .el-select,
   .el-input {
@@ -1594,6 +1606,7 @@ export default {
 }
 .stepBtn {
   width: 100%;
+  padding: 2%;
   // border: 1px solid red;
   margin-top: 3%;
   text-align: right;
@@ -1620,7 +1633,7 @@ export default {
 .title {
   border-bottom: 1px solid #d2d2d2;
   padding: 10px;
-  text-align: left;
+  text-align: center;
   margin-bottom: 3%;
 }
 .cancel {
@@ -1656,5 +1669,33 @@ export default {
 >>>.el-input.is-disabled .el-input__inner{
   background: #F5F7FA!important;
   color:#C0C4CC!important;
+}
+>>> .el-input__inner::-webkit-input-placeholder {
+  color: #C0C4CC !important;
+}
+>>> .queryBtn{
+  background: #0C87D6 !important;
+  color: #FFF;
+}
+.search >>> .search_icon {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  right:4%;
+  width: 36px;
+  height: 36px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+   border-radius: 0 5px 5px 0;
+}
+>>> .el-dialog__body{
+  padding: 5px 0 !important;
 }
 </style>
