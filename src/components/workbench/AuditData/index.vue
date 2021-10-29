@@ -486,7 +486,8 @@
       <div class="dlag_conter2 shenhe">
 
         <!-- 遮罩 -->
-        <div class="mose"></div>
+        <div class="mose"
+             v-if="edit_title == '详细信息'"></div>
 
         <el-form label-width="80px"
                  :rules="rules"
@@ -1140,7 +1141,7 @@ export default {
     return {
       activeName: 0,
       title: '新增审计资料任务',
-      edit_title: '',//审核title
+      edit_title: '添加资料',//审核title
       dialogVisible: false,//新增弹窗
       dialogVisible2: false,//添加资料
       dialogVisibl_operation: false,//操作
