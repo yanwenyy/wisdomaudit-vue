@@ -92,7 +92,7 @@
           <el-upload
             class="upload-demo"
             drag
-            action="/wisdomaudit/attachment/filesUpload"
+            action="/wisdomaudit/auditBasy/filesUpload"
             :on-success="handleChangePic"
             :before-remove="handleRemoveApk"
             accept=".docx,.xls,.xlsx,.txt,.zip,.doc"
@@ -333,23 +333,60 @@ export default {
     },
     //附件下载
     downFile(id,fileName){
+      // let formData = new FormData()
+      // formData.append('fileId', id)
+      // down_file(formData).then(resp => {
+      //   const content = resp.data;
+      //   const blob = new Blob([content],{ type: 'application/octet-stream,charset=UTF-8' })
+      //   if ('download' in document.createElement('a')) { // 非IE下载
+      //     const elink = document.createElement('a')
+      //     elink.download = fileName
+      //     elink.style.display = 'none'
+      //     elink.href = window.URL.createObjectURL(blob)
+      //     document.body.appendChild(elink)
+      //     elink.click()
+      //     window.URL.revokeObjectURL(elink.href) // 释放URL 对象
+      //     document.body.removeChild(elink)
+      //   } else { // IE10+下载
+      //     navigator.msSaveBlob(blob, fileName)
+      //   }
+      // })
+
       let formData = new FormData()
       formData.append('fileId', id)
-      down_file(id).then(resp => {
-        const content = resp.data;
-        const blob = new Blob([content])
-        if ('download' in document.createElement('a')) { // 非IE下载
+      this.$axios({
+        method: 'post',
+        url: 'http://localhost:9529/wisdomaudit/auditPreviousDemandData/downloadByFileId',
+        // url: 'http://localhost:9529/wisdomaudit/attachment/xiazai',
+        data: formData,
+        responseType: 'blob',
+      }).then((res) => {
+        const content = res.data;
+        console.log(res);
+        const blob = new Blob([content],
+          // { type: "application/xlsx" }
+          // { type: res.data.type }
+          { type: 'application/octet-stream,charset=UTF-8' }
+        )
+        // var timestamp = (new Date()).valueOf();
+        // const fileName = res.headers["content-disposition"].split("fileName*=utf-8''")[1];
+        // const filteType = res.headers["content-disposition"].split('.')[1];
+        if ('download' in document.createElement('a')) {
+          // 非IE下载
           const elink = document.createElement('a')
-          elink.download = fileName
+          elink.download = fileName //下载后文件名
           elink.style.display = 'none'
-          elink.href = URL.createObjectURL(blob)
+          elink.href = window.URL.createObjectURL(blob)
           document.body.appendChild(elink)
           elink.click()
-          URL.revokeObjectURL(elink.href) // 释放URL 对象
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象
           document.body.removeChild(elink)
-        } else { // IE10+下载
+        } else {
+          // IE10+下载
           navigator.msSaveBlob(blob, fileName)
         }
+      }).catch((err) => {
+        console.log(err);
       })
     },
     //保存数据
