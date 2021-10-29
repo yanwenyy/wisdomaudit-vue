@@ -1305,7 +1305,7 @@ export default {
         this.modelTotal = resp.data.total;
     });
     },
-   
+
     // 分页跳转事件
     handleCurrentChangeModel(val) {
       let query = {
@@ -1453,7 +1453,7 @@ export default {
         this.$message.info("请选择要引入的模型!")
       }
 
-      
+
     },
     // 模型列表分页事件
     handleCurrentChangeModelTab(val) {
