@@ -1483,7 +1483,7 @@ export default {
 
             this.$axios({
               method: "post",
-              url: "http://10.10.112.56:1095/wisdomaudit/attachment/fileUploads",
+              url: "/wisdomaudit/attachment/fileUploads",
               data: formData,
               headers: {
                 "Content-Type": "multipart/form-data",
@@ -1580,7 +1580,7 @@ export default {
 
         this.$axios({
           method: "post",
-          url: "http://10.10.112.56:1095/wisdomaudit/attachment/fileUploads",
+          url: "/wisdomaudit/attachment/fileUploads",
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
