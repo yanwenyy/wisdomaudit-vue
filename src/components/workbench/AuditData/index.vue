@@ -305,8 +305,11 @@
               message: '此项不能为空',
               trigger: 'blur',
             }">
+
             <el-input v-model="add_form.name"
+                      :disabled="disabled"
                       style="width:260px;"></el-input>
+
           </el-form-item>
         </el-form>
         <!-- 获取资料清单 -->
@@ -475,12 +478,16 @@
       </span>
     </el-dialog>
 
-    <!-- 添加资料 -->
+    <!-- 添加资料  审批的时候  查看详情-->
     <el-dialog @close="resetForm('add_data')"
                :visible.sync="dialogVisible2"
                style="padding-bottom: 59px; ">
-      <div class="title_dlag">添加资料</div>
-      <div class="dlag_conter2">
+      <div class="title_dlag">{{edit_title}} </div>
+      <div class="dlag_conter2 shenhe">
+
+        <!-- 遮罩 -->
+        <div class="mose"></div>
+
         <el-form label-width="80px"
                  :rules="rules"
                  :model="add_data"
@@ -489,7 +496,7 @@
           <div class="son">
             <el-form-item label-width="80px"
                           prop="dataCategory">
-              <p>类别：</p>
+              <p><span style="color:red">*</span>类别：</p>
               <el-select v-model="add_data.dataCategory"
                          @change="PrjType_change"
                          placeholder="请选择类别">
@@ -503,13 +510,14 @@
 
             <el-form-item label-width="80px"
                           prop="dataName">
-              <p>资料名称：</p>
+              <p><span style="color:red">*</span>资料名称：</p>
               <el-input v-model="add_data.dataName"
                         placeholder="请输入资料名称"></el-input>
             </el-form-item>
           </div>
 
-          <div class="son">
+          <div class="son"
+               v-if="user_data">
 
             <el-form-item label-width="80px"
                           prop="dataNumber">
@@ -526,11 +534,26 @@
                         placeholder="请输入二级编号"></el-input>
             </el-form-item>
           </div>
+          <div class="son"
+               v-else>
+            <el-form-item label-width="80px"
+                          prop="dataNumber">
+              <p>编号 ：</p>
+              <el-input :disabled="disabled"
+                        placeholder="请输入编号"></el-input>
+            </el-form-item>
+            <el-form-item label-width="80px"
+                          prop="secondLevelDataNumber">
+              <p>二级编号：</p>
+              <el-input :disabled="disabled"
+                        placeholder="请输入二级编号"></el-input>
+            </el-form-item>
+          </div>
           <div class="son">
 
             <el-form-item label-width="80px"
                           prop="department">
-              <p>部门：</p>
+              <p><span style="color:red">*</span>部门：</p>
               <el-select v-model="add_data.department"
                          @change="Department_change"
                          placeholder="请选择资料部门">
@@ -543,7 +566,7 @@
             </el-form-item>
             <el-form-item label-width="80px"
                           prop="source">
-              <p>来源：</p>
+              <p><span style="color:red">*</span>来源：</p>
               <el-select v-model="add_data.source"
                          @change="DataSource_change"
                          placeholder="请选择来源">
@@ -555,7 +578,8 @@
               </el-select>
             </el-form-item>
           </div>
-          <div class="son">
+          <div class="son"
+               v-if="user_data">
             <el-form-item label-width="80px"
                           prop="addPeople">
               <p>添加人：</p>
@@ -577,13 +601,34 @@
                 </el-date-picker>
               </div>
             </el-form-item>
+          </div>
+          <div class="son"
+               v-else>
+            <el-form-item label-width="80px"
+                          prop="addPeople">
+              <p>添加人：</p>
+              <el-input placeholder="请选择添加人"
+                        class="addPeople"></el-input>
+              <!-- <div class="addPeople">{{add_data.addPeople}}</div> -->
+            </el-form-item>
+
+            <el-form-item label-width="80px"
+                          prop="addTime">
+              <p>添加日期：</p>
+              <div class="block">
+                <el-date-picker type="date"
+                                placeholder="选择日期">
+                </el-date-picker>
+              </div>
+            </el-form-item>
 
           </div>
+
           <div class="son cd">
 
             <el-form-item label-width="100px"
                           prop="status">
-              <p style="padding:0 0 0 30px;">是否沉淀为常规需求资料：</p>
+              <p style="padding:0 0 0 30px;"><span style="color:red">*</span>是否沉淀为常规需求资料：</p>
               <el-radio-group v-model="add_data.status"
                               @change="changeHandler">
                 <el-radio label="2">否</el-radio>
@@ -651,8 +696,7 @@
                style="padding-bottom: 59px; ">
       <div class="title_dlag">操作</div>
 
-      <div class="dlag_conter3"
-           style="border:1px solid green">
+      <div class="dlag_conter3">
 
         <div class="tt">资料列表</div>
 
@@ -887,10 +931,10 @@
         </div>
       </div>
       <span slot="footer">
-        <el-button type="primary"
-                   @click="adopt()">通过</el-button>
         <el-button @click="reject()"
                    plain>驳回</el-button>
+        <el-button type="primary"
+                   @click="adopt()">通过</el-button>
 
       </span>
     </el-dialog>
@@ -1083,6 +1127,12 @@
 import { data_pageList, data_push, data_save, add_pageList, data_pageListDone, data_delete, data_push_ing, data_edit_details, data_update, data_add_savePush, data_edit_savePush, loadcascader, saveTemp, operation_list_data, operation_record_list, operation_audit, operation_uploadData, select_loadcascader, enclosure_details, select_user_data, enclosure_sysLogById, enclosure_details_file, enclosure_downloadByFileId, operation_addExit } from
   '@SDMOBILE/api/shandong/data'
 import { fmtDate } from '@SDMOBILE/model/time.js';
+import {
+  task_personLiable,//责任人
+} from
+  '@SDMOBILE/api/shandong/task'
+
+
 import { Input } from 'element-ui';
 export default {
   components: {},
@@ -1090,6 +1140,7 @@ export default {
     return {
       activeName: 0,
       title: '新增审计资料任务',
+      edit_title: '',//审核title
       dialogVisible: false,//新增弹窗
       dialogVisible2: false,//添加资料
       dialogVisibl_operation: false,//操作
@@ -1105,6 +1156,8 @@ export default {
 
       search_title: '',//未完成 筛选title
       search_title2: '',//已完成
+
+      disabled: true,//责任人点击
 
       // 添加资料
       add_data: {
@@ -1244,6 +1297,8 @@ export default {
 
       moban_list: 0,//模版附件
       enclosure_moban_list: [],//模版资料
+
+      user_data: {},//添加资料回显
     }
   },
   computed: {},
@@ -1273,6 +1328,8 @@ export default {
     this.post_select_loadcascader_bm();//添加资料   部门 数据
     this.post_select_loadcascader_ly();//添加资料   领域 数据
 
+    // 获取请求人
+    this.task_personLiable_data();
   },
   mounted () { },
   props: ['active_project'],
@@ -1285,6 +1342,16 @@ export default {
   },
 
   methods: {
+
+    // 获取责任人
+    task_personLiable_data () {
+      task_personLiable().then(resp => {
+        this.add_form.name = resp.data.realName//责任人name
+        this.disabled = true
+      })
+    },
+
+
     // 关闭新增
     close_model () {
       this.get_out();
@@ -1442,7 +1509,7 @@ export default {
     close () {
       this.dialogVisible = false;
       this.get_out();//关闭请求的接口
-      this.add_form.name = '';//清空name
+      // this.add_form.name = '';//清空name
       this.add_form.title = '';//清空title
 
       // this.add_data.dataNumber = '';//编号
@@ -1480,8 +1547,7 @@ export default {
 
     //新增任务 弹窗
     add_data_task () {
-
-      this.add_form.name = '';//清空name
+      // this.add_form.name = '';//清空name
       this.add_form.title = '';//清空title
       this.dialogVisible = true
       this.title = '新增审计资料任务';
@@ -1578,6 +1644,7 @@ export default {
     // 添加资料
     add_data_click () {
       this.dialogVisible2 = true;
+      this.edit_title = '添加资料'
       this.add_data = {}; //清空
     },
     // 新增任务初始化 列表
@@ -1614,10 +1681,11 @@ export default {
         this.$message.info("请输入标题！");
         return false
 
-      } else if (this.add_form.name == '') {
-        this.$message.info("请输入发起人！");
-        return false
       }
+      //  else if (this.add_form.name == '') {
+      //   this.$message.info("请输入发起人！");
+      //   return false
+      // }
       if (this.multipleSelection_list.length == 0) {
         this.$message.info("请选择至少一条数据！");
         return false
@@ -1657,10 +1725,11 @@ export default {
         this.$message.info("请输入标题！");
         return false
 
-      } else if (this.add_form.name == '') {
-        this.$message.info("请输入发起人！");
-        return false
       }
+      // else if (this.add_form.name == '') {
+      //   this.$message.info("请输入发起人！");
+      //   return false
+      // }
       if (this.multipleSelection_list.length == 0) {
         this.$message.info("请选择至少一条数据！");
         return false
@@ -1740,7 +1809,7 @@ export default {
             this.list_data_start(params)//未完成列表
             this.dialogVisible = false;//关闭新增弹窗
 
-            this.add_form.name = '';//清空name
+            // this.add_form.name = '';//清空name
             this.add_form.title = '';//清空name
             array1 = [];//清空
 
@@ -1777,7 +1846,7 @@ export default {
           this.list_data_start(params)//未完成列表
 
           this.dialogVisible = false;//关闭新增弹窗
-          this.add_form.name = '';//清空name
+          // this.add_form.name = '';//清空name
           this.add_form.title = '';//清空name
           this.array1 = [];//清空
         } else {
@@ -1837,16 +1906,19 @@ export default {
     PrjType_change (val) {
       console.log(val);
       this.add_data.dataCategory = val;
+
       let params = {
-        dataCategory: val,
+        dataCategory: this.add_data.dataCategory,
       };
+
       //根据类型查看新增的 资料信息
       select_user_data(params).then(resp => {
         console.log(resp.data);
-        this.add_data.dataNumber = resp.data.dataNumber;//编号
-        this.add_data.secondLevelDataNumber = resp.data.secondLevelDataNumber;//二级编号
-        this.add_data.addPeople = resp.data.addPeople;//添加人
-        this.add_data.addTime = resp.data.addTime;//添加日期
+        this.user_data = resp.data
+        this.add_data.dataNumber = this.user_data.dataNumber;//编号
+        this.add_data.secondLevelDataNumber = this.user_data.secondLevelDataNumber;//二级编号
+        this.add_data.addPeople = this.user_data.addPeople;//添加人
+        this.add_data.addTime = this.user_data.addTime;//添加日期
         this.disabled = true;
       });
     },
@@ -2157,17 +2229,19 @@ export default {
 
     //查看操作 记录
     look_record (data) {
-      this.record_status = true;
+      // this.record_status = true;
       this.record_query.id = data.auditPreviousDemandDataUuid;
+      this.dialogVisible2 = true//显示编辑
+      this.edit_title = '详细信息'
 
-      let query_params = {
-        condition: {
-          logSysActiUuid: this.record_query.id
-        },
-        pageNo: this.record_query.pageNo,
-        pageSize: this.record_query.pageSize
-      }
-      this.post_operation_record(query_params)//刷新 操作记录 列表
+      // let query_params = {
+      //   condition: {
+      //     logSysActiUuid: this.record_query.id
+      //   },
+      //   pageNo: this.record_query.pageNo,
+      //   pageSize: this.record_query.pageSize
+      // }
+      // this.post_operation_record(query_params)//刷新 操作记录 列表
     },
     // 审批操作记录  分页每页条数
     handleSizeChange_record_list (val) {
@@ -2332,7 +2406,7 @@ export default {
 
     // 任务列表 显示编辑
     edit_common (data) {
-      this.add_form.name = '';//清空name
+      // this.add_form.name = '';//清空name
       this.add_form.title = '';//清空title
       // this.$refs.multipleTable.clearSelection();//清空
       this.title = '编辑审计资料任务';
@@ -2750,5 +2824,19 @@ export default {
 }
 .file_name:hover {
   color: #1371cc;
+}
+
+.shenhe {
+  position: relative;
+  display: flex;
+}
+.mose {
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+  opacity: 0.5;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 </style>

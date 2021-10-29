@@ -245,3 +245,19 @@ export function task_personLiable (data) {
     data,
   })
 }
+
+
+
+
+// 核实列表 新增动态表头
+export function projectRel_pgeList (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/resultDetailProjectRel/pageList`,
+    method: 'post',
+    data,
+  })
+}
+
+
+
