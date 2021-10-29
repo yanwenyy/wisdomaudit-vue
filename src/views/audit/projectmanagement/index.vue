@@ -75,9 +75,16 @@
         </template>
       </el-table-column>
     </el-table>
-
     <!-- 分页 -->
-    <div class="page">
+    <pagination
+      v-show="total > 0"
+      :total="total"
+      :page.sync="query.pageNo"
+      :limit.sync="query.pageSize"
+      @pagination="queryName"
+    />
+    <!-- 分页 -->
+    <!-- <div class="page">
       <el-pagination
         background
         :hide-on-single-page="false"
@@ -88,7 +95,7 @@
         :page-size="project.size"
         :total="project.total"
       ></el-pagination>
-    </div>
+    </div> -->
     <!-- 分页 end-->
 
     <!-- 新增页面 -->
@@ -521,11 +528,11 @@
     </el-dialog>
 
     <el-dialog
-      title="编辑审计项目"
       :visible.sync="editDialogVisible"
       @close="addDialogClosed"
       width="50%"
     >
+      <div class="title">编辑审计项目</div>
       <!-- 专项 -->
       <div class="addzhuanForm" v-if="prjType == 1">
         <el-form
@@ -657,6 +664,7 @@
               style="width: 100%"
               border
               class="projectTable"
+              :header-cell-style="{'background-color': '#F4FAFF',}"
             >
               <el-table-column label="项目编号" prop="projectCode" width="110">
               </el-table-column>
@@ -683,7 +691,6 @@
                   </el-form-item>
                 </template>
               </el-table-column>
-              <el-table-column label="角色" width="60">组长 </el-table-column>
               <el-table-column
                 prop="projectChargemanName"
                 label="负责人"
@@ -905,7 +912,7 @@
               </el-col>
             </el-form-item>
           </el-row>
-          <el-row>
+          <!-- <el-row>
             <el-form-item label="地市接口人:" prop="areaUserName">
               <el-input
                 placeholder="请输入"
@@ -913,7 +920,7 @@
               >
               </el-input>
             </el-form-item>
-          </el-row>
+          </el-row> -->
         </el-form>
 
         <div class="stepBtn">
@@ -926,6 +933,7 @@
 </template>
 
 <script>
+import Pagination from "@WISDOMAUDIT/components/Pagination";
 import {
   projectList,
   projectType,
@@ -941,8 +949,10 @@ import {
 } from "@WISDOMAUDIT/api/shandong/projectmanagement.js";
 
 export default {
+  components: { Pagination },
   data() {
     return {
+      total:0,
       isdisabled: true,
       loading: false,
       loadingForm: false,
@@ -1216,6 +1226,9 @@ export default {
       projectList(data).then((resp) => {
         this.tableData = resp.data.records;
         this.project = resp.data;
+        
+        this.total =resp.data.total;
+        console.log(this.total);
         this.loading = false;
       });
     },
@@ -1301,7 +1314,7 @@ export default {
 
     // 项目管理列表分页
     handleCurrentChangeProject(val) {
-      // console.log(val);
+      console.log(val);
       // 模型列表
       let query = {
         pageNo: val,
@@ -1457,6 +1470,7 @@ export default {
             this.$message.success("添加项目成功！");
             this.addDialogVisible = false;
             this.projectData(this.query);
+            
           });
         } else {
           console.log("error submit!!");

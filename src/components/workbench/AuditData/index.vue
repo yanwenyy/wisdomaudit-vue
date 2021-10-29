@@ -133,14 +133,21 @@
         </div>
         <!-- 分页 -->
         <div class="page">
-          <el-pagination background
+
+          <el-pagination @size-change="handleSizeChange_model"
+                         @current-change="handleCurrentChange_model"
+                         :page-size="this.tableData.size"
+                         layout="total, sizes, prev, pager, next, jumper"
+                         :total="this.tableData.total">
+          </el-pagination>
+          <!-- <el-pagination background
                          :hide-on-single-page="true"
                          layout="prev, pager, next"
                          :page-sizes="[2, 4, 6, 8]"
                          :current-page="this.tableData.current"
                          @current-change="handleCurrentChange_model"
                          :page-size="this.tableData.size"
-                         :total="this.tableData.total"></el-pagination>
+                         :total="this.tableData.total"></el-pagination> -->
         </div>
         <!-- 分页 end-->
       </el-tab-pane>
@@ -253,24 +260,33 @@
 
         <!-- 分页 -->
         <div class="page">
-          <el-pagination background
+          <el-pagination @size-change="handleSizeChange_zj"
+                         @current-change="handleCurrentChange_zj"
+                         :page-size="this.tableData2.size"
+                         :current-page="this.tableData2.current"
+                         layout="total, sizes, prev, pager, next, jumper"
+                         :total="this.tableData2.total">
+          </el-pagination>
+
+          <!-- <el-pagination background
                          :hide-on-single-page="true"
                          layout="prev, pager, next"
                          :page-sizes="[2, 4, 6, 8]"
                          :current-page="this.tableData2.current"
                          @current-change="handleCurrentChange_zj"
                          :page-size="this.tableData2.size"
-                         :total="this.tableData2.total"></el-pagination>
+                         :total="this.tableData2.total"></el-pagination> -->
         </div>
         <!-- 分页 end-->
       </el-tab-pane>
     </el-tabs>
 
     <!-- 新增资料 编辑资料-->
-    <el-dialog :title="title"
-               width="60%"
+    <el-dialog width="60%"
                :visible.sync="dialogVisible"
                style="padding-bottom: 59px; ">
+      <div class="title_dlag">{{title}}</div>
+
       <div class="dlag_conter">
         <el-form ref="add_form"
                  :inline="false"
@@ -383,12 +399,14 @@
           </el-form>
           <!-- 分页 -->
           <div class="page">
-            <el-pagination background
-                           layout="prev, pager, next"
-                           :current-page="this.task_list.current"
+
+            <el-pagination @size-change="handleSizeChange_csh"
                            @current-change="handleCurrentChange_csh"
+                           :current-page="this.task_list.current"
                            :page-size="this.task_list.size"
-                           :total="this.task_list.total"></el-pagination>
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="this.task_list.total">
+            </el-pagination>
 
           </div>
           <!-- 分页 end-->
@@ -433,12 +451,20 @@
           </el-form>
           <div class="page">
 
-            <el-pagination background
+            <el-pagination @size-change="handleSizeChange_details"
+                           @current-change="handleCurrentChange_details"
+                           :current-page="this.edit_details.current"
+                           :page-size="this.edit_details.size"
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="this.edit_details.total">
+            </el-pagination>
+
+            <!-- <el-pagination background
                            layout="prev, pager, next"
                            :current-page="this.edit_details.pageCurrent"
                            @current-change="handleCurrentChange_details"
                            :page-size="this.edit_details.pageSize"
-                           :total="this.edit_details.pageTotal"></el-pagination>
+                           :total="this.edit_details.pageTotal"></el-pagination> -->
 
           </div>
           <!-- 分页 end-->
@@ -446,30 +472,27 @@
 
       </div>
       <span slot="footer">
-        <el-button size="small"
+        <el-button plain
                    @click="close()">取 消</el-button>
         <!-- 新增保存 -->
-        <el-button size="small"
-                   type="primary"
+        <el-button type="primary"
                    v-if="title=='新增审计资料任务'"
                    @click="query_add_form(1)">保存</el-button>
         <!-- 编辑保存 -->
-        <el-button size="small"
-                   type="primary"
+        <el-button type="primary"
                    v-else
                    @click="query_add_form(2)">保存</el-button>
         <!-- 新增直接下发 -->
-        <el-button size="small"
-                   type="primary"
+        <el-button type="primary"
                    @click="add_push_save()">下发</el-button>
       </span>
     </el-dialog>
 
     <!-- 添加资料 -->
-    <el-dialog title="添加资料"
-               @close="resetForm('add_data')"
+    <el-dialog @close="resetForm('add_data')"
                :visible.sync="dialogVisible2"
                style="padding-bottom: 59px; ">
+      <div class="title_dlag">添加资料</div>
       <div class="dlag_conter2">
         <el-form label-width="80px"
                  :rules="rules"
@@ -603,20 +626,17 @@
               <!-- <el-input type="textarea"
                         v-model="add_data.file"
                         placeholder=""></el-input> -->
-
               <el-upload class="upload-demo"
                          drag
-                         :limit="1"
                          ref="upload"
-                         :show-file-list="true"
-                         :on-progress="up_ing"
+                         action="#"
+                         :on-change="handleChangePic_verify"
+                         :on-remove="handleRemoveApk"
+                         :file-list="edit_file_list"
+                         :auto-upload="false"
                          accept=".zip,.doc,.docx,.xls,.xlsx,.txt"
-                         :on-success="handleAvatarSuccess"
-                         :before-upload="beforeAvatarUpload"
-                         action="/wisdomaudit/auditPreviousData/fileUpload">
-                <!-- accept=".doc,.xls,.txt,.xlsx,.zip,.doc" -->
-                <!-- action="/wisdomaudit/attachment/fileUpload2"> -->
-                <!-- multiple//多选 -->
+                         multiple>
+
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">点击上传或将文件拖到虚线框<br />支持.zip,.doc,.docx,.xls,.xlsx,.txt</div>
               </el-upload>
@@ -627,15 +647,13 @@
         </el-form>
       </div>
       <span slot="footer">
-        <el-button size="small"
+        <el-button plain
                    @click="dialogVisible2 = false">取 消</el-button>
 
-        <el-button size="small"
-                   type="primary"
+        <el-button type="primary"
                    v-if="success_btn==0"
                    @click="save_data_btn('add_data')">确定</el-button>
-        <el-button type="primary"
-                   v-if="success_btn==1"
+        <el-button v-if="success_btn==1"
                    :loading="true">上传中</el-button>
       </span>
     </el-dialog>
@@ -645,6 +663,8 @@
                width="90%"
                :visible.sync="dialogVisibl_operation"
                style="padding-bottom: 59px; ">
+      <div class="title_dlag">操作</div>
+
       <div class="dlag_conter3">
 
         <div class="tt">资料列表</div>
@@ -777,20 +797,16 @@
           </el-table-column>
 
         </el-table>
+
         <!-- 分页 -->
         <div class="page">
-
-          <!-- 分页 -->
-          <div class="page">
-            <el-pagination @size-change="handleSizeChange_list_data"
-                           @current-change="handleCurrentChange_list_data"
-                           :current-page="this.operation_table.current"
-                           :page-size="this.operation_table.size"
-                           layout="total, sizes, prev, pager, next, jumper"
-                           :total="this.operation_table.total">
-            </el-pagination>
-          </div>
-          <!-- 分页 end-->
+          <el-pagination @size-change="handleSizeChange_list_data"
+                         @current-change="handleCurrentChange_list_data"
+                         :current-page="this.operation_table.current"
+                         :page-size="this.operation_table.size"
+                         layout="total, sizes, prev, pager, next, jumper"
+                         :total="this.operation_table.total">
+          </el-pagination>
         </div>
         <!-- 分页 end-->
 
@@ -799,25 +815,62 @@
 
         <!-- 操作记录 -->
         <div v-if="record_status==true">
-          <el-table :data="record"
+
+          <el-table :data="record_list_table"
+                    :header-cell-style="{'text-align':'center',
+                    'background-color': '#F4FAFF',}"
                     style="width: 100%">
+
             <el-table-column prop="opOperate"
                              label="动作"
+                             align="center"
                              width="180">
             </el-table-column>
             <el-table-column prop="opUserName"
                              label="操作人"
+                             align="center"
                              width="180">
             </el-table-column>
-            <el-table-column prop="opTime  "
+            <el-table-column prop="opTime"
+                             align="center"
                              label="操作时间">
               <template slot-scope="scope">
-                {{  scope.row.opTime |filtedate }}
+                {{scope.row.opTime |filtedate }}
               </template>
             </el-table-column>
             <el-table-column prop="opInfo"
+                             align="center"
                              label="备注">
             </el-table-column>
+
+            <!-- 附件 -->
+            <el-table-column prop="count"
+                             align="center"
+                             label="附件"
+                             width="90">
+              <template slot-scope="scope">
+                <!-- @click="open_enclosure_details(scope.row.auditTaskUuid)" -->
+                <div class="update">
+                  <i class="update_icon">
+                    <svg t="1631877671204"
+                         class="icon"
+                         viewBox="0 0 1024 1024"
+                         version="1.1"
+                         xmlns="http://www.w3.org/2000/svg"
+                         p-id="9939"
+                         width="200"
+                         height="200">
+                      <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
+                            fill="#FD9D27"
+                            p-id="9940"></path>
+                    </svg>
+                  </i>
+                  <span>{{scope.row.fileCount}}</span>
+
+                </div>
+              </template>
+            </el-table-column>
+
             <!-- <el-table-column prop="enclosurePath"
                              label="附件"> 
             </el-table-column>-->
@@ -826,40 +879,38 @@
         </div>
 
         <!-- 分页 -->
-        <!-- <div class="page">
-         <el-pagination background
-                         :hide-on-single-page="true"
-                         layout="prev, pager, next"
-                         :page-sizes="[2, 4, 6, 8]"
-                         :current-page="this.record.current"
-                         @current-change="handleCurrentChange_record"
-                         :page-size="this.record.size"
-                         :total="this.record.total"></el-pagination>
+        <div class="page"
+             v-if="record_status==true">
+          <el-pagination @size-change="handleSizeChange_record_list"
+                         @current-change="handleCurrentChange_record_list"
+                         :current-page="this.history_log.current"
+                         :page-size="this.history_log.size"
+                         layout="total, sizes, prev, pager, next, jumper"
+                         :total="this.history_log.total">
           </el-pagination>
-        </div> -->
+        </div>
         <!-- 分页 end-->
-        <div class="remarks">
+
+        <div class="remarks"
+             style="margin-top:10px">
           <p>备注：</p>
           <el-input type="textarea"
                     style="padding:10px;width:100%"
                     v-model="audit_query.posy_remarks"></el-input>
-
         </div>
       </div>
-
       <span slot="footer">
-
-        <el-button size="small"
-                   type="primary"
+        <el-button type="primary"
                    @click="adopt()">通过</el-button>
-        <el-button size="small"
-                   @click="reject()">驳回</el-button>
+        <el-button @click="reject()"
+                   plain>驳回</el-button>
 
       </span>
     </el-dialog>
 
     <!-- 附件详情 -->
     <el-dialog width="20%"
+               :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                :visible.sync="dialogVisibl_enclosure_details"
                style="padding-bottom: 59px; ">
       <el-table :data="enclosure_details_list"
@@ -875,6 +926,7 @@
                          label="资料类型">
         </el-table-column> -->
         <el-table-column prop="fileName"
+                         align="center"
                          label="文件名称">
           <template slot-scope="scope">
             <el-button @click="download(scope.row.attachmentUuid,scope.row.fileName)"
@@ -910,9 +962,10 @@
     </div>
 
     <!-- 操作记录 -->
-    <el-dialog title="操作记录"
-               :visible.sync="history"
+    <el-dialog :visible.sync="history"
                width="width">
+      <div class="title_dlag">操作记录</div>
+
       <div class="dlag_conter4">
         <el-table :data="history_log.records"
                   :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
@@ -990,6 +1043,7 @@
           </el-table-column>
 
         </el-table>
+
         <!-- 分页 -->
         <div class="page">
           <el-pagination @size-change="handleSizeChange_operation"
@@ -1017,7 +1071,7 @@
 </template>
 
 <script>
-import { data_pageList, data_push, data_save, add_pageList, data_pageListDone, data_delete, data_push_ing, data_edit_details, data_update, data_add_savePush, data_edit_savePush, loadcascader, saveTemp, operation_list_data, operation_record_list, operation_audit, operation_uploadData, select_loadcascader, enclosure_details, select_user_data, enclosure_sysLogById, enclosure_details_file, enclosure_downloadByFileId } from
+import { data_pageList, data_push, data_save, add_pageList, data_pageListDone, data_delete, data_push_ing, data_edit_details, data_update, data_add_savePush, data_edit_savePush, loadcascader, saveTemp, operation_list_data, operation_record_list, operation_audit, operation_uploadData, select_loadcascader, enclosure_details, select_user_data, enclosure_sysLogById, enclosure_details_file, enclosure_downloadByFileId, operation_addExit } from
   '@SDMOBILE/api/shandong/data'
 import { fmtDate } from '@SDMOBILE/model/time.js';
 import { Input } from 'element-ui';
@@ -1090,7 +1144,8 @@ export default {
         addDataTaskUuid: '',//id
       },
 
-      record: [],//操作记录 数据
+      record_list: [],//操作记录 数据
+      record_list_table: [],
       record_params: {
         id: '',
       },
@@ -1160,12 +1215,23 @@ export default {
 
       history_log: [],//查看 操作记录
 
-      // 操作记录
+      //列表 操作记录
       operation_query: {
         id: '',//
         pageNo: 1,
-        pageSize: 2,
+        pageSize: 10,
       },
+
+      // 审核 操作日志
+      record_query: {
+        id: '',
+        pageNo: 1,
+        pageSize: 10,
+      },
+
+      fileList: [],//上传的文件
+
+      edit_file_list: [],
     }
   },
   computed: {},
@@ -1191,8 +1257,6 @@ export default {
     }
     // 新增未完成任务列表
     this.add_add_csh(params2);
-
-
     this.post_select_loadcascader_lx();//添加资料   类型 数据
     this.post_select_loadcascader_bm();//添加资料   部门 数据
     this.post_select_loadcascader_ly();//添加资料   领域 数据
@@ -1209,9 +1273,12 @@ export default {
   },
 
   methods: {
-
-
-
+    // 新增资料任务时退出
+    get_out () {
+      operation_addExit().then(resp => {
+        console.log(resp);
+      })
+    },
 
     // 资料筛选
     search_list (index) {
@@ -1294,24 +1361,35 @@ export default {
     up_ing () {
       this.success_btn = 1;//显示加载按钮  0成功  1 loaging
     },
-    // 上传成功回调
-    handleAvatarSuccess (resp, file) {
-      this.update_path = resp.data.filePath
-      if (resp.code == 0) {
-        this.add_data.Url = URL.createObjectURL(file.raw);
-        this.$message({
-          message: '上传成功',
-          type: 'success'
-        });
-        this.success_btn = 0;//隐藏加载按钮
-        return false
-      } else {
-        this.$message({
-          message: resp.msg,
-          type: 'error'
-        });
+    // 结果数 核实上传  删除
+    handleRemoveApk (file, fileList) {
+      if (file.response) {
+        this.fileList.remove(file.response.data);
+        this.key = Math.random();
+
       }
     },
+
+    // 上传成功回调
+    // handleChangePic_verify (resp, file) {
+    //   this.update_path = resp.data.filePath
+    //   console.log(this.update_path);
+    //   if (resp.code == 0) {
+    //     this.add_data.Url = URL.createObjectURL(file.raw);
+
+    //     this.$message({
+    //       message: '上传成功',
+    //       type: 'success'
+    //     });
+    //     this.success_btn = 0;//隐藏加载按钮
+    //     return false
+    //   } else {
+    //     this.$message({
+    //       message: resp.msg,
+    //       type: 'error'
+    //     });
+    //   }
+    // },
     // 顶部tab 切换事件
     handleClick (val, event) {
       this.search_title = '';//清空筛选
@@ -1344,6 +1422,7 @@ export default {
     // 关闭
     close () {
       this.dialogVisible = false;
+      this.get_out();//关闭请求的接口
       this.add_form.name = '';//清空name
       this.add_form.title = '';//清空title
 
@@ -1362,6 +1441,9 @@ export default {
         this.tableData_list = resp.data.records
         // this.loading = false
       })
+    },
+    handleSizeChange_model () {
+      this.params.pageSize = val
     },
     // 任务列表分页
     handleCurrentChange_model (val) {
@@ -1386,6 +1468,8 @@ export default {
       this.dialogVisible = true
       this.title = '新增审计资料任务';
       // this.$refs.multipleTable.clearSelection();//
+      this.get_out();//关闭请求的接口
+
     },
     // 查看附件详情
     open_enclosure_details (id) {
@@ -1458,6 +1542,8 @@ export default {
     add_data_click () {
       this.dialogVisible2 = true;
       this.add_data = {}; //清空
+      this.get_out();//关闭请求的接口
+
     },
     // 新增任务初始化 列表
     add_add_csh (params) {
@@ -1465,6 +1551,11 @@ export default {
         this.task_list = resp.data;
         this.task_list_records = resp.data.records;
       })
+    },
+
+    // 新增任务初始化 列表 分页每页条数
+    handleSizeChange_csh (val) {
+      this.params_add.pageSize = val
     },
     // 新增任务初始化 列表 分页
     handleCurrentChange_csh (val) {
@@ -1573,6 +1664,8 @@ export default {
             }
             this.list_data_start(params)//未完成列表
             this.dialogVisible = false;//关闭新增弹窗
+            this.get_out();//关闭请求的接口
+
             this.add_form.name = '';//清空name
             this.add_form.title = '';//清空name
             array1 = [];//清空
@@ -1612,6 +1705,8 @@ export default {
             }
             this.list_data_start(params)//未完成列表
             this.dialogVisible = false;//关闭新增弹窗
+            this.get_out();//关闭请求的接口
+
             this.add_form.name = '';//清空name
             this.add_form.title = '';//清空name
             array1 = [];//清空
@@ -1647,6 +1742,8 @@ export default {
             }
           }
           this.list_data_start(params)//未完成列表
+          this.get_out();//关闭请求的接口
+
           this.dialogVisible = false;//关闭新增弹窗
           this.add_form.name = '';//清空name
           this.add_form.title = '';//清空name
@@ -1679,6 +1776,8 @@ export default {
           }
           this.list_data_start(params)//未完成列表
           this.dialogVisible = false;//关闭新增 编辑弹窗
+          this.get_out();//关闭请求的接口
+
 
 
         } else {
@@ -1749,9 +1848,6 @@ export default {
       this.add_data.source = val
     },
 
-
-
-
     // 添加资料  是否沉淀 radio
     changeHandler (val) {
       this.add_data.status = val;
@@ -1763,55 +1859,116 @@ export default {
       this.$refs.upload.clearFiles();
 
     },
+
+    // 新增上传附件
+    handleChangePic_verify (file, fileList, name) {
+      this.fileList = fileList;
+      this.file = file.raw
+    },
+
     //添加资料 保存按钮
     save_data_btn (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let params = {
-            dataCategory: this.add_data.dataCategory,//类别
-            dataName: this.add_data.dataName,//资料名称
-            dataNumber: this.add_data.dataNumber,//编号
-            secondLevelDataNumber: this.add_data.secondLevelDataNumber,//二级编号
-            department: this.add_data.department,//部门
-            source: this.add_data.source,//来源
-            remarks: this.add_data.remarks,//备注
-            addPeople: this.addPeople,//添加人 
-            addTime: this.add_data.addTime,//添加时间
-            status: this.add_data.status,//是否沉淀
-            dataModulId: this.update_path,//回调上传的文件路径
-            // enclosure: '111',//回调上传的文件路径
-            projectType: this.projectNumber,//项目id
-
-          }
-          saveTemp(params).then(resp => {
-            console.log(resp.data);
-            if (resp.code == 0) {
-              this.$message({
-                message: '添加资料成功',
-                type: 'success'
-              });
-              this.dialogVisible2 = false;
-              let params2 = {
-                pageNo: this.params_add.pageNo,
-                pageSize: this.params_add.pageSize,
-                projectType: this.projectNumber,//项目id
+          if (this.fileList.length !== 0) {
+            let formData = new FormData()
+            formData.append('file', this.file.raw)
+            this.fileList.forEach((item) => {
+              formData.append('files', item.raw);
+            })
+            this.$axios({
+              method: 'post',
+              url: 'http://localhost:9529/wisdomaudit/attachment/fileUploads',
+              data: formData,
+              headers: {
+                'Content-Type': 'multipart/form-data'
               }
-              // 新增未完成任务列表
-              this.add_add_csh(params2);
-            } else {
-              this.$message({
-                message: reesp.msg,
-                type: error
-              });
-            }
+            }).then(resp => {
+              // 上传成功
+              if (resp.data.code == 0) {
+                this.success_btn = 0;//显示加载按钮  0成功  1 loaging
+                // console.log(resp.data.data);
+                this.Upload_file = resp.data.data;//上传成功大的文件
 
-          })
+                let params = {
+                  dataCategory: this.add_data.dataCategory,//类别
+                  dataName: this.add_data.dataName,//资料名称
+                  dataNumber: this.add_data.dataNumber,//编号
+                  secondLevelDataNumber: this.add_data.secondLevelDataNumber,//二级编号
+                  department: this.add_data.department,//部门
+                  source: this.add_data.source,//来源
+                  remarks: this.add_data.remarks,//备注
+                  addPeople: this.addPeople,//添加人 
+                  addTime: this.add_data.addTime,//添加时间
+                  status: this.add_data.status,//是否沉淀
+                  attachmentList: this.Upload_file,//回调上传的文件路径
+                  // enclosure: '111',//回调上传的文件路径
+                  projectType: this.projectNumber,//项目id
+                }
+                this.save_data_up(params)
+              } else {
+                // 上传失败
+                this.$message({
+                  message: resp.data.msg,
+                  type: 'error'
+                });
+                this.success_btn = 1;//显示加载按钮  0成功  1 loaging
+              }
+            })
+          } else {
+            // 如果未上传
+            let params = {
+              dataCategory: this.add_data.dataCategory,//类别
+              dataName: this.add_data.dataName,//资料名称
+              dataNumber: this.add_data.dataNumber,//编号
+              secondLevelDataNumber: this.add_data.secondLevelDataNumber,//二级编号
+              department: this.add_data.department,//部门
+              source: this.add_data.source,//来源
+              remarks: this.add_data.remarks,//备注
+              addPeople: this.addPeople,//添加人 
+              addTime: this.add_data.addTime,//添加时间
+              status: this.add_data.status,//是否沉淀
+              attachmentList: this.edit_file_list,//回调上传的文件路径
+              // enclosure: '111',//回调上传的文件路径
+              projectType: this.projectNumber,//项目id
+            }
+            this.save_data_up(params)
+          }
         } else {
           this.$message.info("请填写信息");
           return false;
         }
       });
     },
+    // 提交
+    save_data_up (params) {
+      saveTemp(params).then(resp => {
+        console.log(resp.data);
+        if (resp.code == 0) {
+          this.$message({
+            message: '添加资料成功',
+            type: 'success'
+          });
+
+          this.dialogVisible2 = false;
+          let params2 = {
+            pageNo: this.params_add.pageNo,
+            pageSize: this.params_add.pageSize,
+            projectType: this.projectNumber,//项目id
+          }
+          // 新增未完成任务列表
+          this.add_add_csh(params2);
+        } else {
+          this.$message({
+            message: reesp.msg,
+            type: error
+          });
+        }
+
+      })
+    },
+
+
     // 显示下发 确认
     yes_push (data) {
       this.push_id = data.addDataTaskUuid
@@ -1970,21 +2127,39 @@ export default {
     //查看操作 记录
     look_record (data) {
       this.record_status = true;
+      this.record_query.id = data.auditPreviousDemandDataUuid;
+
       let query_params = {
         condition: {
-          logSysActiUuid: data.auditPreviousDemandDataUuid,
+          logSysActiUuid: this.record_query.id
         },
-        pageNo: 1,
-        pageSize: 10
+        pageNo: this.record_query.pageNo,
+        pageSize: this.record_query.pageSize
       }
       this.post_operation_record(query_params)//刷新 操作记录 列表
-
     },
+    // 审批操作记录  分页每页条数
+    handleSizeChange_record_list (val) {
+      this.record_query.pageSize = val
+    },
+    // 审批操作记录  分页
+    handleCurrentChange_record_list (val) {
+      let query_params = {
+        condition: {
+          logSysActiUuid: this.record_query.id
+        },
+        pageNo: val,
+        pageSize: this.record_query.pageSize
+      }
+      this.post_operation_record(query_params)
+    },
+
 
     // 操作记录 
     post_operation_record (query_params) {
       operation_record_list(query_params).then(resp => {
-        this.record = resp.data
+        this.record_list = resp.data
+        this.record_list_table = resp.data.records;
       })
     },
     // 通过
@@ -2143,7 +2318,10 @@ export default {
 
       });
     },
-
+    // 编辑分页每页
+    handleSizeChange_details (val) {
+      this.edit_details_query.pageSize = val
+    },
     // 编辑分页
     handleCurrentChange_details (val) {
       let params = {
@@ -2158,7 +2336,6 @@ export default {
     },
     // 已完成==========================
     // 已完成列表
-    // 已完成列表
     list_data_end (params2) {
       // this.loading = true
       data_pageListDone(params2).then(resp => {
@@ -2166,6 +2343,9 @@ export default {
         this.tableData_list2 = resp.data.records
         // this.loading = false
       })
+    },
+    handleSizeChange_zj (val) {
+      this.params2.pageSize = val
     },
     // 已完成 分页
     handleCurrentChange_zj (val) {
@@ -2191,6 +2371,11 @@ export default {
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
 @import "../../../assets/styles/css/yw.css";
+
+.sjzl >>> .is-plain {
+  background: #ffffff !important;
+  border: 1px solid #dcdfe6 !important;
+}
 
 .projectTab >>> .el-button,
 .search >>> .el-input__inner {
@@ -2444,6 +2629,9 @@ export default {
 .dlag_conter3 >>> .operation_header div {
   display: flex;
   align-items: center;
+}
+.dlag_conter3 >>> .operation_header div p {
+  margin-left: 20px;
 }
 .dlag_conter3 >>> .operation_header div .el-input {
   width: 220px !important;

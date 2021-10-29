@@ -57,7 +57,7 @@ export function operation_findFile (data) {
   let id = data.id
   return request({
     baseURL: baseURL,
-    url: '/auditPreviousDemandData/findFile' + id + '',
+    url: '/auditPreviousDemandData/findFile/' + id + '',
     method: 'post',
     data
   })

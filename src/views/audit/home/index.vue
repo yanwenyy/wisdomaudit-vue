@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <div class="filter-container">
-      <el-card class="box-card">
+      <el-card class="box-card" v-loading="floading1">
         <div slot="header" class="clearfix">
           <span> <svg-icon icon-class="edit" class="homepage-icon"/> 审计项目</span>
           <el-button
@@ -11,7 +11,7 @@
           >
         </div>
 
-        <div class="project-wapper" >
+        <div class="project-wapper" style="height:270px;">
           <div class="project-item" v-for="(item,index) in projectlist" :key="'project'+index" >
             <h3>{{item.projectName || '--'}}</h3>
             <ul :style="index==0?'':'border-left:1px solid #ccc;'">
@@ -47,7 +47,7 @@
 
       <el-row :gutter="20" style="margin-top: 20px">
         <el-col :span="14">
-          <el-card class="body-padding">
+          <el-card class="body-padding"  v-loading="floading2">
             <div slot="header" class="clearfix">
               <span> <svg-icon icon-class="task" class="homepage-icon"/>我的模型任务</span>
             </div>
@@ -70,7 +70,7 @@
           </el-card>
         </el-col>
         <el-col :span="10">
-          <el-card>
+          <el-card  v-loading="floading3">
             <div slot="header" class="clearfix">
               <span> <svg-icon icon-class="view" class="homepage-icon"/>审计资料</span>
             </div>
@@ -138,7 +138,10 @@ export default {
     return {
       modellist:[],
       projectlist:[],
-      datalist:[]
+      datalist:[],
+      floading1:false,
+      floading2:false,
+      floading3:false
     };
   },
   created(){
@@ -153,34 +156,37 @@ export default {
       return newTime
     },
     getmodellist(){
+      this.floading2 = true
       axios({
         url: `/wisdomaudit/homePage/homeMxList`,
         method: "post",
         data: {},
       }).then((res) => {
-        console.log(res.data.data)
+        this.floading2 = false
         this.modellist = res.data.data || ''
       });
     },
     getprojectlist(){
+      this.floading1 = true
       axios({
         url: `/wisdomaudit/homePage/homeProjectList`,
         method: "post",
         data: {},
       }).then((res) => {
-        console.log(res.data.data.homePageDtoList)
+        this.floading1 = false
         if(res.data.data.homePageDtoList){
           this.projectlist = res.data.data.homePageDtoList.slice(0,3) || ''
         }
       });
     },
     getdatalist(){
+      this.floading3 = true
       axios({
         url: `/wisdomaudit/homePage/homeZlList`,
         method: "post",
         data: {},
       }).then((res) => {
-        console.log(res.data.data)
+        this.floading3 = false
         this.datalist = res.data.data || ''
       });
     },
@@ -335,7 +341,7 @@ export default {
       }
 
       .icon-wapper:hover {
-        background-image: linear-gradient(#a0ccf0, #5D89FD);
+        background-image: linear-gradient(#e0edf8, #4d7cfd);
         color: #fff;
       }
     }
@@ -427,7 +433,7 @@ export default {
   font-size: 15px;
   font-weight: bold;
   color: #439bd8;
-  padding: 10px;
+  padding: 10px !important;
 }
 .homepage-icon{
   margin-right:3px;

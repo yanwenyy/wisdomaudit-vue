@@ -44,7 +44,7 @@ export default {
     },
     background: {
       type: Boolean,
-      default: true
+      default: false
     },
     autoScroll: {
       type: Boolean,
@@ -93,9 +93,10 @@ export default {
 </script>
 
 <style scoped>
-/*.pagination-container {*/
-/*  padding: 32px 16px;*/
-/*}*/
+.pagination-container {
+  display: flex;
+  justify-content: flex-end;
+}
 .pagination-container.hidden {
   display: none;
 }

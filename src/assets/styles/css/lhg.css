@@ -1,11 +1,9 @@
-/* 入场动画 */
-.anmition_show {
+/* .anmition_show {
   animation: go_in_show 1s;
   -moz-animation: go_in_show 1s;
   -webkit-animation: go_in_show 1s;
 }
 
-/* active_show 动画 */
 @keyframes go_in_show {
   0% {
     transform: translateX(5%);
@@ -17,4 +15,10 @@
     opacity: 1 !important;
     transition: all .6s ease;
   }
+} */
+
+.title_dlag {
+  border-bottom: 1px solid #d2d2d2;
+  padding: 10px;
+  text-align: left;
 }

@@ -5,16 +5,17 @@
     <div class="task_type">
       <!-- 表单 -->
       <el-table :data="list_data_list"
-                v-loading="list_data_loading"
                 :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                 style="width: 100%">
         <el-table-column prop="createTime"
+                         align="center"
                          label="发起日期">
           <template slot-scope="scope">
             <p>{{scope.row.createTime | filtedate}}</p>
           </template>
         </el-table-column>
         <el-table-column prop="projectNumber"
+                         align="center"
                          label="项目名称">
         </el-table-column>
         <el-table-column prop="title"
@@ -62,23 +63,26 @@
       </el-table>
       <!-- 分页 -->
       <div class="page">
-        <el-pagination background
-                       layout="prev, pager, next"
-                       :page-sizes="[2, 4, 6, 8]"
-                       :current-page="this.list_data.current"
+
+        <el-pagination @size-change="handleSizeChange"
                        @current-change="handleCurrentChange"
                        :page-size="this.list_data.size"
-                       :total="this.list_data.total"></el-pagination>
+                       :current-page="this.list_data.current"
+                       layout="total, sizes, prev, pager, next, jumper"
+                       :total="this.list_data.total">
+        </el-pagination>
+
       </div>
       <!-- 分页 end-->
 
     </div>
 
-    <!-- 反馈 资料列表-->
-    <el-dialog title=""
-               :visible.sync="dialogVisible"
+    <!-- 反馈 -->
+    <el-dialog :visible.sync="dialogVisible"
                width="60%"
                :before-close="dialogBeforeClose">
+      <div class="title_dlag">资料列表</div>
+
       <div class="dialog_conter">
         <div class="header">
           <el-row class="titleMes">
@@ -104,7 +108,6 @@
                       :data="feedback_list.records"
                       tooltip-effect="dark"
                       style="width: 100%"
-                      v-loading="list_loading"
                       @selection-change="handleSelectionChange_query">
               <el-table-column type="selection"
                                width="55">
@@ -124,12 +127,28 @@
               </el-table-column>
               <el-table-column prop="enclosure"
                                label="模版">
+
                 <template slot-scope="scope">
-                  <el-link type="primary"
-                           style=""
-                           @click="enclosure(scope.row.dataModulId,scope.row.enclosure)">{{scope.row.enclosure}}
-                  </el-link>
+                  <div class="update"
+                       @click="enclosure_look(scope.row.dataModulId)">
+                    <div class="update_icon">
+                      <svg t="1631877671204"
+                           class="icon"
+                           viewBox="0 0 1024 1024"
+                           version="1.1"
+                           xmlns="http://www.w3.org/2000/svg"
+                           p-id="9939"
+                           width="200"
+                           height="200">
+                        <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
+                              fill="#FD9D27"
+                              p-id="9940"></path>
+                      </svg>
+                    </div>
+                    <span>{{scope.row.enclosure}}</span>
+                  </div>
                 </template>
+
               </el-table-column>
               <el-table-column prop="remarks"
                                label="备注">
@@ -225,13 +244,14 @@
 
           <!-- 分页 -->
           <div class="page">
-            <el-pagination background
-                           layout="prev, pager, next"
-                           :page-sizes="[2, 4, 6, 8]"
-                           :current-page="this.feedback_list.current"
+            <el-pagination @size-change="handleSizeChange_data"
                            @current-change="handleCurrentChange_data"
                            :page-size="this.feedback_list.size"
-                           :total="this.feedback_list.total"></el-pagination>
+                           :current-page="this.feedback_list.current"
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="this.feedback_list.total">
+            </el-pagination>
+
           </div>
           <!-- 分页 end-->
         </div>
@@ -239,8 +259,7 @@
         <!-- 操作记录 -->
         <div v-if="record_status==true">
           <p>操作记录</p>
-          <el-form label-width="80px"
-                   v-loading="record_loading">
+          <el-form label-width="80px">
             <el-table :data="record_log"
                       style="width: 100%">
               <el-table-column prop="opOperate"
@@ -294,25 +313,61 @@
     </el-dialog>
 
     <!-- 附件详情 -->
-    <el-dialog title="附件详情"
-               width="40%"
+    <el-dialog width="20%"
+               :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                :visible.sync="dialogVisibl_enclosure_details"
                style="padding-bottom: 59px; ">
-      <el-table :data="findFile_list"
-                style="width: 100%;">
-        <!-- <el-table-column prop="dataTaskNumber"
+      <div class="fileName">
+
+        <!-- 模版 -->
+        <el-table :data="findFile_list_moban"
+                  v-if="file_type == 0"
+                  style="width: 100%;">
+          <!-- <el-table-column prop="dataTaskNumber"
                              label="流水单号">
             </el-table-column> -->
-        <el-table-column type="index"
+          <!-- <el-table-column type="index"
+                         align="center"
                          label="序号">
         </el-table-column>
         <el-table-column prop="name"
+                         align="center"
                          label="资料类型">
+        </el-table-column> -->
+          <el-table-column prop="fileName"
+                           align="center"
+                           label="文件名称">
+            <template slot-scope="scope">
+              <span @click="enclosure(scope.row.attachmentUuid,scope.row.fileName)"> {{  scope.row.fileName }}</span>
+            </template>
+
+          </el-table-column>
+        </el-table>
+
+        <!-- 附件 -->
+        <el-table :data="findFile_list"
+                  v-if="file_type==1"
+                  style="width: 100%;">
+          <!-- <el-table-column prop="dataTaskNumber"
+                             label="流水单号">
+            </el-table-column> -->
+          <!-- <el-table-column type="index"
+                         align="center"
+                         label="序号">
         </el-table-column>
         <el-table-column prop="name"
-                         label="文件名称">
-        </el-table-column>
-      </el-table>
+                         align="center"
+                         label="资料类型">
+        </el-table-column> -->
+          <el-table-column prop="fileName"
+                           align="center"
+                           label="文件名称">
+            <template slot-scope="scope">
+              <span @click="enclosure(scope.row.attachmentUuid,scope.row.fileName)">{{scope.row.fileName}}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </el-dialog>
 
   </div>
@@ -329,10 +384,6 @@ export default {
   data () {
     return {
       list_data_loading: false,
-      tableData_list: [
-        { name: 111 },
-        { name: 111 },
-      ],
       list_data: [],//列表数据
       list_data_list: [],//列表
       params: {
@@ -373,6 +424,9 @@ export default {
       findFile_list: [],//附件详情
       success_btn: 0,//文件上传完成
 
+      file_type: 0,//0 模版 1.附件
+      findFile_list_moban: [],//模版列表
+
     }
   },
   filters: {
@@ -392,8 +446,15 @@ export default {
     this.list_data_page(params); // 反馈列表
   },
   methods: {
+    handleSizeChange (val) {
+      this.params.pageSize = val
+    },
     // 反馈分页
     handleCurrentChange (val) {
+      let params = {
+        pageNo: val,
+        pageSize: this.params.pageSize,
+      }
       this.list_data_page(params);
     },
     // 列表
@@ -458,6 +519,9 @@ export default {
         this.list_loading = false;
       })
     },
+    handleSizeChange_data (val) {
+      this.data_query.pageSize = val
+    },
     // 反馈资料 分页
     handleCurrentChange_data (val) {
       let params = {
@@ -470,37 +534,48 @@ export default {
       this.feedback_post(params)//资料列表
     },
 
+    // 查看模版
+    enclosure_look (id) {
+      this.dialogVisibl_enclosure_details = true;//显示附件详情
+      this.file_type = 0;
 
-    // 查看下载模版
+      this.dialogVisibl_enclosure_details = true;//显示附件详情
+      let params = {
+        id: id
+      }
+      operation_findFile(params).then(resp => {
+        this.findFile_list_moban = resp.data
+        console.log(this.findFile_list_moban);
+      })
+
+
+    },
+    // 下载模版
     enclosure (id, name) {
-      // let params = {
-      //   uuid: id
-      // };
-      const fileName = name.split('.')[0];
+      // const fileName = name.split('.')[0];
       //模版下载
       let formData = new FormData()
-      formData.append('uuid', id)
+      formData.append('fileId', id)
       this.$axios({
         method: 'post',
         url: 'http://localhost:9529/wisdomaudit/auditPreviousDemandData/downloadByFileId',
-        // url: 'http://localhost:9529/wisdomaudit/auditPreviousDemandData/downloadByBid',
         data: formData,
         responseType: 'blob',
       }).then((res) => {
         const content = res.data;
         console.log(res);
         const blob = new Blob([content],
-          // { type: "application/xlsx" }
-          // { type: res.data.type }
           { type: 'application/octet-stream,charset=UTF-8' }
         )
-        // var timestamp = (new Date()).valueOf();
+
+        //  var timestamp = (new Date()).valueOf();
         // const fileName = res.headers["content-disposition"].split("fileName*=utf-8''")[1];
         // const filteType = res.headers["content-disposition"].split('.')[1];
+
         if ('download' in document.createElement('a')) {
           // 非IE下载
           const elink = document.createElement('a')
-          elink.download = fileName //下载后文件名
+          elink.download = name //下载后文件名
           elink.style.display = 'none'
           elink.href = window.URL.createObjectURL(blob)
           document.body.appendChild(elink)
@@ -518,6 +593,7 @@ export default {
     // 查看附件
     open_enclosure_details (id) {
       this.dialogVisibl_enclosure_details = true;//显示附件详情
+      this.file_type = 1;//0.模版 1.附件
       let params = {
         id: id
       }
@@ -542,7 +618,6 @@ export default {
     },
     // 上传时
     up_ing (file) {
-      alert('1111')
       this.success_btn = 1;//显示加载按钮  0成功  1 loaging
     },
     // 上传
@@ -565,7 +640,6 @@ export default {
             message: '上传成功',
             type: 'success'
           });
-          alert(222)
           this.success_btn = 0;//隐藏加载按钮
           //刷新列表
           let params = {
@@ -654,6 +728,10 @@ export default {
 </script>
 
 <style  scoped>
+.fileName .cell span:hover {
+  cursor: pointer !important;
+  color: #1371cc !important;
+}
 .feeback {
   padding: 20px;
   box-sizing: border-box;

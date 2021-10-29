@@ -84,7 +84,7 @@
                              label="问题数">
               <template slot-scope="scope">
                 <!-- scope.row.taskType ：1 模型  2自建 -->
-                <div v-if=" scope.row.taskType ==1">
+                <div v-if="scope.row.taskType ==1">
                   <el-button v-if="scope.row.problemsNumber !==0"
                              @click="probleNum_click(scope.row.auditTaskUuid,scope.row.auditModelName)"
                              type="text"
@@ -192,8 +192,9 @@
 
                 <!-- 模型 ===========---------->
 
-                <!-- 编辑 -->
+                <!-- 编辑 模型可以编辑-->
                 <el-button @click="edit_data(scope.row)"
+                           v-if="scope.row.taskType ==2"
                            type="text"
                            style="color:#1371CC"
                            size="small">编辑</el-button>
@@ -213,14 +214,13 @@
           <!-- 表单 end-->
           <!-- 分页 -->
           <div class="page">
-            <el-pagination background
-                           :hide-on-single-page="false"
-                           layout="prev, pager, next"
-                           :page-sizes="[10, 50, 100]"
-                           :current-page="this.tableData.current"
+            <el-pagination @size-change="handleSizeChange_zijian"
                            @current-change="handleCurrentChange_zijian"
                            :page-size="this.tableData.size"
-                           :total="this.tableData.total"></el-pagination>
+                           :current-page="this.tableData.current"
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="this.tableData.total">
+            </el-pagination>
           </div>
           <!-- 分页 end-->
         </div>
@@ -229,11 +229,11 @@
     </div>
 
     <!-- 模型任务 结果数 -->
-    <el-dialog title="查看结果"
-               width="90%"
+    <el-dialog width="90%"
                popper-class="status_data_dlag"
                :visible.sync="dialogVisible_data_num"
                style="padding-bottom: 59px">
+      <div class="title_dlag">查看结果</div>
 
       <div class="dlag_conter">
         <!-- 结果分类  -->
@@ -307,13 +307,14 @@
     </el-dialog>
 
     <!-- 结果数 核实明细结果  -->
-    <el-dialog title="核实结果"
-               width="40%"
+    <el-dialog width="40%"
                @close="resetForm_verify('verify')"
                close=""
                popper-class="status_data_dlag_verify"
                :visible.sync="dialogVisible_data_verify"
                style="padding-bottom: 59px">
+      <div class="title_dlag">核实结果</div>
+
       <div class="dlag_conter3 verify">
         <el-form>
           <!-- 是否问题-->
@@ -377,6 +378,8 @@
     <!-- 模型任务 问题数 -->
     <el-dialog :visible.sync="problemsDialogVisible"
                width="70%">
+      <div class="title_dlag">问题数</div>
+
       <el-row style="margin-top:3%;background:#F2F2F2;padding:15px">
         <el-col :span="18"
                 class="tableTitle">{{wt_title}}模型审计发现列表</el-col>
@@ -443,13 +446,15 @@
 
       <!-- 分页 -->
       <div class="page">
-        <el-pagination background
-                       layout="prev, pager, next"
-                       :page-sizes="[2, 4, 6, 8]"
-                       :current-page="this.probleNum_data.current"
+        <el-pagination @size-change="handleSizeChange_probleNum"
                        @current-change="handleCurrentChange_probleNum"
+                       :current-page="this.probleNum_data.current"
+                       :page-sizes="[100, 200, 300, 400]"
                        :page-size="this.probleNum_data.size"
-                       :total="this.probleNum_data.total"></el-pagination>
+                       layout="total, sizes, prev, pager, next, jumper"
+                       :total="this.probleNum_data.total">
+        </el-pagination>
+
       </div>
       <!-- 分页 end-->
 
@@ -707,10 +712,10 @@
     </el-dialog> -->
 
     <!-- 自建任务新增 -->
-    <el-dialog :title="title"
-               :visible.sync="dialogVisible_zj"
+    <el-dialog :visible.sync="dialogVisible_zj"
                @close="resetForm2('save_zj_query')"
                style="padding-bottom: 59px">
+      <div class="title_dlag">{{title}}</div>
 
       <div class="dlag_conter new">
         <el-form ref="save_zj_query"
@@ -737,7 +742,7 @@
                          :value="item.peopleTableUuid">
               </el-option>
             </el-select> -->
-            <el-input v-model="save_zj_query.userName"
+            <el-input v-model="save_zj_query.peopleName"
                       :disabled="disabled"></el-input>
           </el-form-item>
 
@@ -968,7 +973,7 @@ export default {
         taskType: 2,//任务类型
         enclosure: '',//附件
         peopleName: '',//责任人name
-        userName: '',//责任人id
+        peopleTableUuid: '',//责任人id
         belongField: '',// 领域
         belongSpcial: '',//专题
 
@@ -979,7 +984,6 @@ export default {
       title: '',//弹窗变量标题
 
       select_list: [],//责任人数据
-      peopleName: '请选择',//责任人默认值
       auditTaskUuid: '',//当前点击的项目id
       modelId: '',//modelid
       //  ------------------------------\
@@ -1151,7 +1155,9 @@ export default {
         this.loading = false
       })
     },
-
+    handleSizeChange_zijian (val) {
+      this.params.pageSize = val
+    },
     // 自建任务 列表分页
     handleCurrentChange_zijian (val) {
       // 资料列表
@@ -1171,7 +1177,8 @@ export default {
     // 获取责任人
     task_personLiable_data () {
       task_personLiable().then(resp => {
-        this.save_zj_query.userName = resp.data.realName
+        this.save_zj_query.peopleName = resp.data.realName//责任人name
+        this.save_zj_query.peopleTableUuid = resp.data.userId//责任人id
         console.log(resp.data);
         this.disabled = true
       })
@@ -1234,9 +1241,6 @@ export default {
                   this.success_btn = 0;//显示加载按钮  0成功  1 loaging
                   // console.log(resp.data.data);
                   this.Upload_file = resp.data.data;//上传成功大的文件
-
-
-
                   // 提交步骤
                   let params1 = {
                     managementProjectUuid: this.managementProjectUuid,//项目id
@@ -1377,6 +1381,7 @@ export default {
             enclosure: this.save_zj_query.enclosure,//附件
             peopleName: this.save_zj_query.peopleName,//责任人
             peopleTableUuid: this.save_zj_query.peopleTableUuid,//责任人id
+
             belongSpcial: this.save_zj_query.belongSpcial,//领域
             belongField: this.save_zj_query.belongField,//专题
             attachmentList: upList,//上传成功de 的文件
@@ -1462,7 +1467,7 @@ export default {
       this.title = '编辑任务';
       this.dialogVisible_zj = true;//显示新增编辑 弹窗
       this.save_zj_query.auditTaskUuid = data.auditTaskUuid;
-      this.save_zj_query.peopleName = data.peopleName;//责任人
+      // this.save_zj_query.peopleName = data.peopleName;//责任人
 
       this.edit_file_list = [];//清回显
       this.fileList = [];
@@ -1864,6 +1869,10 @@ export default {
         this.probleNum_data = resp.data
         this.probleNum_list = resp.data.records
       })
+    },
+    // 问题数分页 每页几条
+    handleSizeChange_probleNum (val) {
+      this.probleNum.pageSize = val
     },
     // 问题数分页
     handleCurrentChange_probleNum (val) {
