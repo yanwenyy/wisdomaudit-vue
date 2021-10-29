@@ -114,18 +114,6 @@
         </div>
 
         <!-- 分页 -->
-<<<<<<< HEAD
-        <div class="page">
-          <el-pagination background
-                         :hide-on-single-page="false"
-                         layout="prev, pager, next"
-                         :page-sizes="[2, 4, 6, 8]"
-                         :current-page="project.current"
-                         @current-change="handleCurrentChangeTask"
-                         :page-size="project.size"
-                         :total="project.total"></el-pagination>
-        </div>
-=======
         <pagination
           v-show="modelTotal > 0"
           :total="modelTotal"
@@ -133,7 +121,6 @@
           :limit.sync="queryInfo.pageSize"
           @pagination="queryName"
         />
->>>>>>> 2563524b16a6c35de97dd3b1f1a3f4108802891f
         <!-- 分页 end-->
       </div>
     </div>
@@ -200,20 +187,10 @@
                      :auto-upload="false"
                      multiple>
             <i class="el-icon-upload"></i>
-<<<<<<< HEAD
-            <div class="el-upload__text">
-              将文件拖到此处，或<em>点击上传</em>
-            </div>
-            <div class="el-upload__tip"
-                 slot="tip">
-              只能上传jpg/png文件，且不超过500kb
-            </div>
-=======
              <div class="el-upload__text">
                 点击上传或将文件拖到虚线框
                 <br />支持.zip,.doc,.docx,.xls,.xlsx,.txt
               </div>
->>>>>>> 2563524b16a6c35de97dd3b1f1a3f4108802891f
           </el-upload>
         </el-form-item>
       </el-form>
@@ -225,17 +202,11 @@
     </el-dialog>
 
     <!-- 审计任务维护新增弹框 -->
-<<<<<<< HEAD
-    <el-dialog :visible.sync="TaskDialogVisible"
-               width="50%"
-               @close="resetForm2('selfTaskRef')">
-=======
     <el-dialog
       :visible.sync="TaskDialogVisible"
       width="55%"
       @close="resetForm2('selfTaskRef')"
     >
->>>>>>> 2563524b16a6c35de97dd3b1f1a3f4108802891f
       <div class="taskTitle">新增任务</div>
       <div class="taskAdd"
            v-if="task == '1'">
@@ -312,26 +283,13 @@
                        multiple>
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">
-<<<<<<< HEAD
-                将文件拖到此处，或<em>点击上传</em>
-              </div>
-              <div class="el-upload__tip"
-                   slot="tip">
-                只能上传jpg/png文件，且不超过500kb
-=======
                 点击上传或将文件拖到虚线框
                 <br />支持.zip,.doc,.docx,.xls,.xlsx,.txt
->>>>>>> 2563524b16a6c35de97dd3b1f1a3f4108802891f
               </div>
             </el-upload>
           </el-form-item>
         </el-form>
         <div class="temBtn">
-<<<<<<< HEAD
-          <el-button @click="resBtn">取消</el-button>
-          <el-button style="background: #0c87d6; color: #fff"
-                     @click="saveTask('selfTaskRef')">完成</el-button>
-=======
           <el-button @click="resBtn" style="border: 1px solid #d2d2d2"
             >取消</el-button
           >
@@ -340,7 +298,6 @@
             @click="saveTask('selfTaskRef')"
             >完成</el-button
           >
->>>>>>> 2563524b16a6c35de97dd3b1f1a3f4108802891f
         </div>
       </div>
       <div class="model_Info"
@@ -388,22 +345,6 @@
           </el-table-column>
         </el-table>
         <!-- 分页 -->
-<<<<<<< HEAD
-        <div class="page">
-          <el-pagination background
-                         :hide-on-single-page="false"
-                         layout="prev, pager, next"
-                         :page-sizes="[2, 4, 6, 8]"
-                         :current-page="modelSize.current"
-                         @current-change="handleCurrentChangeModel"
-                         :page-size="modelSize.size"
-                         :total="modelSize.total"></el-pagination>
-        </div>
-        <div class="stepBtn">
-          <el-button @click="returnStep">取消</el-button>
-          <el-button style="background: #0c87d6; color: #fff"
-                     @click="modelInfoBtn">完成</el-button>
-=======
         <pagination
           v-show="taskTotal > 0"
           :total="taskTotal"
@@ -420,7 +361,6 @@
             @click="modelInfoBtn"
             >完成</el-button
           >
->>>>>>> 2563524b16a6c35de97dd3b1f1a3f4108802891f
         </div>
       </div>
     </el-dialog>
@@ -443,18 +383,12 @@
         <el-table-column prop="fileName"
                          label="文件名称">
           <template slot-scope="scope">
-<<<<<<< HEAD
-            <el-link type="primary"
-                     style=""
-                     @click="enclosureDownload(scope.row.attachmentUuid)">{{ scope.row.fileName }}</el-link>
-=======
             <el-link
               type="primary"
               style=""
               @click="enclosureDownload(scope.row.attachmentUuid,scope.row.fileName)"
               >{{ scope.row.fileName }}</el-link
             >
->>>>>>> 2563524b16a6c35de97dd3b1f1a3f4108802891f
           </template>
         </el-table-column>
       </el-table>
@@ -921,18 +855,12 @@ export default {
       });
     },
     //模型模糊查询
-<<<<<<< HEAD
-    queryModel () {
-      auditModelList(this.model_QueryInfo).then((resp) => {
-        // console.log(resp);
-=======
     queryModel() {
       this.model_QueryInfo.condition.projectId = this.active_project;
       this.queryModelSql(this.model_QueryInfo);
     },
     queryModelSql(data) {
       auditModelList(data).then((resp) => {
->>>>>>> 2563524b16a6c35de97dd3b1f1a3f4108802891f
         this.modelTableData = resp.data.records;
         this.taskTotal = resp.data.total;
         this.modelSize = resp.data;
@@ -1033,17 +961,6 @@ export default {
       console.log(this.taskSelf);
     },
     // 模型任务完成按钮
-<<<<<<< HEAD
-    modelInfoBtn () {
-      this.selectauditModelList.projectId = this.active_project;
-      quoteModel(this.selectauditModelList).then((resp) => {
-        this.$message.success("创建成功！");
-        this.TaskDialogVisible = false;
-        this.queryInfo.condition.managementProjectUuid = this.active_project;
-        this.getmodelTaskList(this.queryInfo);
-        this.task = 1;
-      });
-=======
     modelInfoBtn() {
       if (this.selectauditModelList.auditModelList.length > 0) {
         this.selectauditModelList.projectId = this.active_project;
@@ -1057,7 +974,6 @@ export default {
       } else {
         this.$message.info("请选择要引入的模型!")
       }
->>>>>>> 2563524b16a6c35de97dd3b1f1a3f4108802891f
     },
     //新增自建任务上传附件
     handleChangePic (file, fileList) {
@@ -1284,13 +1200,8 @@ export default {
       });
     },
     // 附件下载
-<<<<<<< HEAD
-    enclosureDownload (id) {
-      console.log(id);
-=======
     enclosureDownload(id, name) {
       const fileName = name.split('.')[0];
->>>>>>> 2563524b16a6c35de97dd3b1f1a3f4108802891f
       let formData = new FormData();
       formData.append("fileId", id);
       this.$axios({
@@ -1336,11 +1247,7 @@ export default {
       this.fileList = [];
     },
     //
-<<<<<<< HEAD
-    handleRemove (file, fileList) {
-=======
     handleRemove(file, fileList) {
->>>>>>> 2563524b16a6c35de97dd3b1f1a3f4108802891f
       if (file.response) {
         this.fileList.remove(file.response.data);
         this.key = Math.random();
@@ -1351,12 +1258,7 @@ export default {
       }
     },
   },
-<<<<<<< HEAD
-  created () {
-    // console.log(this.active_project);
-=======
   created() {
->>>>>>> 2563524b16a6c35de97dd3b1f1a3f4108802891f
     this.queryInfo.condition.managementProjectUuid = this.active_project;
     this.getmodelTaskList(this.queryInfo);
     // this.getSelectData(this.select);

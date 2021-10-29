@@ -1246,15 +1246,9 @@ export default {
         //下一步 保存组员
         editprojectMembershipList(this.updataPerson).then((resp) => {
           // this.$message.success("添加成功！");
-<<<<<<< HEAD
-          this.query.condition.managementProjectUuid =
-            this.managementProjectUuid;
-          this.projectMember(this.query);
-=======
           this.queryleader.condition.managementProjectUuid =
             this.managementProjectUuid;
           this.leaderSelect(this.queryleader);
->>>>>>> 2563524b16a6c35de97dd3b1f1a3f4108802891f
         });
 
         this.getModelList.condition.managementProjectUuid =
@@ -1264,17 +1258,10 @@ export default {
       } else {
         //下一步 保存组员
         editprojectMembershipList(this.updataPerson).then((resp) => {
-<<<<<<< HEAD
-          this.$message.success("添加成功！");
-          this.query.condition.managementProjectUuid =
-            this.managementProjectUuid;
-          this.projectMember(this.query);
-=======
           // this.$message.success("添加成功！");
           this.queryleader.condition.managementProjectUuid =
             this.managementProjectUuid;
           this.leaderSelect(this.queryleader);
->>>>>>> 2563524b16a6c35de97dd3b1f1a3f4108802891f
         });
 
         this.getModelList.condition.managementProjectUuid =
@@ -1318,11 +1305,7 @@ export default {
         this.modelTotal = resp.data.total;
     });
     },
-<<<<<<< HEAD
    
-=======
-
->>>>>>> 2563524b16a6c35de97dd3b1f1a3f4108802891f
     // 分页跳转事件
     handleCurrentChangeModel(val) {
       let query = {
@@ -1395,16 +1378,6 @@ export default {
     selectModel() {
       this.addDialogVisible = false;
       this.modelDialog = true;
-<<<<<<< HEAD
-=======
-      for (let i = 0; i < this.modelTableData.length; i++) {
-        this.$refs.multipleModelRef.toggleRowSelection(
-          this.modelTableData[i],
-          false
-        );
-      }
-      this.modelQuery.condition.projectId = this.managementProjectUuid;
->>>>>>> 2563524b16a6c35de97dd3b1f1a3f4108802891f
       this.getauditModelListSql(this.modelQuery);
     },
     // 未初始化弹框关闭事件
