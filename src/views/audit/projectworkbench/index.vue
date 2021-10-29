@@ -593,11 +593,9 @@
               multiple
             >
               <i class="el-icon-upload"></i>
-              <div class="el-upload__text">
-                将文件拖到此处，或<em>点击上传</em>
-              </div>
-              <div class="el-upload__tip" slot="tip">
-                只能上传jpg/png文件，且不超过500kb
+               <div class="el-upload__text">
+                点击上传或将文件拖到虚线框
+                <br />支持.zip,.doc,.docx,.xls,.xlsx,.txt
               </div>
             </el-upload>
           </el-form-item>
@@ -694,10 +692,8 @@
             >
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">
-                将文件拖到此处，或<em>点击上传</em>
-              </div>
-              <div class="el-upload__tip" slot="tip">
-                只能上传jpg/png文件，且不超过500kb
+                点击上传或将文件拖到虚线框
+                <br />支持.zip,.doc,.docx,.xls,.xlsx,.txt
               </div>
             </el-upload>
           </el-form-item>
@@ -974,10 +970,17 @@ export default {
         peopleTableUuid: "",
         auditTaskUuid: "",
       },
-      query: {
+      query: {      //查询组员入参
         condition: {
           managementProjectUuid: "",
           peopleRole: "2",
+        },
+        pageNo: 1,
+        pageSize: 1000,
+      },
+      queryleader:{
+         condition: {
+          managementProjectUuid: "",
         },
         pageNo: 1,
         pageSize: 1000,
@@ -1033,6 +1036,7 @@ export default {
   },
   methods: {
     filterMethod(query, item) {
+       if (!query) return true
       return item.label.indexOf(query) > -1;
     },
     //查询未初始化项目
@@ -1179,6 +1183,13 @@ export default {
         this.loading = false;
       });
     },
+   //查询责任人下拉框接口
+   leaderSelect(data){
+      projectMembership(data).then((resp) => {
+        this.tableData = resp.data.records;
+      })
+   },
+
     // 查询已选组员
     projectMember(data) {
       projectMembership(data).then((resp) => {
@@ -1206,7 +1217,7 @@ export default {
     // 下一步按钮事件
     nextBtn() {
       this.step = 2;
-      console.log(this.updataPerson);
+      // console.log(this.updataPerson);
 
       if (this.updataPerson.projectId == "") {
         this.updataPerson.projectId = this.managementProjectUuid;
@@ -1225,9 +1236,9 @@ export default {
         //下一步 保存组员
         editprojectMembershipList(this.updataPerson).then((resp) => {
           // this.$message.success("添加成功！");
-          this.query.condition.managementProjectUuid =
+          this.queryleader.condition.managementProjectUuid =
             this.managementProjectUuid;
-          this.projectMember(this.query);
+          this.leaderSelect(this.queryleader);
         });
 
         this.getModelList.condition.managementProjectUuid =
@@ -1238,9 +1249,9 @@ export default {
         //下一步 保存组员
         editprojectMembershipList(this.updataPerson).then((resp) => {
           // this.$message.success("添加成功！");
-          this.query.condition.managementProjectUuid =
+          this.queryleader.condition.managementProjectUuid =
             this.managementProjectUuid;
-          this.projectMember(this.query);
+          this.leaderSelect(this.queryleader);
         });
 
         this.getModelList.condition.managementProjectUuid =
@@ -1498,6 +1509,7 @@ export default {
                 this.taskSelf.attachmentList = this.Upload_file;
                 this.taskSelf.managementProjectUuid =
                   this.managementProjectUuid;
+                  this.taskSelf.taskType = 2;
                 selfTaskFunction(this.taskSelf).then((resp) => {
                   this.$message.success("自建任务创建成功！");
                   this.taskSelfDialogVisible = false;
@@ -1516,6 +1528,7 @@ export default {
               }
             });
           } else {
+            this.taskSelf.taskType = 2;
             this.taskSelf.managementProjectUuid = this.managementProjectUuid;
             selfTaskFunction(this.taskSelf).then((resp) => {
               this.$message.success("自建任务创建成功！");
@@ -2259,5 +2272,10 @@ export default {
 }
 .el-transfer /deep/ .el-transfer-panel {
   width: 400px;
+}
+.selfTask /deep/ .el-form-item__error {
+  position: absolute;
+  top: -70%;
+  left: 35%;
 }
 </style>
