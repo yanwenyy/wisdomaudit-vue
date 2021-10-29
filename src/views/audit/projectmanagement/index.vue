@@ -1392,6 +1392,18 @@ export default {
           row.auditOrgName = this.loadaudittorgoptions[i].orgName;
         }
       }
+
+        //添加专项table数组根据某一个字段去重
+      var result = [];
+      var obj = {};
+      for (let i = 0; i < this.addProjectManagement.auditList.length; i++) {
+        if (!obj[this.addProjectManagement.auditList[i].auditOrgUuid] || !obj[this.addProjectManagement.auditList[i].projectChargemanID]) {
+          result.push(this.addProjectManagement.auditList[i]);
+          obj[this.addProjectManagement.auditList[i].auditOrgUuid] = true;
+          obj[this.addProjectManagement.auditList[i].projectChargemanID] = true;
+        }
+      }
+      this.addProjectManagement.auditList = result;
     },
     //专项项目负责人下拉框事件
     LeaderSelect(row) {
@@ -1411,7 +1423,7 @@ export default {
       var result = [];
       var obj = {};
       for (let i = 0; i < this.addProjectManagement.auditList.length; i++) {
-        if (!obj[this.addProjectManagement.auditList[i].auditOrgUuid] && !obj[this.addProjectManagement.auditList[i].projectChargemanID]) {
+        if (!obj[this.addProjectManagement.auditList[i].auditOrgUuid] || !obj[this.addProjectManagement.auditList[i].projectChargemanID]) {
           result.push(this.addProjectManagement.auditList[i]);
           obj[this.addProjectManagement.auditList[i].auditOrgUuid] = true;
           obj[this.addProjectManagement.auditList[i].projectChargemanID] = true;
@@ -1432,7 +1444,7 @@ export default {
       var result = [];
       var obj = {};
       for (let i = 0; i < this.addProjectManagement.auditList.length; i++) {
-        if (!obj[this.addProjectManagement.auditList[i].auditOrgUuid] && !obj[this.addProjectManagement.auditList[i].projectChargemanID]) {
+        if (!obj[this.addProjectManagement.auditList[i].auditOrgUuid] || !obj[this.addProjectManagement.auditList[i].projectChargemanID]) {
           result.push(this.addProjectManagement.auditList[i]);
           obj[this.addProjectManagement.auditList[i].auditOrgUuid] = true;
           obj[this.addProjectManagement.auditList[i].projectChargemanID] = true;

@@ -1241,7 +1241,7 @@ export default {
       formData.append("fileId", id);
       this.$axios({
         method: "post",
-        url: "http://localhost:9529/wisdomaudit/auditPreviousDemandData/downloadByFileId",
+        url: "/wisdomaudit/auditPreviousDemandData/downloadByFileId",
         data: formData,
         responseType: "blob",
       })
