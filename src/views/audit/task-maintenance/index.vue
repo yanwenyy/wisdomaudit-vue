@@ -208,12 +208,10 @@
             multiple
           >
             <i class="el-icon-upload"></i>
-            <div class="el-upload__text">
-              将文件拖到此处，或<em>点击上传</em>
-            </div>
-            <div class="el-upload__tip" slot="tip">
-              只能上传jpg/png文件，且不超过500kb
-            </div>
+             <div class="el-upload__text">
+                点击上传或将文件拖到虚线框
+                <br />支持.zip,.doc,.docx,.xls,.xlsx,.txt
+              </div>
           </el-upload>
         </el-form-item>
       </el-form>
@@ -1643,5 +1641,10 @@ export default {
   text-align: center;
   margin-bottom: 3%;
   font-weight: 700;
+}
+.taskAdd /deep/ .el-form-item__error {
+  position: absolute;
+  top: -70%;
+  left: 35%;
 }
 </style>

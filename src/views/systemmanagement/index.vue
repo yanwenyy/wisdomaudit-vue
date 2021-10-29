@@ -54,13 +54,14 @@
 
         <!-- 分页 -->
         <div class="page">
-          <pagination
+          <el-pagination
             :total="total"
             :page.sync="queryInfo.pageCurrent"
             :limit.sync="queryInfo.pageSize"
-            @handleSizeChange="handleSizeChange"
-            @handleCurrentChange="handleCurrentChange"
-          />
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          >
+          </el-pagination>
         </div>
         <!-- 分页 end-->
       </div>
@@ -117,32 +118,31 @@ export default {
         pageCurrent: 1,
         // 每页显示多少条
         pageSize: 10,
-   
       },
     };
   },
   computed: {},
   watch: {},
   methods: {
-   async searchName(){
+    async searchName() {
       let data = {
         pageCurrent: this.queryInfo.pageCurrent,
         pageSize: this.queryInfo.pageSize,
         roleName: this.queryInfo.roleName,
       };
-        let res = await searchRole(data);
+      let res = await searchRole(data);
       console.log(res, "ss");
-       this.tableData = res.data.list;
+      this.tableData = res.data.list;
     },
-  async  handleSizeChange(val) {
-       let data = {
+    async handleSizeChange(val) {
+      let data = {
         pageCurrent: this.queryInfo.pageCurrent,
         pageSize: val,
         // roleName: this.queryInfo.roleName,
       };
       let res = await searchRole(data);
       console.log(res, "翻页");
-       this.tableData = res.data.list;
+      this.tableData = res.data.list;
     },
     async handleCurrentChange(val) {
       let data = {
@@ -151,7 +151,7 @@ export default {
         // roleName: this.queryInfo.roleName,
       };
       let res = await searchRole(data);
-       this.tableData = res.data.list;
+      this.tableData = res.data.list;
     },
 
     deleteRow(id) {
