@@ -156,7 +156,7 @@
               <el-table-column prop="updateTime"
                                label="提供时间">
                 <template slot-scope="scope">
-                  {{scope.row.updateTime | filtedate}}
+                  {{scope.row.createTime | filtedate}}
                 </template>
               </el-table-column>
               <el-table-column prop="dataNumber"
@@ -558,7 +558,7 @@ export default {
       formData.append('fileId', id)
       this.$axios({
         method: 'post',
-        url: 'http://localhost:9529/wisdomaudit/auditPreviousDemandData/downloadByFileId',
+        url: '/wisdomaudit/auditPreviousDemandData/downloadByFileId',
         data: formData,
         responseType: 'blob',
       }).then((res) => {
@@ -628,7 +628,7 @@ export default {
       formData.append('file', file.file)
       this.$axios({
         method: 'post',
-        url: 'http://localhost:9529/wisdomaudit/auditPreviousDemandData/uploadData',
+        url: '/wisdomaudit/auditPreviousDemandData/uploadData',
         data: formData,
         headers: {
           'Content-Type': 'multipart/form-data'

@@ -84,14 +84,15 @@
     </div>
 
     <!-- 关联指标 -->
-    <el-dialog title="关联指标"
-               width="40%"
+    <el-dialog width="40%"
                popper-class="status_data_dlag_verify"
                :visible.sync="dlag_Correlation_zb"
                style="padding-bottom: 59px">
+      <div class="title_dlag">关联指标</div>
+
       <div class="dlag_conter3">
         <!-- 表单 -->
-        <el-table :data="tableData1"
+        <el-table :data="correlation"
                   ref="multipleTable"
                   tooltip-effect="dark"
                   v-loading="loading"
@@ -103,7 +104,7 @@
                            width="55">
           </el-table-column>
           <el-table-column prop="name"
-                           align="center"
+                           align="indexType"
                            label="指标类型"> </el-table-column>
 
           <el-table-column prop="name"
@@ -137,12 +138,15 @@
         </span>
       </div>
     </el-dialog>
+
     <!-- 关联问题 -->
-    <el-dialog title="关联问题"
-               width="60%"
+    <el-dialog width="60%"
                popper-class="status_data_dlag_verify"
                :visible.sync="dlag_Correlation_wt"
                style="padding-bottom: 59px">
+
+      <div class="title_dlag">关联问题</div>
+
       <div class="dlag_conter3">
         <!-- 表单 -->
         <el-table :data="tableData2_list"
@@ -209,49 +213,23 @@
 
 <script>
 
-import { task_pageList_wt, task_pageList_export } from '@SDMOBILE/api/shandong/AuditReport'
+import { operatingIndicators_list, task_pageList_wt, task_pageList_export, export_selectFile } from '@SDMOBILE/api/shandong/AuditReport'
 import { fmtDate } from '@SDMOBILE/model/time.js';
 
 export default {
   components: {},
   data () {
     return {
-      // tt: [
-      //   { name: 11 },
-      //   { name: 22 },
-      //   { name: 33 },
-      //   { name: 44 },
-      //   { name: 55 }
-      // ],//title
-
+      file_list: [],//附件
       loading: false,
       dlag_Correlation_zb: false,//添加关联指标
       dlag_Correlation_wt: false,//添加关联问题
 
       multipleSelection: [],//指标多选
       multipleSelection2: [],//问题多选
-      tableData1: [
-        {
-          name: '个人',
+      correlation: [],//关联指标数据
 
-        },
-        {
-          name: '个人',
 
-        },
-        {
-          name: '个人',
-
-        },
-        {
-          name: '个人',
-
-        },
-        {
-          name: '个人',
-
-        },
-      ],
       managementProjectUuid: 'string',//项目管理id
       administrativeAdvice: '',//管理建议
       businessEvaluation: '',//经营评价
@@ -267,7 +245,10 @@ export default {
   computed: {},
   watch: {},
   created () {
-
+    let params = {
+      managementProjectUuid: this.managementProjectUuid,//项目id
+    }
+    this.export_selectFile_data(params)
   },
   mounted () {
 
@@ -279,7 +260,13 @@ export default {
     }
   },
   methods: {
-
+    // 附件
+    export_selectFile_data (params) {
+      export_selectFile(params).then(resp => {
+        console.log(resp);
+        this.file_list = resp.data
+      })
+    },
     // listTop (item, index) {
     //   this.tt.splice(index, 1)
     //   this.tt.unshift(item)
@@ -288,7 +275,14 @@ export default {
 
     // 添加关联指标
     Correlation_zb () {
+      let params = {
+        managementProjectUuid: this.managementProjectUuid,//项目id
+      }
       this.dlag_Correlation_zb = true;//添加关联指标
+      operatingIndicators_list(params).then(resp => {
+        this.correlation = resp.data;
+        console.log(resp);
+      })
     },
     // 指标多选
     handleSelectionChange_zb (val) {
@@ -376,6 +370,12 @@ export default {
 </script>
 
 <style scoped>
+.title_dlag {
+  border-bottom: 1px solid #d2d2d2;
+  padding: 10px;
+  text-align: left;
+}
+
 .report {
 }
 .report >>> .header {
@@ -413,6 +413,11 @@ export default {
   box-sizing: border-box;
   margin-top: 20px;
 }
+.dlag_conter3 >>> .el-table {
+  overflow-y: auto;
+  height: 300px;
+}
+
 .dlag_conter3 >>> .foot {
   width: 100%;
   display: flex;
