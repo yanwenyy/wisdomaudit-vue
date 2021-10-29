@@ -30,19 +30,19 @@
       max-height="calc(100vh - 300px)"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column align="center" label="序号">
+      <el-table-column label="序号">
         <template slot-scope="scope">
           {{ scope.$index + 1 }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="问题">
+      <el-table-column label="问题">
         <template slot-scope="scope">
           <div class="canclick" @click="checkDetail(scope.row.problemListUuid)">
             {{ scope.row.problem }}
           </div>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="领域" prop="field">
+      <el-table-column label="领域" prop="field">
         <template slot-scope="scope">
           <div>
             <!-- {{ fieldFilter(scope.row.field) }} -->
@@ -50,7 +50,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="专题" prop="special">
+      <el-table-column label="专题" prop="special">
         <template slot-scope="scope">
           <div>
             {{ specialFilter(scope.row.special) }}
@@ -60,16 +60,15 @@
       <el-table-column
         label="风险金额（万元）"
         width="180px"
-        align="center"
         prop="riskAmount"
       />
-      <el-table-column align="center" label="发现日期">
+      <el-table-column label="发现日期">
         <template slot-scope="scope">
           {{ repDate(scope.row.problemDiscoveryTime) }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="发现人" prop="problemFindPeople" />
-      <el-table-column align="center" label="操作" width="200">
+      <el-table-column label="发现人" prop="problemFindPeople" />
+      <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <el-button
             @click="openDetail(scope.$index)"
