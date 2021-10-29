@@ -8,15 +8,11 @@
         </el-col>
 
         <div class="search">
-          <el-input placeholder="请输入" v-model="pageQuery.condition.problem">
+          <el-input placeholder="请输入内容" v-model="pageQuery.condition.problem" class="input-with-select">
+            <el-button slot="append" icon="el-icon-search" type="primary" @click="getList"></el-button>
           </el-input>
-          <div class="search_icon">
-            <i class="el-icon-search" style="color: rgba(0, 0, 0, 0.5)"></i>
-          </div>
-          <el-button type="primary" @click="getList">筛选</el-button>
         </div>
       </el-row>
-
       <!-- <div class="auditproblem-btn-box"></div> -->
     </div>
     <!-- @sort-change="sortChange"
@@ -102,6 +98,7 @@
       title="新增问题"
       :visible.sync="dialogFormVisible"
       :close-on-click-modal="false"
+      center
     >
       <el-form
         ref="dataForm"
@@ -311,7 +308,7 @@
             placeholder="请输入发现人"
           />
         </el-form-item>
-        <el-form-item label="风险金额（万元）" prop="riskAmount">
+        <el-form-item label="风险金额（万元）" prop="riskAmount" width="180">
           <el-input
             v-model.number="dqProblem.riskAmount"
             placeholder="请输入风险金额"
@@ -911,6 +908,7 @@ export default {
 }
 .auditproblem .citebtn {
   height: 40px;
+  margin-bottom: 6px;
 }
 .canclick {
   color: rgb(27, 168, 250);
