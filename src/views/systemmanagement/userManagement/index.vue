@@ -6,7 +6,11 @@
           <el-row class="titleMes" type="flex" justify="space-between">
             <el-col :span="7">
               <div class="search">
-                <el-input placeholder="请输入角色名称搜索" v-model="queryInfo.userName"> </el-input>
+                <el-input
+                  placeholder="请输入角色名称搜索"
+                  v-model="queryInfo.userName"
+                >
+                </el-input>
                 <el-button class="search_icon" @click="searchUser">
                   <i class="el-icon-search" style="color: #fff"></i>
                 </el-button>
@@ -36,7 +40,9 @@
             </el-table-column>
             <el-table-column prop="address" label="操作">
               <template slot-scope="scope">
-                <el-link type="primary" @click.native.prevent="det_obj(scope.row.id)"
+                <el-link
+                  type="primary"
+                  @click.native.prevent="det_obj(scope.row.id)"
                   >编辑</el-link
                 >
                 <el-link
@@ -52,13 +58,14 @@
 
         <!-- 分页 -->
         <div class="page">
-          <pagination
+          <el-pagination
             :total="total"
-            :page.sync="pageNo"
-            :limit.sync="pageSize"
-            @handleSizeChange="handleSizeChange"
-            @handleCurrentChange="handleCurrentChange"
-          />
+            :page.sync="queryInfo.pageCurrent"
+            :limit.sync="queryInfo.pageSize"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          >
+          </el-pagination>
         </div>
         <!-- 分页 end-->
       </div>
@@ -67,7 +74,7 @@
 </template>
 
 <script>
-import { getUserList ,removeUser} from "../../../api/user";
+import { getUserList, removeUser } from "../../../api/user";
 import Pagination from "@/components/Pagination";
 export default {
   components: { Pagination },
@@ -108,7 +115,7 @@ export default {
       tableData: [],
       value1: "",
       value2: "",
-      total: "1",
+      total: 1,
       queryInfo: {
         userName: "",
         // 当前页数
@@ -121,14 +128,14 @@ export default {
   computed: {},
   watch: {},
   methods: {
-   async searchUser(){
-       let data = {
+    async searchUser() {
+      let data = {
         pageCurrent: this.queryInfo.pageCurrent,
         pageSize: this.queryInfo.pageSize,
         userName: this.queryInfo.userName,
       };
-        let res = await getUserList(data);
-       this.tableData = res.data.list;
+      let res = await getUserList(data);
+      this.tableData = res.data.list;
     },
     async getUserLists() {
       let res = await getUserList();
@@ -168,22 +175,22 @@ export default {
       console.log(id);
       this.$router.push({
         name: "editUserManagement",
-         query: {
+        query: {
           id: id,
         },
       });
     },
     // 删除
     deleteRow(id) {
-        console.log(id);
-         this.$confirm("是否删除?", "提示", {
+      console.log(id);
+      this.$confirm("是否删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(async () => {
           let ids = {
-            userId:id,
+            userId: id,
           };
           let res = await removeUser(ids);
           if (res.status == 0) {
@@ -205,7 +212,6 @@ export default {
             message: "已取消删除",
           });
         });
-
     },
     // 查看结果
     see_val() {

@@ -19,6 +19,7 @@
         }"
           style="width: 100%;">
           <el-table-column
+            :selectable="selectable"
             align="center"
             type="selection"
             width="55">
@@ -109,11 +110,11 @@
             placeholder="请输入指标名称"
           />
         </el-form-item>
-        <el-form-item label="单位" prop="numericSymbol	">
-          <el-select v-model="temp.numericSymbol	" placeholder="请选择"
+        <el-form-item label="单位" prop="numericSymbol">
+          <el-select v-model="temp.numericSymbol" placeholder="请选择"
                      @change="
                       getName(
-                        temp.numericSymbol	,
+                        temp.numericSymbol,
                         selectList.dw,
                         'numericSymbolName',
                       )
@@ -202,7 +203,6 @@
           indexName:'',
           numericSymbol:'',
           numericSymbolName:'',
-          numericSymbolName:'',
           dataProvidingDepartment:'',
           dataProvidingDepartmentName:'',
           accessCaliberFormula:'',
@@ -262,6 +262,13 @@
       }
     },
     methods: {
+      selectable(row, index) {
+        if (row.ifChecked===true) {
+          return false;
+        } else {
+          return true;
+        }
+      },
       //获取下拉框的name
       getName(id,list,name){
         if(id){
@@ -273,22 +280,33 @@
       },
       //指标新增确定按钮点击
       addSave(){
-        indexManagement_addSave(this.temp).then(resp => {
-          if (resp.code == 0) {
-            this.$message({
-              message: "保存成功",
-              type: "success",
-            });
-            this.dialogFormVisible=false;
-            this.init(this.managementProjectUuid);
-            this.clearTemp();
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            indexManagement_addSave(this.temp).then(resp => {
+              if (resp.code == 0) {
+                this.$message({
+                  message: "保存成功",
+                  type: "success",
+                });
+                this.dialogFormVisible=false;
+                this.init(this.managementProjectUuid);
+                this.clearTemp();
+              } else {
+                this.$message({
+                  message: resp.data.msg,
+                  type: "error",
+                });
+              }
+            })
           } else {
             this.$message({
-              message: resp.data.msg,
+              message: '请完善信息',
               type: "error",
             });
+            return false;
           }
-        })
+        });
+
       },
       //清空指标新增数据
       clearTemp(){
@@ -317,6 +335,9 @@
         let params={
           pageNo: this.searchForm.pageNo,
           pageSize: this.searchForm.pageSize,
+          condition:{
+            managementProjectUuid:this.managementProjectUuid
+          }
         };
         this.loading = true
         indexManagement_addList(params).then(resp => {
@@ -340,22 +361,27 @@
           indexManagementList: this.selListShow,
           managementProjectUuid: this.managementProjectUuid,
         };
-        this.loading = true
-        indexManagement_save(params).then(resp => {
-          if (resp.code == 0) {
-            this.$message({
-              message: "保存成功",
-              type: "success",
-            });
-            this.visible=false;
-            this.$emit('refreshAdd')
-          } else {
-            this.$message({
-              message: resp.data.msg,
-              type: "error",
-            });
-          }
-        })
+        this.loading = true;
+        if(this.selListShow.length>0){
+          indexManagement_save(params).then(resp => {
+            if (resp.code == 0) {
+              this.$message({
+                message: "保存成功",
+                type: "success",
+              });
+              this.visible=false;
+              this.$emit('refreshAdd')
+            } else {
+              this.$message({
+                message: resp.data.msg,
+                type: "error",
+              });
+            }
+          })
+        }else{
+          this.visible=false;
+        }
+
       },
       //分页点击
       handleSizeChange(val) {
