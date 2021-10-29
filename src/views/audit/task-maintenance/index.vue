@@ -1614,4 +1614,8 @@ export default {
   top: -70%;
   left: 35%;
 }
+>>>.el-input.is-disabled .el-input__inner{
+  background: #F5F7FA!important;
+  color:#C0C4CC!important;
+}
 </style>
