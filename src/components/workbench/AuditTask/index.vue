@@ -298,30 +298,30 @@
 
           <!-- 固定 -->
           <!-- 是否问题 -->
-          <el-table-column prop="addTime"
+          <el-table-column prop="isProbleam"
                            align="center"
                            label="是否问题">
-            <template slot-scope="scope">
-              {{  scope.row.createTime }}
-            </template>
+            <!-- <template slot-scope="scope">
+              {{  scope.row. }}
+            </template> -->
           </el-table-column>
 
           <!-- 核实人 -->
-          <el-table-column prop="addTime"
+          <el-table-column prop="handlePersonName"
                            align="center"
                            label="核实人">
-            <template slot-scope="scope">
+            <!-- <template slot-scope="scope">
               {{  scope.row.createTime }}
-            </template>
+            </template> -->
           </el-table-column>
 
           <!-- 核实信息-->
-          <el-table-column prop="addTime"
+          <el-table-column prop="handleIdea"
                            align="center"
                            label="核实信息">
-            <template slot-scope="scope">
+            <!-- <template slot-scope="scope">
               {{  scope.row.createTime }}
-            </template>
+            </template> -->
           </el-table-column>
 
           <el-table-column prop=""
@@ -346,7 +346,8 @@
                           p-id="9940"></path>
                   </svg>
                 </div>
-                <span>{{scope.row.enclosureCount}}</span>
+                <span>0</span>
+                <!-- <span>{{scope.row.enclosureCount}}</span> -->
               </div>
               <!-- 没有附件 -->
               <div class="update"
@@ -365,7 +366,9 @@
                           p-id="9940"></path>
                   </svg>
                 </div>
-                <span>{{scope.row.enclosureCount}}</span>
+                <span>0</span>
+
+                <!-- <span>{{scope.row.enclosureCount}}</span> -->
               </div>
             </template>
           </el-table-column>
@@ -1791,37 +1794,18 @@ export default {
           pageNo: this.params_heshi.pageNo,
           pageSize: this.params_heshi.pageSize,
         };
-        this.new_table(params_query);
+        this.new_table(params_query);//新接口 table
 
         let arr = this.status_data_list[0].result //原列表
         let arr2 = this.projectRel_pgeList_list //新列表
-        // console.log(this.projectRel_pgeList_list);
-
-        if (arr && arr2) {
-          arr.forEach(item => {
-            const data = arr2.forEach(i => item.onlyuuid == i.resultDetailId)
-            return {
-              ...item,
-              ...data,
-              // products: data ? data.products : []
-            }
-          })
-          console.log(arr);
-          return
-        }
 
 
-        // this.status_data_list = this.status_data_list.concat(this.lhg)
-        // this.status_data_list
+        console.log(arr);
 
-        // return
-        // this.status_data_list.forEach(item => {
+        // arr.forEach(item => {
         //   this.$set(item, 'yes_no', false)//是否问题
         // })
-        // this.tableData_list = this.tableData_list.concat(this.li)
-
-        console.log(this.status_data_list);
-        // this.loading = false
+        // console.log(this.status_data_list);
 
       })
     },
@@ -1829,9 +1813,10 @@ export default {
     // 新增核实 表头
     new_table (params_query) {
       projectRel_pgeList(params_query).then(resp => {
-
         this.projectRel_pgeList_list = resp.data.records
         console.log(this.projectRel_pgeList_list);
+
+
       })
     },
 
@@ -1889,6 +1874,19 @@ export default {
       //   return false
       // }
       this.dialogVisible_data_verify = true;//显示核实结果
+
+
+      // 新表单
+      let params_query = {
+        condition: {
+          runTaskRelUuid: this.paramTaskUuid,
+        },
+        pageNo: this.params_heshi.pageNo,
+        pageSize: this.params_heshi.pageSize,
+      };
+      this.new_table(params_query);//新接口 table
+
+
     },
     // 是否问题 change
     isProbleam_change (val) {
@@ -2019,6 +2017,41 @@ export default {
             type: "success",
           });
           this.dialogVisible_data_verify = false;//关闭核实  弹窗
+
+
+          //老 结果列表
+          let params3 = {
+            basePageParam: {
+              condition: {
+                keyword: null,
+                runResultTableUuid: this.status_data[this.date_index].runResultTableUuid,
+                // runTaskRelUuid: this.status_data[this.date_index].runTaskRelUuid,
+                // runTaskRelUuid: this.status_data[this.date_index].paramTaskUuid,
+                runTaskRelUuid: this.paramTaskUuid,
+                resultTableName: this.status_data[this.date_index].resultTableName,//- 实际表名
+                resultShowName: this.status_data[this.date_index].resultShowName,
+                tableType: this.status_data[this.date_index].tableType,//  主副表标识, 主表 = 1、副表1 = 2、副表2 = 3···
+                dataCount: 1
+              },
+              pageNo: this.basePageParam_query.pageNo, //当前页数
+              pageSize: this.basePageParam_query.pageSize //分页数量
+            },
+            filterSql: "undefined",
+          }
+          this.data_tab_list(params3)// 结果列表
+
+
+          // 新表单
+          let params_query = {
+            condition: {
+              runTaskRelUuid: this.paramTaskUuid,
+            },
+            pageNo: this.params_heshi.pageNo,
+            pageSize: this.params_heshi.pageSize,
+          };
+          this.new_table(params_query);//新接口 table
+
+
         } else {
           this.$message({
             message: resp.msg,
@@ -2306,7 +2339,7 @@ export default {
       this.auditTaskUuid = data.auditTaskUuid;
       this.auditModelUuid = data.paramTaskUuid;
       let modelUuids = [this.modelId];
-      // let modelUuids = ['feee90e402b7b046610870b0df6a7510'];
+      // let modelUuids = ['3e9ea48186fef8481a88c85891908c4e'];
       task_findModelList(modelUuids).then(resp => {
         console.log(resp.data);
         if (resp.code == 0) {
