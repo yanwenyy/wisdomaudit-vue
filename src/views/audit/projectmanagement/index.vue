@@ -6,27 +6,31 @@
         <!-- 添加按钮 -->
         <el-button class="queryBtn"  @click="addProject">新增项目</el-button>
       </el-col>
-      <el-col :span="5" class="search">
-        <el-input
+      <!-- <el-col :span="4" > -->
+        <div class="search">
+           <el-input
           placeholder="请输入项目名称"
           v-model="query.condition.projectName"
           @keyup.enter.native="queryName"
         >
-         </el-input>
-          <!-- <el-button
+        
+           <!-- <el-button
             class="queryBtn"
             slot="append"
             type="primary"
             icon="el-icon-search"
             @click="queryName"
           ></el-button> -->
-           <div class="search_icon"
+         </el-input>
+          <div class="search_icon"
                  style=" background: rgb(12, 135, 214) !important;"
                  @click="queryName">
               <i class="el-icon-search"
                  style="color: white;   "></i>
             </div>
-      </el-col>
+        </div>
+          
+      <!-- </el-col> -->
       <!-- <el-col :span="2">
         <el-button
           style="margin-left: 10%; border: 1px solid #ebeef2"
@@ -43,20 +47,21 @@
       style="margin-top: 1%; width: 100%"
       border
       stripe
+      fit
       :header-cell-style="{'background-color': '#F4FAFF',}"
     >
-      <el-table-column type="selection" width="55"> </el-table-column>
+      <el-table-column type="selection" width="40"> </el-table-column>
       <el-table-column align="center" prop="projectCode" width="105" label="项目编号" show-overflow-tooltip >
       </el-table-column>
-      <el-table-column align="center" prop="projectName" label="审计项目名称" show-overflow-tooltip>
+      <el-table-column min-width="90px" align="center" prop="projectName" label="审计项目名称" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column align="center" prop="auditOrgName" label="被审计对象" show-overflow-tooltip>
+      <el-table-column align="center" min-width="90px" prop="auditOrgName" label="被审计对象" show-overflow-tooltip>
       </el-table-column>
       <el-table-column align="center" prop="projectTypeName" label="项目类型" show-overflow-tooltip>
       </el-table-column>
       <el-table-column align="center" prop="specialName" label="专题" show-overflow-tooltip></el-table-column>
       <el-table-column align="center" prop="fieldName" label="领域" show-overflow-tooltip></el-table-column>
-      <el-table-column align="center" prop="projectLeaderName" label="项目负责人" show-overflow-tooltip>
+      <el-table-column align="center" min-width="90px" prop="projectLeaderName" label="项目负责人" show-overflow-tooltip>
       </el-table-column>
       <el-table-column align="center" prop="projectChargemanName" label="项目组长" show-overflow-tooltip>
       </el-table-column>
@@ -352,7 +357,7 @@
           hide-required-asterisk
         >
           <el-row>
-            <el-form-item label="ㅤㅤ项目编号:" prop="projectCode">
+            <el-form-item label="ㅤ项目编号:" prop="projectCode">
               <el-input
                 placeholder=""
                 v-model="addprojectjing.projectCode"
@@ -380,7 +385,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="ㅤㅤ项目名称:" prop="projectName">
+            <el-form-item label="ㅤ项目名称:" prop="projectName">
               <el-input
                 placeholder="请输入"
                 v-model="addprojectjing.projectName"
@@ -1666,7 +1671,7 @@ export default {
 .projectmanagement{
   background: #FFF;
 }
->>>.el-input.is-disabled .el-input__inner{
+>>>.el-input .is-disabled .el-input__inner{
   background: #F5F7FA!important;
   color:#C0C4CC!important;
 }
@@ -1677,11 +1682,26 @@ export default {
   background: #0C87D6 !important;
   color: #FFF;
 }
+.search {
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+}
+.search >>> .el-input__inner {
+  width: 220px !important;
+  border-radius: 5px 0 0 5px;
+}
+.search >>> .el-input__inner {
+  width: 250px !important;
+  display: flex;
+  float: right;
+  border-radius: 0 !important;
+}
 .search >>> .search_icon {
   cursor: pointer;
   position: absolute;
   top: 0;
-  right:4%;
+  right:0%;
   width: 36px;
   height: 36px;
   display: -webkit-box;
