@@ -62,3 +62,6 @@ table tr:nth-child(odd){
 .itemThree .el-form-item__content{
   width: 50%;
 }
+.el-input.is-disabled .el-input__inner{
+  background-color: #F5F7FA!important;
+}

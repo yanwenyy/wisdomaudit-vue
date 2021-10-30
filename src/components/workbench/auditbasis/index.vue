@@ -4,7 +4,7 @@
 
     <div>
       <div class="projectTab">
-        <el-table :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}" :data="tableData" style="width: 100%" @select="Selects">
+        <el-table @row-dblclick="getLook" :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}" :data="tableData" style="width: 100%" @select="Selects">
           <el-table-column align="center" type="index" label="编号"> </el-table-column>
           <el-table-column align="left" prop="basyName" label="资料名称">
             <template slot-scope="scope">
@@ -62,34 +62,39 @@
       <el-form :model="formState" class="formData"  label-width="100px">
         <el-form-item class="itemTwo" label="资料名称:">
           <el-input
+            :disabled="ifLook"
             v-model="formState.basyName"
             placeholder="请输入"
           ></el-input>
         </el-form-item>
         <el-form-item class="itemTwo" label="文号:">
           <el-input
+            :disabled="ifLook"
             v-model="formState.basySymbol"
             placeholder="请输入"
           ></el-input>
         </el-form-item>
         <el-form-item class="itemTwo" label="重点条款:" >
           <el-input
+            :disabled="ifLook"
             v-model="formState.keyClauses"
             placeholder="请输入"
           ></el-input>
         </el-form-item>
         <el-form-item class="itemTwo" label="发文日期:" >
-          <el-date-picker v-model="formState.issueDate" type="date"  placeholder="请选择" value-format="yyyy-MM-dd">
+          <el-date-picker :disabled="ifLook" v-model="formState.issueDate" type="date"  placeholder="请选择" value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
         <el-form-item class="itemTwo" label="发文部门:" >
           <el-input
+            :disabled="ifLook"
             v-model="formState.publishDepartment"
             placeholder="请输入"
           ></el-input>
         </el-form-item>
         <el-form-item label="上传到附件:" >
           <el-upload
+            v-if="!ifLook"
             class="upload-demo"
             drag
             action="/wisdomaudit/auditBasy/filesUpload"
@@ -105,14 +110,17 @@
               点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc
             </div>
           </el-upload>
+          <div  v-if="ifLook">
+            <div v-for="(item,index) in fileList">{{item.name}}</div>
+          </div>
         </el-form-item>
         <el-form-item label="附件内容:" >
-          <el-input type="textarea" v-model="formState.content" :rows="6" style="flex:1;" :placeholder="'模板:\n第一章 货币资金审计\n第一节 现金盘点\n第一条 现金的账实是否属实\n1.确定所有现金存放地点和用途\n2.现场键盘库存现金'"></el-input>
+          <el-input :disabled="ifLook" type="textarea" v-model="formState.content" :rows="6" style="flex:1;" :placeholder="'模板:\n第一章 货币资金审计\n第一节 现金盘点\n第一条 现金的账实是否属实\n1.确定所有现金存放地点和用途\n2.现场键盘库存现金'"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="close">取 消</el-button>
-        <el-button class="btn" @click="sub">确 定</el-button>
+        <el-button v-if="!ifLook" class="btn" @click="sub">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -126,6 +134,7 @@ export default {
   components: {},
   data() {
     return {
+      ifLook:false,
       key:0,
       title: "",
       formState: {
@@ -234,6 +243,31 @@ export default {
         })
       })
 
+    },
+    //查看
+    getLook(row, column, event){
+      this.clearForm();
+      this.isAdd = true;
+      this.title = "查看审计依据";
+      this.ifLook=true;
+      auditBasy_getDetail(row.basyUuid).then(resp => {
+        var datas=resp.data;
+        this.formState=datas;
+        // this.formState.basyName=datas.basyName;
+        // this.formState.basySymbol=datas.basySymbol;
+        // this.formState.keyClauses=datas.keyClauses;
+        // this.formState.issueDate=datas.issueDate;
+        // this.formState.publishDepartment=datas.publishDepartment;
+        this.formState.content=this.setContent(datas.treeData.arr);
+        datas.attachmentList.forEach((item)=>{
+          var v={
+            name:item.file_name,
+            url:item.file_path,
+            attachmentUuid:item.attachment_uuid
+          }
+          this.fileList.push(v);
+        })
+      })
     },
     //列表数据
     list_data_start () {
