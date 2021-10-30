@@ -108,10 +108,10 @@
         <el-col>
           <div class="menu">
             <el-menu
+              :default-active="userInfo.userRole == '1' || userInfo.userRole == '3'?'1-1':'2-1'"
               class="el-menu-vertical-demo"
               @select="open"
               background-color="#F1F5FB"
-              default-active="1-1"
             >
               <el-submenu
                 v-if="userInfo.userRole == '1' || userInfo.userRole == '3'"
@@ -302,8 +302,8 @@
               <!-- <span style="margin-top: 2.5%; color: #5f6165; margin-left: 10px">
                 请选择想要引用的模型
               </span> -->
-           
-            
+
+
               <el-button style="background:#1897E4;color:#FFF" @click="addTaskSelf"
                 >新增自建任务</el-button
               >
@@ -648,7 +648,7 @@
     <el-dialog
       :visible.sync="editTaskSelfDialogVisible"
       width="50%"
-    > 
+    >
     <div class="dialogTitle">编辑自建任务</div>
       <div class="selfTask">
         <el-form label-width="100px" :model="edittaskSelfForm"  hide-required-asterisk>

@@ -3,6 +3,7 @@
     <el-button type="primary" @click="addConfirmation()">新增确认单</el-button>
     <!-- 审计确认单列表 -->
     <el-table
+      @row-dblclick="getLook"
       :header-cell-style="{'background-color': '#F4FAFF',}"
       :data="confirmaryData"
       style="margin-top: 1%"
@@ -93,21 +94,22 @@
         >
         <el-form-item class="itemTwo" label="被审计单位:">{{auditOrgName}}</el-form-item>
         <el-form-item label="审计（调查）事项:">
-          <el-input type="textarea" v-model="formDetail.matter"></el-input>
+          <el-input :disabled="ifLook" type="textarea" v-model="formDetail.matter"></el-input>
         </el-form-item>
         <el-form-item label="审计(调查)事项描述:">
-          <el-button @click="getRelationQues" class="relationBtn">关联问题</el-button>
+          <el-button  :disabled="ifLook"  @click="getRelationQues" class="relationBtn">关联问题</el-button>
 
-          <el-input type="textarea" v-model="formDetail.matterDetail"></el-input>
+          <el-input rows="6" :disabled="ifLook" type="textarea" v-model="formDetail.matterDetail"></el-input>
         </el-form-item>
         <el-form-item class="itemThree" label="审计人员:">
-          <el-input placeholder="请输入"  v-model="formDetail.auditorsName"></el-input>
+          <el-input :disabled="ifLook" placeholder="请输入"  v-model="formDetail.auditorsName"></el-input>
         </el-form-item>
         <el-form-item class="itemThree" label="复核人:">
-          <el-input placeholder="请输入" v-model="formDetail.reviewerName"></el-input>
+          <el-input :disabled="ifLook" placeholder="请输入" v-model="formDetail.reviewerName"></el-input>
         </el-form-item>
         <el-form-item class="itemThree" label="编制日期:">
           <el-date-picker
+            :disabled="ifLook"
             v-model="formDetail.compileDate"
             type="date"
             placeholder="选择日期"
@@ -118,7 +120,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" @click="saveForm">确 定</el-button>
+        <el-button v-if="!ifLook" type="primary" @click="saveForm">确 定</el-button>
       </span>
     </el-dialog>
     <el-dialog
@@ -128,7 +130,7 @@
       @close="handleClose"
     >
       <div class="title">{{confirmationDialogTitle}}</div>
-      <div>
+      <div class="zxTabel-div">
         <table class="zxTabel">
           <tr>
             <td>项目名称</td>
@@ -139,8 +141,13 @@
             <td colspan="5">{{formDetail.auditOrgName	}}</td>
           </tr>
           <tr>
+            <td>审计(调查)事项</td>
+            <td colspan="5">{{formDetail.matter	}}</td>
+          </tr>
+          <tr>
             <td>审计(调查)事项描述</td>
-            <td colspan="5"><el-input type="textarea" v-model="formDetail.matterDetail"></el-input></td>
+            <!--<td colspan="5"><el-input  :disabled="ifLook" type="textarea" v-model="formDetail.matterDetail"></el-input></td>-->
+            <td colspan="5"><div>{{formDetail.matterDetail}}</div></td>
           </tr>
           <tr>
             <td>审计人员(签名)</td>
@@ -148,25 +155,29 @@
             <td>复审人(签名)</td>
             <td  width="20%">{{formDetail.reviewerName}}</td>
             <td>编制日期</td>
-            <td>{{formDetail.compileDate}}</td>
+            <td>{{formDetail.compileDate | dateformat}}</td>
           </tr>
           <tr>
             <td>被审计(调查)单位确认意见</td>
-            <td colspan="5"><el-input type="textarea" v-model="formDetail.auditOrgOpinion"></el-input></td>
+            <!--<td colspan="5"><el-input  :disabled="ifLook" type="textarea" v-model="formDetail.auditOrgOpinion"></el-input></td>-->
+            <td colspan="5">{{formDetail.auditOrgOpinion}}</td>
           </tr>
           <tr>
             <td>相关负责人(签名)</td>
-            <td><el-input v-model="formDetail.principalName"></el-input></td>
+            <!--<td><el-input  :disabled="ifLook" v-model="formDetail.principalName"></el-input></td>-->
+            <td>{{formDetail.principalPost}}</td>
             <td>职务</td>
-            <td><el-input v-model="formDetail.principalPost"></el-input></td>
+            <!--<td><el-input  :disabled="ifLook" v-model="formDetail.principalPost"></el-input></td>-->
+            <td>{{formDetail.principalPost}}</td>
             <td>日期</td>
-            <td><el-input v-model="formDetail.signatureDate"></el-input></td>
+            <!--<td><el-input  :disabled="ifLook" v-model="formDetail.signatureDate"></el-input></td>-->
+            <td>{{formDetail.principalPost | dateformat}}</td>
           </tr>
         </table>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" @click="saveForm">确 定</el-button>
+        <el-button v-if="!ifLook" type="primary" @click="saveForm">确 定</el-button>
       </span>
     </el-dialog>
     <search-list ref="searchTabel" @refreshSearch="getSearchInfo"></search-list>
@@ -184,6 +195,7 @@ export default {
   props:['active_project'],
   data() {
     return {
+      ifLook:false,
       confirmationDialogTitle:'新增确认单',
       confirmaryData: [],
       confirmationDialogVisible: false, //新增确认单弹框
@@ -306,6 +318,9 @@ export default {
       this.clearForm();
       this.isAdd = true;
       this.confirmationDialogTitle="编辑确认单";
+      this.getDetail(row);
+    },
+    getDetail(row){
       auditConfirmation_getDetail(row.auditConfirmationUuid).then(resp => {
         var datas=resp.data;
         this.formDetail=datas;
@@ -316,6 +331,13 @@ export default {
         }
 
       })
+    },
+    getLook(row, column, event){
+      this.clearForm();
+      this.ifLook=true;
+      this.isAdd = true;
+      this.confirmationDialogTitle="查看确认单";
+      this.getDetail(row);
     },
     //列表数据
     list_data_start () {
@@ -483,7 +505,14 @@ export default {
     border: none;
     color:blue;
   }
+  .zxTabel-div{
+    padding: 20px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+  }
   .zxTabel{
+    box-sizing: border-box;
     border: 1px solid #ddd;
     width: 100%;
   }
