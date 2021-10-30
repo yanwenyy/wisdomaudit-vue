@@ -81,6 +81,7 @@
     </el-table>
     <!-- 新增确认单弹出框 -->
     <el-dialog
+      class="qrd-dialog"
       :visible.sync="confirmationDialogVisible"
       width="70%"
       @close="handleClose"
@@ -95,7 +96,7 @@
           <el-input type="textarea" v-model="formDetail.matter"></el-input>
         </el-form-item>
         <el-form-item label="审计(调查)事项描述:">
-          <el-button @click="getRelationQues">关联问题</el-button>
+          <el-button @click="getRelationQues" class="relationBtn">关联问题</el-button>
 
           <el-input type="textarea" v-model="formDetail.matterDetail"></el-input>
         </el-form-item>
@@ -121,6 +122,7 @@
       </span>
     </el-dialog>
     <el-dialog
+      class="qrd-dialog"
       :visible.sync="confirmationDialogVisibleZx"
       width="70%"
       @close="handleClose"
@@ -442,7 +444,7 @@ export default {
 }
 .title {
   border-bottom: 1px solid #d2d2d2;
-  padding: 10px;
+  padding: 15px;
   text-align: center;
 }
 .formData {
@@ -457,6 +459,20 @@ export default {
 </style>
 <style scoped>
   @import '../../../assets/styles/css/yw.css';
+  >>>.qrd-dialog .el-dialog__header,>>>.qrd-dialog .el-dialog__body{
+    padding: 0!important;
+  }
+  >>>.qrd-dialog .el-dialog__headerbtn{
+    top: 15px!important;
+    right: 15px!important;
+  }
+  >>>.qrd-dialog .el-dialog__footer{
+    padding-left: 35px!important;
+    padding-right: 35px!important;
+  }
+  .relationBtn{
+    margin-bottom: 10px;
+  }
   .list-folder{
     color:orange;
     margin-right: 5px;

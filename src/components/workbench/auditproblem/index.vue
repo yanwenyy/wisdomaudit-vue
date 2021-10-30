@@ -8,15 +8,11 @@
         </el-col>
 
         <div class="search">
-          <el-input placeholder="请输入" v-model="pageQuery.condition.problem">
+          <el-input placeholder="请输入内容" v-model="pageQuery.condition.problem" class="input-with-select">
+            <el-button slot="append" icon="el-icon-search" type="primary" @click="getList"></el-button>
           </el-input>
-          <div class="search_icon">
-            <i class="el-icon-search" style="color: rgba(0, 0, 0, 0.5)"></i>
-          </div>
-          <el-button type="primary" @click="getList">筛选</el-button>
         </div>
       </el-row>
-
       <!-- <div class="auditproblem-btn-box"></div> -->
     </div>
     <!-- @sort-change="sortChange"
@@ -34,19 +30,19 @@
       max-height="calc(100vh - 300px)"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column align="center" label="序号">
+      <el-table-column label="序号">
         <template slot-scope="scope">
           {{ scope.$index + 1 }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="问题">
+      <el-table-column label="问题">
         <template slot-scope="scope">
           <div class="canclick" @click="checkDetail(scope.row.problemListUuid)">
             {{ scope.row.problem }}
           </div>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="领域" prop="field">
+      <el-table-column label="领域" prop="field">
         <template slot-scope="scope">
           <div>
             <!-- {{ fieldFilter(scope.row.field) }} -->
@@ -54,7 +50,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="专题" prop="special">
+      <el-table-column label="专题" prop="special">
         <template slot-scope="scope">
           <div>
             {{ specialFilter(scope.row.special) }}
@@ -64,16 +60,15 @@
       <el-table-column
         label="风险金额（万元）"
         width="180px"
-        align="center"
         prop="riskAmount"
       />
-      <el-table-column align="center" label="发现日期">
+      <el-table-column label="发现日期">
         <template slot-scope="scope">
           {{ repDate(scope.row.problemDiscoveryTime) }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="发现人" prop="problemFindPeople" />
-      <el-table-column align="center" label="操作" width="200">
+      <el-table-column label="发现人" prop="problemFindPeople" />
+      <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <el-button
             @click="openDetail(scope.$index)"
@@ -102,6 +97,7 @@
       title="新增问题"
       :visible.sync="dialogFormVisible"
       :close-on-click-modal="false"
+      center
     >
       <el-form
         ref="dataForm"
@@ -311,7 +307,7 @@
             placeholder="请输入发现人"
           />
         </el-form-item>
-        <el-form-item label="风险金额（万元）" prop="riskAmount">
+        <el-form-item label="风险金额（万元）" prop="riskAmount" width="180">
           <el-input
             v-model.number="dqProblem.riskAmount"
             placeholder="请输入风险金额"
@@ -911,6 +907,7 @@ export default {
 }
 .auditproblem .citebtn {
   height: 40px;
+  margin-bottom: 6px;
 }
 .canclick {
   color: rgb(27, 168, 250);

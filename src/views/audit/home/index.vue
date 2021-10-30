@@ -145,6 +145,7 @@ export default {
     };
   },
   created(){
+    axios.defaults.headers.common['TOKEN'] = sessionStorage.getItem('TOKEN');
     this.getmodellist()
     this.getprojectlist()
     this.getdatalist()
