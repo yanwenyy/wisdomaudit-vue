@@ -20,12 +20,13 @@
           <el-col :span="15">
             <div>
               <p>审计周期：</p>
-              <p>{{ value.auditStartData }}至{{ value.auditFinishData }}</p>
+              <p class="textOver">{{ value.auditStartData }}至{{ value.auditFinishData }}</p>
             </div>
           </el-col>
         </el-row>
       </li>
       <span
+        class="moreBtn"
         style="cursor: pointer; color: #12579a"
         v-if="projectAll.length > 4"
         @click="moreProjectBtn()"
@@ -101,7 +102,7 @@
       style="margin-top: 5%; border: 2px solid #ebf0f6; height: 600px"
     ></el-empty>
 
-    <el-row class="tac" style="margin-top:-1%" v-else>
+    <el-row class="tac" v-else>
       <!-- 左侧导航 -->
       <div class="left_menu">
         <el-col>
@@ -247,12 +248,12 @@
           <el-col :span="24">
             <div class="stepNew">
               <div class="stepOneN">
-                <div>1.第一步：添加组员</div>
+                <div>第一步：添加组员</div>
                 <span></span>
               </div>
               <div class="stepTwoN">
                 <span></span>
-                <div>2.第二步：分配审计任务</div>
+                <div>第二步：分配审计任务</div>
                 <span></span>
               </div>
             </div>
@@ -283,12 +284,12 @@
       <div class="addAudit" v-else-if="step == 2" style="padding: 1%">
         <div class="stepNew">
           <div class="auditStepOneN">
-            <div>1.第一步：添加组员</div>
+            <div>第一步：添加组员</div>
             <span></span>
           </div>
           <div class="auditStepTwoN">
             <span></span>
-            <div>2.第二步：分配审计任务</div>
+            <div>第二步：分配审计任务</div>
             <span></span>
           </div>
         </div>
@@ -1903,22 +1904,30 @@ export default {
 .projectInit {
   // border: 1px solid red;
   // display: none;
-  
   min-height: 100px;
   margin-bottom: 3%;
   // display: flex;
   align-items: center;
   li {
-    min-width: 24%;
+    min-width: 22%;
     font-size: 0.1vw;
     border-radius: 10px;
     float: left;
-    margin-right: 1%;
+    margin-right: 0.8%;
     padding: 1%;
     border: 3px solid #ebf0f6;
     cursor: pointer;
     transition: all 0.3s;
     &:hover {
+      box-shadow: 0 2px 10px 5px rgba(0, 0, 0, 0.05);
+    }
+  }
+  .moreBtn{
+    padding: 5px;
+    border-radius: 5px;
+    border: 2px solid #ebf0f6;
+    line-height: 100px;
+      &:hover {
       box-shadow: 0 2px 10px 5px rgba(0, 0, 0, 0.05);
     }
   }
@@ -2382,4 +2391,15 @@ export default {
   align-items: center;
   border-radius: 0 5px 5px 0;
 }
+.textOver{
+  white-space: nowrap;
+text-overflow: ellipsis;
+overflow: hidden;
+word-break: break-all;
+}
+ .textOver:hover{
+    text-overflow:inherit; 
+    overflow: visible; 
+    white-space: pre-line;     
+  }
 </style>

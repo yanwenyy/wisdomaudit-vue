@@ -116,7 +116,7 @@
       @close="addDialogClosed"
     >
       <div class="title">新增项目</div>
-      <!-- 新增专项的页面 -->
+      <!-- 新增专项以及其他的页面 -->
       <div class="addzhuanForm" v-if="prjType == 1">
         <el-form
           label-width="100px"
@@ -707,7 +707,7 @@
               </el-table-column>
               <el-table-column
                 prop="projectChargemanName"
-                label="负责人"
+                label="设置组长"
                 width="330"
               >
                 <template slot-scope="scope">
@@ -1294,10 +1294,25 @@ export default {
     },
     // 项目分类下拉框事件
     selectprojectType(val) {
-
-      // 如果不是专项分类
-      if (val !== "zxsj") {
-        this.prjType = 2;
+      console.log(val);
+      // 如果不是经责分类
+      if (val !== "jzsj") {
+        this.prjType = 1;
+        this.addProjectManagement.projectType = val;
+        for (let i = 0; i < this.projectTypeoptions.length; i++) {
+          if (val == this.projectTypeoptions[i].value) {
+            this.addProjectManagement.projectTypeName =
+              this.projectTypeoptions[i].label;
+          }
+        }
+        // 获取项目编号
+        this.projectTypeSelect.typecode = val;
+        getItemId(this.projectTypeSelect).then((resp) => {
+          this.addProjectManagement.projectCode = resp.data;
+          this.addProjectManagement.auditList[0].projectCode = resp.data;
+        });
+      } else {
+         this.prjType = 2;
         this.addprojectjing.projectType = val;
         for (let i = 0; i < this.projectTypeoptions.length; i++) {
           if (val == this.projectTypeoptions[i].value) {
@@ -1312,21 +1327,6 @@ export default {
         getItemId(this.projectTypeSelect).then((resp) => {
           this.addprojectjing.projectCode = resp.data;
           // console.log(this.addprojectjing.projectCode);
-        });
-      } else {
-        this.prjType = 1;
-        this.addProjectManagement.projectType = val;
-        for (let i = 0; i < this.projectTypeoptions.length; i++) {
-          if (val == this.projectTypeoptions[i].value) {
-            this.addProjectManagement.projectTypeName =
-              this.projectTypeoptions[i].label;
-          }
-        }
-        // 获取项目编号
-        this.projectTypeSelect.typecode = val;
-        getItemId(this.projectTypeSelect).then((resp) => {
-          this.addProjectManagement.projectCode = resp.data;
-          this.addProjectManagement.auditList[0].projectCode = resp.data;
         });
       }
       var that=this;
@@ -1671,10 +1671,6 @@ export default {
 .projectmanagement{
   background: #FFF;
 }
->>>.el-input .is-disabled .el-input__inner{
-  background: #F5F7FA!important;
-  color:#C0C4CC!important;
-}
 >>> .el-input__inner::-webkit-input-placeholder {
   color: #C0C4CC !important;
 }
@@ -1717,5 +1713,9 @@ export default {
 }
 >>> .el-dialog__body{
   padding: 5px 0 !important;
+}
+>>> .el-input .is-disabled .el-input__inner{
+  background: #F5F7FA!important;
+  color:#C0C4CC!important;
 }
 </style>
