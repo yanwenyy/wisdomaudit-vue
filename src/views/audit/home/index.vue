@@ -6,7 +6,7 @@
           <span> <svg-icon icon-class="edit" class="homepage-icon"/> 审计项目</span>
           <el-button
             style="float: right; padding: 0; color: #439bd8; font-size:18px;"
-            type="text"
+            type="text" @change="goWorkbench()"
             >···</el-button
           >
         </div>
@@ -15,27 +15,27 @@
           <div class="project-item" v-for="(item,index) in projectlist" :key="'project'+index" >
             <h3>{{item.projectName || '--'}}</h3>
             <ul :style="index==0?'':'border-left:1px solid #ccc;'">
-              <li @click="projectEvent('1')">
-                <div class="icon-wapper">
+              <li>
+                <div class="icon-wapper pointer" @click="projectEvent('1')">
                   <svg-icon icon-class="fmodel" />
                   <br />
                   <span>模型任务 {{item.mxCount}}</span>
                 </div>
               </li>
-              <li @click="projectEvent('2')">
-                <div class="icon-wapper">
+              <li>
+                <div class="icon-wapper pointer" @click="projectEvent('2')">
                   <svg-icon icon-class="ftrask" /><br />
                   <span>自建任务 {{item.zjCount}}</span>
                 </div>
               </li>
-              <li @click="projectEvent('3')">
-                <div class="icon-wapper">
+              <li>
+                <div class="icon-wapper pointer" @click="projectEvent('3')">
                   <svg-icon icon-class="fproblem" /><br />
                   <span>问题 {{item.wtCount}}</span>
                 </div>
               </li>
-              <li @click="projectEvent('4')">
-                <div class="icon-wapper">
+              <li>
+                <div class="icon-wapper pointer" @click="projectEvent('4')">
                   <svg-icon icon-class="fconfirm" /><br />
                   <span>审计确认单 {{item.qrdCount}}</span>
                 </div>
@@ -52,16 +52,16 @@
               <span> <svg-icon icon-class="task" class="homepage-icon"/>我的模型任务</span>
             </div>
 
-            <ul style="height: 406px;overflow:scroll;" class="odd-even" @click="taskModelEvent">
+            <ul style="height: 406px;overflow:scroll;" class="odd-even">
               <li v-for="(item,index) in modellist" :key="'model'+index">
                 <div class="li-item">
-                  <h5>{{item.projectName || '--'}}</h5>
+                  <h5 @click="taskModelEvent" class="pointer">{{item.projectName || '--'}}</h5>
                   <span>{{timefilter(item.updateTime || '')}}</span>
                 </div>
                 <el-divider></el-divider>
                 <div class="li-item">
                   <p>{{item.taskName || '--'}}</p>
-                  <el-button type="primary" size="mini"
+                  <el-button type="primary" size="mini" @click="taskModelEvent"
                     >前去处理<i class="el-icon-d-arrow-right el-icon--right"></i
                   ></el-button>
                 </div>
@@ -75,10 +75,10 @@
               <span> <svg-icon icon-class="view" class="homepage-icon"/>审计资料</span>
             </div>
 
-            <ul style="height: 200px;overflow:scroll;" class="odd-even" @click="auditInfoEvent">
+            <ul style="height: 200px;overflow:scroll;" class="odd-even">
               <li v-for="(item,index) in datalist" :key="'data'+index">
                 <div class="li-item">
-                  <h5>{{item.projectName || '--'}}</h5>
+                  <h5 @click="auditInfoEvent" class="pointer">{{item.projectName || '--'}}</h5>
                   <span>{{timefilter(item.createTime || '')}}</span>
                 </div>
                 <el-divider></el-divider>
@@ -101,27 +101,27 @@
             <ul style="height: 100px" class="shortcut-wapper">
               <li @click="shortcutEvent('1')">
                 <span class="item-icon"></span>
-                数据审计风险监控
+                暂无
               </li>
               <li @click="shortcutEvent('2')">
                 <span class="item-icon icon-warning"></span>
-                风险扫描
+                暂无
               </li>
               <li @click="shortcutEvent('3')">
                 <span class="item-icon"></span>
-                项目工作台
+                暂无
               </li>
               <li @click="shortcutEvent('4')">
                 <span class="item-icon icon-green"></span>
-                模型化建模
+                暂无
               </li>
               <li @click="shortcutEvent('5')">
                 <span class="item-icon icon-error"></span>
-                数据导入
+                暂无
               </li>
               <li @click="shortcutEvent('6')">
                 <span class="item-icon icon-blue"></span>
-                审计依据
+                暂无
               </li>
             </ul>
           </el-card>
@@ -191,12 +191,12 @@ export default {
         this.datalist = res.data.data || ''
       });
     },
+    goWorkbench(){
+      this.$router.push({
+        path: "/audit/auditItems/projectWorkbench",
+      });
+    },
     projectEvent(type) {
-      // this.$router.push({
-      //   path: "/audit/auditItems/projectWorkbench",
-      //   query: { index: "2-2" },
-      // });
-
       switch (type) {
         case "1":
           this.$router.push({
@@ -243,6 +243,7 @@ export default {
     },
 
     shortcutEvent(type) {
+      return
       switch (type) {
         case "1":
           this.$router.push({ path: "/audit/riskMonitoring/riskScan/personal" });
@@ -441,6 +442,9 @@ export default {
   height:1.2rem !important;
   width:1.2rem !important;
   vertical-align:-0.3em !important;
+}
+.pointer{
+  cursor: pointer;
 }
 </style>
 
