@@ -240,10 +240,10 @@
         class="problem-form"
       >
         <el-form-item label="问题" prop="problem">
-          <el-input v-model="dqProblem.problem" placeholder="请输入问题" />
+          <el-input v-model="dqProblem.problem" placeholder="请输入问题" :disabled="ifadd != 2 ? false : true"/>
         </el-form-item>
         <el-form-item label="领域" prop="field">
-          <el-select v-model="dqProblem.field" placeholder="请选择领域">
+          <el-select v-model="dqProblem.field" placeholder="请选择领域" :disabled="ifadd != 2 ? false : true">
             <el-option
               v-for="item in CategoryList"
               :key="item.label"
@@ -254,7 +254,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="专题" prop="special">
-          <el-select v-model="dqProblem.special" placeholder="请选择专题">
+          <el-select v-model="dqProblem.special" placeholder="请选择专题" :disabled="ifadd != 2 ? false : true">
             <el-option
               v-for="item in SPECIALList"
               :key="item.value"
@@ -285,12 +285,13 @@
           >引用审计依据</el-button
         >
         <el-form-item label="描述" prop="describe" class="long">
-          <el-input v-model="dqProblem.describe" placeholder="请输入描述" />
+          <el-input v-model="dqProblem.describe" placeholder="请输入描述" :disabled="ifadd != 2 ? false : true"/>
         </el-form-item>
         <el-form-item label="管理建议" prop="managementAdvice" class="long">
           <el-input
             v-model="dqProblem.managementAdvice"
             placeholder="请输入管理建议"
+            :disabled="ifadd != 2 ? false : true"
           />
         </el-form-item>
         <el-form-item label="发现日期" prop="problemDiscoveryTime">
@@ -299,18 +300,21 @@
             placeholder="选择日期"
             v-model="dqProblem.problemDiscoveryTime"
             style="width: 100%"
+            :disabled="ifadd != 2 ? false : true"
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="发现人" prop="problemFindPeople">
           <el-input
             v-model="dqProblem.problemFindPeople"
             placeholder="请输入发现人"
+            :disabled="ifadd != 2 ? false : true"
           />
         </el-form-item>
         <el-form-item label="风险金额（万元）" prop="riskAmount" width="180">
           <el-input
             v-model.number="dqProblem.riskAmount"
             placeholder="请输入风险金额"
+            :disabled="ifadd != 2 ? false : true"
           />
         </el-form-item>
         <el-form-item label="关联任务" prop="auditTaskUuid">
@@ -478,7 +482,7 @@
               >
               <el-button
                 style="padding: 3px 0 3px 20px; color: #ffba00"
-                v-if="item.contentLev == 2"
+                v-if="item.contentLev == 3"
                 @click="choosebasis(item.label)"
                 >引用</el-button
               >
@@ -629,9 +633,18 @@ export default {
     //选择依据
     choosebasis(val) {
       if (this.dqbasis.choose.indexOf(val) > -1) {
+        this.$message({
+          message: '您已引用这一条',
+          type: 'warning'
+        });
         return;
       } else {
         this.dqbasis.choose.push(val);
+        this.$message({
+          message: '引用成功，点击确定保存',
+          type: 'success'
+        });
+
       }
     },
     //依据树
@@ -898,6 +911,7 @@ export default {
   flex-direction: row;
   align-items: flex-end;
   flex-wrap: wrap;
+  padding: 0px 20px;
 }
 .problem-form .el-form-item__label {
   float: left !important;
