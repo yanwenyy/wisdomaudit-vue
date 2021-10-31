@@ -55,7 +55,10 @@
           <el-table
             :data="taskData"
             style="width: 100%"
-            :header-cell-style="{ 'background-color': '#F4FAFF', 'font-weight':'400'  }"
+            :header-cell-style="{
+              'background-color': '#F4FAFF',
+              'font-weight': '400',
+            }"
           >
             <el-table-column prop="taskName" label="模型任务名称">
             </el-table-column>
@@ -90,10 +93,29 @@
             </el-table-column>
             <el-table-column prop="address" label="附件" width="90">
               <template slot-scope="scope">
-                <div
+                <el-popover placement="bottom" width="300"  trigger="click"  v-loading="nearbyLoading">
+                  <el-table :data="enclosure_details_list">
+                    <el-table-column prop="fileName" label="文件名称">
+                      <template slot-scope="scope">
+                        <el-link
+                          type="primary"
+                          @click="
+                            enclosureDownload(
+                              scope.row.attachmentUuid,
+                              scope.row.fileName
+                            )
+                          "
+                          >{{ scope.row.fileName }}</el-link
+                        >
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                  <!-- <el-button slot="reference" >click 激活</el-button> -->
+                  <div
                   class="update"
                   style="margin-left: -40px; cursor: pointer"
                   @click="nearbyDetails(scope.row)"
+                  slot="reference"
                 >
                   <i class="update_icon" style="margin-top: -3px">
                     <svg
@@ -115,6 +137,8 @@
                   </i>
                   <span>{{ scope.row.count }}</span>
                 </div>
+                </el-popover>
+                
               </template>
             </el-table-column>
             <el-table-column label="操作">
@@ -360,29 +384,29 @@
         </div>
       </div>
       <div class="model_Info" v-else-if="task == '2'">
-        <div style="padding:20px">
-           <el-row style="margin-top: 10px;">
-          <el-col :span="15">
-            <div style="margin-top: 2.5%; color: #5f6165">
-              请选择想要引用的模型
+        <div style="padding: 20px">
+          <el-row style="margin-top: 10px">
+            <el-col :span="15">
+              <div style="margin-top: 2.5%; color: #5f6165">
+                请选择想要引用的模型
+              </div>
+            </el-col>
+            <div class="search">
+              <el-input
+                placeholder="请输入模型名称"
+                v-model="model_QueryInfo.condition.modelName"
+                @keyup.enter.native="queryModel"
+              >
+              </el-input>
+              <div
+                class="search_icon"
+                style="background: #1897e4 !important"
+                @click="queryModel"
+              >
+                <i class="el-icon-search" style="color: white"></i>
+              </div>
             </div>
-          </el-col>
-           <div class="search">
-            <el-input
-              placeholder="请输入模型名称"
-              v-model="model_QueryInfo.condition.modelName"
-              @keyup.enter.native="queryModel"
-            >
-            </el-input>
-            <div
-              class="search_icon"
-              style="background: #1897e4 !important"
-              @click="queryModel"
-            >
-              <i class="el-icon-search" style="color: white"></i>
-            </div>
-          </div>
-          <!-- <el-col :span="9">
+            <!-- <el-col :span="9">
             <el-input
               placeholder="请输入内容"
               v-model="model_QueryInfo.condition.modelName"
@@ -395,51 +419,51 @@
               ></el-button>
             </el-input>
           </el-col> -->
-        </el-row>
-        <el-table
-          :data="modelTableData"
-          style="width: 100%"
-          @selection-change="handleSelectionChangeModel"
-          ref="multipleModelRef"
-        >
-          <el-table-column type="selection"> </el-table-column>
-          <el-table-column type="index" label="模型编号" width="80">
-          </el-table-column>
-          <el-table-column prop="belongField" label="所属领域">
-          </el-table-column>
-          <el-table-column prop="belongSpcial" label="所属专题">
-          </el-table-column>
-          <el-table-column prop="modelName" label="模型名称"> </el-table-column>
-          <el-table-column prop="address" label="说明" width="250">
-          </el-table-column>
-          <el-table-column prop="ruleDescription" label="规则" width="300">
-          </el-table-column>
-        </el-table>
-        <!-- 分页 -->
-        <pagination
-          v-show="taskTotal > 0"
-          :total="taskTotal"
-          :page.sync="model_QueryInfo.pageNo"
-          :limit.sync="model_QueryInfo.pageSize"
-          @pagination="queryModel"
-        />
-        <div class="stepBtn" style="margin-right: 2%">
-          <el-button @click="returnStep" style="border: 1px solid #d2d2d2"
-            >取消</el-button
+          </el-row>
+          <el-table
+            :data="modelTableData"
+            style="width: 100%"
+            @selection-change="handleSelectionChangeModel"
+            ref="multipleModelRef"
           >
-          <el-button
-            style="background: #0c87d6; color: #fff"
-            @click="modelInfoBtn"
-            >完成</el-button
-          >
+            <el-table-column type="selection"> </el-table-column>
+            <el-table-column type="index" label="模型编号" width="80">
+            </el-table-column>
+            <el-table-column prop="belongField" label="所属领域">
+            </el-table-column>
+            <el-table-column prop="belongSpcial" label="所属专题">
+            </el-table-column>
+            <el-table-column prop="modelName" label="模型名称">
+            </el-table-column>
+            <el-table-column prop="address" label="说明" width="250">
+            </el-table-column>
+            <el-table-column prop="ruleDescription" label="规则" width="300">
+            </el-table-column>
+          </el-table>
+          <!-- 分页 -->
+          <pagination
+            v-show="taskTotal > 0"
+            :total="taskTotal"
+            :page.sync="model_QueryInfo.pageNo"
+            :limit.sync="model_QueryInfo.pageSize"
+            @pagination="queryModel"
+          />
+          <div class="stepBtn" style="margin-right: 2%">
+            <el-button @click="returnStep" style="border: 1px solid #d2d2d2"
+              >取消</el-button
+            >
+            <el-button
+              style="background: #0c87d6; color: #fff"
+              @click="modelInfoBtn"
+              >完成</el-button
+            >
+          </div>
         </div>
-        </div>
-        
       </div>
     </el-dialog>
 
     <!-- 附件详情 -->
-    <el-dialog
+    <!-- <el-dialog
       title="附件详情"
       width="40%"
       :visible.sync="nearbyDialogVisible"
@@ -450,9 +474,6 @@
         style="width: 100%"
         v-loading="nearbyLoading"
       >
-        <!-- <el-table-column prop="dataTaskNumber"
-                             label="流水单号">
-            </el-table-column> -->
         <el-table-column type="index" label="序号"> </el-table-column>
         <el-table-column prop="fiileType" label="文件类型"> </el-table-column>
         <el-table-column prop="fileName" label="文件名称">
@@ -468,7 +489,7 @@
           </template>
         </el-table-column>
       </el-table>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -1240,7 +1261,7 @@ export default {
     nearbyDetails(rows) {
       let params = {
         pageNo: 1,
-        pageSize: 10,
+        pageSize: 1000,
         condition: {
           businessUuid: rows.auditTaskUuid,
         },
@@ -1254,10 +1275,8 @@ export default {
         if (index == 2) {
           this.enclosure_details_list = resp.data;
           if (this.enclosure_details_list.length == 0) {
-            this.$message("暂无上传的附件");
+            // this.$message("暂无上传的附件");
             return false;
-          } else {
-            this.nearbyDialogVisible = true;
           }
         } else {
           var list = resp.data; //
@@ -1745,5 +1764,8 @@ export default {
   -ms-flex-align: center;
   align-items: center;
   border-radius: 0 5px 5px 0;
+}
+/deep/ .el-popover {
+  width: 500px !important;
 }
 </style>

@@ -1474,9 +1474,8 @@ export default {
         if (valid) {
           addProject(this.addProjectManagement).then((resp) => {
             this.$message.success("添加项目成功！");
-            this.addDialogVisible = false;
+           // this.addDialogVisible = false;
             this.projectData(this.query);
-            
           });
         } else {
           console.log("error submit!!");
@@ -1489,17 +1488,17 @@ export default {
     editDialog(rows) {
       this.editDialogVisible = true;
       this.selectprojectPeople(1, 1000);
-      if (rows.projectType == "zxsj") {
-        this.prjType = 1;
-        editProject(rows.managementProjectUuid).then((resp) => {
-          this.addProjectManagement = resp.data;
-          console.log(this.addProjectManagement);
-        });
-      } else {
+      if (rows.projectType == "jzsj") {
         this.prjType = 2;
         editProject(rows.managementProjectUuid).then((resp) => {
           this.addprojectjing = resp.data;
           console.log(this.addprojectjing);
+        });
+      } else {
+         this.prjType = 1;
+        editProject(rows.managementProjectUuid).then((resp) => {
+          this.addProjectManagement = resp.data;
+          console.log(this.addProjectManagement);
         });
       }
     },
@@ -1714,8 +1713,12 @@ export default {
 >>> .el-dialog__body{
   padding: 5px 0 !important;
 }
->>> .el-input .is-disabled .el-input__inner{
-  background: #F5F7FA!important;
+.addForm >>> .el-input.is-disabled .el-input__inner{
+  background-color: #F5F7FA!important;
+  color:#C0C4CC!important;
+}
+.addzhuanForm >>> .el-input.is-disabled .el-input__inner{
+  background-color: #F5F7FA!important;
   color:#C0C4CC!important;
 }
 </style>
