@@ -243,6 +243,7 @@ export default {
     },
 
     shortcutEvent(type) {
+      return
       switch (type) {
         case "1":
           this.$router.push({ path: "/audit/riskMonitoring/riskScan/personal" });
