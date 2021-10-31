@@ -3,7 +3,7 @@
     <el-dialog
       center
       width="80%"
-      title="添加指标"
+      title="问题列表"
       :visible.sync="visible"
       :append-to-body="true">
       <div class="relation-div">
