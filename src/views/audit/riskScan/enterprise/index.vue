@@ -82,7 +82,7 @@ export default {
       radio2:  {
         tab:1,
         tabName:'员工违规消户余额',
-        excuteUrl:'http://10.8.17.4:8080/webroot/decision/view/form?viewlet=Form17.frm',
+        excuteUrl:'',
         modifytime:''
 
       },
@@ -92,14 +92,14 @@ export default {
       {
         tab:1,
         tabName:'员工违规消户余额',
-        excuteUrl:'http://10.8.17.4:8080/webroot/decision/view/form?viewlet=Form17.frm',
+        excuteUrl:'',
         modifytime:''
 
       },
       {
         tab:2,
         tabName:'员工违规消户余额',
-        excuteUrl:'http://10.8.17.4:8080/webroot/decision/view/form?viewlet=Form17.frm',
+        excuteUrl:'',
         modifytime:''
 
       }
@@ -107,7 +107,7 @@ export default {
     value:'',
 
 
-      formdates:'http://10.8.17.4:8080/webroot/decision/view/form?viewlet=Form17.frm&tab=1&month=202010'
+      formdates:''
     };
   },
   created() {
