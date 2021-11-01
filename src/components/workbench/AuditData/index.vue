@@ -1,5 +1,6 @@
 <template>
-  <div class="sjzl anmition_show">
+  <div class="sjzl anmition_show"
+       v-if="userRole ==1">
     <!-- tab 切换 -->
     <el-tabs v-model="activeName"
              @tab-click="handleClick">
@@ -13,6 +14,7 @@
             <el-col :span="1.5">
               <el-button type="primary"
                          style="background:#4BDCB4!important"
+                         v-if="is_add==1"
                          @click="add_data_task()">新增资料任务</el-button>
             </el-col>
             <!--未完成筛选 -->
@@ -31,6 +33,7 @@
           </el-row>
           <el-table :data="tableData_list"
                     style="width: 100%;"
+                    v-loading="loading"
                     :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}">
             <!-- <el-table-column type="selection"
                              width="55">
@@ -65,7 +68,7 @@
                   scope.row.status == 0
                     ? "待开始"
                     : scope.row.status == 1
-                    ? "进行中":""
+                    ? "进行中":"已完成"
                 }}
               </template>
             </el-table-column>
@@ -85,47 +88,53 @@
             <el-table-column label="操作"
                              align="center">
               <template slot-scope="scope">
-                <div v-if=" scope.row.status == 0">
-                  <el-button @click="edit_common(scope.row)"
-                             type="text"
-                             style="color:#1371CC"
-                             size="small">
-                    编辑
-                  </el-button>
-                  <!-- <el-button @click="list_push(scope.row)"
+                <!-- isDeleted  0:不是接口人 1:s是接口人 -->
+
+                <div v-if="scope.row.isDeleted==1">
+
+                  <div v-if=" scope.row.status == 0">
+                    <el-button @click="edit_common(scope.row)"
+                               type="text"
+                               style="color:#1371CC"
+                               size="small">
+                      编辑
+                    </el-button>
+                    <!-- <el-button @click="list_push(scope.row)"
                              type="text"
                              style="color:#1371CC"
                              size="small">
                     下发
                   </el-button> -->
-                  <el-button @click="yes_push(scope.row)"
-                             type="text"
-                             style="color:#1371CC"
-                             size="small">
-                    下发
-                  </el-button>
+                    <el-button @click="yes_push(scope.row)"
+                               type="text"
+                               style="color:#1371CC"
+                               size="small">
+                      下发
+                    </el-button>
 
-                  <el-button @click="deleteRow(scope.row)"
-                             type="text"
-                             style="color:red"
-                             size="small">
-                    删除
-                  </el-button>
-                </div>
+                    <el-button @click="deleteRow(scope.row)"
+                               type="text"
+                               style="color:red"
+                               size="small">
+                      删除
+                    </el-button>
+                  </div>
 
-                <div v-if=" scope.row.status == 1">
-                  <el-button @click="operation(scope.row)"
-                             type="text"
-                             style="color:#1371CC"
-                             size="small">
-                    审批
-                  </el-button>
-                  <el-button @click="deleteRow(scope.row)"
-                             type="text"
-                             style="color:red"
-                             size="small">
-                    删除
-                  </el-button>
+                  <div v-if=" scope.row.status == 1">
+                    <el-button @click="operation(scope.row)"
+                               v-if="scope.row.doingCount>=1"
+                               type="text"
+                               style="color:#1371CC"
+                               size="small">
+                      审批
+                    </el-button>
+                    <el-button @click="deleteRow(scope.row)"
+                               type="text"
+                               style="color:red"
+                               size="small">
+                      删除
+                    </el-button>
+                  </div>
                 </div>
 
               </template>
@@ -169,6 +178,7 @@
         <div class="projectTab anmition_show">
           <el-table :data="tableData_list2"
                     style="width: 100%;"
+                    v-loading="loading"
                     :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}">
             <!-- <el-table-column prop="dataTaskNumber"
                              label="流水单号">
@@ -178,6 +188,7 @@
                              label="序号">
             </el-table-column>
             <el-table-column prop="dataName"
+                             align="center"
                              label="资料名称">
             </el-table-column>
             <el-table-column prop="createTime"
@@ -205,51 +216,66 @@
                              align="center"
                              label="备注">
             </el-table-column>
-            <el-table-column prop=""
+
+            <!-- 附件 -->
+            <el-table-column prop="enclosureCount"
                              align="center"
-                             label=附件>
+                             label="附件"
+                             show-overflow-tooltip>
               <template slot-scope="scope">
-                <!-- 有附件 -->
-                <div class="update"
-                     v-if="scope.row.enclosureCount !==0"
-                     @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)">
-                  <div class="update_icon">
-                    <svg t="1631877671204"
-                         class="icon"
-                         viewBox="0 0 1024 1024"
-                         version="1.1"
-                         xmlns="http://www.w3.org/2000/svg"
-                         p-id="9939"
-                         width="200"
-                         height="200">
-                      <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                            fill="#FD9D27"
-                            p-id="9940"></path>
-                    </svg>
-                  </div>
-                  <span>{{scope.row.enclosureCount}}</span>
-                </div>
-                <!-- 没有附件 -->
-                <div class="update"
-                     v-else>
-                  <div class="update_icon">
-                    <svg t="1631877671204"
-                         class="icon"
-                         viewBox="0 0 1024 1024"
-                         version="1.1"
-                         xmlns="http://www.w3.org/2000/svg"
-                         p-id="9939"
-                         width="200"
-                         height="200">
-                      <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                            fill="#FD9D27"
-                            p-id="9940"></path>
-                    </svg>
-                  </div>
-                  <span>{{scope.row.enclosureCount}}</span>
-                </div>
+                <!-- 附件详情 -->
+                <el-popover placement="bottom"
+                            width="400"
+                            trigger="click">
+                  <el-table :data="enclosure_details_list"
+                            :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                            v-loading="loading"
+                            style="width: 100%;">
+                    <el-table-column prop="fiileType"
+                                     align="center"
+                                     v-loading="loading"
+                                     label="资料类型">
+                    </el-table-column>
+                    <el-table-column prop="fileName"
+                                     align="center"
+                                     label="文件名称">
+                      <template slot-scope="scope">
+                        <p @click="download(scope.row.attachmentUuid,scope.row.fileName)"
+                           type="text"
+                           class="file_name"
+                           size="small">
+                          {{ scope.row.fileName }}
+                        </p>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+
+                  <!-- 附件 -->
+                  <el-button slot="reference">
+                    <div class="update"
+                         @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)">
+                      <i class="update_icon">
+                        <svg t="1631877671204"
+                             class="icon"
+                             viewBox="0 0 1024 1024"
+                             version="1.1"
+                             xmlns="http://www.w3.org/2000/svg"
+                             p-id="9939"
+                             width="200"
+                             height="200">
+                          <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
+                                fill="#FD9D27"
+                                p-id="9940"></path>
+                        </svg>
+                      </i>
+                      <span>{{scope.row.enclosureCount}}</span>
+                    </div>
+                  </el-button>
+                </el-popover>
               </template>
             </el-table-column>
+            <!--附件 end  -->
+
           </el-table>
         </div>
 
@@ -289,25 +315,16 @@
                  :model="add_form"
                  label-width="80px">
           <!-- 标题 -->
+
           <el-form-item label="标题"
-                        prop="title"
-                        :rules="{
-              required: true,
-              message: '此项不能为空',
-              trigger: 'blur',
-            }">
+                        prop="title">
             <el-input v-model="add_form.title"
                       style="width:260px;"></el-input>
           </el-form-item>
+
           <!-- 发起人 -->
           <el-form-item label="发起人"
-                        prop="name"
-                        :rules="{
-              required: true,
-              message: '此项不能为空',
-              trigger: 'blur',
-            }">
-
+                        prop="name">
             <el-input v-model="add_form.name"
                       :disabled="disabled"
                       style="width:260px;"></el-input>
@@ -331,6 +348,7 @@
           <el-form label-width="80px">
             <el-table ref="multipleTable"
                       row-key="id"
+                      v-loading="loading"
                       :data="task_list_records"
                       tooltip-effect="dark"
                       style="width: 100%"
@@ -626,9 +644,9 @@
               <p style="padding:0 0 0 30px;"><span style="color:red">*</span>是否沉淀为常规需求资料：</p>
               <el-radio-group v-model="add_data.status"
                               @change="changeHandler">
-                <el-radio label="2"
+                <el-radio :label="2"
                           :disabled="edit_title == '详细信息'">否</el-radio>
-                <el-radio label="1"
+                <el-radio :label="1"
                           :disabled="edit_title == '详细信息'">是</el-radio>
               </el-radio-group>
             </el-form-item>
@@ -647,8 +665,8 @@
             </el-form-item>
           </div>
 
+          <!-- 模版新增： -->
           <div class="son cd">
-
             <el-form-item label-width="80px"
                           style="margin-bottom:0!important"
                           class="up">
@@ -657,7 +675,7 @@
                         v-model="add_data.file"
                         placeholder=""></el-input> -->
               <el-upload class="upload-demo"
-                         :disabled="edit_title == '详细信息'"
+                         :disabled="edit_title == '详细信息'?true:false"
                          drag
                          ref="upload"
                          action="#"
@@ -726,6 +744,7 @@
                   :data="operation_tableData"
                   tooltip-effect="dark"
                   style="width: 100%"
+                  v-loading="loading"
                   :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                   @selection-change="handleSelectionChange_operation">
           <el-table-column type="selection"
@@ -771,6 +790,7 @@
             </template>
 
           </el-table-column>
+          <!-- 状态 -->
           <el-table-column prop="status"
                            align="center"
                            label="状态"
@@ -787,40 +807,75 @@
             </template>
 
           </el-table-column>
+          <!-- 附件 -->
           <el-table-column prop="enclosureCount"
                            align="center"
                            label="附件"
                            show-overflow-tooltip>
             <template slot-scope="scope">
-              <div class="update"
-                   @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)">
-                <i class="update_icon">
-                  <svg t="1631877671204"
-                       class="icon"
-                       viewBox="0 0 1024 1024"
-                       version="1.1"
-                       xmlns="http://www.w3.org/2000/svg"
-                       p-id="9939"
-                       width="200"
-                       height="200">
-                    <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                          fill="#FD9D27"
-                          p-id="9940"></path>
-                  </svg>
-                </i>
-                <span>{{scope.row.enclosureCount}}</span>
 
-              </div>
+              <!-- enclosure_details_list -->
+              <!-- 附件详情 -->
+              <el-popover placement="bottom"
+                          width="400"
+                          trigger="click">
+                <el-table :data="enclosure_details_list"
+                          :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                          style="width: 100%;">
+                  <el-table-column prop="fiileType"
+                                   align="center"
+                                   v-loading="loading"
+                                   label="资料类型">
+                  </el-table-column>
+                  <el-table-column prop="fileName"
+                                   align="center"
+                                   label="文件名称">
+                    <template slot-scope="scope">
+                      <p @click="download(scope.row.attachmentUuid,scope.row.fileName)"
+                         type="text"
+                         class="file_name"
+                         size="small">
+                        {{ scope.row.fileName }}
+                      </p>
+                    </template>
+                  </el-table-column>
+                </el-table>
+
+                <!-- 附件 -->
+                <el-button slot="reference">
+                  <div class="update"
+                       @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)">
+                    <i class="update_icon">
+                      <svg t="1631877671204"
+                           class="icon"
+                           viewBox="0 0 1024 1024"
+                           version="1.1"
+                           xmlns="http://www.w3.org/2000/svg"
+                           p-id="9939"
+                           width="200"
+                           height="200">
+                        <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
+                              fill="#FD9D27"
+                              p-id="9940"></path>
+                      </svg>
+                    </i>
+                    <span>{{scope.row.enclosureCount}}</span>
+                  </div>
+                </el-button>
+              </el-popover>
+
             </template>
 
           </el-table-column>
+          <!--附件 end  -->
+
           <el-table-column prop="address"
                            align="center"
                            label="操作">
             <template slot-scope="scope">
               <el-button size="small"
                          type="primary"
-                         @click="look_record(scope.row,scope.$index)">查看</el-button>
+                         @click="look_record(scope.row)">查看</el-button>
               <!-- <el-button size="small"
                          type="primary"
                          @click="post(scope.row)">提交</el-button> -->
@@ -1021,6 +1076,7 @@
 
       <div class="dlag_conter4">
         <el-table :data="history_log.records"
+                  v-loading="loading_history"
                   :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                   style="width: 100%;">
           <!-- <el-table-column type="selection"
@@ -1124,7 +1180,10 @@
 </template>
 
 <script>
-import { data_pageList, data_push, data_save, add_pageList, data_pageListDone, data_delete, data_push_ing, data_edit_details, data_update, data_add_savePush, data_edit_savePush, loadcascader, saveTemp, operation_list_data, operation_record_list, operation_audit, operation_uploadData, select_loadcascader, enclosure_details, select_user_data, enclosure_sysLogById, enclosure_details_file, enclosure_downloadByFileId, operation_addExit } from
+import {
+  data_pageList, data_push, data_save, add_pageList, data_pageListDone, data_delete, data_push_ing, data_edit_details, data_update, data_add_savePush, data_edit_savePush, loadcascader, saveTemp, operation_list_data, operation_record_list, operation_audit, operation_uploadData, select_loadcascader, enclosure_details, select_user_data,
+  enclosure_sysLogById, enclosure_details_file, enclosure_downloadByFileId, operation_addExit, operation_addTitle
+} from
   '@SDMOBILE/api/shandong/data'
 import { fmtDate } from '@SDMOBILE/model/time.js';
 import {
@@ -1147,6 +1206,7 @@ export default {
       // color: '',   // 上传文件icon 颜色
       dialogVisibl_enclosure_details: false,//附件详情
       loading: false,
+      loading_history: false,//操作记录
       whether: false,//是否下发
       sensitiveOptions: [],//添加资料 类型
       sensitiveDepartment: [],//添加资料 部门
@@ -1299,6 +1359,8 @@ export default {
       enclosure_moban_list: [],//模版资料
 
       user_data: {},//添加资料回显
+      is_add: 0//
+      // 是否显示新增
     }
   },
   computed: {},
@@ -1330,9 +1392,16 @@ export default {
 
     // 获取请求人
     this.task_personLiable_data();
+
+
+    // 标题 是否显示 新增
+    let params_title = {
+      id: this.projectNumber
+    }
+    this.query_title(params_title)
   },
   mounted () { },
-  props: ['active_project'],
+  props: ['active_project', 'userRole'],
   filters: {
     filtedate: function (date) {
       let t = new Date(date);
@@ -1342,6 +1411,13 @@ export default {
   },
 
   methods: {
+    // 获取标题
+    query_title (params_title) {
+      operation_addTitle(params_title).then(resp => {
+        this.add_form.title = resp.data.title//标题
+        this.is_add = resp.data.isDelete//是否新增
+      })
+    },
     // 获取责任人
     task_personLiable_data () {
       task_personLiable().then(resp => {
@@ -1404,9 +1480,11 @@ export default {
     },
     // 操作记录
     operation_data (params) {
+      this.loading_history = true;
       enclosure_sysLogById(params).then(resp => {
         console.log(resp.data);
         this.history_log = resp.data
+        this.loading_history = false;
       })
     },
 
@@ -1505,7 +1583,7 @@ export default {
       this.dialogVisible = false;
       this.get_out();//关闭请求的接口
       // this.add_form.name = '';//清空name
-      this.add_form.title = '';//清空title
+      // this.add_form.title = '';//清空title
 
       // this.add_data.dataNumber = '';//编号
       // this.add_data.secondLevelDataNumber = '';//二级编号
@@ -1516,11 +1594,15 @@ export default {
     // 未完成============================
     // 列表 未完成
     list_data_start (params) {
-      // this.loading = true
+      this.loading = true
       data_pageList(params).then(resp => {
         this.tableData = resp.data;
         this.tableData_list = resp.data.records
-        // this.loading = false
+        // if (this.tableData_list) {
+        //   this.is_add = resp.data.records[0].isDeleted//是否可以新增
+        // }
+
+        this.loading = false
       })
     },
     handleSizeChange_model () {
@@ -1544,6 +1626,12 @@ export default {
     add_data_task () {
       // this.add_form.name = '';//清空name
       this.add_form.title = '';//清空title
+      // 标题 是否显示 新增
+      let params_title = {
+        id: this.projectNumber
+      }
+      this.query_title(params_title)
+
       this.dialogVisible = true
       this.title = '新增审计资料任务';
       this.$nextTick(() => {
@@ -1577,15 +1665,17 @@ export default {
       };
       // 附件详情
       enclosure_details_file(params).then(resp => {
+        this.loading = true;
         this.enclosure_details_list = resp.data
+        this.loading = false;
 
-        if (this.enclosure_details_list.length == 0) {
-          this.$message('暂无上传的附件');
-          return false
-        } else {
-          this.dialogVisibl_enclosure_details = true;
+        // if (this.enclosure_details_list.length == 0) {
+        //   this.$message('暂无上传的附件');
+        //   return false
+        // } else {
+        //   this.dialogVisibl_enclosure_details = true;
 
-        }
+        // }
       })
 
     },
@@ -1644,9 +1734,11 @@ export default {
     },
     // 新增任务初始化 列表
     add_add_csh (params) {
+      this.loading = true;
       add_pageList(params).then(resp => {
         this.task_list = resp.data;
         this.task_list_records = resp.data.records;
+        this.loading = false;
       })
     },
 
@@ -1687,19 +1779,19 @@ export default {
       // 新增确认
       if (index == 1) {
         let params = {
-          demandDataList: array1,
-          title: this.add_form.title,
-          launchPeople: this.add_form.name,
-          projectNumber: this.projectNumber,
+          demandDataList: array1,//勾选的数据
+          title: this.add_form.title,//标题
+          launchPeople: this.add_form.name,//发起人
+          projectNumber: this.projectNumber,//项目id
         };
         this.query_save(params)//进行新增确认保存操作
       } else {
         // 编辑确认
         let params2 = {
-          demandDataList: array1,
-          title: this.add_form.title,
-          launchPeople: this.add_form.name,
-          projectNumber: this.projectNumber,
+          demandDataList: array1,//勾选的数据
+          title: this.add_form.title,//标题
+          launchPeople: this.add_form.name,//发起人
+          projectNumber: this.projectNumber,//项目id
           addDataTaskUuid: this.addDataTaskUuid,
         };
 
@@ -1759,8 +1851,8 @@ export default {
             this.list_data_start(params)//未完成列表
             this.dialogVisible = false;//关闭新增弹窗
 
-            this.add_form.name = '';//清空name
-            this.add_form.title = '';//清空name
+            // this.add_form.name = '';//清空name
+            // this.add_form.title = '';//清空name
             array1 = [];//清空
 
           } else {
@@ -1799,8 +1891,8 @@ export default {
             this.list_data_start(params)//未完成列表
             this.dialogVisible = false;//关闭新增弹窗
 
-            // this.add_form.name = '';//清空name
-            this.add_form.title = '';//清空name
+            // // this.add_form.name = '';//清空name
+            // this.add_form.title = '';//清空name
             array1 = [];//清空
 
           } else {
@@ -1837,7 +1929,7 @@ export default {
 
           this.dialogVisible = false;//关闭新增弹窗
           // this.add_form.name = '';//清空name
-          this.add_form.title = '';//清空name
+          // this.add_form.title = '';//清空tltle
           this.array1 = [];//清空
         } else {
           this.$message({
@@ -2173,11 +2265,11 @@ export default {
     },
     // 操作 资料列表
     operation_list (params) {
-      // this.loading = true
+      this.loading = true
       operation_list_data(params).then(resp => {
         this.operation_table = resp.data
         this.operation_tableData = resp.data.records
-        // this.loading = false
+        this.loading = false
       })
     },
     // 操作 资料列表分页 控制每页条数
@@ -2223,24 +2315,40 @@ export default {
     //查看操作 记录
     look_record (data, index) {
       console.log(data);
-      console.log(index);
+      // console.log(index);
       // this.record_status = true;
       this.record_query.id = data.auditPreviousDemandDataUuid;
       this.dialogVisible2 = true//显示编辑
       this.edit_title = '详细信息'
+      this.add_data.dataCategory = data.dataCategory;//基本类型
+      this.add_data.dataName = data.dataName;//资料名称
+      this.add_data.dataNumber = data.dataNumber;//编号 
+      this.add_data.secondLevelDataNumber = data.secondLevelDataNumber;//二级编号 
+      this.add_data.source = data.source;//来源 
+      this.add_data.department = data.department;//部门
+      this.add_data.remarks = data.remarks;//备注
+      this.add_data.status = data.isDeleted;//是否沉淀 0.否 1.是
+      this.add_data.addPeople = data.addPeople;//添加人
+      this.add_data.addTime = data.createTime;//addTime
+      var list = data.attachmentList//附件列表
+      // 编辑回显
+      if (list) {
+        this.edit_file_list = [];
+        // 回显
+        list.forEach(item => {
+          item.isDeleted = 0;
+          item.url = item.filePath;
+          item.name = item.fileName;
+          this.edit_file_list.push(item);
+        })
+      }
 
-      // 资料任务id 
-      // this.addDataTaskUuid = data.addDataTaskUuid
 
-      let params_query = {
-        condition: {
-          addDataTaskUuid: this.addDataTaskUuid,
-          projectType: this.active_project,
-        },
-        pageNo: this.edit_details_query.pageNo,
-        pageSize: this.edit_details_query.pageSize,
-      };
-      this.edut_details(params_query, index);//编辑详情
+
+      // }
+
+
+
       // let query_params = {
       //   condition: {
       //     logSysActiUuid: this.record_query.id
@@ -2413,7 +2521,7 @@ export default {
     // 任务列表 显示编辑
     edit_common (data) {
       // this.add_form.name = '';//清空name
-      this.add_form.title = '';//清空title
+      // this.add_form.title = '';//清空title
       // this.$refs.multipleTable.clearSelection();//清空
       this.edit_title.title = '编辑审计资料任务';
       this.dialogVisible = true;//显示编辑
@@ -2439,24 +2547,6 @@ export default {
         this.add_form.title = this.edit_details.title;
         this.add_form.name = this.edit_details.launchPeople;
         this.task_list_records_details = resp.data.demandDataList
-
-        if (this.edit_title = '详细信息') {
-          console.log(this.task_list_records_details[index]);
-          let data = this.task_list_records_details[index]
-          this.add_data.dataCategory = data.dataCategory;//基本类型
-          this.add_data.dataName = data.dataName;//资料名称
-          this.add_data.dataNumber = data.dataNumber;//编号 
-          this.add_data.secondLevelDataNumber = data.secondLevelDataNumber;//二级编号 
-          this.add_data.source = data.source;//来源 
-          this.add_data.department = data.department;//部门
-          this.add_data.remarks = data.remarks;//备注
-          this.add_data.status = data.status;//是否沉淀
-          this.add_data.addPeople = data.addPeople;//添加人
-          this.add_data.addTime = data.createTime;//addTime
-
-        }
-
-
 
         // 显示模版列表数据
         let params2 = {
@@ -2493,11 +2583,11 @@ export default {
     // 已完成==========================
     // 已完成列表
     list_data_end (params2) {
-      // this.loading = true
+      this.loading = true
       data_pageListDone(params2).then(resp => {
         this.tableData2 = resp.data;
         this.tableData_list2 = resp.data.records
-        // this.loading = false
+        this.loading = false
       })
     },
     handleSizeChange_zj (val) {
@@ -2712,7 +2802,7 @@ export default {
 
 /* 新增资料 */
 .dlag_conter2 {
-  padding: 20px 0 20px 0px;
+  padding: 20px 20px 20px 0px;
 }
 .dlag_conter2 p {
   padding-top: 10px;
@@ -2774,6 +2864,10 @@ export default {
   width: 220px;
   display: flex;
   align-items: center;
+  box-sizing: border-box;
+}
+.dlag_conter3 {
+  padding: 20px;
   box-sizing: border-box;
 }
 .dlag_conter3 >>> .operation_header {
@@ -2847,6 +2941,7 @@ export default {
 }
 .file_name:hover {
   color: #1371cc;
+  cursor: pointer;
 }
 
 .shenhe {

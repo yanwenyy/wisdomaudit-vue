@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import qs from 'qs'
 
-const baseURL = '/wisdomaudit'
+const baseURL = '/wisdomaudit_wei'
 
 // 资料列表 未完成
 export function data_pageList (data) {
@@ -9,6 +9,7 @@ export function data_pageList (data) {
     baseURL: baseURL,
     url: `/addDataTask/pageListDoing`,
     method: 'post',
+    isLoading: false,
     data
   })
 }
@@ -18,6 +19,7 @@ export function data_pageListDone (data) {
     baseURL: baseURL,
     url: `/auditPreviousDemandData/pageListDone`,
     method: 'post',
+    isLoading: false,
     data
   })
 }
@@ -29,6 +31,19 @@ export function data_delete (data) {
     baseURL: baseURL,
     url: '/addDataTask/delete/' + ids + '',
     method: 'delete',
+    isLoading: false,
+    data
+  })
+}
+
+// 新增资料  获取标题
+export function operation_addTitle (data) {
+  let id = data.id
+  return request({
+    baseURL: baseURL,
+    url: '/addDataTask/addTitle/' + id + '',
+    method: 'post',
+    isLoading: false,
     data
   })
 }
@@ -40,6 +55,7 @@ export function add_pageList (data) {
     baseURL: baseURL,
     url: `/auditPreviousData/pageList`,
     method: 'post',
+    isLoading: false,
     data
   })
 }
@@ -63,6 +79,7 @@ export function data_add_savePush (data) {
     baseURL: baseURL,
     url: '/addDataTask/savePush',
     method: 'post',
+    isLoading: false,
     data
   })
 }
@@ -85,6 +102,7 @@ export function data_save (data) {
     baseURL: baseURL,
     url: `/addDataTask/save`,
     method: 'post',
+    isLoading: false,
     data
   })
 }
@@ -106,6 +124,7 @@ export function data_update (data) {
     baseURL: baseURL,
     url: `/addDataTask/update`,
     method: 'put',
+    isLoading: false,
     data
   })
 }
@@ -116,6 +135,7 @@ export function select_loadcascader (data) {
     baseURL: baseURL,
     url: `/init/loadcascader`,
     method: 'post',
+    isLoading: false,
     data
   })
 }
@@ -126,6 +146,7 @@ export function saveTemp (data) {
     baseURL: baseURL,
     url: `auditPreviousData/saveTemp`,
     method: 'post',
+    isLoading: false,
     data
   })
 }
@@ -137,6 +158,8 @@ export function operation_list_data (data) {
     baseURL: baseURL,
     url: `/auditPreviousDemandData/pageList`,
     method: 'post',
+    isLoading: false,
+
     data
   })
 }
@@ -148,6 +171,7 @@ export function operation_audit (data) {
     baseURL: baseURL,
     url: `/auditPreviousDemandData/audit`,
     method: 'post',
+    isLoading: false,
     data
   })
 }
@@ -158,6 +182,7 @@ export function operation_uploadData (data) {
     baseURL: baseURL,
     url: `/auditPreviousDemandData/uploadData`,
     method: 'post',
+    isLoading: false,
     data
   })
 }
@@ -169,6 +194,7 @@ export function select_user_data (data) {
     baseURL: baseURL,
     url: `/auditPreviousData/addNumber`,
     method: 'post',
+    isLoading: false,
     data
   })
 }
@@ -181,6 +207,7 @@ export function enclosure_details_file (data) {
     baseURL: baseURL,
     url: '/auditPreviousDemandData/findFile/' + id + '',
     method: 'post',
+    isLoading: false,
     data
   })
 }
@@ -193,6 +220,7 @@ export function enclosure_downloadByFileId (data) {
     baseURL: baseURL,
     url: `/auditPreviousDemandData/downloadByFileId`,
     method: 'post',
+    isLoading: false,
     data: qs.stringify(data),
   })
 }
@@ -205,6 +233,7 @@ export function enclosure_sysLogById (data) {
     baseURL: baseURL,
     url: `/addDataTask/sysLogById`,
     method: 'post',
+    isLoading: false,
     data
   })
 }
@@ -215,6 +244,7 @@ export function operation_record_list (data) {
     baseURL: baseURL,
     url: `/auditPreviousDemandData/sysLogById`,
     method: 'post',
+    isLoading: false,
     data
   })
 }
@@ -226,6 +256,7 @@ export function operation_addExit (data) {
     baseURL: baseURL,
     url: `/addDataTask/addExit`,
     method: 'post',
+    isLoading: false,
     data
   })
 }

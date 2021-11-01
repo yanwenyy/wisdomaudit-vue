@@ -1,5 +1,6 @@
 <template>
-  <div class="sjzl anmition_show">
+  <div class="sjzl anmition_show"
+       v-if="userRole==1">
     <!-- {{managementProjectUuid}} -->
     <div class="conter">
       <div class="projectTab">
@@ -35,12 +36,8 @@
           <!-- 表单 -->
           <el-table :data="tableData_list"
                     :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                    v-loading="loading"
                     style="width: 100%">
-
-            <!-- <el-table-column type="index"
-                             label="序号"
-                             width="50">
-            </el-table-column> -->
             <!-- 任务/自建任务名称 -->
             <el-table-column prop="taskName"
                              width="180"
@@ -137,25 +134,55 @@
                              width="90">
               <template slot-scope="scope">
 
-                <div class="update"
-                     @click="open_enclosure_details(scope.row.auditTaskUuid)">
-                  <i class="update_icon">
-                    <svg t="1631877671204"
-                         class="icon"
-                         viewBox="0 0 1024 1024"
-                         version="1.1"
-                         xmlns="http://www.w3.org/2000/svg"
-                         p-id="9939"
-                         width="200"
-                         height="200">
-                      <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                            fill="#FD9D27"
-                            p-id="9940"></path>
-                    </svg>
-                  </i>
-                  <span>{{scope.row.count}}</span>
+                <!-- 附件详情 -->
+                <el-popover placement="bottom"
+                            width="400"
+                            trigger="click">
+                  <el-table :data="enclosure_details_list"
+                            :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                            v-loading="loading_file"
+                            style="width: 100%;">
+                    <el-table-column prop="fiileType"
+                                     align="center"
+                                     label="资料类型">
+                    </el-table-column>
+                    <el-table-column prop="fileName"
+                                     align="center"
+                                     label="文件名称">
+                      <template slot-scope="scope">
+                        <p @click="download_click(scope.row.attachmentUuid,scope.row.fileName)"
+                           type="text"
+                           class="file_name"
+                           size="small">
+                          {{ scope.row.fileName }}
+                        </p>
+                      </template>
+                    </el-table-column>
+                  </el-table>
 
-                </div>
+                  <!-- 附件 -->
+                  <el-button slot="reference">
+                    <div class="update"
+                         @click="open_enclosure_details(scope.row.auditTaskUuid)">
+                      <i class="update_icon">
+                        <svg t="1631877671204"
+                             class="icon"
+                             viewBox="0 0 1024 1024"
+                             version="1.1"
+                             xmlns="http://www.w3.org/2000/svg"
+                             p-id="9939"
+                             width="200"
+                             height="200">
+                          <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
+                                fill="#FD9D27"
+                                p-id="9940"></path>
+                        </svg>
+                      </i>
+                      <span>{{scope.row.count}}</span>
+                    </div>
+                  </el-button>
+                </el-popover>
+
               </template>
             </el-table-column>
 
@@ -501,6 +528,7 @@
         </el-col> -->
       </el-row>
       <el-table :data="probleNum_list"
+                v-loading="loading"
                 :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                 ref="multipleTable"
                 style="width: 100%;margin-bottom:2%">
@@ -820,7 +848,7 @@
       </div>
     </el-dialog> -->
 
-    <!-- 自建任务新增 -->
+    <!-- 自建任务新增 编辑-->
     <el-dialog :visible.sync="dialogVisible_zj"
                @close="resetForm2('save_zj_query')"
                style="padding-bottom: 59px">
@@ -828,6 +856,7 @@
 
       <div class="dlag_conter new">
         <el-form ref="save_zj_query"
+                 v-loading="loading_edit"
                  :model="save_zj_query"
                  :inline="false"
                  :rules='rules_task'>
@@ -951,6 +980,7 @@
 
         <el-table :data="enclosure_details_list"
                   :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                  v-loading="loading_file"
                   style="width: 100%;">
           <!-- <el-table-column prop="dataTaskNumber"
                              label="流水单号">
@@ -1166,7 +1196,7 @@ export default {
       jg_title: '',//结果数模型title
 
       data_active: '',//选中
-
+      loading_file: false,//附件loading
       enclosure_details_list: [],//附件详情
 
       success_btn: 0,//文件上传完成
@@ -1176,7 +1206,7 @@ export default {
       edit_file_list: [],// 编辑回显 上传文件
       disabled: true,//责任人点击
 
-
+      loading_edit: false,//编辑 loading
       verify: {
         isProbleam_data: '',//是否问题
         handleIdea: '',//核实信息
@@ -1233,7 +1263,7 @@ export default {
       return fmtDate(t, 'yyyy-MM-dd ');
     }
   },
-  props: ['active_project'],
+  props: ['active_project', 'userRole'],
   created () {
     this.managementProjectUuid = this.active_project;
     // 模型  自建任务列表
@@ -1273,14 +1303,14 @@ export default {
   methods: {
     // 模型/自建任务列表  
     list_data (params) {
-      // this.loading = true;
+      this.loading = true;
       task_pageList(params).then(resp => {
         this.tableData = resp.data;
         // console.log(this.tableData);
         this.tableData_list = resp.data.records
 
         console.log(this.tableData_list);
-        // this.loading = false
+        this.loading = false
       })
     },
     handleSizeChange_zijian (val) {
@@ -1591,6 +1621,7 @@ export default {
 
     // 自建 任务--显示编辑详情
     edit_data (data) {
+      this.loading_edit = true;
       this.title = '编辑任务';
       this.dialogVisible_zj = true;//显示新增编辑 弹窗
       this.save_zj_query.auditTaskUuid = data.auditTaskUuid;
@@ -1617,6 +1648,8 @@ export default {
           }
         }
         this.file_details(params2, 1);//附件详情
+        this.loading_edit = false;
+
       })
     },
     // 查看附件详情
@@ -1633,16 +1666,18 @@ export default {
     },
     // 附件详情
     file_details (params2, index) {
+      this.loading_file = true;
       task_problems_uopload_details(params2).then(resp => {
+        this.loading_file = false;
         // index=1  列表查看附件详情
         if (index == 2) {
           this.enclosure_details_list = resp.data
-          if (this.enclosure_details_list.length == 0) {
-            this.$message('暂无上传的附件');
-            return false
-          } else {
-            this.dialogVisibl_enclosure_details = true;
-          }
+          // if (this.enclosure_details_list.length == 0) {
+          //   this.$message('暂无上传的附件');
+          //   return false
+          // } else {
+          //   // this.dialogVisibl_enclosure_details = true;
+          // }
         } else {
           var list = resp.data//
           // 编辑回显
@@ -2084,9 +2119,11 @@ export default {
     },
     // 问题数列表
     task_problems_data (params) {
+      this.loading = true;
       task_problems_list(params).then(resp => {
         this.probleNum_data = resp.data
         this.probleNum_list = resp.data.records
+        this.loading = false
       })
     },
     // 问题数分页 每页几条
@@ -2753,6 +2790,10 @@ export default {
 .dlag_conter >>> .el-form-item__content {
   margin-left: 10px !important;
   display: flex;
+  min-width: 400px;
+}
+.upload-demo {
+  width: 100%;
 }
 /* .sjzl >>> .el-dialog__footer {
   text-align: center !important;
@@ -2857,12 +2898,9 @@ export default {
 .new >>> .el-form p span {
   color: red;
 }
-.style_focus >>> .el-upload-dragger {
-  border: 1px dashed red !important;
-}
-
 .file_name:hover {
   color: #1371cc;
+  cursor: pointer;
 }
 
 /* 核实  */
@@ -2878,5 +2916,14 @@ export default {
 
 .verify >>> .el-form-item__content span {
   color: red;
+}
+
+.dlag_conter >>> .el-upload-list__item-name {
+  max-width: 285px;
+  margin-right: 0;
+}
+
+.dlag_conter >>> .el-upload {
+  width: 305px !important;
 }
 </style>

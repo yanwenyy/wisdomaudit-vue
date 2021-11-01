@@ -5,6 +5,7 @@
     <div class="task_type">
       <!-- 表单 -->
       <el-table :data="list_data_list"
+                v-loading="loading"
                 :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                 style="width: 100%">
         <el-table-column prop="createTime"
@@ -105,6 +106,7 @@
           <el-form label-width="80px">
             <el-table ref="multipleTable"
                       row-key="id"
+                      v-loading="loading_list"
                       :data="feedback_list.records"
                       tooltip-effect="dark"
                       style="width: 100%"
@@ -261,6 +263,7 @@
           <p>操作记录</p>
           <el-form label-width="80px">
             <el-table :data="record_log"
+                      v-loading="loading_list"
                       style="width: 100%">
               <el-table-column prop="opOperate"
                                label="动作"
@@ -383,6 +386,8 @@ export default {
   },
   data () {
     return {
+      loading: false,
+      loading_list: false,
       list_data_loading: false,
       list_data: [],//列表数据
       list_data_list: [],//列表
@@ -459,11 +464,11 @@ export default {
     },
     // 列表
     list_data_page (params) {
-      this.list_data_loading = true;
+      this.loading = true;
       data_pageList(params).then(resp => {
         this.list_data = resp.data;
         this.list_data_list = resp.data.records;//列表
-        this.list_data_loading = false;
+        this.loading = false;
       })
     },
 
@@ -513,10 +518,10 @@ export default {
     },
     // 资料列表
     feedback_post (params) {
-      this.list_loading = true
+      this.loading_list = true
       feedback_pageList(params).then(resp => {
         this.feedback_list = resp.data
-        this.list_loading = false;
+        this.loading_list = false;
       })
     },
     handleSizeChange_data (val) {

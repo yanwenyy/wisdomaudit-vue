@@ -20,6 +20,7 @@ export function enclosure_update (data) {
     baseURL: baseURL,
     url: '/auditPreviousDemandData/sysLogById/' + id + '',
     method: 'post',
+    isLoading: false,
     data
   })
 }
@@ -30,6 +31,7 @@ export function task_pageList (data) {
     baseURL: baseURL,
     url: `/auditTask/selectTask/pageList`,
     method: 'post',
+    isLoading: false,
     data,
   })
 }
@@ -40,6 +42,7 @@ export function quoteModel (data) {
     baseURL: baseURL,
     url: `/auditTask/quoteModel`,
     method: 'post',
+    isLoading: false,
     data,
   })
 }
@@ -50,6 +53,7 @@ export function task_model_pageList (data) {
     baseURL: baseURL,
     url: `/auditModel/pageList`,
     method: 'post',
+    isLoading: false,
     data,
   })
 }
@@ -59,6 +63,8 @@ export function task_add (data) {
     baseURL: baseURL,
     url: `/auditTask/saveTask`,
     method: 'post',
+    isLoading: false,
+
     data,
   })
 }
@@ -69,6 +75,7 @@ export function task_details (data) {
     baseURL: baseURL,
     url: '/auditTask/getById/' + id + '',
     method: 'get',
+    isLoading: false,
     data,
   })
 }
@@ -78,6 +85,9 @@ export function task_update (data) {
     baseURL: baseURL,
     url: `/auditTask/update`,
     method: 'put',
+    isLoading: false,
+
+
     data,
   })
 }
@@ -88,6 +98,8 @@ export function task_remove (data) {
     baseURL: baseURL,
     url: '/auditTask/delete/' + ids + '',
     method: 'delete',
+    isLoading: false,
+
     data,
   })
 }
@@ -97,6 +109,8 @@ export function Task_update_status (data) {
     baseURL: baseURL,
     url: `/auditTask/update`,
     method: 'put',
+    isLoading: false,
+
     data,
   })
 }
@@ -106,6 +120,8 @@ export function task_select_repeat (data) {
     baseURL: baseURL,
     url: `/auditTask/pageList`,
     method: 'post',
+    isLoading: false,
+
     data,
   })
 }
@@ -115,6 +131,8 @@ export function task_select_people (data) {
     baseURL: baseURL,
     url: `/projectMembership/pageList`,
     method: 'post',
+    isLoading: false,
+
     data,
   })
 }
@@ -124,6 +142,8 @@ export function task_setChargePeople (data) {
     baseURL: baseURL,
     url: `/auditTask/setChargePeople`,
     method: 'put',
+    isLoading: false,
+
     data,
   })
 }
@@ -133,6 +153,8 @@ export function task_data_verify (data) {
     baseURL: baseURL,
     url: `/resultDetailProjectRel/verify`,
     method: 'post',
+    isLoading: false,
+
     data,
   })
 }
@@ -143,6 +165,8 @@ export function task_problems_list (data) {
     baseURL: baseURL,
     url: `problemList/pageList`,
     method: 'post',
+    isLoading: false,
+
     data,
   })
 }
@@ -152,6 +176,8 @@ export function task_problems_save (data) {
     baseURL: baseURL,
     url: `/problemList/save`,
     method: 'post',
+    isLoading: false,
+
     data,
   })
 }
@@ -162,6 +188,8 @@ export function task_problems_delete (data) {
     baseURL: baseURL,
     url: '/problemList/delete/' + ids + '',
     method: 'delete',
+    isLoading: false,
+
     data,
   })
 }
@@ -172,6 +200,7 @@ export function task_problems_details (data) {
     baseURL: baseURL,
     url: '/problemList/getById/' + id + '',
     method: 'get',
+    isLoading: false,
     data,
   })
 }
@@ -181,6 +210,8 @@ export function task_problems_update (data) {
     baseURL: baseURL,
     url: '/problemList/update',
     method: 'put',
+    isLoading: false,
+
     data,
   })
 }
@@ -190,6 +221,8 @@ export function task_problems_loadcascader (data) {
     baseURL: baseURL,
     url: '/init/loadcascader',
     method: 'post',
+    isLoading: false,
+
     data,
   })
 }
@@ -199,6 +232,8 @@ export function task_problems_relation (data) {
     baseURL: baseURL,
     url: '/auditTask/selectTask',
     method: 'post',
+    isLoading: false,
+
     data,
   })
 }
@@ -221,6 +256,8 @@ export function task_problems_uopload_details (data) {
     baseURL: baseURL,
     url: '/attachment/pageList',
     method: 'post',
+    isLoading: false,
+
     data,
   })
 }
@@ -232,6 +269,7 @@ export function task_fileRemove (data) {
     baseURL: baseURL,
     url: `/attachment/fileRemove`,
     method: 'post',
+    isLoading: false,
     data,
   })
 }
@@ -242,6 +280,7 @@ export function task_personLiable (data) {
     baseURL: baseURL,
     url: `/user/getLoginUserInfo`,
     method: 'get',
+    isLoading: false,
     data,
   })
 }
@@ -255,6 +294,8 @@ export function projectRel_pgeList (data) {
     baseURL: baseURL,
     url: `/resultDetailProjectRel/pageList`,
     method: 'post',
+    isLoading: false,
+
     data,
   })
 }

@@ -7,6 +7,7 @@ export function operatingIndicators_list (data) {
     baseURL: baseURL,
     url: `/operatingIndicators/list2`,
     method: 'post',
+    isLoading: false,
     data,
   })
 }
@@ -18,6 +19,7 @@ export function task_pageList_wt (data) {
     baseURL: baseURL,
     url: `/problemList/pageList`,
     method: 'post',
+    isLoading: false,
     data,
   })
 }
@@ -28,6 +30,7 @@ export function task_pageList_export (data) {
     baseURL: baseURL,
     url: `/auditReport/export/word`,
     method: 'post',
+    isLoading: false,
     data: qs.stringify(data),
   })
 }
@@ -40,6 +43,7 @@ export function export_selectFile (data) {
     baseURL: baseURL,
     url: '/auditReport/selectFile/' + id + '',
     method: 'post',
+    isLoading: false,
     data,
   })
 }

@@ -8,6 +8,8 @@ export function data_pageList (data) {
     baseURL: baseURL,
     url: `/addDataTask/pageListBuyUser`,
     method: 'post',
+    isLoading: false,
+
     data
   })
 }
@@ -18,6 +20,8 @@ export function feedback_pageList (data) {
     url: `/auditPreviousDemandData/pageList
     `,
     method: 'post',
+    isLoading: false,
+
     data
   })
 }
@@ -28,6 +32,8 @@ export function operation_record_list (data) {
     baseURL: baseURL,
     url: '/auditPreviousDemandData/sysLogById/' + id + '',
     method: 'post',
+    isLoading: false,
+
     data
   })
 }
@@ -38,6 +44,8 @@ export function operation_download (data) {
     url: `/auditPreviousDemandData/downloadByBid`,
     method: 'post',
     responseType: 'blob',
+    isLoading: false,
+
     data: qs.stringify(data),
   })
 }
@@ -49,6 +57,8 @@ export function operation_uploadData (data) {
     url: `/auditPreviousDemandData/uploadData`,
     method: 'post',
     data: qs.stringify(data),
+    isLoading: false,
+
   })
 }
 
@@ -59,6 +69,8 @@ export function operation_findFile (data) {
     baseURL: baseURL,
     url: '/auditPreviousDemandData/findFile/' + id + '',
     method: 'post',
+    isLoading: false,
+
     data
   })
 }
@@ -70,6 +82,8 @@ export function operation_reportData (data) {
     baseURL: baseURL,
     url: `/auditPreviousDemandData/reportData`,
     method: 'post',
+    isLoading: false,
+
     data
   })
 }

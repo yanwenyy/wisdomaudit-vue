@@ -103,28 +103,30 @@
           <el-table-column type="selection"
                            width="55">
           </el-table-column>
-          <el-table-column prop="name"
-                           align="indexType"
+          <el-table-column prop="indexTypeName"
+                           align="center"
                            label="指标类型"> </el-table-column>
 
-          <el-table-column prop="name"
+          <el-table-column prop="accessCaliberName"
                            align="center"
                            label="依据"> </el-table-column>
 
-          <el-table-column prop="name"
+          <el-table-column prop="indexUnitName"
                            align="center"
                            label="单位"> </el-table-column>
 
-          <el-table-column prop="name"
+          <el-table-column prop="dataProvideDepartmentName"
                            align="center"
                            label="资料提供部门"> </el-table-column>
-          <el-table-column prop="name"
+          <!-- <el-table-column prop="name"
                            align="center"
-                           label="管理建议"> </el-table-column>
+                           label="管理建议"> </el-table-column> -->
 
-          <el-table-column prop="name"
+          <el-table-column prop="indexValue"
                            align="center"
-                           label="指标值"> </el-table-column>
+                           label="指标值">
+
+          </el-table-column>
         </el-table>
 
         <span slot="footer"
@@ -230,7 +232,6 @@ export default {
       correlation: [],//关联指标数据
 
 
-      managementProjectUuid: 'string',//项目管理id
       administrativeAdvice: '',//管理建议
       businessEvaluation: '',//经营评价
       // 模糊查询
@@ -242,11 +243,13 @@ export default {
       wt_listl: [],//问题 选择
     }
   },
+  props: ['active_project'],
+
   computed: {},
   watch: {},
   created () {
     let params = {
-      managementProjectUuid: this.managementProjectUuid,//项目id
+      id: this.active_project,//项目id
     }
     this.export_selectFile_data(params)
   },
@@ -276,7 +279,7 @@ export default {
     // 添加关联指标
     Correlation_zb () {
       let params = {
-        managementProjectUuid: this.managementProjectUuid,//项目id
+        managementProjectUuid: this.active_project,//项目id
       }
       this.dlag_Correlation_zb = true;//添加关联指标
       operatingIndicators_list(params).then(resp => {
@@ -290,19 +293,18 @@ export default {
     },
     // 指标确认保存
     query_save_zb () {
-      console.log(this.multipleSelection);
       if (this.multipleSelection.length == 0) {
         this.$message.info("至少关联一条数据！");
         return false;
       }
 
       let array1 = [];//数组1
-      this.multipleSelection.forEach((item) => {
-        array1.push(item);
+      this.multipleSelection.forEach((item, i) => {
+        array1.push((i + 1) + '.' + item.accessCaliberName + item.dataProvideDepartmentName);
       });
       console.log(array1);
-
-
+      this.administrativeAdvice = array1
+      // 拼接
       // this.dlag_Correlation_zb = false;//添加关联指标
 
     },
@@ -328,8 +330,6 @@ export default {
     handleSelectionChange_wt (val) {
       this.multipleSelection2 = val;
     },
-
-
     // 指标确认保存
     query_save_wt () {
       if (this.multipleSelection2.length == 0) {
@@ -347,7 +347,6 @@ export default {
       this.dlag_Correlation_wt = false;//添加关联问题
 
     },
-
     // 生成报告
     query_report () {
       let params = {
@@ -412,6 +411,10 @@ export default {
   float: left;
   box-sizing: border-box;
   margin-top: 20px;
+}
+.dlag_conter3 {
+  padding: 20px;
+  box-sizing: border-box;
 }
 .dlag_conter3 >>> .el-table {
   overflow-y: auto;
