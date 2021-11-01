@@ -68,46 +68,23 @@ export default {
   data() {
     return {
       options: [
-        {
-          type: "1",
-          typename: "员工违规",
-        },
-        {
-          type: "2",
-          typename: "员工违规",
-        },
+
 
       ],
- value2: "202010",
+ value2: "",
       radio2:  {
-        tab:1,
-        tabName:'员工违规消户余额',
-        excuteUrl:'http://10.8.17.4:8080/webroot/decision/view/form?viewlet=Form17.frm',
-        modifytime:''
+
 
       },
 
-      activeName: "first",
+      activeName: "",
     tablelist:[
-      {
-        tab:1,
-        tabName:'员工违规消户余额',
-        excuteUrl:'http://10.8.17.4:8080/webroot/decision/view/form?viewlet=Form17.frm',
-        modifytime:''
 
-      },
-      {
-        tab:2,
-        tabName:'员工违规消户余额',
-        excuteUrl:'http://10.8.17.4:8080/webroot/decision/view/form?viewlet=Form17.frm',
-        modifytime:''
-
-      }
     ],
     value:'',
 
 
-      formdates:'http://10.8.17.4:8080/webroot/decision/view/form?viewlet=Form17.frm&tab=1&month=202010'
+      formdates:''
     };
   },
   created() {

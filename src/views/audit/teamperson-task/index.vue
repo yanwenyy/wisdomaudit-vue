@@ -93,7 +93,7 @@
                 <el-switch
                   v-model="scope.row.isLiaison"
                   active-color="#13ce66"
-                  inactive-color="#ff4949"
+                  inactive-color="gray"
                   active-value="1"
                   inactive-value="0"
                   @change="switchChange(scope.row)"
