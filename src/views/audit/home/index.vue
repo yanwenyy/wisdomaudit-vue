@@ -146,7 +146,7 @@
                       : ''
                   "
                 ></span>
-                {{item.menuName}}
+                {{ item.menuName }}
               </div>
             </div>
           </el-card>
@@ -233,24 +233,31 @@ export default {
   methods: {
     //保存快捷功能
     savefastlist() {
-      axios({
-        url: `/wisdomaudit/homePage/shortCutSet`,
-        method: "post",
-        data: this.dqfastlist,
-      }).then((res) => {
-        console.log(res);
-        if (res.data.code == 0) {
-          this.fastDialogVisible = false;
-          this.$refs.multipleTable.clearSelection();
-          this.$message({
-            message: "设置成功",
-            type: "success",
-          });
-          this.getdqfastlist();
-        } else {
-          this.$message.error(res.data.data.msg);
-        }
-      });
+      if (this.dqfastlist.length > 6) {
+        this.$message({
+          message: "选择请不要超过6条",
+          type: "warning",
+        });
+      } else {
+        axios({
+          url: `/wisdomaudit/homePage/shortCutSet`,
+          method: "post",
+          data: this.dqfastlist,
+        }).then((res) => {
+          console.log(res);
+          if (res.data.code == 0) {
+            this.fastDialogVisible = false;
+            this.$refs.multipleTable.clearSelection();
+            this.$message({
+              message: "设置成功",
+              type: "success",
+            });
+            this.getdqfastlist();
+          } else {
+            this.$message.error(res.data.data.msg);
+          }
+        });
+      }
     },
     //关闭快捷功能设置前
     beforeclosefastlist() {
