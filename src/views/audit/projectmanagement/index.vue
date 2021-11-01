@@ -1487,7 +1487,7 @@ export default {
         if (valid) {
           addProject(this.addProjectManagement).then((resp) => {
             this.$message.success("添加项目成功！");
-           // this.addDialogVisible = false;
+           this.addDialogVisible = false;
             this.projectData(this.query);
           });
         } else {
