@@ -13,8 +13,8 @@
         <el-row>
           <el-col :span="9">
             <div>
-              <p>被审计对象：</p>
-              <p>{{ value.auditOrgName }}</p>
+              <p class="textOver">被审计对象：</p>
+              <p class="textOver">{{ value.auditOrgName }}</p>
             </div>
           </el-col>
           <el-col :span="15">
@@ -87,7 +87,7 @@
         >
           {{ item.projectName }}
         </li>
-        <span @click="project_more()" v-if="projectInitMore.length > 6"
+        <span @click="look_more()"  v-if="ifmore"
           >更多>></span
         >
       </ul>
@@ -858,6 +858,7 @@ export default {
       projectAll: [],
       projectInit: [],
       projectInitMore: [],
+      ifmore:false,
       queryManage: {
         condition: {
           status: 0,
@@ -1092,6 +1093,7 @@ export default {
     this.thematicSelect(this.thematic);
     this.areasSelect(this.areas);
     this.moreProject(this.queryManageAll);
+    this.project_more();
   },
   mounted(){
     this.get_user();
@@ -1129,11 +1131,17 @@ export default {
       this.index = 0;
       this.index = index;
     },
+    look_more(){
+    this.project_data = true;
+    },
     // 查看更多初始化项目
     project_more() {
-      this.project_data = true;
+      
       initProject(this.queryProjectAll).then((resp) => {
         this.projectInitMore = resp.data.records;
+        if(this.projectInitMore.length>6){
+          this.ifmore = true
+        }
         console.log(this.projectInitMore);
       });
     },
@@ -1928,11 +1936,12 @@ export default {
   // display: flex;
   align-items: center;
   li {
-    min-width: 22%;
+    width: 22%;
+    max-width: 22%;
     font-size: 0.1vw;
     border-radius: 10px;
     float: left;
-    margin-right: 0.8%;
+    margin-right: 0.5%;
     padding: 1%;
     border: 3px solid #ebf0f6;
     cursor: pointer;
@@ -1942,7 +1951,7 @@ export default {
     }
   }
   .moreBtn{
-    padding: 5px;
+    padding: 0.5%;
     border-radius: 5px;
     border: 2px solid #ebf0f6;
     line-height: 100px;
@@ -2412,9 +2421,9 @@ export default {
 }
 .textOver{
   white-space: nowrap;
-text-overflow: ellipsis;
-overflow: hidden;
-word-break: break-all;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-break: break-all;
 }
  .textOver:hover{
     text-overflow:inherit;

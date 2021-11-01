@@ -1,6 +1,5 @@
 <template>
-  <!-- v-if="userRole ==1" -->
-  <div>
+  <div v-if="userRole == 1">
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="组员维护" name="first" style="padding: 1%">
         <el-row :gutter="24">
