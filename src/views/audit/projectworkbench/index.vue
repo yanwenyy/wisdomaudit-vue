@@ -108,6 +108,7 @@
         <el-col>
           <div class="menu">
             <el-menu
+              :key="key"
               :default-active="userInfo.userRole == '1' || userInfo.userRole == '3'?'1-1':'2-1'"
               class="el-menu-vertical-demo"
               @select="open"
@@ -838,6 +839,7 @@ export default {
   },
   data() {
     return {
+      key:0,
       enclosure_details_list: [],
       nearbyDialogVisible: false, //附件详情
       userInfo: {},
@@ -1140,11 +1142,13 @@ export default {
     },
     // 点击初始化项目事件
     look_project(index, item) {
+      // this.key=Math.random();
       this.active_project = item.managementProjectUuid; //点击选择添加高亮
       console.log(this.active_project);
       this.projectInit.splice(index, 1);
       this.projectInit.unshift(item);
       this.get_user();
+
       if (index > 6) {
         this.projectInitUuid =
           this.projectInitMore[index].managementProjectUuid;
@@ -2413,8 +2417,8 @@ overflow: hidden;
 word-break: break-all;
 }
  .textOver:hover{
-    text-overflow:inherit; 
-    overflow: visible; 
-    white-space: pre-line;     
+    text-overflow:inherit;
+    overflow: visible;
+    white-space: pre-line;
   }
 </style>
