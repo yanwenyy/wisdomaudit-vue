@@ -545,7 +545,7 @@
       @close="addDialogClosed"
       width="50%"
     >
-      <div class="title">编辑审计项目</div>
+      <div class="title">编辑项目</div>
       <!-- 专项 -->
       <div class="addzhuanForm" v-if="prjType == 1">
         <el-form
@@ -671,7 +671,7 @@
               </el-col>
             </el-form-item>
             <el-col :span="15">
-              <el-form-item label="ㅤ设置组长:">123</el-form-item>
+              <el-form-item label="ㅤ设置组长:">&nbsp;&nbsp;</el-form-item>
             </el-col>
             <el-table
               :data="addProjectManagement.auditList"
@@ -948,6 +948,7 @@
 </template>
 
 <script>
+import { get_userInfo } from "@SDMOBILE/api/shandong/ls";
 import Pagination from "@WISDOMAUDIT/components/Pagination";
 import {
   projectList,
@@ -1160,6 +1161,7 @@ export default {
     this.selectloadaudittorg(this.selectprojectPeopleNum);
     this.thematicSelect(this.thematic);
     this.areasSelect(this.areas);
+    this.get_user(); //获取当前登录人接口
   },
   methods: {
 
@@ -1240,7 +1242,18 @@ export default {
     addProject() {
       this.addDialogVisible = true;
       this.selectprojectPeople(1, 1000);
+      this.addProjectManagement.projectLeaderName = this.userInfo.user.realName;
+      // console.log(this.userInfo.user.realName);
+      this.addprojectjing.projectLeaderName = this.userInfo.user.realName
     },
+     //获取当前登录人信息
+    get_user(){
+      get_userInfo().then((resp) => {
+        this.userInfo = resp.data;
+        console.log(this.userInfo);
+      });
+    },
+    //增加专项项目table假数据
     addData() {
       // alert(11);
       this.addProjectManagement.auditList.push({
@@ -1474,7 +1487,7 @@ export default {
         if (valid) {
           addProject(this.addProjectManagement).then((resp) => {
             this.$message.success("添加项目成功！");
-           // this.addDialogVisible = false;
+           this.addDialogVisible = false;
             this.projectData(this.query);
           });
         } else {
