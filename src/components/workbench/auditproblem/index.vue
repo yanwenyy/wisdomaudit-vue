@@ -173,10 +173,11 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="发现人" prop="problemFindPeople">
-          <el-input
-            v-model="temp.problemFindPeople"
-            placeholder="请输入发现人"
-          />
+          <el-select v-model="temp.problemFindPeople" placeholder="请选择发现人">
+            <el-option v-for="(item,i) in personlist" :key="'person'+i" :label="item.realName" :value="item.realName">
+              {{item.realName}}
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="风险金额（万元）" prop="riskAmount">
           <el-input
@@ -304,11 +305,11 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="发现人" prop="problemFindPeople">
-          <el-input
-            v-model="dqProblem.problemFindPeople"
-            placeholder="请输入发现人"
-            :disabled="ifadd != 2 ? false : true"
-          />
+          <el-select v-model="dqProblem.problemFindPeople" placeholder="请选择发现人" :disabled="ifadd != 2 ? false : true">
+            <el-option v-for="(item,i) in personlist" :key="'person'+i" :label="item.realName" :value="item.realName">
+              {{item.realName}}
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="风险金额（万元）" prop="riskAmount" width="180">
           <el-input
@@ -597,6 +598,8 @@ export default {
       },
       basisload: false,
       ifadd: 0,
+      personlist:[],
+      me:''
     };
   },
   watch: {},
@@ -604,8 +607,10 @@ export default {
     this.getloadcascader("Category");
     this.getloadcascader("SPECIAL");
     this.getSelectTask();
-    this.getList();
+    this.getperson();
+    this.getme();
     this.getbasis();
+    this.getList();
   },
   methods: {
     toopen(val) {
@@ -619,6 +624,26 @@ export default {
         console.log(_this.$refs["basisbtn0"]);
         return false;
       }
+    },
+    //获取当前人员信息
+    getme(){
+      axios({
+        url: `/wisdomaudit/init/getCurrentInfo`,
+        method: "get",
+        data: {},
+      }).then((res) => {
+        this.me = res.data.data.user.realName;
+      });
+    },
+    //获取人员
+    getperson(){
+      axios({
+        url: `/wisdomaudit/user/listUserInfo?pageCurrent=1&pageSize=1000`,
+        method: "get",
+        data: {},
+      }).then((res) => {
+        this.personlist = res.data.data.list;
+      });
     },
     //确定选择依据
     surebasis() {
@@ -662,7 +687,6 @@ export default {
         data: {},
       }).then((res) => {
         this.basislist = res.data.data;
-        console.log(res);
       });
     },
     //获取依据详情
@@ -784,7 +808,6 @@ export default {
         method: "post",
         data: this.pageQuery,
       }).then((res) => {
-        console.log(res.data.data);
         this.listLoading = false;
         if (res.data.code == 0) {
           this.list = res.data.data.records;
@@ -795,6 +818,7 @@ export default {
     add() {
       this.dialogFormVisible = true;
       this.ifadd = 0;
+      this.temp.problemFindPeople = this.me
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
       });
