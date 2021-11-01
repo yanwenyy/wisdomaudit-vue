@@ -12,6 +12,7 @@
           <el-row class="titleMes">
             <el-col :span="1.5">
               <el-button type="primary"
+                         style="background:#4BDCB4!important"
                          @click="add_data_task()">新增资料任务</el-button>
             </el-col>
             <!--未完成筛选 -->
@@ -42,6 +43,7 @@
                              label="流水单号"> -->
             <!-- </el-table-column> -->
             <el-table-column prop="title"
+                             align="center"
                              label="标题">
             </el-table-column>
             <el-table-column prop="launchPeople"
@@ -485,10 +487,6 @@
       <div class="title_dlag">{{edit_title}} </div>
       <div class="dlag_conter2 shenhe">
 
-        <!-- 遮罩 -->
-        <div class="mose"
-             v-if="edit_title == '详细信息'"></div>
-
         <el-form label-width="80px"
                  :rules="rules"
                  :model="add_data"
@@ -500,6 +498,7 @@
               <p><span style="color:red">*</span>类别：</p>
               <el-select v-model="add_data.dataCategory"
                          @change="PrjType_change"
+                         :disabled="edit_title == '详细信息'"
                          placeholder="请选择类别">
                 <el-option v-for="item in sensitiveOptions"
                            :key="item.value"
@@ -513,6 +512,7 @@
                           prop="dataName">
               <p><span style="color:red">*</span>资料名称：</p>
               <el-input v-model="add_data.dataName"
+                        :disabled="edit_title == '详细信息'"
                         placeholder="请输入资料名称"></el-input>
             </el-form-item>
           </div>
@@ -524,15 +524,13 @@
                           prop="dataNumber">
               <p>编号 ：</p>
               <el-input v-model="add_data.dataNumber"
-                        :disabled="disabled"
-                        placeholder="请输入编号"></el-input>
+                        :disabled="disabled"></el-input>
             </el-form-item>
             <el-form-item label-width="80px"
                           prop="secondLevelDataNumber">
               <p>二级编号：</p>
               <el-input v-model="add_data.secondLevelDataNumber"
-                        :disabled="disabled"
-                        placeholder="请输入二级编号"></el-input>
+                        :disabled="disabled"></el-input>
             </el-form-item>
           </div>
           <div class="son"
@@ -540,14 +538,12 @@
             <el-form-item label-width="80px"
                           prop="dataNumber">
               <p>编号 ：</p>
-              <el-input :disabled="disabled"
-                        placeholder="请输入编号"></el-input>
+              <el-input :disabled="disabled"></el-input>
             </el-form-item>
             <el-form-item label-width="80px"
                           prop="secondLevelDataNumber">
               <p>二级编号：</p>
-              <el-input :disabled="disabled"
-                        placeholder="请输入二级编号"></el-input>
+              <el-input :disabled="disabled"></el-input>
             </el-form-item>
           </div>
           <div class="son">
@@ -557,6 +553,7 @@
               <p><span style="color:red">*</span>部门：</p>
               <el-select v-model="add_data.department"
                          @change="Department_change"
+                         :disabled="edit_title == '详细信息'"
                          placeholder="请选择资料部门">
                 <el-option v-for="item in sensitiveDepartment"
                            :key="item.value"
@@ -570,6 +567,7 @@
               <p><span style="color:red">*</span>来源：</p>
               <el-select v-model="add_data.source"
                          @change="DataSource_change"
+                         :disabled="edit_title == '详细信息'"
                          placeholder="请选择来源">
                 <el-option v-for="item in sensitiveDataSource"
                            :key="item.value"
@@ -586,7 +584,6 @@
               <p>添加人：</p>
               <el-input v-model="add_data.addPeople"
                         :disabled="disabled"
-                        placeholder="请选择添加人"
                         class="addPeople"></el-input>
               <!-- <div class="addPeople">{{add_data.addPeople}}</div> -->
             </el-form-item>
@@ -597,8 +594,7 @@
               <div class="block">
                 <el-date-picker v-model="add_data.addTime"
                                 :disabled="disabled"
-                                type="date"
-                                placeholder="选择日期">
+                                type="date">
                 </el-date-picker>
               </div>
             </el-form-item>
@@ -608,8 +604,7 @@
             <el-form-item label-width="80px"
                           prop="addPeople">
               <p>添加人：</p>
-              <el-input placeholder="请选择添加人"
-                        class="addPeople"></el-input>
+              <el-input class="addPeople"></el-input>
               <!-- <div class="addPeople">{{add_data.addPeople}}</div> -->
             </el-form-item>
 
@@ -617,8 +612,7 @@
                           prop="addTime">
               <p>添加日期：</p>
               <div class="block">
-                <el-date-picker type="date"
-                                placeholder="选择日期">
+                <el-date-picker type="date">
                 </el-date-picker>
               </div>
             </el-form-item>
@@ -632,8 +626,10 @@
               <p style="padding:0 0 0 30px;"><span style="color:red">*</span>是否沉淀为常规需求资料：</p>
               <el-radio-group v-model="add_data.status"
                               @change="changeHandler">
-                <el-radio label="2">否</el-radio>
-                <el-radio label="1">是</el-radio>
+                <el-radio label="2"
+                          :disabled="edit_title == '详细信息'">否</el-radio>
+                <el-radio label="1"
+                          :disabled="edit_title == '详细信息'">是</el-radio>
               </el-radio-group>
             </el-form-item>
 
@@ -645,6 +641,7 @@
                           prop="remarks">
               <p>备注：</p>
               <el-input type="textarea"
+                        :disabled="edit_title == '详细信息'"
                         v-model="add_data.remarks"
                         placeholder=""></el-input>
             </el-form-item>
@@ -660,6 +657,7 @@
                         v-model="add_data.file"
                         placeholder=""></el-input> -->
               <el-upload class="upload-demo"
+                         :disabled="edit_title == '详细信息'"
                          drag
                          ref="upload"
                          action="#"
@@ -695,7 +693,7 @@
     <el-dialog width="90%"
                :visible.sync="dialogVisibl_operation"
                style="padding-bottom: 59px; ">
-      <div class="title_dlag">操作</div>
+      <div class="title_dlag">审批</div>
 
       <div class="dlag_conter3">
 
@@ -705,6 +703,7 @@
           <div>
             <p>资料名称：</p>
             <el-input v-model="operation_query.dataName"
+                      align="center"
                       placeholder="请输入资料名称"></el-input>
             <p>资料类型：</p>
             <el-select v-model="operation_query.dataCategory"
@@ -821,7 +820,7 @@
             <template slot-scope="scope">
               <el-button size="small"
                          type="primary"
-                         @click="look_record(scope.row)">查看</el-button>
+                         @click="look_record(scope.row,scope.$index)">查看</el-button>
               <!-- <el-button size="small"
                          type="primary"
                          @click="post(scope.row)">提交</el-button> -->
@@ -1343,7 +1342,6 @@ export default {
   },
 
   methods: {
-
     // 获取责任人
     task_personLiable_data () {
       task_personLiable().then(resp => {
@@ -1351,12 +1349,9 @@ export default {
         this.disabled = true
       })
     },
-
-
     // 关闭新增
     close_model () {
       this.get_out();
-
     },
     // 新增资料任务时退出
     get_out () {
@@ -1364,7 +1359,6 @@ export default {
         console.log(resp);
       })
     },
-
     // 资料筛选
     search_list (index) {
       if (index == 1) {
@@ -1681,12 +1675,7 @@ export default {
       if (this.add_form.title == '') {
         this.$message.info("请输入标题！");
         return false
-
       }
-      //  else if (this.add_form.name == '') {
-      //   this.$message.info("请输入发起人！");
-      //   return false
-      // }
       if (this.multipleSelection_list.length == 0) {
         this.$message.info("请选择至少一条数据！");
         return false
@@ -1877,6 +1866,9 @@ export default {
             }
           }
           this.list_data_start(params)//未完成列表
+
+
+
           this.dialogVisible = false;//关闭新增 编辑弹窗
 
 
@@ -2009,7 +2001,7 @@ export default {
                   // enclosure: '111',//回调上传的文件路径
                   projectType: this.projectNumber,//项目id
                 }
-                this.save_data_up(params)
+                this.save_data_up(params)//保存
               } else {
                 // 上传失败
                 this.$message({
@@ -2229,12 +2221,26 @@ export default {
     },
 
     //查看操作 记录
-    look_record (data) {
+    look_record (data, index) {
+      console.log(data);
+      console.log(index);
       // this.record_status = true;
       this.record_query.id = data.auditPreviousDemandDataUuid;
       this.dialogVisible2 = true//显示编辑
       this.edit_title = '详细信息'
 
+      // 资料任务id 
+      // this.addDataTaskUuid = data.addDataTaskUuid
+
+      let params_query = {
+        condition: {
+          addDataTaskUuid: this.addDataTaskUuid,
+          projectType: this.active_project,
+        },
+        pageNo: this.edit_details_query.pageNo,
+        pageSize: this.edit_details_query.pageSize,
+      };
+      this.edut_details(params_query, index);//编辑详情
       // let query_params = {
       //   condition: {
       //     logSysActiUuid: this.record_query.id
@@ -2404,18 +2410,16 @@ export default {
 
 
 
-
     // 任务列表 显示编辑
     edit_common (data) {
       // this.add_form.name = '';//清空name
       this.add_form.title = '';//清空title
       // this.$refs.multipleTable.clearSelection();//清空
-      this.title = '编辑审计资料任务';
+      this.edit_title.title = '编辑审计资料任务';
       this.dialogVisible = true;//显示编辑
 
       // 资料任务id 
       this.addDataTaskUuid = data.addDataTaskUuid
-
       let params_query = {
         condition: {
           addDataTaskUuid: this.addDataTaskUuid,
@@ -2427,7 +2431,7 @@ export default {
       this.edut_details(params_query);//编辑详情
     },
     // 编辑
-    edut_details (params_query) {
+    edut_details (params_query, index) {
       // 显示编辑 详情
       data_edit_details(params_query).then(resp => {
         // let data = resp.data.demandDataList;
@@ -2435,6 +2439,25 @@ export default {
         this.add_form.title = this.edit_details.title;
         this.add_form.name = this.edit_details.launchPeople;
         this.task_list_records_details = resp.data.demandDataList
+
+        if (this.edit_title = '详细信息') {
+          console.log(this.task_list_records_details[index]);
+          let data = this.task_list_records_details[index]
+          this.add_data.dataCategory = data.dataCategory;//基本类型
+          this.add_data.dataName = data.dataName;//资料名称
+          this.add_data.dataNumber = data.dataNumber;//编号 
+          this.add_data.secondLevelDataNumber = data.secondLevelDataNumber;//二级编号 
+          this.add_data.source = data.source;//来源 
+          this.add_data.department = data.department;//部门
+          this.add_data.remarks = data.remarks;//备注
+          this.add_data.status = data.status;//是否沉淀
+          this.add_data.addPeople = data.addPeople;//添加人
+          this.add_data.addTime = data.createTime;//addTime
+
+        }
+
+
+
         // 显示模版列表数据
         let params2 = {
           pageNo: this.params_add.pageNo,
@@ -2449,7 +2472,6 @@ export default {
             })
           }
         }
-
       });
     },
     // 编辑分页每页

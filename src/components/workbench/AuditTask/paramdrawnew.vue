@@ -314,6 +314,8 @@ export default {
           }
           if (typeof paramObj.defaultVal !== 'undefined' && paramObj.defaultVal != null) {
             obj.setParamObj.dataDefaultVal = paramObj.defaultVal
+            console.log(paramObj.defaultVal);
+
             // 下拉列表默认值
             if (paramObj.paramChoice.choiceType === '1') {
               // 单选

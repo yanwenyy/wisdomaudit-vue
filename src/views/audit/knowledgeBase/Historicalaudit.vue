@@ -97,104 +97,114 @@
 
     <!-- 分页 -->
     <div class="page">
-      <el-pagination background
-                     layout="prev, pager, next"
+
+      <el-pagination @size-change="handleSizeChange"
                      :current-page="this.tableData.current"
                      @current-change="handleCurrentChange"
+                     :page-sizes="[100, 200, 300, 400]"
                      :page-size="this.tableData.size"
-                     :total="this.tableData.total"></el-pagination>
+                     layout="total, sizes, prev, pager, next, jumper"
+                     :total="this.tableData.total">
+      </el-pagination>
 
     </div>
     <!-- 分页 end-->
 
     <!-- 新增 -->
 
-    <!-- 自建任务新增 -->
-    <el-dialog :title="title"
+    <!-- 历史审计发现描述 -->
+    <el-dialog @close="resetForm2('add')"
                :visible.sync="dialogVisible"
                style="padding-bottom: 59px">
+
+      <div class="title_dlag">{{title}}</div>
+
       <div class="dlag_conter">
-        <!-- 历史审计发现描述 -->
-        <el-form label-width="80px">
-          <p style="padding-top: 10px;">历史审计发现描述：</p>
-          <el-input v-model="add.historyAuditFindDescribe"
-                    placeholder="请输入历史审计发现描述"></el-input>
-        </el-form>
+        <el-form ref="add"
+                 :model="add"
+                 :rules="rules">
 
-        <!-- 被审计单位 -->
-        <el-form label-width="80px">
-          <p style="padding-top: 10px;">被审计单位：</p>
+          <!-- 历史审计发现描述 -->
+          <el-form-item>
+            <p>历史审计发现描述：</p>
+            <el-input v-model="add.historyAuditFindDescribe"
+                      placeholder="请输入历史审计发现描述"></el-input>
+          </el-form-item>
 
-          <el-select v-model="add.auditedEntity"
-                     @change="changeHeader_danwei">
-            <el-option v-for="item in audit_Company"
-                       :key="item.orgName"
-                       :label="item.orgName"
-                       :value="item.orgName">
-            </el-option>
-          </el-select>
+          <!-- 被审计单位 -->
+          <el-form-item>
+            <p style="padding-top: 10px;">被审计单位：</p>
 
-        </el-form>
+            <el-select v-model="add.auditedEntity"
+                       @change="changeHeader_danwei">
+              <el-option v-for="item in audit_Company"
+                         :key="item.orgName"
+                         :label="item.orgName"
+                         :value="item.orgName">
+              </el-option>
+            </el-select>
 
-        <!-- 领域 -->
-        <el-form label-width="80px">
-          <p style="padding-top: 10px;">领域：</p>
-          <el-select v-model="add.field"
-                     @change="changeHeader_ly">
-            <el-option v-for="item in problems_slect_ly"
-                       :key="item.value"
-                       :label="item.label"
-                       :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form>
+          </el-form-item>
 
-        <!-- 专题 -->
-        <el-form label-width="80px">
-          <p style="padding-top: 10px;">专题：</p>
-          <el-select v-model="add.special"
-                     @change="changeHeader_zt">
-            <el-option v-for="item in problems_slect_zt"
-                       :key="item.value"
-                       :label="item.label"
-                       :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form>
+          <!-- 领域 -->
+          <el-form-item prop="field">
+            <p><span style="color:red;">*</span> 领域：</p>
+            <el-select v-model="add.field"
+                       @change="changeHeader_ly">
+              <el-option v-for="item in problems_slect_ly"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
 
-        <!-- 发现人 -->
-        <el-form label-width="80px">
-          <p style="padding-top: 10px;">发现人：</p>
-          <el-input v-model="add.findPeople"
-                    placeholder="请输入发现人"></el-input>
-        </el-form>
+          <!-- 专题 -->
+          <el-form-item prop="special">
+            <p><span style="color:red;">*</span> 专题：</p>
+            <el-select v-model="add.special"
+                       @change="changeHeader_zt">
+              <el-option v-for="item in problems_slect_zt"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
 
-        <!--评审依据 -->
-        <el-form label-width="80px">
-          <p style="padding-top: 10px;">评审依据：</p>
-          <el-select v-model="add.auditBasis"
-                     @change="changeHeader_yj">
-            <el-option v-for="item in problems_slect_yj"
-                       :key="item.value"
-                       :label="item.label"
-                       :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form>
+          <!-- 发现人 -->
+          <el-form-item>
+            <p>发现人：</p>
+            <el-input v-model="add.findPeople"
+                      placeholder="请输入发现人"></el-input>
+          </el-form-item>
 
-        <!--发现日期 -->
-        <el-form label-width="80px">
-          <p style="padding-top: 10px;">发现日期：</p>
-          <el-date-picker v-model="add.findData"
-                          type="date"
-                          placeholder="选择日期">
-          </el-date-picker>
-        </el-form>
+          <!--评审依据 -->
+          <el-form-item>
+            <p>评审依据：</p>
+            <el-select v-model="add.auditBasis"
+                       @change="changeHeader_yj">
+              <el-option v-for="item in problems_slect_yj"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
 
-        <!--所属年份 -->
-        <el-form label-width="80px">
-          <p style="padding-top: 10px;">所属年份：</p>
-          <!-- <el-select v-model="add.year"
+          <!--发现日期 -->
+          <el-form-item>
+            <p>发现日期：</p>
+            <el-date-picker v-model="add.findData"
+                            type="date"
+                            placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+
+          <!--所属年份 -->
+          <el-form-item>
+            <p>所属年份：</p>
+            <!-- <el-select v-model="add.year"
                      @change="changeHeader_nf">
             <el-option v-for="item in problems_slect"
                        :key="item.value"
@@ -202,37 +212,40 @@
                        :value="item.value">
             </el-option>
           </el-select> -->
-          <el-date-picker v-model="add.year"
-                          type="year"
-                          placeholder="选择年"
-                          value-format="yyyy"> </el-date-picker>
+            <el-date-picker v-model="add.year"
+                            type="year"
+                            placeholder="选择年份"
+                            value-format="yyyy"> </el-date-picker>
 
+          </el-form-item>
+
+          <!-- 发现来源 -->
+          <el-form-item>
+            <p>发现来源：</p>
+            <el-input v-model="add.source"
+                      placeholder="请输入发现来源"></el-input>
+          </el-form-item>
+
+          <!-- 风险金额 -->
+          <el-form-item>
+            <p>风险金额：</p>
+            <el-input v-model="add.riskAmount"
+                      placeholder="请输入风险金额"></el-input>
+          </el-form-item>
         </el-form>
 
-        <!-- 发现来源 -->
-        <el-form label-width="80px">
-          <p style="padding-top: 10px;">发现来源：</p>
-          <el-input v-model="add.source"
-                    placeholder="请输入发现来源"></el-input>
-        </el-form>
-
-        <!-- 风险金额 -->
-        <el-form label-width="80px">
-          <p style="padding-top: 10px;">风险金额：</p>
-          <el-input v-model="add.riskAmount"
-                    placeholder="请输入风险金额"></el-input>
-        </el-form>
-
-        <span slot="footer">
+        <span slot="footer"
+              class="foot">
           <el-button size="small"
                      type="primary"
                      v-if="title=='新增'"
-                     @click="save(1)">确 定</el-button>
+                     @click="save(1,'add')">确 定</el-button>
           <el-button size="small"
                      type="primary"
                      v-else
                      @click="save(2)">确 定</el-button>
           <el-button size="small"
+                     plain
                      @click="dialogVisible = false">取 消</el-button>
         </span>
       </div>
@@ -281,6 +294,20 @@ export default {
       problems_slect_zt: [],//专题
       audit_Company: [],//审计单位
       problems_slect_yj: [],//评审依据
+      rules: {
+        field: {
+          required: true,
+          message: '请选择领域',
+          trigger: 'change',
+        },
+        special: {
+          required: true,
+          message: '请选择专题',
+          trigger: 'change',
+        },
+
+
+      }
     }
   },
   computed: {},
@@ -337,6 +364,9 @@ export default {
         this.loading = false
       })
     },
+    handleSizeChange (val) {
+      this.query.pageSize = val
+    },
     // 分页
     handleCurrentChange (val) {
       let params = {
@@ -370,94 +400,109 @@ export default {
       this.dialogVisible = true;
     },
     // 新增 编辑保存
-    save (index) {
-      if (index == 1) {
-        // 新增保存
-        let params = {
-          historyAuditFindDescribe: this.add.historyAuditFindDescribe,//发现描述
-          auditedEntity: this.add.auditedEntity,//被审计单位
-          field: this.add.field,//领域
-          special: this.add.special,//专题
-          findPeople: this.add.findPeople,//发现人
-          auditBasis: this.add.auditBasis,//依据
-          findData: this.add.findData,//发现日期
-          year: this.add.year,//所属年份
-          source: this.add.source,//来源
-          riskAmount: this.add.riskAmount,//金额
+    save (index, add) {
+      this.$refs[add].validate((valid) => {
+        if (valid) {
+          if (index == 1) {
+            // 新增保存
+            let params = {
+              historyAuditFindDescribe: this.add.historyAuditFindDescribe,//发现描述
+              auditedEntity: this.add.auditedEntity,//被审计单位
+              field: this.add.field,//领域
+              special: this.add.special,//专题
+              findPeople: this.add.findPeople,//发现人
+              auditBasis: this.add.auditBasis,//依据
+              findData: this.add.findData,//发现日期
+              year: this.add.year,//所属年份
+              source: this.add.source,//来源
+              riskAmount: this.add.riskAmount,//金额
 
-        }
-        // 新增
-        historicalaudit_add(params).then(resp => {
-          console.log(resp.data);
-          if (resp.code == 0) {
-            this.$message({
-              message: '新增成功',
-              type: 'success'
-            });
-            this.dialogVisible = false;
-            // 刷新列表
-            let params2 = {
-              pageNo: this.query.pageNo,
-              pageSize: this.query.pageSize,
-              condition: {
-                findPeople: this.query.findPeople,
-                historyAuditFindDescribe: this.query.historyAuditFindDescribe,
-              }
             }
-            this.page_list(params);
-          } else {
-            this.$message({
-              message: resp.msg,
-              type: 'error'
-            });
-          }
-        })
-
-      } else {
-        // 编辑保存
-        let params = {
-          historyAuditFindDescribe: this.add.historyAuditFindDescribe,//发现描述
-          auditedEntity: this.add.auditedEntity,//被审计单位
-          field: this.add.field,//领域
-          special: this.add.special,//专题
-          findPeople: this.add.findPeople,//发现人
-          auditBasis: this.add.auditBasis,//依据
-          findData: this.add.findData,//发现日期
-          year: this.add.year,//所属年份
-          source: this.add.source,//来源
-          riskAmount: this.add.riskAmount,//金额
-          historyAuditFindUuid: this.historyAuditFindUuid// 主键id
-
-        }
-        // 编辑保存
-        historicalaudit_update(params).then(resp => {
-          if (resp.code == 0) {
-            this.$message({
-              message: '编辑成功',
-              type: 'success'
-            });
-            this.dialogVisible = false;
-            // 刷新列表
-            let params2 = {
-              pageNo: this.query.pageNo,
-              pageSize: this.query.pageSize,
-              condition: {
-                findPeople: this.query.findPeople,
-                historyAuditFindDescribe: this.query.historyAuditFindDescribe,
+            // 新增
+            historicalaudit_add(params).then(resp => {
+              console.log(resp.data);
+              if (resp.code == 0) {
+                this.$message({
+                  message: '新增成功',
+                  type: 'success'
+                });
+                this.dialogVisible = false;
+                // 刷新列表
+                let params2 = {
+                  pageNo: this.query.pageNo,
+                  pageSize: this.query.pageSize,
+                  condition: {
+                    findPeople: this.query.findPeople,
+                    historyAuditFindDescribe: this.query.historyAuditFindDescribe,
+                  }
+                }
+                this.page_list(params);
+              } else {
+                this.$message({
+                  message: resp.msg,
+                  type: 'error'
+                });
               }
-            }
-            this.page_list(params);
+            })
+
           } else {
-            this.$message({
-              message: resp.msg,
-              type: 'error'
-            });
+            // 编辑保存
+            let params = {
+              historyAuditFindDescribe: this.add.historyAuditFindDescribe,//发现描述
+              auditedEntity: this.add.auditedEntity,//被审计单位
+              field: this.add.field,//领域
+              special: this.add.special,//专题
+              findPeople: this.add.findPeople,//发现人
+              auditBasis: this.add.auditBasis,//依据
+              findData: this.add.findData,//发现日期
+              year: this.add.year,//所属年份
+              source: this.add.source,//来源
+              riskAmount: this.add.riskAmount,//金额
+              historyAuditFindUuid: this.historyAuditFindUuid// 主键id
+
+            }
+            // 编辑保存
+            historicalaudit_update(params).then(resp => {
+              if (resp.code == 0) {
+                this.$message({
+                  message: '编辑成功',
+                  type: 'success'
+                });
+                this.dialogVisible = false;
+                // 刷新列表
+                let params2 = {
+                  pageNo: this.query.pageNo,
+                  pageSize: this.query.pageSize,
+                  condition: {
+                    findPeople: this.query.findPeople,
+                    historyAuditFindDescribe: this.query.historyAuditFindDescribe,
+                  }
+                }
+                this.page_list(params);
+              } else {
+                this.$message({
+                  message: resp.msg,
+                  type: 'error'
+                });
+              }
+            })
+
+
           }
-        })
-
-
-      }
+        } else {
+          this.$message.info("请填写信息");
+          return false;
+        }
+      })
     },
+
+    // 新增任务关闭
+    resetForm2 (add) {
+      this.$refs[add].resetFields();
+
+    },
+
+
     // 编辑
     edit (id) {
       this.historyAuditFindUuid = id
@@ -634,7 +679,25 @@ export default {
   min-width: 120px;
   text-align: right;
 }
+.dlag_conter >>> .foot {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.dlag_conter >>> .foot .is-plain {
+  background: #ffffff;
+  border: 1px solid #dcdfe6;
+}
 .dlag_conter >>> .el-form {
+  padding: 20px 0 0;
+  box-sizing: border-box;
+}
+.dlag_conter >>> .el-form-item__error {
+  left: 120px !important;
+}
+.dlag_conter >>> .el-form-item__content {
   margin-bottom: 20px;
   width: 100%;
   display: flex;
@@ -645,15 +708,16 @@ export default {
 .dlag_conter >>> .el-input {
   width: 300px;
 }
-.dlag_conter >>> .el-form-item {
-  margin-bottom: 20px !important;
-  display: flex;
-}
 
 .page {
   width: 100%;
   padding: 20px 10px;
   display: flex;
   justify-content: flex-end;
+}
+.title_dlag {
+  border-bottom: 1px solid #d2d2d2;
+  padding: 10px;
+  text-align: left;
 }
 </style>

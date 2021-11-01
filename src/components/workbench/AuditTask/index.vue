@@ -10,6 +10,7 @@
           <!-- 自建新增   -->
           <el-col :span="1.5">
             <el-button type="primary"
+                       style="background:#4BDCB4!important"
                        @click="new_add_zj()">新增任务</el-button>
           </el-col>
 
@@ -43,7 +44,7 @@
             <!-- 任务/自建任务名称 -->
             <el-table-column prop="taskName"
                              width="180"
-                             label="任务/自建任务名称"> </el-table-column>
+                             label="任务名称"> </el-table-column>
             <!-- 专题 -->
             <el-table-column prop="belongSpcial"
                              align="center"
@@ -162,8 +163,10 @@
             <el-table-column prop="resultsNumber"
                              align="center"
                              label="运行状态">
+
               <template slot-scope="scope">
-                {{
+                <div v-if=" scope.row.taskType == 1">
+                  {{
                   scope.row.runStatus == 0
                     ? "未开始"
                     : scope.row.runStatus == 1
@@ -171,6 +174,7 @@
                     : scope.row.runStatus == 2
                     ? "已完成":'运行失败'
                 }}
+                </div>
               </template>
             </el-table-column>
 
@@ -301,29 +305,37 @@
           <el-table-column prop="isProbleam"
                            align="center"
                            label="是否问题">
-            <!-- <template slot-scope="scope">
-              {{  scope.row. }}
-            </template> -->
+            <template slot-scope="scope">
+              {{
+                  scope.row.isProbleam == 0
+                    ? "未核实"
+                    : scope.row.isProbleam == 1
+                    ? "已核实":"..."
+                }}
+
+            </template>
           </el-table-column>
 
           <!-- 核实人 -->
           <el-table-column prop="handlePersonName"
                            align="center"
                            label="核实人">
-            <!-- <template slot-scope="scope">
-              {{  scope.row.createTime }}
-            </template> -->
+            <template slot-scope="scope">
+              <p v-if="scope.row.handlePersonName"> {{scope.row.handlePersonName }}</p>
+              <p v-else>...</p>
+            </template>
           </el-table-column>
 
           <!-- 核实信息-->
           <el-table-column prop="handleIdea"
                            align="center"
                            label="核实信息">
-            <!-- <template slot-scope="scope">
-              {{  scope.row.createTime }}
-            </template> -->
+            <template slot-scope="scope">
+              <p v-if="scope.row.handleIdea"> {{scope.row.handleIdea }}</p>
+              <p v-else>...</p>
+            </template>
           </el-table-column>
-
+          <!-- 附件 -->
           <el-table-column prop=""
                            align="center"
                            label=附件>
@@ -932,36 +944,40 @@
     </el-dialog>
 
     <!-- 附件详情 -->
-    <el-dialog width="20%"
+    <el-dialog width="40%"
                :visible.sync="dialogVisibl_enclosure_details"
                style="padding-bottom: 59px; ">
-      <el-table :data="enclosure_details_list"
-                :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
-                style="width: 100%;">
-        <!-- <el-table-column prop="dataTaskNumber"
+      <div class="file_details">
+
+        <el-table :data="enclosure_details_list"
+                  :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                  style="width: 100%;">
+          <!-- <el-table-column prop="dataTaskNumber"
                              label="流水单号">
             </el-table-column> -->
-        <!-- <el-table-column type="index"
+          <!-- <el-table-column type="index"
                          align="center"
                          label="序号">
-        </el-table-column>
-        <el-table-column prop="fiileType"
-                         align="center"
-                         label="资料类型">
         </el-table-column> -->
-        <el-table-column prop="fileName"
-                         align="center"
-                         label="文件名称">
-          <template slot-scope="scope">
-            <el-button @click="download_click(scope.row.attachmentUuid,scope.row.fileName)"
-                       type="text"
-                       class="file_name"
-                       size="small">
-              {{ scope.row.fileName }}
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+          <el-table-column prop="fiileType"
+                           align="center"
+                           label="资料类型">
+          </el-table-column>
+          <el-table-column prop="fileName"
+                           align="center"
+                           label="文件名称">
+            <template slot-scope="scope">
+              <el-button @click="download_click(scope.row.attachmentUuid,scope.row.fileName)"
+                         type="text"
+                         class="file_name"
+                         size="small">
+                {{ scope.row.fileName }}
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+
     </el-dialog>
 
   </div>
@@ -1204,7 +1220,9 @@ export default {
         pageNo: 1,
         pageSize: 10,
       },
-      projectRel_pgeList_list: [],//核实后的新表单数据
+
+      arr: [],//旧表单
+      arr2: [],//新表单 //核实后的新表单数据
     };
   },
   computed: {},
@@ -1230,16 +1248,6 @@ export default {
       }
     }
     this.list_data(params); // 模型  自建任务列表
-
-    // 请求 责任人
-    // let params_people = {
-    //   condition: {
-    //     managementProjectUuid: this.managementProjectUuid,
-    //   },
-    //   pageNo: 1,
-    //   pageSize: 10,
-    // }
-    // this.select_people(params_people)//请求责任人数据
 
     // 获取请求人
     this.task_personLiable_data();
@@ -1782,41 +1790,46 @@ export default {
       task_selectTable(params).then(resp => {
         // this.loading = true
         this.status_data_list_data = resp.data;
-
         this.status_data_list = resp.data.records
-
-
-        // 新表单
-        let params_query = {
-          condition: {
-            runTaskRelUuid: this.paramTaskUuid,
-          },
-          pageNo: this.params_heshi.pageNo,
-          pageSize: this.params_heshi.pageSize,
-        };
-        this.new_table(params_query);//新接口 table
-
-        let arr = this.status_data_list[0].result //原列表
-        let arr2 = this.projectRel_pgeList_list //新列表
-
-
-        console.log(arr);
-
+        this.arr = resp.data.records[0].result //原列表
+        this.new_table();//新接口 table
         // arr.forEach(item => {
         //   this.$set(item, 'yes_no', false)//是否问题
         // })
-        // console.log(this.status_data_list);
 
       })
     },
+    // 合并 结果列表 新旧数表单
+
+    merge () {
+      this.arr.forEach(item => {
+        this.arr2.forEach(i => {
+          if (item.onlyuuid == i.resultDetailId) {
+            this.$set(item, 'handleIdea', i.handleIdea)//核实意见
+            this.$set(item, 'handlePersonName', i.handlePersonName)//核实人
+            this.$set(item, 'isProbleam', i.isProbleam)//是否问题 0否 1.是
+          }
+        })
+      })
+    },
+
+
 
     // 新增核实 表头
-    new_table (params_query) {
+    new_table () {
+      let params_query = {
+        condition: {
+          runTaskRelUuid: this.paramTaskUuid,
+        },
+        pageNo: this.params_heshi.pageNo,
+        pageSize: this.params_heshi.pageSize,
+      };
       projectRel_pgeList(params_query).then(resp => {
-        this.projectRel_pgeList_list = resp.data.records
-        console.log(this.projectRel_pgeList_list);
-
-
+        this.arr2 = resp.data.records
+        console.log(this.arr2);
+        if (this.arr2) {
+          this.merge();//合并新旧
+        }
       })
     },
 
@@ -1864,29 +1877,27 @@ export default {
         this.data_tab(params2);//结果分类
       } else {
         this.$message.info("请选择已经完成的查看");
-        return
+        return false
       }
     },
     // 结果数 核实显示弹窗
     task_verify () {
-      // if (this.multipleSelection_data_list.length == 0) {
-      //   this.$message.info("请选择一条进行数据核实");
-      //   return false
-      // }
-      this.dialogVisible_data_verify = true;//显示核实结果
+      if (this.multipleSelection_data_list.length == 0) {
+        this.$message.info("请选择一条进行数据核实");
+        return false
+      }
 
+      console.log(this.multipleSelection_data_list);
 
-      // 新表单
-      let params_query = {
-        condition: {
-          runTaskRelUuid: this.paramTaskUuid,
-        },
-        pageNo: this.params_heshi.pageNo,
-        pageSize: this.params_heshi.pageSize,
-      };
-      this.new_table(params_query);//新接口 table
-
-
+      this.multipleSelection_data_list.forEach(item => {
+        if (item.isProbleam == 1) {
+          this.$message.info("请选择未核实的结果进行核实");
+          return false
+        } else {
+          this.dialogVisible_data_verify = true;//显示核实结果
+          // this.new_table();//新接口 table
+        }
+      })
     },
     // 是否问题 change
     isProbleam_change (val) {
@@ -2018,39 +2029,8 @@ export default {
           });
           this.dialogVisible_data_verify = false;//关闭核实  弹窗
 
-
-          //老 结果列表
-          let params3 = {
-            basePageParam: {
-              condition: {
-                keyword: null,
-                runResultTableUuid: this.status_data[this.date_index].runResultTableUuid,
-                // runTaskRelUuid: this.status_data[this.date_index].runTaskRelUuid,
-                // runTaskRelUuid: this.status_data[this.date_index].paramTaskUuid,
-                runTaskRelUuid: this.paramTaskUuid,
-                resultTableName: this.status_data[this.date_index].resultTableName,//- 实际表名
-                resultShowName: this.status_data[this.date_index].resultShowName,
-                tableType: this.status_data[this.date_index].tableType,//  主副表标识, 主表 = 1、副表1 = 2、副表2 = 3···
-                dataCount: 1
-              },
-              pageNo: this.basePageParam_query.pageNo, //当前页数
-              pageSize: this.basePageParam_query.pageSize //分页数量
-            },
-            filterSql: "undefined",
-          }
-          this.data_tab_list(params3)// 结果列表
-
-
           // 新表单
-          let params_query = {
-            condition: {
-              runTaskRelUuid: this.paramTaskUuid,
-            },
-            pageNo: this.params_heshi.pageNo,
-            pageSize: this.params_heshi.pageSize,
-          };
-          this.new_table(params_query);//新接口 table
-
+          this.new_table();//新接口 table
 
         } else {
           this.$message({
@@ -2592,6 +2572,12 @@ export default {
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
 @import "../../../assets/styles/css/yw.css";
+/* 附件详情 */
+.file_details {
+  /* border: 1px solid red; */
+  height: 200px;
+  overflow-y: auto;
+}
 
 .sjzl >>> .is-plain {
   background: #ffffff !important;
