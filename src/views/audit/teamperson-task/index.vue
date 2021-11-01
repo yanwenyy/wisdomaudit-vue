@@ -1,14 +1,32 @@
 <template>
-  <div v-if="userRole ==1">
+  <!-- v-if="userRole ==1" -->
+  <div>
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="组员维护" name="first" style="padding: 1%">
         <el-row :gutter="24">
           <el-col :span="17">
-            <el-button type="primary" @click="addgroupMember()"
+            <el-button
+              style="background: #1897e4; color: #fff"
+              @click="addgroupMember()"
               >组员维护</el-button
             >
           </el-col>
-          <el-col :span="6">
+          <div class="search">
+            <el-input
+              placeholder="请输入姓名"
+              v-model="query.condition.peopleName"
+              @keyup.enter.native="queryName"
+            >
+            </el-input>
+            <div
+              class="search_icon"
+              style="background: #1897e4 !important"
+              @click="queryName"
+            >
+              <i class="el-icon-search" style="color: white"></i>
+            </div>
+          </div>
+          <!-- <el-col :span="6">
             <el-input
               placeholder="请输入姓名"
               v-model="query.condition.peopleName"
@@ -17,12 +35,12 @@
             >
               <el-button
                 slot="append"
-                type="primary"
+                style="background:#1897E4;color:#FFF;"
                 icon="el-icon-search"
                 @click="queryName"
               ></el-button>
             </el-input>
-          </el-col>
+          </el-col> -->
         </el-row>
         <!-- 组员维护列表 -->
         <el-form>
@@ -32,7 +50,7 @@
             style="width: 100%"
             border
             align="center"
-            :header-cell-style="{ 'background-color': '#F4FAFF' }"
+            :header-cell-style="{ 'background-color': '#F4FAFF', 'font-weight':'400' }"
           >
             <el-table-column
               align="center"
@@ -55,12 +73,14 @@
               align="center"
               property="belongCompany"
               label="所属单位"
+               show-overflow-tooltip
             >
             </el-table-column>
             <el-table-column
               align="center"
               property="belongDept"
               label="所属部门"
+               show-overflow-tooltip
             >
             </el-table-column>
             <el-table-column
@@ -73,7 +93,7 @@
                 <el-switch
                   v-model="scope.row.isLiaison"
                   active-color="#13ce66"
-                  inactive-color="#ff4949"
+                  inactive-color="gray"
                   active-value="1"
                   inactive-value="0"
                   @change="switchChange(scope.row)"
@@ -135,7 +155,7 @@
         </el-transfer>
       </div>
 
-      <div class="stepBtn">
+      <div class="stepBtn" style="margin-right: 2%">
         <el-button @click="addgroupDialog = false">取消</el-button>
         <el-button
           type="primary"
@@ -174,7 +194,7 @@ export default {
   // props:{
   //   projectNum:[],
   // },
-  props: ["active_project","userRole"],
+  props: ["active_project", "userRole"],
   data() {
     return {
       timer: "", //重新刷新子组件
@@ -274,10 +294,10 @@ export default {
     // this.queryInfo.condition.managementProjectUuid = this.active_project;
     // this.getmodelTaskList(this.queryInfo);
   },
-  watch:{
-     userRole(newValue,oldValue){
-       this.userRole=newValue;
-      },
+  watch: {
+    userRole(newValue, oldValue) {
+      this.userRole = newValue;
+    },
   },
   methods: {
     queryName() {
@@ -444,7 +464,7 @@ export default {
           this.query.condition.managementProjectUuid = this.active_project;
           this.loading = false;
         });
-         this.projectMember(this.query);
+        this.projectMember(this.query);
         // console.log(this.tableData);
       });
     },
@@ -905,6 +925,39 @@ export default {
 </style>
 <style scoped>
 .el-transfer /deep/ .el-transfer-panel {
-  width: 400px;
+  width: 35%;
+}
+.search {
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+}
+.search >>> .el-input__inner {
+  width: 220px !important;
+  border-radius: 5px 0 0 5px;
+}
+.search >>> .el-input__inner {
+  width: 250px !important;
+  display: flex;
+  float: right;
+  border-radius: 0 !important;
+}
+.search >>> .search_icon {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: 0%;
+  width: 36px;
+  height: 36px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border-radius: 0 5px 5px 0;
 }
 </style>

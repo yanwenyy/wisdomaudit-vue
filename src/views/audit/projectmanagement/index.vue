@@ -6,27 +6,31 @@
         <!-- 添加按钮 -->
         <el-button class="queryBtn"  @click="addProject">新增项目</el-button>
       </el-col>
-      <el-col :span="5" class="search">
-        <el-input
+      <!-- <el-col :span="4" > -->
+        <div class="search">
+           <el-input
           placeholder="请输入项目名称"
           v-model="query.condition.projectName"
           @keyup.enter.native="queryName"
         >
-         </el-input>
-          <!-- <el-button
+        
+           <!-- <el-button
             class="queryBtn"
             slot="append"
             type="primary"
             icon="el-icon-search"
             @click="queryName"
           ></el-button> -->
-           <div class="search_icon"
+         </el-input>
+          <div class="search_icon"
                  style=" background: rgb(12, 135, 214) !important;"
                  @click="queryName">
               <i class="el-icon-search"
                  style="color: white;   "></i>
             </div>
-      </el-col>
+        </div>
+          
+      <!-- </el-col> -->
       <!-- <el-col :span="2">
         <el-button
           style="margin-left: 10%; border: 1px solid #ebeef2"
@@ -43,20 +47,21 @@
       style="margin-top: 1%; width: 100%"
       border
       stripe
+      fit
       :header-cell-style="{'background-color': '#F4FAFF',}"
     >
-      <el-table-column type="selection" width="55"> </el-table-column>
+      <el-table-column type="selection" width="40"> </el-table-column>
       <el-table-column align="center" prop="projectCode" width="105" label="项目编号" show-overflow-tooltip >
       </el-table-column>
-      <el-table-column align="center" prop="projectName" label="审计项目名称" show-overflow-tooltip>
+      <el-table-column min-width="90px" align="center" prop="projectName" label="审计项目名称" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column align="center" prop="auditOrgName" label="被审计对象" show-overflow-tooltip>
+      <el-table-column align="center" min-width="90px" prop="auditOrgName" label="被审计对象" show-overflow-tooltip>
       </el-table-column>
       <el-table-column align="center" prop="projectTypeName" label="项目类型" show-overflow-tooltip>
       </el-table-column>
       <el-table-column align="center" prop="specialName" label="专题" show-overflow-tooltip></el-table-column>
       <el-table-column align="center" prop="fieldName" label="领域" show-overflow-tooltip></el-table-column>
-      <el-table-column align="center" prop="projectLeaderName" label="项目负责人" show-overflow-tooltip>
+      <el-table-column align="center" min-width="90px" prop="projectLeaderName" label="项目负责人" show-overflow-tooltip>
       </el-table-column>
       <el-table-column align="center" prop="projectChargemanName" label="项目组长" show-overflow-tooltip>
       </el-table-column>
@@ -111,7 +116,7 @@
       @close="addDialogClosed"
     >
       <div class="title">新增项目</div>
-      <!-- 新增专项的页面 -->
+      <!-- 新增专项以及其他的页面 -->
       <div class="addzhuanForm" v-if="prjType == 1">
         <el-form
           label-width="100px"
@@ -352,7 +357,7 @@
           hide-required-asterisk
         >
           <el-row>
-            <el-form-item label="ㅤㅤ项目编号:" prop="projectCode">
+            <el-form-item label="ㅤ项目编号:" prop="projectCode">
               <el-input
                 placeholder=""
                 v-model="addprojectjing.projectCode"
@@ -380,7 +385,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="ㅤㅤ项目名称:" prop="projectName">
+            <el-form-item label="ㅤ项目名称:" prop="projectName">
               <el-input
                 placeholder="请输入"
                 v-model="addprojectjing.projectName"
@@ -702,7 +707,7 @@
               </el-table-column>
               <el-table-column
                 prop="projectChargemanName"
-                label="负责人"
+                label="设置组长"
                 width="330"
               >
                 <template slot-scope="scope">
@@ -1289,10 +1294,25 @@ export default {
     },
     // 项目分类下拉框事件
     selectprojectType(val) {
-
-      // 如果不是专项分类
-      if (val !== "zxsj") {
-        this.prjType = 2;
+      console.log(val);
+      // 如果不是经责分类
+      if (val !== "jzsj") {
+        this.prjType = 1;
+        this.addProjectManagement.projectType = val;
+        for (let i = 0; i < this.projectTypeoptions.length; i++) {
+          if (val == this.projectTypeoptions[i].value) {
+            this.addProjectManagement.projectTypeName =
+              this.projectTypeoptions[i].label;
+          }
+        }
+        // 获取项目编号
+        this.projectTypeSelect.typecode = val;
+        getItemId(this.projectTypeSelect).then((resp) => {
+          this.addProjectManagement.projectCode = resp.data;
+          this.addProjectManagement.auditList[0].projectCode = resp.data;
+        });
+      } else {
+         this.prjType = 2;
         this.addprojectjing.projectType = val;
         for (let i = 0; i < this.projectTypeoptions.length; i++) {
           if (val == this.projectTypeoptions[i].value) {
@@ -1307,21 +1327,6 @@ export default {
         getItemId(this.projectTypeSelect).then((resp) => {
           this.addprojectjing.projectCode = resp.data;
           // console.log(this.addprojectjing.projectCode);
-        });
-      } else {
-        this.prjType = 1;
-        this.addProjectManagement.projectType = val;
-        for (let i = 0; i < this.projectTypeoptions.length; i++) {
-          if (val == this.projectTypeoptions[i].value) {
-            this.addProjectManagement.projectTypeName =
-              this.projectTypeoptions[i].label;
-          }
-        }
-        // 获取项目编号
-        this.projectTypeSelect.typecode = val;
-        getItemId(this.projectTypeSelect).then((resp) => {
-          this.addProjectManagement.projectCode = resp.data;
-          this.addProjectManagement.auditList[0].projectCode = resp.data;
         });
       }
       var that=this;
@@ -1469,9 +1474,8 @@ export default {
         if (valid) {
           addProject(this.addProjectManagement).then((resp) => {
             this.$message.success("添加项目成功！");
-            this.addDialogVisible = false;
+           // this.addDialogVisible = false;
             this.projectData(this.query);
-            
           });
         } else {
           console.log("error submit!!");
@@ -1484,17 +1488,17 @@ export default {
     editDialog(rows) {
       this.editDialogVisible = true;
       this.selectprojectPeople(1, 1000);
-      if (rows.projectType == "zxsj") {
-        this.prjType = 1;
-        editProject(rows.managementProjectUuid).then((resp) => {
-          this.addProjectManagement = resp.data;
-          console.log(this.addProjectManagement);
-        });
-      } else {
+      if (rows.projectType == "jzsj") {
         this.prjType = 2;
         editProject(rows.managementProjectUuid).then((resp) => {
           this.addprojectjing = resp.data;
           console.log(this.addprojectjing);
+        });
+      } else {
+         this.prjType = 1;
+        editProject(rows.managementProjectUuid).then((resp) => {
+          this.addProjectManagement = resp.data;
+          console.log(this.addProjectManagement);
         });
       }
     },
@@ -1666,10 +1670,6 @@ export default {
 .projectmanagement{
   background: #FFF;
 }
->>>.el-input.is-disabled .el-input__inner{
-  background: #F5F7FA!important;
-  color:#C0C4CC!important;
-}
 >>> .el-input__inner::-webkit-input-placeholder {
   color: #C0C4CC !important;
 }
@@ -1677,11 +1677,26 @@ export default {
   background: #0C87D6 !important;
   color: #FFF;
 }
+.search {
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+}
+.search >>> .el-input__inner {
+  width: 220px !important;
+  border-radius: 5px 0 0 5px;
+}
+.search >>> .el-input__inner {
+  width: 250px !important;
+  display: flex;
+  float: right;
+  border-radius: 0 !important;
+}
 .search >>> .search_icon {
   cursor: pointer;
   position: absolute;
   top: 0;
-  right:4%;
+  right:0%;
   width: 36px;
   height: 36px;
   display: -webkit-box;
@@ -1697,5 +1712,13 @@ export default {
 }
 >>> .el-dialog__body{
   padding: 5px 0 !important;
+}
+.addForm >>> .el-input.is-disabled .el-input__inner{
+  background-color: #F5F7FA!important;
+  color:#C0C4CC!important;
+}
+.addzhuanForm >>> .el-input.is-disabled .el-input__inner{
+  background-color: #F5F7FA!important;
+  color:#C0C4CC!important;
 }
 </style>
