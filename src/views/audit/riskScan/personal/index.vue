@@ -68,41 +68,18 @@ export default {
   data() {
     return {
       options: [
-        {
-          type: "1",
-          typename: "员工违规",
-        },
-        {
-          type: "2",
-          typename: "员工违规",
-        },
+
 
       ],
- value2: "202010",
+ value2: "",
       radio2:  {
-        tab:1,
-        tabName:'员工违规消户余额',
-        excuteUrl:'',
-        modifytime:''
+
 
       },
 
-      activeName: "first",
+      activeName: "",
     tablelist:[
-      {
-        tab:1,
-        tabName:'员工违规消户余额',
-        excuteUrl:'',
-        modifytime:''
 
-      },
-      {
-        tab:2,
-        tabName:'员工违规消户余额',
-        excuteUrl:'',
-        modifytime:''
-
-      }
     ],
     value:'',
 
