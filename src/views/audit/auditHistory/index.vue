@@ -236,17 +236,9 @@ export default {
     width: 100%;
     float: left;
   }
-  >>> .el-button--primary {
-    background-color: #42d7a5 !important;
-    border: none;
-  }
   .titleMes {
     padding: 10px 0 0;
     box-sizing: border-box;
-  }
-  >>> .el-button {
-    background: none;
-    border: none;
   }
   >>> .el-table__header {
     border-top: none !important;

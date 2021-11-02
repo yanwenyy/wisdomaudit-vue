@@ -921,10 +921,7 @@ export default {
 }
 </style>
 <style>
-.auditproblem .el-button {
-  background: none;
-  border: none;
-}
+
 .auditproblem .el-form-item {
   width: 49%;
   margin: 10px 1% 10px 0 !important;

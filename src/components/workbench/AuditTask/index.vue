@@ -2649,10 +2649,6 @@ export default {
   padding: 10px 0 0;
   box-sizing: border-box;
 }
-.sjzl >>> .el-button {
-  background: none;
-  border: none;
-}
 .sjzl >>> .el-table__header {
   border-top: none !important;
 }
@@ -2662,10 +2658,6 @@ export default {
 }
 
 /* 内容  按钮 */
-/* .sjzl >>> .el-button--primary {
-  background-color: #42d7a5 !important;
-  border: none;
-} */
 .cxjg >>> .el-col {
   display: flex;
   width: 100%;

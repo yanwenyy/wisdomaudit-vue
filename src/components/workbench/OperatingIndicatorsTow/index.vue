@@ -269,19 +269,11 @@ document.getElementById("upload").click();
   border-bottom: 2px solid #eeeeee;
 }
 /* 内容  按钮 */
-.sjzl >>> .el-button--primary {
-  background-color: #42d7a5 !important;
-  border: none;
-}
 .titleMes {
   padding: 10px 0 0;
   box-sizing: border-box;
 }
 .table {
-}
-.sjzl >>> .el-button {
-  background: none;
-  border: none;
 }
 .sjzl >>> .el-table__header {
   border-top: none !important;

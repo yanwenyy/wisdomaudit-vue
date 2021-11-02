@@ -503,10 +503,6 @@ export default {
 
   border-bottom: 2px solid #eeeeee;
 }
-.sjzl >>> .el-button--primary {
-  background-color: #42d7a5 !important;
-  border: none;
-}
 .titleMes {
   box-sizing: border-box;
 }
