@@ -297,11 +297,11 @@
                 padding-left: 10px;
                 padding-right: 15px;
               "
-              @click="isLiaison_Btn(option)"
+              @click="isLiaison_Btn(option,value)"
               >设为接口人</span
             >
             <span
-               v-else-if="option.isLiaison == 1"
+              v-else-if="option.isLiaison == 1"
               style="
                 float: right;
                 color: #8492a6;
@@ -1268,27 +1268,34 @@ export default {
       this.drawer = true;
     },
     // 选择组员事件
-    selectMember(val) {
-      console.log(val);
-      this.updataPerson.projectId = this.managementProjectUuid;
-      this.updataPerson.projectMemberships = [];
-      for (let i = 0; i < val.length; i++) {
-        this.updataPerson.projectMemberships.push({
-          peopleRole: 2,
-          isLiaison: 0,
-          managementProjectUuid: this.managementProjectUuid,
-          peopleTableUuid: val[i],
-          projectMembershipUuid: val[i].projectMembershipUuid,
+    selectMember(val, to, list) {
+      console.log(val, to, list);
+      // this.updataPerson.projectId = this.managementProjectUuid;
+      // this.updataPerson.projectMemberships = [];
+      // for (let i = 0; i < val.length; i++) {
+      //   this.updataPerson.projectMemberships.push({
+      //     peopleRole: 2,
+      //     isLiaison: 0,
+      //     managementProjectUuid: this.managementProjectUuid,
+      //     peopleTableUuid: val[i],
+      //     projectMembershipUuid: val[i].projectMembershipUuid,
+      //   });
+      // }
+      if (to == "left") {
+        this.data.forEach((e) => {
+         if(list.indexOf(e.key)!=-1){
+           console.log(e)
+           e.isLiaison=2;
+         }
+        });
+      } else {
+         this.data.forEach((e) => {
+         if(list.indexOf(e.key)!=-1){
+           console.log(e)
+           e.isLiaison=0;
+         }
         });
       }
-      console.log(this.updataPerson);
-     this.updataPerson.projectMemberships.forEach((e) =>{
-        for(let k=0;k<this.data.length;k++){
-              if(e.isLiaison == 0 && this.data[k].key == e.peopleTableUuid){
-                this.data[k].isLiaison = 0;
-              }
-          }
-     })
     },
     // 组员查询
     getSelectData(num, size) {
@@ -1304,10 +1311,11 @@ export default {
             key: String(e.id),
             label: e.realName + e.mobile,
             disabled: false,
-            isLiaison:2,
+            isLiaison: 2,
+            peopleTableUuid: String(e.id)
           });
         });
-        console.log( resp.data.list);
+        console.log(resp.data.list);
         this.projectMember(this.query);
         this.loading = false;
       });
@@ -1331,13 +1339,14 @@ export default {
             for (let j = 0; j < this.data.length; j++) {
               if (this.data[j].key == e.peopleTableUuid) {
                 this.data[j].disabled = true;
+                 this.data[j].projectMembershipUuid = e.projectMembershipUuid;
               }
             }
           }
-           for(let k=0;k<this.data.length;k++){
-              if(e.isLiaison == 0 && this.data[k].key == e.peopleTableUuid){
-                this.data[k].isLiaison = 0;
-              }
+          for (let k = 0; k < this.data.length; k++) {
+            if (e.isLiaison == 0 && this.data[k].key == e.peopleTableUuid) {
+              this.data[k].isLiaison = 0;
+            }
           }
           this.value.push(e.peopleTableUuid);
         });
@@ -1348,47 +1357,57 @@ export default {
     addDialogClosed() {
       this.$router.go(0);
     },
+
+    //设为接口人事件
+    isLiaison_Btn(row,list) {
+      this.data.forEach((item)=>{
+        if(list.indexOf(item.key)!=-1){
+          item.isLiaison = 0;
+          item.disabled = false;
+        }
+      })
+      row.isLiaison = 1;
+      row.disabled = true;
+    },
+
     // 下一步按钮事件
     nextBtn() {
       this.step = 2;
-      console.log(this.updataPerson);
-
-      if (this.updataPerson.projectId == "") {
-        this.updataPerson.projectId = this.managementProjectUuid;
-        this.updataPerson.projectMemberships = [];
-        for (let i = 0; i < this.peopleSelection.length; i++) {
-          this.updataPerson.projectMemberships.push({
-            peopleRole: 2,
-            isLiaison: 0,
-            managementProjectUuid: this.managementProjectUuid,
-            peopleTableUuid: this.peopleSelection[i].peopleTableUuid,
-            projectMembershipUuid:
-              this.peopleSelection[i].projectMembershipUuid,
-          });
+      var selectedPeople=[];
+      this.data.forEach((item)=>{
+        if(this.value.indexOf(item.key)!=-1){
+          item.managementProjectUuid=this.managementProjectUuid;
+          item.peopleRole = 2;
+          // item.peopleTableUuid=this.key;
+          selectedPeople.push(item);
         }
+      })
+      console.log(selectedPeople)
 
+      this.updataPerson.projectId = this.managementProjectUuid;
+        // // this.updataPerson.projectMemberships = [];
+        // // for (let i = 0; i < this.peopleSelection.length; i++) {
+        // //   this.updataPerson.projectMemberships.push({
+        // //     peopleRole: 2,
+        // //     isLiaison: 0,
+        // //     managementProjectUuid: this.managementProjectUuid,
+        // //     peopleTableUuid: this.peopleSelection[i].peopleTableUuid,
+        // //     projectMembershipUuid:
+        // //       this.peopleSelection[i].projectMembershipUuid,
+        // //   });
+        // }
+
+        this.updataPerson.projectMemberships=selectedPeople;
         //下一步 保存组员
-        // editprojectMembershipList(this.updataPerson).then((resp) => {
-        //   this.queryleader.condition.managementProjectUuid =
-        //     this.managementProjectUuid;
-        //   this.leaderSelect(this.queryleader);
-        // });
+        editprojectMembershipList(this.updataPerson).then((resp) => {
+          this.queryleader.condition.managementProjectUuid =
+            this.managementProjectUuid;
+          this.leaderSelect(this.queryleader);
+        });
 
-        // this.getModelList.condition.managementProjectUuid =
-        //   this.managementProjectUuid;
-        // this.getauditModelList(this.getModelList);
-      } else {
-        //下一步 保存组员
-        // editprojectMembershipList(this.updataPerson).then((resp) => {
-        //   this.queryleader.condition.managementProjectUuid =
-        //     this.managementProjectUuid;
-        //   this.leaderSelect(this.queryleader);
-        // });
-
-        // this.getModelList.condition.managementProjectUuid =
-        //   this.managementProjectUuid;
-        // this.getauditModelList(this.getModelList);
-      }
+        this.getModelList.condition.managementProjectUuid =
+          this.managementProjectUuid;
+        this.getauditModelList(this.getModelList);
     },
     //删除任务按钮事件
     deleteModel(row) {
