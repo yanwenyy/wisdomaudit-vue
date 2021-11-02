@@ -74,8 +74,9 @@
     </el-drawer>
 
     <!-- 初始化项目 -->
+    <!-- v-show="projectNum.length > 0" -->
     <div class="initializeProject" v-if="active_project">
-      <div class="title" v-show="projectNum.length > 0" style="margin-top: -1%">
+      <div class="title"  style="margin-top: -1%">
         初始化项目
       </div>
       <ul v-if="projectInit">

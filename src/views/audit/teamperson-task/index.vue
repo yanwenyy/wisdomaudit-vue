@@ -148,7 +148,7 @@
           v-model="value"
           :titles="['组员列表', '已选组员']"
           :data="data"
-          v-loading="loading"
+         
           @change="selectMember"
         >
         </el-transfer>
