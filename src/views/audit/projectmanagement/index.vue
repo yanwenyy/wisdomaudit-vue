@@ -4,7 +4,9 @@
     <el-row>
       <el-col :span="18">
         <!-- 添加按钮 -->
-        <el-button class="queryBtn" @click="addProject('addjingForm')">新增项目</el-button>
+        <el-button class="queryBtn" @click="addProject('addjingForm')"
+          >新增项目</el-button
+        >
       </el-col>
       <!-- <el-col :span="4" > -->
       <div class="search">
@@ -400,7 +402,9 @@
           <el-button @click="addDialogVisible = false" class="cancel"
             >取消</el-button
           >
-          <el-button class="nextBtn" @click="addSave('addjingForm')">确认</el-button>
+          <el-button class="nextBtn" @click="addSave('addjingForm')"
+            >确认</el-button
+          >
         </div>
       </div>
       <!-- 新增经责的页面 -->
@@ -550,7 +554,12 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="ㅤ审计期间:" class="dataTime" required prop="auditStartData">
+            <el-form-item
+              label="ㅤ审计期间:"
+              class="dataTime"
+              required
+              prop="auditStartData"
+            >
               <el-col :span="8">
                 <el-form-item prop="auditStartData">
                   <el-date-picker
@@ -1266,7 +1275,7 @@ export default {
     },
     //新增项目按钮事件
     addProject() {
-       this.addprojectjing = {
+      this.addprojectjing = {
         projectCode: "",
         projectType: "",
         projectTypeName: "",
@@ -1308,7 +1317,7 @@ export default {
             projectChargemanName: "",
           },
         ],
-      }
+      };
       // console.log(this.addprojectjing);
       // console.log(this.addProjectManagement);
       this.prjType = 2;
@@ -1317,7 +1326,7 @@ export default {
       this.selectprojectPeople(1, 1000);
       this.addProjectManagement.projectLeaderName = this.userInfo.user.realName;
       // console.log(this.userInfo.user.realName);
-      this.addProjectManagement. projectLeaderUuid = this.userInfo.user.id;
+      this.addProjectManagement.projectLeaderUuid = this.userInfo.user.id;
       this.addprojectjing.projectLeaderUuid = this.userInfo.user.id;
       this.addprojectjing.projectLeaderName = this.userInfo.user.realName;
     },
@@ -1404,10 +1413,10 @@ export default {
             projectChargemanName: "",
           },
         ],
-      }
+      };
     },
     //编辑项目对话框关闭事件
-    editDialogClosed(editref){
+    editDialogClosed(editref) {
       this.$refs[editref].resetFields();
       // this.addProjectManagement = [];
       // this.addprojectjing = [];
@@ -1452,7 +1461,7 @@ export default {
       } else {
         this.prjType = 2;
         this.addprojectjing.projectType = val;
-        this.addprojectjing.projectName = "2021年度某公司经责审计项目";
+        // this.addprojectjing.projectName = "2021年度某公司经责审计项目";
         for (let i = 0; i < this.projectTypeoptions.length; i++) {
           if (val == this.projectTypeoptions[i].value) {
             this.addprojectjing.projectTypeName =
@@ -1519,11 +1528,13 @@ export default {
       }
     },
     selectorg(val) {
+      console.log(val);
       this.addprojectjing.auditOrgUuid = val;
       for (var i = 0; i < this.loadaudittorgoptions.length; i++) {
         if (val == this.loadaudittorgoptions[i].auditOrgUuid) {
           this.addprojectjing.auditOrgName =
             this.loadaudittorgoptions[i].orgName;
+           this.addprojectjing.projectName = "2021年度"+this.addprojectjing.auditOrgName+"经责审计项目";
         }
       }
       // console.log(this.addprojectjing.auditOrgUuid);

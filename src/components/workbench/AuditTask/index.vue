@@ -1,6 +1,5 @@
 <template>
-  <div class="sjzl anmition_show"
-       v-if="userRole==1">
+  <div class="sjzl anmition_show">
     <!-- {{managementProjectUuid}} -->
     <div class="conter">
       <div class="projectTab">
@@ -11,7 +10,7 @@
           <!-- 自建新增   -->
           <el-col :span="1.5">
             <el-button type="primary"
-                       style="background:#4BDCB4!important"
+                       v-if="userRole==1 && userRole==2 "
                        @click="new_add_zj()">新增任务</el-button>
           </el-col>
 
@@ -205,47 +204,50 @@
               </template>
             </el-table-column>
 
+            <!-- 操作 -->
             <el-table-column label="操作"
                              align="center"
                              width="250">
               <template slot-scope="scope">
+                <div v-if="userRole==1 && userRole==2 ">
 
-                <!-- 模型 ---------->
-                <!-- 重新执行设置 -->
-                <el-button @click="setParameters(scope.row)"
-                           type="text"
-                           v-if=" scope.row.taskType == 1"
-                           style="color: #1371cc"
-                           size="small">
-                  运行
-                </el-button>
+                  <!-- 模型 ---------->
+                  <!-- 重新执行设置 -->
+                  <el-button @click="setParameters(scope.row)"
+                             type="text"
+                             v-if=" scope.row.taskType == 1"
+                             style="color: #1371cc"
+                             size="small">
+                    运行
+                  </el-button>
 
-                <!-- 查看结果 -->
-                <el-button @click="data_num_click(scope.row)"
-                           type="text"
-                           v-if=" scope.row.taskType == 1"
-                           style="color:#1371CC"
-                           size="small">
-                  查看结果
-                </el-button>
+                  <!-- 查看结果 -->
+                  <el-button @click="data_num_click(scope.row)"
+                             type="text"
+                             v-if=" scope.row.taskType == 1"
+                             style="color:#1371CC"
+                             size="small">
+                    查看结果
+                  </el-button>
 
-                <!-- 模型 ===========---------->
+                  <!-- 模型 ===========---------->
 
-                <!-- 编辑 模型可以编辑-->
-                <el-button @click="edit_data(scope.row)"
-                           v-if="scope.row.taskType ==2"
-                           type="text"
-                           style="color:#1371CC"
-                           size="small">编辑</el-button>
+                  <!-- 编辑 模型可以编辑-->
+                  <el-button @click="edit_data(scope.row)"
+                             v-if="scope.row.taskType ==2"
+                             type="text"
+                             style="color:#1371CC"
+                             size="small">编辑</el-button>
 
-                <!-- 删除 -->
-                <el-button @click="delete_model(scope.row.auditTaskUuid)"
-                           type="
+                  <!-- 删除 -->
+                  <el-button @click="delete_model(scope.row.auditTaskUuid)"
+                             type="
                            text"
-                           style="color: red"
-                           size="small">
-                  删除
-                </el-button>
+                             style="color: red"
+                             size="small">
+                    删除
+                  </el-button>
+                </div>
 
               </template>
             </el-table-column>
@@ -299,6 +301,7 @@
           <el-col> 模型线索结果（{{jg_title}}模型） </el-col>
           <el-col style="display: contents">
             <el-button plain
+                       v-if="userRole==1 && userRole==2 "
                        @click="task_verify()">核实</el-button>
             <!-- 下载核实结果 -->
             <!-- <el-button plain
@@ -2646,10 +2649,6 @@ export default {
   padding: 10px 0 0;
   box-sizing: border-box;
 }
-.sjzl >>> .el-button {
-  background: none;
-  border: none;
-}
 .sjzl >>> .el-table__header {
   border-top: none !important;
 }
@@ -2659,10 +2658,6 @@ export default {
 }
 
 /* 内容  按钮 */
-/* .sjzl >>> .el-button--primary {
-  background-color: #42d7a5 !important;
-  border: none;
-} */
 .cxjg >>> .el-col {
   display: flex;
   width: 100%;

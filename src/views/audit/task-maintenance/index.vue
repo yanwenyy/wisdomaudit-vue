@@ -1372,18 +1372,10 @@ export default {
   padding: 10px;
 }
 /* 内容  按钮 */
-/* .sjzl >>> .el-button--primary {
-  background-color: #42d7a5 !important;
-  border: none;
-} */
 .titleMes {
   box-sizing: border-box;
 }
 .table {
-}
-.sjzl >>> .el-button {
-  background: none;
-  border: none;
 }
 .sjzl >>> .el-table__header {
   border-top: none !important;

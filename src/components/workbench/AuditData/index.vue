@@ -1,6 +1,5 @@
 <template>
-  <div class="sjzl anmition_show"
-       v-if="userRole ==1">
+  <div class="sjzl anmition_show">
     <!-- tab 切换 -->
     <el-tabs v-model="activeName"
              @tab-click="handleClick">
@@ -1359,8 +1358,9 @@ export default {
       enclosure_moban_list: [],//模版资料
 
       user_data: {},//添加资料回显
-      is_add: 0//
+      is_add: 0,//
       // 是否显示新增
+
     }
   },
   computed: {},
@@ -2725,20 +2725,12 @@ export default {
 
   border-bottom: 2px solid #eeeeee;
 }
-/* 内容  按钮 */
-/* .sjzl >>> .el-button--primary {
-  background-color: #42d7a5 !important;
-  border: none;
-} */
+
 .titleMes {
   padding: 10px 0 0;
   box-sizing: border-box;
 }
 .table {
-}
-.sjzl >>> .el-button {
-  background: none;
-  border: none;
 }
 .sjzl >>> .el-table__header {
   border-top: none !important;
