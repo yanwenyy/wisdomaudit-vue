@@ -9,14 +9,6 @@
       </el-col>
     </div>
 
-    <!-- <div class="header">
-      <el-col :span="12"
-              v-for="(it,index) in tt"
-              :key="index">
-        <p @click="listTop(it,index)">{{it.name}}</p>
-      </el-col>
-    </div> -->
-
     <div class="conter">
       <div class="top">
         <el-row>
@@ -29,9 +21,7 @@
           <div class="text">
             <el-input type="textarea"
                       resize="none"
-                      disabled
                       v-model="administrativeAdvice">
-              1.23o239139219830921832390131
             </el-input>
           </div>
 
@@ -48,8 +38,8 @@
           </el-col>
 
           <div class="text">
+
             <el-input type="textarea"
-                      disabled
                       resize="none"
                       v-model="businessEvaluation">
               1.23o239139219830921832390131
@@ -266,8 +256,9 @@ export default {
     // 附件
     export_selectFile_data (params) {
       export_selectFile(params).then(resp => {
-        console.log(resp);
         this.file_list = resp.data
+        // console.log(resp);
+
       })
     },
     // listTop (item, index) {
@@ -297,16 +288,16 @@ export default {
         this.$message.info("至少关联一条数据！");
         return false;
       }
-
       let array1 = [];//数组1
       this.multipleSelection.forEach((item, i) => {
-        array1.push((i + 1) + '.' + item.accessCaliberName + item.dataProvideDepartmentName);
-      });
-      console.log(array1);
-      this.administrativeAdvice = array1
-      // 拼接
-      // this.dlag_Correlation_zb = false;//添加关联指标
+        array1.push((i + 1) + '.' + item.accessCaliberName + item.dataProvideDepartmentName + '\n');
 
+      });
+      var array_list = array1.join('')
+      // var array_list = array1.toString();  //把数组转换为字符串
+      console.log(array_list);
+      this.administrativeAdvice = array_list;
+      this.dlag_Correlation_zb = false;//关闭弹窗
     },
 
 
@@ -405,6 +396,7 @@ export default {
   color: #c0c4cc;
   cursor: n-resize;
   background: #fff;
+  line-height: 25px;
 }
 .text {
   width: 100%;
