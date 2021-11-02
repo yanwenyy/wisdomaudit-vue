@@ -20,7 +20,9 @@
           <el-col :span="15">
             <div>
               <p>审计周期：</p>
-              <p class="textOver">{{ value.auditStartData }}至{{ value.auditFinishData }}</p>
+              <p class="textOver">
+                {{ value.auditStartData }}至{{ value.auditFinishData }}
+              </p>
             </div>
           </el-col>
         </el-row>
@@ -73,7 +75,9 @@
 
     <!-- 初始化项目 -->
     <div class="initializeProject" v-if="active_project">
-      <div class="title" v-show="projectNum.length > 0" style=" margin-top: -1%;">初始化项目</div>
+      <div class="title" v-show="projectNum.length > 0" style="margin-top: -1%">
+        初始化项目
+      </div>
       <ul v-if="projectInit">
         <li
           v-for="(item, index) in projectInit"
@@ -87,9 +91,7 @@
         >
           {{ item.projectName }}
         </li>
-        <span @click="look_more()"  v-if="ifmore"
-          >更多>></span
-        >
+        <span class="moreBtn" @click="look_more()" v-if="ifmore">更多>></span>
       </ul>
       <ul v-else>
         暂无更多初始化项目...
@@ -109,7 +111,11 @@
           <div class="menu">
             <el-menu
               :key="key"
-              :default-active="userInfo.userRole == '1' || userInfo.userRole == '3'?'1-1':'2-1'"
+              :default-active="
+                userInfo.userRole == '1' || userInfo.userRole == '3'
+                  ? '1-1'
+                  : '2-1'
+              "
               class="el-menu-vertical-demo"
               @select="open"
               background-color="#F1F5FB"
@@ -220,8 +226,12 @@
     </el-row>
 
     <!-- 查看更多初始化项目 -->
-    <div class="project_data" :class="project_data == true ? 'opctin' : ''">
-      <div class="right_data" @click="close()">
+    <div
+      class="project_data"
+      :class="project_data == true ? 'opctin' : ''"
+      @click="close()"
+    >
+      <div class="right_data">
         <ul :class="project_data == true ? 'style_width' : ''" class="ul_data">
           <li
             @click.stop="look_project(index, item)"
@@ -243,7 +253,9 @@
       :before-close="addClosed"
       width="60%"
     >
-      <div class="title" style=" border-bottom: 1px solid #d2d2d2;">{{ name }}</div>
+      <div class="title" style="border-bottom: 1px solid #d2d2d2">
+        {{ name }}
+      </div>
       <div class="addPerson" v-if="step == 1">
         <el-row>
           <el-col :span="24">
@@ -272,9 +284,33 @@
           v-model="value"
           :titles="['组员列表', '已选组员']"
           :data="data"
-          v-loading="loading"
           @change="selectMember"
         >
+          <span slot-scope="{ option }"
+            >{{ option.label }}
+            <span
+              v-if="option.isLiaison == 0"
+              style="
+                float: right;
+                color: #8492a6;
+                font-size: 13px;
+                padding-left: 10px;
+                padding-right: 15px;
+              "
+              @click="isLiaison_Btn(option)"
+              >设为接口人</span
+            >
+            <span
+               v-else-if="option.isLiaison == 1"
+              style="
+                float: right;
+                color: #8492a6;
+                font-size: 13px;
+                padding-left: 10px;
+              "
+              >接口人</span
+            >
+          </span>
         </el-transfer>
         <div class="stepBtn">
           <el-button @click="addDialogVisibleRes()">取消</el-button>
@@ -296,25 +332,28 @@
         </div>
         <div class="optionBtn" v-if="radio == '1'">
           <el-row :gutter="24">
-            <el-col :span="15" style="margin-right:4%">
-              <el-button style="background:#1897E4;color:#FFF" @click="selectModel"
+            <el-col :span="15" style="margin-right: 4%">
+              <el-button
+                style="background: #1897e4; color: #fff"
+                @click="selectModel"
                 >新增模型任务</el-button
               >
               <!-- <span style="margin-top: 2.5%; color: #5f6165; margin-left: 10px">
                 请选择想要引用的模型
               </span> -->
 
-
-              <el-button style="background:#1897E4;color:#FFF" @click="addTaskSelf"
+              <el-button
+                style="background: #1897e4; color: #fff"
+                @click="addTaskSelf"
                 >新增自建任务</el-button
               >
             </el-col>
 
             <!-- 条件查询模型名称 -->
-             <div class="search">
+            <div class="search">
               <el-input
                 placeholder="请输入模型任务名称"
-                 v-model="getModelList.condition.taskName"
+                v-model="getModelList.condition.taskName"
                 @keyup.enter.native="queryName"
               >
               </el-input>
@@ -380,7 +419,7 @@
             </el-table-column>
             <el-table-column prop="address" label="附件" width="90">
               <template slot-scope="scope">
-                 <el-popover placement="bottom" width="300"  trigger="click">
+                <el-popover placement="bottom" width="300" trigger="click">
                   <el-table :data="enclosure_details_list">
                     <el-table-column prop="fileName" label="文件名称">
                       <template slot-scope="scope">
@@ -397,34 +436,33 @@
                       </template>
                     </el-table-column>
                   </el-table>
-                <div
-                  class="update"
-                  style="margin-top: 5px; cursor: pointer"
-                  @click="nearbyDetails(scope.row)"
-                  slot="reference"
-                >
-                  <i class="update_icon" style="margin-top: -3px">
-                    <svg
-                      t="1631877671204"
-                      class="icon"
-                      viewBox="0 0 1024 1024"
-                      version="1.1"
-                      xmlns="http://www.w3.org/2000/svg"
-                      p-id="9939"
-                      width="15"
-                      height="15"
-                    >
-                      <path
-                        d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                        fill="#FD9D27"
-                        p-id="9940"
-                      ></path>
-                    </svg>
-                  </i>
-                  <span>{{ scope.row.count }}</span>
-                </div>
+                  <div
+                    class="update"
+                    style="margin-top: 5px; cursor: pointer"
+                    @click="nearbyDetails(scope.row)"
+                    slot="reference"
+                  >
+                    <i class="update_icon" style="margin-top: -3px">
+                      <svg
+                        t="1631877671204"
+                        class="icon"
+                        viewBox="0 0 1024 1024"
+                        version="1.1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        p-id="9939"
+                        width="15"
+                        height="15"
+                      >
+                        <path
+                          d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
+                          fill="#FD9D27"
+                          p-id="9940"
+                        ></path>
+                      </svg>
+                    </i>
+                    <span>{{ scope.row.count }}</span>
+                  </div>
                 </el-popover>
-
               </template>
             </el-table-column>
             <el-table-column label="操作">
@@ -486,7 +524,7 @@
       :before-close="MedolDialogClosed"
     >
       <div class="dialogTitle">模型列表</div>
-      <div style="padding:2%">
+      <div style="padding: 2%">
         <el-row>
           <el-col :span="15">
             <div style="margin-top: 2.5%; color: #5f6165; margin-top: 10px">
@@ -494,20 +532,20 @@
             </div>
           </el-col>
           <div class="search">
-              <el-input
-                placeholder="请输入模型名称"
-                v-model="modelQuery.condition.modelName"
-                @keyup.enter.native="queryModel"
-              >
-              </el-input>
-              <div
-                class="search_icon"
-                style="background: #1897e4 !important"
-                @click="queryModel"
-              >
-                <i class="el-icon-search" style="color: white"></i>
-              </div>
+            <el-input
+              placeholder="请输入模型名称"
+              v-model="modelQuery.condition.modelName"
+              @keyup.enter.native="queryModel"
+            >
+            </el-input>
+            <div
+              class="search_icon"
+              style="background: #1897e4 !important"
+              @click="queryModel"
+            >
+              <i class="el-icon-search" style="color: white"></i>
             </div>
+          </div>
           <!-- <el-col :span="9">
             <el-input
               placeholder="请输入内容"
@@ -567,7 +605,9 @@
         <!-- 分页 end-->
         <div class="stepBtn" style="margin-top: 25px">
           <el-button @click="res">取消</el-button>
-          <el-button style="background:#1897E4;color:#FFF" @click="modelInfo">确认</el-button>
+          <el-button style="background: #1897e4; color: #fff" @click="modelInfo"
+            >确认</el-button
+          >
         </div>
       </div>
     </el-dialog>
@@ -666,13 +706,14 @@
       </div>
     </el-dialog>
 
-    <el-dialog
-      :visible.sync="editTaskSelfDialogVisible"
-      width="50%"
-    >
-    <div class="dialogTitle">编辑自建任务</div>
+    <el-dialog :visible.sync="editTaskSelfDialogVisible" width="50%">
+      <div class="dialogTitle">编辑自建任务</div>
       <div class="selfTask">
-        <el-form label-width="100px" :model="edittaskSelfForm"  hide-required-asterisk>
+        <el-form
+          label-width="100px"
+          :model="edittaskSelfForm"
+          hide-required-asterisk
+        >
           <!-- <el-form-item label="类型：" style="margin-bottom: 50px">
             <div style="margin-top: -5%; margin-bottom: 20px">
               <el-radio v-model="radio" label="1">模型任务</el-radio>
@@ -731,7 +772,7 @@
           <el-form-item label="ㅤㅤ任务描述：">
             <el-input
               type="textarea"
-              style="top: -35px;"
+              style="top: -35px"
               v-model="edittaskSelfForm.taskDescription"
             ></el-input>
           </el-form-item>
@@ -839,7 +880,7 @@ export default {
   },
   data() {
     return {
-      key:0,
+      key: 0,
       enclosure_details_list: [],
       nearbyDialogVisible: false, //附件详情
       userInfo: {},
@@ -858,7 +899,7 @@ export default {
       projectAll: [],
       projectInit: [],
       projectInitMore: [],
-      ifmore:false,
+      ifmore: false,
       queryManage: {
         condition: {
           status: 0,
@@ -1095,12 +1136,12 @@ export default {
     this.moreProject(this.queryManageAll);
     this.project_more();
   },
-  mounted(){
+  mounted() {
     this.get_user();
   },
   methods: {
     //获取当前登录人信息
-    get_user(){
+    get_user() {
       get_userInfo().then((resp) => {
         this.userInfo = resp.data;
         console.log(this.userInfo);
@@ -1131,18 +1172,16 @@ export default {
       this.index = 0;
       this.index = index;
     },
-    look_more(){
-    this.project_data = true;
+    look_more() {
+      this.project_data = true;
     },
     // 查看更多初始化项目
     project_more() {
-      
       initProject(this.queryProjectAll).then((resp) => {
         this.projectInitMore = resp.data.records;
-        if(this.projectInitMore.length>6){
-          this.ifmore = true
+        if (this.projectInitMore.length > 6) {
+          this.ifmore = true;
         }
-        console.log(this.projectInitMore);
       });
     },
     close() {
@@ -1152,7 +1191,7 @@ export default {
     look_project(index, item) {
       // this.key=Math.random();
       this.active_project = item.managementProjectUuid; //点击选择添加高亮
-      console.log(this.active_project);
+      // console.log(this.active_project);
       this.projectInit.splice(index, 1);
       this.projectInit.unshift(item);
       this.get_user();
@@ -1160,8 +1199,10 @@ export default {
       if (index > 6) {
         this.projectInitUuid =
           this.projectInitMore[index].managementProjectUuid;
+        this.project_data = false;
       } else {
         this.projectInitUuid = this.projectInit[index].managementProjectUuid;
+        this.project_data = false;
       }
 
       // 更新项目接口
@@ -1241,6 +1282,13 @@ export default {
         });
       }
       console.log(this.updataPerson);
+     this.updataPerson.projectMemberships.forEach((e) =>{
+        for(let k=0;k<this.data.length;k++){
+              if(e.isLiaison == 0 && this.data[k].key == e.peopleTableUuid){
+                this.data[k].isLiaison = 0;
+              }
+          }
+     })
     },
     // 组员查询
     getSelectData(num, size) {
@@ -1256,8 +1304,10 @@ export default {
             key: String(e.id),
             label: e.realName + e.mobile,
             disabled: false,
+            isLiaison:2,
           });
         });
+        console.log( resp.data.list);
         this.projectMember(this.query);
         this.loading = false;
       });
@@ -1274,7 +1324,7 @@ export default {
       projectMembership(data).then((resp) => {
         this.peopleSelection = resp.data.records;
         this.tableData = resp.data.records;
-
+        console.log(this.peopleSelection);
         this.value = [];
         this.peopleSelection.forEach((e) => {
           if (e.isCanDelete == 0) {
@@ -1283,6 +1333,11 @@ export default {
                 this.data[j].disabled = true;
               }
             }
+          }
+           for(let k=0;k<this.data.length;k++){
+              if(e.isLiaison == 0 && this.data[k].key == e.peopleTableUuid){
+                this.data[k].isLiaison = 0;
+              }
           }
           this.value.push(e.peopleTableUuid);
         });
@@ -1296,7 +1351,7 @@ export default {
     // 下一步按钮事件
     nextBtn() {
       this.step = 2;
-      // console.log(this.updataPerson);
+      console.log(this.updataPerson);
 
       if (this.updataPerson.projectId == "") {
         this.updataPerson.projectId = this.managementProjectUuid;
@@ -1313,30 +1368,26 @@ export default {
         }
 
         //下一步 保存组员
-        editprojectMembershipList(this.updataPerson).then((resp) => {
-          // this.$message.success("添加成功！");
-          this.queryleader.condition.managementProjectUuid =
-            this.managementProjectUuid;
-          this.leaderSelect(this.queryleader);
-        });
+        // editprojectMembershipList(this.updataPerson).then((resp) => {
+        //   this.queryleader.condition.managementProjectUuid =
+        //     this.managementProjectUuid;
+        //   this.leaderSelect(this.queryleader);
+        // });
 
-        this.getModelList.condition.managementProjectUuid =
-          this.managementProjectUuid;
-        // console.log(this.getModelList);
-        this.getauditModelList(this.getModelList);
+        // this.getModelList.condition.managementProjectUuid =
+        //   this.managementProjectUuid;
+        // this.getauditModelList(this.getModelList);
       } else {
         //下一步 保存组员
-        editprojectMembershipList(this.updataPerson).then((resp) => {
-          // this.$message.success("添加成功！");
-          this.queryleader.condition.managementProjectUuid =
-            this.managementProjectUuid;
-          this.leaderSelect(this.queryleader);
-        });
+        // editprojectMembershipList(this.updataPerson).then((resp) => {
+        //   this.queryleader.condition.managementProjectUuid =
+        //     this.managementProjectUuid;
+        //   this.leaderSelect(this.queryleader);
+        // });
 
-        this.getModelList.condition.managementProjectUuid =
-          this.managementProjectUuid;
-        // console.log(this.getModelList);
-        this.getauditModelList(this.getModelList);
+        // this.getModelList.condition.managementProjectUuid =
+        //   this.managementProjectUuid;
+        // this.getauditModelList(this.getModelList);
       }
     },
     //删除任务按钮事件
@@ -1918,7 +1969,7 @@ export default {
 // 二级导航 穿透样式 end
 
 .projectWorkbench {
-  margin-top:-1%;
+  margin-top: -1%;
   padding: 1%;
   .title {
     font-weight: 700;
@@ -1950,12 +2001,12 @@ export default {
       box-shadow: 0 2px 10px 5px rgba(0, 0, 0, 0.05);
     }
   }
-  .moreBtn{
+  .moreBtn {
     padding: 0.5%;
     border-radius: 5px;
     border: 2px solid #ebf0f6;
     line-height: 100px;
-      &:hover {
+    &:hover {
       box-shadow: 0 2px 10px 5px rgba(0, 0, 0, 0.05);
     }
   }
@@ -1978,7 +2029,6 @@ export default {
       transition: all 0.3s;
       border: 1px solid #fff;
       font-size: 14px;
-
       &:hover {
         box-shadow: 0 2px 10px 5px rgba(0, 0, 0, 0.1);
         border: 1px solid #ebf0f6;
@@ -1987,9 +2037,12 @@ export default {
     span {
       color: #12579a;
       margin: 0 10px;
-      min-width: 60px;
+      min-width: 70px;
       box-sizing: border-box;
       cursor: pointer;
+      padding: 0.5%;
+      border-radius: 5px;
+      border: 2px solid #ebf0f6;
     }
   }
 }
@@ -2038,7 +2091,6 @@ export default {
 
     .ul_data {
       width: 0;
-      height: 100%;
       position: absolute;
       right: -300px;
       top: 0;
@@ -2101,7 +2153,7 @@ export default {
   font-size: 0;
   position: relative;
   float: left;
-  background: #559ED4;
+  background: #559ed4;
   z-index: 50;
   /* 更改此处的颜色即可完成 */
 }
@@ -2148,7 +2200,7 @@ export default {
 .auditStepOneN span:nth-of-type(1) {
   border-width: 25px 0 25px 25px;
   border-style: solid;
-  border-color: #1897E4 transparent #1897E4 transparent;
+  border-color: #1897e4 transparent #1897e4 transparent;
   position: absolute;
   top: 0;
   right: 0;
@@ -2198,7 +2250,7 @@ export default {
   position: relative;
   left: -5%;
   float: left;
-  background: #1897E4;
+  background: #1897e4;
 }
 .auditStepTwoN div {
   width: 70%;
@@ -2215,7 +2267,7 @@ export default {
 .auditStepTwoN span:nth-of-type(1) {
   border-width: 25px 0 25px 25px;
   border-style: solid;
-  border-color: transparent transparent transparent #1897E4;
+  border-color: transparent transparent transparent #1897e4;
   position: absolute;
   top: 0;
   left: 0;
@@ -2243,11 +2295,11 @@ export default {
   text-align: right;
 }
 .addAudit .nextBtn {
-  background: #1897E4 !important;
+  background: #1897e4 !important;
   color: #fff;
 }
 .addPerson .nextBtn {
-  background: #559ED4 !important;
+  background: #559ed4 !important;
   color: #fff;
 }
 .page {
@@ -2327,7 +2379,7 @@ export default {
 </style>
 <style scoped>
 >>> .el-input__inner::-webkit-input-placeholder {
-  color: #C0C4CC !important;
+  color: #c0c4cc !important;
 }
 .dialogTitle {
   /* border: 1px solid red; */
@@ -2419,15 +2471,15 @@ export default {
   align-items: center;
   border-radius: 0 5px 5px 0;
 }
-.textOver{
+.textOver {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   word-break: break-all;
 }
- .textOver:hover{
-    text-overflow:inherit;
-    overflow: visible;
-    white-space: pre-line;
-  }
+.textOver:hover {
+  text-overflow: inherit;
+  overflow: visible;
+  white-space: pre-line;
+}
 </style>
