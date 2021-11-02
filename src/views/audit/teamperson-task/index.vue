@@ -699,7 +699,7 @@ export default {
 .title {
   border-bottom: 1px solid #d2d2d2;
   padding: 10px;
-  text-align: left;
+  text-align: center;
 }
 /* 方法二 */
 .stepNew {
