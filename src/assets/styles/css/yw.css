@@ -62,3 +62,6 @@ table tr:nth-child(odd){
 .itemThree .el-form-item__content{
   width: 50%;
 }
+.search-form>.el-form-item{
+  margin-left: 30px;
+}
