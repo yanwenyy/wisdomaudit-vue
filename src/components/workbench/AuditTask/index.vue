@@ -85,7 +85,7 @@
                   <el-button v-if="scope.row.problemsNumber !==0"
                              @click="probleNum_click(scope.row.auditTaskUuid,scope.row.auditModelName)"
                              type="text"
-                             style="color: #1371cc"
+                             style="color: #1371cc;background:none"
                              size="small">
                     {{ scope.row.problemsNumber }}
                   </el-button>
@@ -106,7 +106,7 @@
                 <div v-if=" scope.row.taskType ==1">
                   <el-button @click="data_num_click(scope.row)"
                              type="text"
-                             style="color: #1371cc"
+                             style="color: #1371cc;background:none"
                              size="small">
                     {{ scope.row.resultsNumber }}
                   </el-button>
@@ -131,9 +131,55 @@
                              align="center"
                              label="附件"
                              width="90">
-              <template slot-scope="scope">
 
-                <!-- 附件详情 -->
+              <template slot-scope="scope">
+                <!-- createUserUuid fileCount-->
+                <el-popover placement="bottom"
+                            width="350"
+                            @show="open_enclosure_details(scope.row.attachmentUuid,scope.row.fileName)"
+                            trigger="click">
+                  <ul :popper-class="enclosure_details_list.attchmentList1==''?'no-padding':''"
+                      v-if="enclosure_details_list.attchmentList1!=''"
+                      class="fileList-ul">
+                    <li class="tableFileList-title">问题核实反馈资料</li>
+                    <li v-for="(item,index) in enclosure_details_list.attchmentList1"
+                        :key="index"
+                        class="pointer blue"
+                        @click="download(item.attachment_uuid,item.file_name)">
+                      {{item.fileName}}</li>
+                  </ul>
+
+                  <ul :popper-class="enclosure_details_list.attchmentList2==''?'no-padding':''"
+                      v-if="enclosure_details_list.attchmentList2!=''"
+                      class="fileList-ul">
+                    <li class="tableFileList-title">最终审计核实结果数据</li>
+                    <li v-for="(item,index) in enclosure_details_list.attchmentList2"
+                        :key="index"
+                        class="pointer blue"
+                        @click="download(item.attachment_uuid,item.file_name)">
+                      {{item.fileName}}</li>
+                  </ul>
+
+                  <ul :popper-class="enclosure_details_list.attchmentList3==''?'no-padding':''"
+                      v-if="enclosure_details_list.attchmentList3!=''"
+                      class="fileList-ul">
+                    <li class="tableFileList-title">现场提取资料 </li>
+                    <li v-for="(item,index) in enclosure_details_list.attchmentList3"
+                        :key="index"
+                        class="pointer blue"
+                        @click="download(item.attachment_uuid,item.file_name)">
+                      {{item.fileName}}</li>
+                  </ul>
+
+                  <div slot="reference"
+                       style="color: #1371cc;"
+                       class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.fileCount}}
+                  </div>
+                </el-popover>
+              </template>
+
+              <!-- 附件详情 -->
+              <!-- <template slot-scope="scope">
                 <el-popover placement="bottom"
                             width="400"
                             trigger="click">
@@ -159,30 +205,17 @@
                     </el-table-column>
                   </el-table>
 
-                  <!-- 附件 -->
-                  <el-button slot="reference">
+                  <el-button slot="reference"
+                             style="color: #1371cc;background:none;border:none">
                     <div class="update"
                          @click="open_enclosure_details(scope.row.auditTaskUuid,scope.row.paramTaskUuid)">
-                      <i class="update_icon">
-                        <svg t="1631877671204"
-                             class="icon"
-                             viewBox="0 0 1024 1024"
-                             version="1.1"
-                             xmlns="http://www.w3.org/2000/svg"
-                             p-id="9939"
-                             width="200"
-                             height="200">
-                          <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                                fill="#FD9D27"
-                                p-id="9940"></path>
-                        </svg>
-                      </i>
-                      <span>{{scope.row.count}}</span>
+                      <i class="el-icon-folder-opened list-folder"></i>
+                      <span>{{scope.row.fileCount}}</span>
                     </div>
                   </el-button>
                 </el-popover>
+              </template> -->
 
-              </template>
             </el-table-column>
 
             <!-- 状态 -->
@@ -340,9 +373,8 @@
                   scope.row.isProbleam == 0
                     ? "未核实"
                     : scope.row.isProbleam == 1
-                    ? "已核实":"..."
+                    ? "已核实":""
                 }}
-
             </template>
           </el-table-column>
 
@@ -1043,7 +1075,8 @@ import {
   projectRel_taskAttachment,//附件详情  新版
 } from
   '@SDMOBILE/api/shandong/task'
-
+import { down_file } from
+  '@SDMOBILE/api/shandong/ls'
 //task_findModelList_all
 import { Task_run, Task_data_status, task_findModelList, task_selectModel, task_selectTable } from '@SDMOBILE/api/shandong/task_setting'
 
@@ -1689,7 +1722,7 @@ export default {
     },
     // 查看附件详情
     open_enclosure_details (auditTaskUuid, paramTaskUuid) {
-
+      this.file_details_li = [];//清空值
       let params2 = {
         auditTaskUuid: auditTaskUuid,
         paramTaskUuid: paramTaskUuid,
@@ -1739,33 +1772,18 @@ export default {
       })
     },
     //   已完成列表点击附件
-    download_click (id, name) {
-      const fileName = name.split('.')[0];
-
-      //附件下载
+    download (id, fileName) {
       let formData = new FormData()
       formData.append('fileId', id)
-      this.$axios({
-        method: 'post',
-        url: '/wisdomaudit/auditPreviousDemandData/downloadByFileId',
-        // url: 'http://localhost:9529/wisdomaudit/attachment/xiazai',
-        data: formData,
-        responseType: 'blob',
-      }).then((res) => {
-        const content = res.data;
-        console.log(res);
+      down_file(formData).then(resp => {
+        const content = resp;
         const blob = new Blob([content],
-          // { type: "application/xlsx" }
-          // { type: res.data.type }
           { type: 'application/octet-stream,charset=UTF-8' }
         )
-        // var timestamp = (new Date()).valueOf();
-        // const fileName = res.headers["content-disposition"].split("fileName*=utf-8''")[1];
-        // const filteType = res.headers["content-disposition"].split('.')[1];
         if ('download' in document.createElement('a')) {
           // 非IE下载
           const elink = document.createElement('a')
-          elink.download = name //下载后文件名
+          elink.download = fileName //下载后文件名
           elink.style.display = 'none'
           elink.href = window.URL.createObjectURL(blob)
           document.body.appendChild(elink)
@@ -2959,5 +2977,27 @@ export default {
 
 .dlag_conter >>> .el-upload {
   width: 305px !important;
+}
+
+/* 新版附件详 */
+.list-folder {
+  color: orange;
+  margin-right: 5px;
+}
+.no-padding {
+  padding: 0 !important;
+  border: none !important;
+}
+.tableFileList-title {
+  padding: 5px 0;
+  border-top: 1px solid #ddd;
+  background: #f4faff;
+}
+.fileList-ul > li {
+  padding-left: 10px;
+  margin-bottom: 10px;
+}
+.pointer {
+  cursor: pointer;
 }
 </style>

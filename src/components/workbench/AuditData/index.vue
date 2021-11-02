@@ -94,7 +94,7 @@
                   <div v-if=" scope.row.status == 0">
                     <el-button @click="edit_common(scope.row)"
                                type="text"
-                               style="color:#1371CC"
+                               style="color:#1371CC;background:none;border:none"
                                size="small">
                       编辑
                     </el-button>
@@ -106,14 +106,14 @@
                   </el-button> -->
                     <el-button @click="yes_push(scope.row)"
                                type="text"
-                               style="color:#1371CC"
+                               style="color:#1371CC;background:none;border:none"
                                size="small">
                       下发
                     </el-button>
 
                     <el-button @click="deleteRow(scope.row)"
                                type="text"
-                               style="color:red"
+                               style="color:red;background:none;border:none"
                                size="small">
                       删除
                     </el-button>
@@ -123,19 +123,27 @@
                     <el-button @click="operation(scope.row)"
                                v-if="scope.row.doingCount>=1"
                                type="text"
-                               style="color:#1371CC"
+                               style="color:#1371CC;background:none;border:none"
                                size="small">
                       审批
                     </el-button>
                     <el-button @click="deleteRow(scope.row)"
                                type="text"
-                               style="color:red"
+                               style="color:red;background:none;border:none"
                                size="small">
                       删除
                     </el-button>
                   </div>
                 </div>
 
+                <!-- 111 -->
+                <!-- <el-button @click="operation(scope.row)"
+                           type="text"
+                           style="color:#1371CC;background:none;border:none"
+                           size="small">
+                  审批
+                </el-button> -->
+                <!--222 -->
               </template>
 
             </el-table-column>
@@ -222,9 +230,32 @@
                              label="附件"
                              show-overflow-tooltip>
               <template slot-scope="scope">
+
+                <el-popover :popper-class="enclosure_details_list==''?'no-padding':''"
+                            v-if="scope.row.enclosureCount"
+                            placement="bottom"
+                            width="250"
+                            @show="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)"
+                            trigger="click">
+                  <ul v-if="enclosure_details_list!=''"
+                      class="fileList-ul">
+                    <li class="tableFileList-title">文件名称</li>
+                    <li v-for="(item,index) in enclosure_details_list"
+                        :key="index"
+                        class="pointer blue"
+                        @click="download(item.attachmentUuid,item.fileName)">
+                      {{item.fileName}}</li>
+                  </ul>
+                  <div slot="reference"
+                       style="color: #1371cc;"
+                       class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.enclosureCount}}
+                  </div>
+                </el-popover>
+
                 <!-- 附件详情 -->
-                <el-popover placement="bottom"
-                            width="400"
+                <!-- <el-popover placement="bottom"
+                            :popper-class="enclosure_details_list==''?'no-padding':''"
+                            width="250"
                             trigger="click">
                   <el-table :data="enclosure_details_list"
                             :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
@@ -248,29 +279,16 @@
                       </template>
                     </el-table-column>
                   </el-table>
-
-                  <!-- 附件 -->
-                  <el-button slot="reference">
+                  <el-button slot="reference"
+                             style="background:none;border:none">
                     <div class="update"
                          @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)">
-                      <i class="update_icon">
-                        <svg t="1631877671204"
-                             class="icon"
-                             viewBox="0 0 1024 1024"
-                             version="1.1"
-                             xmlns="http://www.w3.org/2000/svg"
-                             p-id="9939"
-                             width="200"
-                             height="200">
-                          <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                                fill="#FD9D27"
-                                p-id="9940"></path>
-                        </svg>
-                      </i>
+                      <i class="el-icon-folder-opened list-folder"></i>
                       <span>{{scope.row.enclosureCount}}</span>
                     </div>
                   </el-button>
-                </el-popover>
+                </el-popover> -->
+
               </template>
             </el-table-column>
             <!--附件 end  -->
@@ -814,8 +832,30 @@
             <template slot-scope="scope">
 
               <!-- enclosure_details_list -->
+
+              <el-popover :popper-class="enclosure_details_list==''?'no-padding':''"
+                          v-if="scope.row.enclosureCount"
+                          placement="bottom"
+                          width="250"
+                          @show="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)"
+                          trigger="click">
+                <ul v-if="enclosure_details_list!=''"
+                    class="fileList-ul">
+                  <li class="tableFileList-title">文件名称</li>
+                  <li v-for="(item,index) in enclosure_details_list"
+                      :key="index"
+                      class="pointer blue"
+                      @click="download(item.attachmentUuid,item.fileName)">
+                    {{item.fileName}}</li>
+                </ul>
+                <div slot="reference"
+                     style="color: #1371cc;"
+                     class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.enclosureCount}}
+                </div>
+              </el-popover>
+
               <!-- 附件详情 -->
-              <el-popover placement="bottom"
+              <!-- <el-popover placement="bottom"
                           width="400"
                           trigger="click">
                 <el-table :data="enclosure_details_list"
@@ -840,28 +880,14 @@
                   </el-table-column>
                 </el-table>
 
-                <!-- 附件 -->
                 <el-button slot="reference">
                   <div class="update"
                        @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)">
-                    <i class="update_icon">
-                      <svg t="1631877671204"
-                           class="icon"
-                           viewBox="0 0 1024 1024"
-                           version="1.1"
-                           xmlns="http://www.w3.org/2000/svg"
-                           p-id="9939"
-                           width="200"
-                           height="200">
-                        <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                              fill="#FD9D27"
-                              p-id="9940"></path>
-                      </svg>
-                    </i>
+                   
                     <span>{{scope.row.enclosureCount}}</span>
                   </div>
                 </el-button>
-              </el-popover>
+              </el-popover> -->
 
             </template>
 
@@ -950,7 +976,7 @@
                             p-id="9940"></path>
                     </svg>
                   </i>
-                  <span>{{scope.row.fileCount}}</span>
+                  <span>{{scope.row.count}}</span>
 
                 </div>
               </template>
@@ -1190,7 +1216,8 @@ import {
 } from
   '@SDMOBILE/api/shandong/task'
 
-
+import { down_file } from
+  '@SDMOBILE/api/shandong/ls'
 import { Input } from 'element-ui';
 export default {
   components: {},
@@ -1651,7 +1678,7 @@ export default {
         this.$message('暂无上传的附件');
         return false
       } else {
-        this.dialogVisibl_enclosure_details = true;
+        // this.dialogVisibl_enclosure_details = true;
       }
 
     },
@@ -1659,6 +1686,7 @@ export default {
 
     // 查看附件详情
     open_enclosure_details (id) {
+      this.enclosure_details_list = [];//清空附件
       // 已完成列表 查看详情
       let params = {
         id: id,
@@ -1679,52 +1707,34 @@ export default {
       })
 
     },
-
-    //   已完成列表点击附件
-    download (id, name) {
-      // let prarms = {
-      //   fileId: id
-      // }
-      //附件下载
+    // 下载
+    download (id, fileName) {
       let formData = new FormData()
       formData.append('fileId', id)
-      this.$axios({
-        method: 'post',
-        url: '/wisdomaudit/auditPreviousDemandData/downloadByFileId',
-        // url: 'http://10.10.113.196:1095/wisdomaudit/auditPreviousDemandData/downloadByFileId',
-        // url: 'http://localhost:9529/wisdomaudit/attachment/fileDownload',
-
-        data: formData,
-        responseType: 'blob',
-      }).then((res) => {
-        const content = res.data;
-        console.log(res);
+      down_file(formData).then(resp => {
+        const content = resp;
         const blob = new Blob([content],
-          // { type: "application/xlsx" }
-          // { type: res.data.type }
           { type: 'application/octet-stream,charset=UTF-8' }
         )
-        // var timestamp = (new Date()).valueOf();
-        // const fileName = res.headers["content-disposition"].split("fileName*=utf-8''")[1];
-        // const filteType = res.headers["content-disposition"].split('.')[1];
         if ('download' in document.createElement('a')) {
-          // 非IE下载  
+          // 非IE下载
           const elink = document.createElement('a')
-          elink.download = name //下载后文件名
+          elink.download = fileName //下载后文件名
           elink.style.display = 'none'
           elink.href = window.URL.createObjectURL(blob)
           document.body.appendChild(elink)
           elink.click()
-          window.URL.revokeObjectURL(elink.href) // 释放URL 对象  
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象
           document.body.removeChild(elink)
         } else {
-          // IE10+下载 
+          // IE10+下载
           navigator.msSaveBlob(blob, fileName)
         }
       }).catch((err) => {
         console.log(err);
       })
     },
+
 
     // 添加资料
     add_data_click () {
@@ -2948,5 +2958,27 @@ export default {
   position: absolute;
   left: 0;
   top: 0;
+}
+
+/* 新版附件详 */
+.list-folder {
+  color: orange;
+  margin-right: 5px;
+}
+.no-padding {
+  padding: 0 !important;
+  border: none !important;
+}
+.tableFileList-title {
+  padding: 5px 0;
+  border-top: 1px solid #ddd;
+  background: #f4faff;
+}
+.fileList-ul > li {
+  padding-left: 10px;
+  margin-bottom: 10px;
+}
+.pointer {
+  cursor: pointer;
 }
 </style>
