@@ -9,12 +9,15 @@
           <el-table-column align="left" prop="basyName" label="资料名称">
             <template slot-scope="scope">
               <el-popover
+                :popper-class="tableFileList==''?'no-padding':''"
                 placement="bottom"
-                width="200"
+                width="250"
                 @show="getFileList(scope.row.basyUuid)"
                 trigger="click">
-                <ul v-if="tableFileList!=''">
-                  <li v-for="item in tableFileList" class="pointer blue" @click="downFile(item.attachment_uuid,item.file_name)"><i class="orange el-icon-folder-opened"></i>{{item.file_name}}</li>
+                <ul v-if="tableFileList!=''" class="fileList-ul">
+                  <li class="tableFileList-title">文件名称</li>
+                  <!--<li v-for="item in tableFileList" class="pointer blue" @click="downFile(item.attachment_uuid,item.file_name)"><i class="orange el-icon-folder-opened"></i>{{item.file_name}}</li>-->
+                  <li v-for="item in tableFileList" class="pointer blue" @click="downFile(item.attachment_uuid,item.file_name)">{{item.file_name}}</li>
                 </ul>
                 <div slot="reference" class="pointer blue">{{scope.row.basyName}}</div>
               </el-popover>
