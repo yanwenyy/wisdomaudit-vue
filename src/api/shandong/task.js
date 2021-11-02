@@ -302,3 +302,20 @@ export function projectRel_pgeList (data) {
 
 
 
+
+
+
+
+// 附件详情  新版
+export function projectRel_taskAttachment (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/auditTask/taskAttachment`,
+    method: 'post',
+    isLoading: false,
+
+    data,
+  })
+}
+
+

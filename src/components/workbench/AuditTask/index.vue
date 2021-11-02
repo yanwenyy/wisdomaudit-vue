@@ -162,7 +162,7 @@
                   <!-- 附件 -->
                   <el-button slot="reference">
                     <div class="update"
-                         @click="open_enclosure_details(scope.row.auditTaskUuid)">
+                         @click="open_enclosure_details(scope.row.auditTaskUuid,scope.row.paramTaskUuid)">
                       <i class="update_icon">
                         <svg t="1631877671204"
                              class="icon"
@@ -1040,6 +1040,7 @@ import {
   task_problems_uopload_details,//附件列表  编辑回显
   task_personLiable,//责任人
   projectRel_pgeList,//核实 新增表头
+  projectRel_taskAttachment,//附件详情  新版
 } from
   '@SDMOBILE/api/shandong/task'
 
@@ -1256,6 +1257,10 @@ export default {
 
       arr: [],//旧表单
       arr2: [],//新表单 //核实后的新表单数据
+
+
+      // 新版附件详情
+      file_details_li: [],
     };
   },
   computed: {},
@@ -1302,20 +1307,47 @@ export default {
     }
     this.task_problems_relation_data(params4);//关联任务
 
+
+
+
   },
   methods: {
+
+    // 附件详情  新版
+    file_list_details (params) {
+      projectRel_taskAttachment(params).then(resp => {
+        console.log(resp.data);
+        this.file_details_li = resp.data;
+      })
+    },
+
+
     // 模型/自建任务列表  
     list_data (params) {
       this.loading = true;
       task_pageList(params).then(resp => {
         this.tableData = resp.data;
-        // console.log(this.tableData);
         this.tableData_list = resp.data.records
-
-        console.log(this.tableData_list);
-        this.loading = false
+        this.loading = false;
       })
     },
+
+    // // 详情合并
+    // file_list_merge () {
+    //   // 列表
+    //   this.tableData_list.forEach(item => {
+    //     // 附件详情
+    //     this.file_details.forEach(i => {
+    //       if (item.onlyuuid == i.resultDetailId) {
+    //         this.$set(item, 'handleIdea', i.handleIdea)//核实意见
+    //         this.$set(item, 'handlePersonName', i.handlePersonName)//核实人
+    //         this.$set(item, 'isProbleam', i.isProbleam)//是否问题 0否 1.是
+    //       }
+    //     })
+    //   })
+    // },
+
+
     handleSizeChange_zijian (val) {
       this.params.pageSize = val
     },
@@ -1656,16 +1688,23 @@ export default {
       })
     },
     // 查看附件详情
-    open_enclosure_details (id) {
-      this.auditTaskUuid = id
+    open_enclosure_details (auditTaskUuid, paramTaskUuid) {
+
       let params2 = {
-        pageNo: 1,
-        pageSize: 10,
-        condition: {
-          businessUuid: this.auditTaskUuid
-        }
+        auditTaskUuid: auditTaskUuid,
+        paramTaskUuid: paramTaskUuid,
       }
-      this.file_details(params2, 2);
+      this.file_list_details(params2)//新版详情
+
+      // this.auditTaskUuid = auditTaskUuid
+      // let params2 = {
+      //   pageNo: 1,
+      //   pageSize: 10,
+      //   condition: {
+      //     businessUuid: this.auditTaskUuid
+      //   }
+      // }
+      // this.file_details(params2, 2);
     },
     // 附件详情
     file_details (params2, index) {
