@@ -2,20 +2,22 @@
   <div class="report anmition_show">
     <div class="header">
       <el-col :span="12">
-        <p>审计项目：2021经费审计项目</p>
+        <p>审计项目：{{file_list.projectName}}</p>
       </el-col>
       <el-col :span="12">
-        <p>被审计单位：2021经费审计项目</p>
+        <p>被审计单位：{{file_list.auditOrgName}}</p>
       </el-col>
     </div>
 
     <div class="conter">
+      <!-- 经营评价：  -->
       <div class="top">
         <el-row>
           <el-col>
             <p>经营评价：</p>
             <el-button plain
                        @click="Correlation_zb()">关联指标</el-button>
+
           </el-col>
 
           <div class="text">
@@ -29,6 +31,7 @@
 
       </div>
 
+      <!-- 管理建议： -->
       <div class="top">
         <el-row>
           <el-col>
@@ -42,7 +45,6 @@
             <el-input type="textarea"
                       resize="none"
                       v-model="businessEvaluation">
-              1.23o239139219830921832390131
             </el-input>
           </div>
 
@@ -57,14 +59,21 @@
             取消</el-button>
           <el-button size="small"
                      type="primary"
+                     v-if="success_btn==0"
                      @click="query_report()">生成报告</el-button>
+          <el-button type="primary"
+                     v-if="success_btn==1"
+                     :loading="true">生成中</el-button>
         </span>
-
         <div class="flex_end">
           <p>附件：</p>
           <ul>
-            <li> <a href="#">关于引发的文件.zip</a><span>版本1.0</span><span>时间2011-1102</span></li>
-            <li> <a href="#">关于引发的文件.zip</a><span>版本1.0</span><span>时间2011-1102</span></li>
+            <li v-for="(item,index) in file_list.attachmentList"
+                :key="index">
+              <p @click="download_click(item.attachmentUuid,item.fileName)">{{item.fileName}}</p>
+              <span>版本1.0</span><span>时间{{item.createTime|filtedate
+}}</span>
+            </li>
 
           </ul>
 
@@ -75,12 +84,24 @@
 
     <!-- 关联指标 -->
     <el-dialog width="40%"
+               @close='closeDialog'
                popper-class="status_data_dlag_verify"
                :visible.sync="dlag_Correlation_zb"
                style="padding-bottom: 59px">
       <div class="title_dlag">关联指标</div>
 
       <div class="dlag_conter3">
+        <!--自建任务 模型任务 筛选 -->
+        <div class="search">
+          <el-input placeholder="请输入指标类型名称"
+                    v-model="search_zb_name"> </el-input>
+          <div class="search_icon"
+               style=" background: rgb(12, 135, 214) !important;"
+               @click="search_list(1)">
+            <i class="el-icon-search"
+               style="color: white;   "></i>
+          </div>
+        </div>
         <!-- 表单 -->
         <el-table :data="correlation"
                   ref="multipleTable"
@@ -133,6 +154,7 @@
 
     <!-- 关联问题 -->
     <el-dialog width="60%"
+               @close='closeDialog'
                popper-class="status_data_dlag_verify"
                :visible.sync="dlag_Correlation_wt"
                style="padding-bottom: 59px">
@@ -140,6 +162,16 @@
       <div class="title_dlag">关联问题</div>
 
       <div class="dlag_conter3">
+        <div class="search">
+          <el-input placeholder="请输入关联问题名称"
+                    v-model="search_jy_name"> </el-input>
+          <div class="search_icon"
+               style=" background: rgb(12, 135, 214) !important;"
+               @click="search_list(2)">
+            <i class="el-icon-search"
+               style="color: white;   "></i>
+          </div>
+        </div>
         <!-- 表单 -->
         <el-table :data="tableData2_list"
                   ref="multipleTable"
@@ -168,11 +200,11 @@
                            align="center"
                            label="描述">
           </el-table-column>
-          <el-table-column prop="problemDiscoveryTime"
+          <el-table-column prop="discoveryTime"
                            align="center"
                            label="发现日期">
             <template slot-scope="scope">
-              <p>{{scope.row.problemDiscoveryTime|filtedate}}</p>
+              <p>{{scope.row.discoveryTime}}</p>
             </template>
 
           </el-table-column>
@@ -204,7 +236,8 @@
 </template>
 
 <script>
-
+import { down_file } from
+  '@SDMOBILE/api/shandong/ls'
 import { operatingIndicators_list, task_pageList_wt, task_pageList_export, export_selectFile } from '@SDMOBILE/api/shandong/AuditReport'
 import { fmtDate } from '@SDMOBILE/model/time.js';
 
@@ -213,6 +246,9 @@ export default {
   data () {
     return {
       file_list: [],//附件
+      search_zb_name: '',//指标筛选
+      search_jy_name: '',//管理建议
+
       loading: false,
       dlag_Correlation_zb: false,//添加关联指标
       dlag_Correlation_wt: false,//添加关联问题
@@ -231,6 +267,7 @@ export default {
       tableData2: [],//关联问题
       tableData2_list: [],//关联问题 list
       wt_listl: [],//问题 选择
+      success_btn: 0,//文件上传完成
     }
   },
   props: ['active_project'],
@@ -253,31 +290,60 @@ export default {
     }
   },
   methods: {
-    // 附件
+
+    // 公用筛选
+    search_list (index) {
+      if (index == 1) {
+        let params = {
+          managementProjectUuid: this.active_project,//项目id
+          indexTypeName: this.search_zb_name,//筛选名称
+        }
+        this.correlation_index(params)// 关联指标
+
+      } else {
+        let params = {
+          condition: {
+            managementProjectUuid: this.active_project,//项目id
+            problem: this.search_zb_name,//模糊查询
+            status: '1',
+          },
+        }
+        this.correlation_problem(params)
+      }
+    },
+    //公用关闭
+    closeDialog () {
+      this.search_zb_name = '';
+      this.search_jy_name = '';
+    },
+    // 附件 以及默认显示
     export_selectFile_data (params) {
       export_selectFile(params).then(resp => {
-        this.file_list = resp.data
-        // console.log(resp);
-
+        this.file_list = resp.data;
+        console.log(11)
       })
     },
-    // listTop (item, index) {
-    //   this.tt.splice(index, 1)
-    //   this.tt.unshift(item)
-    // },
-
 
     // 添加关联指标
     Correlation_zb () {
       let params = {
         managementProjectUuid: this.active_project,//项目id
+        indexTypeName: this.search_zb_name,//筛选名称
       }
       this.dlag_Correlation_zb = true;//添加关联指标
+      this.correlation_index(params)// 关联指标
+    },
+    // 关联指标
+    correlation_index (params) {
+      this.loading = true;
       operatingIndicators_list(params).then(resp => {
         this.correlation = resp.data;
-        console.log(resp);
+        this.loading = false;
+
       })
     },
+
+
     // 指标多选
     handleSelectionChange_zb (val) {
       this.multipleSelection = val;
@@ -290,15 +356,15 @@ export default {
       }
       let array1 = [];//数组1
       this.multipleSelection.forEach((item, i) => {
-        array1.push((i + 1) + '.' + item.accessCaliberName + item.dataProvideDepartmentName + '\n');
-
+        array1.push((i + 1) + '.' + item.accessCaliberName + ',' + item.dataProvideDepartmentName + ',' + item.indexTypeName + ',' + item.indexUnitName + '\n');
       });
       var array_list = array1.join('')
       // var array_list = array1.toString();  //把数组转换为字符串
-      console.log(array_list);
+
       this.administrativeAdvice = array_list;
       this.dlag_Correlation_zb = false;//关闭弹窗
     },
+
 
 
 
@@ -307,16 +373,26 @@ export default {
       let params = {
         condition: {
           managementProjectUuid: this.managementProjectUuid,//项目id
+          problem: this.query.problem,//模糊查询
+          status: '1',
         },
-        problem: this.query.problem,//模糊查询
       }
+      this.correlation_problem(params)
       this.dlag_Correlation_wt = true;//添加关联问题
+
+    },
+    // 关联问题
+    correlation_problem (params) {
       task_pageList_wt(params).then(resp => {
-        // console.log(resp.data);
         this.tableData2 = resp.data;
         this.tableData2_list = resp.data.records;
       })
     },
+
+
+
+
+
     // 问题多选
     handleSelectionChange_wt (val) {
       this.multipleSelection2 = val;
@@ -327,32 +403,128 @@ export default {
         this.$message.info("至少关联一条数据！");
         return false;
       }
+
       let array1 = [];//数组1
-      this.multipleSelection2.forEach((item) => {
-        array1.push(item);
+      this.multipleSelection2.forEach((item, i) => {
+        array1.push((i + 1) + '.' + item.problemFindPeople + ',' + item.discoveryTime + ',' + item.basis + ',' + item.field + ',' + item.problem + ',' + item.describe + ',' + item.riskAmount + ',' + item.managementAdvice + '\n');
       });
-      console.log(array1);
-      return
-      // this.businessEvaluation = array1;
+      var array_list = array1.join('')
+
+      this.businessEvaluation = array_list;
 
       this.dlag_Correlation_wt = false;//添加关联问题
 
     },
     // 生成报告
     query_report () {
-      let params = {
-        managementProjectUuid: this.managementProjectUuid,//项目id
+      this.success_btn = 1;//显示加载按钮  0成功  1 loaging
+      let params2 = {
+        managementProjectUuid: this.active_project,//项目id
         administrativeAdvice: this.administrativeAdvice,//管理建议
         businessEvaluation: this.businessEvaluation//经营评价
       }
-      this.generate(params);//生成
+      this.generate(params2);//生成
     },
     // 生成
     generate (params) {
       task_pageList_export(params).then(resp => {
-        console.log(resp.data);
+
+        this.success_btn = 0;
+        if (resp.code == 0) {
+          this.$message({
+            message: '生成成功',
+            type: 'success'
+          });
+          this.administrativeAdvice = '';//管理建议
+          this.businessEvaluation = '';//经营评价
+          let params = {
+            id: this.active_project,//项目id
+          }
+          this.export_selectFile_data(params)//附件列表
+        } else if (resp.code == 2201) {
+          this.$message({
+            message: resp.msg,
+          });
+          return false
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: 'error'
+          });
+          return false
+        }
+
       })
     },
+
+
+
+
+    //附件下载
+    download_click (id, fileName) {
+      let formData = new FormData()
+      formData.append('fileId', id)
+      down_file(formData).then(resp => {
+        const content = resp;
+        const blob = new Blob([content],
+          { type: 'application/octet-stream,charset=UTF-8' }
+        )
+        if ('download' in document.createElement('a')) {
+          // 非IE下载
+          const elink = document.createElement('a')
+          elink.download = fileName //下载后文件名
+          elink.style.display = 'none'
+          elink.href = window.URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象
+          document.body.removeChild(elink)
+        } else {
+          // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
+    },
+
+
+    //   已完成列表点击附件
+    // download_click (id, name) {
+    //   const fileName = name.split('.')[0];
+    //   //附件下载
+    //   let formData = new FormData()
+    //   formData.append('fileId', id)
+    //   this.$axios({
+    //     method: 'post',
+    //     url: '/wisdomaudit/auditPreviousDemandData/downloadByFileId',
+    //     // url: 'http://localhost:9529/wisdomaudit/attachment/xiazai',
+    //     data: formData,
+    //     responseType: 'blob',
+    //   }).then((res) => {
+    //     const content = res.data;
+    //     const blob = new Blob([content],
+    // { type: 'application/octet-stream,charset=UTF-8' }
+    //     )
+    //     if ('download' in document.createElement('a')) {
+    //       // 非IE下载
+    //       const elink = document.createElement('a')
+    //       elink.download = name //下载后文件名
+    //       elink.style.display = 'none'
+    //       elink.href = window.URL.createObjectURL(blob)
+    //       document.body.appendChild(elink)
+    //       elink.click()
+    //       window.URL.revokeObjectURL(elink.href) // 释放URL 对象
+    //       document.body.removeChild(elink)
+    //     } else {
+    //       // IE10+下载
+    //       navigator.msSaveBlob(blob, fileName)
+    //     }
+    //   }).catch((err) => {
+
+    //   })
+    // },
+
 
   },
 
@@ -388,6 +560,8 @@ export default {
   min-height: 250px !important;
   padding: 10px;
   box-sizing: border-box;
+  line-height: 27px;
+  font-size: 16px;
 }
 .report >>> .el-textarea.is-disabled,
 .el-textarea__inner {
@@ -396,7 +570,6 @@ export default {
   color: #c0c4cc;
   cursor: n-resize;
   background: #fff;
-  line-height: 25px;
 }
 .text {
   width: 100%;
@@ -430,10 +603,16 @@ export default {
 .bottom p {
   display: flex;
   margin-right: 5px;
+  min-width: 45px;
 }
 .flex_end {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
   display: flex;
-  margin-left: 100px;
+  flex: 1;
+  padding: 0 10px 20px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
 }
 .flex_end ul {
   display: flex;
@@ -445,9 +624,53 @@ export default {
   color: #4f9fdd;
   margin-bottom: 20px;
 }
+.flex_end ul li p {
+  cursor: pointer;
+}
 .flex_end ul li span {
   margin: 0 10px;
   color: rgba(0, 0, 0, 1);
   font-weight: 400;
+}
+.search {
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+  padding-bottom: 20px;
+
+  box-sizing: border-box;
+}
+.search >>> .el-input__inner {
+  width: 220px !important;
+  border-radius: 5px 0 0 5px;
+}
+.search >>> .el-input__inner {
+  width: 250px !important;
+  display: flex;
+  float: right;
+  border-radius: 0 !important;
+}
+.titleMes .el-button {
+  border-radius: 0 !important;
+}
+.search >>> .search_icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 36px;
+  height: 36px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+.search >>> .el-button {
+  border-radius: 0 5px 5px 0;
+  /* background: #1371cc !important; */
 }
 </style>

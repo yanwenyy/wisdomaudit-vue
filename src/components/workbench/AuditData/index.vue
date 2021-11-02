@@ -1,6 +1,5 @@
 <template>
-  <div class="sjzl anmition_show"
-       v-if="userRole ==1">
+  <div class="sjzl anmition_show">
     <!-- tab 切换 -->
     <el-tabs v-model="activeName"
              @tab-click="handleClick">
@@ -1359,8 +1358,9 @@ export default {
       enclosure_moban_list: [],//模版资料
 
       user_data: {},//添加资料回显
-      is_add: 0//
+      is_add: 0,//
       // 是否显示新增
+
     }
   },
   computed: {},
