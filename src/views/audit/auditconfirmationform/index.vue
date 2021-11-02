@@ -88,26 +88,26 @@
       @close="handleClose"
     >
       <div class="title">{{confirmationDialogTitle}}</div>
-      <el-form class="formData" label-width="130px"  :model="formDetail">
+      <el-form  :rules="rules" ref="addForm" class="formData" label-width="130px"  :model="formDetail">
         <el-form-item class="itemTwo" label="审计项目名称:"
         >{{managementProjectName}}</el-form-item
         >
         <el-form-item class="itemTwo" label="被审计单位:">{{auditOrgName}}</el-form-item>
-        <el-form-item label="审计（调查）事项:">
+        <el-form-item  prop="matter" label="审计（调查）事项:" >
           <el-input :disabled="ifLook" type="textarea" v-model="formDetail.matter"></el-input>
         </el-form-item>
-        <el-form-item label="审计(调查)事项描述:">
+        <el-form-item  prop="matterDetail" label="审计(调查)事项描述:">
           <el-button  :disabled="ifLook"  @click="getRelationQues" class="relationBtn">关联问题</el-button>
 
           <el-input rows="6" :disabled="ifLook" type="textarea" v-model="formDetail.matterDetail"></el-input>
         </el-form-item>
-        <el-form-item class="itemThree" label="审计人员:">
+        <el-form-item  prop="auditorsName" class="itemThree" label="审计人员:">
           <el-input :disabled="ifLook" placeholder="请输入"  v-model="formDetail.auditorsName"></el-input>
         </el-form-item>
-        <el-form-item class="itemThree" label="复核人:">
+        <el-form-item  prop="reviewerName" class="itemThree" label="复核人:">
           <el-input :disabled="ifLook" placeholder="请输入" v-model="formDetail.reviewerName"></el-input>
         </el-form-item>
-        <el-form-item class="itemThree" label="编制日期:">
+        <el-form-item  prop="compileDate" class="itemThree" label="编制日期:">
           <el-date-picker
             :disabled="ifLook"
             v-model="formDetail.compileDate"
@@ -195,6 +195,7 @@ export default {
   props:['active_project'],
   data() {
     return {
+      canClick:true,
       ifLook:false,
       confirmationDialogTitle:'新增确认单',
       confirmaryData: [],
@@ -219,6 +220,24 @@ export default {
       auditOrgName:'',//被审计单位
       projectType:'',//项目类型 jzsj经责审计  zxsj专项审计
       tableFileList:[],//确认单附件列表
+      // 新增的表单验证
+      rules: {
+        matter: [
+          { required: true, message: "请填写审计（调查）事项", trigger: "blur" },
+        ],
+        matterDetail: [
+          { required: true, message: "请填写审计（调查）事项描述", trigger: "blur" },
+        ],
+        auditorsName: [
+          { required: true, message: "请填写审计人员", trigger: "blur" },
+        ],
+        reviewerName: [
+          { required: true, message: "请填写复核人", trigger: "blur" },
+        ],
+        compileDate: [
+          { required: true, message: "请填写编制日期", trigger: "blur" },
+        ],
+      },
     };
   },
   created() {
@@ -383,43 +402,55 @@ export default {
 
     //保存审计确认单
     saveForm(){
-      if(this.confirmationDialogTitle=='新增确认单'){
-        this.formDetail.managementProjectUuid=this.active_project;
-        auditConfirmation_save(this.formDetail).then(resp => {
-          if (resp.code == 0) {
-            this.$message({
-              message: "保存成功",
-              type: "success",
-            });
-            this.confirmationDialogVisible=false;
-            this.list_data_start();
-          } else {
-            this.$message({
-              message: resp.data.msg,
-              type: "error",
-            });
-          }
+      if(this.canClick){
+        this.canClick=false;
+        this.$refs['addForm'].validate((valid) => {
+          if (valid) {
+            if(this.confirmationDialogTitle=='新增确认单'){
+              this.formDetail.managementProjectUuid=this.active_project;
+              auditConfirmation_save(this.formDetail).then(resp => {
+                this.canClick=true;
+                if (resp.code == 0) {
+                  this.$message({
+                    message: "保存成功",
+                    type: "success",
+                  });
+                  this.confirmationDialogVisible=false;
+                  this.list_data_start();
+                } else {
+                  this.$message({
+                    message: resp.data.msg,
+                    type: "error",
+                  });
+                }
 
-        })
-      }else{
-        auditConfirmation_update(this.formDetail).then(resp => {
-          if (resp.code == 0) {
-            this.$message({
-              message: "修改成功",
-              type: "success",
-            });
-            this.confirmationDialogVisible=false;
-            this.list_data_start();
-          } else {
-            this.$message({
-              message: resp.data.msg,
-              type: "error",
-            });
-          }
+              })
+            }else{
+              auditConfirmation_update(this.formDetail).then(resp => {
+                this.canClick=true;
+                if (resp.code == 0) {
+                  this.$message({
+                    message: "修改成功",
+                    type: "success",
+                  });
+                  this.confirmationDialogVisible=false;
+                  this.list_data_start();
+                } else {
+                  this.$message({
+                    message: resp.data.msg,
+                    type: "error",
+                  });
+                }
 
-        })
+              })
+            }
+          }else{
+            this.canClick=true;
+            this.$message.error("请添加必填项和正确的数据格式");
+            return false;
+          }
+        });
       }
-
     },
     clearForm(){
       this.formDetail={
@@ -534,5 +565,8 @@ export default {
   }
   .orange{
     color:orange;
+  }
+  >>>.el-form-item{
+    margin-bottom: 20px!important;
   }
 </style>
