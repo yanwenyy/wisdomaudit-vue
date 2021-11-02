@@ -127,7 +127,7 @@
             </div>
             <div class="shortcut-wapper" style="">
               <div
-                @click="shortcutEvent('1')"
+                @click="shortcutEvent(item.url)"
                 v-for="(item, index) in outfastlist"
                 :key="'fastli' + index"
                 class="fastli"
@@ -146,7 +146,7 @@
                       : ''
                   "
                 ></span>
-                {{ item.menuName }}
+                <span>{{ item.menuName }}</span>
               </div>
             </div>
           </el-card>
@@ -278,7 +278,6 @@ export default {
     },
     //删除选择
     handleDelete(val) {
-      console.log(val);
       this.$refs.multipleTable.toggleRowSelection(val);
     },
     //添加选择
@@ -429,38 +428,10 @@ export default {
       });
     },
 
-    shortcutEvent(type) {
-      return;
-      switch (type) {
-        case "1":
-          this.$router.push({
-            path: "/audit/riskMonitoring/riskScan/personal",
-          });
-          break;
-        case "2":
-          this.$router.push({
-            path: "/audit/riskMonitoring/riskScan/personal",
-          });
-          break;
-        case "3":
-          this.$router.push({
-            path: "/audit/auditItems/projectWorkbench",
-            query: { index: "1-1" },
-          });
-          break;
-        case "4":
-          // this.$router.push({ path: "/audit/personalManage/ModelList" });
-
-          break;
-        case "5":
-          // this.$router.push({ path: "/audit/audittasknode" });
-          break;
-        case "6":
-          this.$router.push({ path: "/audit/personalManage/auditbasis" });
-          break;
-        default:
-          break;
-      }
+    shortcutEvent(url) {
+      this.$router.push({
+        path: url,
+      });
     },
   },
 };
@@ -618,6 +589,9 @@ export default {
     height: 50px;
     display: flex;
     align-items: center;
+    span {
+      cursor: pointer;
+    }
     span.item-icon {
       display: inline-block;
       width: 8px;

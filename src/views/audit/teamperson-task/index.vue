@@ -148,7 +148,7 @@
           v-model="value"
           :titles="['组员列表', '已选组员']"
           :data="data"
-          v-loading="loading"
+         
           @change="selectMember"
         >
         </el-transfer>
@@ -699,7 +699,7 @@ export default {
 .title {
   border-bottom: 1px solid #d2d2d2;
   padding: 10px;
-  text-align: left;
+  text-align: center;
 }
 /* 方法二 */
 .stepNew {

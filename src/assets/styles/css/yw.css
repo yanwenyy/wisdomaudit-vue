@@ -65,3 +65,19 @@ table tr:nth-child(odd){
 .search-form>.el-form-item{
   margin-left: 30px;
 }
+.inline-block{
+  display: inline-block;
+}
+.no-padding{
+  padding: 0!important;
+  border: none!important;
+}
+.tableFileList-title{
+  padding: 5px 0;
+  border-top:1px solid #ddd;
+  background: #F4FAFF;
+}
+.fileList-ul>li{
+  padding-left: 10px;
+  margin-bottom: 10px;
+}

@@ -74,8 +74,9 @@
     </el-drawer>
 
     <!-- 初始化项目 -->
+    <!-- v-show="projectNum.length > 0" -->
     <div class="initializeProject" v-if="active_project">
-      <div class="title" v-show="projectNum.length > 0" style="margin-top: -1%">
+      <div class="title"  style="margin-top: -1%">
         初始化项目
       </div>
       <ul v-if="projectInit">
@@ -232,7 +233,8 @@
       @click="close()"
     >
       <div class="right_data">
-        <ul :class="project_data == true ? 'style_width' : ''" class="ul_data">
+        <div :class="project_data == true ? 'style_width' : ''" class="ul_data">
+        <ul  style="height: 100%;overflow-y: auto;">
           <li
             @click.stop="look_project(index, item)"
             v-for="(item, index) in projectInitMore"
@@ -244,6 +246,7 @@
             {{ item.projectName }}
           </li>
         </ul>
+        </div>
       </div>
     </div>
 
@@ -511,7 +514,7 @@
         </div>
 
         <div class="stepBtn">
-          <el-button @click="prevoius">上一步</el-button>
+          <el-button @click="prevoius()">上一步</el-button>
           <el-button class="nextBtn" @click="saveBtn">完成</el-button>
         </div>
       </div>
@@ -1284,7 +1287,6 @@ export default {
       if (to == "left") {
         this.data.forEach((e) => {
          if(list.indexOf(e.key)!=-1){
-           console.log(e)
            e.isLiaison=2;
          }
         });
@@ -1299,6 +1301,7 @@ export default {
     },
     // 组员查询
     getSelectData(num, size) {
+      // alert(2)
       this.loading = true;
       getProjectMember(num, size).then((resp) => {
         this.personMes = resp.data.list;
@@ -1329,6 +1332,7 @@ export default {
 
     // 查询已选组员
     projectMember(data) {
+      // alert(11)
       projectMembership(data).then((resp) => {
         this.peopleSelection = resp.data.records;
         this.tableData = resp.data.records;
@@ -1432,6 +1436,10 @@ export default {
     },
     prevoius() {
       this.step = 1;
+        this.getSelectData(1, 1000);//左侧
+                // this.projectMember(this.query);//右侧
+
+
     },
     // 模糊查询引入模型名称
     queryModel() {
@@ -2056,7 +2064,7 @@ export default {
     span {
       color: #12579a;
       margin: 0 10px;
-      min-width: 70px;
+      min-width: 80px;
       box-sizing: border-box;
       cursor: pointer;
       padding: 0.5%;
@@ -2113,6 +2121,8 @@ export default {
       position: absolute;
       right: -300px;
       top: 0;
+      height: 100%;
+      position: fixed;
       // width: 300px;
       padding: 40px 20px 20px;
       background-color: #fff;

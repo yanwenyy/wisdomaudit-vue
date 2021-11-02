@@ -46,4 +46,7 @@ export default {
 .el-loading-mask{
   z-index: 1998;
 }
+.el-button--text{
+  border: none !important;
+}
 </style>
