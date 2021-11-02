@@ -186,7 +186,6 @@
           ref="addjingForm"
           label-position="right"
           hide-required-asterisk
-          v-loading="loadingForm"
         >
           <el-row>
             <el-form-item label="ㅤ项目编号:" prop="projectCode">
@@ -415,7 +414,6 @@
           ref="addjingForm"
           :rules="addprojectjingRules"
           hide-required-asterisk
-          v-loading="loadingForm"
         >
           <el-row>
             <el-form-item label="ㅤ项目编号:" prop="projectCode">
@@ -619,7 +617,6 @@
           :rules="rules"
           :model="addProjectManagement"
           ref="editform"
-          v-loading="loadingForm"
           hide-required-asterisk
         >
           <el-row>
@@ -826,7 +823,6 @@
           :model="addprojectjing"
           :rules="addprojectjingRules"
           ref="editform"
-          v-loading="loadingForm"
           hide-required-asterisk
         >
           <el-row>
