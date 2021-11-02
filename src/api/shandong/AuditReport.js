@@ -35,7 +35,7 @@ export function task_pageList_export (data) {
   })
 }
 
-// 附件
+// 附件 以及公用信息显示
 export function export_selectFile (data) {
   let id = data.id
   console.log(id);
