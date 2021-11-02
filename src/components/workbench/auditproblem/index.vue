@@ -666,7 +666,7 @@ export default {
       } else {
         this.dqbasis.choose.push(val);
         this.$message({
-          message: '引用成功，点击确定保存',
+          message: '引用成功',
           type: 'success'
         });
 
@@ -698,7 +698,6 @@ export default {
         data: {},
       }).then((res) => {
         this.dqbasis.info = res.data.data.treeData;
-        this.dqbasis.choose = [];
         this.basisload = false;
       });
     },
