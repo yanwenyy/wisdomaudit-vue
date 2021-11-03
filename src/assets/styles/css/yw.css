@@ -9,7 +9,7 @@ table tr:nth-child(odd){
   border-bottom:1px solid #eee!important;
 }
 .el-table__body{
-  border-collapse:collapse;
+  border-collapse:collapse!important;
 }
 .blue{
   color: #79BDF0!important;
