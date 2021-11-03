@@ -612,4 +612,7 @@ export default {
 >>> .el-form-item {
   margin-bottom: 20px !important;
 }
+  >>>.el-dialog__footer{
+    text-align: center;
+  }
 </style>
