@@ -256,7 +256,7 @@
       :before-close="addClosed"
       width="60%"
     >
-      <div class="title" style="border-bottom: 1px solid #d2d2d2">
+      <div class="dialogTitle">
         {{ name }}
       </div>
       <div class="addPerson" v-if="step == 1">
@@ -309,6 +309,7 @@
                 color: #8492a6;
                 font-size: 13px;
                  margin-right: 20px;
+                 cursor: pointer;
               "
               @click="cancel_Btn(option)"
               >接口人</span
@@ -2321,17 +2322,17 @@ export default {
   right: 0;
 }
 .temBtn {
-  width: 130%;
+  width: 100%;
   // border: 1px solid red;
   margin-top: 2%;
   margin-bottom: 1%;
-  text-align: right;
+  text-align: center;
 }
 .stepBtn {
   //  border: 1px solid red;
   margin-top: 2%;
   margin-bottom: 1%;
-  text-align: right;
+  text-align: center;
 }
 .addAudit .nextBtn {
   background: #1897e4 !important;

@@ -433,7 +433,7 @@
             </el-table-column>
             <el-table-column prop="belongSpcial" label="所属专题">
             </el-table-column>
-            <el-table-column prop="modelName" label="模型名称">
+            <el-table-column prop="modelName" label="模型名称" show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="address" label="说明" width="250">
             </el-table-column>
@@ -1594,15 +1594,16 @@ export default {
 }
 
 .stepBtn {
+  width: 100%;
   /* border: 1px solid red; */
   margin-top: 5%;
-  text-align: right;
+  text-align: center;
 }
 .temBtn {
-  width: 120%;
+  width: 100%;
   /* border: 1px solid red; */
   margin-top: 5%;
-  text-align: right;
+  text-align: center;
 }
 .addAudit .nextBtn {
   background: #508ce6 !important;
