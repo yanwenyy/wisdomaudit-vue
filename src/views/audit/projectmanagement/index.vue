@@ -647,7 +647,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="ㅤ项目名称:" prop="projectName">
+            <el-form-item label="ㅤ项目名称:">
               <el-input
                 placeholder="请输入"
                 v-model="addProjectManagement.projectName"
@@ -853,7 +853,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="ㅤ项目名称:">
+            <el-form-item label="ㅤ项目名称:" >
               <el-input
                 placeholder="请输入"
                 v-model="addprojectjing.projectName"
@@ -879,7 +879,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="ㅤㅤㅤ专题:" prop="specialName">
+            <el-form-item label="ㅤㅤㅤ专题:">
               <el-select
                 placeholder="请选择"
                 v-model="addprojectjing.specialName"
@@ -896,7 +896,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="ㅤㅤㅤ领域:" prop="fieldName">
+            <el-form-item label="ㅤㅤㅤ领域:">
               <el-select
                 placeholder="请选择"
                 v-model="addprojectjing.fieldName"
@@ -958,7 +958,7 @@
           <el-row>
             <el-form-item label="ㅤ审计期间:" class="editdataTime">
               <el-col :span="8">
-                <el-form-item prop="auditStartData">
+                <el-form-item>
                   <el-date-picker
                     type="date"
                     placeholder="请选择"
@@ -968,7 +968,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item prop="auditFinishData" style="margin-left: -5px">
+                <el-form-item  style="margin-left: -5px">
                   <el-date-picker
                     type="date"
                     placeholder="请选择"
