@@ -1,7 +1,7 @@
 
 import request from '@/utils/request'
 
-const baseURL = '/wisdomaudit'
+const baseURL = '/wisdomaudit_wei'
 import qs from 'qs'
 
 // 设置参数

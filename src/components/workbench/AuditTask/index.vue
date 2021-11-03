@@ -10,7 +10,7 @@
           <!-- 自建新增   -->
           <el-col :span="1.5">
             <el-button type="primary"
-                       v-if="userRole==1 && userRole==2 "
+                       v-if="userRole==1 || userRole==2 "
                        @click="new_add_zj()">新增任务</el-button>
           </el-col>
 
@@ -127,47 +127,44 @@
               </template>
             </el-table-column>
             <!-- 附件 -->
-            <el-table-column prop="count"
+            <el-table-column prop="file_details_li"
                              align="center"
                              label="附件"
                              width="90">
 
               <template slot-scope="scope">
+
                 <!-- createUserUuid fileCount-->
                 <el-popover placement="bottom"
                             width="350"
-                            @show="open_enclosure_details(scope.row.attachmentUuid,scope.row.fileName)"
+                            v-if="scope.row.fileCount"
+                            @show="open_enclosure_details_data(scope.row.auditTaskUuid,scope.row.paramTaskUuid,)"
+                            :popper-class="file_new==''?'no-padding':''"
                             trigger="click">
-                  <ul :popper-class="enclosure_details_list.attchmentList1==''?'no-padding':''"
-                      v-if="enclosure_details_list.attchmentList1!=''"
-                      class="fileList-ul">
-                    <li class="tableFileList-title">问题核实反馈资料</li>
-                    <li v-for="(item,index) in enclosure_details_list.attchmentList1"
-                        :key="index"
-                        class="pointer blue"
-                        @click="download(item.attachment_uuid,item.file_name)">
-                      {{item.fileName}}</li>
-                  </ul>
-
-                  <ul :popper-class="enclosure_details_list.attchmentList2==''?'no-padding':''"
-                      v-if="enclosure_details_list.attchmentList2!=''"
-                      class="fileList-ul">
-                    <li class="tableFileList-title">最终审计核实结果数据</li>
-                    <li v-for="(item,index) in enclosure_details_list.attchmentList2"
-                        :key="index"
-                        class="pointer blue"
-                        @click="download(item.attachment_uuid,item.file_name)">
-                      {{item.fileName}}</li>
-                  </ul>
-
-                  <ul :popper-class="enclosure_details_list.attchmentList3==''?'no-padding':''"
-                      v-if="enclosure_details_list.attchmentList3!=''"
-                      class="fileList-ul">
+                  <ul class="fileList-ul">
                     <li class="tableFileList-title">现场提取资料 </li>
-                    <li v-for="(item,index) in enclosure_details_list.attchmentList3"
+                    <li v-for="(item,index) in file_new.attachmentList1"
                         :key="index"
                         class="pointer blue"
-                        @click="download(item.attachment_uuid,item.file_name)">
+                        @click="download(item.attachmentUuid,item.fileName)">
+                      {{item.fileName}}</li>
+                  </ul>
+
+                  <ul class="fileList-ul">
+                    <li class="tableFileList-title">最终审计核实结果数据</li>
+                    <li v-for="(item,index) in file_new.attachmentList2"
+                        :key="index"
+                        class="pointer blue"
+                        @click="download(item.attachmentUuid,item.fileName)">
+                      {{item.fileName}}</li>
+                  </ul>
+
+                  <ul class="fileList-ul">
+                    <li class="tableFileList-title">问题核实反馈资料 </li>
+                    <li v-for="(item,index) in file_new.attachmentList3"
+                        :key="index"
+                        class="pointer blue"
+                        @click="download(item.attachmentUuid,item.fileName)">
                       {{item.fileName}}</li>
                   </ul>
 
@@ -177,45 +174,6 @@
                   </div>
                 </el-popover>
               </template>
-
-              <!-- 附件详情 -->
-              <!-- <template slot-scope="scope">
-                <el-popover placement="bottom"
-                            width="400"
-                            trigger="click">
-                  <el-table :data="enclosure_details_list"
-                            :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
-                            v-loading="loading_file"
-                            style="width: 100%;">
-                    <el-table-column prop="fiileType"
-                                     align="center"
-                                     label="资料类型">
-                    </el-table-column>
-                    <el-table-column prop="fileName"
-                                     align="center"
-                                     label="文件名称">
-                      <template slot-scope="scope">
-                        <p @click="download_click(scope.row.attachmentUuid,scope.row.fileName)"
-                           type="text"
-                           class="file_name"
-                           size="small">
-                          {{ scope.row.fileName }}
-                        </p>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-
-                  <el-button slot="reference"
-                             style="color: #1371cc;background:none;border:none">
-                    <div class="update"
-                         @click="open_enclosure_details(scope.row.auditTaskUuid,scope.row.paramTaskUuid)">
-                      <i class="el-icon-folder-opened list-folder"></i>
-                      <span>{{scope.row.fileCount}}</span>
-                    </div>
-                  </el-button>
-                </el-popover>
-              </template> -->
-
             </el-table-column>
 
             <!-- 状态 -->
@@ -242,7 +200,7 @@
                              align="center"
                              width="250">
               <template slot-scope="scope">
-                <div v-if="userRole==1 && userRole==2 ">
+                <div v-if="userRole==1 || userRole==2 ">
 
                   <!-- 模型 ---------->
                   <!-- 重新执行设置 -->
@@ -276,7 +234,7 @@
                   <el-button @click="delete_model(scope.row.auditTaskUuid)"
                              type="
                            text"
-                             style="color: red"
+                             style="color: red;border:none;"
                              size="small">
                     删除
                   </el-button>
@@ -304,6 +262,7 @@
 
     <!-- 模型任务 结果数 -->
     <el-dialog width="90%"
+               el-dialog
                popper-class="status_data_dlag"
                :visible.sync="dialogVisible_data_num"
                style="padding-bottom: 59px">
@@ -334,7 +293,7 @@
           <el-col> 模型线索结果（{{jg_title}}模型） </el-col>
           <el-col style="display: contents">
             <el-button plain
-                       v-if="userRole==1 && userRole==2 "
+                       v-if="userRole==1 || userRole==2 "
                        @click="task_verify()">核实</el-button>
             <!-- 下载核实结果 -->
             <!-- <el-button plain
@@ -398,55 +357,31 @@
             </template>
           </el-table-column>
           <!-- 附件 -->
-          <el-table-column prop=""
+          <el-table-column prop="count"
                            align="center"
                            label=附件>
             <template slot-scope="scope">
-              <!-- 有附件 -->
-              <div class="update"
-                   v-if="scope.row.enclosureCount !==0"
-                   @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)">
-                <div class="update_icon">
-                  <svg t="1631877671204"
-                       class="icon"
-                       viewBox="0 0 1024 1024"
-                       version="1.1"
-                       xmlns="http://www.w3.org/2000/svg"
-                       p-id="9939"
-                       width="200"
-                       height="200">
-                    <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                          fill="#FD9D27"
-                          p-id="9940"></path>
-                  </svg>
+              <el-popover placement="bottom"
+                          width="250"
+                          @show="open_enclosure_details(scope.row)"
+                          trigger="click">
+                <ul class="fileList-ul">
+                  <li class="tableFileList-title">文件名称</li>
+                  <li v-for="(item,index) in enclosure_details_list"
+                      :key="index"
+                      class="pointer blue"
+                      @click="download(item.attachmentUuid,item.fileName)">
+                    {{item.fileName}}</li>
+                </ul>
+                <div slot="reference"
+                     style="color: #1371cc;"
+                     class="pointer">
+                  <i class="el-icon-folder-opened list-folder"></i>
+                  {{scope.row.count}}
                 </div>
-                <span>0</span>
-                <!-- <span>{{scope.row.enclosureCount}}</span> -->
-              </div>
-              <!-- 没有附件 -->
-              <div class="update"
-                   v-else>
-                <div class="update_icon">
-                  <svg t="1631877671204"
-                       class="icon"
-                       viewBox="0 0 1024 1024"
-                       version="1.1"
-                       xmlns="http://www.w3.org/2000/svg"
-                       p-id="9939"
-                       width="200"
-                       height="200">
-                    <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                          fill="#FD9D27"
-                          p-id="9940"></path>
-                  </svg>
-                </div>
-                <span>0</span>
-
-                <!-- <span>{{scope.row.enclosureCount}}</span> -->
-              </div>
+              </el-popover>
             </template>
           </el-table-column>
-          <!-- 固定 end -->
 
         </el-table>
         <!-- 表单 end-->
@@ -476,23 +411,24 @@
 
     <!-- 结果数 核实明细结果  -->
     <el-dialog width="40%"
-               @close="resetForm_verify('verify')"
+               el-dialog
+               @close="resetForm_verify('verify_model')"
                popper-class="status_data_dlag_verify"
                :visible.sync="dialogVisible_data_verify"
                style="padding-bottom: 59px">
       <div class="title_dlag">核实结果</div>
 
       <div class="dlag_conter3 verify">
-        <el-form ref="verify"
+        <el-form ref="verify_model"
                  :rules='rules_verify'
-                 :model="verify"
+                 :model="verify_model"
                  :inline="false">
           <!-- 是否问题-->
-          <el-form-item prop="isProbleam_data">
+          <el-form-item prop="isProbleam">
             <p><span>*</span>是否问题：</p>
-            <el-select v-model="verify.isProbleam_data"
+            <el-select v-model="verify_model.isProbleam_data"
                        @change="isProbleam_change">
-              <el-option v-for="item in isProbleam"
+              <el-option v-for="item in isProbleam_data_select"
                          :key="item.value"
                          :label="item.label"
                          :value="item.value">
@@ -503,7 +439,7 @@
           <el-form-item>
             <p>核实信息：</p>
             <el-input type="textarea"
-                      v-model="verify.handleIdea"
+                      v-model="verify_model.handleIdea"
                       placeholder="请输入核实信息"></el-input>
           </el-form-item>
           <!-- 上传文件 -->
@@ -528,6 +464,7 @@
           </el-form-item>
         </el-form>
         <span slot="footer"
+              center
               class="foot">
           <el-button type="primary"
                      v-if="success_btn2==1"
@@ -536,7 +473,7 @@
                v-if="success_btn2==0">
             <el-button size="small"
                        type="primary"
-                       @click="verify_save('verify')">保 存</el-button>
+                       @click="verify_save('verify_model')">保 存</el-button>
             <el-button size="small"
                        plain
                        @click="dialogVisible_data_verify = false">返回</el-button>
@@ -548,59 +485,61 @@
 
     <!-- 模型任务 问题数 -->
     <el-dialog :visible.sync="problemsDialogVisible"
+               el-dialog
                width="70%">
       <div class="title_dlag">问题数</div>
+      <div class="dlag_conter2 ">
 
-      <el-row style="margin-top:3%;background:#F2F2F2;padding:15px">
-        <el-col :span="18"
-                class="tableTitle">{{wt_title}}模型审计发现列表</el-col>
-        <!-- <el-col :span="6">
+        <el-row style="margin-top:3%;background:#F2F2F2;padding:15px">
+          <el-col :span="18"
+                  class="tableTitle">{{wt_title}}模型审计发现列表</el-col>
+          <!-- <el-col :span="6">
           <el-button size="small"
                      type="primary"
                      style="float:right"
                      @click="add_list()">增加</el-button>
 
         </el-col> -->
-      </el-row>
-      <el-table :data="probleNum_list"
-                v-loading="loading"
-                :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
-                ref="multipleTable"
-                style="width: 100%;margin-bottom:2%">
-        <!-- tooltip-effect="dark" -->
-        <!-- @selection-change="handleSelectionChange_wts" -->
-        <!-- <el-table-column type="selection"
+        </el-row>
+        <el-table :data="probleNum_list"
+                  v-loading="loading"
+                  :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                  ref="multipleTable"
+                  style="width: 100%;margin-bottom:2%">
+          <!-- tooltip-effect="dark" -->
+          <!-- @selection-change="handleSelectionChange_wts" -->
+          <!-- <el-table-column type="selection"
                          align="center"> </el-table-column> -->
-        <el-table-column prop="field"
-                         align="center"
-                         label="领域"> </el-table-column>
-        <el-table-column prop="problem"
-                         align="center"
-                         label="问题"> </el-table-column>
-        <el-table-column prop="basis"
-                         align="center"
-                         label="依据"> </el-table-column>
-        <el-table-column prop="describe"
-                         align="center"
-                         label="描述"> </el-table-column>
+          <el-table-column prop="field"
+                           align="center"
+                           label="领域"> </el-table-column>
+          <el-table-column prop="problem"
+                           align="center"
+                           label="问题"> </el-table-column>
+          <el-table-column prop="basis"
+                           align="center"
+                           label="依据"> </el-table-column>
+          <el-table-column prop="describe"
+                           align="center"
+                           label="描述"> </el-table-column>
 
-        <el-table-column prop="problemDiscoveryTime"
-                         align="center"
-                         label="发现时间">
-          <template slot-scope="scope">
-            {{scope.row.problemDiscoveryTime |filtedate }}
-          </template>
+          <el-table-column prop="problemDiscoveryTime"
+                           align="center"
+                           label="发现时间">
+            <template slot-scope="scope">
+              {{scope.row.problemDiscoveryTime |filtedate }}
+            </template>
 
-        </el-table-column>
+          </el-table-column>
 
-        <el-table-column prop="riskAmount"
-                         align="center"
-                         width="180"
-                         label="风险金额（万元）"> </el-table-column>
-        <el-table-column prop="problemFindPeople"
-                         align="center"
-                         label="发现人"> </el-table-column>
-        <!-- <el-table-column prop="name6"
+          <el-table-column prop="riskAmount"
+                           align="center"
+                           width="180"
+                           label="风险金额（万元）"> </el-table-column>
+          <el-table-column prop="problemFindPeople"
+                           align="center"
+                           label="发现人"> </el-table-column>
+          <!-- <el-table-column prop="name6"
                          align="center"
                          width="160"
                          label="操作">
@@ -614,8 +553,9 @@
                        @click="remove_list(scope.row.problemListUuid)">删除</el-button>
           </template>
         </el-table-column> -->
-      </el-table>
+        </el-table>
 
+      </div>
       <!-- 分页 -->
       <div class="page">
         <el-pagination @size-change="handleSizeChange_probleNum"
@@ -771,7 +711,8 @@
     </el-dialog> -->
 
     <!-- 模型任务设置参数 -->
-    <el-dialog :visible.sync="setParametersDialogVisible"
+    <el-dialog center
+               :visible.sync="setParametersDialogVisible"
                width="60%">
       <el-card class="setParameters"> 参数设置 </el-card>
       <el-card class="parameters">
@@ -885,6 +826,7 @@
 
     <!-- 自建任务新增 编辑-->
     <el-dialog :visible.sync="dialogVisible_zj"
+               center
                @close="resetForm2('save_zj_query')"
                style="padding-bottom: 59px">
       <div class="title_dlag">{{title}}</div>
@@ -1244,13 +1186,13 @@ export default {
       disabled: true,//责任人点击
 
       loading_edit: false,//编辑 loading
-      verify: {
+      verify_model: {
         isProbleam_data: '',//是否问题
         handleIdea: '',//核实信息
         resultDetailIds: '',//核实结果id
       },
       // 是否问题
-      isProbleam: [
+      isProbleam_data_select: [
         {
           value: "0",
           label: "否",
@@ -1280,8 +1222,6 @@ export default {
         isProbleam_data: [{ required: true, message: '请选择问题', trigger: 'change' }],
         handleIdea: [{ required: true, message: '请输入核实信息', trigger: 'blur' }],
       },
-
-
       // 新增核实 表头
       params_heshi: {
         pageNo: 1,
@@ -1293,7 +1233,11 @@ export default {
 
 
       // 新版附件详情
-      file_details_li: [],
+      file_new: [],
+      attachmentList1: [],
+      attachmentList2: [],
+      attachmentList3: [],
+
     };
   },
   computed: {},
@@ -1345,16 +1289,6 @@ export default {
 
   },
   methods: {
-
-    // 附件详情  新版
-    file_list_details (params) {
-      projectRel_taskAttachment(params).then(resp => {
-        console.log(resp.data);
-        this.file_details_li = resp.data;
-      })
-    },
-
-
     // 模型/自建任务列表  
     list_data (params) {
       this.loading = true;
@@ -1364,23 +1298,6 @@ export default {
         this.loading = false;
       })
     },
-
-    // // 详情合并
-    // file_list_merge () {
-    //   // 列表
-    //   this.tableData_list.forEach(item => {
-    //     // 附件详情
-    //     this.file_details.forEach(i => {
-    //       if (item.onlyuuid == i.resultDetailId) {
-    //         this.$set(item, 'handleIdea', i.handleIdea)//核实意见
-    //         this.$set(item, 'handlePersonName', i.handlePersonName)//核实人
-    //         this.$set(item, 'isProbleam', i.isProbleam)//是否问题 0否 1.是
-    //       }
-    //     })
-    //   })
-    // },
-
-
     handleSizeChange_zijian (val) {
       this.params.pageSize = val
     },
@@ -1720,24 +1637,34 @@ export default {
 
       })
     },
-    // 查看附件详情
-    open_enclosure_details (auditTaskUuid, paramTaskUuid) {
-      this.file_details_li = [];//清空值
+    // 列表查看附件
+    open_enclosure_details_data (auditTaskUuid, paramTaskUuid) {
       let params2 = {
         auditTaskUuid: auditTaskUuid,
         paramTaskUuid: paramTaskUuid,
       }
       this.file_list_details(params2)//新版详情
-
-      // this.auditTaskUuid = auditTaskUuid
-      // let params2 = {
-      //   pageNo: 1,
-      //   pageSize: 10,
-      //   condition: {
-      //     businessUuid: this.auditTaskUuid
-      //   }
-      // }
-      // this.file_details(params2, 2);
+    },
+    // 列表 附件详情  新版
+    file_list_details (params) {
+      console.log(params);
+      projectRel_taskAttachment(params).then(resp => {
+        this.file_new = resp.data;
+        this.attachmentList1 = resp.data.attachmentList1;
+        this.attachmentList2 = resp.data.attachmentList2;
+        this.attachmentList3 = resp.data.attachmentList3;
+      })
+    },
+    // 结果附件
+    open_enclosure_details (data) {
+      let params2 = {
+        pageNo: 1,
+        pageSize: 10,
+        condition: {
+          businessUuid: data.resultDetailProjectRelId
+        }
+      }
+      this.file_details(params2, 2);
     },
     // 附件详情
     file_details (params2, index) {
@@ -1747,12 +1674,6 @@ export default {
         // index=1  列表查看附件详情
         if (index == 2) {
           this.enclosure_details_list = resp.data
-          // if (this.enclosure_details_list.length == 0) {
-          //   this.$message('暂无上传的附件');
-          //   return false
-          // } else {
-          //   // this.dialogVisibl_enclosure_details = true;
-          // }
         } else {
           var list = resp.data//
           // 编辑回显
@@ -1798,14 +1719,6 @@ export default {
         console.log(err);
       })
     },
-
-    // 请求责任人 select数据
-    // select_people (params_people) {
-    //   task_select_people(params_people).then(resp => {
-    //     this.select_list = resp.data.records;
-
-    //   })
-    // },
 
     // 模型任务列表 自建任务 筛选
     search_list () {
@@ -1895,7 +1808,6 @@ export default {
       })
     },
     // 合并 结果列表 新旧数表单
-
     merge () {
       this.arr.forEach(item => {
         this.arr2.forEach(i => {
@@ -1903,6 +1815,9 @@ export default {
             this.$set(item, 'handleIdea', i.handleIdea)//核实意见
             this.$set(item, 'handlePersonName', i.handlePersonName)//核实人
             this.$set(item, 'isProbleam', i.isProbleam)//是否问题 0否 1.是
+            this.$set(item, 'count', i.count)//附件数
+            this.$set(item, 'resultDetailProjectRelId', i.resultDetailProjectRelId)//核实信息表主键
+
           }
         })
       })
@@ -1996,7 +1911,7 @@ export default {
     },
     // 是否问题 change
     isProbleam_change (val) {
-      this.verify.isProbleam = val
+      this.verify_model.isProbleam_data = val
     },
 
     // 新增上传附件
@@ -2017,20 +1932,11 @@ export default {
         // }
       }
     },
-    // 结果数 核实上传关闭
-    resetForm_verify (verify) {
-      // this.$refs[verify].resetFields();
-      this.verify = '';//清空输入
-      this.$refs.upload2.clearFiles();
-      // this.save_zj_query.taskDescription = '';//清空备忘录
-      // this.save_zj_query.taskName = '';//清空name
-      this.success_btn2 = 0;//显示加载按钮  0成功  1 loaging
-    },
 
 
     // 核实上传 保存附件
-    verify_save (verify) {
-      this.$refs[verify].validate((valid) => {
+    verify_save (formName) {
+      this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.fileList2.length > 0) {
             this.success_btn2 = 1;//显示加载按钮  0成功  1 loaging
@@ -2062,11 +1968,11 @@ export default {
                 var arr = this.multipleSelection_data_list.map(function (item, index) {
                   return item.onlyuuid;
                 }).join(",");
-                console.log(arr);
+                // console.log(arr);
                 // 提交
                 let resultDetailProjectRelDto = {
-                  handleIdea: this.verify.handleIdea,//核实信息
-                  isProbleam: this.verify.isProbleam_data, //是否问题（0：否 1：是 ）
+                  handleIdea: this.verify_model.handleIdea,//核实信息
+                  isProbleam: this.verify_model.isProbleam_data, //是否问题（0：否 1：是 ）
                   resultDetailIds: arr,//核实明细结果id （多个）
                   attachmentList: this.Upload_file2,//上传成功de 的文件
                   projectId: this.managementProjectUuid,
@@ -2085,19 +1991,13 @@ export default {
               }
             })//上传 end
           } else {
-            console.log('直接保存');
             // 直接保存
-
-            console.log(this.multipleSelection_data_list);
             var arr = this.multipleSelection_data_list.map(function (item, index) {
               return item.onlyuuid;
             }).join(",");
-            console.log(arr);
-
-
             let resultDetailProjectRelDto = {
-              handleIdea: this.verify.handleIdea,//核实信息
-              isProbleam: this.verify.isProbleam_data, //是否问题（0：否 1：是 ）
+              handleIdea: this.verify_model.handleIdea,//核实信息
+              isProbleam: this.verify_model.isProbleam_data, //是否问题（0：否 1：是 ）
               resultDetailIds: arr,//核实明细结果id （多个）
               attachmentList: this.edit_file_list2,//上传成功的 的文件
               projectId: this.managementProjectUuid,
@@ -2112,6 +2012,14 @@ export default {
         }
       });
     },
+    // 结果数 核实上传关闭
+    resetForm_verify (formName) {
+      this.$refs[formName].resetFields();
+      this.verify_model = '';//清空输入
+      this.$refs.upload2.clearFiles();
+      this.success_btn2 = 0;//显示加载按钮  0成功  1 loaging
+    },
+
 
     // 核实保存
     verify_preservation (resultDetailProjectRelDto) {
@@ -2126,6 +2034,21 @@ export default {
 
           // 新表单
           this.new_table();//新接口 table
+
+
+          // 刷新任务列表
+          let params = {
+            pageNo: this.params.pageNo,
+            pageSize: this.params.pageSize,
+            condition: {
+              auditModelCategory: this.params.auditModelCategory,
+              managementProjectUuid: this.managementProjectUuid,
+              taskName: this.search_taskName,
+              // taskType: 2//自建任务列表
+            }
+          }
+          this.list_data(params);
+
 
         } else {
           this.$message({
@@ -2668,14 +2591,23 @@ export default {
   
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
-@import "../../../assets/styles/css/yw.css";
+/* @import "../../../assets/styles/css/yw.css"; */
+
+.task_type >>> .el-button:hover,
+.task_type >>> .el-button,
+.task_type >>> .el-button:focus {
+  background: none;
+  border-color: transparent !important;
+}
 /* 附件详情 */
 .file_details {
   /* border: 1px solid red; */
   height: 200px;
   overflow-y: auto;
 }
-
+.title_dlag {
+  text-align: center;
+}
 .sjzl >>> .is-plain {
   background: #ffffff !important;
   border: 1px solid #dcdfe6 !important;
@@ -2896,7 +2828,7 @@ export default {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  padding-bottom: 33px;
+  padding-bottom: 20px;
   box-sizing: border-box;
 }
 .dlag_conter3 >>> .el-form-item__content {
@@ -2916,7 +2848,7 @@ export default {
 .dlag_conter3 >>> .foot {
   width: 100%;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   flex-wrap: wrap;
   margin-top: 20px;
 }
@@ -2956,6 +2888,10 @@ export default {
 }
 
 /* 核实  */
+.verify {
+  padding: 0 20px 20px 20px;
+  box-sizing: border-box;
+}
 .verify >>> .el-form-item__content textarea,
 .verify >>> .el-form-item__content .el-input {
   width: 300px;
@@ -2968,6 +2904,9 @@ export default {
 
 .verify >>> .el-form-item__content span {
   color: red;
+}
+.verify >>> .el-upload {
+  width: 100% !important;
 }
 
 .dlag_conter >>> .el-upload-list__item-name {
@@ -3000,4 +2939,9 @@ export default {
 .pointer {
   cursor: pointer;
 }
+.dlag_conter2 {
+  padding: 0 20px 20px;
+  box-sizing: border-box;
+}
 </style>
+ 

@@ -84,6 +84,7 @@
 
     <!-- 关联指标 -->
     <el-dialog width="40%"
+               center
                @close='closeDialog'
                popper-class="status_data_dlag_verify"
                :visible.sync="dlag_Correlation_zb"
@@ -154,6 +155,7 @@
 
     <!-- 关联问题 -->
     <el-dialog width="60%"
+               center
                @close='closeDialog'
                popper-class="status_data_dlag_verify"
                :visible.sync="dlag_Correlation_wt"
@@ -532,11 +534,7 @@ export default {
 </script>
 
 <style scoped>
-.title_dlag {
-  border-bottom: 1px solid #d2d2d2;
-  padding: 10px;
-  text-align: left;
-}
+@import "../../../assets/styles/css/lhg.css";
 
 .report {
 }
@@ -589,7 +587,7 @@ export default {
 .dlag_conter3 >>> .foot {
   width: 100%;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   flex-wrap: wrap;
   padding-bottom: 25px;
   margin-top: 20px;
