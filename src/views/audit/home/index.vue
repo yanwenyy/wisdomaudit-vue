@@ -70,7 +70,7 @@
                   <h5 @click="taskModelEvent" class="pointer">
                     {{ item.projectName || "--" }}
                   </h5>
-                  <span>{{ timefilter(item.updateTime || "") }}</span>
+                  <span>{{ timefilter(item.createTime || "") }}</span>
                 </div>
                 <el-divider></el-divider>
                 <div class="li-item">
