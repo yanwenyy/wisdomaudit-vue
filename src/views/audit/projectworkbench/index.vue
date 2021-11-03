@@ -76,9 +76,7 @@
     <!-- 初始化项目 -->
     <!-- v-show="projectNum.length > 0" -->
     <div class="initializeProject" v-if="active_project">
-      <div class="title"  style="margin-top: -1%">
-        初始化项目
-      </div>
+      <div class="title" style="margin-top: -1%">初始化项目</div>
       <ul v-if="projectInit">
         <li
           v-for="(item, index) in projectInit"
@@ -234,18 +232,20 @@
     >
       <div class="right_data">
         <div :class="project_data == true ? 'style_width' : ''" class="ul_data">
-        <ul  style="height: 100%;overflow-y: auto;">
-          <li
-            @click.stop="look_project(index, item)"
-            v-for="(item, index) in projectInitMore"
-            :key="index"
-            :class="
-              active_project == item.managementProjectUuid ? 'active_class' : ''
-            "
-          >
-            {{ item.projectName }}
-          </li>
-        </ul>
+          <ul style="height: 100%; overflow-y: auto">
+            <li
+              @click.stop="look_project(index, item)"
+              v-for="(item, index) in projectInitMore"
+              :key="index"
+              :class="
+                active_project == item.managementProjectUuid
+                  ? 'active_class'
+                  : ''
+              "
+            >
+              {{ item.projectName }}
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -256,7 +256,7 @@
       :before-close="addClosed"
       width="60%"
     >
-      <div class="title" style="border-bottom: 1px solid #d2d2d2">
+      <div class="dialogTitle">
         {{ name }}
       </div>
       <div class="addPerson" v-if="step == 1">
@@ -297,10 +297,9 @@
                 float: right;
                 color: #8492a6;
                 font-size: 13px;
-                padding-left: 10px;
-                padding-right: 15px;
+                margin-right: 10px;
               "
-              @click="isLiaison_Btn(option,value)"
+              @click="isLiaison_Btn(option, value)"
               >设为接口人</span
             >
             <span
@@ -309,8 +308,10 @@
                 float: right;
                 color: #8492a6;
                 font-size: 13px;
-                padding-left: 10px;
+                 margin-right: 20px;
+                 cursor: pointer;
               "
+              @click="cancel_Btn(option)"
               >接口人</span
             >
           </span>
@@ -1286,16 +1287,16 @@ export default {
       // }
       if (to == "left") {
         this.data.forEach((e) => {
-         if(list.indexOf(e.key)!=-1){
-           e.isLiaison=2;
-         }
+          if (list.indexOf(e.key) != -1) {
+            e.isLiaison = 2;
+          }
         });
       } else {
-         this.data.forEach((e) => {
-         if(list.indexOf(e.key)!=-1){
-           console.log(e)
-           e.isLiaison=0;
-         }
+        this.data.forEach((e) => {
+          if (list.indexOf(e.key) != -1) {
+            console.log(e);
+            e.isLiaison = 0;
+          }
         });
       }
     },
@@ -1315,7 +1316,7 @@ export default {
             label: e.realName + e.mobile,
             disabled: false,
             isLiaison: 2,
-            peopleTableUuid: String(e.id)
+            peopleTableUuid: String(e.id),
           });
         });
         console.log(resp.data.list);
@@ -1343,13 +1344,17 @@ export default {
             for (let j = 0; j < this.data.length; j++) {
               if (this.data[j].key == e.peopleTableUuid) {
                 this.data[j].disabled = true;
-                 this.data[j].projectMembershipUuid = e.projectMembershipUuid;
+                this.data[j].projectMembershipUuid = e.projectMembershipUuid;
               }
             }
           }
           for (let k = 0; k < this.data.length; k++) {
             if (e.isLiaison == 0 && this.data[k].key == e.peopleTableUuid) {
               this.data[k].isLiaison = 0;
+            }
+            if (e.isLiaison == 1 && this.data[k].key == e.peopleTableUuid) {
+              this.data[k].isLiaison = 1;
+              this.data[k].disabled = true;
             }
           }
           this.value.push(e.peopleTableUuid);
@@ -1363,55 +1368,63 @@ export default {
     },
 
     //设为接口人事件
-    isLiaison_Btn(row,list) {
-      this.data.forEach((item)=>{
-        if(list.indexOf(item.key)!=-1){
-          item.isLiaison = 0;
-          item.disabled = false;
-        }
-      })
-      row.isLiaison = 1;
-      row.disabled = true;
+    isLiaison_Btn(row, list) {
+      // console.log(row);
+      // console.log(list);
+      this.data.forEach((item) => {
+          if (list.indexOf(item.key) != -1) {
+            item.isLiaison = 0;
+            item.disabled = false;
+          }
+        });
+        row.isLiaison = 1;
+        row.disabled = true;
     },
-
+    //取消设为接口人
+    cancel_Btn(row){
+      // alert(123)
+      row.isLiaison = 0;
+      // row.disabled = true;
+      row.disabled = false;
+    },
     // 下一步按钮事件
     nextBtn() {
       this.step = 2;
-      var selectedPeople=[];
-      this.data.forEach((item)=>{
-        if(this.value.indexOf(item.key)!=-1){
-          item.managementProjectUuid=this.managementProjectUuid;
+      var selectedPeople = [];
+      this.data.forEach((item) => {
+        if (this.value.indexOf(item.key) != -1) {
+          item.managementProjectUuid = this.managementProjectUuid;
           item.peopleRole = 2;
           // item.peopleTableUuid=this.key;
           selectedPeople.push(item);
         }
-      })
-      console.log(selectedPeople)
+      });
+      // console.log(selectedPeople)
 
       this.updataPerson.projectId = this.managementProjectUuid;
-        // // this.updataPerson.projectMemberships = [];
-        // // for (let i = 0; i < this.peopleSelection.length; i++) {
-        // //   this.updataPerson.projectMemberships.push({
-        // //     peopleRole: 2,
-        // //     isLiaison: 0,
-        // //     managementProjectUuid: this.managementProjectUuid,
-        // //     peopleTableUuid: this.peopleSelection[i].peopleTableUuid,
-        // //     projectMembershipUuid:
-        // //       this.peopleSelection[i].projectMembershipUuid,
-        // //   });
-        // }
+      // // this.updataPerson.projectMemberships = [];
+      // // for (let i = 0; i < this.peopleSelection.length; i++) {
+      // //   this.updataPerson.projectMemberships.push({
+      // //     peopleRole: 2,
+      // //     isLiaison: 0,
+      // //     managementProjectUuid: this.managementProjectUuid,
+      // //     peopleTableUuid: this.peopleSelection[i].peopleTableUuid,
+      // //     projectMembershipUuid:
+      // //       this.peopleSelection[i].projectMembershipUuid,
+      // //   });
+      // }
 
-        this.updataPerson.projectMemberships=selectedPeople;
-        //下一步 保存组员
-        editprojectMembershipList(this.updataPerson).then((resp) => {
-          this.queryleader.condition.managementProjectUuid =
-            this.managementProjectUuid;
-          this.leaderSelect(this.queryleader);
-        });
-
-        this.getModelList.condition.managementProjectUuid =
+      this.updataPerson.projectMemberships = selectedPeople;
+      //下一步 保存组员
+      editprojectMembershipList(this.updataPerson).then((resp) => {
+        this.queryleader.condition.managementProjectUuid =
           this.managementProjectUuid;
-        this.getauditModelList(this.getModelList);
+        this.leaderSelect(this.queryleader);
+      });
+
+      this.getModelList.condition.managementProjectUuid =
+        this.managementProjectUuid;
+      this.getauditModelList(this.getModelList);
     },
     //删除任务按钮事件
     deleteModel(row) {
@@ -1436,10 +1449,8 @@ export default {
     },
     prevoius() {
       this.step = 1;
-        this.getSelectData(1, 1000);//左侧
-                // this.projectMember(this.query);//右侧
-
-
+      this.getSelectData(1, 1000); //左侧
+      // this.projectMember(this.query);//右侧
     },
     // 模糊查询引入模型名称
     queryModel() {
@@ -2311,17 +2322,17 @@ export default {
   right: 0;
 }
 .temBtn {
-  width: 130%;
+  width: 100%;
   // border: 1px solid red;
   margin-top: 2%;
   margin-bottom: 1%;
-  text-align: right;
+  text-align: center;
 }
 .stepBtn {
   //  border: 1px solid red;
   margin-top: 2%;
   margin-bottom: 1%;
-  text-align: right;
+  text-align: center;
 }
 .addAudit .nextBtn {
   background: #1897e4 !important;
@@ -2505,6 +2516,7 @@ export default {
   text-overflow: ellipsis;
   overflow: hidden;
   word-break: break-all;
+  font-size: 13px;
 }
 .textOver:hover {
   text-overflow: inherit;

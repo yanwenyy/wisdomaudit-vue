@@ -556,7 +556,6 @@
               label="ㅤ审计期间:"
               class="dataTime"
               required
-              prop="auditStartData"
             >
               <el-col :span="8">
                 <el-form-item prop="auditStartData">
@@ -629,7 +628,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="ㅤ项目类型:">
+            <el-form-item label="ㅤ项目类型:" prop="projectTypeName">
               <el-select
                 placeholder="请选择"
                 v-model="addProjectManagement.projectTypeName"
@@ -854,7 +853,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="ㅤ项目名称:" prop="projectName">
+            <el-form-item label="ㅤ项目名称:">
               <el-input
                 placeholder="请输入"
                 v-model="addprojectjing.projectName"
@@ -1176,13 +1175,27 @@ export default {
       },
       // 添加经责表单校验
       addprojectjingRules: {
-        // projectName1: [
-        //   { required: true, message: "请填写项目名称", trigger: "blur" },
-        // ],
-        // auditOrgLeader: [
-        //   { required: true, message: "请填写被审计领导", trigger: "blur" },
-        //   { max: 5, message: "被审计领导在5个字符之内", trigger: "change" },
-        // ],
+        projectName: [
+          { required: true, message: "请填写项目名称", trigger: "blur" },
+        ],
+        auditOrgLeader: [
+          { required: true, message: "请填写被审计领导", trigger: "blur" },
+          { max: 5, message: "被审计领导在5个字符之内", trigger: "change" },
+        ],
+         auditStartData: [
+          {
+            required: true,
+            message: "请选择审计开始时间",
+            trigger: "change",
+          },
+        ],
+        auditFinishData: [
+          {
+            required: true,
+            message: "请选择审计结束时间",
+            trigger: "change",
+          },
+        ],
       },
     };
   },
@@ -1641,8 +1654,11 @@ export default {
     // 编辑
     editDialog(rows) {
       this.editDialogVisible = true;
+      //  this.$refs.rules.clearValidate();
+      //   this.$refs.addjingForm.clearValidate();
       this.selectprojectPeople(1, 1000);
       if (rows.projectType == "jzsj") {
+       
         this.prjType = 2;
         editProject(rows.managementProjectUuid).then((resp) => {
           this.addprojectjing = resp.data;
@@ -1728,7 +1744,7 @@ export default {
     text-align: center;
     border: 1px solid #ebeef2;
     cursor: pointer;
-    margin-bottom: 5%;
+    // margin-bottom: 5%;
   }
 }
 .addzhuanForm {
@@ -1745,30 +1761,31 @@ export default {
   }
   .addIcon {
     background-color: #fff;
-    width: 98.5%;
+    width: 100%;
     padding: 10px;
     color: #128ad7;
     text-align: center;
     border: 1px solid #ebeef2;
     cursor: pointer;
-    margin-bottom: 5%;
+    // margin-bottom: 5%;
   }
 }
 .addzhuanBtn {
   //  border: 1px solid red;
   margin-top: 3%;
-  text-align: right;
+  text-align: center;
   .nextBtn {
     background: #508ce6 !important;
     color: #fff;
   }
 }
 .stepBtn {
-  width: 100%;
+  width: 125%;
   padding: 2%;
+  margin-left: -25%;
   // border: 1px solid red;
   margin-top: 3%;
-  text-align: right;
+  text-align: center;
   .nextBtn {
     background: #508ce6 !important;
     color: #fff;

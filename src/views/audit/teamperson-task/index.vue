@@ -855,9 +855,11 @@ export default {
 }
 
 .stepBtn {
-  /* border: 1px solid red; */
-  margin-top: 5%;
-  text-align: right;
+  width: 100%;
+//  border: 1px solid red; 
+  margin-top: 4%;
+  margin-bottom: 2%;
+  text-align: center;
 }
 .addAudit .nextBtn {
   background: #508ce6 !important;
