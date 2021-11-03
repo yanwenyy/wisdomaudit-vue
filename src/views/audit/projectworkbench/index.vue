@@ -2523,4 +2523,7 @@ export default {
   overflow: visible;
   white-space: pre-line;
 }
+.projectWorkbench >>> .el-table__header {
+  border-top: none !important;
+}
 </style>
