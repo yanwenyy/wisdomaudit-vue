@@ -710,12 +710,13 @@
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="editTaskSelfDialogVisible" width="50%">
+    <el-dialog :visible.sync="editTaskSelfDialogVisible" width="50%"  @close="editResetForm2('editTaskRef')">
       <div class="dialogTitle">编辑自建任务</div>
       <div class="selfTask">
         <el-form
           label-width="100px"
           :model="edittaskSelfForm"
+          ref="editTaskRef"
           hide-required-asterisk
         >
           <!-- <el-form-item label="类型：" style="margin-bottom: 50px">
@@ -1746,6 +1747,7 @@ export default {
     },
     // 自建任务编辑完成按钮
     edittaskSelfSave() {
+      console.log(this.fileList);
       if (this.fileList.length > 0) {
         const loading = this.$loading({
           lock: true,
@@ -1850,6 +1852,11 @@ export default {
     },
     resetForm2(resetForm2) {
       this.$refs[resetForm2].resetFields();
+      this.fileList = [];
+    },
+    editResetForm2(ref) {
+      this.$refs[ref].resetFields();
+      this.fileList = [];
     },
     //新增自建任务上传附件
     handleChangePic(file, fileList) {
