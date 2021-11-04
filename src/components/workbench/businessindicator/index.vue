@@ -16,33 +16,35 @@
       <!--</div>-->
     </div>
     <div class="jyzb-div">
-      <table class="jyzb">
+      <table class="jyzb" style="table-layout: fixed">
         <tr>
-          <th width="150">指标分类</th>
-          <th width="150">指标名称</th>
-          <th width="100">单位</th>
-          <th width="150" v-for="item in yearRange">{{item}}</th>
-          <th width="150">资料提供部门</th>
-          <th width="100">联系人</th>
-          <th width="160">操作</th>
+          <th><div class="td-100">指标分类</div></th>
+          <th><div class="td-150">指标名称</div></th>
+          <th><div class="td-100">单位</div></th>
+          <th v-for="item in yearRange"><div class="td-150">{{item}}</div></th>
+          <th><div class="td-150">资料提供部门</div></th>
+          <th><div class="td-100">联系人</div></th>
+          <th><div class="td-100">操作</div></th>
         </tr>
       </table>
-      <table class="jyzb" v-for="item in dataList">
+      <table class="jyzb" v-for="item in dataList" style="table-layout: fixed">
         <tr>
-          <td class="jyzb-tr-title" colspan="7">{{item.indexType}}</td>
+          <td class="jyzb-tr-title" :colspan="6+(yearRange.length)">{{item.indexType}}</td>
         </tr>
         <tr v-for="vtem in item.children">
-          <td width="150"></td>
-          <td width="150">{{vtem.indexName}}</td>
-          <td width="100">{{vtem.indexUnitName}}</td>
-          <td width="150" v-for="y in vtem.operatingIndicatorsValueList">
-            <span v-if="yearRange.indexOf(y.indexDate)!=-1">{{y.indexValue}}</span>
+          <td><div class="transparent td-100">指标分类</div></td>
+          <td><div class="td-150">{{vtem.indexName}}</div></td>
+          <td><div class="td-100">{{vtem.indexUnitName}}</div></td>
+          <td v-for="y in vtem.operatingIndicatorsValueList">
+            <div class="td-150" v-if="yearRange.indexOf(y.indexDate)!=-1">{{y.indexValue}}</div>
           </td>
-          <td width="150">{{vtem.dataProvideDepartmentName}}</td>
-          <td width="100">{{vtem.contactPerson}}</td>
-          <td width="160">
-            <el-button type="text" class="blue" @click="edit(vtem)">编辑</el-button>
-            <el-button type="text" class="red" @click="del(vtem.operatingIndicatorsUuid)">删除</el-button>
+          <td><div class="td-150">{{vtem.dataProvideDepartmentName}}</div></td>
+          <td><div class="td-100">{{vtem.contactPerson}}</div></td>
+          <td>
+            <div class="td-100">
+              <el-button type="text" class="blue" @click="edit(vtem)">编辑</el-button>
+              <el-button type="text" class="red" @click="del(vtem.operatingIndicatorsUuid)">删除</el-button>
+            </div>
           </td>
         </tr>
       </table>
@@ -121,7 +123,7 @@
       :visible.sync="editVisible"
       :close-on-click-modal="false"
     >
-      <el-form :model="formState" class="formData"  label-width="100px">
+      <el-form :model="formState" class="formData zb-edit"  label-width="150px">
         <el-form-item v-for="(item,index) in formState.operatingIndicatorsValueList" :label="item.indexDate" :key="index">
           <el-input
             v-model="item.indexValue"
@@ -130,7 +132,7 @@
           ></el-input>
         </el-form-item>
       </el-form>
-      <div slot="footer">
+      <div slot="footer" class="zb-edit-footer">
         <el-button @click="editVisible = false">取消</el-button>
         <el-button type="primary" @click="editSave">确定</el-button>
       </div>
@@ -481,6 +483,13 @@ export default {
     padding: 10px;
     background: #fff;
     text-align: center;
+    box-sizing: border-box;
+    word-break: break-all;
+  }
+  .jyzb td div,.jyzb th div{
+    display: inline-block;
+    box-sizing: border-box;
+    word-break: break-all;
   }
   .blue{
     color: blue;
@@ -490,6 +499,31 @@ export default {
   }
   .jyzb button{
     border: none!important;
+  }
+  >>>.zb-edit .el-form-item__content{
+    width: 70%!important;
+  }
+  .zb-edit-footer{
+    text-align: center;
+  }
+  .transparent{
+    visibility: hidden;
+  }
+  .td-150{
+    width: 150px!important;
+    box-sizing: border-box;
+  }
+  .td-100{
+    width: 100px!important;
+    box-sizing: border-box;
+  }
+  .td-200{
+     width: 200px!important;
+     box-sizing: border-box;
+   }
+  .td-250{
+    width: 250px!important;
+    box-sizing: border-box;
   }
 </style>
 
