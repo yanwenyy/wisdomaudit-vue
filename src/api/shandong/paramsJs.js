@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import $ from "jquery"
-const analysisUrl = '/wisdomaudit_wei'
-const baseURL = '/wisdomaudit_wei'
+const analysisUrl = '/wisdomaudit'
+const baseURL = '/wisdomaudit'
 
 
 /**

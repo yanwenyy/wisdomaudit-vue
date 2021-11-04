@@ -10,6 +10,7 @@
           <!-- 自建新增   -->
           <el-col :span="1.5">
             <el-button type="primary"
+                       style="border:none;"
                        v-if="userRole==1 || userRole==2 "
                        @click="new_add_zj()">新增任务</el-button>
           </el-col>

@@ -374,7 +374,7 @@ export default {
     Correlation_wt () {
       let params = {
         condition: {
-          managementProjectUuid: this.managementProjectUuid,//项目id
+          managementProjectUuid: this.active_project,//项目id
           problem: this.query.problem,//模糊查询
           status: '1',
         },
@@ -385,16 +385,12 @@ export default {
     },
     // 关联问题
     correlation_problem (params) {
+
       task_pageList_wt(params).then(resp => {
         this.tableData2 = resp.data;
         this.tableData2_list = resp.data.records;
       })
     },
-
-
-
-
-
     // 问题多选
     handleSelectionChange_wt (val) {
       this.multipleSelection2 = val;
@@ -459,9 +455,6 @@ export default {
       })
     },
 
-
-
-
     //附件下载
     download_click (id, fileName) {
       let formData = new FormData()
@@ -489,45 +482,6 @@ export default {
         console.log(err);
       })
     },
-
-
-    //   已完成列表点击附件
-    // download_click (id, name) {
-    //   const fileName = name.split('.')[0];
-    //   //附件下载
-    //   let formData = new FormData()
-    //   formData.append('fileId', id)
-    //   this.$axios({
-    //     method: 'post',
-    //     url: '/wisdomaudit/auditPreviousDemandData/downloadByFileId',
-    //     // url: 'http://localhost:9529/wisdomaudit/attachment/xiazai',
-    //     data: formData,
-    //     responseType: 'blob',
-    //   }).then((res) => {
-    //     const content = res.data;
-    //     const blob = new Blob([content],
-    // { type: 'application/octet-stream,charset=UTF-8' }
-    //     )
-    //     if ('download' in document.createElement('a')) {
-    //       // 非IE下载
-    //       const elink = document.createElement('a')
-    //       elink.download = name //下载后文件名
-    //       elink.style.display = 'none'
-    //       elink.href = window.URL.createObjectURL(blob)
-    //       document.body.appendChild(elink)
-    //       elink.click()
-    //       window.URL.revokeObjectURL(elink.href) // 释放URL 对象
-    //       document.body.removeChild(elink)
-    //     } else {
-    //       // IE10+下载
-    //       navigator.msSaveBlob(blob, fileName)
-    //     }
-    //   }).catch((err) => {
-
-    //   })
-    // },
-
-
   },
 
 }

@@ -12,7 +12,7 @@
           <el-row class="titleMes">
             <el-col :span="1.5">
               <el-button type="primary"
-                         style="background:#4BDCB4!important;border:none;"
+                         style="border:none;"
                          v-if="is_add==1"
                          @click="add_data_task()">新增资料任务</el-button>
             </el-col>

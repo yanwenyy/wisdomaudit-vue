@@ -153,24 +153,6 @@
                     </div>
                   </el-popover>
 
-                  <!-- <div class="update"
-                       @click="enclosure_look(scope.row.dataModulId)">
-                    <div class="update_icon">
-                      <svg t="1631877671204"
-                           class="icon"
-                           viewBox="0 0 1024 1024"
-                           version="1.1"
-                           xmlns="http://www.w3.org/2000/svg"
-                           p-id="9939"
-                           width="200"
-                           height="200">
-                        <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                              fill="#FD9D27"
-                              p-id="9940"></path>
-                      </svg>
-                    </div>
-                    <span>{{scope.row.enclosure}}</span>
-                  </div> -->
                 </template>
 
               </el-table-column>
@@ -202,25 +184,6 @@
               <el-table-column prop="dataNumber"
                                label="附件">
                 <template slot-scope="scope">
-                  <!-- <div class="update"
-                       @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)">
-                    <div class="update_icon">
-                      <svg t="1631877671204"
-                           class="icon"
-                           viewBox="0 0 1024 1024"
-                           version="1.1"
-                           xmlns="http://www.w3.org/2000/svg"
-                           p-id="9939"
-                           width="200"
-                           height="200">
-                        <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                              fill="#FD9D27"
-                              p-id="9940"></path>
-                      </svg>
-                    </div>
-                    <span>{{scope.row.enclosureCount}}</span>
-                  </div> -->
-
                   <el-popover :popper-class="findFile_list==''?'no-padding':''"
                               v-if="scope.row.enclosureCount"
                               placement="bottom"
