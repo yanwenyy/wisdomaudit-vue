@@ -202,14 +202,17 @@
         <el-button type="primary" @click="savefastlist()">确 定</el-button>
       </span>
     </el-dialog>
+    <Vault></Vault>
   </div>
 </template>
 
 <script>
+import Vault from "@WISDOMAUDIT/components/Vaultcertification"
 import moment from "moment";
 import axios from "axios";
 import { validUsername } from "@/utils/validate";
 export default {
+  components: { Vault },
   data() {
     return {
       modellist: [],
