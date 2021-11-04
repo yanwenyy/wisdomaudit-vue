@@ -206,6 +206,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import axios from "axios";
 import { validUsername } from "@/utils/validate";
 export default {
@@ -221,6 +222,7 @@ export default {
       fastlist: [],
       dqfastlist: [],
       outfastlist: [],
+      ifpush: true,
     };
   },
   created() {
@@ -239,24 +241,30 @@ export default {
           type: "warning",
         });
       } else {
-        axios({
-          url: `/wisdomaudit/homePage/shortCutSet`,
-          method: "post",
-          data: this.dqfastlist,
-        }).then((res) => {
-          console.log(res);
-          if (res.data.code == 0) {
-            this.fastDialogVisible = false;
-            this.$refs.multipleTable.clearSelection();
-            this.$message({
-              message: "设置成功",
-              type: "success",
-            });
-            this.getdqfastlist();
-          } else {
-            this.$message.error(res.data.data.msg);
-          }
-        });
+        if (this.ifpush) {
+          this.ifpush = false
+          axios({
+            url: `/wisdomaudit/homePage/shortCutSet`,
+            method: "post",
+            data: this.dqfastlist,
+          }).then((res) => {
+            console.log(res);
+            if (res.data.code == 0) {
+              this.fastDialogVisible = false;
+              this.$refs.multipleTable.clearSelection();
+              this.$message({
+                message: "设置成功",
+                type: "success",
+              });
+              this.ifpush = true
+              this.getdqfastlist();
+            } else {
+              this.$message.error(res.data.msg);
+            }
+          });
+        }else{
+          return
+        }
       }
     },
     //关闭快捷功能设置前
@@ -309,8 +317,12 @@ export default {
         method: "post",
         data: {},
       }).then((res) => {
-        this.dqfastlist = res.data.data.records;
-        this.outfastlist = res.data.data.records;
+        let rep = [];
+        for(let j=0;j<res.data.data.records.length;j++){
+          rep.push({menuName:res.data.data.records[j].menuName,url:res.data.data.records[j].url})
+        }
+        this.dqfastlist = rep;
+        this.outfastlist = rep;
         let _this = this;
         for (let i = 0; i < res.data.data.records.length; i++) {
           this.fastlist.forEach((row) => {
@@ -333,9 +345,12 @@ export default {
       });
     },
     timefilter(time) {
-      let oldTime = new Date(time).getTime();
-      let newTime = new Date(oldTime).toLocaleString("zh", { hour12: false });
-      return newTime;
+      let pattern = "YYYY-MM-DD HH:mm:ss";
+      if (time) {
+        return moment(time).format(pattern);
+      } else {
+        return "";
+      }
     },
     //打开快捷功能设置
     openfast() {

@@ -48,5 +48,6 @@ export default {
 }
 .el-button--text{
   border: none !important;
+  background-color: transparent !important;
 }
 </style>
