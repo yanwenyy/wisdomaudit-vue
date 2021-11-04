@@ -1,5 +1,5 @@
 <template>
-  <div v-if="userRole == 1">
+  <div class="personMain" v-if="userRole == 1">
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="组员维护" name="first" style="padding: 1%">
         <el-row :gutter="24">
@@ -960,5 +960,8 @@ export default {
   -ms-flex-align: center;
   align-items: center;
   border-radius: 0 5px 5px 0;
+}
+.personMain >>> .el-table__header {
+  border-top: none !important;
 }
 </style>

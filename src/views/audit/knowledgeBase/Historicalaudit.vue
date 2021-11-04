@@ -13,10 +13,10 @@
                   v-model="query.findPeople"> </el-input>
         <div class="search_icon">
           <i class="el-icon-search"
+             @click="search_list()"
              style="color: rgba(0, 0, 0, 0.5)"></i>
         </div>
-        <el-button type="primary"
-                   @click="search_list()">筛选</el-button>
+
       </div>
     </div>
     <div class="header">
@@ -29,33 +29,40 @@
       <!-- 表单 -->
       <el-table :data="tableData_list"
                 v-loading="loading"
+                :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                 style="width: 100%">
 
         <el-table-column type="index"
                          label="序号"
+                         align="center"
                          width="50">
         </el-table-column>
         <!-- 历史审计发现 -->
         <el-table-column prop="historyAuditFindDescribe"
+                         align="center"
                          label="历史审计发现描述">
         </el-table-column>
         <!-- 被审计单位 -->
         <el-table-column prop="auditedEntity"
+                         align="center"
                          label="被审计单位">
         </el-table-column>
 
         <!-- 发现人 -->
         <el-table-column prop="findPeople"
+                         align="center"
                          label="发现人">
         </el-table-column>
 
         <!-- 审计依据 -->
         <el-table-column prop="auditBasis"
+                         align="center"
                          label="审计依据">
 
         </el-table-column>
         <!-- 发现时间 -->
         <el-table-column prop="findData"
+                         align="center"
                          label="发现时间">
           <template slot-scope="scope">
             <p>{{scope.row.findData |filtedate}}</p>
@@ -63,16 +70,19 @@
         </el-table-column>
         <!-- 发现来源 -->
         <el-table-column prop="source"
+                         align="center"
                          label="发现来源 ">
         </el-table-column>
 
         <!-- 风险金额 -->
         <el-table-column prop="riskAmount"
+                         align="center"
                          label="风险金额">
         </el-table-column>
 
         <!-- 操作 -->
         <el-table-column prop="edit"
+                         align="center"
                          label="操作">
           <template slot-scope="scope">
             <el-button @click="edit(scope.row.historyAuditFindUuid)"
@@ -114,9 +124,9 @@
 
     <!-- 历史审计发现描述 -->
     <el-dialog @close="resetForm2('add')"
+               center
                :visible.sync="dialogVisible"
                style="padding-bottom: 59px">
-
       <div class="title_dlag">{{title}}</div>
 
       <div class="dlag_conter">
@@ -531,35 +541,54 @@ export default {
     },
     // 删除
     delete_model (id) {
-      this.historyAuditFindUuid = id
-      let params = {
-        ids: this.historyAuditFindUuid
-      }
-      // 删除
-      historicalaudit_delete(params).then(resp => {
-        console.log(resp.data);
-        if (resp.code == 0) {
-          this.$message({
-            message: '删除成功',
-            type: 'success'
-          });
-          // 刷新列表
-          let params2 = {
-            pageNo: this.query.pageNo,
-            pageSize: this.query.pageSize,
-            condition: {
-              findPeople: this.query.findPeople,
-              historyAuditFindDescribe: this.query.historyAuditFindDescribe,
-            }
-          }
-          this.page_list(params);
-        } else {
-          this.$message({
-            message: resp.msg,
-            type: 'error'
-          })
-        }
+
+      this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
+        .then(() => {
+          // let params = {
+          //   ids: id,
+          // }
+          // this.task_problems_delete_btn(params);
+
+          this.historyAuditFindUuid = id
+          let params = {
+            ids: this.historyAuditFindUuid
+          }
+          // 删除
+          historicalaudit_delete(params).then(resp => {
+            console.log(resp.data);
+            if (resp.code == 0) {
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              });
+              // 刷新列表
+              let params2 = {
+                pageNo: this.query.pageNo,
+                pageSize: this.query.pageSize,
+                condition: {
+                  findPeople: this.query.findPeople,
+                  historyAuditFindDescribe: this.query.historyAuditFindDescribe,
+                }
+              }
+              this.page_list(params);
+            } else {
+              this.$message({
+                message: resp.msg,
+                type: 'error'
+              })
+            }
+          })
+
+
+        })
+        .catch(() => { });
+
+
+
     },
 
     // 领域select
@@ -609,8 +638,16 @@ export default {
 </script>
 
 <style scoped>
+@import "../../../assets/styles/css/lhg.css";
 .app-main {
   background-color: #fff;
+}
+.sjzl >>> .el-dialog--center .el-dialog__body {
+  padding: 0;
+}
+.dlag_conter {
+  padding: 0 20px 20px 20px;
+  box-sizing: border-box;
 }
 .header {
   display: flex;
@@ -633,7 +670,7 @@ export default {
 }
 .search >>> .el-input__inner {
   width: 220px !important;
-  border-radius: 5px 0 0 5px;
+  border-radius: 0;
 }
 .search >>> .el-input__inner {
   width: 180px;
@@ -643,9 +680,9 @@ export default {
 .search >>> .search_icon {
   position: absolute;
   top: 0;
-  right: 70px;
-  width: 37px;
-  height: 37px;
+  right: 0;
+  width: 36px;
+  height: 36px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -655,6 +692,11 @@ export default {
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
+  color: #fff;
+  background: rgb(12, 135, 214) !important;
+}
+.search >>> .el-icon-search {
+  color: #fff !important;
 }
 .search >>> .el-button {
   border-radius: 0 5px 5px 0;
@@ -682,7 +724,7 @@ export default {
 .dlag_conter >>> .foot {
   width: 100%;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   flex-wrap: wrap;
   margin-top: 20px;
 }

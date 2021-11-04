@@ -313,7 +313,6 @@ export function projectRel_taskAttachment (data) {
     url: `/auditTask/taskAttachment`,
     method: 'post',
     isLoading: false,
-
     data,
   })
 }

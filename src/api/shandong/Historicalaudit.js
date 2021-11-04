@@ -9,6 +9,7 @@ export function historicalaudit_pageList (data) {
     baseURL: baseURL,
     url: `/historyAuditFind/pageList `,
     method: 'post',
+    isLoading: false,
     data,
   })
 }
@@ -20,6 +21,7 @@ export function historicalaudit_add (data) {
     baseURL: baseURL,
     url: `/historyAuditFind/save`,
     method: 'post',
+    isLoading: false,
     data,
   })
 }
@@ -30,6 +32,7 @@ export function historicalaudit_details (data) {
     baseURL: baseURL,
     url: '/historyAuditFind/getById/' + id + '',
     method: 'get',
+    isLoading: false,
     data,
   })
 }
@@ -40,6 +43,7 @@ export function historicalaudit_loaauditorg (data) {
     baseURL: baseURL,
     url: `/init/loaauditorg`,
     method: 'post',
+    isLoading: false,
     data,
   })
 }
@@ -49,6 +53,7 @@ export function historicalaudit_update (data) {
     baseURL: baseURL,
     url: `/historyAuditFind/update `,
     method: 'put',
+    isLoading: false,
     data,
   })
 }
@@ -60,6 +65,7 @@ export function historicalaudit_delete (data) {
     baseURL: baseURL,
     url: '/historyAuditFind/delete/' + ids + '',
     method: 'delete',
+    isLoading: false,
     data,
   })
 }

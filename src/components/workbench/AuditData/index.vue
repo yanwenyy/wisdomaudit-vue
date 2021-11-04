@@ -12,7 +12,7 @@
           <el-row class="titleMes">
             <el-col :span="1.5">
               <el-button type="primary"
-                         style="background:#4BDCB4!important"
+                         style="background:#4BDCB4!important;border:none;"
                          v-if="is_add==1"
                          @click="add_data_task()">新增资料任务</el-button>
             </el-col>
@@ -34,9 +34,7 @@
                     style="width: 100%;"
                     v-loading="loading"
                     :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}">
-            <!-- <el-table-column type="selection"
-                             width="55">
-            </el-table-column> -->
+
             <el-table-column type="index"
                              align="center"
                              label="序号">
@@ -88,9 +86,7 @@
                              align="center">
               <template slot-scope="scope">
                 <!-- isDeleted  0:不是接口人 1:s是接口人 -->
-
                 <div v-if="scope.row.isDeleted==1">
-
                   <div v-if=" scope.row.status == 0">
                     <el-button @click="edit_common(scope.row)"
                                type="text"
@@ -135,15 +131,6 @@
                     </el-button>
                   </div>
                 </div>
-
-                <!-- 111 -->
-                <!-- <el-button @click="operation(scope.row)"
-                           type="text"
-                           style="color:#1371CC;background:none;border:none"
-                           size="small">
-                  审批
-                </el-button> -->
-                <!--222 -->
               </template>
 
             </el-table-column>
@@ -151,7 +138,6 @@
         </div>
         <!-- 分页 -->
         <div class="page">
-
           <el-pagination @size-change="handleSizeChange_model"
                          @current-change="handleCurrentChange_model"
                          :page-size="this.tableData.size"
@@ -321,6 +307,7 @@
 
     <!-- 新增资料 编辑资料-->
     <el-dialog width="60%"
+               center
                @close="close_model"
                :visible.sync="dialogVisible"
                style="padding-bottom: 59px; ">
@@ -517,6 +504,7 @@
 
     <!-- 添加资料  审批的时候  查看详情-->
     <el-dialog @close="resetForm('add_data')"
+               center
                :visible.sync="dialogVisible2"
                style="padding-bottom: 59px; ">
       <div class="title_dlag">{{edit_title}} </div>
@@ -726,6 +714,7 @@
 
     <!-- 操作 审批-->
     <el-dialog width="90%"
+               center
                :visible.sync="dialogVisibl_operation"
                style="padding-bottom: 59px; ">
       <div class="title_dlag">审批</div>
@@ -831,8 +820,7 @@
                            show-overflow-tooltip>
             <template slot-scope="scope">
 
-              <!-- enclosure_details_list -->
-
+              <!-- enclosure_details_list enclosureCount-->
               <el-popover :popper-class="enclosure_details_list==''?'no-padding':''"
                           v-if="scope.row.enclosureCount"
                           placement="bottom"
@@ -960,32 +948,29 @@
                              label="附件"
                              width="90">
               <template slot-scope="scope">
-                <!-- @click="open_enclosure_details(scope.row.auditTaskUuid)" -->
-                <div class="update">
-                  <i class="update_icon">
-                    <svg t="1631877671204"
-                         class="icon"
-                         viewBox="0 0 1024 1024"
-                         version="1.1"
-                         xmlns="http://www.w3.org/2000/svg"
-                         p-id="9939"
-                         width="200"
-                         height="200">
-                      <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                            fill="#FD9D27"
-                            p-id="9940"></path>
-                    </svg>
-                  </i>
-                  <span>{{scope.row.count}}</span>
+                <el-popover :popper-class="enclosure_details_list==''?'no-padding':''"
+                            v-if="scope.row.fileCount"
+                            placement="bottom"
+                            width="250"
+                            @show="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)"
+                            trigger="click">
+                  <ul v-if="enclosure_details_list!=''"
+                      class="fileList-ul">
+                    <li class="tableFileList-title">文件名称</li>
+                    <li v-for="(item,index) in enclosure_details_list"
+                        :key="index"
+                        class="pointer blue"
+                        @click="download(item.attachmentUuid,item.fileName)">
+                      {{item.fileName}}</li>
+                  </ul>
+                  <div slot="reference"
+                       style="color: #1371cc;"
+                       class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.fileCount}}
+                  </div>
+                </el-popover>
 
-                </div>
               </template>
             </el-table-column>
-
-            <!-- <el-table-column prop="enclosurePath"
-                             label="附件"> 
-            </el-table-column>-->
-
           </el-table>
         </div>
 
@@ -1021,6 +1006,7 @@
 
     <!-- 附件详情 -->
     <el-dialog width="20%"
+               center
                :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                :visible.sync="dialogVisibl_enclosure_details"
                style="padding-bottom: 59px; ">
@@ -1096,6 +1082,7 @@
 
     <!-- 操作记录 -->
     <el-dialog :visible.sync="history"
+               center
                width="width">
       <div class="title_dlag">操作记录</div>
 
@@ -1385,7 +1372,7 @@ export default {
       enclosure_moban_list: [],//模版资料
 
       user_data: {},//添加资料回显
-      is_add: 0,//
+      is_add: '',//是否接口人
       // 是否显示新增
 
     }
@@ -1443,6 +1430,7 @@ export default {
       operation_addTitle(params_title).then(resp => {
         this.add_form.title = resp.data.title//标题
         this.is_add = resp.data.isDelete//是否新增
+        console.log(resp.data.isDelete);
       })
     },
     // 获取责任人
@@ -1465,6 +1453,7 @@ export default {
     // 资料筛选
     search_list (index) {
       if (index == 1) {
+
         // alert('a', this.search_title)
 
         // 未完成
@@ -1696,7 +1685,6 @@ export default {
         this.loading = true;
         this.enclosure_details_list = resp.data
         this.loading = false;
-
         // if (this.enclosure_details_list.length == 0) {
         //   this.$message('暂无上传的附件');
         //   return false
@@ -2301,7 +2289,7 @@ export default {
     },
     // 查询 资料列表
     search_operation_list () {
-      if (this.operation_query.data_name == '' && this.operation_query.data_category == '') {
+      if (this.operation_query.data_name == '' || this.operation_query.data_category == '') {
         this.$message.info("请输入标题或者选择类型 后进行查询！");
         return false
       }
@@ -2533,7 +2521,7 @@ export default {
       // this.add_form.name = '';//清空name
       // this.add_form.title = '';//清空title
       // this.$refs.multipleTable.clearSelection();//清空
-      this.edit_title.title = '编辑审计资料任务';
+      this.title = '编辑审计资料任务';
       this.dialogVisible = true;//显示编辑
 
       // 资料任务id 
@@ -2626,7 +2614,7 @@ export default {
 
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
-@import "../../../assets/styles/css/yw.css";
+/* @import "../../../assets/styles/css/yw.css"; */
 
 .sjzl >>> .is-plain {
   background: #ffffff !important;
@@ -2958,27 +2946,5 @@ export default {
   position: absolute;
   left: 0;
   top: 0;
-}
-
-/* 新版附件详 */
-.list-folder {
-  color: orange;
-  margin-right: 5px;
-}
-.no-padding {
-  padding: 0 !important;
-  border: none !important;
-}
-.tableFileList-title {
-  padding: 5px 0;
-  border-top: 1px solid #ddd;
-  background: #f4faff;
-}
-.fileList-ul > li {
-  padding-left: 10px;
-  margin-bottom: 10px;
-}
-.pointer {
-  cursor: pointer;
 }
 </style>

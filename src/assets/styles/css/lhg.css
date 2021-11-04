@@ -21,4 +21,31 @@
   border-bottom: 1px solid #d2d2d2;
   padding: 10px;
   text-align: left;
+  text-align: center;
+}
+
+/* 新版附件详 */
+.list-folder {
+  color: orange;
+  margin-right: 5px;
+}
+
+.no-padding {
+  padding: 0 !important;
+  border: none !important;
+}
+
+.tableFileList-title {
+  padding: 5px 0;
+  border-top: 1px solid #ddd;
+  background: #f4faff;
+}
+
+.fileList-ul>li {
+  padding-left: 10px;
+  margin-bottom: 10px;
+}
+
+.pointer {
+  cursor: pointer;
 }

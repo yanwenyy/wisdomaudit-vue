@@ -80,6 +80,7 @@
 
     <!-- 反馈 -->
     <el-dialog :visible.sync="dialogVisible"
+               center
                width="60%"
                :before-close="dialogBeforeClose">
       <div class="title_dlag">资料列表</div>
@@ -131,7 +132,28 @@
                                label="模版">
 
                 <template slot-scope="scope">
-                  <div class="update"
+                  <el-popover :popper-class="findFile_list_moban==''?'no-padding':''"
+                              v-if="scope.row.enclosure"
+                              placement="bottom"
+                              width="250"
+                              @show="enclosure_look(scope.row.dataModulId)"
+                              trigger="click">
+                    <ul v-if="findFile_list_moban!=''"
+                        class="fileList-ul">
+                      <li class="tableFileList-title">文件名称</li>
+                      <li v-for="(item,index) in findFile_list_moban"
+                          :key="index"
+                          class="pointer blue"
+                          @click="download(item.attachmentUuid,item.fileName)">
+                        {{item.fileName}}</li>
+                    </ul>
+                    <div slot="reference"
+                         style="color: #1371cc;"
+                         class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.enclosure}}
+                    </div>
+                  </el-popover>
+
+                  <!-- <div class="update"
                        @click="enclosure_look(scope.row.dataModulId)">
                     <div class="update_icon">
                       <svg t="1631877671204"
@@ -148,7 +170,7 @@
                       </svg>
                     </div>
                     <span>{{scope.row.enclosure}}</span>
-                  </div>
+                  </div> -->
                 </template>
 
               </el-table-column>
@@ -180,7 +202,7 @@
               <el-table-column prop="dataNumber"
                                label="附件">
                 <template slot-scope="scope">
-                  <div class="update"
+                  <!-- <div class="update"
                        @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)">
                     <div class="update_icon">
                       <svg t="1631877671204"
@@ -197,7 +219,29 @@
                       </svg>
                     </div>
                     <span>{{scope.row.enclosureCount}}</span>
-                  </div>
+                  </div> -->
+
+                  <el-popover :popper-class="findFile_list==''?'no-padding':''"
+                              v-if="scope.row.enclosureCount"
+                              placement="bottom"
+                              width="250"
+                              @show="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)"
+                              trigger="click">
+                    <ul v-if="findFile_list!=''"
+                        class="fileList-ul">
+                      <li class="tableFileList-title">文件名称</li>
+                      <li v-for="(item,index) in findFile_list"
+                          :key="index"
+                          class="pointer blue"
+                          @click="download(item.attachmentUuid,item.fileName)">
+                        {{item.fileName}}</li>
+                    </ul>
+                    <div slot="reference"
+                         style="color: #1371cc;"
+                         class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.enclosureCount}}
+                    </div>
+                  </el-popover>
+
                 </template>
               </el-table-column>
 
@@ -317,6 +361,7 @@
 
     <!-- 附件详情 -->
     <el-dialog width="20%"
+               center
                :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                :visible.sync="dialogVisibl_enclosure_details"
                style="padding-bottom: 59px; ">
@@ -377,6 +422,9 @@
 </template>
 
 <script>
+import { down_file } from
+  '@SDMOBILE/api/shandong/ls'
+
 import { data_pageList, feedback_pageList, operation_record_list, operation_download, operation_uploadData, operation_findFile, operation_reportData } from
   '@SDMOBILE/api/shandong/feedback'
 import { fmtDate } from '@SDMOBILE/model/time.js';
@@ -541,10 +589,8 @@ export default {
 
     // 查看模版
     enclosure_look (id) {
-      this.dialogVisibl_enclosure_details = true;//显示附件详情
+      // this.dialogVisibl_enclosure_details = true;//显示附件详情
       this.file_type = 0;
-
-      this.dialogVisibl_enclosure_details = true;//显示附件详情
       let params = {
         id: id
       }
@@ -555,6 +601,35 @@ export default {
 
 
     },
+    //   已完成列表点击附件
+    download (id, fileName) {
+      let formData = new FormData()
+      formData.append('fileId', id)
+      down_file(formData).then(resp => {
+        const content = resp;
+        const blob = new Blob([content],
+          { type: 'application/octet-stream,charset=UTF-8' }
+        )
+        if ('download' in document.createElement('a')) {
+          // 非IE下载
+          const elink = document.createElement('a')
+          elink.download = fileName //下载后文件名
+          elink.style.display = 'none'
+          elink.href = window.URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象
+          document.body.removeChild(elink)
+        } else {
+          // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
+    },
+
+
     // 下载模版
     enclosure (id, name) {
       // const fileName = name.split('.')[0];
@@ -597,7 +672,7 @@ export default {
     },
     // 查看附件
     open_enclosure_details (id) {
-      this.dialogVisibl_enclosure_details = true;//显示附件详情
+      // this.dialogVisibl_enclosure_details = true;//显示附件详情
       this.file_type = 1;//0.模版 1.附件
       let params = {
         id: id

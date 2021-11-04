@@ -62,7 +62,20 @@ const Systemmanagement = {
         title: '编辑用户'
       },
     },
-
+    {
+      path: '/parameterManagement',
+      component: () => import('@WISDOMAUDIT/views/systemmanagement/parameterManagement'),
+      meta: {
+        title: '参数管理'
+      },
+    },
+    {
+      path: '/auditedInstitution',
+      component: () => import('@WISDOMAUDIT/views/systemmanagement/auditedInstitution'),
+      meta: {
+        title: '被审计机构管理'
+      },
+    },
 ]
 }
 

@@ -485,6 +485,7 @@
                 style="padding: 3px 0 3px 20px; color: #ffba00"
                 v-if="item.contentLev == 3"
                 @click="choosebasis(item.label)"
+                type="text"
                 >引用</el-button
               >
             </div>

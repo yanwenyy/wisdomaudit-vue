@@ -470,7 +470,7 @@
               </el-select>
             </el-form-item>
           </el-row>
-          <el-row>
+          <!-- <el-row>
             <el-form-item label="ㅤㅤㅤ专题:" prop="specialName">
               <el-select
                 placeholder="请选择"
@@ -505,7 +505,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-          </el-row>
+          </el-row> -->
           <el-row>
             <el-form-item label="被审计单位:" prop="auditOrgName">
               <el-select
@@ -878,7 +878,7 @@
               </el-select>
             </el-form-item>
           </el-row>
-          <el-row>
+          <!-- <el-row>
             <el-form-item label="ㅤㅤㅤ专题:">
               <el-select
                 placeholder="请选择"
@@ -911,7 +911,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-          </el-row>
+          </el-row> -->
           <el-row>
             <el-form-item label="被审计单位:" prop="auditOrgName">
               <el-select
@@ -1175,9 +1175,9 @@ export default {
       },
       // 添加经责表单校验
       addprojectjingRules: {
-        projectName: [
-          { required: true, message: "请填写项目名称", trigger: "blur" },
-        ],
+        // projectName: [
+        //   { required: true, message: "请填写项目名称", trigger: "blur" },
+        // ],
         auditOrgLeader: [
           { required: true, message: "请填写被审计领导", trigger: "blur" },
           { max: 5, message: "被审计领导在5个字符之内", trigger: "change" },
@@ -1211,6 +1211,7 @@ export default {
   methods: {
     changStartTime() {
       this.isdisabled = false;
+      this.changeTime();
     },
     //审计期间禁用判断
     changeTime() {
@@ -1327,6 +1328,7 @@ export default {
           },
         ],
       };
+      this.isdisabled = true;
       // console.log(this.addprojectjing);
       // console.log(this.addProjectManagement);
       this.prjType = 2;
@@ -1338,6 +1340,8 @@ export default {
       this.addProjectManagement.projectLeaderUuid = this.userInfo.user.id;
       this.addprojectjing.projectLeaderUuid = this.userInfo.user.id;
       this.addprojectjing.projectLeaderName = this.userInfo.user.realName;
+       this.addprojectjing.projectChargemanID = this.userInfo.user.id;
+      this.addprojectjing.projectChargemanName = this.userInfo.user.realName;
     },
     //获取当前登录人信息
     get_user() {
@@ -1892,5 +1896,8 @@ export default {
 .addzhuanForm >>> .el-input.is-disabled .el-input__inner {
   background-color: #f5f7fa !important;
   color: #c0c4cc !important;
+}
+.projectmanagement >>> .el-table__header {
+  border-top: none !important;
 }
 </style>
