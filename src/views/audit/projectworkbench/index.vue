@@ -289,16 +289,11 @@
           :data="data"
           @change="selectMember"
         >
-          <span slot-scope="{ option }"
+          <div slot-scope="{ option }" class="setinterPerson"
             >{{ option.label }}
             <span
               v-if="option.isLiaison == 0"
-              style="
-                float: right;
-                color: #8492a6;
-                font-size: 13px;
-                margin-right: 10px;
-              "
+              class="setinterPersonBtn"
               @click="isLiaison_Btn(option, value)"
               >设为接口人</span
             >
@@ -308,13 +303,13 @@
                 float: right;
                 color: #8492a6;
                 font-size: 13px;
-                 margin-right: 20px;
-                 cursor: pointer;
+                margin-right: 20px;
+                cursor: pointer;
               "
               @click="cancel_Btn(option)"
               >接口人</span
             >
-          </span>
+          </div>
         </el-transfer>
         <div class="stepBtn">
           <el-button @click="addDialogVisibleRes()">取消</el-button>
@@ -710,7 +705,11 @@
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="editTaskSelfDialogVisible" width="50%"  @close="editResetForm2('editTaskRef')">
+    <el-dialog
+      :visible.sync="editTaskSelfDialogVisible"
+      width="50%"
+      @close="editResetForm2('editTaskRef')"
+    >
       <div class="dialogTitle">编辑自建任务</div>
       <div class="selfTask">
         <el-form
@@ -1373,16 +1372,16 @@ export default {
       // console.log(row);
       // console.log(list);
       this.data.forEach((item) => {
-          if (list.indexOf(item.key) != -1) {
-            item.isLiaison = 0;
-            item.disabled = false;
-          }
-        });
-        row.isLiaison = 1;
-        row.disabled = true;
+        if (list.indexOf(item.key) != -1) {
+          item.isLiaison = 0;
+          item.disabled = false;
+        }
+      });
+      row.isLiaison = 1;
+      row.disabled = true;
     },
     //取消设为接口人
-    cancel_Btn(row){
+    cancel_Btn(row) {
       // alert(123)
       row.isLiaison = 0;
       // row.disabled = true;
@@ -2423,6 +2422,17 @@ export default {
   margin-top: 1%;
   margin-left: 5%;
 }
+.setinterPerson {
+  width: 200px;
+  // border: 1px solid red;
+ position: relative;
+  .setinterPersonBtn{
+    position: absolute;
+    right: 0;
+     color: #8492a6;
+      font-size: 13px;
+  }
+}
 </style>
 <style scoped>
 >>> .el-input__inner::-webkit-input-placeholder {
@@ -2533,4 +2543,6 @@ export default {
 .projectWorkbench >>> .el-table__header {
   border-top: none !important;
 }
+
+
 </style>
