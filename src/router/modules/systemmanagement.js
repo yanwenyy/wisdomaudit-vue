@@ -15,7 +15,7 @@ const Systemmanagement = {
       component: () => import("@WISDOMAUDIT/views/systemmanagement/userManagement"),
       name: 'modelManagement',
       meta: {
-        title: '用户管理',
+        title: '系统管理-用户管理',
       },
     },
     {
@@ -24,7 +24,7 @@ const Systemmanagement = {
 
       name: 'modelManagement',
       meta: {
-        title: '角色管理',
+        title: '系统管理-权限管理',
       }
     },{
       path: '/newUserManagement',

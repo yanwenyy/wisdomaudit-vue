@@ -16,7 +16,7 @@ const AuditCorrective = {
       name: 'rectificationPlan',
       component: () => import('@WISDOMAUDIT/views/auditCorrective/rectificationPlan'),
       meta: {
-        title: '整改计划'
+        title: '审计整改-整改计划'
       },
     },
     {
@@ -25,7 +25,7 @@ const AuditCorrective = {
       hidden:true,
       component: () => import('@WISDOMAUDIT/views/auditCorrective/rectificationPlan/questionList'),
       meta: {
-        title: '问题列表'
+        title: '审计整改-整改计划/问题列表'
       },
     },
     {
@@ -33,7 +33,7 @@ const AuditCorrective = {
       name: 'rectificationMeasures',
       component: () => import('@WISDOMAUDIT/views/auditCorrective/rectificationMeasures'),
       meta: {
-        title: '整改措施'
+        title: '审计整改-整改措施'
       },
     },
     {
@@ -42,7 +42,7 @@ const AuditCorrective = {
       hidden:true,
       component: () => import('@WISDOMAUDIT/views/auditCorrective/rectificationMeasures/editList'),
       meta: {
-        title: '整改措施/问题'
+        title: '审计整改-整改措施/问题'
       },
     },
     {
@@ -50,7 +50,7 @@ const AuditCorrective = {
       name: 'correctiveParameter',
       component: () => import('@WISDOMAUDIT/views/auditCorrective/correctiveParameter'),
       meta: {
-        title: '整改台账'
+        title: '审计整改-整改台账'
       },
     },
     {
@@ -59,7 +59,7 @@ const AuditCorrective = {
       hidden:true,
       component: () => import('@WISDOMAUDIT/views/auditCorrective/correctiveParameter/index'),
       meta: {
-        title: '整改台账'
+        title: '审计整改-整改台账'
       },
     },
   ]
