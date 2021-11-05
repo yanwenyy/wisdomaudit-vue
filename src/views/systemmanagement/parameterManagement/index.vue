@@ -14,13 +14,13 @@
           <el-input
             placeholder="请输入分类名称"
             v-model="maintainDictionaryList.condition.typename"
-            @keyup.enter.native="queryName"
+            @keyup.enter.native="queryNameInput"
           >
           </el-input>
           <div
             class="search_icon"
             style="background: rgb(12, 135, 214) !important"
-            @click="queryName"
+            @click="queryNameInput"
           >
             <i class="el-icon-search" style="color: white"></i>
           </div>
@@ -54,7 +54,7 @@
           <el-button
             style="background: #0c87d6; color: #fff"
             size="small"
-            @click="editDictionary"
+            @click="editDictionary(scope.row.uuid)"
             >编辑</el-button
           >
         </template>
@@ -75,6 +75,7 @@
     <el-dialog
       :visible.sync="mainDialogVisible"
       width="50%"
+      @open="openDialog"
       @close="handleClose"
     >
       <div class="mainTitle">维护字典</div>
@@ -154,33 +155,33 @@
                   :model="form"
                   :rules="rules"
                   label-width="80px"
-                  ref="form"
+                  ref="formRef"
                   hide-required-asterisk
                 >
                   <el-row>
                     <el-col :offset="2" :span="20">
-                      <el-form-item label="字典名称" prop="dictName">
-                        <el-input v-model="form.dictName"></el-input>
+                      <el-form-item label="字典名称" prop="dictname">
+                        <el-input v-model="form.dictname"></el-input>
                       </el-form-item>
                     </el-col>
                   </el-row>
                   <el-row>
                     <el-col :offset="2" :span="20">
-                      <el-form-item label="字典编码" prop="dictCode">
-                        <span v-if="this.form.uuid">{{
-                          this.form.dictCode
-                        }}</span>
-                        <el-input v-else v-model="form.dictCode"></el-input>
+                      <el-form-item label="字典编码" prop="dictcode">
+                        <!-- <span v-if="this.form.uuid">{{
+                          this.form.dictcode
+                        }}</span> -->
+                        <el-input v-model="form.dictcode"></el-input>
                       </el-form-item>
                     </el-col>
                   </el-row>
                   <el-row>
                     <el-col :offset="1" :span="21">
                       <el-form-item align="center">
-                        <el-button @click="formOnSubmit" type="primary"
+                        <el-button @click="formOnSubmit()" type="primary"
                           >保存并关闭</el-button
                         >
-                        <el-button @click="formOnCancle">取消</el-button>
+                        <el-button @click="formOnCancle()">取消</el-button>
                       </el-form-item>
                     </el-col>
                   </el-row>
@@ -193,13 +194,13 @@
                 <el-row>
                   <el-col :offset="1" :span="20" style="margin-top: 20px">
                     <label class="label-style">字典名称</label>:
-                    <span>字典名称01</span>
+                    <span>{{ treeData.dictname }}</span>
                   </el-col>
                 </el-row>
                 <el-row>
                   <el-col :offset="1" :span="20" style="margin-top: 20px">
                     <label class="label-style">字典编码</label>:
-                    <span>字典编码01</span>
+                    <span>{{ treeData.dictcode }}</span>
                   </el-col>
                 </el-row>
               </div>
@@ -210,7 +211,11 @@
     </el-dialog>
 
     <!-- 新增编辑字典弹框 -->
-    <el-dialog :visible.sync="add_dictionary" width="30%" @close="closeDialog">
+    <el-dialog
+      :visible.sync="add_dictionary"
+      width="30%"
+      @close="closeDialog('dictionaryRef')"
+    >
       <div class="mainTitle" v-if="isAdd == 1">新增</div>
       <div class="mainTitle" v-else-if="isAdd == 2">编辑</div>
       <div class="formStyle">
@@ -243,6 +248,9 @@ import {
   get_dictionary,
   dictionaryList_Code,
   addDictionaryList,
+  dictionaryList_load,
+  dictionaryChild_load,
+  addDictionaryChild,
 } from "@SDMOBILE/api/shandong/maintainDictionary";
 import Pagination from "@WISDOMAUDIT/components/Pagination";
 export default {
@@ -262,20 +270,27 @@ export default {
         typerank: 2,
       },
       orgTree: [], //树形数据
+      treeData: {
+        typeCode: "",
+        pdictid: "",
+        uuid: "",
+        dictName: "",
+        dictCode: "",
+      },
       defaultProps: { children: "children", label: "label" },
       editicon: true,
       editpanel: false, //编辑字典页面
       form: {
-        typeCode: "",
-        pdictId: "",
+        typecode: "",
+        pdictid: "",
         uuid: "",
-        dictName: "",
-        dictCode: "",
+        dictname: "",
+        dictcode: "",
         isUsed: "1",
       },
       filterText: "",
       rules: {
-        dictName: [
+        dictname: [
           { required: true, message: "请输入字典名称", trigger: "blur" },
         ],
       },
@@ -304,8 +319,19 @@ export default {
   },
   methods: {
     // 模糊查询
-    queryName() {
-      this.getDictionary(this.maintainDictionaryList);
+    queryNameInput() {
+      let query = {
+        condition: {
+          typename:this.maintainDictionaryList.condition.typename,
+        },
+        pageNo: 1,
+        pageSize: 10
+      };
+      this.getDictionary(query);
+    },
+    queryName(){
+      this.maintainDictionaryList.condition.typename="";
+       this.getDictionary(this.maintainDictionaryList);
     },
     //参数管理table获取
     getDictionary(data) {
@@ -320,39 +346,54 @@ export default {
       this.add_dictionary = true;
     },
     //编辑字典按钮事件
-    editDictionary() {
+    editDictionary(id) {
       this.isAdd = 2;
       this.add_dictionary = true;
       //编辑回显接口
+      dictionaryList_load(id).then((resp) => {
+        console.log(resp);
+        this.dictionaryForm = resp.data;
+      });
     },
     //增加编辑字典完成按钮
     editSave() {
       this.$refs["dictionaryRef"].validate((valid) => {
         if (valid) {
-          if (this.isAdd == 1) {
-            // 增加字典接口
-            addDictionaryList(this.dictionaryForm).then((resp) => {
-              console.log(resp);
-              this.add_dictionary = false;
-              this.getDictionary(this.maintainDictionaryList);
-            });
-          }
+          // 增加编辑字典接口
+          addDictionaryList(this.dictionaryForm).then((resp) => {
+            this.add_dictionary = false;
+            this.getDictionary(this.maintainDictionaryList);
+          });
         }
       });
     },
     // 增加编辑字典弹框关闭事件
-    closeDialog(){
-      
+    closeDialog(dictionaryRef) {
+      this.$refs[dictionaryRef].resetFields();
     },
     //维护字典按钮事件
     maintainDictionary(rows) {
+      console.log(rows);
       this.mainDialogVisible = true;
+      this.form.typecode = rows.typecode;
       dictionaryList_Code(rows.typecode).then((resp) => {
         this.orgTree = resp.data;
       });
     },
+    //维护字典弹框弹开事件
+    openDialog() {},
     // 弹框关闭事件
-    handleClose() {},
+    handleClose() {
+      this.treeData.typecode = "";
+      this.treeData.pdictid = "";
+      this.treeData.uuid = "";
+      this.treeData.dictname = "";
+      this.treeData.dictcode = "";
+
+      this.form = {};
+      this.editpanel = false;
+      this.editicon = true;
+    },
 
     //节点显示与隐藏
     filterNode(value, data) {
@@ -363,30 +404,84 @@ export default {
     // 点击查看树信息
     getCheckedNodes(data) {
       console.log(data);
+      if (this.editpanel) {
+        return this.$message({
+          showClose: true,
+          message: "请将基本信息完成或者取消！",
+          type: "warning",
+        });
+      } else {
+        if (data.value === this.orgTree[0].value) {
+          return this.$message({
+            showClose: true,
+            message: "根节点在此处不可查看！",
+            type: "warning",
+          });
+        } else {
+          this.editpanel = false;
+          this.editicon = true;
+          dictionaryChild_load(data.value).then((resp) => {
+            this.treeData = resp.data;
+            // console.log(this.treeData);
+          });
+        }
+      }
     },
 
     // 增加
     append(data) {
       console.log(data);
+      if (this.editpanel) {
+        return this.$message({
+          showClose: true,
+          message: "请将基本信息完成或者取消！",
+          type: "warning",
+        });
+      }
+      this.form.pdictid = data.value;
+      this.form.uuid = this.form.dictName = this.form.dictCode = "";
+      this.editpanel = true;
+      this.editicon = false;
     },
 
     // 编辑
     edit() {
       this.editpanel = true;
       this.editicon = false;
+      this.form = JSON.parse(JSON.stringify(this.treeData)); // clone到form，避免双向绑定
     },
 
-    //编辑字典确认事件
+    //新增编辑树形字典确认事件
     formOnSubmit() {
-      alert("保存");
+      this.$refs["formRef"].validate((valid) => {
+        if (valid) {
+          addDictionaryChild(this.form).then((resp) => {
+            if (resp.code === 0) {
+              this.form.uuid = resp.data.uuid;
+              this.treeData = JSON.parse(JSON.stringify(this.form));
+              this.$refs["formRef"].resetFields();
+              this.form.pdictid =
+                this.form.uuid =
+                this.form.dictname =
+                this.form.dictcode =
+                  "";
+              this.editpanel = false;
+              this.editicon = true;
+              this.maintainDictionary(this.form);
+            }
+          });
+        }
+      });
     },
 
     //取消编辑事件
     formOnCancle() {
-      alert("取消保存！");
-      this.$nextTick(() => {
-        this.$refs["form"].resetFields();
-      });
+      this.form.dictname = "";
+      this.form.dictcode = "";
+      // let that = this;
+      // this.$nextTick(() => {
+      //   that.$refs["formRef"].resetFields();
+      // });
       this.editpanel = false;
       this.editicon = true;
     },

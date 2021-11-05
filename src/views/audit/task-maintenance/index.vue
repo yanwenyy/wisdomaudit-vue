@@ -24,13 +24,13 @@
               <el-input
                 placeholder="请输入模型任务名称"
                 v-model="queryInfo.condition.taskName"
-                @keyup.enter.native="queryName"
+                @keyup.enter.native="queryNameInput"
               >
               </el-input>
               <div
                 class="search_icon"
                 style="background: #1897e4 !important"
-                @click="queryName"
+                @click="queryNameInput"
               >
                 <i class="el-icon-search" style="color: white"></i>
               </div>
@@ -93,7 +93,12 @@
             </el-table-column>
             <el-table-column prop="address" label="附件" width="90">
               <template slot-scope="scope">
-                <el-popover placement="bottom" width="300"  trigger="click"  v-loading="nearbyLoading">
+                <el-popover
+                  placement="bottom"
+                  width="300"
+                  trigger="click"
+                  v-loading="nearbyLoading"
+                >
                   <el-table :data="enclosure_details_list">
                     <el-table-column prop="fileName" label="文件名称">
                       <template slot-scope="scope">
@@ -112,33 +117,32 @@
                   </el-table>
                   <!-- <el-button slot="reference" >click 激活</el-button> -->
                   <div
-                  class="update"
-                  style="margin-left: -40px; cursor: pointer"
-                  @click="nearbyDetails(scope.row)"
-                  slot="reference"
-                >
-                  <i class="update_icon" style="margin-top: -3px">
-                    <svg
-                      t="1631877671204"
-                      class="icon"
-                      viewBox="0 0 1024 1024"
-                      version="1.1"
-                      xmlns="http://www.w3.org/2000/svg"
-                      p-id="9939"
-                      width="200"
-                      height="200"
-                    >
-                      <path
-                        d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                        fill="#FD9D27"
-                        p-id="9940"
-                      ></path>
-                    </svg>
-                  </i>
-                  <span>{{ scope.row.count }}</span>
-                </div>
+                    class="update"
+                    style="margin-left: -40px; cursor: pointer"
+                    @click="nearbyDetails(scope.row)"
+                    slot="reference"
+                  >
+                    <i class="update_icon" style="margin-top: -3px">
+                      <svg
+                        t="1631877671204"
+                        class="icon"
+                        viewBox="0 0 1024 1024"
+                        version="1.1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        p-id="9939"
+                        width="200"
+                        height="200"
+                      >
+                        <path
+                          d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
+                          fill="#FD9D27"
+                          p-id="9940"
+                        ></path>
+                      </svg>
+                    </i>
+                    <span>{{ scope.row.count }}</span>
+                  </div>
                 </el-popover>
-                
               </template>
             </el-table-column>
             <el-table-column label="操作">
@@ -395,13 +399,13 @@
               <el-input
                 placeholder="请输入模型名称"
                 v-model="model_QueryInfo.condition.modelName"
-                @keyup.enter.native="queryModel"
+                @keyup.enter.native="queryModelInput"
               >
               </el-input>
               <div
                 class="search_icon"
                 style="background: #1897e4 !important"
-                @click="queryModel"
+                @click="queryModelInput"
               >
                 <i class="el-icon-search" style="color: white"></i>
               </div>
@@ -433,7 +437,11 @@
             </el-table-column>
             <el-table-column prop="belongSpcial" label="所属专题">
             </el-table-column>
-            <el-table-column prop="modelName" label="模型名称" show-overflow-tooltip>
+            <el-table-column
+              prop="modelName"
+              label="模型名称"
+              show-overflow-tooltip
+            >
             </el-table-column>
             <el-table-column prop="address" label="说明" width="250">
             </el-table-column>
@@ -786,7 +794,19 @@ export default {
       this.file_details(params, 1);
       this.deletFileList = [];
     },
+    queryNameInput() {
+      let params = {
+        pageNo: 1,
+        pageSize: 10,
+        condition: {
+          managementProjectUuid: this.queryInfo.condition.managementProjectUuid,
+          taskName: this.queryInfo.condition.taskName,
+        },
+      };
+      this.getmodelTaskList(params);
+    },
     queryName() {
+      this.queryInfo.condition.taskName = "";
       this.getmodelTaskList(this.queryInfo);
     },
     // 列表显示
@@ -952,7 +972,19 @@ export default {
       });
     },
     //模型模糊查询
+    queryModelInput() {
+      let query = {
+        condition: {
+          modelName: this.model_QueryInfo.condition.modelName,
+          projectId: this.active_project,
+        },
+        pageNo: 1,
+        pageSize: 10,
+      };
+      this.queryModelSql(query);
+    },
     queryModel() {
+      this.model_QueryInfo.condition.modelName = "";
       this.model_QueryInfo.condition.projectId = this.active_project;
       this.queryModelSql(this.model_QueryInfo);
     },
@@ -1055,10 +1087,10 @@ export default {
           this.editTask.peopleName = this.tableData[i].peopleName;
         }
       }
-      console.log(this.taskSelf);
     },
     // 模型任务完成按钮
     modelInfoBtn() {
+      console.log(this.selectauditModelList.auditModelList);
       if (this.selectauditModelList.auditModelList.length > 0) {
         this.selectauditModelList.projectId = this.active_project;
         quoteModel(this.selectauditModelList).then((resp) => {
@@ -1067,6 +1099,7 @@ export default {
           this.queryInfo.condition.managementProjectUuid = this.active_project;
           this.getmodelTaskList(this.queryInfo);
           this.task = 1;
+          this.selectauditModelList.auditModelList = [];
         });
       } else {
         this.$message.info("请选择要引入的模型!");

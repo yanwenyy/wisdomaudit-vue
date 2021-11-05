@@ -14,13 +14,13 @@
             <el-input
               placeholder="请输入姓名"
               v-model="query.condition.peopleName"
-              @keyup.enter.native="queryName"
+              @keyup.enter.native="queryNameInput"
             >
             </el-input>
             <div
               class="search_icon"
               style="background: #1897e4 !important"
-              @click="queryName"
+              @click="queryNameInput"
             >
               <i class="el-icon-search" style="color: white"></i>
             </div>
@@ -49,7 +49,10 @@
             style="width: 100%"
             border
             align="center"
-            :header-cell-style="{ 'background-color': '#F4FAFF', 'font-weight':'400' }"
+            :header-cell-style="{
+              'background-color': '#F4FAFF',
+              'font-weight': '400',
+            }"
           >
             <el-table-column
               align="center"
@@ -72,14 +75,14 @@
               align="center"
               property="belongCompany"
               label="所属单位"
-               show-overflow-tooltip
+              show-overflow-tooltip
             >
             </el-table-column>
             <el-table-column
               align="center"
               property="belongDept"
               label="所属部门"
-               show-overflow-tooltip
+              show-overflow-tooltip
             >
             </el-table-column>
             <el-table-column
@@ -148,7 +151,6 @@
           v-model="value"
           :titles="['组员列表', '已选组员']"
           :data="data"
-         
           @change="selectMember"
         >
         </el-transfer>
@@ -299,7 +301,20 @@ export default {
     },
   },
   methods: {
+    queryNameInput() {
+      let query = {
+        condition: {
+          managementProjectUuid: this.active_project,
+          peopleRole: this.query.condition.peopleRole,
+          peopleName: this.query.condition.peopleName,
+        },
+        pageNo: 1,
+        pageSize: 10,
+      };
+      this.projectMember(query);
+    },
     queryName() {
+      this.query.condition.peopleName = "";
       this.query.condition.managementProjectUuid = this.active_project;
       // 组员维护组员列表接口
       this.projectMember(this.query);
@@ -856,7 +871,7 @@ export default {
 
 .stepBtn {
   width: 100%;
-//  border: 1px solid red; 
+  //  border: 1px solid red;
   margin-top: 4%;
   margin-bottom: 2%;
   text-align: center;

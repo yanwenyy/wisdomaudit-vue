@@ -31,3 +31,32 @@ export function addDictionaryList(data){
     data
     })
 }
+
+//编辑字典回显
+export function dictionaryList_load(id){
+    return request({
+    baseURL: baseURL,
+    url: `/dictType/loadDictType?`+`uuid=`+id,
+    method: 'post'
+    })
+}
+
+// 点击树节点查看详情数据
+export function dictionaryChild_load(id){
+    return request({
+    baseURL: baseURL,
+    url: `/dictType/loadDict?`+`uuid=`+id,
+    method: 'post'
+    })
+}
+
+
+//  子字典添加与编辑接口
+export function addDictionaryChild(data){
+    return request({
+    baseURL: baseURL,
+    url: `/dictType/saveDict`,
+    method: 'post',
+    data
+    })
+}

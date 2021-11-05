@@ -353,13 +353,13 @@
               <el-input
                 placeholder="请输入模型任务名称"
                 v-model="getModelList.condition.taskName"
-                @keyup.enter.native="queryName"
+                @keyup.enter.native="queryNameInput"
               >
               </el-input>
               <div
                 class="search_icon"
                 style="background: #1897e4 !important"
-                @click="queryName"
+                @click="queryNameInput"
               >
                 <i class="el-icon-search" style="color: white"></i>
               </div>
@@ -534,13 +534,13 @@
             <el-input
               placeholder="请输入模型名称"
               v-model="modelQuery.condition.modelName"
-              @keyup.enter.native="queryModel"
+              @keyup.enter.native="queryModelInput"
             >
             </el-input>
             <div
               class="search_icon"
               style="background: #1897e4 !important"
-              @click="queryModel"
+              @click="queryModelInput"
             >
               <i class="el-icon-search" style="color: white"></i>
             </div>
@@ -1465,7 +1465,19 @@ export default {
       // this.projectMember(this.query);//右侧
     },
     // 模糊查询引入模型名称
+    queryModelInput(){
+      let query={
+         condition: {
+          modelName: this.modelQuery.condition.modelName,
+          projectId: this.managementProjectUuid,
+        },
+        pageNo: 1,
+        pageSize: 10,
+      }
+       this.getauditModelListSql(query);
+    },
     queryModel() {
+      this.modelQuery.condition.modelName = "";
       this.getauditModelListSql(this.modelQuery);
     },
     // 导入模型列表渲染
@@ -1590,14 +1602,25 @@ export default {
       return row.auditModelUuid;
     },
     // 分页模糊查询模型列表
+    queryNameInput(){
+      let query = {
+         condition: {
+          taskName: this.getModelList.condition.taskName,
+          managementProjectUuid: this.managementProjectUuid,
+        },
+        pageNo: 1,
+        pageSize: 10,
+      }
+      this.getauditModelList(query);
+    },
     queryName() {
-      this.modelQuery.condition.projectId = this.managementProjectUuid;
+      this.getModelList.condition.taskName = "";
       this.getauditModelList(this.getModelList);
     },
     // 分页模糊查询模型列表
-    queryName() {
-      this.getauditModelList(this.getModelList);
-    },
+    // queryName() {
+    //   this.getauditModelList(this.getModelList);
+    // },
     // 模型列表渲染
     getauditModelList(data) {
       modelTaskList(data).then((resp) => {
