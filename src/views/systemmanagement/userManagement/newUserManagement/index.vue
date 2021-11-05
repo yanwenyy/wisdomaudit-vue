@@ -69,7 +69,7 @@
           </el-form-item>
 
 
-          
+
         </el-col>
         <!-- <el-col :span="10" :offset="1">
           <el-form-item prop="countyCode">
@@ -125,7 +125,7 @@ export default {
       if (!value) {
         return callback(new Error('手机号不能为空'))
       } else {
-        const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
+        const reg = /^1[3|4|5|7|8｜9][0-9]\d{8}$/
         if (reg.test(value)) {
           callback()
         } else {
@@ -262,7 +262,7 @@ export default {
     //   })[0].childList
     // },
     /**
-     * 
+     *
      * orgTree树查询方法
      */
     getRoleName(val){
@@ -278,9 +278,9 @@ export default {
       let res= await searchRole()
       console.log(res);
      this.roleNameList=res.data.list
-   
+
     },
-   
+
    async getOrgTree() {
 
       let res = await getUserTree()
@@ -339,7 +339,7 @@ export default {
         oaId:this.form.oaId, //OA账号
         roleId:this.form.roleId//角色名称：
       }
-      
+
       let res = await addUser(data)
       console.log(res,'添加');
          if(res.status==0){
