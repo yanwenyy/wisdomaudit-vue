@@ -16,7 +16,7 @@
             <el-button slot="append"
                        icon="el-icon-search"
                        type="primary"
-                       @click="getList"></el-button>
+                       @click="getList(1)"></el-button>
           </el-input>
         </div>
       </el-row>
@@ -784,7 +784,10 @@ export default {
         date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
       return Y + M + D;
     },
-    getList () {
+    getList(page) {
+      if(page==1){
+        this.pageQuery.pageNo = 1
+      }
       this.listLoading = true;
       axios({
         url: `/wisdomaudit/problemList/pageList`,
@@ -862,7 +865,7 @@ export default {
               this.temp.managementAdvice = "";
               this.temp.riskAmount = "";
               this.temp.special = "";
-              this.getList();
+              this.getList(1);
             }
           });
         } else {
