@@ -125,6 +125,8 @@ export default {
         let res = await getTabList(`type=${this.value}`);
         this.tablelist=res.data
         this.radio2= res.data[0]
+        var date=new Date();
+        this.value2= date .getMonth()-1
 
 
 

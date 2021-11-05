@@ -118,6 +118,7 @@ export default {
         this.value= res.data[0].type
         this.gettablelist(this.value)
 
+
     },
 // 获取模型列表
     async gettablelist(){
@@ -125,6 +126,7 @@ export default {
         let res = await getTabList(`type=${this.value}`);
         this.tablelist=res.data
         this.radio2= res.data[0]
+        this.value2= date .getMonth()-1
 
 
 
