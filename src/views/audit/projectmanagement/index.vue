@@ -1491,6 +1491,10 @@ export default {
 
       confirm_problem_dlag_edit: false,//问题清单编辑
       dqProblem: {},
+      // auditTaskUuidArr: [],//关联人物
+      // basisArr: [],//依据
+
+
       // 新增的表单验证
       rules: {
         auditTaskUuid: [
@@ -2265,7 +2269,28 @@ export default {
       this.list_check = data;
       if (index == 1) {
         let entity = this.list_check//当前的数据
-        this.edit_remove_data(1, entity)// 编辑 删除  数据
+        this.problemCorrectUuid = entity.problemCorrectUuid
+        // let _data = resp.data
+        this.dqProblem.problem = entity.problem//问题
+        this.dqProblem.field = entity.field//领域
+        this.dqProblem.special = entity.special//专题
+        this.dqProblem.describe = entity.describe//描述
+        this.dqProblem.managementAdvice = entity.managementAdvice//建议
+        this.dqProblem.problemDiscoveryTime = entity.problemDiscoveryTime//发现日期
+        this.dqProblem.problemFindPeople = entity.problemFindPeople//发现人
+        this.dqProblem.riskAmount = entity.riskAmount//风险金额
+        this.dqProblem.basis = entity.basis.split(",");//依据
+        this.dqProblem.auditTaskUuid = entity.auditTaskUuid.split(",")//关联任务
+
+
+        this.dqProblem = JSON.parse(JSON.stringify(this.dqProblem));
+
+        this.$nextTick(() => {
+          this.$refs["detailForm"].clearValidate();
+        });
+        console.log(this.dqProblem);
+
+        // this.edit_remove_data(1, entity)// 编辑 删除  数据
         this.confirm_problem_dlag_edit = true;//审计问题清单 编辑
         this.$nextTick(() => {
           this.$refs["detailForm"].clearValidate();
@@ -2281,6 +2306,7 @@ export default {
             this.entity_isDeleted = data.isDeleted = 1;
             let entity = this.list_check//当前的数据
             this.edit_remove_data(2, entity)// 编辑 删除  数据
+
           })
           .catch(() => { });
       }
@@ -2289,33 +2315,21 @@ export default {
     edit_remove_data (index, params) {
       edit_remove(params).then(resp => {
         if (resp.code == 0) {
-          // 编辑回显
-          if (index == 1) {
-            console.log(resp.data);
-            let _data = resp.data
-            this.dqProblem.problem = _data.problem//问题
-            this.dqProblem.field = _data.field//领域
-            this.dqProblem.special = _data.special//专题
-            this.dqProblem.describe = _data.describe//描述
-            this.dqProblem.managementAdvice = _data.managementAdvice//建议
-            this.dqProblem.problemDiscoveryTime = _data.problemDiscoveryTime//发现日期
-            this.dqProblem.problemFindPeople = _data.problemFindPeople//发现人
-            this.dqProblem.riskAmount = _data.riskAmount//风险金额
-            this.dqProblem.basis = _data.basis.split(",");//依据
-            this.dqProblem.auditTaskUuid = _data.auditTaskUuid.split(",")//关联任务
-            this.dqProblem = JSON.parse(JSON.stringify(this.dqProblem));
-
-            this.$nextTick(() => {
-              this.$refs["detailForm"].clearValidate();
-            });
-            console.log(this.dqProblem);
-          } else {
+          if (index == 2) {
             // 删除
             this.$message({
               message: "删除成功",
               type: "success",
             });
             this.confirm_problem_data()//刷新 整改问题清单列表
+          } else {
+            this.$message({
+              message: "编辑成功",
+              type: "success",
+            });
+            this.confirm_problem_dlag_edit = false//关闭编辑弹窗
+            this.confirm_problem_data()//确认整改问题清单列表
+
           }
         } else {
           this.$message({
@@ -2328,14 +2342,16 @@ export default {
     // 编辑保存 确认清单
     updateData (detailForm) {
       this.$refs["detailForm"].validate((valid) => {
-        //rep.auditTaskUuid = rep.auditTaskUuid.join(",");
-        // rep.basis = rep.basis.join(",");
         if (valid) {
-          this.$message({
-            message: "编辑成功",
-            type: "success",
-          });
 
+          var a = this.dqProblem.auditTaskUuid;  //定义数组
+          this.dqProblem.auditTaskUuid = a.toString();  //把数组转换为字符串
+          var b = this.dqProblem.basis
+          this.dqProblem.basis = b.toString()
+          this.$set(this.dqProblem, 'problemCorrectUuid', this.problemCorrectUuid)//id
+          this.$set(this.dqProblem, 'isDeleted', 0)//依据
+          let entity = this.dqProblem//当前的数据
+          this.edit_remove_data(3, entity)// 编辑 删除  数据
         } else {
           this.$message({
             message: "请填写信息",
