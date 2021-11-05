@@ -289,8 +289,8 @@
           :data="data"
           @change="selectMember"
         >
-          <div slot-scope="{ option }" class="setinterPerson"
-            >{{ option.label }}
+          <div slot-scope="{ option }" class="setinterPerson">
+            {{ option.label }}
             <span
               v-if="option.isLiaison == 0"
               class="setinterPersonBtn"
@@ -1193,11 +1193,23 @@ export default {
     },
     // 点击初始化项目事件
     look_project(index, item) {
-      // this.key=Math.random();
+      console.log(index);
+      console.log(item);
       this.active_project = item.managementProjectUuid; //点击选择添加高亮
       // console.log(this.active_project);
-      this.projectInit.splice(index, 1);
-      this.projectInit.unshift(item);
+      if (index > 6) {
+        this.projectInitMore.splice(index, 1);
+        this.projectInitMore.unshift(item);
+        this.projectInit.splice(5, 1);
+        this.projectInit.unshift(item);
+      } else {
+         this.projectInitMore.splice(index, 1);
+        this.projectInitMore.unshift(item);
+        this.projectInit.splice(index, 1);
+        this.projectInit.unshift(item);
+      }
+
+      console.log(this.projectInit);
       this.get_user();
 
       if (index > 6) {
@@ -2425,12 +2437,12 @@ export default {
 .setinterPerson {
   width: 200px;
   // border: 1px solid red;
- position: relative;
-  .setinterPersonBtn{
+  position: relative;
+  .setinterPersonBtn {
     position: absolute;
     right: 0;
-     color: #8492a6;
-      font-size: 13px;
+    color: #8492a6;
+    font-size: 13px;
   }
 }
 </style>
@@ -2543,6 +2555,4 @@ export default {
 .projectWorkbench >>> .el-table__header {
   border-top: none !important;
 }
-
-
 </style>
