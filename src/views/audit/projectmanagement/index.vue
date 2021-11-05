@@ -978,7 +978,6 @@
                              label="发现人"
                              show-overflow-tooltip>
             </el-table-column>
-
             <el-table-column align="center"
                              label="操作"
                              show-overflow-tooltip>
@@ -1005,14 +1004,196 @@
           </el-pagination>
         </div>
       </div>
-      <!-- <div slot="footer">
-        <el-button plain
-                   @click="confirm_problem_dlag = false">取 消</el-button>
-        <el-button type="primary"
-                   @click="save_issues_list()">确 定</el-button>
-      </div> -->
     </el-dialog>
     <!-- 确认整改清单 end-->
+
+    <!-- 确认整改清单 编辑 -->
+    <el-dialog center
+               title=""
+               :close-on-click-modal="false"
+               :visible.sync="confirm_problem_dlag_edit"
+               width="width">
+      <div class="title">编辑问题</div>
+      <div class="dialog2 auditproblem">
+        <el-form ref="detailForm"
+                 :model="dqProblem"
+                 :rules="rules"
+                 label-position="right"
+                 label-width="120px"
+                 class="problem-form">
+          <el-form-item label="问题"
+                        prop="problem">
+            <el-input v-model="dqProblem.problem"
+                      placeholder="请输入问题" />
+          </el-form-item>
+          <el-form-item label="领域"
+                        prop="field">
+            <el-select v-model="dqProblem.field"
+                       placeholder="请选择领域">
+              <el-option v-for="item in CategoryList"
+                         :key="item.label"
+                         :label="item.label"
+                         :value="item.label">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="专题"
+                        prop="special">
+            <el-select v-model="dqProblem.special"
+                       placeholder="请选择专题">
+              <el-option v-for="item in SPECIALList"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item></el-form-item>
+          <el-form-item label="依据"
+                        prop="basis"
+                        class="long">
+            <el-select v-model="dqProblem.basis"
+                       multiple
+                       @visible-change="toopen"
+                       placeholder="请选择"
+                       no-data-text="请点击引用审计依据">
+            </el-select>
+          </el-form-item>
+          <el-button type="primary"
+                     ref="basisbtn0"
+                     class="citebtn"
+                     @click="openbasis()">引用审计依据</el-button>
+          <el-form-item label="描述"
+                        prop="describe"
+                        class="long">
+            <el-input v-model="dqProblem.describe"
+                      placeholder="请输入描述" />
+          </el-form-item>
+          <el-form-item label="管理建议"
+                        prop="managementAdvice"
+                        class="long">
+            <el-input v-model="dqProblem.managementAdvice"
+                      placeholder="请输入管理建议" />
+          </el-form-item>
+          <el-form-item label="发现日期"
+                        prop="problemDiscoveryTime">
+            <el-date-picker type="date"
+                            placeholder="选择日期"
+                            v-model="dqProblem.problemDiscoveryTime"
+                            style="width: 100%"></el-date-picker>
+          </el-form-item>
+          <el-form-item label="发现人"
+                        prop="problemFindPeople">
+            <el-select v-model="dqProblem.problemFindPeople"
+                       placeholder="请选择发现人">
+              <el-option v-for="(item,i) in personlist"
+                         :key="'person'+i"
+                         :label="item.realName"
+                         :value="item.realName">
+                {{item.realName}}
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="风险金额（万元）"
+                        prop="riskAmount"
+                        width="180">
+            <el-input v-model.number="dqProblem.riskAmount"
+                      placeholder="请输入风险金额" />
+          </el-form-item>
+          <el-form-item label="关联任务"
+                        prop="auditTaskUuid">
+            <el-select v-model="dqProblem.auditTaskUuid"
+                       multiple
+                       disabled
+                       placeholder="请选择">
+              <el-option v-for="item in auditTasklList"
+                         :key="item.auditTaskUuid"
+                         :label="item.taskName"
+                         :value="item.auditTaskUuid">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div slot="footer">
+        <el-button @click="confirm_problem_dlag_edit = false">取 消</el-button>
+        <el-button type="primary"
+                   @click="updateData()">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 确认整改清单 编辑 end-->
+
+    <!-- 引用审计依据 -->
+    <el-dialog title=""
+               center
+               :visible.sync="basisdialog"
+               width="60%"
+               custom-class="outmax">
+
+      <div class="title">编辑问题</div>
+      <div class="auditproblem">
+        <div style="display: flex; height: 100%; padding: 20px">
+          <div style="max-height: 60vh; width: 50%; overflow: scroll">
+            <el-form ref="basisform"
+                     class="problem-form"
+                     :model="dqbasis"
+                     label-width="120px"
+                     label-position="right">
+              <el-form-item label="审计依据名称"
+                            class="long">
+                <el-select v-model="dqbasis.val"
+                           placeholder="请选择依据名称"
+                           @change="getbasisdetail(dqbasis.val)">
+                  <el-option v-for="item in basislist"
+                             :key="item.basy_uuid"
+                             :label="item.basy_name"
+                             :value="item.basy_uuid">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-form>
+            <el-card class="box-card"
+                     style="width: 70%; min-height: 300px; margin: auto">
+              <el-tree :data="dqbasis.info.tree"
+                       :props="defaultProps"
+                       @node-click="treeNodeClick"
+                       default-expand-all
+                       v-loading="basisload"></el-tree>
+            </el-card>
+          </div>
+          <el-card class="box-card basiscard"
+                   style="width: 50%"
+                   v-loading="basisload">
+            <div v-for="(item, index) in dqbasis.info.arr"
+                 :key="'dqbasisarr' + index">
+              <div slot="header"
+                   class="clearfix">
+                <span style="font-weight: bold"
+                      :style="
+                  item.contentLev == 1
+                    ? 'font-size:18px;'
+                    : item.contentLev == 2
+                    ? 'font-size:16px;'
+                    : 'font-size:14px;'
+                ">{{ item.label }}</span>
+                <el-button style="padding: 3px 0 3px 20px; color: #ffba00"
+                           v-if="item.contentLev == 3"
+                           @click="choosebasis(item.label)"
+                           type="text">引用</el-button>
+              </div>
+              <p class="">{{ item.attachmentContent }}</p>
+            </div>
+          </el-card>
+        </div>
+      </div>
+      <span slot="footer"
+            class="dialog-footer">
+        <el-button @click="basisdialog = false">取 消</el-button>
+        <el-button type="primary"
+                   @click="surebasis()">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 引用审计依据 end -->
 
     <!-- 选择问题 -->
     <el-dialog title=""
@@ -1091,6 +1272,7 @@
 <script>
 import { get_userInfo } from "@SDMOBILE/api/shandong/ls";
 import { confirm_rectification, selection_questions_list, saveProblemCorrect, edit_remove } from "@SDMOBILE/api/shandong/adminProject";//lhg
+import axios from "axios";
 import Pagination from "@WISDOMAUDIT/components/Pagination";
 import {
   projectList,
@@ -1123,7 +1305,7 @@ export default {
       },
       query: {
         condition: {
-          projectName: "",
+          projectName: "2021年度某公司经责审计项目03",
         },
         pageNo: 1,
         pageSize: 10,
@@ -1305,8 +1487,82 @@ export default {
       // //选择问题 参数
       queryProblemList_query: {
         search_problem: '',//  筛选问题
-
       },
+
+      confirm_problem_dlag_edit: false,//问题清单编辑
+      dqProblem: {},
+      // 新增的表单验证
+      rules: {
+        auditTaskUuid: [
+          { required: true, message: "请选择关联任务", trigger: "change" },
+        ],
+        basis: [{ required: true, message: "请选择依据", trigger: "change" }],
+        describe: [
+          { required: true, message: "请填写描述", trigger: "blue" },
+        ],
+        field: [{ required: true, message: "请选择领域", trigger: "change" }],
+        managementAdvice: [
+          { required: true, message: "请填写意见", trigger: "blue" },
+        ],
+        problem: [{ required: true, message: "请填写问题", trigger: "blue" }],
+        problemDiscoveryTime: [
+          { required: true, message: "请填写发现时间", trigger: "blue" },
+        ],
+        problemFindPeople: [
+          { required: true, message: "请填写发现人", trigger: "blue" },
+        ],
+        special: [{ required: true, message: "请选择专题", trigger: "change" }],
+        riskAmount: [
+          { required: true, message: "请填写风险金额", trigger: "blue" },
+        ],
+      },
+      temp: {
+        managementProjectUuid: this.active_project,
+        // 业务分类
+        auditTaskUuid: [],
+        basis: "",
+        describe: "",
+        field: "",
+        special: "",
+        isDeleted: 0,
+        problem: "",
+        problemDiscoveryTime: "",
+        problemFindPeople: "",
+        managementAdvice: "",
+        problemListUuid: "",
+        riskAmount: "",
+        status: 0,
+      },
+      selections: [],
+      dialogFormVisible: false,
+      dialogDetailVisible: false,
+      dialogStatus: "",
+      basisdialog: false,//引用依据
+
+      closeStatus: false,
+      downloadLoading: false,
+      headers: { "Content-Type": "multipart/form-data" },
+      file: "",
+      problemtableSelection: [],
+      CategoryList: [],//领域
+      SPECIALList: [],//专题
+      auditTasklList: [],
+      basislist: [],//获取的依据
+      dqbasis: {
+        val: "",
+        info: "",
+        choose: [],
+      },
+      defaultProps: {
+        children: "children",
+        label: "label",
+      },
+      basisload: false,
+      ifadd: 0,
+      personlist: [],
+      me: '',
+
+
       dialogVisible_select_dialog: false,//选择问题
       problem_loading: false,//问题loading
       problem_list: [],//问题列表
@@ -1328,6 +1584,15 @@ export default {
     this.thematicSelect(this.thematic);
     this.areasSelect(this.areas);
     this.get_user(); //获取当前登录人接口
+
+
+    // 编辑  审计整改问题  引用
+    this.getloadcascader("Category");
+    this.getloadcascader("SPECIAL");
+    this.getbasis();//获取依据 任务select 
+    this.getSelectTask();//关联任务
+
+
   },
   filters: {
     filtedate: function (date) {
@@ -1365,9 +1630,7 @@ export default {
       projectList(data).then((resp) => {
         this.tableData = resp.data.records;
         this.project = resp.data;
-
         this.total = resp.data.total;
-
         this.loading = false;
       });
     },
@@ -1845,8 +2108,6 @@ export default {
         });
       }
     },
-
-
     // 设置整改跟进人
     setting_prople () {
       this.dialogVisible_setting_prople = true;//设置整改跟进人
@@ -1860,8 +2121,6 @@ export default {
     run_rectification () {
       this.dialogVisible_rectification = true;//启动整改
     },
-
-
     // 确认问题整改清单=============
     confirm_problem (id) {
       this.confirm_problem_dlag = true;//显示确认清单
@@ -1902,12 +2161,116 @@ export default {
     handleSelectionChange_problem (val) {
       this.check_detailed = val
     },
+    toopen (val) {
+      console.log(val);
+      if (val) {
+        let _this = this;
+        setTimeout(function () {
+          _this.$refs["basisbtn0"].handleClick();
+        }, 100);
+
+        console.log(_this.$refs["basisbtn0"]);
+        return false;
+      }
+    },
+    // 专题 领域
+    getloadcascader (str) {
+      axios({
+        url: `/wisdomaudit/init/loadcascader`,
+        method: "post",
+        data: {
+          typecode: str,
+        },
+      }).then((res) => {
+        if (str == "Category") {
+          this.CategoryList = res.data.data;
+        } else if (str == "SPECIAL") {
+          this.SPECIALList = res.data.data;
+        }
+      });
+    },
+    getSelectTask () {
+      axios({
+        url: `/wisdomaudit/auditTask/selectTask`,
+        method: "post",
+        data: {
+          managementProjectUuid: this.active_project,
+        },
+      }).then((res) => {
+        this.auditTasklList = res.data.data;
+        console.log(this.auditTasklList);
+      });
+    },
+
+    //依据树
+    treeNodeClick () { },
+    //打开依据
+    openbasis () {
+      this.basisdialog = true;
+      this.dqbasis.choose = [];
+    },
+    //获取依据
+    getbasis () {
+      axios({
+        url: `/wisdomaudit/auditBasy/getAuditbasyList`,
+        method: "get",
+        data: {},
+      }).then((res) => {
+        this.basislist = res.data.data;
+      });
+    },
+    //获取依据详情
+    getbasisdetail (bid) {
+      this.basisload = true;
+      axios({
+        url: `/wisdomaudit/auditBasy/getById/` + bid + ``,
+        method: "get",
+        data: {},
+      }).then((res) => {
+        this.dqbasis.info = res.data.data.treeData;
+        this.basisload = false;
+      });
+    },
+
+    //选择右侧依据 点击引用
+    choosebasis (val) {
+      if (this.dqbasis.choose.indexOf(val) > -1) {
+        this.$message({
+          message: '您已引用这一条',
+          type: 'warning'
+        });
+        return;
+      } else {
+        this.dqbasis.choose.push(val);
+        this.$message({
+          message: '引用成功',
+          type: 'success'
+        });
+
+      }
+    },
+    //确定选择依据
+    surebasis () {
+      this.basisdialog = false;
+      if (this.ifadd == 0) {
+        this.temp.basis = this.dqbasis.choose;
+      } else {
+        this.dqProblem.basis = this.dqbasis.choose;
+      }
+      this.dqbasis.choose = [];
+    },
+
     // 编辑删除
     edit (index, data) {
       this.list_check = data;
       if (index == 1) {
         let entity = this.list_check//当前的数据
         this.edit_remove_data(1, entity)// 编辑 删除  数据
+        this.confirm_problem_dlag_edit = true;//审计问题清单 编辑
+        this.$nextTick(() => {
+          this.$refs["detailForm"].clearValidate();
+        });
+
       } else {
         this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, "提示", {
           confirmButtonText: "确定",
@@ -1925,9 +2288,29 @@ export default {
     // 编辑 删除  数据
     edit_remove_data (index, params) {
       edit_remove(params).then(resp => {
-        console.log(resp);
-        if (resp.code == 1) {
-          if (index == 2) {
+        if (resp.code == 0) {
+          // 编辑回显
+          if (index == 1) {
+            console.log(resp.data);
+            let _data = resp.data
+            this.dqProblem.problem = _data.problem//问题
+            this.dqProblem.field = _data.field//领域
+            this.dqProblem.special = _data.special//专题
+            this.dqProblem.describe = _data.describe//描述
+            this.dqProblem.managementAdvice = _data.managementAdvice//建议
+            this.dqProblem.problemDiscoveryTime = _data.problemDiscoveryTime//发现日期
+            this.dqProblem.problemFindPeople = _data.problemFindPeople//发现人
+            this.dqProblem.riskAmount = _data.riskAmount//风险金额
+            this.dqProblem.basis = _data.basis.split(",");//依据
+            this.dqProblem.auditTaskUuid = _data.auditTaskUuid.split(",")//关联任务
+            this.dqProblem = JSON.parse(JSON.stringify(this.dqProblem));
+
+            this.$nextTick(() => {
+              this.$refs["detailForm"].clearValidate();
+            });
+            console.log(this.dqProblem);
+          } else {
+            // 删除
             this.$message({
               message: "删除成功",
               type: "success",
@@ -1942,11 +2325,47 @@ export default {
         }
       })
     },
-    // 保存 确认清单
-    // save_issues_list () {
+    // 编辑保存 确认清单
+    updateData (detailForm) {
+      this.$refs["detailForm"].validate((valid) => {
+        //rep.auditTaskUuid = rep.auditTaskUuid.join(",");
+        // rep.basis = rep.basis.join(",");
+        if (valid) {
+          this.$message({
+            message: "编辑成功",
+            type: "success",
+          });
 
-    // },
+        } else {
+          this.$message({
+            message: "请填写信息",
+            type: "error",
+          });
+        }
+      })
+    },
 
+
+    //领域返显
+    fieldFilter (str) {
+      let rep = "";
+      this.CategoryList.forEach((e) => {
+        if (e.value == str) {
+          rep = e.label;
+        }
+      });
+      return rep;
+    },
+    //专题返显
+    specialFilter (str) {
+      let rep = "";
+      this.SPECIALList.forEach((e) => {
+        if (e.value == str) {
+          rep = e.label;
+        }
+      });
+      return rep;
+    },
 
 
     // 选择问题==============
@@ -2183,6 +2602,89 @@ export default {
   display: flex;
   justify-content: flex-end;
 }
+
+/* 整改清单编辑 */
+.dialog2 {
+  box-sizing: border-box;
+}
+.dialog2 .el-form-item {
+  width: 49%;
+  margin: 10px 1% 10px 0 !important;
+  box-sizing: border-box;
+}
+
+.auditproblem >>> .problem-form {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  padding: 0px 20px;
+}
+.auditproblem >>> .el-form-item__label {
+  float: left !important;
+}
+.auditproblem >>> .el-select {
+  width: 100%;
+}
+.auditproblem >>> .citebtn {
+  height: 40px;
+  margin-bottom: 6px;
+}
+.canclick {
+  color: rgb(27, 168, 250);
+  cursor: pointer;
+}
+.search {
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+}
+.search .el-input__inner {
+  width: 220px !important;
+  border-radius: 5px 0 0 5px;
+}
+.search .el-input__inner {
+  width: 180px;
+  display: flex;
+  float: right;
+}
+.search .search_icon {
+  position: absolute;
+  top: 0;
+  right: 70px;
+  width: 37px;
+  height: 37px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+.search .el-button {
+  border-radius: 0 5px 5px 0;
+  /* background: #1371cc !important; */
+}
+.long {
+  width: 70% !important;
+}
+.basiscard p {
+  padding: 10px 0 10px 20px;
+}
+
+.problem-form .el-form-item__label {
+  float: left !important;
+}
+.problem-form .el-form-item__label {
+  float: left !important;
+}
+.long {
+  width: 70% !important;
+}
+/* 整改清单编辑 end*/
 
 .addForm /deep/ .el-form-item__error {
   position: absolute;

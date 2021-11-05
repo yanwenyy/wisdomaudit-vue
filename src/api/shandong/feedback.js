@@ -27,13 +27,11 @@ export function feedback_pageList (data) {
 }
 // 操作   操作记录
 export function operation_record_list (data) {
-  let id = data.id
   return request({
     baseURL: baseURL,
-    url: '/auditPreviousDemandData/sysLogById/' + id + '',
+    url: `/auditPreviousDemandData/sysLogById`,
     method: 'post',
     isLoading: false,
-
     data
   })
 }

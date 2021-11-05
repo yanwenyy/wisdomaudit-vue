@@ -331,9 +331,9 @@
             <template slot-scope="scope">
               {{
                   scope.row.isProbleam == 0
-                    ? "未核实"
+                    ? "否"
                     : scope.row.isProbleam == 1
-                    ? "已核实":""
+                    ? "是":""
                 }}
             </template>
           </el-table-column>

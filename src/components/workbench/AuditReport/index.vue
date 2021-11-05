@@ -130,9 +130,9 @@
           <el-table-column prop="dataProvideDepartmentName"
                            align="center"
                            label="资料提供部门"> </el-table-column>
-          <!-- <el-table-column prop="name"
+          <el-table-column prop="indexDate"
                            align="center"
-                           label="管理建议"> </el-table-column> -->
+                           label="指标值期间"> </el-table-column>
 
           <el-table-column prop="indexValue"
                            align="center"
@@ -358,11 +358,10 @@ export default {
       }
       let array1 = [];//数组1
       this.multipleSelection.forEach((item, i) => {
-        array1.push((i + 1) + '.' + item.accessCaliberName + ',' + item.dataProvideDepartmentName + ',' + item.indexTypeName + ',' + item.indexUnitName + '\n');
+        array1.push((i + 1) + '.' + item.indexDate + ',' + item.indexTypeName + ',' + item.dataProvideDepartmentName + ',' + item.accessCaliberName + ',' + item.indexValue + ',' + item.indexUnitName + '\n');
       });
       var array_list = array1.join('')
       // var array_list = array1.toString();  //把数组转换为字符串
-
       this.administrativeAdvice = array_list;
       this.dlag_Correlation_zb = false;//关闭弹窗
     },
@@ -401,7 +400,6 @@ export default {
         this.$message.info("至少关联一条数据！");
         return false;
       }
-
       let array1 = [];//数组1
       this.multipleSelection2.forEach((item, i) => {
         array1.push((i + 1) + '.' + item.problemFindPeople + ',' + item.discoveryTime + ',' + item.basis + ',' + item.field + ',' + item.problem + ',' + item.describe + ',' + item.riskAmount + ',' + item.managementAdvice + '\n');

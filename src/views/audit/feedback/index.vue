@@ -269,8 +269,8 @@
         <div v-if="record_status==true">
           <p>操作记录</p>
           <el-form label-width="80px">
-            <el-table :data="record_log"
-                      v-loading="loading_list"
+            <el-table :data="record_log.records"
+                      v-loading="loading_list2"
                       style="width: 100%">
               <el-table-column prop="opOperate"
                                label="动作"
@@ -292,10 +292,19 @@
               <!-- <el-table-column prop="enclosurePath"
                              label="附件">
             </el-table-column>-->
-
             </el-table>
-
           </el-form>
+          <div class="page">
+            <el-pagination @size-change="handleSizeChange_log"
+                           @current-change="handleCurrentChange_log"
+                           :page-size="this.record_log.size"
+                           :current-page="this.record_log.current"
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="this.record_log.total">
+            </el-pagination>
+
+          </div>
+
         </div>
 
         <div class="remarks"
@@ -419,6 +428,13 @@ export default {
       list_loading: false,//资料列表 loading
       feedback_list: [],//反馈资料列表
       check_data_list: [],// 反馈资料列表  多选
+
+      log: {
+        pageNo: 1,
+        pageSize: 10,
+        auditPreviousDemandDataUuid: '',
+      },
+      loading_list2: false,
 
       projectNumber: '',// 项目名称：
       addPeople: '',// 审计期间
@@ -705,18 +721,32 @@ export default {
     //查看操作 记录
     look_record (data) {
       this.record_status = true;
-      let query_params = {
-        id: data.auditPreviousDemandDataUuid,
-      }
-      this.post_operation_record(query_params)//刷新 操作记录 列表
+      this.log.auditPreviousDemandDataUuid = data.auditPreviousDemandDataUuid,
+        this.post_operation_record()//刷新 操作记录 列表
 
     },
+    handleSizeChange_log (val) {
+      this.log.pageSize = val;
+    },
+    // 操作记录分页
+    handleCurrentChange_log (val) {
+      this.log.pageNo = val
+      this.post_operation_record()//刷新 操作记录 列表
+    },
     // 操作记录
-    post_operation_record (query_params) {
-      this.record_loading = true;
+    post_operation_record () {
+      let query_params = {
+        pageNo: this.log.pageNo,
+        pageSize: this.log.pageSize,
+        condition: {
+          logSysActiUuid: this.log.auditPreviousDemandDataUuid
+        },
+      }
+      this.loading_list2 = true;
       operation_record_list(query_params).then(resp => {
         this.record_log = resp.data
-        this.record_loading = false;
+        console.log(this.record_log);
+        this.loading_list2 = false;
       })
     },
     // 反馈确认
@@ -771,6 +801,8 @@ export default {
 </script>
 
 <style  scoped>
+@import "../../../assets/styles/css/lhg.css";
+
 .fileName .cell span:hover {
   cursor: pointer !important;
   color: #1371cc !important;

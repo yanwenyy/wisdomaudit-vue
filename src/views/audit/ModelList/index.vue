@@ -30,11 +30,11 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="belogField"
+        <el-table-column prop="belongField"
                          align="center"
                          label="所属领域">
         </el-table-column>
-        <el-table-column prop="belogSpcial"
+        <el-table-column prop="belongSpcial"
                          align="center"
                          label="所属专题">
         </el-table-column>
