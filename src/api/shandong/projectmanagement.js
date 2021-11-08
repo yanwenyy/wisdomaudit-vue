@@ -133,7 +133,7 @@ export function setprojectInit(id){
 export function getProjectMember(num,size){
   return request({
   baseURL: baseURL,
-  url: `/user/listUserInfo?`+`pageCurrent=`+num+`&pageSize=`+size,
+  url: `/projectMembership/listUserInfo?`+`pageCurrent=`+num+`&pageSize=`+size,
   method: 'get',
   })
 }

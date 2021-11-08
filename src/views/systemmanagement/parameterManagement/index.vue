@@ -46,13 +46,15 @@
       <el-table-column align="center" label="操作" width="200px">
         <template slot-scope="scope">
           <el-button
-            style="background: #0c87d6; color: #fff"
-            @click="maintainDictionary(scope.row)"
+            type="text"
+            style="color: #1371cc"
             size="small"
+            @click="maintainDictionary(scope.row)"
             >维护字典</el-button
           >
           <el-button
-            style="background: #0c87d6; color: #fff"
+            type="text"
+            style="color: #1371cc"
             size="small"
             @click="editDictionary(scope.row.uuid)"
             >编辑</el-button
@@ -274,8 +276,8 @@ export default {
         typeCode: "",
         pdictid: "",
         uuid: "",
-        dictName: "",
-        dictCode: "",
+        dictname: "",
+        dictcode: "",
       },
       defaultProps: { children: "children", label: "label" },
       editicon: true,
@@ -291,6 +293,9 @@ export default {
       filterText: "",
       rules: {
         dictname: [
+          { required: true, message: "请输入字典名称", trigger: "blur" },
+        ],
+        dictcode: [
           { required: true, message: "请输入字典名称", trigger: "blur" },
         ],
       },
@@ -322,16 +327,16 @@ export default {
     queryNameInput() {
       let query = {
         condition: {
-          typename:this.maintainDictionaryList.condition.typename,
+          typename: this.maintainDictionaryList.condition.typename,
         },
         pageNo: 1,
-        pageSize: 10
+        pageSize: 10,
       };
       this.getDictionary(query);
     },
-    queryName(){
-      this.maintainDictionaryList.condition.typename="";
-       this.getDictionary(this.maintainDictionaryList);
+    queryName() {
+      this.maintainDictionaryList.condition.typename = "";
+      this.getDictionary(this.maintainDictionaryList);
     },
     //参数管理table获取
     getDictionary(data) {
@@ -446,9 +451,13 @@ export default {
 
     // 编辑
     edit() {
-      this.editpanel = true;
-      this.editicon = false;
-      this.form = JSON.parse(JSON.stringify(this.treeData)); // clone到form，避免双向绑定
+      if (this.treeData.dictname !== "" && this.treeData.dictcode !== "") {
+        this.editpanel = true;
+        this.editicon = false;
+        this.form = JSON.parse(JSON.stringify(this.treeData)); // clone到form，避免双向绑定
+      }else{
+        this.$message.warning("请选择要编辑的字典！")
+      }
     },
 
     //新增编辑树形字典确认事件
