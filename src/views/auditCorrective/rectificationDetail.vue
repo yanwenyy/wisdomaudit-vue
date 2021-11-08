@@ -212,7 +212,7 @@
     padding:0 100px;
   }
   >>>.left-100 .el-input{
-    width: 40%;
+    width: 40%!important;
     margin-right: 20px;
   }
   >>>.zl-up-btn .el-icon-upload2{
@@ -221,7 +221,7 @@
     transform: scale(1.2);
   }
   >>>.left-100 .itemTwo .el-input{
-    width: 100%;
+    width: 100%!important;
     margin-right: 0;
   }
   .zl-title{
