@@ -1090,15 +1090,17 @@ export default {
     },
     // 模型任务完成按钮
     modelInfoBtn() {
-      console.log(this.selectauditModelList.auditModelList);
       if (this.selectauditModelList.auditModelList.length > 0) {
         this.selectauditModelList.projectId = this.active_project;
+        this.TaskDialogVisible = false;
         quoteModel(this.selectauditModelList).then((resp) => {
-          this.$message.success("创建成功！");
-          this.TaskDialogVisible = false;
-          this.queryInfo.condition.managementProjectUuid = this.active_project;
-          this.getmodelTaskList(this.queryInfo);
-          this.task = 1;
+          if (resp.code == 0) {
+            this.$message.success("创建成功！");
+            this.queryInfo.condition.managementProjectUuid =
+              this.active_project;
+            this.getmodelTaskList(this.queryInfo);
+            this.task = 1;
+          }
           this.selectauditModelList.auditModelList = [];
         });
       } else {

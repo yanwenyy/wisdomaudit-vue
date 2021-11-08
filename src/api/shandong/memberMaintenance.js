@@ -14,10 +14,10 @@ export function projectMembership(data){
     })
 }
 // 组员人员下拉框接口
-export function getProjectMember(num,size){
+export function getProjectMember(num,size,id){
     return request({
     baseURL: baseURL,
-    url: `/projectMembership/listUserInfo?`+`pageCurrent=`+num+`&pageSize=`+size,
+    url: `/projectMembership/listUserInfo?`+`pageCurrent=`+num+`&pageSize=`+size+`&projectId=`+id,
     method: 'get',
     })
 }

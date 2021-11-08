@@ -1203,7 +1203,7 @@ export default {
         this.projectInit.splice(5, 1);
         this.projectInit.unshift(item);
       } else {
-         this.projectInitMore.splice(index, 1);
+        this.projectInitMore.splice(index, 1);
         this.projectInitMore.unshift(item);
         this.projectInit.splice(index, 1);
         this.projectInit.unshift(item);
@@ -1258,7 +1258,7 @@ export default {
       }
       // console.log(this.managementProjectUuid);
       this.addDialogVisible = true;
-      this.getSelectData(1, 1000);
+      this.getSelectData(1, 1000, this.managementProjectUuid);
       // auditModelList(this.modelQuery).then((resp) => {
       //   this.modelTableData = resp.data.records;
       //   this.modelSize = resp.data;
@@ -1313,10 +1313,10 @@ export default {
       }
     },
     // 组员查询
-    getSelectData(num, size) {
+    getSelectData(num, size, id) {
       // alert(2)
       this.loading = true;
-      getProjectMember(num, size).then((resp) => {
+      getProjectMember(num, size, id).then((resp) => {
         this.personMes = resp.data.list;
         // console.log(this.personMes);
 
@@ -1461,20 +1461,20 @@ export default {
     },
     prevoius() {
       this.step = 1;
-      this.getSelectData(1, 1000); //左侧
+      this.getSelectData(1, 1000, this.managementProjectUuid); //左侧
       // this.projectMember(this.query);//右侧
     },
     // 模糊查询引入模型名称
-    queryModelInput(){
-      let query={
-         condition: {
+    queryModelInput() {
+      let query = {
+        condition: {
           modelName: this.modelQuery.condition.modelName,
           projectId: this.managementProjectUuid,
         },
         pageNo: 1,
         pageSize: 10,
-      }
-       this.getauditModelListSql(query);
+      };
+      this.getauditModelListSql(query);
     },
     queryModel() {
       this.modelQuery.condition.modelName = "";
@@ -1602,15 +1602,15 @@ export default {
       return row.auditModelUuid;
     },
     // 分页模糊查询模型列表
-    queryNameInput(){
+    queryNameInput() {
       let query = {
-         condition: {
+        condition: {
           taskName: this.getModelList.condition.taskName,
           managementProjectUuid: this.managementProjectUuid,
         },
         pageNo: 1,
         pageSize: 10,
-      }
+      };
       this.getauditModelList(query);
     },
     queryName() {
@@ -2108,9 +2108,17 @@ export default {
       transition: all 0.3s;
       border: 1px solid #fff;
       font-size: 14px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      word-break: break-all;
+      font-size: 13px;
       &:hover {
         box-shadow: 0 2px 10px 5px rgba(0, 0, 0, 0.1);
         border: 1px solid #ebf0f6;
+        text-overflow: inherit;
+        overflow: visible;
+        white-space: pre-line;
       }
     }
     span {
