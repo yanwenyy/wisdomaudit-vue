@@ -62,33 +62,33 @@
       width="70%"
       center
     > <el-divider></el-divider>
-      <el-form :model="formState" class="formData"  label-width="100px">
-        <el-form-item class="itemTwo" label="资料名称:">
+      <el-form ref="addForm" :model="formState" :rules="rules" class="formData"  label-width="100px">
+        <el-form-item class="itemTwo" prop="basyName" label="资料名称:">
           <el-input
             :disabled="ifLook"
             v-model="formState.basyName"
             placeholder="请输入"
           ></el-input>
         </el-form-item>
-        <el-form-item class="itemTwo" label="文号:">
+        <el-form-item class="itemTwo" prop="basySymbol" label="文号:">
           <el-input
             :disabled="ifLook"
             v-model="formState.basySymbol"
             placeholder="请输入"
           ></el-input>
         </el-form-item>
-        <el-form-item class="itemTwo" label="重点条款:" >
+        <el-form-item class="itemTwo" prop="keyClauses" label="重点条款:" >
           <el-input
             :disabled="ifLook"
             v-model="formState.keyClauses"
             placeholder="请输入"
           ></el-input>
         </el-form-item>
-        <el-form-item class="itemTwo" label="发文日期:" >
+        <el-form-item class="itemTwo" prop="issueDate" label="发文日期:" >
           <el-date-picker :disabled="ifLook" v-model="formState.issueDate" type="date"  placeholder="请选择" value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
-        <el-form-item class="itemTwo" label="发文部门:" >
+        <el-form-item class="itemTwo" prop="publishDepartment" label="发文部门:" >
           <el-input
             :disabled="ifLook"
             v-model="formState.publishDepartment"
@@ -117,7 +117,7 @@
             <div v-for="(item,index) in fileList">{{item.name}}</div>
           </div>
         </el-form-item>
-        <el-form-item label="附件内容:" >
+        <el-form-item label="附件内容:" prop="content" >
           <el-input :disabled="ifLook" type="textarea" v-model="formState.content" :rows="6" style="flex:1;" :placeholder="'模板:\n第一章 货币资金审计\n第一节 现金盘点\n第一条 现金的账实是否属实\n1.确定所有现金存放地点和用途\n2.现场键盘库存现金'"></el-input>
         </el-form-item>
       </el-form>
@@ -137,6 +137,7 @@ export default {
   components: {},
   data() {
     return {
+      canClick:true,
       ifLook:false,
       key:0,
       title: "",
@@ -172,6 +173,27 @@ export default {
       },
       apkFiles:[],//附件上传列表
       fileList:[],//附件上传回显列表
+      // 新增的表单验证
+      rules: {
+        basyName: [
+          { required: true, message: "请填写资料名称", trigger: "blur" },
+        ],
+        basySymbol: [
+          { required: true, message: "请填写文号", trigger: "blur" },
+        ],
+        keyClauses: [
+          { required: true, message: "请填写重点条款", trigger: "blur" },
+        ],
+        publishDepartment: [
+          { required: true, message: "请填写发文部门", trigger: "blur" },
+        ],
+        issueDate: [
+          { required: true, message: "请填写发文日期", trigger: "blur" },
+        ],
+        content: [
+          { required: true, message: "请填写附件内容", trigger: "blur" },
+        ],
+      },
     };
   },
   computed: {},
@@ -301,6 +323,7 @@ export default {
       this.searchForm.basyName=data.basyName;
       this.searchForm.issueDate=data.issueDate;
       this.searchForm.publishDepartment=data.publishDepartment;
+      this.searchForm.pageNo=1;
       this.list_data_start();
     },
     //分页点击
@@ -398,32 +421,53 @@ export default {
     },
     //保存数据
     sub(){
-      var attachmentUuidList=[];
-      this.apkFiles.forEach((item)=>{
-        attachmentUuidList.push(item.attachmentUuid)
-      });
-      if(this.formState.attachmentList){
-        this.formState.attachmentList.forEach((item)=>{
-          attachmentUuidList.push(item.attachment_uuid)
+      console.log(this.canClick)
+      if (this.canClick) {
+
+        this.canClick = false;
+        var attachmentUuidList=[];
+        this.apkFiles.forEach((item)=>{
+          attachmentUuidList.push(item.attachmentUuid)
         });
-      }
-      this.formState.attachmentUuidList=attachmentUuidList;
-      auditBasy_save(this.formState).then(resp => {
-        if (resp.code == 0) {
-          this.$message({
-            message: "保存成功",
-            type: "success",
-          });
-          this.isAdd=false;
-          this.list_data_start();
-        } else {
-          this.$message({
-            message: resp.data.msg,
-            type: "error",
+        if(this.formState.attachmentList){
+          this.formState.attachmentList.forEach((item)=>{
+            attachmentUuidList.push(item.attachment_uuid)
           });
         }
+        this.formState.attachmentUuidList=attachmentUuidList;
+        if(this.formState.attachmentUuidList.length==0){
+          this.$message.error("请上传附件");
+          this.canClick=true;
+          return false;
+        }
+        this.$refs['addForm'].validate((valid) => {
+          if (valid) {
+            this.canClick=true;
+            auditBasy_save(this.formState).then(resp => {
+              if (resp.code == 0) {
+                this.$message({
+                  message: "保存成功",
+                  type: "success",
+                });
+                this.isAdd=false;
+                this.list_data_start();
+              } else {
+                this.$message({
+                  message: resp.data.msg,
+                  type: "error",
+                });
+              }
 
-      })
+            })
+          } else {
+            this.canClick = true;
+            this.$message.error("请添加必填项和正确的数据格式");
+            return false;
+          }
+        });
+      }
+
+
     },
     //关闭弹窗
     close(){
@@ -462,6 +506,7 @@ export default {
       }
       this.fileList=[];
       this.apkFiles=[];
+      this.canClick=true;
     },
     //点击资料名称显示附件列表
     getFileList(id){
