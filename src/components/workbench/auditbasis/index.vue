@@ -205,6 +205,7 @@ export default {
     },
     addlist() {
       this.isAdd = true;
+      this.ifLook=false;
       this.title = "新增审计依据";
     },
     Selects(selection, row) {
