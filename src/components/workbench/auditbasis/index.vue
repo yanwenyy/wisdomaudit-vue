@@ -451,6 +451,7 @@ export default {
                 });
                 this.isAdd=false;
                 this.list_data_start();
+                this.clearForm();
               } else {
                 this.$message({
                   message: resp.data.msg,
