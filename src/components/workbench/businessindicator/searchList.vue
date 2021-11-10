@@ -282,7 +282,7 @@
       addSave(){
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            indexManagement_addSave(this.temp).then(resp => {
+            setTimeout(indexManagement_addSave(this.temp).then(resp => {
               if (resp.code == 0) {
                 this.$message({
                   message: "保存成功",
@@ -297,7 +297,7 @@
                   type: "error",
                 });
               }
-            })
+            }),1)
           } else {
             this.$message({
               message: '请完善信息',

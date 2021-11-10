@@ -249,6 +249,7 @@ export default {
     edit(row){
       this.clearForm();
       this.isAdd = true;
+      this.ifLook=false;
       this.title = "编辑审计依据";
       auditBasy_getDetail(row.basyUuid).then(resp => {
         var datas=resp.data;
