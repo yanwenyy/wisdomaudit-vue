@@ -192,6 +192,24 @@ export function correctStep_pageListJkr(data) {
     data
   })
 }
+//整改措施领导列表
+export function correctStep_pageListLd(data) {
+  return request({
+    baseURL: baseURL,
+    url:'/correctStep/pageListLd',
+    method: 'post',
+    data
+  })
+}
+//整改措施跟进人列表
+export function correctStep_pageList(data) {
+  return request({
+    baseURL: baseURL,
+    url:'/correctStep/pageList',
+    method: 'post',
+    data
+  })
+}
 //整改措施项目下拉列表
 export function correctStep_getProjectList(data) {
   return request({
@@ -207,6 +225,33 @@ export function correctStep_getById(data) {
     baseURL: baseURL,
     url:'/correctStep/getById/' + data + '',
     method: 'get',
+    data
+  })
+}
+//整改措施录入整改
+export function correctStep_inputAlter(data) {
+  return request({
+    baseURL: baseURL,
+    url:'/correctStep/inputAlter',
+    method: 'post',
+    data
+  })
+}
+//整改措施详情提交
+export function correctStep_submitAlter(data) {
+  return request({
+    baseURL: baseURL,
+    url:'/correctStep/submitAlter',
+    method: 'post',
+    data
+  })
+}
+//整改措施列表提交
+export function correctStep_submitAlterLb(data) {
+  return request({
+    baseURL: baseURL,
+    url:'/correctStep/submitAlterLb',
+    method: 'post',
     data
   })
 }

@@ -4,7 +4,7 @@
       <div style="float: right;">
         <el-form class="search-form" :inline="true" :model="searchForm" @keyup.enter.native="list_data_start()">
           <el-form-item label="状态:">
-            <el-select v-model="searchForm.correctStatus" placeholder="请选择">
+            <el-select v-model="searchForm.correctStatus" placeholder="请选择" clearable>
               <el-option label="待提交" value="1"></el-option>
               <el-option label="待审核" value="2"></el-option>
               <el-option label="审核通过" value="3"></el-option>
@@ -12,7 +12,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="项目:">
-            <el-select v-model="searchForm.projectName	" placeholder="请选择">
+            <el-select v-model="searchForm.projectName	" placeholder="请选择" clearable>
               <el-option
                 v-for="(item,index) in projectList"
                 :label="item.projectName"
@@ -24,11 +24,12 @@
           </el-form-item>
           <el-form-item label="问题:">
             <el-input
+              clearable
               placeholder="请输入问题"
               v-model="searchForm.problemName"
               class="input-with-select"
             >
-              <el-button type="primary" slot="append" icon="el-icon-search"></el-button>
+              <el-button type="primary" slot="append" icon="el-icon-search" @click="list_data_start"></el-button>
             </el-input>
           </el-form-item>
         </el-form>
@@ -128,12 +129,12 @@
       ></el-pagination>
     </div>
     <!-- 分页 end-->
-    <detail ref="detail"></detail>
+    <detail ref="detail" @refs="refreshList"></detail>
   </div>
 </template>
 
 <script>
-  import { correctStep_pageListJkr,correctStep_getProjectList } from
+  import { correctStep_pageListJkr,correctStep_getProjectList ,correctStep_submitAlterLb} from
       '@SDMOBILE/api/shandong/ls'
   import Detail from "./rectificationDetail";
   export default {
@@ -165,6 +166,10 @@
       })
     },
     methods: {
+      //详情保存后刷新列表
+      refreshList(){
+        this.list_data_start();
+      },
       //列表数据
       list_data_start () {
         let params={
@@ -199,7 +204,30 @@
         this.list_data_start();
       },
       //提交点击
-      sub(row){},
+      sub(row){
+        this.$confirm(`确认提交该条数据吗?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          var formData = new FormData();
+          formData.append("correctStepUuids",row.correctStepUuid)
+          correctStep_submitAlterLb(formData).then(resp => {
+            if (resp.code == 0) {
+              this.$message({
+                message: "提交成功",
+                type: "success",
+              });
+              this.list_data_start();
+            } else {
+              this.$message({
+                message: resp.data.msg,
+                type: "error",
+              });
+            }
+          });
+        }).catch(() => {})
+      },
       //审核点击
       examine(row) {
         this.$nextTick(() => {

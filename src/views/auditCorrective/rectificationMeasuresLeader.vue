@@ -2,32 +2,34 @@
   <div class="rectificationMeasures">
     <div style="width: 100%; overflow: hidden">
       <div style="float: right;">
-        <el-form class="search-form" :inline="true" :model="form" @keyup.enter.native="init()">
+        <el-form class="search-form" :inline="true" :model="searchForm" @keyup.enter.native="list_data_start()">
           <el-form-item label="状态:">
-            <el-select v-model="form.zt" placeholder="请选择">
-              <el-option
-                label="1"
-                value="1"
-              >
-              </el-option>
+            <el-select v-model="searchForm.correctStatus" placeholder="请选择" clearable>
+              <el-option label="待提交" value="1"></el-option>
+              <el-option label="待审核" value="2"></el-option>
+              <el-option label="审核通过" value="3"></el-option>
+              <el-option label="驳回待提交" value="4"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="项目:">
-            <el-select v-model="form.zt" placeholder="请选择">
+            <el-select v-model="searchForm.projectName	" placeholder="请选择" clearable>
               <el-option
-                label="1"
-                value="1"
+                v-for="(item,index) in projectList"
+                :label="item.projectName"
+                :value="item.projectName"
+                :key="index"
               >
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="问题:">
             <el-input
+              clearable
               placeholder="请输入问题"
-              v-model="form.info"
+              v-model="searchForm.problemName"
               class="input-with-select"
             >
-              <el-button type="primary" slot="append" icon="el-icon-search"></el-button>
+              <el-button type="primary" slot="append" icon="el-icon-search" @click="list_data_start"></el-button>
             </el-input>
           </el-form-item>
         </el-form>
@@ -46,44 +48,50 @@
       />
       <el-table-column
         label="项目名称"
-        width="200px"
-        prop="name"
+        width="250px"
+        prop="projectName"
         algin="left"
       />
       <el-table-column
         label="问题"
         width="250px"
-        prop="address"
+        prop="problemName"
         algin="left"
       >
         <template slot-scope="scope">
-          <span class="blue pointer" @click="look(scope.row)">{{scope.row.address}}</span>
+          <span class="blue pointer" @click="look(scope.row)">{{scope.row.problemName}}</span>
         </template>
       </el-table-column>
       <el-table-column
-        label="项目类型"
+        label="整改期间"
         width="200px"
-        prop="name"
+        prop="createTime"
         align="center"
-      />
-      <el-table-column
-        label="整改时间"
-        width="200px"
-        prop="date"
-        align="center"
-      />
+      >
+        <template slot-scope="scope">
+          <span>{{scope.row.createTime | dateformat}}</span>至 <span>{{scope.row.planEndDate | dateformat}}</span>
+        </template>
+      </el-table-column>
       <el-table-column
         label="整改责任部门及联系人"
         width="200px"
         align="center"
         prop="name"
-      />
+      >
+        <template slot-scope="scope">
+          <span>{{scope.row.correctDept+scope.row.correctPerson}}</span>
+        </template>
+      </el-table-column>
       <el-table-column
         label="状态"
-        prop="date"
+        prop="correctStatus"
         align="center"
         width="100px"
-      />
+      >
+        <template slot-scope="scope">
+          <span>{{scope.row.correctStatus=='1'?'待提交':scope.row.correctStatus=='2'?'待审核':scope.row.correctStatus=='3'?'审核通过':scope.row.correctStatus=='4'?'驳回待提交':''}}</span>
+        </template>
+      </el-table-column>
       <el-table-column
         label="整改结果"
         prop="name"
@@ -92,9 +100,10 @@
       <el-table-column
         label="操作"
         align="center"
+        width="200px"
       >
         <template slot-scope="scope">
-          <el-button class="blue sh-btn" type="text" @click="examine(scope.row)">
+          <el-button v-if="scope.row.correctStatus=='1'||scope.row.correctStatus=='4'" class="blue sh-btn" type="text" @click="examine(scope.row)">
             审核
           </el-button>
         </template>
@@ -114,45 +123,70 @@
       ></el-pagination>
     </div>
     <!-- 分页 end-->
-    <detail ref="detail"></detail>
+    <detail ref="detail" @refs="refreshList"></detail>
   </div>
 </template>
 
 <script>
+  import { correctStep_pageListLd,correctStep_getProjectList } from
+      '@SDMOBILE/api/shandong/ls'
   import Detail from "./rectificationDetail";
   export default {
     data() {
       return {
-        form: {},
+        projectList:[],//项目下拉列表
+        searchForm: {
+          pageNo: 1,
+          pageSize: 10,
+          correctStatus:'',
+          projectName:'',
+          problemName:''
+        },
         page: {
           current: 1,
           size: 10,
           total: 0
         },
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
+        tableData: [],
       }
     },
     components:{
       Detail
     },
+    mounted(){
+      this.list_data_start();
+      correctStep_getProjectList().then(resp=>{
+        this.projectList=resp.data;
+      })
+    },
     methods: {
-
+      //详情保存后刷新列表
+      refreshList(){
+        this.list_data_start();
+      },
+      //列表数据
+      list_data_start () {
+        let params={
+          pageNo: this.searchForm.pageNo,
+          pageSize: this.searchForm.pageSize,
+          condition: {
+            correctStatus: this.searchForm.correctStatus,
+            projectName: this.searchForm.projectName,
+            problemName: this.searchForm.problemName,
+          }
+        };
+        this.loading = true;
+        correctStep_pageListLd(params).then(resp => {
+          var datas=resp.data;
+          this.tableData = datas.records;
+          this.page={
+            current:datas.current,
+            size:datas.size,
+            total:datas.total
+          };
+          this.loading = false;
+        })
+      },
       //分页点击
       handleSizeChange(val) {
         this.searchForm.pageSize = val;
@@ -163,16 +197,18 @@
         this.searchForm.pageNo= val;
         this.list_data_start();
       },
+      //提交点击
+      sub(row){},
       //审核点击
       examine(row) {
         this.$nextTick(() => {
-          this.$refs.detail.init('整改事项明细','zgcs_examine');
+          this.$refs.detail.init('整改事项明细','zgcs_examine',row.correctStepUuid);
         });
       },
       //查看点击
       look(row){
         this.$nextTick(()=>{
-          this.$refs.detail.init('问题详情','zgcs_look');
+          this.$refs.detail.init('问题详情','zgtz_look',row.correctStepUuid);
         })
       }
     }
