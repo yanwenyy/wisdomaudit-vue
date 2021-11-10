@@ -66,7 +66,7 @@ const Systemmanagement = {
       path: '/parameterManagement',
       component: () => import('@WISDOMAUDIT/views/systemmanagement/parameterManagement'),
       meta: {
-        title: '参数管理'
+        title: '系统管理-参数管理'
       },
     },
     {

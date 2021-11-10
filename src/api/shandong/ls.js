@@ -183,3 +183,30 @@ export function indexManagement_delete (data) {
     data
   })
 }
+//整改措施接口人列表
+export function correctStep_pageListJkr(data) {
+  return request({
+    baseURL: baseURL,
+    url:'/correctStep/pageListJkr',
+    method: 'post',
+    data
+  })
+}
+//整改措施项目下拉列表
+export function correctStep_getProjectList(data) {
+  return request({
+    baseURL: baseURL,
+    url:'/correctStep/getProjectList',
+    method: 'post',
+    data
+  })
+}
+//整改措施详情
+export function correctStep_getById(data) {
+  return request({
+    baseURL: baseURL,
+    url:'/correctStep/getById/' + data + '',
+    method: 'get',
+    data
+  })
+}
