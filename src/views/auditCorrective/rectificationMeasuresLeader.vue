@@ -29,7 +29,7 @@
               v-model="searchForm.problemName"
               class="input-with-select"
             >
-              <el-button type="primary" slot="append" icon="el-icon-search"  @click="list_data_start"></el-button>
+              <el-button type="primary" slot="append" icon="el-icon-search" @click="list_data_start"></el-button>
             </el-input>
           </el-form-item>
         </el-form>
@@ -128,7 +128,7 @@
 </template>
 
 <script>
-  import { correctStep_pageList,correctStep_getProjectList } from
+  import { correctStep_pageListLd,correctStep_getProjectList } from
       '@SDMOBILE/api/shandong/ls'
   import Detail from "./rectificationDetail";
   export default {
@@ -176,7 +176,7 @@
           }
         };
         this.loading = true;
-        correctStep_pageList(params).then(resp => {
+        correctStep_pageListLd(params).then(resp => {
           var datas=resp.data;
           this.tableData = datas.records;
           this.page={

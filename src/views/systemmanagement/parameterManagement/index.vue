@@ -180,7 +180,10 @@
                   <el-row>
                     <el-col :offset="1" :span="21">
                       <el-form-item align="center">
-                        <el-button @click="formOnSubmit()" type="primary"
+                        <el-button
+                          @click="formOnSubmit()"
+                          style="background: #0c87d6; color: #fff"
+                          :disabled="isdisabled"
                           >保存并关闭</el-button
                         >
                         <el-button @click="formOnCancle()">取消</el-button>
@@ -237,7 +240,10 @@
       </div>
       <div class="footerBtn">
         <el-button @click="add_dictionary = false">取消</el-button>
-        <el-button @click="editSave" style="background: #0c87d6; color: #fff"
+        <el-button
+          @click="editSave"
+          style="background: #0c87d6; color: #fff"
+          :disabled="isdisabled"
           >确认</el-button
         >
       </div>
@@ -316,6 +322,7 @@ export default {
         pageNo: 1,
         pageSize: 10,
       },
+      isdisabled: false,
     };
   },
   created() {
@@ -364,11 +371,25 @@ export default {
     editSave() {
       this.$refs["dictionaryRef"].validate((valid) => {
         if (valid) {
-          // 增加编辑字典接口
-          addDictionaryList(this.dictionaryForm).then((resp) => {
-            this.add_dictionary = false;
-            this.getDictionary(this.maintainDictionaryList);
-          });
+          this.isdisabled = true;
+          if (this.isAdd == 2) {
+            // 增加编辑字典接口
+            addDictionaryList(this.dictionaryForm).then((resp) => {
+              this.add_dictionary = false;
+              this.getDictionary(this.maintainDictionaryList);
+            });
+          }
+          if (this.isAdd == 1) {
+            this.dictionaryForm.uuid = "";
+            // 增加编辑字典接口
+            addDictionaryList(this.dictionaryForm).then((resp) => {
+              this.add_dictionary = false;
+              this.getDictionary(this.maintainDictionaryList);
+            });
+          }
+          setTimeout(() => {
+            this.isdisabled = false;
+          }, 3000);
         }
       });
     },
@@ -378,7 +399,6 @@ export default {
     },
     //维护字典按钮事件
     maintainDictionary(rows) {
-      console.log(rows);
       this.mainDialogVisible = true;
       this.form.typecode = rows.typecode;
       dictionaryList_Code(rows.typecode).then((resp) => {
@@ -408,7 +428,6 @@ export default {
 
     // 点击查看树信息
     getCheckedNodes(data) {
-      console.log(data);
       if (this.editpanel) {
         return this.$message({
           showClose: true,
@@ -455,8 +474,8 @@ export default {
         this.editpanel = true;
         this.editicon = false;
         this.form = JSON.parse(JSON.stringify(this.treeData)); // clone到form，避免双向绑定
-      }else{
-        this.$message.warning("请选择要编辑的字典！")
+      } else {
+        this.$message.warning("请选择要编辑的字典！");
       }
     },
 
@@ -464,6 +483,7 @@ export default {
     formOnSubmit() {
       this.$refs["formRef"].validate((valid) => {
         if (valid) {
+          this.isdisabled = true;
           addDictionaryChild(this.form).then((resp) => {
             if (resp.code === 0) {
               this.form.uuid = resp.data.uuid;
@@ -479,6 +499,9 @@ export default {
               this.maintainDictionary(this.form);
             }
           });
+          setTimeout(() => {
+            this.isdisabled = false;
+          }, 3000);
         }
       });
     },

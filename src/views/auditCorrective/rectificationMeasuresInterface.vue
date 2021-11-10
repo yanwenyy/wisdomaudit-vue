@@ -29,7 +29,7 @@
               v-model="searchForm.problemName"
               class="input-with-select"
             >
-              <el-button type="primary" slot="append" icon="el-icon-search"  @click="list_data_start"></el-button>
+              <el-button type="primary" slot="append" icon="el-icon-search" @click="list_data_start"></el-button>
             </el-input>
           </el-form-item>
         </el-form>
@@ -104,7 +104,13 @@
       >
         <template slot-scope="scope">
           <el-button v-if="scope.row.correctStatus=='1'||scope.row.correctStatus=='4'" class="blue sh-btn" type="text" @click="examine(scope.row)">
-            审核
+            录入整改
+          </el-button>
+          <el-button class="blue sh-btn" type="text" @click="look(scope.row)">
+            查看
+          </el-button>
+          <el-button v-if="scope.row.correctStatus=='1'||scope.row.correctStatus=='4'" class="blue sh-btn" type="text" @click="sub(scope.row)">
+            提交
           </el-button>
         </template>
       </el-table-column>
@@ -128,7 +134,7 @@
 </template>
 
 <script>
-  import { correctStep_pageList,correctStep_getProjectList } from
+  import { correctStep_pageListJkr,correctStep_getProjectList ,correctStep_submitAlterLb} from
       '@SDMOBILE/api/shandong/ls'
   import Detail from "./rectificationDetail";
   export default {
@@ -176,7 +182,7 @@
           }
         };
         this.loading = true;
-        correctStep_pageList(params).then(resp => {
+        correctStep_pageListJkr(params).then(resp => {
           var datas=resp.data;
           this.tableData = datas.records;
           this.page={
@@ -198,11 +204,34 @@
         this.list_data_start();
       },
       //提交点击
-      sub(row){},
+      sub(row){
+        this.$confirm(`确认提交该条数据吗?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          var formData = new FormData();
+          formData.append("correctStepUuids",row.correctStepUuid)
+          correctStep_submitAlterLb(formData).then(resp => {
+            if (resp.code == 0) {
+              this.$message({
+                message: "提交成功",
+                type: "success",
+              });
+              this.list_data_start();
+            } else {
+              this.$message({
+                message: resp.data.msg,
+                type: "error",
+              });
+            }
+          });
+        }).catch(() => {})
+      },
       //审核点击
       examine(row) {
         this.$nextTick(() => {
-          this.$refs.detail.init('整改事项明细','zgcs_examine',row.correctStepUuid);
+          this.$refs.detail.init('录入整改','zgcs_edit',row.correctStepUuid);
         });
       },
       //查看点击
