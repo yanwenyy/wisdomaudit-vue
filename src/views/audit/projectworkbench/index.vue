@@ -604,7 +604,10 @@
         <!-- 分页 end-->
         <div class="stepBtn" style="margin-top: 25px">
           <el-button @click="res">取消</el-button>
-          <el-button style="background: #1897e4; color: #fff" @click="modelInfo"
+          <el-button
+            style="background: #1897e4; color: #fff"
+            @click="modelInfo"
+            :disabled="isdisabled"
             >确认</el-button
           >
         </div>
@@ -698,7 +701,10 @@
         </el-form>
         <div class="temBtn">
           <el-button @click="TaskSelf_res">取消</el-button>
-          <el-button type="primary" @click="taskSelfInfo('selfTaskRef')"
+          <el-button
+            type="primary"
+            @click="taskSelfInfo('selfTaskRef')"
+            :disabled="isdisabled"
             >确认</el-button
           >
         </div>
@@ -802,7 +808,12 @@
         </el-form>
         <div class="temBtn">
           <el-button @click="editTaskSelfDialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="edittaskSelfSave">确认</el-button>
+          <el-button
+            type="primary"
+            @click="edittaskSelfSave"
+            :disabled="isdisabled"
+            >确认</el-button
+          >
         </div>
       </div>
     </el-dialog>
@@ -884,6 +895,7 @@ export default {
   },
   data() {
     return {
+      isdisabled: false,
       key: 0,
       enclosure_details_list: [],
       nearbyDialogVisible: false, //附件详情
@@ -1636,6 +1648,7 @@ export default {
       // console.log(this.selectauditModelList);
 
       if (this.selectauditModelList.auditModelList.length > 0) {
+        this.isdisabled = true;
         this.selectauditModelList.projectId = this.managementProjectUuid;
         quoteModel(this.selectauditModelList).then((resp) => {
           this.$message.success("创建成功！");
@@ -1646,6 +1659,9 @@ export default {
           // console.log(this.getModelList);
           this.getauditModelList(this.getModelList);
         });
+        setTimeout(() => {
+          this.isdisabled = false;
+        }, 3000);
       } else {
         this.$message.info("请选择要引入的模型!");
       }
@@ -1733,6 +1749,7 @@ export default {
               }
             });
           } else {
+            this.isdisabled = true;
             this.taskSelf.taskType = 2;
             this.taskSelf.managementProjectUuid = this.managementProjectUuid;
             selfTaskFunction(this.taskSelf).then((resp) => {
@@ -1744,6 +1761,10 @@ export default {
               // console.log(this.getModelList);
               this.getauditModelList(this.getModelList);
             });
+
+            setTimeout(() => {
+              this.isdisabled = false;
+            }, 3000);
           }
         } else {
           console.log("error submit!!");
@@ -1853,6 +1874,7 @@ export default {
         this.fileList_Delet.forEach((item) => {
           item.status = null;
         });
+        this.isdisabled = true;
         var upList = this.edit_file_list.concat(this.fileList_Delet);
         this.edittaskSelfForm.attachmentList = upList;
         this.edittaskSelfForm.managementProjectUuid =
@@ -1863,10 +1885,14 @@ export default {
             this.editTaskSelfDialogVisible = false;
           }
         });
+
         this.addDialogVisible = true;
         this.getModelList.condition.managementProjectUuid =
           this.managementProjectUuid;
         this.getauditModelList(this.getModelList);
+        setTimeout(() => {
+          this.isdisabled = false;
+        }, 3000);
       }
     },
     // 自建任务删除
@@ -2506,7 +2532,7 @@ export default {
 .companyName {
   font-weight: 500;
   font-size: 16px;
-   white-space: nowrap;
+  white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   word-break: break-all;
