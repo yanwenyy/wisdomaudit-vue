@@ -244,8 +244,7 @@ export default {
      * @param { Object } e 提交点击事件对象
      */
      submit() {
-
-
+        this.form.permissionIds = this.$refs.tree.getCheckedKeys()
       this.$refs.newRoleManagementForm.validate( async valid => {
         if (!valid) {
           return
@@ -263,7 +262,7 @@ export default {
           message: '修改成功',
           type: 'success'
         });
-           _self.$router.go(-1)
+           this.$router.go(-1)
         }else{
           this.$message({
           message: '修改失败',
@@ -340,6 +339,7 @@ export default {
           this.common.showErrorToast('有三级按钮选中时，必须选中基础功能')
         }
       }
+
     },
     /**
      * 取消按钮点击事件
