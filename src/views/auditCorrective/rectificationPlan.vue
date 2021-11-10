@@ -83,12 +83,12 @@
             </el-button>
             <el-button type="text"
                        v-if="scope.row.auditConf == 2"
-                       @click="push(scope.row.managementProjectUuid)"
+                       @click="push(scope.row)"
                        style="color: rgb(68, 163, 223);">
               下发
             </el-button>
+            <!-- v-if="scope.row.auditConf == 3" -->
             <el-button type="text"
-                       v-if="scope.row.auditConf == 3"
                        @click="examine(scope.row.managementProjectUuid)"
                        style="color: rgb(68, 163, 223);">
               审核
@@ -183,7 +183,7 @@
 <script>
 import { isStartProject, startProject, follow_up_person } from "@SDMOBILE/api/shandong/adminProject";//lhg
 
-import { pageProblemCorrectList, details_pageList, isProjectLeader } from "@SDMOBILE/api/shandong/recitFicationPlan";//lhg
+import { pageProblemCorrectList, details_pageList, isProjectLeader, issueProject } from "@SDMOBILE/api/shandong/recitFicationPlan";//lhg
 
 export default {
   data () {
@@ -222,8 +222,6 @@ export default {
 
       projectid: '',//获取项目的id
       isDisable: false,//防止重复提交
-
-
 
     }
   },
@@ -389,10 +387,29 @@ export default {
     details_click (id) {
       this.$router.push({ path: 'rectificationPlan/details/' + id })
     },
-
     // 下发
-    push () {
-
+    push (data) {
+      let params = {
+        managementProjectUuid: data.managementProjectUuid,//项目id
+        projectName: data.projectName,//项目名称
+        auditOrgUuid: data.auditOrgUuid,//被审计单位
+        correctSend: 1,//是否下发
+      };
+      issueProject(params).then(resp => {
+        console.log(resp);
+        if (resp.code == 0) {
+          this.$message({
+            message: '下发成功',
+            type: 'success'
+          });
+          this.pageProblemCorrectList_data();//刷新列表
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: 'error'
+          });
+        }
+      })
     },
     // 审核
     examine (id) {

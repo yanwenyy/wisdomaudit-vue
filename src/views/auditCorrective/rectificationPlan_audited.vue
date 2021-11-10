@@ -1,8 +1,10 @@
 <template>
+  <!-- 被审计 -->
   <div>
     <div class="header_dlag">
       <div class="search">
-        <el-input placeholder="请输入项目名称"> </el-input>
+        <el-input placeholder="请输入项目名称"
+                  v-model="list_query.projectName"> </el-input>
         <div class="search_icon"
              style=" background: rgb(12, 135, 214) !important;"
              @click="search_list_details()">
@@ -13,7 +15,7 @@
     </div>
 
     <div class="padding">
-      <el-table :data="tableData"
+      <el-table :data="tableData.records"
                 :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                 v-loading="loading"
                 style="width: 100%">
@@ -22,36 +24,39 @@
                          width="50">
         </el-table-column>
         <el-table-column align="center"
-                         prop="problem"
+                         prop="projectName"
                          label="审计项目名称">
         </el-table-column>
         <el-table-column align="center"
-                         prop="problem"
+                         prop="auditOrgName"
                          label="被审计单位">
         </el-table-column>
         <el-table-column align="center"
-                         prop="problem"
+                         prop="projectType"
                          label="项目类型">
         </el-table-column>
         <el-table-column align="center"
-                         prop="problem"
+                         prop="projectLeaderName"
                          label="项目负责人">
         </el-table-column>
         <el-table-column align="center"
-                         prop="problem"
+                         prop="projectChargemanName"
                          label="项目组长">
         </el-table-column>
         <el-table-column align="center"
                          prop="problem"
                          label="操作">
           <template slot-scope="scope">
+
             <el-button type="text"
+                       v-if="scope.row.correctStatus==1 || scope.row.correctStatus==4"
                        @click="edit(scope.row)"
                        style="color: rgb(68, 163, 223);">
               编辑
             </el-button>
             <el-button type="text"
-                       @click="save(scope.row)"
+                       v-if="scope.row.correctStatus==1 || scope.row.correctStatus==4"
+                       @click="post(scope.row.managementProjectUuid)"
                        style="color: rgb(68, 163, 223);">
               提交
             </el-button>
@@ -61,14 +66,14 @@
 
       <!-- 分页 -->
       <div class="page">
-        <!-- <el-pagination @size-change="handleSizeChange"
-                     @current-change="handleCurrentChange"
-                     :current-page="this.issues_list.current"
-                     :page-sizes="[100, 200, 300, 400]"
-                     :page-size="this.issues_list.size"
-                     layout="total, sizes, prev, pager, next, jumper"
-                     :total="this.issues_list.total">
-      </el-pagination> -->
+        <el-pagination @size-change="handleSizeChange"
+                       @current-change="handleCurrentChange"
+                       :current-page="this.tableData.current"
+                       :page-sizes="[100, 200, 300, 400]"
+                       :page-size="this.tableData.size"
+                       layout="total, sizes, prev, pager, next, jumper"
+                       :total="this.tableData.total">
+        </el-pagination>
       </div>
       <!-- 分页 end-->
 
@@ -78,11 +83,17 @@
 </template>
 
 <script>
+import { pageBsjProblemCorrectList, submitReview } from "@SDMOBILE/api/shandong/rectificationPlan_audited";//lhg
 export default {
   components: {},
   data () {
     return {
       loading: false,
+      list_query: {
+        pageNo: 1,
+        pageSize: 10,
+        projectName: '',
+      },
       tableData: [
         { problem: '11' },
       ],
@@ -90,22 +101,70 @@ export default {
   },
   computed: {},
   watch: {},
-  methods: {
-    // 编辑
-    edit () {
-
-    },
-    // 提交
-    save () {
-
-    },
-  },
   created () {
-
+    this.pageBsjProblemCorrectList_data();
   },
   mounted () {
 
   },
+  methods: {
+    // 列表
+    pageBsjProblemCorrectList_data () {
+      this.loading = true;
+      let params = {
+        pageNo: this.list_query.pageNo,
+        pageSize: this.list_query.pageSize,
+        condition: {
+          projectName: this.list_query.projectName,
+        }
+      };
+      pageBsjProblemCorrectList(params).then(resp => {
+        this.tableData = resp.data;
+        this.loading = false;
+      })
+    },
+    // 每页条数
+    handleSizeChange (val) {
+      this.list_query.pageSize = val
+    },
+    // 分页
+    handleCurrentChange (val) {
+      this.list_query.pageNo = val;
+      this.pageBsjProblemCorrectList_data();//刷新列表
+
+    },
+    // 筛选
+    search_list_details () {
+      this.pageBsjProblemCorrectList_data();//刷新列表
+    },
+    // 编辑
+    edit (data) {
+      this.$router.push({ path: 'rectificationPlan_audited/edit/' + data.managementProjectUuid })
+    },
+    // 提交
+    // 提交
+    post (id) {
+      let params = {
+        managementProjectUuid: id
+      };
+      submitReview(params).then(resp => {
+        console.log(resp.data);
+        if (resp.code == 0) {
+          this.$message({
+            message: '提交成功',
+            type: 'success'
+          });
+          this.pageBsjProblemCorrectList_data();//刷新列表
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: 'error'
+          });
+        }
+      })
+    },
+  },
+
 }
 </script>
 

@@ -148,9 +148,9 @@
             <el-select v-model="add.auditedEntity"
                        @change="changeHeader_danwei">
               <el-option v-for="item in audit_Company"
-                         :key="item.orgName"
+                         :key="item.auditOrgUuid"
                          :label="item.orgName"
-                         :value="item.orgName">
+                         :value="item.auditOrgUuid">
               </el-option>
             </el-select>
 
@@ -607,6 +607,7 @@ export default {
     Company (params) {
       historicalaudit_loaauditorg(params).then(resp => {
         this.audit_Company = resp.data
+        console.log(this.audit_Company);
       })
     },
     // 单位

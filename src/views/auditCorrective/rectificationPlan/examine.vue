@@ -2,7 +2,8 @@
   <div>
     <div class="header_dlag">
       <div class="search">
-        <el-input placeholder="请输入问题"> </el-input>
+        <el-input placeholder="请输入问题"
+                  v-model="details_query.problem"> </el-input>
         <div class="search_icon"
              style=" background: rgb(12, 135, 214) !important;"
              @click="search_list_details()">
@@ -13,7 +14,7 @@
     </div>
 
     <div class="dialog">
-      <el-table :data="tableData"
+      <el-table :data="details_data_list.problemCorrectList"
                 :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                 v-loading="loading"
                 style="width: 100%">
@@ -27,27 +28,27 @@
                          show-overflow-tooltip>
         </el-table-column>
         <el-table-column align="center"
-                         prop="problem"
+                         prop="dutyDeptName"
                          label="主要负责部门"
                          show-overflow-tooltip>
         </el-table-column>
         <el-table-column align="center"
-                         prop="problem"
+                         prop="dutyPersonName"
                          label="整改责任人"
                          show-overflow-tooltip>
         </el-table-column>
         <el-table-column align="center"
-                         prop="problem"
+                         prop="planContent"
                          label="整改计划"
                          show-overflow-tooltip>
         </el-table-column>
         <el-table-column align="center"
-                         prop="problem"
+                         prop="limitTime"
                          label="预计完成时限"
                          show-overflow-tooltip>
         </el-table-column>
         <el-table-column align="center"
-                         prop="problem"
+                         prop="remark"
                          label="备注"
                          show-overflow-tooltip>
         </el-table-column>
@@ -70,6 +71,7 @@
       <div class="remarks">
         <p>审核意见：</p>
         <el-input type="textarea"
+                  v-model="remark"
                   class="resizeNone"></el-input>
       </div>
       <!-- 备注 end-->
@@ -78,8 +80,8 @@
 
     <div class="footer">
       <el-button type="primary"
-                 @click="dialogVisible_examine = false">确 定</el-button>
-      <el-button @click="dialogVisible_examine = false"
+                 @click="succes()">通过</el-button>
+      <el-button @click="reject()"
                  style="color:#DD5656;border:1px solid #DD5656;">驳回</el-button>
 
     </div>
@@ -88,6 +90,7 @@
 </template>
 
 <script>
+import { toReviewPage, reviewResult } from "@SDMOBILE/api/shandong/recitFicationPlan_examine";//lhg
 export default {
   components: {},
   data () {
@@ -99,15 +102,12 @@ export default {
         problem: '',
         id: '',//项目id
       },
+      remark: '',//备注
+      details_data_list: [],//审核数据
     }
   },
   computed: {},
   watch: {},
-  methods: {
-    details_data () {
-
-    },
-  },
   created () {
     this.details_query.id = this.$route.params && this.$route.params.id
     this.details_data()
@@ -115,6 +115,70 @@ export default {
   mounted () {
 
   },
+  methods: {
+    // 审核信息
+    details_data () {
+      let params = {
+        problem: this.details_query.problem,
+        managementProjectUuid: this.details_query.id
+      };
+      toReviewPage(params).then(resp => {
+        console.log(resp.data);
+        this.details_data_list = resp.data;
+      })
+    },
+    // 筛选
+    search_list_details () {
+      this.details_data()//刷新列表
+    },
+
+
+    // 通过
+    succes () {
+      this.$set(this.details_data_list.correctLog, 'remark', this.remark)//备注
+      this.$set(this.details_data_list.correctLog, 'isPassed', '通过')//依据
+      this.examine(1);//审核数据
+    },
+    // 驳回
+    reject () {
+      this.$set(this.details_data_list.correctLog, 'remark', this.remark)//备注
+      this.$set(this.details_data_list.correctLog, 'isPassed', '驳回')//依据
+      this.examine(2);//审核数据
+    },
+
+    // 审核数据
+    examine (index) {
+      let params = this.details_data_list;
+      reviewResult(params).then(resp => {
+        console.log(resp.data);
+        if (resp.code == 0) {
+          if (index == 1) {
+            this.$message({
+              message: '审核成功',
+              type: 'success'
+            });
+            // this.details_data()//刷新列表
+            this.$router.push({ path: 'rectificationPlan_audited/' })
+
+          } else {
+            this.$message({
+              message: '驳回成功',
+              type: 'success'
+            });
+            // this.details_data()//刷新列表
+            this.$router.push({ path: 'rectificationPlan_audited/' })
+          }
+
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: 'error'
+          });
+        }
+      })
+    }
+  },
+
 }
 </script>
 

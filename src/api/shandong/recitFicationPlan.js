@@ -12,8 +12,6 @@ export function pageProblemCorrectList (data) {
     data,
   })
 }
-
-
 // 查看
 export function details_pageList (data) {
   return request({
@@ -24,8 +22,6 @@ export function details_pageList (data) {
     data,
   })
 }
-
-
 //设置整改跟进人
 export function updateManagementProject (data) {
   return request({
@@ -36,9 +32,6 @@ export function updateManagementProject (data) {
     data,
   })
 }
-
-
-
 // 整改计划  启动整改
 export function isProjectLeader (data) {
   return request({
@@ -50,3 +43,13 @@ export function isProjectLeader (data) {
   })
 }
 
+// 整改计划  启动整改
+export function issueProject (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/problemCorrect/issueProject`,
+    method: 'post',
+    isLoading: false,
+    data,
+  })
+}

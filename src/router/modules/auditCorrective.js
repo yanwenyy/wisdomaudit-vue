@@ -47,6 +47,17 @@ const AuditCorrective = {
         title: '审计整改-整改计划 被审计角色'
       },
     },
+    // 编辑
+    {
+      path: 'rectificationPlan_audited/edit/:id?',
+      name: 'rectificationPlanEdit',
+      component: () => import('@WISDOMAUDIT/views/auditCorrective/rectificationPlan_audited/edit'),
+      hidden: true,
+      meta: {
+        title: '审计整改-整改计划 被审计角色'
+      },
+    },
+
     {
       path: 'rectificationPlan/questionList/:id?',
       name: 'questionList',

@@ -26,27 +26,8 @@
                          label="问题"
                          show-overflow-tooltip>
           <template slot-scope="scope">
-            <div class="problem_details">
-              <ul class="list">
-                <li class="tableFileList-title">文件名称</li>
-
-              </ul>
-
-              <!-- <el-popover placement="bottom"
-                          width="100"
-                          popper-class="problem_details_conter"
-                          @show="open_details(scope.row)"
-                          trigger="click">
-                <ul class="list">
-                  <li class="tableFileList-title">文件名称</li>
-
-                </ul>
-                <div slot="reference"
-                     class="pointer">{{scope.row.problem}}
-                </div>
-              </el-popover> -->
-
-            </div>
+            <p @click="details_show(scope.row,scope.$index+1)"
+               style="cursor: pointer;">{{scope.row.problem}}</p>
           </template>
 
         </el-table-column>
@@ -67,7 +48,9 @@
         </el-table-column>
 
       </el-table>
-
+      <div class="mose"
+           @click="close_mose"
+           v-if="details == true"></div>
       <!-- 分页 -->
       <div class="page">
         <el-pagination @size-change="handleSizeChange_details"
@@ -80,7 +63,31 @@
         </el-pagination>
       </div>
       <!-- 分页 end-->
+      <!-- 详情 -->
+      <div class="problem_details_conter"
+           :style="{'top':details_list.style_top}"
+           v-if="details == true">
+        <ul class="list">
+          <li>
+            <p>序号：<span>{{Index}}</span></p>
+            <p>领域：<span>{{details_list.special}}</span> </p>
+            <p>问题：<span>{{details_list.problem}}</span> </p>
+          </li>
+          <li>
+            <p>发现日期：<span>{{details_list.discoveryTime}}</span> </p>
+            <p>风险金额（元）：<span>{{details_list.riskAmount}}</span> </p>
+            <p>描述：<span>{{details_list.describe}}</span> </p>
+          </li>
+          <li>
+            <p>发现人：<span>{{details_list.problemFindPeople}}</span> </p>
+            <p>管理建议：<span>{{details_list.field}}</span> </p>
+          </li>
+        </ul>
+      </div>
+      <!-- 详情 end-->
+
     </div>
+
   </div>
 </template>
 
@@ -99,6 +106,10 @@ export default {
       },
       loading_details: false,//详情loading
       tableData_details: [],//详情数据
+      details: false,//悬浮问题 背景
+      style_px: 40,//悬浮定位
+      details_list: [],//悬浮数据
+      Index: '',
     }
   },
   computed: {},
@@ -141,43 +152,30 @@ export default {
       this.details_query.pageNo = val;
       this.details_data();
     },
-
-    open_details () {
-      console.log(222);
+    details_show (data, index) {
+      this.Index = index
+      this.details = true
+      this.details_list = data;
+      if (index == 0) {
+        this.$set(this.details_list, 'style_top', '90px')//核实意见
+      } else {
+        let top_px = (this.style_px * index + 50) + 'px'
+        this.$set(this.details_list, 'style_top', top_px)//核实意见
+      }
     },
+    close_mose () {
+      this.details = false
+    }
+
   },
 
 }
 </script>
 <style>
-/* 开启 */
-#app >>> .sidebar-container .problem_details_conter {
-  border: 1px solid red;
-  /* width: 87% !important; */
-  width: calc(100% - 215px) !important;
-}
-/* 关闭 */
-#app >>> .hideSidebar .sidebar-container .problem_details_conter {
-  border: 1px solid green;
-  width: calc(100% - 60px) !important;
-}
-.problem_details_conter {
-  /* width: 87% !important; */
-  left: auto !important;
-  right: 20px !important;
-  /* background: transparent; */
-  /* box-shadow: none; */
-  /* border: none; */
-  /* padding: 0; */
-}
-.problem_details_conter .el-popper[x-placement^="bottom"] .popper__arrow {
-  border-bottom-color: none;
-}
-.problem_details_conter
-  .el-popper[x-placement^="bottom"]
-  .popper__arrow::after {
-  border-bottom-color: none;
-}
+/* .problem_details_conter {
+  width: auto;
+  min-width: 800px;
+} */
 </style>
 <style scoped>
 /* 筛选 */
@@ -226,20 +224,55 @@ export default {
   display: flex;
   justify-content: flex-end;
 }
+.table >>> .el-table__header {
+  margin-top: 0 !important;
+}
 
-.problem_details {
-  border: 1px solid red;
+.mose {
   width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 99;
 }
 .table {
   position: relative;
 }
-.list {
-  padding: 10px;
-  box-sizing: border-box;
 
+.problem_details_conter {
+  width: 100%;
+  position: absolute;
+  /* top: 90px; */
+  left: 0;
+  padding: 0 20px;
+  box-sizing: border-box;
+  z-index: 100;
+}
+.problem_details_conter .list {
   margin: 0 auto;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
   background: #e6f1fc;
+  display: flex;
+  flex-wrap: wrap;
+}
+.list li {
+  width: 100%;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+.list li:last-child {
+  margin-bottom: 0;
+}
+.list li p {
+  width: 33%;
+  float: left;
+  box-sizing: border-box;
+}
+.list li p span {
+  font-weight: 600;
 }
 </style>
 
