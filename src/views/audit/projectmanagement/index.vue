@@ -41,10 +41,11 @@
     <!-- 项目管理列表 -->
     <el-table class="table"
               :data="tableData"
-              style="margin-top: 1%; width: 100%"
+              style="margin-top: 1%; width: 100%;min-height:400px"
               border
               stripe
               fit
+              @selection-change="handleSelectionChange_list"
               :header-cell-style="{ 'background-color': '#F4FAFF' }">
       <el-table-column type="selection"
                        width="40"> </el-table-column>
@@ -118,6 +119,7 @@
           </el-button>
 
           <el-button type="text"
+                     v-if="scope.row.auditConf==1"
                      style="color: #44a3df; background: none; border: 0"
                      size="small"
                      @click="confirm_problem(scope.row.managementProjectUuid)">
@@ -128,10 +130,8 @@
       </el-table-column>
     </el-table>
 
-    <!-- 设置整改跟进人 启动整改 -->
+    <!--  启动整改 -->
     <div class="setting_people">
-      <el-button type="primary"
-                 @click="setting_prople()">设置整改跟进人</el-button>
       <el-button type="primary"
                  @click="run_rectification()">启动整改</el-button>
     </div>
@@ -888,32 +888,62 @@
       </div>
     </el-dialog>
 
-    <!-- 设置整改跟进人 -->
-    <el-dialog title=""
-               center
-               :visible.sync="dialogVisible_setting_prople"
-               width="width">
-      <div slot="footer">
-        <el-button @click="dialogVisible_setting_prople = false">取 消</el-button>
-        <el-button type="primary"
-                   @click="save_follow_up_person()">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!-- 设置整改跟进人 end-->
-
     <!-- 启动整改 -->
-    <el-dialog title=""
+    <el-dialog :visible.sync="dialogVisible_rectification"
                center
-               :visible.sync="dialogVisible_rectification"
-               width="15%">
-      <div class="title">是否确认启动整改</div>
+               @close="resetForm2('save_project_prople')"
+               width="30%">
+      <div class="title">启动整改</div>
 
-      <div class="dialog"></div>
+      <div class="dialog">
+        <div class="dialog follow_up_person">
+          <el-form ref="save_project_prople"
+                   :model="save_project_prople"
+                   :inline="false"
+                   :rules='rules_people'>
+            <div class="people">
+              <p><span style="color:red">*</span> 整改期限：</p>
+              <el-form-item label-width="80px"
+                            prop="beginTime">
+                <el-date-picker type="date"
+                                v-model="save_project_prople.beginTime"
+                                style="margin-right:15px;"
+                                placeholder="选择日期">
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item label-width="80px"
+                            prop="endTime">
+                <el-date-picker type="date"
+                                v-model="save_project_prople.endTime"
+                                placeholder="选择日期">
+                </el-date-picker>
+              </el-form-item>
+            </div>
+            <div class="people err_select">
+              <el-form-item label-width="80px"
+                            prop="setting_people_key">
+                <p><span style="color:red">*</span>整改跟进人：</p>
+                <el-select v-model="save_project_prople.setting_people_key"
+                           @change="change_peoplr"
+                           filterable
+                           placeholder="请选择">
+                  <el-option v-for="item in setting_people"
+                             :key="item.id"
+                             :label="item.realName"
+                             :value="item.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-form>
+        </div>
+      </div>
       <div slot="footer">
         <el-button plain
                    @click="dialogVisible_rectification = false">取 消</el-button>
         <el-button type="primary"
-                   @click="dialogVisible_rectification = false">确 定</el-button>
+                   :disabled="isDisable"
+                   @click="save_people('save_project_prople')">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 启动整改 end-->
@@ -1052,17 +1082,20 @@
           <el-form-item label="依据"
                         prop="basis"
                         class="long">
-            <el-select v-model="dqProblem.basis"
+            <el-input v-model="dqProblem.basis"
+                      placeholder=""
+                      type="textarea"></el-input>
+            <!-- <el-select v-model="dqProblem.basis"
                        multiple
                        @visible-change="toopen"
                        placeholder="请选择"
                        no-data-text="请点击引用审计依据">
-            </el-select>
+            </el-select> -->
           </el-form-item>
-          <el-button type="primary"
+          <!-- <el-button type="primary"
                      ref="basisbtn0"
                      class="citebtn"
-                     @click="openbasis()">引用审计依据</el-button>
+                     @click="openbasis()">引用审计依据</el-button> -->
           <el-form-item label="描述"
                         prop="describe"
                         class="long">
@@ -1122,78 +1155,6 @@
       </div>
     </el-dialog>
     <!-- 确认整改清单 编辑 end-->
-
-    <!-- 引用审计依据 -->
-    <el-dialog title=""
-               center
-               :visible.sync="basisdialog"
-               width="60%"
-               custom-class="outmax">
-
-      <div class="title">编辑问题</div>
-      <div class="auditproblem">
-        <div style="display: flex; height: 100%; padding: 20px">
-          <div style="max-height: 60vh; width: 50%; overflow: scroll">
-            <el-form ref="basisform"
-                     class="problem-form"
-                     :model="dqbasis"
-                     label-width="120px"
-                     label-position="right">
-              <el-form-item label="审计依据名称"
-                            class="long">
-                <el-select v-model="dqbasis.val"
-                           placeholder="请选择依据名称"
-                           @change="getbasisdetail(dqbasis.val)">
-                  <el-option v-for="item in basislist"
-                             :key="item.basy_uuid"
-                             :label="item.basy_name"
-                             :value="item.basy_uuid">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-form>
-            <el-card class="box-card"
-                     style="width: 70%; min-height: 300px; margin: auto">
-              <el-tree :data="dqbasis.info.tree"
-                       :props="defaultProps"
-                       @node-click="treeNodeClick"
-                       default-expand-all
-                       v-loading="basisload"></el-tree>
-            </el-card>
-          </div>
-          <el-card class="box-card basiscard"
-                   style="width: 50%"
-                   v-loading="basisload">
-            <div v-for="(item, index) in dqbasis.info.arr"
-                 :key="'dqbasisarr' + index">
-              <div slot="header"
-                   class="clearfix">
-                <span style="font-weight: bold"
-                      :style="
-                  item.contentLev == 1
-                    ? 'font-size:18px;'
-                    : item.contentLev == 2
-                    ? 'font-size:16px;'
-                    : 'font-size:14px;'
-                ">{{ item.label }}</span>
-                <el-button style="padding: 3px 0 3px 20px; color: #ffba00"
-                           v-if="item.contentLev == 3"
-                           @click="choosebasis(item.label)"
-                           type="text">引用</el-button>
-              </div>
-              <p class="">{{ item.attachmentContent }}</p>
-            </div>
-          </el-card>
-        </div>
-      </div>
-      <span slot="footer"
-            class="dialog-footer">
-        <el-button @click="basisdialog = false">取 消</el-button>
-        <el-button type="primary"
-                   @click="surebasis()">确 定</el-button>
-      </span>
-    </el-dialog>
-    <!-- 引用审计依据 end -->
 
     <!-- 选择问题 -->
     <el-dialog title=""
@@ -1262,6 +1223,7 @@
         <el-button plain
                    @click="dialogVisible_select_dialog = false">取 消</el-button>
         <el-button type="primary"
+                   :disabled="isDisable"
                    @click="save_problem()">确 定</el-button>
       </div>
     </el-dialog>
@@ -1271,7 +1233,7 @@
 
 <script>
 import { get_userInfo } from "@SDMOBILE/api/shandong/ls";
-import { confirm_rectification, selection_questions_list, saveProblemCorrect, edit_remove } from "@SDMOBILE/api/shandong/adminProject";//lhg
+import { confirm_rectification, selection_questions_list, saveProblemCorrect, edit_remove, follow_up_person, updateManagementProject, isStartProject, startProject } from "@SDMOBILE/api/shandong/adminProject";//lhg
 import axios from "axios";
 import Pagination from "@WISDOMAUDIT/components/Pagination";
 import {
@@ -1305,7 +1267,7 @@ export default {
       },
       query: {
         condition: {
-          projectName: "2021年度某公司经责审计项目03",
+          projectName: "",
         },
         pageNo: 1,
         pageSize: 10,
@@ -1551,33 +1513,36 @@ export default {
       CategoryList: [],//领域
       SPECIALList: [],//专题
       auditTasklList: [],
-      basislist: [],//获取的依据
-      dqbasis: {
-        val: "",
-        info: "",
-        choose: [],
-      },
-      defaultProps: {
-        children: "children",
-        label: "label",
-      },
-      basisload: false,
-      ifadd: 0,
-      personlist: [],
+      personlist: [],//发现人
       me: '',
-
-
       dialogVisible_select_dialog: false,//选择问题
       problem_loading: false,//问题loading
       problem_list: [],//问题列表
       check_problem: [],//勾选的问题
 
-      dialogVisible_setting_prople: false,//项目整改跟进人
+      // dialogVisible_setting_prople: false,//项目整改跟进人
       dialogVisible_rectification: false,//启动整改
 
+      // 设置整改跟进人 
+      project_list: [],//项目列表 多选
+      setting_people: [],
+      save_project_prople: {
+        setting_people_name: '',//选择的整改跟进人
+        setting_people_key: '',
+        beginTime: '',//开始时间
+        endTime: '',//结束时间
+      },
+
+      rules_people: {
+        setting_people_key: [{ required: true, message: '请选择跟进人', trigger: 'change' }],
+        beginTime: [{ required: true, message: '请选择开始时间', trigger: 'change' }],
+        endTime: [{ required: true, message: '请选择结束时间', trigger: 'change' }],
+      },
 
 
 
+      isDisable: false,//防止重复提交
+      projectid: '',//获取项目的id
     };
   },
   created () {
@@ -1593,7 +1558,7 @@ export default {
     // 编辑  审计整改问题  引用
     this.getloadcascader("Category");
     this.getloadcascader("SPECIAL");
-    this.getbasis();//获取依据 任务select 
+    // this.getbasis();//获取依据 任务select 
     this.getSelectTask();//关联任务
 
 
@@ -2112,18 +2077,123 @@ export default {
         });
       }
     },
-    // 设置整改跟进人
-    setting_prople () {
-      this.dialogVisible_setting_prople = true;//设置整改跟进人
+    //项目列表 多选
+    handleSelectionChange_list (val) {
+      this.project_list = val
     },
-    // 确认整改跟进人
-    save_follow_up_person () {
 
+    // 设置跟进人 data
+    setting_follow_prople () {
+      let params = {
+        projectid: this.projectid,
+        pageSize: '1000',
+        pageCurrent: '1',
+      }
+      // 获取跟进人
+      follow_up_person(params).then(resp => {
+        console.log(resp.data);
+        this.setting_people = resp.data.list
+      })
+    },
+
+    // 整改人  change
+    change_peoplr (val) {
+      let obj = {};
+      obj = this.setting_people.find((item) => {
+        return item.id === val;
+      });
+      this.save_project_prople.setting_people_name = obj.realName//选择的整改人   key
+      this.save_project_prople.setting_people_key = val//选择的整改人
+    },
+
+    // 启动整改显示弹窗
+    run_rectification () {
+      if (this.project_list.length !== 1) {
+        this.$message({ message: '请选择一条项目进行启动整改' })
+        return
+      } else {
+        this.run_startProject();//是否启动整改
+      }
     },
 
     // 启动整改
-    run_rectification () {
-      this.dialogVisible_rectification = true;//启动整改
+    run_startProject () {
+      let params = {
+        managementProjectUuid: this.project_list[0].managementProjectUuid,
+        managementAdvice: this.project_list[0].managementAdvice,//
+      }
+      // 是否启动整改
+      isStartProject(params).then(resp => {
+        if (resp.code == 0) {
+          let _data = resp.data
+          if (_data.isStartProject == 0) {
+            this.dialogVisible_rectification = true;//启动整改 弹窗
+            // 获取整改人
+            var ids = []
+            this.project_list.forEach((r, i) => {
+              ids.push(r.managementProjectUuid)
+            })
+            this.projectid = ids[0]
+            this.setting_follow_prople()//整改人 数据
+
+          } else {
+            this.$message({
+              message: '请选择可以启动整改的项目进行整改',
+              type: "error"
+            });
+          }
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: "error"
+          });
+        }
+      })
+    },
+    // 设置整改跟进人 参数
+    save_people (save_project_prople) {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
+      this.$refs[save_project_prople].validate((valid) => {
+        if (valid) {
+          let params2 = {
+            correctUser: this.save_project_prople.setting_people_key,//跟进人 key
+            correctUserName: this.save_project_prople.setting_people_name,//跟进人 name
+            managementProjectUuid: this.projectid,//项目id
+            beginTime: this.save_project_prople.beginTime,//开始时间
+            endTime: this.save_project_prople.endTime,//结束时间
+            managementAdvice: "1",
+          }
+          // 去整改
+          startProject(params2).then(resp => {
+            console.log(params2);
+            if (resp.code == 0) {
+              this.$message({
+                message: '整改成功',
+                type: 'success'
+              });
+              this.dialogVisible_rectification = false;//启动整改 弹窗
+              this.projectData(this.query);//刷新外面列表
+
+            } else {
+              this.$message({
+                message: resp.msg,
+                type: "error"
+              });
+            }
+          })
+          // 去整改 end
+        } else {
+          this.$message.info("请填写信息");
+          return false;
+        }
+      })
+    },
+    // 关闭整改 弹窗
+    resetForm2 (save_project_prople) {
+      this.$refs[save_project_prople].resetFields();
     },
     // 确认问题整改清单=============
     confirm_problem (id) {
@@ -2165,18 +2235,6 @@ export default {
     handleSelectionChange_problem (val) {
       this.check_detailed = val
     },
-    toopen (val) {
-      console.log(val);
-      if (val) {
-        let _this = this;
-        setTimeout(function () {
-          _this.$refs["basisbtn0"].handleClick();
-        }, 100);
-
-        console.log(_this.$refs["basisbtn0"]);
-        return false;
-      }
-    },
     // 专题 领域
     getloadcascader (str) {
       axios({
@@ -2193,6 +2251,7 @@ export default {
         }
       });
     },
+    // 关联任务
     getSelectTask () {
       axios({
         url: `/wisdomaudit/auditTask/selectTask`,
@@ -2202,68 +2261,8 @@ export default {
         },
       }).then((res) => {
         this.auditTasklList = res.data.data;
-        console.log(this.auditTasklList);
       });
     },
-
-    //依据树
-    treeNodeClick () { },
-    //打开依据
-    openbasis () {
-      this.basisdialog = true;
-      this.dqbasis.choose = [];
-    },
-    //获取依据
-    getbasis () {
-      axios({
-        url: `/wisdomaudit/auditBasy/getAuditbasyList`,
-        method: "get",
-        data: {},
-      }).then((res) => {
-        this.basislist = res.data.data;
-      });
-    },
-    //获取依据详情
-    getbasisdetail (bid) {
-      this.basisload = true;
-      axios({
-        url: `/wisdomaudit/auditBasy/getById/` + bid + ``,
-        method: "get",
-        data: {},
-      }).then((res) => {
-        this.dqbasis.info = res.data.data.treeData;
-        this.basisload = false;
-      });
-    },
-
-    //选择右侧依据 点击引用
-    choosebasis (val) {
-      if (this.dqbasis.choose.indexOf(val) > -1) {
-        this.$message({
-          message: '您已引用这一条',
-          type: 'warning'
-        });
-        return;
-      } else {
-        this.dqbasis.choose.push(val);
-        this.$message({
-          message: '引用成功',
-          type: 'success'
-        });
-
-      }
-    },
-    //确定选择依据
-    surebasis () {
-      this.basisdialog = false;
-      if (this.ifadd == 0) {
-        this.temp.basis = this.dqbasis.choose;
-      } else {
-        this.dqProblem.basis = this.dqbasis.choose;
-      }
-      this.dqbasis.choose = [];
-    },
-
     // 编辑删除
     edit (index, data) {
       this.list_check = data;
@@ -2360,8 +2359,6 @@ export default {
         }
       })
     },
-
-
     //领域返显
     fieldFilter (str) {
       let rep = "";
@@ -2382,8 +2379,6 @@ export default {
       });
       return rep;
     },
-
-
     // 选择问题==============
     select_problem () {
       this.dialogVisible_select_dialog = true;//显示选择问题列表
@@ -2416,6 +2411,10 @@ export default {
     },
     // 保存问题
     save_problem () {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
       this.issues_list = this.check_problem;
       console.log(this.issues_list);
       if (this.check_problem.length == 0) {
@@ -2583,6 +2582,7 @@ export default {
   border-radius: 0 !important;
 }
 .search >>> .search_icon {
+  cursor: pointer;
   position: absolute;
   top: 0;
   right: 0;
@@ -2665,6 +2665,7 @@ export default {
   float: right;
 }
 .search .search_icon {
+  cursor: pointer;
   position: absolute;
   top: 0;
   right: 70px;
@@ -2684,9 +2685,7 @@ export default {
   border-radius: 0 5px 5px 0;
   /* background: #1371cc !important; */
 }
-.long {
-  width: 70% !important;
-}
+
 .basiscard p {
   padding: 10px 0 10px 20px;
 }
@@ -2701,6 +2700,38 @@ export default {
   width: 70% !important;
 }
 /* 整改清单编辑 end*/
+
+/* 整改跟进人 */
+.follow_up_person {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+.follow_up_person p {
+  min-width: 90px;
+  text-align: right;
+}
+
+.people {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.people >>> .el-form-item__content {
+  margin-left: 0 !important;
+}
+.people >>> .el-date-editor.el-input,
+.el-date-editor.el-input__inner {
+  width: 200px;
+}
+.people >>> .el-form-item__content {
+  display: flex;
+}
+.err_select >>> .el-form-item__error {
+  left: 90px;
+}
+/* 整改跟进人 end*/
 
 .addForm /deep/ .el-form-item__error {
   position: absolute;

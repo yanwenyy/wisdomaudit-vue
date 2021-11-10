@@ -8,7 +8,7 @@ const AuditCorrective = {
   name: 'auditCorrective',
   meta: {
     title: '审计整改',
-  
+
   },
   children: [
     {
@@ -20,9 +20,37 @@ const AuditCorrective = {
       },
     },
     {
+      path: 'rectificationPlan/details/:id?',
+      name: 'rectificationPlanDetails',
+      component: () => import('@WISDOMAUDIT/views/auditCorrective/rectificationPlan/details'),
+      hidden: true,
+      meta: {
+        title: '审计整改-整改计划'
+      },
+    },
+
+    {
+      path: 'rectificationPlan/examine/:id?',
+      name: 'rectificationPlanDetails',
+      component: () => import('@WISDOMAUDIT/views/auditCorrective/rectificationPlan/examine'),
+      hidden: true,
+      meta: {
+        title: '审计整改-整改计划'
+      },
+    },
+
+    {
+      path: 'rectificationPlan_audited',
+      name: 'rectificationPlan_audited',
+      component: () => import('@WISDOMAUDIT/views/auditCorrective/rectificationPlan_audited'),
+      meta: {
+        title: '审计整改-整改计划 被审计角色'
+      },
+    },
+    {
       path: 'rectificationPlan/questionList/:id?',
       name: 'questionList',
-      hidden:true,
+      hidden: true,
       component: () => import('@WISDOMAUDIT/views/auditCorrective/rectificationPlan/questionList'),
       meta: {
         title: '审计整改-整改计划/问题列表'
@@ -39,7 +67,7 @@ const AuditCorrective = {
     {
       path: 'rectificationMeasures/editList/:id?',
       name: 'rectificationMeasuresEditList',
-      hidden:true,
+      hidden: true,
       component: () => import('@WISDOMAUDIT/views/auditCorrective/rectificationMeasures/editList'),
       meta: {
         title: '审计整改-整改措施/问题'
@@ -56,7 +84,7 @@ const AuditCorrective = {
     {
       path: 'correctiveParameter/index/:id?',
       name: 'correctiveParameterIndex',
-      hidden:true,
+      hidden: true,
       component: () => import('@WISDOMAUDIT/views/auditCorrective/correctiveParameter/index'),
       meta: {
         title: '审计整改-整改台账'

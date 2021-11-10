@@ -49,3 +49,49 @@ export function saveProblemCorrect (data) {
 
 
 
+// 获取跟进人  广哥  
+export function follow_up_person (data) {
+  return request({
+    baseURL: baseURL,
+    url: '/projectMembership/listUserInfo/?projectid=' + data.projectid + '&pageCurrent=' + data.pageCurrent + '&pageSize=' + data.pageSize + '',
+    method: 'get',
+    isLoading: false,
+    data,
+  })
+}
+
+
+//选择整改跟进人  保存
+export function updateManagementProject (data) {
+  console.log(data);
+  return request({
+    baseURL: baseURL,
+    url: `/managementProject/updateManagementProject`,
+    method: 'post',
+    isLoading: false,
+    data,
+  })
+}
+
+
+// 是否可以启动整改
+export function isStartProject (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/managementProject/isStartProject`,
+    method: 'post',
+    isLoading: false,
+    data,
+  })
+}
+
+// 启动整改
+export function startProject (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/managementProject/startProject`,
+    method: 'post',
+    isLoading: false,
+    data,
+  })
+}

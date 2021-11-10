@@ -5,7 +5,7 @@
     <!--知识库/模型清单 筛选 -->
     <div class="search">
       <div class="search_conter">
-        <el-input placeholder="请输入模型或自建任务名称"
+        <el-input placeholder="请输入模型名称"
                   v-model="model_liat_query.modelName"> </el-input>
         <div class="search_icon"
              @click="search_list()">
