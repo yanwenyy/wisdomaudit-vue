@@ -210,7 +210,7 @@ const wisdomauditRouter = {
         {
           path: "auditHistory",
           name: "auditHistory",
-          component: () => import("@WISDOMAUDIT/views/audit/auditHistory"),
+          component: () => import("@WISDOMAUDIT/views/audit/knowledgeBase/Historicalaudit"),
           meta: {
             title: "省内历史审计发现"
           }

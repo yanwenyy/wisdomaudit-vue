@@ -264,7 +264,10 @@ export default {
     async getUserinfo() {
       let userId = this.$route.query.id;
       let res = await obtainUser({ userId: userId });
-      let arr = res.data.roleId.split(",").map(Number);
+
+      let arr = res.data.roleId==''?  null : res.data.roleId.split(",").map(Number);
+
+
 
       console.log(res, "userinfo");
 

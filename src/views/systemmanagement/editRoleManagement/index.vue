@@ -38,10 +38,9 @@
           show-checkbox
           node-key="permissionId"
           ref="tree"
-          
           highlight-current
           :props="defaultProps"
-         @check="handleNodeClick"
+         @check-change="checkId"
           :default-checked-keys="form.permissionIds"
           :check-strictly="false"
         ></el-tree>
@@ -162,6 +161,7 @@ export default {
 
 
 
+
    async modifyPermission(){
       let res=await getPermission()
        this.permissionIdList=res.data
@@ -244,8 +244,8 @@ export default {
      * @param { Object } e 提交点击事件对象
      */
      submit() {
-     
-      
+
+
       this.$refs.newRoleManagementForm.validate( async valid => {
         if (!valid) {
           return
