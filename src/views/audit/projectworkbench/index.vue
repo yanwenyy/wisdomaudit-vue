@@ -1781,7 +1781,7 @@ export default {
     },
     // 自建任务编辑完成按钮
     edittaskSelfSave() {
-      console.log(this.fileList);
+      // console.log(this.fileList);
       if (this.fileList.length > 0) {
         const loading = this.$loading({
           lock: true,
@@ -2506,6 +2506,15 @@ export default {
 .companyName {
   font-weight: 500;
   font-size: 16px;
+   white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-break: break-all;
+}
+.companyName:hover {
+  text-overflow: inherit;
+  overflow: visible;
+  white-space: pre-line;
 }
 .projectInit >>> .el-row div p {
   margin-top: 10px;
