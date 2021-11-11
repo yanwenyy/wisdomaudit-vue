@@ -18,7 +18,7 @@
       </el-col>
       <el-col :span="18">
         <el-row>
-          <el-col :span="10">
+          <el-col :span="2">
             <!-- 导入按钮 -->
             <el-upload
               ref="upload"
@@ -30,17 +30,26 @@
               <el-button size="small" type="primary">文件导入</el-button>
             </el-upload>
           </el-col>
+          <el-col :span="2">
+            <el-button
+              type="text"
+              style="color: #44a3df; background: none; border: 0"
+              size="small"
+              @click="orgDownload()"
+              >下载模板</el-button
+            >
+          </el-col>
           <div class="search">
             <el-input
               placeholder="请输入项目名称"
               v-model="queryInfo.condition.orgName"
-              @keyup.enter.native="queryName"
+              @keyup.enter.native="queryNameInput"
             >
             </el-input>
             <div
               class="search_icon"
               style="background: rgb(12, 135, 214) !important"
-              @click="queryName"
+              @click="queryNameInput"
             >
               <i class="el-icon-search" style="color: white"></i>
             </div>
@@ -115,23 +124,25 @@
     </el-row>
 
     <!-- 查看弹框 -->
-    <el-dialog
-      :visible.sync="look_auditOrg"
-      width="30%"
-    >
+    <el-dialog :visible.sync="look_auditOrg" width="30%">
       <div class="mainTitle">被审计机构</div>
       <div class="formStyle">
-        <el-form label-width="110px" ref="dictionaryRef" :model="auditOrgForm" disabled>
+        <el-form
+          label-width="110px"
+          ref="dictionaryRef"
+          :model="auditOrgForm"
+          disabled
+        >
           <el-form-item prop="orgCode" label="ㅤ机ㅤ构ㅤ编ㅤ码:">
             <el-input v-model="auditOrgForm.orgCode"> </el-input>
           </el-form-item>
           <el-form-item prop="orgName" label="ㅤ机ㅤ构ㅤ名ㅤ称:">
             <el-input v-model="auditOrgForm.orgName"> </el-input>
           </el-form-item>
-           <el-form-item prop="leaderName" label="ㅤ被审计单位领导:">
+          <el-form-item prop="leaderName" label="ㅤ被审计单位领导:">
             <el-input v-model="auditOrgForm.leaderName"> </el-input>
           </el-form-item>
-           <el-form-item prop="userName" label="被审计单位接口人:">
+          <el-form-item prop="userName" label="被审计单位接口人:">
             <el-input v-model="auditOrgForm.userName"> </el-input>
           </el-form-item>
         </el-form>
@@ -144,7 +155,7 @@
 import {
   auditOrgList,
   auditOrgTree,
-  auditDetail
+  auditDetail,
 } from "@SDMOBILE/api/shandong/auditedInstitution";
 import Pagination from "@WISDOMAUDIT/components/Pagination";
 export default {
@@ -171,7 +182,7 @@ export default {
         label: "orgName",
       },
       look_auditOrg: false, //查看弹框
-      auditOrgForm:{},//查看详情表单
+      auditOrgForm: {}, //查看详情表单
     };
   },
   watch: {
@@ -186,8 +197,10 @@ export default {
   methods: {
     //对树节点进行筛选时执行的方法
     filterNode(value, data) {
+      console.log(value);
+      console.log(data);
       if (!value) return true;
-      return data.label.indexOf(value) !== -1;
+      return data.orgName.indexOf(value) !== -1;
     },
 
     //被审计机构管理树形列表
@@ -223,29 +236,34 @@ export default {
       });
     },
     //模糊查询被审计机构
+    queryNameInput() {
+      let query = {
+        condition: {
+          orgName: this.queryInfo.condition.orgName,
+          parentOrgCode: this.queryInfo.condition.parentOrgCode,
+        },
+        pageNo: 1,
+        pageSize: 10,
+      };
+      this.getauditOrgList(query);
+    },
     queryName() {
+      this.queryInfo.condition.orgName = "";
       this.getauditOrgList(this.queryInfo);
     },
     //点击上传文件
-    handleChange(event,file, fileList) {
+    handleChange(event, file, fileList) {
       console.log(file);
       console.log(fileList);
       // this.$refs.upload.clearFiles();
 
       let formData = new FormData();
-      // formData.append("file", file[0]);
-
-      //  for(let i=0;i<fileList.length;i++){
-      //    if(fileList[i].raw){
-      //      formData.append("file", fileList[i].raw);
-      //    }
-      //  }
-      fileList.forEach(item => {
-         if (item.raw) {
+    
+      fileList.forEach((item) => {
+        if (item.raw) {
           formData.append("orgFile", item.raw);
         }
       });
-       
 
       this.$axios({
         method: "post",
@@ -259,13 +277,51 @@ export default {
       });
     },
 
+    //下载模板
+    orgDownload() {
+      this.$axios({
+        method: "get",
+        url: "/wisdomaudit/auditOrg/downloadAuditOrgModel",
+        responseType: "blob",
+      })
+        .then((res) => {
+          const content = res.data;
+          console.log(res);
+          const blob = new Blob([content], {
+            type: "application/octet-stream,charset=UTF-8",
+          });
+          const fileName =
+            res.headers["content-disposition"].split("filename=")[1];
+          // const fileName = fileName1.split()[1];
+          // console.log(fileName);
+          const filteType = res.headers["content-disposition"].split(".")[1];
+          if ("download" in document.createElement("a")) {
+            // 非IE下载
+            const elink = document.createElement("a");
+            elink.download = fileName; //下载后文件名
+            elink.style.display = "none";
+            elink.href = window.URL.createObjectURL(blob);
+            document.body.appendChild(elink);
+            elink.click();
+            window.URL.revokeObjectURL(elink.href); // 释放URL 对象
+            document.body.removeChild(elink);
+          } else {
+            // IE10+下载
+            navigator.msSaveBlob(blob, fileName);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
     //查看按钮事件
     auditOrgLook(row) {
       console.log(row);
       this.look_auditOrg = true;
-      auditDetail(row.auditOrgUuid).then((resp)=>{
-          this.auditOrgForm = resp.data;
-      })
+      auditDetail(row.auditOrgUuid).then((resp) => {
+        this.auditOrgForm = resp.data;
+      });
     },
   },
 };
@@ -294,9 +350,9 @@ export default {
     top: -35px;
     width: 70%;
   }
-.el-form-item{
-  margin-top:-4% ;
-}
+  .el-form-item {
+    margin-top: -4%;
+  }
 }
 </style>
 <style scoped>

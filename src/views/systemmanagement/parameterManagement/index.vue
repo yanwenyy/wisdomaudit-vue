@@ -329,6 +329,11 @@ export default {
     //获取维护字典列表接口
     this.getDictionary(this.maintainDictionaryList);
   },
+  watch: {
+    filterText(val) {
+      this.$refs.tree.filter(val);
+    },
+  },
   methods: {
     // 模糊查询
     queryNameInput() {
