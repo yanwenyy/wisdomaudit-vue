@@ -22,6 +22,7 @@
     </div>
     <div class="header">
       <el-button type="primary"
+                 :disabled="isDisable"
                  @click="add_sj()">新增省内历史审计发现</el-button>
     </div>
 
@@ -88,6 +89,7 @@
           <template slot-scope="scope">
             <el-button @click="edit(scope.row.historyAuditFindUuid)"
                        type="primary"
+                       :disabled="isDisable"
                        style="color: #1371cc"
                        size="small">
               编辑
@@ -249,10 +251,12 @@
           <el-button size="small"
                      type="primary"
                      v-if="title=='新增'"
+                     :disabled="isDisable"
                      @click="save(1,'add')">确 定</el-button>
           <el-button size="small"
                      type="primary"
                      v-else
+                     :disabled="isDisable"
                      @click="save(2,'add')">确 定</el-button>
           <el-button size="small"
                      plain
@@ -315,9 +319,9 @@ export default {
           message: '请选择专题',
           trigger: 'change',
         },
+      },
+      isDisable: false,//防止重复提交
 
-
-      }
     }
   },
   computed: {},
@@ -370,7 +374,7 @@ export default {
       historicalaudit_pageList(params).then(resp => {
         this.tableData = resp.data
         this.tableData_list = resp.data.records;
-        console.log(this.tableData);
+
         this.loading = false
       })
     },
@@ -388,6 +392,10 @@ export default {
     },
     // 新增
     add_sj () {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
       this.add = {};
       this.title = '新增';
       this.dialogVisible = true;
@@ -397,6 +405,10 @@ export default {
     },
     // 新增 编辑保存
     save (index, add) {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
       if (index == 1) {
         this.$refs[add].validate((valid) => {
           if (valid) {
@@ -416,7 +428,7 @@ export default {
             }
             // 新增
             historicalaudit_add(params).then(resp => {
-              console.log(resp.data);
+
               if (resp.code == 0) {
                 this.$message({
                   message: '新增成功',
@@ -463,7 +475,7 @@ export default {
               historyAuditFindUuid: this.historyAuditFindUuid// 主键id
 
             }
-            console.log(params);
+
             // 编辑保存
             historicalaudit_update(params).then(resp => {
               if (resp.code == 0) {
@@ -499,6 +511,10 @@ export default {
 
     // 编辑
     edit (id) {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
       this.historyAuditFindUuid = id
       this.title = '编辑';
       this.dialogVisible = true;
@@ -507,7 +523,7 @@ export default {
       }
       // 编辑详情
       historicalaudit_details(params).then(resp => {
-        console.log(resp.data);
+
         let data = resp.data;
         this.add.historyAuditFindDescribe = data.historyAuditFindDescribe,//发现描述
           this.add.auditedEntity = data.auditedEntity//被审计单位
@@ -529,7 +545,7 @@ export default {
     resetForm2 (add) {
       this.$refs[add].resetFields();
       // 关闭验证
-      console.log('关闭验证');
+
     },
 
 
@@ -556,7 +572,7 @@ export default {
           }
           // 删除
           historicalaudit_delete(params).then(resp => {
-            console.log(resp.data);
+
             if (resp.code == 0) {
               this.$message({
                 message: '删除成功',
@@ -604,7 +620,7 @@ export default {
     Company (params) {
       historicalaudit_loaauditorg(params).then(resp => {
         this.audit_Company = resp.data
-        console.log(this.audit_Company);
+
       })
     },
     // 单位

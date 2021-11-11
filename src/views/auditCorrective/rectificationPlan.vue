@@ -240,7 +240,7 @@ export default {
         }
       }
       pageProblemCorrectList(params).then(resp => {
-        console.log(resp.data);
+
         this.loading = false;
         this.tableData = resp.data
       })
@@ -275,7 +275,7 @@ export default {
       }
       // 获取跟进人
       follow_up_person(params).then(resp => {
-        console.log(resp.data);
+
         this.setting_people = resp.data.list
       })
     },
@@ -354,7 +354,7 @@ export default {
           }
           // 去整改
           startProject(params2).then(resp => {
-            console.log(params2);
+
             if (resp.code == 0) {
               this.$message({
                 message: '整改成功',
@@ -396,7 +396,7 @@ export default {
         correctSend: 1,//是否下发
       };
       issueProject(params).then(resp => {
-        console.log(resp);
+
         if (resp.code == 0) {
           this.$message({
             message: '下发成功',

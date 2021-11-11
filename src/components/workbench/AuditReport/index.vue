@@ -60,6 +60,7 @@
           <el-button size="small"
                      type="primary"
                      v-if="success_btn==0"
+                     :disabled="isDisable"
                      @click="query_report()">生成报告</el-button>
           <el-button type="primary"
                      v-if="success_btn==1"
@@ -247,6 +248,8 @@ export default {
   components: {},
   data () {
     return {
+      isDisable: false,//防止重复提交
+
       file_list: [],//附件
       search_zb_name: '',//指标筛选
       search_jy_name: '',//管理建议
@@ -413,6 +416,10 @@ export default {
     },
     // 生成报告
     query_report () {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
       this.success_btn = 1;//显示加载按钮  0成功  1 loaging
       let params2 = {
         managementProjectUuid: this.active_project,//项目id

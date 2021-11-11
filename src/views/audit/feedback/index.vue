@@ -327,6 +327,7 @@
 
         <el-button type="primary"
                    v-if="success_btn==0"
+                   :disabled="isDisable"
                    @click="post()">确 定</el-button>
       </div>
     </el-dialog>
@@ -458,6 +459,7 @@ export default {
 
       file_type: 0,//0 模版 1.附件
       findFile_list_moban: [],//模版列表
+      isDisable: false,//防止重复提交
 
     }
   },
@@ -758,6 +760,10 @@ export default {
     },
     // 提交
     post () {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
       if (this.check_data_list.length == 0) {
         this.$message.info("请选择至少一条数据进行提交！");
         return false;
