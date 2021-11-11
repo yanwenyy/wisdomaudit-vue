@@ -27,7 +27,7 @@
               :on-progress="handleChange"
               :file-list="fileList"
             >
-              <el-button size="small" type="primary">文件导入</el-button>
+              <el-button size="small" style="background: #0c87d6; color: #fff">文件导入</el-button>
             </el-upload>
           </el-col>
           <el-col :span="2">
@@ -214,7 +214,6 @@ export default {
 
     //点击树形查看事件
     getCheckedNodes(data) {
-      console.log(data);
       if (data.auditOrgs.length > 0) {
         this.queryInfo.condition.parentOrgCode = data.orgCode;
         // 获取右侧列表数据
@@ -253,8 +252,8 @@ export default {
     },
     //点击上传文件
     handleChange(event, file, fileList) {
-      console.log(file);
-      console.log(fileList);
+      // console.log(file);
+      // console.log(fileList);
       // this.$refs.upload.clearFiles();
 
       let formData = new FormData();
@@ -274,6 +273,10 @@ export default {
         },
       }).then((resp) => {
         console.log(resp);
+        if(resp.data.code == 0){
+          this.$message.success("文件导入成功！")
+          this.getauditOrgList(this.queryInfo);
+        }
       });
     },
 
