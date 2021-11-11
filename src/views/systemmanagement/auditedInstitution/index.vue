@@ -41,7 +41,7 @@
           </el-col>
           <div class="search">
             <el-input
-              placeholder="请输入项目名称"
+              placeholder="请输入机构名称"
               v-model="queryInfo.condition.orgName"
               @keyup.enter.native="queryNameInput"
             >
