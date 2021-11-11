@@ -270,6 +270,7 @@
         <el-button
           style="background: #0c87d6; color: #fff"
           @click="editTaskSelfBtn"
+          :disabled = "isdisabled"
           >完成</el-button
         >
       </div>
@@ -383,6 +384,7 @@
           <el-button
             style="background: #0c87d6; color: #fff"
             @click="saveTask('selfTaskRef')"
+            :disabled="isdisabled"
             >完成</el-button
           >
         </div>
@@ -410,19 +412,6 @@
                 <i class="el-icon-search" style="color: white"></i>
               </div>
             </div>
-            <!-- <el-col :span="9">
-            <el-input
-              placeholder="请输入内容"
-              v-model="model_QueryInfo.condition.modelName"
-              class="input-with-select"
-            >
-              <el-button
-                slot="append"
-                icon="el-icon-search"
-                @click="queryModel"
-              ></el-button>
-            </el-input>
-          </el-col> -->
           </el-row>
           <el-table
             :data="modelTableData"
@@ -463,6 +452,7 @@
             <el-button
               style="background: #0c87d6; color: #fff"
               @click="modelInfoBtn"
+              :disabled="isdisabled"
               >完成</el-button
             >
           </div>
@@ -529,6 +519,7 @@ export default {
   props: ["active_project"],
   data() {
     return {
+      isdisabled: false,
       task: 1,
       loading: false,
       nearbyLoading: false,
@@ -1092,9 +1083,10 @@ export default {
     modelInfoBtn() {
       if (this.selectauditModelList.auditModelList.length > 0) {
         this.selectauditModelList.projectId = this.active_project;
-        this.TaskDialogVisible = false;
+        this.isdisabled = true;
         quoteModel(this.selectauditModelList).then((resp) => {
           if (resp.code == 0) {
+            this.TaskDialogVisible = false;
             this.$message.success("创建成功！");
             this.queryInfo.condition.managementProjectUuid =
               this.active_project;
@@ -1103,6 +1095,10 @@ export default {
           }
           this.selectauditModelList.auditModelList = [];
         });
+
+        setTimeout(() => {
+          this.isdisabled = false;
+        }, 3000);
       } else {
         this.$message.info("请选择要引入的模型!");
       }
@@ -1164,6 +1160,7 @@ export default {
               }
             });
           } else {
+            this.isdisabled = true;
             this.taskSelf.managementProjectUuid = this.active_project;
             selfTaskFunction(this.taskSelf).then((resp) => {
               this.$message.success("新增任务成功！");
@@ -1174,6 +1171,10 @@ export default {
               this.getmodelTaskList(this.queryInfo);
               this.loading = false;
             });
+
+            setTimeout(() => {
+              this.isdisabled = false;
+            }, 3000);
           }
         } else {
           console.log("error submit!!");
@@ -1251,6 +1252,7 @@ export default {
         this.fileList_Delet.forEach((item) => {
           item.status = null;
         });
+        this.isdisabled = true;
         var upList = this.edit_file_list.concat(this.fileList_Delet);
         this.editTask.attachmentList = upList;
         this.editTask.managementProjectUuid = this.active_project;
@@ -1259,6 +1261,9 @@ export default {
           this.queryInfo.condition.managementProjectUuid = this.active_project;
           this.getmodelTaskList(this.queryInfo);
         });
+        setTimeout(() => {
+          this.isdisabled = false;
+        }, 3000);
       }
     },
     // 自建取消按钮

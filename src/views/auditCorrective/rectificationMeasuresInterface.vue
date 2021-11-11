@@ -7,8 +7,9 @@
             <el-select v-model="searchForm.correctStatus" placeholder="请选择" clearable>
               <el-option label="待提交" value="1"></el-option>
               <el-option label="待审核" value="2"></el-option>
-              <el-option label="审核通过" value="3"></el-option>
-              <el-option label="驳回待提交" value="4"></el-option>
+              <el-option label="领导审核通过" value="3"></el-option>
+              <el-option label="整改跟进人审核通过" value="4"></el-option>
+              <el-option label="驳回待提交" value="5"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="项目:">
@@ -69,7 +70,7 @@
         align="center"
       >
         <template slot-scope="scope">
-          <span>{{scope.row.createTime | dateformat}}</span>至 <span>{{scope.row.planEndDate | dateformat}}</span>
+          <span>{{scope.row.beginTime | dateformat}}</span>至 <span>{{scope.row.endTime | dateformat}}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -79,7 +80,7 @@
         prop="name"
       >
         <template slot-scope="scope">
-          <span>{{scope.row.correctDept+scope.row.correctPerson}}</span>
+          <span>{{scope.row.correctDept+scope.row.correctPerson||''}}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -89,27 +90,31 @@
         width="100px"
       >
         <template slot-scope="scope">
-          <span>{{scope.row.correctStatus=='1'?'待提交':scope.row.correctStatus=='2'?'待审核':scope.row.correctStatus=='3'?'审核通过':scope.row.correctStatus=='4'?'驳回待提交':''}}</span>
+          <span>{{scope.row.correctStatus=='1'?'待提交':scope.row.correctStatus=='2'?'待审核':scope.row.correctStatus=='3'?'领导审核通过':scope.row.correctStatus=='4'?'整改跟进人审核通过':scope.row.correctStatus=='5'?'驳回待提交':''}}</span>
         </template>
       </el-table-column>
       <el-table-column
         label="整改结果"
         prop="name"
         align="center"
-      />
+        >
+      <template slot-scope="scope">
+        <span>{{scope.row.correctState=='0'?'未整改':scope.row.correctStatus=='1'?'整改中':scope.row.correctStatus=='2'?'已完成整改':''}}</span>
+      </template>
+      </el-table-column>
       <el-table-column
         label="操作"
         align="center"
         width="200px"
       >
         <template slot-scope="scope">
-          <el-button v-if="scope.row.correctStatus=='1'||scope.row.correctStatus=='4'" class="blue sh-btn" type="text" @click="examine(scope.row)">
+          <el-button v-if="scope.row.correctStatus=='1'||scope.row.correctStatus=='5'" class="blue sh-btn" type="text" @click="examine(scope.row)">
             录入整改
           </el-button>
           <el-button class="blue sh-btn" type="text" @click="look(scope.row)">
             查看
           </el-button>
-          <el-button v-if="scope.row.correctStatus=='1'||scope.row.correctStatus=='4'" class="blue sh-btn" type="text" @click="sub(scope.row)">
+          <el-button v-if="scope.row.correctStatus=='1'||scope.row.correctStatus=='5'" class="blue sh-btn" type="text" @click="sub(scope.row)">
             提交
           </el-button>
         </template>

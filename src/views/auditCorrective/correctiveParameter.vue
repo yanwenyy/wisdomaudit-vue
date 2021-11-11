@@ -2,14 +2,14 @@
   <div class="correctiveParameter">
     <div style="width: 100%; overflow: hidden">
       <div style="float: right;">
-        <el-form class="search-form" :inline="true" :model="form" @keyup.enter.native="init()">
+        <el-form class="search-form" :inline="true" :model="searchForm" @keyup.enter.native="list_data_start()">
           <!--<el-button type="success" class="addBtn">设置整改跟进人</el-button>-->
           <el-input
             placeholder="请输入项目名称"
-            v-model="form.info"
+            v-model="searchForm.projectName"
             class="input-with-select"
           >
-            <el-button type="primary" slot="append" icon="el-icon-search"></el-button>
+            <el-button type="primary" slot="append" icon="el-icon-search" @click="list_data_start"></el-button>
           </el-input>
         </el-form>
       </div>
@@ -32,52 +32,56 @@
       <el-table-column
         label="审计项目名称"
         width="250px"
-        prop="address"
+        prop="projectName"
         align="left"
       />
       <el-table-column
         label="被审计单位"
-        prop="name"
+        prop="auditOrgName"
         align="center"
         width="150"
       />
       <el-table-column
         label="项目类型"
-        prop="name"
+        prop="projectType"
         align="center"
       />
       <el-table-column
         label="项目负责人"
-        prop="name"
+        prop="projectLeaderName"
         align="center"
         width="150"
       />
       <el-table-column
         label="项目组长"
         align="center"
-        prop="name"
+        prop="projectChargemanName"
       />
       <el-table-column
         label="项目跟进人"
         align="center"
-        prop="name"
+        prop="correctUserName"
         width="150"
       />
       <el-table-column
-        label="审计期间"
-        width="150"
+        label="整改期间"
+        width="250"
         align="center"
         prop="date"
-      />
+      >
+        <template slot-scope="scope">
+          <span>{{scope.row.beginTime | dateformat}}</span>至 <span>{{scope.row.endTime | dateformat}}</span>
+        </template>
+      </el-table-column>
       <el-table-column
         label="创建人"
-        prop="name"
+        prop="createUserName"
         align="center"
       />
       <el-table-column
         label="创建日期"
         align="center"
-        prop="date"
+        prop="createTimeStr"
         width="150"
       />
       <el-table-column
@@ -85,7 +89,7 @@
         align="center"
       >
         <template slot-scope="scope">
-          <el-button type="text" class="sh-btn blue" @click="toEditList">
+          <el-button type="text" class="sh-btn blue" @click="toEditList(scope.row)">
             查看
           </el-button>
         </template>
@@ -108,35 +112,49 @@
 </template>
 
 <script>
+  import {recAccountCorrect_pageList} from
+      '@SDMOBILE/api/shandong/ls'
   export default {
     data() {
       return {
-        form: {},
+        searchForm: {
+          pageNo: 1,
+          pageSize: 10,
+          projectName:''
+        },
         page: {
           current: 1,
           size: 10,
           total: 0
         },
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
+        tableData: []
       }
     },
+    mounted(){
+      this.list_data_start();
+    },
     methods: {
+      //列表数据
+      list_data_start () {
+        let params={
+          pageNo: this.searchForm.pageNo,
+          pageSize: this.searchForm.pageSize,
+          condition: {
+            projectName: this.searchForm.projectName,
+          }
+        };
+        this.loading = true;
+        recAccountCorrect_pageList(params).then(resp => {
+          var datas=resp.data;
+          this.tableData = datas.records;
+          this.page={
+            current:datas.current,
+            size:datas.size,
+            total:datas.total
+          };
+          this.loading = false;
+        })
+      },
       //分页点击
       handleSizeChange(val) {
         this.searchForm.pageSize = val;
@@ -146,8 +164,8 @@
         this.searchForm.pageNo= val;
         this.list_data_start();
       },
-      toEditList() {
-        this.$router.push({name: 'correctiveParameterIndex'})
+      toEditList(row) {
+        this.$router.push({name: 'correctiveParameterIndex',query:{'managementProjectUuid':row.managementProjectUuid}})
       }
     }
   }

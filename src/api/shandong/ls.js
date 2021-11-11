@@ -255,3 +255,30 @@ export function correctStep_submitAlterLb(data) {
     data
   })
 }
+//整改措施领导审核
+export function correctStep_verifyLd(data) {
+  return request({
+    baseURL: baseURL,
+    url:'/correctStep/verifyLd',
+    method: 'post',
+    data
+  })
+}
+//整改台账列表
+export function recAccountCorrect_pageList(data) {
+  return request({
+    baseURL: baseURL,
+    url:'/recAccountCorrect/pageList',
+    method: 'post',
+    data
+  })
+}
+//整改台账明细列表
+export function recAccountCorrect_correctStepPageList(data) {
+  return request({
+    baseURL: baseURL,
+    url:'/recAccountCorrect/correctStepPageList',
+    method: 'post',
+    data
+  })
+}
