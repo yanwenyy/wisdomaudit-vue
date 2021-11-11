@@ -80,8 +80,10 @@
 
     <div class="footer">
       <el-button type="primary"
-                 @click="succes()">通过</el-button>
+                 @click="succes()"
+                 :disabled="isDisable">通过</el-button>
       <el-button @click="reject()"
+                 :disabled="isDisable"
                  style="color:#DD5656;border:1px solid #DD5656;">驳回</el-button>
 
     </div>
@@ -104,6 +106,8 @@ export default {
       },
       remark: '',//备注
       details_data_list: [],//审核数据
+      isDisable: false,//防止重复提交
+
     }
   },
   computed: {},
@@ -135,12 +139,20 @@ export default {
 
     // 通过
     succes () {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
       this.$set(this.details_data_list.correctLog, 'remark', this.remark)//备注
       this.$set(this.details_data_list.correctLog, 'isPassed', '通过')//依据
       this.examine(1);//审核数据
     },
     // 驳回
     reject () {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
       this.$set(this.details_data_list.correctLog, 'remark', this.remark)//备注
       this.$set(this.details_data_list.correctLog, 'isPassed', '驳回')//依据
       this.examine(2);//审核数据

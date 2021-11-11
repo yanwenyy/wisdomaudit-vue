@@ -75,6 +75,7 @@
       <!-- 分页 -->
       <div class="page">
         <el-button type="primary"
+                   :disabled="isDisable"
                    @click="post()"
                    class="post">
           提交审核
@@ -192,6 +193,8 @@ export default {
         limitEndTime: '',//选择日期
         remark: '',//备注
       },
+      isDisable: false,//防止重复提交
+
       edit_list_data: '',//进编辑的数据
     }
   },
@@ -244,6 +247,10 @@ export default {
     },
     // 提交
     post () {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
       let params = {
         managementProjectUuid: this.list_query.id
       };

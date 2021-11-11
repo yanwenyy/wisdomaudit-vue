@@ -14,6 +14,7 @@
               <el-button type="primary"
                          style="border:none;"
                          v-if="is_add==1"
+                         :disabled="isDisable"
                          @click="add_data_task()">新增资料任务</el-button>
             </el-col>
             <!--未完成筛选 -->
@@ -90,6 +91,7 @@
                   <div v-if=" scope.row.status == 0">
                     <el-button @click="edit_common(scope.row)"
                                type="text"
+                               :disabled="isDisable"
                                style="color:#1371CC;background:none;border:none"
                                size="small">
                       编辑
@@ -102,6 +104,7 @@
                   </el-button> -->
                     <el-button @click="yes_push(scope.row)"
                                type="text"
+                               :disabled="isDisable"
                                style="color:#1371CC;background:none;border:none"
                                size="small">
                       下发
@@ -109,6 +112,7 @@
 
                     <el-button @click="deleteRow(scope.row)"
                                type="text"
+                               :disabled="isDisable"
                                style="color:red;background:none;border:none"
                                size="small">
                       删除
@@ -119,12 +123,14 @@
                     <el-button @click="operation(scope.row)"
                                v-if="scope.row.doingCount>=1"
                                type="text"
+                               :disabled="isDisable"
                                style="color:#1371CC;background:none;border:none"
                                size="small">
                       审批
                     </el-button>
                     <el-button @click="deleteRow(scope.row)"
                                type="text"
+                               :disabled="isDisable"
                                style="color:red;background:none;border:none"
                                size="small">
                       删除
@@ -237,44 +243,6 @@
                        class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.enclosureCount}}
                   </div>
                 </el-popover>
-
-                <!-- 附件详情 -->
-                <!-- <el-popover placement="bottom"
-                            :popper-class="enclosure_details_list==''?'no-padding':''"
-                            width="250"
-                            trigger="click">
-                  <el-table :data="enclosure_details_list"
-                            :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
-                            v-loading="loading"
-                            style="width: 100%;">
-                    <el-table-column prop="fiileType"
-                                     align="center"
-                                     v-loading="loading"
-                                     label="资料类型">
-                    </el-table-column>
-                    <el-table-column prop="fileName"
-                                     align="center"
-                                     label="文件名称">
-                      <template slot-scope="scope">
-                        <p @click="download(scope.row.attachmentUuid,scope.row.fileName)"
-                           type="text"
-                           class="file_name"
-                           size="small">
-                          {{ scope.row.fileName }}
-                        </p>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                  <el-button slot="reference"
-                             style="background:none;border:none">
-                    <div class="update"
-                         @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)">
-                      <i class="el-icon-folder-opened list-folder"></i>
-                      <span>{{scope.row.enclosureCount}}</span>
-                    </div>
-                  </el-button>
-                </el-popover> -->
-
               </template>
             </el-table-column>
             <!--附件 end  -->
@@ -292,14 +260,6 @@
                          :total="this.tableData2.total">
           </el-pagination>
 
-          <!-- <el-pagination background
-                         :hide-on-single-page="true"
-                         layout="prev, pager, next"
-                         :page-sizes="[2, 4, 6, 8]"
-                         :current-page="this.tableData2.current"
-                         @current-change="handleCurrentChange_zj"
-                         :page-size="this.tableData2.size"
-                         :total="this.tableData2.total"></el-pagination> -->
         </div>
         <!-- 分页 end-->
       </el-tab-pane>
@@ -491,13 +451,16 @@
         <!-- 新增保存 -->
         <el-button type="primary"
                    v-if="title=='新增审计资料任务'"
+                   :disabled="isDisable"
                    @click="query_add_form(1)">保存</el-button>
         <!-- 编辑保存 -->
         <el-button type="primary"
                    v-else
+                   :disabled="isDisable"
                    @click="query_add_form(2)">保存</el-button>
         <!-- 新增直接下发 -->
         <el-button type="primary"
+                   :disabled="isDisable"
                    @click="add_push_save()">下发</el-button>
       </span>
     </el-dialog>
@@ -706,6 +669,7 @@
 
         <el-button type="primary"
                    v-if="success_btn==0"
+                   :disabled="isDisable"
                    @click="save_data_btn('add_data')">确定</el-button>
         <el-button v-if="success_btn==1"
                    :loading="true">上传中</el-button>
@@ -841,42 +805,6 @@
                      class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.enclosureCount}}
                 </div>
               </el-popover>
-
-              <!-- 附件详情 -->
-              <!-- <el-popover placement="bottom"
-                          width="400"
-                          trigger="click">
-                <el-table :data="enclosure_details_list"
-                          :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
-                          style="width: 100%;">
-                  <el-table-column prop="fiileType"
-                                   align="center"
-                                   v-loading="loading"
-                                   label="资料类型">
-                  </el-table-column>
-                  <el-table-column prop="fileName"
-                                   align="center"
-                                   label="文件名称">
-                    <template slot-scope="scope">
-                      <p @click="download(scope.row.attachmentUuid,scope.row.fileName)"
-                         type="text"
-                         class="file_name"
-                         size="small">
-                        {{ scope.row.fileName }}
-                      </p>
-                    </template>
-                  </el-table-column>
-                </el-table>
-
-                <el-button slot="reference">
-                  <div class="update"
-                       @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)">
-                   
-                    <span>{{scope.row.enclosureCount}}</span>
-                  </div>
-                </el-button>
-              </el-popover> -->
-
             </template>
 
           </el-table-column>
@@ -888,6 +816,7 @@
             <template slot-scope="scope">
               <el-button size="small"
                          type="primary"
+                         :disabled="isDisable"
                          @click="look_record(scope.row)">查看</el-button>
               <!-- <el-button size="small"
                          type="primary"
@@ -997,8 +926,10 @@
       </div>
       <span slot="footer">
         <el-button @click="reject()"
+                   :disabled="isDisable"
                    plain>驳回</el-button>
         <el-button type="primary"
+                   :disabled="isDisable"
                    @click="adopt()">通过</el-button>
 
       </span>
@@ -1071,6 +1002,7 @@
         <span slot="footer">
           <el-button size="small"
                      type="primary"
+                     :disabled="isDisable"
                      @click="list_push()">确认</el-button>
 
           <el-button size="small"
@@ -1374,6 +1306,7 @@ export default {
       user_data: {},//添加资料回显
       is_add: '',//是否接口人
       // 是否显示新增
+      isDisable: false,//防止重复提交
 
     }
   },
@@ -1383,23 +1316,10 @@ export default {
     this.projectNumber = this.active_project;
 
     // 资料 未完成列表 
-    let params = {
-      pageNo: this.params.pageNo,
-      pageSize: this.params.pageSize,
-      condition: {
-        projectNumber: this.projectNumber,
-        title: this.search_title,
-      }
-    }
-    this.list_data_start(params);//未完成
+    this.list_data_start();//未完成
 
-    let params2 = {
-      pageNo: this.params_add.pageNo,
-      pageSize: this.params_add.pageSize,
-      projectType: this.projectNumber,//项目id
-    }
     // 新增未完成任务列表
-    this.add_add_csh(params2);
+    this.add_add_csh();
     this.post_select_loadcascader_lx();//添加资料   类型 数据
     this.post_select_loadcascader_bm();//添加资料   部门 数据
     this.post_select_loadcascader_ly();//添加资料   领域 数据
@@ -1409,10 +1329,8 @@ export default {
 
 
     // 标题 是否显示 新增
-    let params_title = {
-      id: this.projectNumber
-    }
-    this.query_title(params_title)
+
+    this.query_title()
   },
   mounted () { },
   props: ['active_project', 'userRole'],
@@ -1426,7 +1344,10 @@ export default {
 
   methods: {
     // 获取标题
-    query_title (params_title) {
+    query_title () {
+      let params_title = {
+        id: this.projectNumber
+      }
       operation_addTitle(params_title).then(resp => {
         this.add_form.title = resp.data.title//标题
         this.is_add = resp.data.isDelete//是否新增
@@ -1453,38 +1374,24 @@ export default {
     // 资料筛选
     search_list (index) {
       if (index == 1) {
-
         // alert('a', this.search_title)
-
         // 未完成
-        let params = {
-          pageNo: this.params.pageNo,
-          pageSize: this.params.pageSize,
-          condition: {
-            projectNumber: this.projectNumber,
-            title: this.search_title,
-          }
-        }
-        this.list_data_start(params)
+        this.list_data_start()
       } else {
         // alert('b', this.search_title2)
         // 已完成
-        let params2 = {
-          pageNo: this.params2.pageNo,
-          pageSize: this.params2.pageSize,
-          condition: {
-            dataTaskNumber: this.projectNumber,
-            dataName: this.search_title2,
-          }
-        }
-        this.list_data_end(params2)//刷新已完成列表
+
+        this.list_data_end()//刷新已完成列表
       }
 
     },
     // 列表查看记录
     on_list (id) {
-      this.history = true;
       this.operation_query.id = id
+      this.operation_data()//操作记录
+    },
+    // 操作记录
+    operation_data () {
       let params = {
         condition: {
           logSysActiUuid: this.operation_query.id,
@@ -1492,10 +1399,6 @@ export default {
         pageNo: this.operation_query.pageNo,
         pageSize: this.operation_query.pageSize,
       }
-      this.operation_data(params)//操作记录
-    },
-    // 操作记录
-    operation_data (params) {
       this.loading_history = true;
       enclosure_sysLogById(params).then(resp => {
         console.log(resp.data);
@@ -1510,14 +1413,8 @@ export default {
     },
     // 操作记录分页
     handleCurrentChange_operation (val) {
-      let params = {
-        condition: {
-          logSysActiUuid: this.operation_query.id,
-        },
-        pageNo: val,
-        pageSize: this.operation_query.pageSize,
-      }
-      this.operation_data(params)//操作记录
+      this.operation_query.pageNo = val
+      this.operation_data()//操作记录
     },
 
     // 上传中回调
@@ -1571,27 +1468,10 @@ export default {
       this.search_title2 = '';//清空筛选
       if (val.index == 0) {
         // 未完成
-        let params = {
-          pageNo: this.params.pageNo,
-          pageSize: this.params.pageSize,
-          condition: {
-            projectNumber: this.projectNumber,
-            title: this.search_title,
-          }
-        }
-        this.list_data_start(params)//未完成列表
+        this.list_data_start()//未完成列表
       } else {
         // 已完成
-        let params = {
-          pageNo: this.params2.pageNo,
-          pageSize: this.params2.pageSize,
-          condition: {
-            dataTaskNumber: this.projectNumber,
-            dataName: this.search_title2,
-
-          }
-        }
-        this.list_data_end(params)//已完成列表
+        this.list_data_end()//已完成列表
       }
     },
     // 关闭
@@ -1609,15 +1489,19 @@ export default {
     },
     // 未完成============================
     // 列表 未完成
-    list_data_start (params) {
+    list_data_start () {
+      let params = {
+        pageNo: this.params.pageNo,
+        pageSize: this.params.pageSize,
+        condition: {
+          projectNumber: this.projectNumber,
+          title: this.search_title,
+        }
+      }
       this.loading = true
       data_pageList(params).then(resp => {
         this.tableData = resp.data;
         this.tableData_list = resp.data.records
-        // if (this.tableData_list) {
-        //   this.is_add = resp.data.records[0].isDeleted//是否可以新增
-        // }
-
         this.loading = false
       })
     },
@@ -1626,20 +1510,18 @@ export default {
     },
     // 任务列表分页
     handleCurrentChange_model (val) {
-      let params = {
-        pageNo: val,
-        pageSize: this.params.pageSize,
-        condition: {
-          projectNumber: this.projectNumber,
-          title: this.search_title,
-        }
-      }
-      this.list_data_start(params)
+      this.params.pageNo = val;
+      this.list_data_start()
     },
 
 
     //新增任务 弹窗
     add_data_task () {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
+
       // this.add_form.name = '';//清空name
       this.add_form.title = '';//清空title
       // 标题 是否显示 新增
@@ -1731,8 +1613,14 @@ export default {
       this.add_data = {}; //清空
     },
     // 新增任务初始化 列表
-    add_add_csh (params) {
+    add_add_csh () {
       this.loading = true;
+      let params = {
+        pageNo: this.params_add.pageNo,
+        pageSize: this.params_add.pageSize,
+        projectType: this.projectNumber,//项目id
+      }
+
       add_pageList(params).then(resp => {
         this.task_list = resp.data;
         this.task_list_records = resp.data.records;
@@ -1746,12 +1634,8 @@ export default {
     },
     // 新增任务初始化 列表 分页
     handleCurrentChange_csh (val) {
-      let params = {
-        pageNo: val,
-        pageSize: this.params_add.pageSize,
-        projectType: this.projectNumber,//项目id
-      }
-      this.add_add_csh(params)
+      this.params_add.pageNo = val;
+      this.add_add_csh()
     },
 
 
@@ -1761,6 +1645,11 @@ export default {
     },
     // 确认保存添加的资料
     query_add_form (index) {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
+
       // 新增保存 编辑 为空拦截
       if (this.add_form.title == '') {
         this.$message.info("请输入标题！");
@@ -1800,6 +1689,12 @@ export default {
     },
     // 新增直接下发
     add_push_save () {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
+
+
       // 新增保存
       if (this.add_form.title == '') {
         this.$message.info("请输入标题！");
@@ -2054,6 +1949,12 @@ export default {
 
     //添加资料 保存按钮
     save_data_btn (formName) {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
+
+
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.fileList.length !== 0) {
@@ -2137,13 +2038,8 @@ export default {
           });
 
           this.dialogVisible2 = false;
-          let params2 = {
-            pageNo: this.params_add.pageNo,
-            pageSize: this.params_add.pageSize,
-            projectType: this.projectNumber,//项目id
-          }
           // 新增未完成任务列表
-          this.add_add_csh(params2);
+          this.add_add_csh();
         } else {
           this.$message({
             message: reesp.msg,
@@ -2157,12 +2053,22 @@ export default {
 
     // 显示下发 确认
     yes_push (data) {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
+
       this.push_id = data.addDataTaskUuid
       this.whether = true;//显示确认下发
     },
 
     // 未完成列表 确认任务下发
     list_push () {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
+
       let params = {
         taskId: this.push_id,
       }
@@ -2200,6 +2106,10 @@ export default {
     },
     // 删除
     deleteRow (data) {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
       // console.log(data);
       this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, "提示", {
         confirmButtonText: "确定",
@@ -2247,6 +2157,10 @@ export default {
     },
     // 操作
     operation (data) {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
       this.dialogVisibl_operation = true;
       // console.log(data);
       this.addDataTaskUuid = data.addDataTaskUuid;
@@ -2312,7 +2226,10 @@ export default {
 
     //查看操作 记录
     look_record (data, index) {
-      console.log(data);
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
       // console.log(index);
       // this.record_status = true;
       this.record_query.id = data.auditPreviousDemandDataUuid;
@@ -2382,6 +2299,10 @@ export default {
     },
     // 通过
     adopt () {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
       if (this.multipleSelection_operation.length == 0) {
         this.$message.info("请选择一条数据进行操作");
         return
@@ -2408,6 +2329,10 @@ export default {
     },
     // 驳回
     reject () {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
       if (this.multipleSelection_operation.length == 0) {
         this.$message.info("请选择一条数据进行操作");
         return
@@ -2518,6 +2443,10 @@ export default {
 
     // 任务列表 显示编辑
     edit_common (data) {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
       // this.add_form.name = '';//清空name
       // this.add_form.title = '';//清空title
       // this.$refs.multipleTable.clearSelection();//清空
@@ -2580,8 +2509,17 @@ export default {
     },
     // 已完成==========================
     // 已完成列表
-    list_data_end (params2) {
+    list_data_end () {
       this.loading = true
+      let params = {
+        pageNo: this.params2.pageNo,
+        pageSize: this.params2.pageSize,
+        condition: {
+          dataTaskNumber: this.projectNumber,
+          dataName: this.search_title2,
+
+        }
+      }
       data_pageListDone(params2).then(resp => {
         this.tableData2 = resp.data;
         this.tableData_list2 = resp.data.records
@@ -2593,17 +2531,8 @@ export default {
     },
     // 已完成 分页
     handleCurrentChange_zj (val) {
-      // 已完成
-      let params = {
-        pageNo: val,
-        pageSize: this.params2.pageSize,
-        condition: {
-          dataTaskNumber: this.projectNumber,
-          dataName: this.search_title2,
-
-        }
-      }
-      this.list_data_end(params)//刷新已完成列表
+      this.params2.pageNo = val0
+      this.list_data_end()//刷新已完成列表
     },
 
 

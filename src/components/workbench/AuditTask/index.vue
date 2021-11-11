@@ -226,6 +226,7 @@
 
                   <!-- 编辑 模型可以编辑-->
                   <el-button @click="edit_data(scope.row)"
+                             :disabled="isDisable"
                              v-if="scope.row.taskType ==2"
                              type="text"
                              style="color:#1371CC"
@@ -236,6 +237,7 @@
                              type="
                            text"
                              style="color: red;border:none;"
+                             :disabled="isDisable"
                              size="small">
                     删除
                   </el-button>
@@ -264,6 +266,7 @@
     <!-- 模型任务 结果数 -->
     <el-dialog width="90%"
                el-dialog
+               :close-on-click-modal="false"
                popper-class="status_data_dlag"
                :visible.sync="dialogVisible_data_num"
                style="padding-bottom: 59px">
@@ -413,6 +416,7 @@
     <!-- 结果数 核实明细结果  -->
     <el-dialog width="40%"
                el-dialog
+               :close-on-click-modal="false"
                @close="resetForm_verify('verify_model')"
                popper-class="status_data_dlag_verify"
                :visible.sync="dialogVisible_data_verify"
@@ -474,6 +478,7 @@
                v-if="success_btn2==0">
             <el-button size="small"
                        type="primary"
+                       :disabled="isDisable"
                        @click="verify_save('verify_model')">保 存</el-button>
             <el-button size="small"
                        plain
@@ -487,6 +492,7 @@
     <!-- 模型任务 问题数 -->
     <el-dialog :visible.sync="problemsDialogVisible"
                el-dialog
+               :close-on-click-modal="false"
                width="70%">
       <div class="title_dlag">问题数</div>
       <div class="dlag_conter2 ">
@@ -713,6 +719,7 @@
 
     <!-- 模型任务设置参数 -->
     <el-dialog center
+               :close-on-click-modal="false"
                :visible.sync="setParametersDialogVisible"
                width="60%">
       <el-card class="setParameters"> 参数设置 </el-card>
@@ -828,6 +835,7 @@
     <!-- 自建任务新增 编辑-->
     <el-dialog :visible.sync="dialogVisible_zj"
                center
+               :close-on-click-modal="false"
                @close="resetForm2('save_zj_query')"
                style="padding-bottom: 59px">
       <div class="title_dlag">{{title}}</div>
@@ -938,10 +946,12 @@
           <el-button size="small"
                      type="primary"
                      v-if="title=='新增任务'"
+                     :disabled="isDisable"
                      @click="save_zj(1,'save_zj_query')">确 定</el-button>
           <el-button size="small"
                      type="primary"
                      v-else
+                     :disabled="isDisable"
                      @click="save_zj(2)">确 定</el-button>
 
           <el-button size="small"
@@ -1238,6 +1248,9 @@ export default {
       attachmentList1: [],
       attachmentList2: [],
       attachmentList3: [],
+      isDisable: false,//防止重复提交
+
+
 
     };
   },
@@ -1328,6 +1341,10 @@ export default {
     },
     // 新增弹窗
     new_add_zj (index) {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
       // 1:新增  2:编辑
       //自建任务 新增
       this.dialogVisible_zj = true;
@@ -1358,6 +1375,10 @@ export default {
     },
     // 新增自建任务 保存
     save_zj (index, save_zj_query) {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
       // 1:新增  2:编辑
       if (index == 1) {
         this.$refs[save_zj_query].validate((valid) => {
@@ -1600,6 +1621,9 @@ export default {
     resetForm2 (save_zj_query) {
       this.$refs[save_zj_query].resetFields();
       this.$refs.upload.clearFiles();
+      this.save_zj_query.belongSpcial = '';//领域
+      this.save_zj_query.belongField = '';//领域
+
       this.save_zj_query.taskDescription = '';//清空备忘录
       this.save_zj_query.taskName = '';//清空name
       this.success_btn = 0;//显示加载按钮  0成功  1 loaging
@@ -1607,6 +1631,11 @@ export default {
 
     // 自建 任务--显示编辑详情
     edit_data (data) {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
+
       this.loading_edit = true;
       this.title = '编辑任务';
       this.dialogVisible_zj = true;//显示新增编辑 弹窗
@@ -1937,6 +1966,11 @@ export default {
 
     // 核实上传 保存附件
     verify_save (formName) {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
+
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.fileList2.length > 0) {
@@ -2024,6 +2058,7 @@ export default {
 
     // 核实保存
     verify_preservation (resultDetailProjectRelDto) {
+
       task_data_verify(resultDetailProjectRelDto).then(resp => {
         console.log(resp);
         if (resp.code == 0) {
@@ -2547,6 +2582,10 @@ export default {
     },
     // 模型/自建 任务--删除
     delete_model (ids) {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
 
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',

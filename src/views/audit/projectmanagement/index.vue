@@ -349,6 +349,7 @@
             </el-table-column>
           </el-table>
           <div class="addIcon"
+               :disabled="isDisable"
                @click="addData">
             <i class="el-icon-plus"></i>
             <span>新增</span>
@@ -1014,9 +1015,11 @@
               <template slot-scope="scope">
                 <el-button type="primary"
                            size="small"
+                           :disabled="isDisable"
                            @click="edit(1,scope.row)">编辑</el-button>
                 <el-button type="primary"
                            size="small"
+                           :disabled="isDisable"
                            @click="edit(2,scope.row)">删除</el-button>
               </template>
             </el-table-column>
@@ -1151,6 +1154,7 @@
       <div slot="footer">
         <el-button @click="confirm_problem_dlag_edit = false">取 消</el-button>
         <el-button type="primary"
+                   :disabled="isDisable"
                    @click="updateData()">确 定</el-button>
       </div>
     </el-dialog>
@@ -1538,9 +1542,6 @@ export default {
         beginTime: [{ required: true, message: '请选择开始时间', trigger: 'change' }],
         endTime: [{ required: true, message: '请选择结束时间', trigger: 'change' }],
       },
-
-
-
       isDisable: false,//防止重复提交
       projectid: '',//获取项目的id
     };
@@ -1712,6 +1713,10 @@ export default {
     },
     //增加专项项目table假数据
     addData () {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
       // alert(11);
       this.addProjectManagement.auditList.push({
         projectCode: this.addProjectManagement.projectCode,
@@ -2038,6 +2043,11 @@ export default {
     },
     // 专项修改按钮事件
     editBtn () {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
+
       this.$refs.editform.validate((valid) => {
         if (valid) {
           editProjectUpdata(this.addProjectManagement).then((resp) => {
@@ -2283,12 +2293,6 @@ export default {
 
 
         this.dqProblem = JSON.parse(JSON.stringify(this.dqProblem));
-
-        this.$nextTick(() => {
-          this.$refs["detailForm"].clearValidate();
-        });
-        console.log(this.dqProblem);
-
         // this.edit_remove_data(1, entity)// 编辑 删除  数据
         this.confirm_problem_dlag_edit = true;//审计问题清单 编辑
         this.$nextTick(() => {
@@ -2340,6 +2344,10 @@ export default {
     },
     // 编辑保存 确认清单
     updateData (detailForm) {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
       this.$refs["detailForm"].validate((valid) => {
         if (valid) {
 

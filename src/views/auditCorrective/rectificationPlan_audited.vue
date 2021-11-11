@@ -56,6 +56,7 @@
             </el-button>
             <el-button type="text"
                        v-if="scope.row.correctStatus==1 || scope.row.correctStatus==4"
+                       :disabled="isDisable"
                        @click="post(scope.row.managementProjectUuid)"
                        style="color: rgb(68, 163, 223);">
               提交
@@ -79,11 +80,29 @@
 
     </div>
 
+    <!-- 启动整改 弹窗 -->
+    <!-- <el-dialog title=""
+               :close-on-click-modal="false"
+               center
+               width="70%"
+               :visible.sync="dialogVisible_isrun">
+      <div class="title">启动整改</div>
+
+      <div class="dialog">
+        <h1>2021项目哈哈哈哈哈哈哈哈哈哈哈哈哈哈</h1>
+      </div>
+      <div slot="footer">
+        <el-button @click="dialogVisible_isrun = false">取 消</el-button>
+        <el-button type="primary"
+                   @click="dialogVisible_isrun = false">确 定</el-button>
+      </div>
+    </el-dialog> -->
+
   </div>
 </template>
 
 <script>
-import { pageBsjProblemCorrectList, submitReview } from "@SDMOBILE/api/shandong/rectificationPlan_audited";//lhg
+import { pageBsjProblemCorrectList, submitReview, notice } from "@SDMOBILE/api/shandong/rectificationPlan_audited";//lhg
 export default {
   components: {},
   data () {
@@ -94,9 +113,10 @@ export default {
         pageSize: 10,
         projectName: '',
       },
-      tableData: [
-        { problem: '11' },
-      ],
+      tableData: [],
+      dialogVisible_isrun: false,//启动整改
+      isDisable: false,//防止重复提交
+
     }
   },
   computed: {},
@@ -142,8 +162,11 @@ export default {
       this.$router.push({ path: 'rectificationPlan_audited/edit/' + data.managementProjectUuid })
     },
     // 提交
-    // 提交
     post (id) {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
       let params = {
         managementProjectUuid: id
       };

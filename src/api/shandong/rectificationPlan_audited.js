@@ -23,3 +23,18 @@ export function submitReview (data) {
     data,
   })
 }
+
+
+// 启动整改弹窗
+
+
+export function notice (data) {
+  console.log(data);
+  return request({
+    baseURL: baseURL,
+    url: `/problemCorrect/notice`,
+    method: 'post',
+    isLoading: false,
+    data,
+  })
+}

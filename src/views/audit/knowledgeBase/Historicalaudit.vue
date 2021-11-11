@@ -9,6 +9,7 @@
 
       <!--自建任务 模型任务 筛选 -->
       <div class="search">
+        <p style="min-width:130px;text-align:right">发现人：</p>
         <el-input placeholder="请输入发现人"
                   v-model="query.findPeople"> </el-input>
         <div class="search_icon">
@@ -120,11 +121,10 @@
     </div>
     <!-- 分页 end-->
 
-    <!-- 新增 -->
-
-    <!-- 历史审计发现描述 -->
+    <!-- 新增历史审计发现描述 -->
     <el-dialog @close="resetForm2('add')"
                center
+               :close-on-click-modal="false"
                :visible.sync="dialogVisible"
                style="padding-bottom: 59px">
       <div class="title_dlag">{{title}}</div>
@@ -253,7 +253,7 @@
           <el-button size="small"
                      type="primary"
                      v-else
-                     @click="save(2)">确 定</el-button>
+                     @click="save(2,'add')">确 定</el-button>
           <el-button size="small"
                      plain
                      @click="dialogVisible = false">取 消</el-button>
@@ -324,15 +324,7 @@ export default {
   watch: {},
   created () {
     // list
-    let params = {
-      pageNo: this.query.pageNo,
-      pageSize: this.query.pageSize,
-      condition: {
-        findPeople: this.query.findPeople,
-        historyAuditFindDescribe: this.query.historyAuditFindDescribe,
-      }
-    };
-    this.page_list(params);
+    this.page_list();
 
     let params2 = {
       typecode: 'Category',
@@ -365,7 +357,15 @@ export default {
 
   methods: {
     // 列表
-    page_list (params) {
+    page_list () {
+      let params = {
+        pageNo: this.query.pageNo,
+        pageSize: this.query.pageSize,
+        condition: {
+          findPeople: this.query.findPeople,
+          historyAuditFindDescribe: this.query.historyAuditFindDescribe,
+        }
+      };
       this.loading = true
       historicalaudit_pageList(params).then(resp => {
         this.tableData = resp.data
@@ -379,41 +379,27 @@ export default {
     },
     // 分页
     handleCurrentChange (val) {
-      let params = {
-        pageNo: val,
-        pageSize: this.query.pageSize,
-        condition: {
-          findPeople: this.query.findPeople,
-          historyAuditFindDescribe: this.query.historyAuditFindDescribe,
-        }
-      }
-      this.page_list(params);
-
+      this.query.pageNo = val
+      this.page_list();
     },
     // 筛选人
     search_list () {
-      let params = {
-        pageNo: this.query.pageNo,
-        pageSize: this.query.pageSize,
-        condition: {
-          findPeople: this.query.findPeople,
-          historyAuditFindDescribe: this.query.historyAuditFindDescribe,
-        }
-      }
-      this.page_list(params);
-
+      this.page_list();
     },
     // 新增
     add_sj () {
       this.add = {};
       this.title = '新增';
       this.dialogVisible = true;
+      this.$nextTick(() => {
+        this.$refs["add"].clearValidate();
+      });
     },
     // 新增 编辑保存
     save (index, add) {
-      this.$refs[add].validate((valid) => {
-        if (valid) {
-          if (index == 1) {
+      if (index == 1) {
+        this.$refs[add].validate((valid) => {
+          if (valid) {
             // 新增保存
             let params = {
               historyAuditFindDescribe: this.add.historyAuditFindDescribe,//发现描述
@@ -454,8 +440,14 @@ export default {
                 });
               }
             })
-
           } else {
+            this.$message.info("请填写信息");
+            return false;
+          }
+        })
+      } else {
+        this.$refs[add].validate((valid) => {
+          if (valid) {
             // 编辑保存
             let params = {
               historyAuditFindDescribe: this.add.historyAuditFindDescribe,//发现描述
@@ -471,6 +463,7 @@ export default {
               historyAuditFindUuid: this.historyAuditFindUuid// 主键id
 
             }
+            console.log(params);
             // 编辑保存
             historicalaudit_update(params).then(resp => {
               if (resp.code == 0) {
@@ -496,22 +489,13 @@ export default {
                 });
               }
             })
-
-
+          } else {
+            this.$message.info("请填写信息");
+            return false;
           }
-        } else {
-          this.$message.info("请填写信息");
-          return false;
-        }
-      })
+        })
+      }
     },
-
-    // 新增任务关闭
-    resetForm2 (add) {
-      this.$refs[add].resetFields();
-
-    },
-
 
     // 编辑
     edit (id) {
@@ -536,9 +520,22 @@ export default {
         this.add.source = data.source;//来源
         this.add.riskAmount = data.riskAmount;//金额
 
-
       })
+
     },
+
+
+    // 新增任务关闭
+    resetForm2 (add) {
+      this.$refs[add].resetFields();
+      // 关闭验证
+      console.log('关闭验证');
+    },
+
+
+
+
+
     // 删除
     delete_model (id) {
 
@@ -655,7 +652,6 @@ export default {
   padding: 20px;
   box-sizing: border-box;
   align-items: center;
-  justify-content: space-between;
 }
 .search_ms {
   display: flex;
@@ -668,6 +664,7 @@ export default {
   display: flex;
   justify-content: flex-end;
   position: relative;
+  align-items: center;
 }
 .search >>> .el-input__inner {
   width: 220px !important;
