@@ -2,11 +2,11 @@
   <div class="rectificationMeasures">
     <div style="width: 100%; overflow: hidden">
       <div style="float: right;">
-        <el-form class="search-form" :inline="true" :model="form" @keyup.enter.native="init()">
+        <el-form class="search-form" :inline="true" :model="searchForm" @keyup.enter.native="init()">
           <!--<el-button type="success" class="addBtn">设置整改跟进人</el-button>-->
           <el-input
             placeholder="请输入项目名称"
-            v-model="form.info"
+            v-model="searchForm.projectName"
             class="input-with-select"
           >
             <el-button type="primary" slot="append" icon="el-icon-search"></el-button>
@@ -29,17 +29,17 @@
       <el-table-column
           label="问题"
           width="250px"
-          prop="address"
+          prop="problemName"
           align="left"
       >
         <template slot-scope="scope">
-          <span class="blue pointer" @click="look(scope.row)">{{scope.row.address}}</span>
+          <span class="blue pointer" @click="look(scope.row)">{{scope.row.problemName}}</span>
         </template>
       </el-table-column>
       <el-table-column
           label="问题描述"
           width="250px"
-          prop="address"
+          prop="problemDesc"
           align="left"
       />
       <el-table-column
@@ -47,26 +47,39 @@
           width="200px"
           prop="date"
           align="center"
-      />
+      >
+        <template slot-scope="scope">
+          <span>{{scope.row.beginTime | dateformat}}</span>至 <span>{{scope.row.endTime | dateformat}}</span>
+        </template>
+      </el-table-column>
       <el-table-column
           label="整改责任部门及联系人"
           width="180px"
           prop="name"
           align="center"
       >
+        <template slot-scope="scope">
+          <span>{{scope.row.correctDept+scope.row.correctPerson||''}}</span>
+        </template>
       </el-table-column>
 
       <el-table-column
           label="状态"
           align="center"
-          prop="name"
+          prop="correctStatus"
       >
+        <template slot-scope="scope">
+          <span>{{scope.row.correctStatus=='1'?'待提交':scope.row.correctStatus=='2'?'待审核':scope.row.correctStatus=='3'?'领导审核通过':scope.row.correctStatus=='4'?'整改跟进人审核通过':scope.row.correctStatus=='5'?'驳回待提交':''}}</span>
+        </template>
       </el-table-column>
       <el-table-column
         label="整改结果"
         align="center"
-        prop="name"
+        prop="correctState"
       >
+        <template slot-scope="scope">
+          <span>{{scope.row.correctState=='0'?'未整改':scope.row.correctStatus=='1'?'整改中':scope.row.correctStatus=='2'?'已完成整改':''}}</span>
+        </template>
       </el-table-column>
     </el-table>
 
@@ -91,6 +104,8 @@
 <script>
 import FeedBackDialog from './feedback-dialog'
 import Detail from "../rectificationDetail";
+import {recAccountCorrect_correctStepPageList} from
+    '@SDMOBILE/api/shandong/ls'
 export default {
   components: {
     FeedBackDialog,
@@ -99,32 +114,46 @@ export default {
   data() {
     return {
       visible: false,
-      form: {},
+      searchForm: {
+        pageNo: 1,
+        pageSize: 10,
+        projectName:'',
+        projectId:this.$route.query.managementProjectUuid
+      },
       page: {
         current: 1,
         size: 10,
         total: 0
       },
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      tableData: []
     }
   },
+  mounted(){
+    this.list_data_start();
+  },
   methods: {
+    //列表数据
+    list_data_start () {
+      let params={
+        pageNo: this.searchForm.pageNo,
+        pageSize: this.searchForm.pageSize,
+        condition: {
+          projectName: this.searchForm.projectName,
+          managementProjectUuid: this.searchForm.projectId,
+        }
+      };
+      this.loading = true;
+      recAccountCorrect_correctStepPageList(params).then(resp => {
+        var datas=resp.data;
+        this.tableData = datas.records;
+        this.page={
+          current:datas.current,
+          size:datas.size,
+          total:datas.total
+        };
+        this.loading = false;
+      })
+    },
     //分页点击
     handleSizeChange(val) {
       this.searchForm.pageSize = val;
@@ -137,7 +166,7 @@ export default {
     //查看点击
     look(row){
       this.$nextTick(()=>{
-        this.$refs.detail.init('问题明细','zgtz_look');
+        this.$refs.detail.init('问题明细','zgtz_look',row.correctStepUuid);
       })
     },
     showFeedback() {

@@ -48,7 +48,7 @@
       <el-form-item label="整改计划:">
         <el-input
           :disabled="ifLook"
-          v-model="formState.correctPlanUuid"
+          v-model="formState.correctPlan"
           type="textarea"
           rows="6"
           placeholder="请输入"
@@ -150,10 +150,9 @@
         </el-form-item>
         <el-form-item class="itemTwo" label="整改状态:">
           <el-select :disabled="ifLook" v-model="formState.correctStatus" placeholder="请选择">
-            <el-option label="待提交" value="1"></el-option>
-            <el-option label="待审核" value="2"></el-option>
-            <el-option label="审核通过" value="3"></el-option>
-            <el-option label="驳回待提交" value="4"></el-option>
+            <el-option label="未整改" value="0"></el-option>
+            <el-option label="整改中" value="1"></el-option>
+            <el-option label="已完成整改" value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="备注:">
@@ -168,7 +167,6 @@
       </div>
       <el-form-item label="审核意见:" v-if="type=='zgcs_examine'">
         <el-input
-          :disabled="ifLook"
           v-model="formState.auditCommend"
           type="textarea"
           rows="6"
@@ -180,16 +178,19 @@
       <el-button @click="close">取 消</el-button>
       <el-button v-if="!ifLook" type="primary" @click="save">保存</el-button>
       <el-button v-if="!ifLook&&(formState.correctStatus==1||formState.correctStatus==4)" type="primary" @click="sub">提交</el-button>
+      <el-button v-if="type=='zgcs_examine'&&(formState.correctStatus==2||formState.correctStatus==3)" type="primary" @click="examine('1')">提交</el-button>
+      <el-button v-if="type=='zgcs_examine'&&(formState.correctStatus==2||formState.correctStatus==3)" type="primary" @click="examine('2')">驳回</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
-  import { correctStep_getById,correctStep_inputAlter,correctStep_submitAlter } from
+  import { correctStep_getById,correctStep_inputAlter,correctStep_submitAlter,correctStep_verifyLd,correctStep_verifyZgr } from
       '@SDMOBILE/api/shandong/ls'
     export default {
        data(){
          return{
+           people:'',
            key:0,
            isExamine:false,
            ifLook:false,
@@ -200,7 +201,7 @@
              correctAdvice:'',
              correctLimit:'',
              correctPerson:'',
-             correctPlanUuid:'',
+             correctPlan:'',
              correctResult:'',
              unfinishedReason:'',
              correctStatus:'',
@@ -329,14 +330,63 @@
 
           }),1)
         },
+        //审核和驳回按钮点击
+        examine(type){
+          var params=this.setDetail();
+          params.type=type;
+          if(this.people=='leader'){
+            var timer=setTimeout(correctStep_verifyLd(params).then(resp => {
+              if (resp.code == 0) {
+                this.$message({
+                  message: "审核成功",
+                  type: "success",
+                });
+                this.isExamine=false;
+                this.$nextTick(() => {
+                  this.$parent.list_data_start();
+                })
+                clearTimeout(timer);
+                timer=null;
+              } else {
+                this.$message({
+                  message: resp.data.msg,
+                  type: "error",
+                });
+              }
+
+            }),1)
+          }else if(this.people=='gjr'){
+            var timer=setTimeout(correctStep_verifyZgr(params).then(resp => {
+              if (resp.code == 0) {
+                this.$message({
+                  message: "审核成功",
+                  type: "success",
+                });
+                this.isExamine=false;
+                this.$nextTick(() => {
+                  this.$parent.list_data_start();
+                })
+                clearTimeout(timer);
+                timer=null;
+              } else {
+                this.$message({
+                  message: resp.data.msg,
+                  type: "error",
+                });
+              }
+
+            }),1)
+          }
+        },
         close(){
           this.isExamine=false;
         },
-        init(title,type,id){
+        init(title,type,id,people){
           this.title=title;
+          this.people=people;
           this.type=type;
           this.clearFileList();
-          if(type=='zgtz_look'){
+          if(type=='zgtz_look'||type=='zgcs_examine'){
             this.ifLook=true;
           }
           correctStep_getById(id).then(resp=>{
