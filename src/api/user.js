@@ -74,7 +74,7 @@ export function searchRole(params) {
 export function getPermission() {
   return request({
     baseURL: baseURL,
-    url: '/permission/getUserPermissionList',
+    url: '/permission/treePerms',
     method: 'get'
   })
 }
