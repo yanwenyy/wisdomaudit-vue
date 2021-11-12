@@ -252,7 +252,7 @@ export const constantRoutes = [{
   children: [{
     path: "auditbasis",
     name: "Auditbasis",
-    component: () => ("@WISDOMAUDIT/views/audit/auditbasis"),
+    component: () => import("@WISDOMAUDIT/views/audit/auditbasis"),
     meta: {
       title: "审计依据"
     }
