@@ -45,7 +45,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="申请原因">
-            <el-input type="textarea" v-model="form.desc"></el-input>
+            <el-input type="textarea" v-model="form.desc" placeholder="此内容会被审计请慎重填写"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -80,6 +80,7 @@
 </template>
 <script>
 export default {
+  props:['vaultV','sceneId'],
   data() {
     return {
       vaultVisible: false,
@@ -94,6 +95,12 @@ export default {
         info: "",
       },
     };
+  },
+  watch:{
+    vaultV(val, oldVal){
+      console.log(this.vaultV)
+      this.vaultVisible = val
+     },
   },
   methods: {},
 };
