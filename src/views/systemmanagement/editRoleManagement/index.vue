@@ -2,7 +2,6 @@
   <div class="new-user-management-g-wrapper">
     <!-- 面包屑导航 -->
 
-
     <el-form
       ref="newRoleManagementForm"
       :model="form"
@@ -32,15 +31,15 @@
           row="4"
         ></el-input>
       </el-form-item>
-      <el-form-item  label="角色权限：" prop="permissionIdList">
+      <el-form-item label="角色权限：" prop="permissionIdList">
         <el-tree
           :data="permissionIdList"
           show-checkbox
-          node-key="permissionId"
+          node-key="id"
           ref="tree"
           highlight-current
           :props="defaultProps"
-         @check-change="checkId"
+          @check-change="checkId"
           :default-checked-keys="form.permissionIds"
           :check-strictly="false"
         ></el-tree>
@@ -48,18 +47,21 @@
       <el-form-item>
         <el-row class="g-footer">
           <div class="g-footer-btn">
-            <el-button class="m-button-normal" @click="submit($event)">确定</el-button>
-            <el-button class="m-button-normal u-margin-left-20" @click="cancle()">取消</el-button>
+            <el-button class="m-button-normal" @click="submit($event)"
+              >确定</el-button
+            >
+            <el-button
+              class="m-button-normal u-margin-left-20"
+              @click="cancle()"
+              >取消</el-button
+            >
           </div>
         </el-row>
       </el-form-item>
     </el-form>
   </div>
 </template>
-
 <script>
-import {getPermission ,getRoleData,modifyRole}  from "../../../api/user";
-
 /**
  * @name: editRoleManagement.vue
  * @description: 角色编辑
@@ -67,19 +69,14 @@ import {getPermission ,getRoleData,modifyRole}  from "../../../api/user";
  * @update: 2019-01-28
  */
 // 通用组件引入
-// import {
-//   comBreadCrumb,
-//   comTitleDivider,
-//   comSingleSelect,
-//   comShowOverFlowTip
-// } from '@/components/commons'
-// // 混入引入
-// import { CascaderAreaCounty } from '@/assets/js/mixins'
-// // 接口引入
-// import { GetRoleInfoById, UpdateRole, PermissionTree } from '@/api'
+
+// 混入引入
+
+// 接口引入
+import { getPermission, getRoleData, modifyRole } from '../../../api/user'
 export default {
   name: 'newRoleManagement',
-  // mixins: [CascaderAreaCounty],
+
   data() {
     return {
       breadCrumdItems: [
@@ -122,59 +119,26 @@ export default {
           }
         ]
       },
-        permissionIdList :[],
-        defaultProps: {
+      permissionIdList: [],
+      defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'label'
       },
       allPermissionIdList: []
     }
   },
   created() {
-    this.modifyPermission()
-    this.getinformation()
-
-    // this.getPermissionList()
-    // this.getRoleInfoById()
-
+    this.getPermissionList()
+    this.getRoleInfoById()
   },
   methods: {
-    async getinformation(){
-       let roleId  = this.$route.query.id
-        let res = await getRoleData({roleId:roleId})
-        this.form.roleName   = res.data.roleName
-        this.form.roleDesc   = res.data.roleDesc
-        this.form.permissionIds   = res.data.permissionIdList
-        console.log( this.form,'id');
-    },
-
-
- handleNodeClick() {
-      let res = this.$refs.tree.getCheckedKeys().concat(this.$refs.tree.getHalfCheckedKeys())
-        this.form.permissionIds=[...res]
-        console.log( res)
- },
-
-
-
-
-
-
-
-
-   async modifyPermission(){
-      let res=await getPermission()
-       this.permissionIdList=res.data
-      console.log(res);
-
-    },
     /**
      * 根据角色id获取角色信息
      */
     async getRoleInfoById() {
       let _self = this
       // 获取权限树
-      let res = await _self.$http.get(PermissionTree)
+      let res = await getPermission()
       // 获取所有权限id
       this.allPermissionIdList = res.data.map(item => {
         return item.id
@@ -216,22 +180,19 @@ export default {
         })
       })
       if (res.status == 0) {
-        setTimeout(function() {
+        setTimeout(function () {
           // 获取当前用户权限
-          _self.$http
-            .get(GetRoleInfoById, {
-              roleId: _self.$route.params.id
-            })
-            .then(res => {
-              _self.form.roleName = res.data.roleName
-              _self.form.roleDesc = res.data.roleDesc
-              // 判断是否是管理员账户
-              if (res.data.roleDesc === '全部权限') {
-                _self.form.permissionIds = this.allPermissionIdList
-              } else {
-                _self.form.permissionIds = res.data.permissionIdList
-              }
-            })
+          let roleId = _self.$route.query.id
+          getRoleData({ roleId: roleId }).then(res => {
+            _self.form.roleName = res.data.roleName
+            _self.form.roleDesc = res.data.roleDesc
+            // 判断是否是管理员账户
+            if (res.data.roleDesc === '全部权限') {
+              _self.form.permissionIds = this.allPermissionIdList
+            } else {
+              _self.form.permissionIds = res.data.permissionIdList
+            }
+          })
         }, 100)
       }
     },
@@ -243,9 +204,10 @@ export default {
      * 确定按钮点击事件
      * @param { Object } e 提交点击事件对象
      */
-     submit() {
-        this.form.permissionIds = this.$refs.tree.getCheckedKeys()
-      this.$refs.newRoleManagementForm.validate( async valid => {
+    submit() {
+      this.form.permissionIds = this.$refs.tree.getCheckedKeys()
+      console.log(this.$refs.tree.getCheckedKeys());
+      this.$refs.newRoleManagementForm.validate(async valid => {
         if (!valid) {
           return
         }
@@ -255,19 +217,19 @@ export default {
           permissionIds: this.form.permissionIds,
           roleId: this.$route.query.id
         }
-         let res= await modifyRole(data)
-         console.log(res,'确定');
-           if(res.status==0){
-           this.$message({
-          message: '修改成功',
-          type: 'success'
-        });
-           this.$router.go(-1)
-        }else{
+        let res = await modifyRole(data)
+        console.log(res, '确定')
+        if (res.status == 0) {
           this.$message({
-          message: '修改失败',
-          type: 'warning'
-        });
+            message: '修改成功',
+            type: 'success'
+          })
+          this.$router.go(-1)
+        } else {
+          this.$message({
+            message: '修改失败',
+            type: 'warning'
+          })
         }
       })
     },
@@ -339,7 +301,6 @@ export default {
           this.common.showErrorToast('有三级按钮选中时，必须选中基础功能')
         }
       }
-
     },
     /**
      * 取消按钮点击事件
@@ -347,13 +308,7 @@ export default {
     cancle() {
       this.$router.go(-1)
     }
-  },
-  // components: {
-  //   comBreadCrumb,
-  //   comTitleDivider,
-  //   comSingleSelect,
-  //   comShowOverFlowTip
-  // }
+  }
 }
 </script>
 
@@ -363,8 +318,8 @@ export default {
   border-radius: 0px;
   background-color: #fff;
 }
-.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
-    background-color: #ffff !important ;
+.el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
+  background-color: #ffff !important ;
 }
 
 .sidebar-g-container {
@@ -487,5 +442,4 @@ export default {
 .buttom-upload {
   width: 68px !important;
 }
-
 </style>
