@@ -1315,8 +1315,17 @@ export default {
   created () {
     this.projectNumber = this.active_project;
 
+    let params = {
+      pageNo: this.params.pageNo,
+      pageSize: this.params.pageSize,
+      condition: {
+        projectNumber: this.projectNumber,
+        title: this.search_title,
+      }
+    }
+
     // 资料 未完成列表 
-    this.list_data_start();//未完成
+    this.list_data_start(params);//未完成
 
     // 新增未完成任务列表
     this.add_add_csh();
@@ -1376,12 +1385,31 @@ export default {
       if (index == 1) {
         // alert('a', this.search_title)
         // 未完成
+        let params = {
+          pageNo: this.params.pageNo,
+          pageSize: this.params.pageSize,
+          condition: {
+            projectNumber: this.projectNumber,
+            title: this.search_title,
+          }
+        }
+
+
         this.list_data_start()
       } else {
         // alert('b', this.search_title2)
         // 已完成
+        let params = {
+          pageNo: this.params2.pageNo,
+          pageSize: this.params2.pageSize,
+          condition: {
+            dataTaskNumber: this.projectNumber,
+            dataName: this.search_title2,
 
-        this.list_data_end()//刷新已完成列表
+          }
+        }
+
+        this.list_data_end(params)//刷新已完成列表
       }
 
     },
@@ -1468,10 +1496,28 @@ export default {
       this.search_title2 = '';//清空筛选
       if (val.index == 0) {
         // 未完成
-        this.list_data_start()//未完成列表
+        let params = {
+          pageNo: this.params.pageNo,
+          pageSize: this.params.pageSize,
+          condition: {
+            projectNumber: this.projectNumber,
+            title: this.search_title,
+          }
+        }
+
+        this.list_data_start(params)//未完成列表
       } else {
         // 已完成
-        this.list_data_end()//已完成列表
+        let params = {
+          pageNo: this.params2.pageNo,
+          pageSize: this.params2.pageSize,
+          condition: {
+            dataTaskNumber: this.projectNumber,
+            dataName: this.search_title2,
+
+          }
+        }
+        this.list_data_end(params)//已完成列表
       }
     },
     // 关闭
@@ -1489,15 +1535,7 @@ export default {
     },
     // 未完成============================
     // 列表 未完成
-    list_data_start () {
-      let params = {
-        pageNo: this.params.pageNo,
-        pageSize: this.params.pageSize,
-        condition: {
-          projectNumber: this.projectNumber,
-          title: this.search_title,
-        }
-      }
+    list_data_start (params) {
       this.loading = true
       data_pageList(params).then(resp => {
         this.tableData = resp.data;
@@ -1510,8 +1548,15 @@ export default {
     },
     // 任务列表分页
     handleCurrentChange_model (val) {
-      this.params.pageNo = val;
-      this.list_data_start()
+      let params = {
+        pageNo: val,
+        pageSize: this.params.pageSize,
+        condition: {
+          projectNumber: this.projectNumber,
+          title: this.search_title,
+        }
+      }
+      this.list_data_start(params)
     },
 
 
@@ -2137,7 +2182,7 @@ export default {
 
           // 未完成
           let params = {
-            pageNo: this.params.pageNo,
+            pageNo: 1,
             pageSize: this.params.pageSize,
             condition: {
               projectNumber: this.projectNumber,
@@ -2509,17 +2554,8 @@ export default {
     },
     // 已完成==========================
     // 已完成列表
-    list_data_end () {
+    list_data_end (params2) {
       this.loading = true
-      let params = {
-        pageNo: this.params2.pageNo,
-        pageSize: this.params2.pageSize,
-        condition: {
-          dataTaskNumber: this.projectNumber,
-          dataName: this.search_title2,
-
-        }
-      }
       data_pageListDone(params2).then(resp => {
         this.tableData2 = resp.data;
         this.tableData_list2 = resp.data.records
@@ -2531,8 +2567,17 @@ export default {
     },
     // 已完成 分页
     handleCurrentChange_zj (val) {
-      this.params2.pageNo = val0
-      this.list_data_end()//刷新已完成列表
+
+      let params = {
+        pageNo: this.params2.pageNo,
+        pageSize: this.params2.pageSize,
+        condition: {
+          dataTaskNumber: this.projectNumber,
+          dataName: this.search_title2,
+
+        }
+      }
+      this.list_data_end(params)//刷新已完成列表
     },
 
 

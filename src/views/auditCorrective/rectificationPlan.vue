@@ -108,7 +108,6 @@
         <el-pagination @size-change="handleSizeChange"
                        @current-change="handleCurrentChange"
                        :current-page="this.tableData.current"
-                       :page-sizes="[100, 200, 300, 400]"
                        :page-size="this.tableData.size"
                        layout="total, sizes, prev, pager, next, jumper"
                        :total="this.tableData.total">
@@ -246,7 +245,7 @@ export default {
       })
     },
 
-    // 列表 筛选
+    // 列表 筛选 
     search () {
       this.pageProblemCorrectList_data();//列表
     },

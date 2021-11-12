@@ -41,6 +41,11 @@
         <el-table-column prop="modelName"
                          align="center"
                          label="模型名称">
+
+          <template slot-scope="scope">
+            <p class="details"
+               @click="look_details(scope.row.auditModelUuid,scope.$index+1 )">{{scope.row.modelName}}</p>
+          </template>
         </el-table-column>
         <el-table-column prop="logicalDescription"
                          align="center"
@@ -50,10 +55,7 @@
         <el-table-column prop="ruleDescription"
                          align="center"
                          label="业务规则">
-          <template slot-scope="scope">
-            <p class="details"
-               @click="look_details(scope.row.auditModelUuid,scope.$index+1 )">{{scope.row.ruleDescription}}</p>
-          </template>
+
         </el-table-column>
       </el-table>
 

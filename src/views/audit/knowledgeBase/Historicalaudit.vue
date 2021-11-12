@@ -57,7 +57,7 @@
         </el-table-column>
 
         <!-- 审计依据 -->
-        <el-table-column prop="auditBasis"
+        <el-table-column prop="auditBasisName"
                          align="center"
                          label="审计依据">
 
@@ -114,7 +114,6 @@
       <el-pagination @size-change="handleSizeChange"
                      :current-page="this.tableData.current"
                      @current-change="handleCurrentChange"
-                     :page-sizes="[100, 200, 300, 400]"
                      :page-size="this.tableData.size"
                      layout="total, sizes, prev, pager, next, jumper"
                      :total="this.tableData.total">
@@ -134,19 +133,20 @@
       <div class="dlag_conter">
         <el-form ref="add"
                  :model="add"
+                 v-loading="ld"
                  :rules="rules">
 
           <!-- 历史审计发现描述 -->
-          <el-form-item>
-            <p>历史审计发现描述：</p>
+          <el-form-item prop="historyAuditFindDescribe">
+            <p><span style="color:red;">*</span> 历史审计发现描述：</p>
             <el-input v-model="add.historyAuditFindDescribe"
+                      prop="historyAuditFindDescribe"
                       placeholder="请输入历史审计发现描述"></el-input>
           </el-form-item>
 
           <!-- 被审计单位 -->
-          <el-form-item>
-            <p style="padding-top: 10px;">被审计单位：</p>
-
+          <el-form-item prop="auditedEntity">
+            <p style="padding-top: 10px;"><span style="color:red;">*</span> 被审计单位：</p>
             <el-select v-model="add.auditedEntity"
                        @change="changeHeader_danwei">
               <el-option v-for="item in audit_Company"
@@ -197,16 +197,16 @@
             <el-select v-model="add.auditBasis"
                        @change="changeHeader_yj">
               <el-option v-for="item in problems_slect_yj"
-                         :key="item.value"
-                         :label="item.label"
-                         :value="item.value">
+                         :key="item.basyUuid"
+                         :label="item.basyName"
+                         :value="item.basyUuid">
               </el-option>
             </el-select>
           </el-form-item>
 
           <!--发现日期 -->
-          <el-form-item>
-            <p>发现日期：</p>
+          <el-form-item prop="findData">
+            <p><span style="color:red;">*</span>发现日期：</p>
             <el-date-picker v-model="add.findData"
                             type="date"
                             placeholder="选择日期">
@@ -270,7 +270,7 @@
 
 <script>
 import { fmtDate } from '@SDMOBILE/model/time.js';
-import { historicalaudit_pageList, historicalaudit_add, historicalaudit_details, historicalaudit_update, historicalaudit_delete, historicalaudit_loaauditorg } from '@SDMOBILE/api/shandong/Historicalaudit'
+import { historicalaudit_pageList, historicalaudit_add, historicalaudit_details, historicalaudit_update, historicalaudit_delete, historicalaudit_loaauditorg, historicalaudit_yj } from '@SDMOBILE/api/shandong/Historicalaudit'
 
 import { task_problems_loadcascader } from '@SDMOBILE/api/shandong/task'
 export default {
@@ -299,6 +299,7 @@ export default {
         special: '',//专题
         findPeople: '',//发现人
         auditBasis: '',//依据
+        auditBasisName: '',//依据name
         findData: '',//发现日期
         year: '',//所属年份
         source: '',//来源
@@ -309,6 +310,16 @@ export default {
       audit_Company: [],//审计单位
       problems_slect_yj: [],//评审依据
       rules: {
+        historyAuditFindDescribe: {
+          required: true,
+          message: '请填写描述',
+          trigger: 'blue',
+        },
+        auditedEntity: {
+          required: true,
+          message: '请选择被审计单位',
+          trigger: 'change',
+        },
         field: {
           required: true,
           message: '请选择领域',
@@ -319,16 +330,29 @@ export default {
           message: '请选择专题',
           trigger: 'change',
         },
+        findData: {
+          required: true,
+          message: '请选择发现日期',
+          trigger: 'change',
+        }
       },
       isDisable: false,//防止重复提交
-
+      ld: false,
     }
   },
   computed: {},
   watch: {},
   created () {
     // list
-    this.page_list();
+    let params = {
+      pageNo: this.query.pageNo,
+      pageSize: this.query.pageSize,
+      condition: {
+        findPeople: this.query.findPeople,
+        historyAuditFindDescribe: this.query.historyAuditFindDescribe,
+      }
+    };
+    this.page_list(params);
 
     let params2 = {
       typecode: 'Category',
@@ -345,6 +369,14 @@ export default {
       entity: {},
     }
     this.Company(params4);//审计单位
+
+
+    let params5 = {
+      pageNo: 1,
+      pageSize: 100000
+    }
+    this.yiju(params5)
+
   },
   mounted () {
 
@@ -361,20 +393,11 @@ export default {
 
   methods: {
     // 列表
-    page_list () {
-      let params = {
-        pageNo: this.query.pageNo,
-        pageSize: this.query.pageSize,
-        condition: {
-          findPeople: this.query.findPeople,
-          historyAuditFindDescribe: this.query.historyAuditFindDescribe,
-        }
-      };
+    page_list (params) {
       this.loading = true
       historicalaudit_pageList(params).then(resp => {
         this.tableData = resp.data
         this.tableData_list = resp.data.records;
-
         this.loading = false
       })
     },
@@ -383,12 +406,28 @@ export default {
     },
     // 分页
     handleCurrentChange (val) {
-      this.query.pageNo = val
-      this.page_list();
+      let params = {
+        pageNo: val,
+        pageSize: this.query.pageSize,
+        condition: {
+          findPeople: this.query.findPeople,
+          historyAuditFindDescribe: this.query.historyAuditFindDescribe,
+        }
+      };
+      this.page_list(params);
     },
     // 筛选人
     search_list () {
-      this.page_list();
+      let params = {
+        pageNo: this.query.pageNo,
+        pageSize: this.query.pageSize,
+        condition: {
+          findPeople: this.query.findPeople,
+          historyAuditFindDescribe: this.query.historyAuditFindDescribe,
+        }
+      };
+
+      this.page_list(params);
     },
     // 新增
     add_sj () {
@@ -417,9 +456,11 @@ export default {
               historyAuditFindDescribe: this.add.historyAuditFindDescribe,//发现描述
               auditedEntity: this.add.auditedEntity,//被审计单位
               field: this.add.field,//领域
+              auditBasis: this.add.auditBasisName,//依据
+              auditBasisName: this.add.auditBasis,
               special: this.add.special,//专题
               findPeople: this.add.findPeople,//发现人
-              auditBasis: this.add.auditBasis,//依据
+
               findData: this.add.findData,//发现日期
               year: this.add.year,//所属年份
               source: this.add.source,//来源
@@ -436,14 +477,14 @@ export default {
                 });
                 this.dialogVisible = false;
                 // 刷新列表
-                let params2 = {
+                let params = {
                   pageNo: this.query.pageNo,
                   pageSize: this.query.pageSize,
                   condition: {
                     findPeople: this.query.findPeople,
                     historyAuditFindDescribe: this.query.historyAuditFindDescribe,
                   }
-                }
+                };
                 this.page_list(params);
               } else {
                 this.$message({
@@ -467,7 +508,8 @@ export default {
               field: this.add.field,//领域
               special: this.add.special,//专题
               findPeople: this.add.findPeople,//发现人
-              auditBasis: this.add.auditBasis,//依据
+              auditBasis: this.add.auditBasisName,//依据
+              auditBasisName: this.add.auditBasis,
               findData: this.add.findData,//发现日期
               year: this.add.year,//所属年份
               source: this.add.source,//来源
@@ -485,14 +527,14 @@ export default {
                 });
                 this.dialogVisible = false;
                 // 刷新列表
-                let params2 = {
+                let params = {
                   pageNo: this.query.pageNo,
                   pageSize: this.query.pageSize,
                   condition: {
                     findPeople: this.query.findPeople,
                     historyAuditFindDescribe: this.query.historyAuditFindDescribe,
                   }
-                }
+                };
                 this.page_list(params);
               } else {
                 this.$message({
@@ -511,6 +553,7 @@ export default {
 
     // 编辑
     edit (id) {
+      this.ld = true;
       this.isDisable = true
       setTimeout(() => {
         this.isDisable = false
@@ -521,8 +564,26 @@ export default {
       let params = {
         id: this.historyAuditFindUuid
       }
+      this.add = {
+        historyAuditFindDescribe: '',//发现描述
+        auditedEntity: '',//被审计单位
+        field: '',//领域
+        special: '',//专题
+        findPeople: '',//发现人
+        auditBasis: '',//依据
+        findData: '',//发现日期
+        year: '',//所属年份
+        source: '',//来源
+        riskAmount: '',//金额
+      },
+        //清空 
+        this.$nextTick(() => {
+          this.$refs["add"].clearValidate();
+        });
+
       // 编辑详情
       historicalaudit_details(params).then(resp => {
+        this.ld = false;
 
         let data = resp.data;
         this.add.historyAuditFindDescribe = data.historyAuditFindDescribe,//发现描述
@@ -531,6 +592,8 @@ export default {
         this.add.special = data.special;//专题
         this.add.findPeople = data.findPeople;//发现人
         this.add.auditBasis = data.auditBasis; //依据
+        // this.add.auditBasisName = data
+        // auditBasisName:this.add.auditBasisName ,
         this.add.findData = data.findData;//发现日期
         this.add.year = data.year;//所属年份
         this.add.source = data.source;//来源
@@ -545,7 +608,6 @@ export default {
     resetForm2 (add) {
       this.$refs[add].resetFields();
       // 关闭验证
-
     },
 
 
@@ -578,15 +640,14 @@ export default {
                 message: '删除成功',
                 type: 'success'
               });
-              // 刷新列表
-              let params2 = {
+              let params = {
                 pageNo: this.query.pageNo,
                 pageSize: this.query.pageSize,
                 condition: {
                   findPeople: this.query.findPeople,
                   historyAuditFindDescribe: this.query.historyAuditFindDescribe,
                 }
-              }
+              };
               this.page_list(params);
             } else {
               this.$message({
@@ -623,6 +684,15 @@ export default {
 
       })
     },
+    // 依据
+    yiju (params) {
+      historicalaudit_yj(params).then(resp => {
+        this.problems_slect_yj = resp.data.records
+        console.log(resp.data);
+      })
+    },
+
+
     // 单位
     changeHeader_danwei (val) {
       this.add.auditedEntity = val
@@ -639,7 +709,15 @@ export default {
 
     // 依据change
     changeHeader_yj (val) {
-      this.add.auditBasis = val
+      // this.add.auditBasis = val
+      // console.log(this.add.auditBasis);
+      let obj = {};
+      obj = this.problems_slect_yj.find((item) => {
+        return item.basyUuid === val;
+      });
+      this.add.auditBasis = obj.basyName//依据   key
+      this.add.auditBasisName = val//依据 name
+
     },
     // 年份change
     changeHeader_nf (val) {
@@ -707,6 +785,7 @@ export default {
   -ms-flex-align: center;
   align-items: center;
   color: #fff;
+  cursor: pointer;
   background: rgb(12, 135, 214) !important;
 }
 .search >>> .el-icon-search {
@@ -732,7 +811,7 @@ export default {
   justify-content: center;
 }
 .dlag_conter >>> p {
-  min-width: 120px;
+  min-width: 130px;
   text-align: right;
 }
 .dlag_conter >>> .foot {
@@ -751,7 +830,7 @@ export default {
   box-sizing: border-box;
 }
 .dlag_conter >>> .el-form-item__error {
-  left: 120px !important;
+  left: 130px !important;
 }
 .dlag_conter >>> .el-form-item__content {
   margin-bottom: 20px;

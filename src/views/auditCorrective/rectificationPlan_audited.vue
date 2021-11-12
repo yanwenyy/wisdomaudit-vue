@@ -18,7 +18,7 @@
       <el-table :data="tableData.records"
                 :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                 v-loading="loading"
-                style="width: 100%">
+                style="width: 100%;min-height:400px">
         <el-table-column type="index"
                          label="编号"
                          width="50">
@@ -70,7 +70,6 @@
         <el-pagination @size-change="handleSizeChange"
                        @current-change="handleCurrentChange"
                        :current-page="this.tableData.current"
-                       :page-sizes="[100, 200, 300, 400]"
                        :page-size="this.tableData.size"
                        layout="total, sizes, prev, pager, next, jumper"
                        :total="this.tableData.total">

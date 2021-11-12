@@ -83,7 +83,6 @@
         <el-pagination @size-change="handleSizeChange"
                        @current-change="handleCurrentChange"
                        :current-page="this.tableData.current"
-                       :page-sizes="[100, 200, 300, 400]"
                        :page-size="this.tableData.size"
                        layout="total, sizes, prev, pager, next, jumper"
                        :total="this.tableData.total">
