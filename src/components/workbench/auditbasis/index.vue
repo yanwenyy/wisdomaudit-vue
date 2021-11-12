@@ -85,7 +85,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item class="itemTwo" prop="issueDate" label="发文日期:" >
-          <el-date-picker :disabled="ifLook" v-model="formState.issueDate" type="date"  placeholder="请选择" value-format="yyyy-MM-dd">
+          <el-date-picker :disabled="ifLook" v-model="formState.issueDate" type="date"  placeholder="请选择" format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
         <el-form-item class="itemTwo" prop="publishDepartment" label="发文部门:" >
@@ -214,6 +214,9 @@ export default {
               message: "删除成功",
               type: "success",
             });
+            if(this.tableData.length==1){
+              this.searchForm.pageNo=this.searchForm.pageNo-1;
+            }
             this.list_data_start();
           } else {
             this.$message({
@@ -298,12 +301,19 @@ export default {
     },
     //列表数据
     list_data_start () {
+      // debugger
+      var issueDate='';
+      if(this.searchForm.issueDate){
+        const difference = new Date().getTimezoneOffset() * 60 * 1000;
+       issueDate= new Date(this.searchForm.issueDate).getTime()-difference;
+      }
+
       let params={
         pageNo: this.searchForm.pageNo,
         pageSize: this.searchForm.pageSize,
         condition: {
           basyName: this.searchForm.basyName,
-          issueDate: this.searchForm.issueDate,
+          issueDate:this.searchForm.issueDate,
           publishDepartment: this.searchForm.publishDepartment,
         }
       };
@@ -422,54 +432,49 @@ export default {
     },
     //保存数据
     sub(){
-      console.log(this.canClick)
-      if (this.canClick) {
-
-        this.canClick = false;
-        var attachmentUuidList=[];
-        this.apkFiles.forEach((item)=>{
-          attachmentUuidList.push(item.attachmentUuid)
-        });
-        if(this.formState.attachmentList){
-          this.formState.attachmentList.forEach((item)=>{
-            attachmentUuidList.push(item.attachment_uuid)
-          });
-        }
-        this.formState.attachmentUuidList=attachmentUuidList;
-        if(this.formState.attachmentUuidList.length==0){
-          this.$message.error("请上传附件");
-          this.canClick=true;
-          return false;
-        }
-        this.$refs['addForm'].validate((valid) => {
-          if (valid) {
-            this.canClick=true;
-            auditBasy_save(this.formState).then(resp => {
-              if (resp.code == 0) {
-                this.$message({
-                  message: "保存成功",
-                  type: "success",
-                });
-                this.isAdd=false;
-                this.list_data_start();
-                this.clearForm();
-              } else {
-                this.$message({
-                  message: resp.data.msg,
-                  type: "error",
-                });
-              }
-
-            })
-          } else {
-            this.canClick = true;
-            this.$message.error("请添加必填项和正确的数据格式");
-            return false;
-          }
+      var attachmentUuidList=[];
+      this.apkFiles.forEach((item)=>{
+        attachmentUuidList.push(item.attachmentUuid)
+      });
+      if(this.formState.attachmentList){
+        this.formState.attachmentList.forEach((item)=>{
+          attachmentUuidList.push(item.attachment_uuid)
         });
       }
+      this.formState.attachmentUuidList=attachmentUuidList;
 
-
+      this.$refs['addForm'].validate((valid) => {
+        if (valid) {
+          if(this.formState.attachmentUuidList.length==0){
+            this.$message.error("请上传附件");
+            this.canClick=true;
+            return false;
+          }
+          var timer=null;
+          timer=setTimeout(auditBasy_save(this.formState).then(resp => {
+            if (resp.code == 0) {
+              this.$message({
+                message: "保存成功",
+                type: "success",
+              });
+              this.isAdd=false;
+              this.list_data_start();
+              this.clearForm();
+              timer=null;
+              clearTimeout(timer);
+            } else {
+              this.$message({
+                message: resp.data.msg,
+                type: "error",
+              });
+            }
+          }),0)
+        } else {
+          this.canClick = true;
+          this.$message.error("请添加必填项和正确的数据格式");
+          return false;
+        }
+      });
     },
     //关闭弹窗
     close(){

@@ -568,7 +568,6 @@
         <el-pagination @size-change="handleSizeChange_probleNum"
                        @current-change="handleCurrentChange_probleNum"
                        :current-page="this.probleNum_data.current"
-                       :page-sizes="[100, 200, 300, 400]"
                        :page-size="this.probleNum_data.size"
                        layout="total, sizes, prev, pager, next, jumper"
                        :total="this.probleNum_data.total">

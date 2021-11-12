@@ -36,10 +36,10 @@
         <el-tree
           :data="permissionIdList"
           show-checkbox
-          node-key="permissionId"
+          node-key="id"
           ref="tree"
           highlight-current
-           @check="handleNodeClick"
+           @check="checkId"
           :check-strictly="false"
           :props="defaultProps"
           :default-expand-all="false"
@@ -56,29 +56,21 @@
 </template>
 
 <script>
-import {getPermission ,addRole}  from "../../../api/user";
-
 /**
- * 
  * @name: newRoleManagement.vue
  * @description: 角色新建
  * @author: Shan Youjing(mail)
  * @update: 2019-01-28
  */
 // 通用组件引入
-// import {
-//   comBreadCrumb,
-//   comTitleDivider,
-//   comSingleSelect,
-//   comShowOverFlowTip
-// } from '@/components/commons'
-// // 混入引入
-// import { CascaderAreaCounty } from '@/assets/js/mixins'
-// // 接口引入
-// import { GetRoleListInfo, AddRole, PermissionTree } from '@/api'
+
+
+// 接口引入
+import {getPermission ,addRole}  from "../../../api/user";
+
 export default {
   name: 'newRoleManagement',
-  // mixins: [CascaderAreaCounty],
+
   data() {
     return {
       breadCrumdItems: [
@@ -122,64 +114,61 @@ export default {
           }
         ]
       },
-      permissionIdList :[],
+      permissionIdList: [],
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'label'
       }
     }
   },
   created() {
-    // this.getPermissionList()
-    this.addPermission()
-
+    this.getPermissionList()
   },
   methods: {
     /**
      * 获取权限列表
      */
-    async addPermission() {
+    async getPermissionList() {
       let _self = this
-     let res =await getPermission()
-     console.log(res);
-     this.permissionIdList=res.data
-    // //  this.permissionIdList=res.data
-    //     // 获取最外层1级元素
-    //     res.data.forEach(item => {
-    //       if (item.type == 0) {
-    //         _self.permissionIdList.push({
-    //           id: item.permissionId,
-    //           label: item.name,
-    //           children: []
-    //         })
-    //       }
-    //     })
-    //     console.log(this.permissionIdList);
-    //     res.data.forEach(item => {
-    //       _self.permissionIdList.forEach(val => {
-            
-    //           val.children.push({
-    //             id: val.id,
-    //             label: val.name,
-    //             children: []
-    //           })
-            
-    //       })
-    //     })
-    //     res.data.forEach(item => {
-    //       _self.permissionIdList.forEach(subItem => {
-    //         if (subItem.children.length == 0) return
-    //         subItem.children.forEach(thirdItem => {
-    //             thirdItem.children.push({
-    //               id: thirdItem.id,
-    //               label: thirdItem.name,
-    //               children: []
-    //             })
-    //         })
-    //       })
-    //     })
-    //     console.log(_self.permissionIdList)
-    
+      await getPermission().then(res => {
+        // 获取最外层1级元素
+        res.data.forEach(item => {
+          if (item.pId == 0) {
+            _self.permissionIdList.push({
+              id: item.id,
+              pId: item.pId,
+              label: item.name,
+              children: []
+            })
+          }
+        })
+        res.data.forEach(item => {
+          _self.permissionIdList.forEach(val => {
+            if (item.pId == val.id) {
+              val.children.push({
+                id: item.id,
+                label: item.name,
+                children: []
+              })
+            }
+          })
+        })
+        res.data.forEach(item => {
+          _self.permissionIdList.forEach(subItem => {
+            if (subItem.children.length == 0) return
+            subItem.children.forEach(thirdItem => {
+              if (thirdItem.id == item.pId) {
+                thirdItem.children.push({
+                  id: item.id,
+                  label: item.name,
+                  children: []
+                })
+              }
+            })
+          })
+        })
+        console.log(_self.permissionIdList)
+      })
     },
     /**
      * 复选框点击事件
@@ -187,119 +176,97 @@ export default {
      * @param {Object} param2 树目前的选中状态对象
      *
      */
-    handleNodeClick() {
-      let res = this.$refs.tree.getCheckedKeys().concat(this.$refs.tree.getHalfCheckedKeys())
-        this.form.permissionIds=[...res]
-        console.log( this.form.permissionIds)
-
-      // console.log(param1);
+    checkId(param1, param2) {
       // 获取除基础功能外的所有三级节点
-      // let thirdIdList = []
-      // this.permissionIdList.forEach(item => {
-      //   if (item.children.length > 0) {
-      //     item.children.forEach(subItem => {
-      //       if (subItem.children.length > 0) {
-      //         subItem.children.forEach(thirdItem => {
-      //           if (thirdItem.label !== '基础功能') {
-      //             thirdIdList.push(thirdItem.id)
-      //           }
-      //         })
-      //       }
-      //     })
-      //   }
-      // })
-  
-      // if (thirdIdList.includes(param1.id) && param2) {
-      //   // 获取选中节点的父级节点
-      //   let parentObj = {}
-      //   this.permissionIdList.forEach(item => {
-      //     item.children.forEach(subItem => {
-      //       subItem.children.forEach(thirdItem => {
-      //         if (thirdItem.id == param1.id) {
-      //           parentObj = subItem
-      //         }
-      //       })
-      //     })
-      //   })
-      //   // 设置基础功能选中
-      //   if (Object.keys(parentObj) == 0) return
-      //   let basicFunctionId = parentObj.children.find(item => {
-      //     return (item.label = '基础功能')
-      //   }).id
-      //   this.$refs.tree.setChecked(basicFunctionId, true)
-      // }
+      let thirdIdList = []
+      this.permissionIdList.forEach(item => {
+        if (item.children.length > 0) {
+          item.children.forEach(subItem => {
+            if (subItem.children.length > 0) {
+              subItem.children.forEach(thirdItem => {
+                if (thirdItem.label !== '基础功能') {
+                  thirdIdList.push(thirdItem.id)
+                }
+              })
+            }
+          })
+        }
+      })
 
-      // // 如果有其它三级权限的按钮选中，阻止用户手动取消基础功能
-      // if (param1.label == '基础功能' && !param2) {
-      //   console.log(param1.label, param2)
-      //   let parentObj = {}
-      //   this.permissionIdList.forEach(item => {
-      //     item.children.forEach(subItem => {
-      //       subItem.children.forEach(thirdItem => {
-      //         if (thirdItem.id == param1.id) {
-      //           parentObj = subItem
-      //         }
-      //       })
-      //     })
-      //   })
-      //   let flag = false
-      //   let checkedIdList = this.$refs.tree.getCheckedKeys() // 获取当前被选中的节点数组
-      //   parentObj.children.forEach(item => {
-      //     if (checkedIdList.includes(item.id)) {
-      //       flag = true
-      //     }
-      //   })
-      //   if (flag) {
-      //     this.$refs.tree.setChecked(param1.id, true)
-      //     this.common.showErrorToast('有三级按钮选中时，必须选中基础功能')
-      //   }
-      // }
+      if (thirdIdList.includes(param1.id) && param2) {
+        // 获取选中节点的父级节点
+        let parentObj = {}
+        this.permissionIdList.forEach(item => {
+          item.children.forEach(subItem => {
+            subItem.children.forEach(thirdItem => {
+              if (thirdItem.id == param1.id) {
+                parentObj = subItem
+              }
+            })
+          })
+        })
+        // 设置基础功能选中
+        if (Object.keys(parentObj) == 0) return
+        let basicFunctionId = parentObj.children.find(item => {
+          return (item.label = '基础功能')
+        }).id
+        this.$refs.tree.setChecked(basicFunctionId, true)
+      }
+
+      // 如果有其它三级权限的按钮选中，阻止用户手动取消基础功能
+      if (param1.label == '基础功能' && !param2) {
+        console.log(param1.label, param2)
+        let parentObj = {}
+        this.permissionIdList.forEach(item => {
+          item.children.forEach(subItem => {
+            subItem.children.forEach(thirdItem => {
+              if (thirdItem.id == param1.id) {
+                parentObj = subItem
+              }
+            })
+          })
+        })
+        let flag = false
+        let checkedIdList = this.$refs.tree.getCheckedKeys() // 获取当前被选中的节点数组
+        parentObj.children.forEach(item => {
+          if (checkedIdList.includes(item.id)) {
+            flag = true
+          }
+        })
+        if (flag) {
+          this.$refs.tree.setChecked(param1.id, true)
+          this.common.showErrorToast('有三级按钮选中时，必须选中基础功能')
+        }
+      }
     },
     /**
      * 确定按钮点击事件
      * @param { Object } e 提交点击事件对象
      */
-     submit() {
-      // this.form.permissionIds = this.$refs.tree.getCheckedKeys()
-      // let target = e.target
-      // console.log(target);
+    submit(e) {
+      this.form.permissionIds = this.$refs.tree.getCheckedKeys()
+      let target = e.target
       let _self = this
-      _self.$refs.newRoleManagementForm.validate( async valid => {
+      _self.$refs.newRoleManagementForm.validate(valid => {
         if (!valid) {
           return
         }
-        // console.log(1);
-
         let data = {
-          roleName: this.form.roleName,
-          roleDesc: this.form.roleDesc,
-          permissionIds: this.form.permissionIds
+          roleName: _self.form.roleName,
+          roleDesc: _self.form.roleDesc,
+          permissionIds: _self.form.permissionIds
         }
-        let  res= await addRole(data)
-        console.log(res);
-        if(res.status==0){
-           this.$message({
-          message: '添加成功',
-          type: 'success'
-        });
-           _self.$router.go(-1)
-        }else{
-          this.$message({
-          message: '添加失败',
-          type: 'warning'
-        });
-        }
-        // console.log(data)
-        // _self.$http.post(AddRole, data).then(
-        //   res => {
-        //     console.log(res)
-        //     _self.$router.go(-1)
-        //   },
-        //   err => {
-        //     console.log('err', err)
-        //     this.common.showErrorToast(err.message)
-        //   }
-        // )
+        console.log(data)
+        addRole(data).then(
+          res => {
+            console.log(res)
+            _self.$router.go(-1)
+          },
+          err => {
+            console.log('err', err)
+            this.common.showErrorToast(err.message || err.msg)
+          }
+        )
       })
     },
     /**
@@ -309,12 +276,7 @@ export default {
       this.$router.go(-1)
     }
   },
-  // components: {
-  //   comBreadCrumb,
-  //   comTitleDivider,
-  //   comSingleSelect,
-  //   comShowOverFlowTip
-  // }
+
 }
 </script>
 

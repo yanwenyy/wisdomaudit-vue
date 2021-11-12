@@ -9,7 +9,7 @@
         </el-col>
         <el-col :span="6">
           <div class="kuan">发文时间:</div>
-          <el-date-picker v-model="searchForm.issueDate"  value-format="yyyy-MM-dd" format="yyyy-MM-dd" type="date" placeholder="选择日期">
+          <el-date-picker v-model="searchForm.issueDate"  format="yyyy-MM-dd" type="date" placeholder="选择日期">
           </el-date-picker>
         </el-col>
         <el-col :span="6">

@@ -69,3 +69,15 @@ export function historicalaudit_delete (data) {
     data,
   })
 }
+
+
+
+export function historicalaudit_yj (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/auditBasy/pageList`,
+    method: 'post',
+    isLoading: false,
+    data,
+  })
+}

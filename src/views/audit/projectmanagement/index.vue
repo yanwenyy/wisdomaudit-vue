@@ -1030,7 +1030,6 @@
           <el-pagination @size-change="handleSizeChange"
                          @current-change="handleCurrentChange"
                          :current-page="this.issues_list.current"
-                         :page-sizes="[100, 200, 300, 400]"
                          :page-size="this.issues_list.size"
                          layout="total, sizes, prev, pager, next, jumper"
                          :total="this.issues_list.total">
