@@ -1458,17 +1458,28 @@ export default {
         cancelButtonText: "放弃删除",
       })
         .then(() => {
-          deletmodelTask(row.auditTaskUuid).then((resp) => {});
-          this.getModelList.condition.managementProjectUuid =
-            this.managementProjectUuid;
-          // console.log(this.getModelList);
-          this.getauditModelList(this.getModelList);
+          deletmodelTask(row.auditTaskUuid).then((resp) => {
+            // 为了在删除最后一页的最后一条数据时能成功跳转回最后一页的上一页
+            const totalPage = Math.ceil(
+              (this.taskTotal - 1) / this.getModelList.pageSize
+            ); // 总页数
+            this.getModelList.pageNo =
+              this.getModelList.pageNo > totalPage
+                ? totalPage
+                : this.getModelList.pageNo;
+            this.getModelList.pageNo =
+              this.getModelList.pageNo < 1 ? 1 : this.getModelList.pageNo;
+            this.getModelList.condition.managementProjectUuid =
+              this.managementProjectUuid;
+            // console.log(this.getModelList);
+            this.getauditModelList(this.getModelList);
+          });
         })
         .catch((action) => {
-          this.$message({
-            type: "info",
-            message: action === "cancel" ? "放弃删除并离开页面" : "删除成功！",
-          });
+          // this.$message({
+          //   type: "info",
+          //   message: action === "cancel" ? "放弃删除并离开页面" : "删除成功！",
+          // });
         });
     },
     prevoius() {

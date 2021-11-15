@@ -358,8 +358,6 @@ export default {
     },
     //新增组员确认事件
     saveGroupMember() {
-      console.log(this.updataPerson);
-
       if (this.updataPerson.projectId == "") {
         this.updataPerson.projectId = this.active_project;
         this.updataPerson.projectMemberships = [];
@@ -375,8 +373,8 @@ export default {
         }
         this.savedisabled = true;
         editprojectMembershipList(this.updataPerson).then((resp) => {
-          this.$message.success("修改成功！");
           this.addgroupDialog = false;
+          this.$message.success("修改成功！");
           this.query.condition.managementProjectUuid = this.active_project;
           // 组员维护接口
           this.projectMember(this.query);
@@ -384,8 +382,8 @@ export default {
       } else {
         this.savedisabled = true;
         editprojectMembershipList(this.updataPerson).then((resp) => {
+           this.addgroupDialog = false;
           this.$message.success("修改成功！");
-          this.addgroupDialog = false;
           this.query.condition.managementProjectUuid = this.active_project;
           // 组员维护接口
           this.projectMember(this.query);
@@ -403,7 +401,6 @@ export default {
     },
     // 删除当前人员
     deleteRow(row, rows) {
-      console.log(row);
       this.$confirm("你将删除数据库中的组员数据", "提示", {
         distinguishCancelAndClose: true,
         confirmButtonText: "确定",
@@ -413,11 +410,22 @@ export default {
           if (row.isCanDelete == 0) {
             this.$message.info("此用户已被分配任务，不允许删除！");
           } else {
-            deletprojectMembership(row.projectMembershipUuid).then(
-              (resp) => {}
-            );
-            this.projectMember(this.query);
-            this.message.success("删除成功！");
+            deletprojectMembership(row.projectMembershipUuid).then((resp) => {
+              if (resp.code == 0) {
+                this.$message.success("删除成功！");
+                // 为了在删除最后一页的最后一条数据时能成功跳转回最后一页的上一页
+                const totalPage = Math.ceil(
+                  (this.total - 1) / this.query.pageSize
+                ); // 总页数
+                this.query.pageNo =
+                  this.query.pageNo > totalPage
+                    ? totalPage
+                    : this.query.pageNo;
+                this.query.pageNo =
+                  this.query.pageNo < 1 ? 1 : this.query.pageNo;
+                this.projectMember(this.query);
+              }
+            });
           }
         })
         .catch((action) => {
