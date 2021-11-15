@@ -1,6 +1,17 @@
 <template>
   <div class="page-container">
     <!-- <el-button @click="openVault">金库认证测试</el-button> -->
+    <Vault
+      :vaultV="vaultV"
+      :sceneId="sceneId"
+      :approvers="approvers"
+      :maxTime="maxTime"
+      :dqtime="dqtime"
+      :account="account"
+      :appSessionId="appSessionId"
+      @changevault="changevault"
+      @download="download"
+    ></Vault>
     <div class="filter-container">
       <el-card class="box-card" v-loading="floading1">
         <div slot="header" class="clearfix">
@@ -203,24 +214,14 @@
         <el-button type="primary" @click="savefastlist()">确 定</el-button>
       </span>
     </el-dialog>
-    <Vault
-      :vaultV="vaultV"
-      :sceneId="sceneId"
-      :approvers="approvers"
-      :maxTime="maxTime"
-      :dqtime="dqtime"
-      :account="account"
-      :appSessionId="appSessionId"
-      @changevault="changevault"
-      @download="download"
-    ></Vault>
   </div>
 </template>
 
 <script>
 import Vault from "@WISDOMAUDIT/components/Vaultcertification";
-import moment from "moment";
 import axios from "axios";
+
+import moment from "moment";
 import { validUsername } from "@/utils/validate";
 export default {
   components: { Vault },
@@ -244,7 +245,7 @@ export default {
       maxTime: "",
       account: "",
       appSessionId: "",
-      dqtime:''
+      dqtime: "",
     };
   },
   created() {
@@ -256,9 +257,7 @@ export default {
   },
   methods: {
     //通过认证后的方法
-    download(){
-
-    },
+    download() {},
     //控制认证弹窗
     changevault(val) {
       this.vaultV = val;
