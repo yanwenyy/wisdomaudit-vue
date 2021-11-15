@@ -210,6 +210,9 @@ export default {
 
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
+.search >>> .el-input__inner::-webkit-input-placeholder {
+  color: #c0c4cc !important;
+}
 .modelList {
   padding: 20px;
   box-sizing: border-box;

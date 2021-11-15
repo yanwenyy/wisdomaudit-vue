@@ -310,6 +310,9 @@ export default {
 </script>
 
 <style scoped>
+.search >>> .el-input__inner::-webkit-input-placeholder {
+  color: #c0c4cc !important;
+}
 /* 筛选 */
 .search {
   display: flex;
