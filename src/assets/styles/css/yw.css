@@ -81,3 +81,22 @@ table tr:nth-child(odd){
   padding-left: 10px;
   margin-bottom: 10px;
 }
+.el-input__inner::placeholder {
+  color:#C1C1C1!important;
+}
+/* 谷歌 */
+.el-input__inner::-webkit-input-placeholder {
+  color:#C1C1C1!important;
+}
+/* 火狐 */
+.el-input__inner:-moz-placeholder {
+  color:#C1C1C1!important;
+}
+/*ie*/
+.el-input__inner:-ms-input-placeholder {
+  color:#C1C1C1!important;
+}
+::-webkit-input-placeholder {
+  color:#C1C1C1!important;
+}
+

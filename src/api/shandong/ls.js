@@ -264,6 +264,15 @@ export function correctStep_verifyLd(data) {
     data
   })
 }
+//整改措施跟进人审核
+export function correctStep_verifyZgr(data) {
+  return request({
+    baseURL: baseURL,
+    url:'/correctStep/verifyZgr',
+    method: 'post',
+    data
+  })
+}
 //整改台账列表
 export function recAccountCorrect_pageList(data) {
   return request({
