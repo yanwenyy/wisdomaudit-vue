@@ -161,7 +161,7 @@ export default {
     opensort() {
       axios({
         method: "post",
-        url: `/wisdomaudit/remoteFirstAuth`,
+        url: `/wisdomaudit/treasury/remoteFirstAuth`,
         data: {
           account: this.account,
           sceneId: this.sceneId,
@@ -178,7 +178,7 @@ export default {
     secondauth() {
       axios({
         method: "post",
-        url: `/wisdomaudit/remoteSecondAuth`,
+        url: `/wisdomaudit/treasury/remoteSecondAuth`,
         data: {
           account: this.account,
           sceneId: this.sceneId,

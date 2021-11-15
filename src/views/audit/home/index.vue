@@ -266,7 +266,7 @@ export default {
     openVault() {
       axios({
         method: "post",
-        url: `/wisdomaudit/getTreasuryStatus`,
+        url: `/wisdomaudit/treasury/getTreasuryStatus`,
         data: {
           sceneId: this.sceneId,
           sceneName: "导出授权场景", //场景名称
