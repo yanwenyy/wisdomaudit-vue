@@ -1413,7 +1413,6 @@ export default {
     },
     // 下一步按钮事件
     nextBtn() {
-      this.step = 2;
       var selectedPeople = [];
       this.data.forEach((item) => {
         if (this.value.indexOf(item.key) != -1) {
@@ -1423,32 +1422,32 @@ export default {
           selectedPeople.push(item);
         }
       });
-      // console.log(selectedPeople)
-
-      this.updataPerson.projectId = this.managementProjectUuid;
-      // // this.updataPerson.projectMemberships = [];
-      // // for (let i = 0; i < this.peopleSelection.length; i++) {
-      // //   this.updataPerson.projectMemberships.push({
-      // //     peopleRole: 2,
-      // //     isLiaison: 0,
-      // //     managementProjectUuid: this.managementProjectUuid,
-      // //     peopleTableUuid: this.peopleSelection[i].peopleTableUuid,
-      // //     projectMembershipUuid:
-      // //       this.peopleSelection[i].projectMembershipUuid,
-      // //   });
-      // }
-
-      this.updataPerson.projectMemberships = selectedPeople;
-      //下一步 保存组员
-      editprojectMembershipList(this.updataPerson).then((resp) => {
-        this.queryleader.condition.managementProjectUuid =
-          this.managementProjectUuid;
-        this.leaderSelect(this.queryleader);
+      console.log(selectedPeople);
+      let next = 0;
+      selectedPeople.forEach((item) => {
+        if (item.isLiaison == 1) {
+          next = 1;
+        }
       });
+      if (next == 1) {
+        this.step = 2;
+        this.updataPerson.projectId = this.managementProjectUuid;
 
-      this.getModelList.condition.managementProjectUuid =
-        this.managementProjectUuid;
-      this.getauditModelList(this.getModelList);
+        this.updataPerson.projectMemberships = selectedPeople;
+        // console.log(this.updataPerson);
+        //下一步 保存组员
+        editprojectMembershipList(this.updataPerson).then((resp) => {
+          this.queryleader.condition.managementProjectUuid =
+            this.managementProjectUuid;
+          this.leaderSelect(this.queryleader);
+        });
+
+        this.getModelList.condition.managementProjectUuid =
+          this.managementProjectUuid;
+        this.getauditModelList(this.getModelList);
+      } else {
+        this.$message.info("请设置接口人！")
+      }
     },
     //删除任务按钮事件
     deleteModel(row) {

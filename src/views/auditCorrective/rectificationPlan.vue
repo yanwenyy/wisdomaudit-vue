@@ -87,8 +87,9 @@
                        style="color: rgb(68, 163, 223);">
               下发
             </el-button>
-            <!-- v-if="scope.row.auditConf == 3" -->
+            <!--  -->
             <el-button type="text"
+                       v-if="scope.row.auditConf == 3"
                        @click="examine(scope.row.managementProjectUuid)"
                        style="color: rgb(68, 163, 223);">
               审核
@@ -423,6 +424,9 @@ export default {
 
 <style scoped>
 /* 筛选 */
+.search >>> .el-input__inner::-webkit-input-placeholder {
+  color: #c0c4cc !important;
+}
 .search {
   display: flex;
   justify-content: flex-end;

@@ -1,6 +1,17 @@
 <template>
   <div class="page-container">
-    <!-- <el-button @click="openVault">金库测试</el-button> -->
+    <!-- <el-button @click="openVault">金库认证测试</el-button> -->
+    <Vault
+      :vaultV="vaultV"
+      :sceneId="sceneId"
+      :approvers="approvers"
+      :maxTime="maxTime"
+      :dqtime="dqtime"
+      :account="account"
+      :appSessionId="appSessionId"
+      @changevault="changevault"
+      @download="download"
+    ></Vault>
     <div class="filter-container">
       <el-card class="box-card" v-loading="floading1">
         <div slot="header" class="clearfix">
@@ -203,14 +214,14 @@
         <el-button type="primary" @click="savefastlist()">确 定</el-button>
       </span>
     </el-dialog>
-    <Vault :vaultV="vaultV" :sceneId="sceneId"></Vault>
   </div>
 </template>
 
 <script>
 import Vault from "@WISDOMAUDIT/components/Vaultcertification";
-import moment from "moment";
 import axios from "axios";
+
+import moment from "moment";
 import { validUsername } from "@/utils/validate";
 export default {
   components: { Vault },
@@ -227,10 +238,14 @@ export default {
       dqfastlist: [],
       outfastlist: [],
       ifpush: true,
+
       vaultV: false,
       sceneId: 1556, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
-      approvers:[] //审批人列表
-
+      approvers: [], //审批人列表
+      maxTime: "",
+      account: "",
+      appSessionId: "",
+      dqtime: "",
     };
   },
   created() {
@@ -241,45 +256,44 @@ export default {
     this.getmeunlist();
   },
   methods: {
+    //通过认证后的方法
+    download() {},
+    //控制认证弹窗
+    changevault(val) {
+      this.vaultV = val;
+    },
     //打开金库
     openVault() {
-      let rep = {
-        result:1,
-        resultDesc:'',
-        historyAppSessionId:'',
-        relation:[],
-        policyAuthMethod:'remoteAuth',
-        policyAccessMethod:'',
-        maxTime:0,
-        approvers:[{name:'李1'},{name:'李2'}],
-      }
-      this.vaultV = true;
-      return
-      this.$axios({
+      axios({
         method: "post",
-        url: "http://134.80.208.235:9091/ctlPiontServiceImpl/dao?wsdl",
+        url: `/wisdomaudit/treasury/getTreasuryStatus`,
         data: {
-          sceneId:this.sceneId,
-          sceneName:'导出授权场景',//场景名称
-          sensitiveData:'data_export',//敏感数据对应的编号：  data_export 经营指标、模型结果 report_download 附件上传后下载;
-          sensitiveOperate:'export',//敏感操作对应的编号：export： 导出   select：查询
+          sceneId: this.sceneId,
+          sceneName: "导出授权场景", //场景名称
+          sensitiveData: "data_export", //敏感数据对应的编号：  data_export 经营指标、模型结果 report_download 附件上传后下载;
+          sensitiveOperate: "export", //敏感操作对应的编号：export： 导出   select：查询
         },
       }).then((resp) => {
-        console.log(resp.data.data)
         //result 是否开启 开启：1  无需开启：0
         //resultDesc 无需开启原因（成功错误信息）
         //historyAppSessionId 历史有效应用sessionid（仅当已授权状态时必填属性）
         //relation 多值授权方式与访问方式关系
         //policyAuthMethod 授权方式： remoteAuth远程授权
-        //policyAccessMethod 
+        //policyAccessMethod
         //maxTime 授权条件（必填属性）单位为小时： 当为0时，为单次授权；否则为时间段授权即允许以当前时间为开始时间，开始时间+maxTime时间为最大结束时间，允许用户在此范围选择；
         //approvers 审批人列表
-        if(resp.data.data.result==0){
-
-        }else{
-
+        let rep = resp.data.data.treasuryStatusRsp;
+        if (rep.result == 0) {
+          return;
+        } else {
+          console.log(rep);
+          this.approvers = rep.approvers;
+          this.maxTime = rep.maxTime;
+          this.dqtime = new Date();
+          this.account = resp.data.data.account;
+          this.appSessionId = resp.data.data.appSessionId;
+          this.vaultV = true;
         }
-        this.vaultV = true;
       });
     },
 
