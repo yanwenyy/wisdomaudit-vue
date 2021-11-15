@@ -91,7 +91,7 @@
               <div @click="downFile(scope.row.endConfirmationFileId,scope.row.endConfirmationFile)"
                    class="pointer"
                    slot="content">{{scope.row.endConfirmationFile}}</div>
-              <span class="editBtn"><i class="el-icon-folder-opened list-folder smb-folder"></i>1</span>
+              <span class="smb-btn"><i class="el-icon-folder-opened list-folder smb-folder"></i>1</span>
             </el-tooltip>
           </el-button>
         </template>
@@ -574,8 +574,13 @@ export default {
   margin-right: 5px;
 }
 .smb-folder{
-  transform: scale(1.2);
+  transform: scale(1.1);
   display: inline-block;
+}
+.smb-btn{
+  font-size: 14px!important;
+  color:#666;
+  font-weight: normal!important;
 }
 >>> .list-folder-btn {
   font-weight: normal;
