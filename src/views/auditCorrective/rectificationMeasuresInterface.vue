@@ -87,7 +87,7 @@
         label="状态"
         prop="correctStatus"
         align="center"
-        width="100px"
+        width="150px"
       >
         <template slot-scope="scope">
           <span>{{scope.row.correctStatus=='1'?'待提交':scope.row.correctStatus=='2'?'待审核':scope.row.correctStatus=='3'?'领导审核通过':scope.row.correctStatus=='4'?'整改跟进人审核通过':scope.row.correctStatus=='5'?'驳回待提交':''}}</span>
@@ -97,6 +97,7 @@
         label="整改结果"
         prop="name"
         align="center"
+        width="150px"
         >
       <template slot-scope="scope">
         <span>{{scope.row.correctState=='0'?'未整改':scope.row.correctStatus=='1'?'整改中':scope.row.correctStatus=='2'?'已完成整改':''}}</span>

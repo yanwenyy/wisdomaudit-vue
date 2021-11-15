@@ -349,12 +349,13 @@ export default {
     //附件上传成功
     handleChangePic(response, file, fileList) {
       if (response && response.code === 0) {
+        this.apkFiles.push(response.data);
         this.$message({
           message: '上传成功',
           type: 'success',
           duration: 1500,
           onClose: () => {
-            this.apkFiles.push(response.data);
+            // this.apkFiles.push(response.data);
             // console.log(this.apkFiles,3333)
           }
         })

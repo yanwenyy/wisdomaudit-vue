@@ -270,7 +270,7 @@
         <el-button
           style="background: #0c87d6; color: #fff"
           @click="editTaskSelfBtn"
-          :disabled = "isdisabled"
+          :disabled="isdisabled"
           >完成</el-button
         >
       </div>
@@ -820,15 +820,19 @@ export default {
       })
         .then(() => {
           deletmodelTask(row.auditTaskUuid).then((resp) => {
+            // 为了在删除最后一页的最后一条数据时能成功跳转回最后一页的上一页
+            const totalPage = Math.ceil((this.modelTotal - 1) / this.queryInfo.pageSize); // 总页数
+            this.queryInfo.pageNo =
+            this.queryInfo.pageNo > totalPage ? totalPage : this.queryInfo.pageNo;
+            this.queryInfo.pageNo = this.queryInfo.pageNo < 1 ? 1 : this.queryInfo.pageNo;
             this.getmodelTaskList(this.queryInfo);
           });
-          this.loading = false;
         })
         .catch((action) => {
-          this.$message({
-            type: "info",
-            message: action === "cancel" ? "放弃删除并离开页面" : "删除成功！",
-          });
+          // this.$message({
+          //   type: "info",
+          //   message: action === "cancel" ? "放弃删除并离开页面" : "删除成功！",
+          // });
         });
     },
 

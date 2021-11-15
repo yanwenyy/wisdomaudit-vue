@@ -393,7 +393,7 @@ export default {
   align-items: center;
   border-radius: 0 5px 5px 0;
 }
-/* .el-upload >>> .el-upload-list__item-name{
-  display: none !important;
-} */
+.search >>> .el-input__inner::-webkit-input-placeholder {
+  color: #c0c4cc !important;
+}
 </style>

@@ -5,7 +5,7 @@
       <div>
         <el-col :span="6">
           <div class="kuan">资料名称:</div>
-          <el-input v-model="searchForm.basyName" placeholder="请输入关键字"></el-input>
+          <el-input v-model="searchForm.basyName" placeholder="请输入资料名称"></el-input>
         </el-col>
         <el-col :span="6">
           <div class="kuan">发文时间:</div>
@@ -14,7 +14,7 @@
         </el-col>
         <el-col :span="6">
           <div class="kuan">发文部门:</div>
-          <el-input v-model="searchForm.publishDepartment" placeholder="请输入关键字"></el-input>
+          <el-input v-model="searchForm.publishDepartment" placeholder="请输入发文部门"></el-input>
         </el-col>
         <el-col :span="3">
           <el-button type="primary" @click="getData">查询</el-button>

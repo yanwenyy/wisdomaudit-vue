@@ -228,13 +228,15 @@
         //附件上传
         uploadPorgress(response,file, fileList,tableList){
           if (response && response.code === 0) {
+            response.data.isDeleted=2;
+            tableList.push(response.data);
             this.$message({
               message: '上传成功',
               type: 'success',
               duration: 1500,
               onClose: () => {
-                response.data.isDeleted=2;
-                tableList.push(response.data);
+                // response.data.isDeleted=2;
+                // tableList.push(response.data);
               }
             })
           } else {
