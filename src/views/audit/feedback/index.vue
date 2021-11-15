@@ -821,14 +821,18 @@ export default {
 /* header */
 .header {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-evenly;
-  padding: 20px;
+  padding: 20px 20px 0;
   box-sizing: border-box;
 }
 .header >>> .titleMes {
   font-size: 16px;
   display: flex;
-  /* border: 1px sienna solid; */
+  width: 50%;
+  padding: 0 10px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
 }
 /* header end*/
 .title {

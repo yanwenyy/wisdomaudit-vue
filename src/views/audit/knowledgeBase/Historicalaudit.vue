@@ -45,7 +45,7 @@
                          label="历史审计发现描述">
         </el-table-column>
         <!-- 被审计单位 -->
-        <el-table-column prop="auditedEntity"
+        <el-table-column prop="auditedEntityName"
                          align="center"
                          label="被审计单位">
         </el-table-column>
@@ -295,6 +295,8 @@ export default {
       add: {
         historyAuditFindDescribe: '',//发现描述
         auditedEntity: '',//被审计单位
+        auditedEntityName: '',//单位name
+
         field: '',//领域
         special: '',//专题
         findPeople: '',//发现人
@@ -455,9 +457,10 @@ export default {
             let params = {
               historyAuditFindDescribe: this.add.historyAuditFindDescribe,//发现描述
               auditedEntity: this.add.auditedEntity,//被审计单位
+              auditedEntityName: this.add.auditedEntityName,//被审计单位 name
               field: this.add.field,//领域
-              auditBasis: this.add.auditBasisName,//依据
-              auditBasisName: this.add.auditBasis,
+              auditBasis: this.add.auditBasis,//依据
+              auditBasisName: this.add.auditBasisName,//依据name
               special: this.add.special,//专题
               findPeople: this.add.findPeople,//发现人
 
@@ -505,11 +508,14 @@ export default {
             let params = {
               historyAuditFindDescribe: this.add.historyAuditFindDescribe,//发现描述
               auditedEntity: this.add.auditedEntity,//被审计单位
+              auditedEntityName: this.add.auditedEntityName,//被审计单位 name
+
               field: this.add.field,//领域
               special: this.add.special,//专题
               findPeople: this.add.findPeople,//发现人
-              auditBasis: this.add.auditBasisName,//依据
-              auditBasisName: this.add.auditBasis,
+              auditBasis: this.add.auditBasis,//依据
+              auditBasisName: this.add.auditBasisName,//依据name
+
               findData: this.add.findData,//发现日期
               year: this.add.year,//所属年份
               source: this.add.source,//来源
@@ -695,7 +701,15 @@ export default {
 
     // 单位
     changeHeader_danwei (val) {
-      this.add.auditedEntity = val
+      // this.add.auditedEntity = val;
+
+      let obj = {};
+      obj = this.audit_Company.find((item) => {
+        return item.auditOrgUuid === val;
+      });
+      this.add.auditedEntity = val//依据   key
+      this.add.auditedEntityName = obj.orgName //依据 name
+
     },
 
     // 领域change
@@ -715,8 +729,8 @@ export default {
       obj = this.problems_slect_yj.find((item) => {
         return item.basyUuid === val;
       });
-      this.add.auditBasis = obj.basyName//依据   key
-      this.add.auditBasisName = val//依据 name
+      this.add.auditBasis = val//依据   key
+      this.add.auditBasisName = obj.basyName //依据 name
 
     },
     // 年份change
@@ -731,6 +745,9 @@ export default {
 
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
+.header >>> .el-input__inner::-webkit-input-placeholder {
+  color: #c0c4cc !important;
+}
 .app-main {
   background-color: #fff;
 }

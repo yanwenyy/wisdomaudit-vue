@@ -185,6 +185,9 @@ export default {
   box-sizing: border-box;
   position: relative;
 }
+.search >>> .el-input__inner::-webkit-input-placeholder {
+  color: #c0c4cc !important;
+}
 .search >>> .el-input__inner {
   width: 250px !important;
   display: flex;
