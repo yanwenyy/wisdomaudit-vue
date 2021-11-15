@@ -1479,8 +1479,8 @@ export default {
               this.success_btn = 0;//显示加载按钮  0成功  1 loaging
               // console.log(resp.data.data);
               this.Upload_file = resp.data.data;//上传成功大的文件
-              var upList = this.edit_file_list.concat(this.Upload_file);
-
+              // var upList = this.edit_file_list.concat(this.Upload_file);
+              var upList = [...this.edit_file_list, ...this.Upload_file];
               if (this.Upload_file) {
                 for (let p = 0; p < this.Upload_file.length; p++) {
                   this.Upload_file[p].isDeleted = 2
@@ -1494,8 +1494,8 @@ export default {
               this.fileList_Delet.forEach((item) => {
                 item.status = null;
               })
-              var upList = this.edit_file_list.concat(this.Upload_file).concat(this.fileList_Delet);
-
+              // var upList = this.edit_file_list.concat(this.Upload_file).concat(this.fileList_Delet);
+              var upList = [...this.edit_file_list, ...this.Upload_file, ...this.fileList_Delet];
               // 编辑
               let params2 = {
                 taskType: 2,//任务类型

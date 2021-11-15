@@ -140,29 +140,16 @@ export default {
   computed: {},
   watch: {},
   created () {
-    let params = {
-      condition: {
-        modelName: this.model_liat_query.modelName
-      },
-      pageNo: this.model_liat_query.pageNo,
-      pageSize: this.model_liat_query.pageSize
-    };
-    this.model_list_data(params);
+
+    this.model_list_data();
   },
   mounted () {
 
   },
   methods: {
     // 列表
-    model_list_data (params) {
+    model_list_data () {
       this.loading = true;
-      model_list(params).then(resp => {
-        this.tableData = resp.data;
-        this.loading = false;
-      })
-    },
-    // 筛选
-    search_list () {
       let params = {
         condition: {
           modelName: this.model_liat_query.modelName
@@ -170,18 +157,19 @@ export default {
         pageNo: this.model_liat_query.pageNo,
         pageSize: this.model_liat_query.pageSize
       };
-      this.model_list_data(params);
+      model_list(params).then(resp => {
+        this.tableData = resp.data;
+        this.loading = false;
+      })
+    },
+    // 筛选
+    search_list () {
+      this.model_list_data();
     },
     // 分页
     handleCurrentChange (val) {
-      let params = {
-        condition: {
-          modelName: this.model_liat_query.modelName
-        },
-        pageNo: val,
-        pageSize: this.model_liat_query.pageSize
-      };
-      this.model_list_data(params);
+      this.model_liat_query.pageNo = val
+      this.model_list_data();
     },
     // 控制每页条数
     handleSizeChange (val) {
