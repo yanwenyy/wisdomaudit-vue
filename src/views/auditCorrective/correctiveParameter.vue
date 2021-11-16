@@ -43,7 +43,7 @@
       />
       <el-table-column
         label="项目类型"
-        prop="projectType"
+        prop="projectTypeName"
         align="center"
       />
       <el-table-column
