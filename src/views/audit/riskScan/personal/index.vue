@@ -20,6 +20,7 @@
       value-format='yyyyMM'
       placeholder="选择月"
       @change="changesj"
+    
       >
     </el-date-picker>
         </el-col>
@@ -89,10 +90,12 @@ export default {
   },
   created() {
     this.gettapylist()
-
-
+  
   },
   mounted() {
+
+  
+    
 
   },
   methods: {
@@ -102,9 +105,10 @@ export default {
     console.log(this.formdates);
     console.log(this.value);
     },
-    changesj(){
-  this.formdates=this.radio2.excuteUrl+'&tab='+this.radio2.tab+'&month='+this.value2;
-  console.log(this.formdates);
+  changesj(val){
+  
+  this.formdates=this.radio2.excuteUrl+'&tab='+this.radio2.tab+'&month='+val;
+
 
 
 
@@ -112,21 +116,49 @@ export default {
     },
 // 获取二级分类
       async gettapylist(){
-
-        let res = await getTypes('area=1');
+        try {
+           let res = await getTypes('area=1');
         this.options= res.data
         this.value= res.data[0].type
         this.gettablelist(this.value)
+          
+        } catch (error) {
+          log(error)
+          
+        }
+
+       
+
 
     },
+
+gettime(){
+  let date = new Date
+  let year = date.getFullYear()
+  let month = date.getMonth()-1
+  let value= year+ ''+month
+  this.value2=year+ '0'+ month
+  this.changesj(value)
+  
+
+},
 // 获取模型列表
     async gettablelist(){
 
-        let res = await getTabList(`type=${this.value}`);
+       try {
+          let res = await getTabList(`type=${this.value}`);
         this.tablelist=res.data
         this.radio2= res.data[0]
-        var date=new Date();
-        this.value2= date .getMonth()-1
+         if (res.code == 0) {
+         this.gettime()
+          
+        }
+ 
+         
+       } catch (error) {
+         console.log(error);
+         
+       }
 
 
 
