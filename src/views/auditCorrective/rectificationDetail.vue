@@ -72,7 +72,7 @@
             placeholder="请输入"
           ></el-input>
           <el-upload
-            v-if="type!='zgtz_look'"
+            v-if="type!='zgtz_look'&&type!='zgcs_examine'"
             class="upload-demo inline-block"
             action="/wisdomaudit/auditBasy/filesUpload"
             :on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList1)}"
@@ -95,7 +95,7 @@
             placeholder="请输入"
           ></el-input>
           <el-upload
-            v-if="type!='zgtz_look'"
+            v-if="type!='zgtz_look'&&type!='zgcs_examine'"
             class="upload-demo inline-block"
             action="/wisdomaudit/auditBasy/filesUpload"
             :on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList2)}"
@@ -118,7 +118,7 @@
             placeholder="请输入"
           ></el-input>
           <el-upload
-            v-if="type!='zgtz_look'"
+            v-if="type!='zgtz_look'&&type!='zgcs_examine'"
             class="upload-demo inline-block"
             action="/wisdomaudit/auditBasy/filesUpload"
             :on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList3)}"
@@ -149,7 +149,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item class="itemTwo" label="整改状态:">
-          <el-select :disabled="ifLook" v-model="formState.correctStatus" placeholder="请选择">
+          <el-select :disabled="ifLook" v-model="formState.correctState" placeholder="请选择">
             <el-option label="未整改" value="0"></el-option>
             <el-option label="整改中" value="1"></el-option>
             <el-option label="已完成整改" value="2"></el-option>
