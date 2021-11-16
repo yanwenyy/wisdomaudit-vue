@@ -9,6 +9,7 @@
               <el-button
                 style="background: #1897e4; color: #fff"
                 @click="addModel()"
+                v-if="userRole != 3"
                 >新增模型任务</el-button
               >
             </el-col>
@@ -16,6 +17,7 @@
               <el-button
                 style="background: #1897e4; color: #fff"
                 @click="addTask()"
+                v-if="userRole != 3"
                 >新增自建任务</el-button
               >
             </el-col>
@@ -145,7 +147,7 @@
                 </el-popover>
               </template>
             </el-table-column>
-            <el-table-column label="操作">
+            <el-table-column label="操作" v-if="userRole != 3">
               <template slot-scope="scope">
                 <el-button
                   type="text"
@@ -516,9 +518,10 @@ import {
 } from "@WISDOMAUDIT/api/shandong/projectmanagement.js";
 export default {
   components: { Pagination },
-  props: ["active_project"],
+  props: ["active_project","userRole"],
   data() {
     return {
+      // userRole:"",
       isdisabled: false,
       task: 1,
       loading: false,
@@ -722,6 +725,11 @@ export default {
   //     console.log(this.managementProjectUuid);
   //   }
   // },
+   watch: {
+    userRole(newValue, oldValue) {
+      this.userRole = newValue;
+    },
+  },
   methods: {
     // 专题下拉框
     thematicSelect(data) {

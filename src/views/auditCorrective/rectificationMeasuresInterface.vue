@@ -80,7 +80,7 @@
         prop="name"
       >
         <template slot-scope="scope">
-          <span>{{scope.row.correctDept+scope.row.correctPerson||''}}</span>
+          <span>{{scope.row.correctDeptName+scope.row.correctPersonName||''}}</span>
         </template>
       </el-table-column>
       <el-table-column
