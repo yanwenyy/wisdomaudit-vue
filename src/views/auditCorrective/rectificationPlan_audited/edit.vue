@@ -96,10 +96,50 @@
     <el-dialog title=""
                center
                :visible.sync="dialogVisible_edit"
-               width="60%">
-      <div class="title">启动整改</div>
+               width="40%">
+      <div class="title">编辑问题</div>
+
       <div class="dialog">
-        <el-table :data="tableData.records"
+        <el-form ref="save"
+                 :model="save">
+          <el-form-item label="主要负责部门："
+                        prop="dutyDeptName">
+            <el-input placeholder="请输入主要负责部门"
+                      v-model="save.dutyDeptName">
+            </el-input>
+          </el-form-item>
+
+          <el-form-item prop="dutyPersonName"
+                        label="整改责任人：">
+            <el-input placeholder="请输入整改责任人"
+                      v-model="save.dutyPersonName"></el-input>
+          </el-form-item>
+
+          <el-form-item prop="planContent"
+                        label="整改计划：">
+            <el-input type="textarea"
+                      class="resizeNone"
+                      placeholder="请输入整改计划："
+                      v-model="save.planContent"></el-input>
+          </el-form-item>
+
+          <el-form-item prop="limitEndTime"
+                        label="预计整改完成时限：">
+            <el-date-picker type="date"
+                            v-model="save.limitEndTime"
+                            placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item prop="remark"
+                        label="备注：">
+            <el-input type="textarea"
+                      placeholder="请输入备注"
+                      v-model="save.remark"
+                      class="resizeNone"></el-input>
+          </el-form-item>
+        </el-form>
+
+        <!-- <el-table :data="tableData2"
                   :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                   v-loading="loading"
                   style="width: 100%">
@@ -158,7 +198,7 @@
                         class="resizeNone"></el-input>
             </template>
           </el-table-column>
-        </el-table>
+        </el-table> -->
       </div>
       <div slot="footer">
         <el-button @click="dialogVisible_edit = false">取 消</el-button>
@@ -184,6 +224,7 @@ export default {
         problem: '',
       },
       tableData: [],
+      tableData2: [],
       dialogVisible_edit: false,//编辑
       save: {
         dutyDeptName: '',//主要负责部门
@@ -194,7 +235,6 @@ export default {
       },
       isDisable: false,//防止重复提交
 
-      edit_list_data: '',//进编辑的数据
     }
   },
   computed: {},
@@ -218,7 +258,6 @@ export default {
           problem: this.list_query.problem,
         }
       };
-      console.log(params);
       pageList(params).then(resp => {
         this.tableData = resp.data;
         this.loading = false;
@@ -232,17 +271,22 @@ export default {
     handleCurrentChange (val) {
       this.list_query.pageNo = val;
       this.page_list_data();//刷新列表
-
     },
     // 筛选
     search_list_details () {
       this.page_list_data();//刷新列表
     },
-
     // 编辑
     edit (data) {
-      this.edit_list_data = data;//选择的数据
       this.dialogVisible_edit = true;
+      this.tableData2 = data
+      this.save.dutyDeptName = data.dutyDeptName;//主要负责部门
+      this.save.dutyPersonName = data.dutyPersonName;//整改责任人
+      this.save.planContent = data.planContent;//整改计划
+      this.save.limitTime = data.limitTime;//预计整改完成时限
+      this.save.remark = data.remark;//备注
+      console.log(data);
+
     },
     // 提交
     post () {
@@ -278,7 +322,7 @@ export default {
         planContent: this.save.planContent,//整改计划
         limitEndTime: this.save.limitEndTime,//选择日期
         remark: this.save.remark,//备注
-        problemCorrectUuid: this.edit_list_data.problemCorrectUuid,//  problemCorrectUuid
+        problemCorrectUuid: this.tableData2.problemCorrectUuid,//  problemCorrectUuid
       };
       this.post_save(params);
     },
@@ -301,11 +345,7 @@ export default {
         }
       })
     }
-
-
-
   },
-
 }
 </script>
 
@@ -393,5 +433,27 @@ export default {
 .dialog >>> .el-date-editor.el-input,
 .el-date-editor.el-input__inner {
   width: 100% !important;
+}
+
+.dialog >>> .el-form-item {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px !important;
+}
+
+.dialog >>> .el-form-item--medium .el-form-item__label {
+  line-height: 36px;
+  float: left !important;
+  min-width: 120px;
+}
+
+.dialog >>> .el-input--medium .el-input__inner,
+.dialog >>> .el-textarea__inner {
+  height: 36px;
+  line-height: 36px;
+  width: 220px !important;
+}
+.dialog >>> .el-input__inner::-webkit-input-placeholder {
+  color: #c0c4cc !important;
 }
 </style>

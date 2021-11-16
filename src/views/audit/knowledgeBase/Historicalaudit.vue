@@ -4,7 +4,7 @@
       <div class="search_ms">
         <p>历史审计发现描述</p>
         <el-input v-model="query.historyAuditFindDescribe "
-                  placeholder="请输入文件名称"></el-input>
+                  placeholder="请输入描述名称"></el-input>
       </div>
 
       <!--自建任务 模型任务 筛选 -->
