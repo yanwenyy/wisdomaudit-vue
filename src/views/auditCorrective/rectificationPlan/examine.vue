@@ -170,7 +170,9 @@ export default {
               type: 'success'
             });
             // this.details_data()//刷新列表
-            this.$router.push({ path: 'rectificationPlan_audited/' })
+            // this.$router.push({ path: 'rectificationPlan_audited/' })
+            this.$router.push({ path: '/auditCorrective/rectificationPlan' })
+
 
           } else {
             this.$message({
@@ -178,7 +180,7 @@ export default {
               type: 'success'
             });
             // this.details_data()//刷新列表
-            this.$router.push({ path: 'rectificationPlan_audited/' })
+            this.$router.push({ path: '/auditCorrective/rectificationPlan' })
           }
 
         } else {

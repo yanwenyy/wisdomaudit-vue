@@ -62,6 +62,7 @@
           <template slot-scope="scope">
 
             <el-button type="text"
+                       v-if="!type"
                        @click="edit(scope.row)"
                        style="color: rgb(68, 163, 223);">
               编辑
@@ -75,6 +76,7 @@
       <!-- 分页 -->
       <div class="page">
         <el-button type="primary"
+                   v-if="!type"
                    :disabled="isDisable"
                    @click="post()"
                    class="post">
@@ -138,67 +140,6 @@
                       class="resizeNone"></el-input>
           </el-form-item>
         </el-form>
-
-        <!-- <el-table :data="tableData2"
-                  :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
-                  v-loading="loading"
-                  style="width: 100%">
-          <el-table-column type="index"
-                           label="序号"
-                           width="50">
-          </el-table-column>
-          <el-table-column align="center"
-                           prop="problem"
-                           show-overflow-tooltip
-                           label="问题">
-          </el-table-column>
-          <el-table-column align="center"
-                           prop="dutyDeptName"
-                           label="主要负责部门">
-            <template slot-scope="scope">
-              <el-input placeholder=""
-                        v-model="save.dutyDeptName"></el-input>
-            </template>
-
-          </el-table-column>
-          <el-table-column align="center"
-                           prop="dutyPersonName"
-                           label="整改责任人">
-            <template slot-scope="scope">
-              <el-input placeholder=""
-                        v-model="save.dutyPersonName"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column align="center"
-                           prop="planContent"
-                           label="整改计划">
-            <template slot-scope="scope">
-              <el-input type="textarea"
-                        class="resizeNone"
-                        v-model="save.planContent"></el-input>
-            </template>
-
-          </el-table-column>
-          <el-table-column align="center"
-                           prop="limitTime"
-                           label="预计整改完成时限">
-            <template slot-scope="scope">
-              <el-date-picker type="date"
-                              v-model="save.limitTime"
-                              placeholder="选择日期">
-              </el-date-picker>
-            </template>
-          </el-table-column>
-          <el-table-column align="center"
-                           prop="remark"
-                           label="备注">
-            <template slot-scope="scope">
-              <el-input type="textarea"
-                        v-model="save.remark"
-                        class="resizeNone"></el-input>
-            </template>
-          </el-table-column>
-        </el-table> -->
       </div>
       <div slot="footer">
         <el-button @click="dialogVisible_edit = false">取 消</el-button>
@@ -217,6 +158,7 @@ export default {
   data () {
     return {
       loading: false,
+      type: '',//查看
       list_query: {
         pageNo: 1,
         pageSize: 10,
@@ -241,10 +183,18 @@ export default {
   watch: {},
   created () {
     this.list_query.id = this.$route.params && this.$route.params.id
+    this.type = this.$route.query.type
     this.page_list_data()
   },
   mounted () {
 
+  },
+  filters: {
+    filtedate: function (date) {
+      let t = new Date(date);
+      // return fmtDate(t, 'yyyy-MM-dd hh:mm:ss');
+      return fmtDate(t, 'yyyy-MM-dd ');
+    }
   },
   methods: {
     // 列表
@@ -304,7 +254,8 @@ export default {
             message: '提交成功',
             type: 'success'
           });
-          this.page_list_data()//刷新列表
+          // this.page_list_data()//刷新列表
+          this.$router.push({ path: '/auditCorrective/rectificationPlan_audited' })
         } else {
           this.$message({
             message: resp.msg,
