@@ -1,5 +1,5 @@
 <template>
-  <div class="personMain" v-if="userRole == 1">
+  <div class="personMain" v-if="userRole == 1 || userRole == 3">
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="组员维护" name="first" style="padding: 1%">
         <el-row :gutter="24">
@@ -7,6 +7,7 @@
             <el-button
               style="background: #1897e4; color: #fff"
               @click="addgroupMember()"
+              v-if="userRole != 3"
               >组员维护</el-button
             >
           </el-col>
@@ -103,7 +104,7 @@
                 </el-switch>
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="150">
+            <el-table-column label="操作" width="150" v-if="userRole != 3">
               <template slot-scope="scope">
                 <el-button
                   type="text"
@@ -129,7 +130,7 @@
         <!-- 分页 end -->
       </el-tab-pane>
       <el-tab-pane label="审计任务维护" name="second">
-        <TaskMaintenance :active_project="active_project" :key="timer" />
+        <TaskMaintenance :active_project="active_project" :key="timer" :userRole="userRole"/>
       </el-tab-pane>
     </el-tabs>
 
