@@ -62,6 +62,7 @@
           <template slot-scope="scope">
 
             <el-button type="text"
+                       v-if="!type"
                        @click="edit(scope.row)"
                        style="color: rgb(68, 163, 223);">
               编辑
@@ -75,6 +76,7 @@
       <!-- 分页 -->
       <div class="page">
         <el-button type="primary"
+                   v-if="!type"
                    :disabled="isDisable"
                    @click="post()"
                    class="post">
@@ -96,69 +98,48 @@
     <el-dialog title=""
                center
                :visible.sync="dialogVisible_edit"
-               width="60%">
-      <div class="title">启动整改</div>
+               width="40%">
+      <div class="title">编辑问题</div>
+
       <div class="dialog">
-        <el-table :data="tableData.records"
-                  :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
-                  v-loading="loading"
-                  style="width: 100%">
-          <el-table-column type="index"
-                           label="序号"
-                           width="50">
-          </el-table-column>
-          <el-table-column align="center"
-                           prop="problem"
-                           show-overflow-tooltip
-                           label="问题">
-          </el-table-column>
-          <el-table-column align="center"
-                           prop="dutyDeptName"
-                           label="主要负责部门">
-            <template slot-scope="scope">
-              <el-input placeholder=""
-                        v-model="save.dutyDeptName"></el-input>
-            </template>
+        <el-form ref="save"
+                 :model="save">
+          <el-form-item label="主要负责部门："
+                        prop="dutyDeptName">
+            <el-input placeholder="请输入主要负责部门"
+                      v-model="save.dutyDeptName">
+            </el-input>
+          </el-form-item>
 
-          </el-table-column>
-          <el-table-column align="center"
-                           prop="dutyPersonName"
-                           label="整改责任人">
-            <template slot-scope="scope">
-              <el-input placeholder=""
-                        v-model="save.dutyPersonName"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column align="center"
-                           prop="planContent"
-                           label="整改计划">
-            <template slot-scope="scope">
-              <el-input type="textarea"
-                        class="resizeNone"
-                        v-model="save.planContent"></el-input>
-            </template>
+          <el-form-item prop="dutyPersonName"
+                        label="整改责任人：">
+            <el-input placeholder="请输入整改责任人"
+                      v-model="save.dutyPersonName"></el-input>
+          </el-form-item>
 
-          </el-table-column>
-          <el-table-column align="center"
-                           prop="limitTime"
-                           label="预计整改完成时限">
-            <template slot-scope="scope">
-              <el-date-picker type="date"
-                              v-model="save.limitTime"
-                              placeholder="选择日期">
-              </el-date-picker>
-            </template>
-          </el-table-column>
-          <el-table-column align="center"
-                           prop="remark"
-                           label="备注">
-            <template slot-scope="scope">
-              <el-input type="textarea"
-                        v-model="save.remark"
-                        class="resizeNone"></el-input>
-            </template>
-          </el-table-column>
-        </el-table>
+          <el-form-item prop="planContent"
+                        label="整改计划：">
+            <el-input type="textarea"
+                      class="resizeNone"
+                      placeholder="请输入整改计划："
+                      v-model="save.planContent"></el-input>
+          </el-form-item>
+
+          <el-form-item prop="limitEndTime"
+                        label="预计整改完成时限：">
+            <el-date-picker type="date"
+                            v-model="save.limitEndTime"
+                            placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item prop="remark"
+                        label="备注：">
+            <el-input type="textarea"
+                      placeholder="请输入备注"
+                      v-model="save.remark"
+                      class="resizeNone"></el-input>
+          </el-form-item>
+        </el-form>
       </div>
       <div slot="footer">
         <el-button @click="dialogVisible_edit = false">取 消</el-button>
@@ -177,6 +158,7 @@ export default {
   data () {
     return {
       loading: false,
+      type: '',//查看
       list_query: {
         pageNo: 1,
         pageSize: 10,
@@ -184,6 +166,7 @@ export default {
         problem: '',
       },
       tableData: [],
+      tableData2: [],
       dialogVisible_edit: false,//编辑
       save: {
         dutyDeptName: '',//主要负责部门
@@ -194,17 +177,24 @@ export default {
       },
       isDisable: false,//防止重复提交
 
-      edit_list_data: '',//进编辑的数据
     }
   },
   computed: {},
   watch: {},
   created () {
     this.list_query.id = this.$route.params && this.$route.params.id
+    this.type = this.$route.query.type
     this.page_list_data()
   },
   mounted () {
 
+  },
+  filters: {
+    filtedate: function (date) {
+      let t = new Date(date);
+      // return fmtDate(t, 'yyyy-MM-dd hh:mm:ss');
+      return fmtDate(t, 'yyyy-MM-dd ');
+    }
   },
   methods: {
     // 列表
@@ -218,7 +208,6 @@ export default {
           problem: this.list_query.problem,
         }
       };
-      console.log(params);
       pageList(params).then(resp => {
         this.tableData = resp.data;
         this.loading = false;
@@ -232,17 +221,22 @@ export default {
     handleCurrentChange (val) {
       this.list_query.pageNo = val;
       this.page_list_data();//刷新列表
-
     },
     // 筛选
     search_list_details () {
       this.page_list_data();//刷新列表
     },
-
     // 编辑
     edit (data) {
-      this.edit_list_data = data;//选择的数据
       this.dialogVisible_edit = true;
+      this.tableData2 = data
+      this.save.dutyDeptName = data.dutyDeptName;//主要负责部门
+      this.save.dutyPersonName = data.dutyPersonName;//整改责任人
+      this.save.planContent = data.planContent;//整改计划
+      this.save.limitTime = data.limitTime;//预计整改完成时限
+      this.save.remark = data.remark;//备注
+      console.log(data);
+
     },
     // 提交
     post () {
@@ -260,7 +254,8 @@ export default {
             message: '提交成功',
             type: 'success'
           });
-          this.page_list_data()//刷新列表
+          // this.page_list_data()//刷新列表
+          this.$router.push({ path: '/auditCorrective/rectificationPlan_audited' })
         } else {
           this.$message({
             message: resp.msg,
@@ -278,7 +273,7 @@ export default {
         planContent: this.save.planContent,//整改计划
         limitEndTime: this.save.limitEndTime,//选择日期
         remark: this.save.remark,//备注
-        problemCorrectUuid: this.edit_list_data.problemCorrectUuid,//  problemCorrectUuid
+        problemCorrectUuid: this.tableData2.problemCorrectUuid,//  problemCorrectUuid
       };
       this.post_save(params);
     },
@@ -301,11 +296,7 @@ export default {
         }
       })
     }
-
-
-
   },
-
 }
 </script>
 
@@ -393,5 +384,27 @@ export default {
 .dialog >>> .el-date-editor.el-input,
 .el-date-editor.el-input__inner {
   width: 100% !important;
+}
+
+.dialog >>> .el-form-item {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px !important;
+}
+
+.dialog >>> .el-form-item--medium .el-form-item__label {
+  line-height: 36px;
+  float: left !important;
+  min-width: 120px;
+}
+
+.dialog >>> .el-input--medium .el-input__inner,
+.dialog >>> .el-textarea__inner {
+  height: 36px;
+  line-height: 36px;
+  width: 220px !important;
+}
+.dialog >>> .el-input__inner::-webkit-input-placeholder {
+  color: #c0c4cc !important;
 }
 </style>

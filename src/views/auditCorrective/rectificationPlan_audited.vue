@@ -61,6 +61,12 @@
                        style="color: rgb(68, 163, 223);">
               提交
             </el-button>
+
+            <el-button type="text"
+                       @click="look(scope.row)"
+                       style="color: rgb(68, 163, 223);">
+              查看
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -159,6 +165,9 @@ export default {
     // 编辑
     edit (data) {
       this.$router.push({ path: 'rectificationPlan_audited/edit/' + data.managementProjectUuid })
+    },
+    look (data) {
+      this.$router.push({ path: 'rectificationPlan_audited/edit/' + data.managementProjectUuid + '?type=1' })
     },
     // 提交
     post (id) {

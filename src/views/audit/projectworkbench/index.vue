@@ -935,7 +935,7 @@ export default {
         //初始化项目展示入参
         condition: {
           status: 1,
-          peopleTableUuid: "dfb11b4e26c4f4a0647a3f8238aa0a11",
+          peopleTableUuid: "",
         },
         pageNo: 1,
         pageSize: 6,
@@ -943,7 +943,7 @@ export default {
       queryProjectAll: {
         //初始化项目更多入参
         condition: {
-          peopleTableUuid: "dfb11b4e26c4f4a0647a3f8238aa0a11",
+          peopleTableUuid: "",
           status: 1,
         },
         pageNo: 1,
@@ -1144,16 +1144,17 @@ export default {
   },
 
   created() {
+    this.get_user();
     // console.log(this.active_project);
+   
+  },
+  mounted() {
     this.getprojectList(this.queryManage);
-    this.getInitProject(this.queryProject);
+    
     this.thematicSelect(this.thematic);
     this.areasSelect(this.areas);
     this.moreProject(this.queryManageAll);
-    this.project_more();
-  },
-  mounted() {
-    this.get_user();
+   
   },
   methods: {
     //获取当前登录人信息
@@ -1161,6 +1162,7 @@ export default {
       get_userInfo().then((resp) => {
         this.userInfo = resp.data;
         console.log(this.userInfo);
+        this.queryProject.condition.peopleTableUuid = this.userInfo.people.userId;
       });
     },
     filterMethod(query, item) {
@@ -1171,6 +1173,9 @@ export default {
     getprojectList(data) {
       projectListByuser(data).then((resp) => {
         this.projectNum = resp.data.records;
+        console.log(this.queryProject);
+        this.getInitProject(this.queryProject);
+         this.project_more();
       });
     },
     // 初始化项目
@@ -1193,6 +1198,7 @@ export default {
     },
     // 查看更多初始化项目
     project_more() {
+      this.queryProjectAll.condition.peopleTableUuid = this.userInfo.people.userId;
       initProject(this.queryProjectAll).then((resp) => {
         this.projectInitMore = resp.data.records;
         if (this.projectInitMore.length > 6) {
@@ -1205,8 +1211,8 @@ export default {
     },
     // 点击初始化项目事件
     look_project(index, item) {
-      console.log(index);
-      console.log(item);
+      // console.log(index);
+      // console.log(item);
       this.active_project = item.managementProjectUuid; //点击选择添加高亮
       // console.log(this.active_project);
       if (index > 6) {
@@ -1221,8 +1227,7 @@ export default {
         this.projectInit.unshift(item);
       }
 
-      console.log(this.projectInit);
-      this.get_user();
+      // console.log(this.projectInit);
 
       if (index > 6) {
         this.projectInitUuid =
@@ -1236,6 +1241,10 @@ export default {
       // 更新项目接口
       setprojectInit(this.active_project).then((resp) => {
         console.log(resp);
+        if(resp.code == 0 ){
+          this.get_user();
+        }
+        
       });
     },
 
