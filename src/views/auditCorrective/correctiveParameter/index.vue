@@ -49,7 +49,7 @@
           align="center"
       >
         <template slot-scope="scope">
-          <span>{{scope.row.beginTime | dateformat}}</span>至 <span>{{scope.row.endTime | dateformat}}</span>
+          <span>{{scope.row.beginTimeStr}}</span>至 <span>{{scope.row.endTimeStr}}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -59,7 +59,7 @@
           align="center"
       >
         <template slot-scope="scope">
-          <span>{{scope.row.correctDept+scope.row.correctPerson||''}}</span>
+          <span>{{scope.row.correctDeptName+scope.row.correctPersonName||''}}</span>
         </template>
       </el-table-column>
 
