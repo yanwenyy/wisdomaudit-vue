@@ -2,7 +2,7 @@ let watermark = {}
 
 let setWatermark = (str,str1,str2) => {
   let id = '1.23452384164.123412416';
-
+  var container = document.body;
   if (document.getElementById(id) !== null) {
     document.body.removeChild(document.getElementById(id));
   }
@@ -27,19 +27,53 @@ let setWatermark = (str,str1,str2) => {
   cans.fillText(str, can.width / 8, can.height / 3);
   cans.fillText(str1, can.width / 9, can.height / 2);
   cans.fillText(str2, can.width / 9, can.height / 1.5);
-  let div = document.createElement('div');
+  const wmInstance = document.querySelector('.__wm');
+  let div = wmInstance || document.createElement('div');
   div.id = id;
-  div.style.pointerEvents = 'none';
-  div.style.top = '30px';
-  div.style.left = '0px';
-  div.style.position = 'fixed';
-  div.style.zIndex = '100000';
-  div.style.width = document.documentElement.clientWidth + 'px';
-  div.style.height = document.documentElement.clientHeight + 'px';
-  div.style.background = 'url(' + can.toDataURL('image/png') + ') left top repeat';
+  div.contentEditable='false';
+  let styleStr = `
+		top:30px;
+		left:0px;
+		width:100%;
+		height:100%;
+		position:fixed;
+		z-index:100000;
+		pointer-events:none;
+		background-repeat:repeat;
+		background:url('${can.toDataURL('image/png')}') left top repeat`;
+  // div.style.pointerEvents = 'none';
+  // div.style.top = '30px';
+  // div.style.left = '0px';
+  // div.style.position = 'fixed';
+  // div.style.zIndex = '100000';
+  // div.style.width = document.documentElement.clientWidth + 'px';
+  // div.style.height = document.documentElement.clientHeight + 'px';
+  // div.style.background = 'url(' + can.toDataURL('image/png') + ') left top repeat';
+  div.setAttribute('style', styleStr);
+  div.classList.add('__wm');
   document.body.appendChild(div);
+  let MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+  if (MutationObserver) {
+    let mo = new MutationObserver(() => {
+      const wmInstance = document.querySelector('.__wm');
+      // 只在wmInstance元素变动才重新调用 setWatermark
+      if ((wmInstance && wmInstance.getAttribute('style') != styleStr) || !wmInstance) {
+        // 避免一直触发
+        mo.disconnect();
+        mo = null;
+        setWatermark(str,str1,str2)
+      }
+    });
+
+    mo.observe(div, {
+      attributes: true,
+      subtree: true,
+      childList: true,
+    });
+  }
   return id;
 }
+
 
 // 该方法只允许调用一次
 watermark.set = (str,str1,str2) => {
