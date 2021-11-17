@@ -210,7 +210,7 @@
 
               <el-table-column prop="dataNumber"
                                label="操作"
-                               width="160px"
+                               width="180px"
                                v-if="see_data==false">
 
                 <template slot-scope="scope">
@@ -223,7 +223,7 @@
                   </el-button> -->
                   <div class="update_cell">
                     <el-upload class="upload-demo"
-                               style="width:50px"
+                               style="margin:0 10px"
                                :on-progress="up_ing"
                                v-if="scope.row.status !== 3"
                                action="/wisdomaudit/auditPreviousDemandData/uploadData"
@@ -234,8 +234,11 @@
                                accept=".zip,.doc,.docx,.xls,.xlsx,.txt">
                       <el-button size="small"
                                  type="primary"
-                                 @click="up(scope.row)">上传</el-button>
-
+                                 v-if="success_btn2 !== scope.$index"
+                                 @click="up(scope.row,scope.$index)">上传</el-button>
+                      <el-button v-if="success_btn2 === scope.$index"
+                                 type="primary"
+                                 :loading="true">上传中</el-button>
                     </el-upload>
 
                     <el-button @click="look_record(scope.row)"
@@ -323,11 +326,10 @@
 
         <el-button type="primary"
                    v-if="success_btn==1"
-                   :loading="true">上传中</el-button>
+                   :loading="true">反馈中</el-button>
 
         <el-button type="primary"
                    v-if="success_btn==0"
-                   :disabled="isDisable"
                    @click="post()">确 定</el-button>
       </div>
     </el-dialog>
@@ -455,7 +457,11 @@ export default {
       see_data: false,// 查看状态
       dialogVisibl_enclosure_details: false,//附件详情
       findFile_list: [],//附件详情
-      success_btn: 0,//文件上传完成
+      success_btn: 0,//提交按钮
+
+
+      success_btn2: -1,//文件上传
+
 
       file_type: 0,//0 模版 1.附件
       findFile_list_moban: [],//模版列表
@@ -673,16 +679,17 @@ export default {
       return isLt50M;
     },
     // 获取上传的id
-    up (data) {
+    up (data, index) {
+      this.Index = index;
       this.auditPreviousDemandDataUuid = data.auditPreviousDemandDataUuid
       this.status = data.status
     },
     // 上传时
     up_ing (file) {
-      this.success_btn = 1;//显示加载按钮  0成功  1 loaging
     },
     // 上传
     handleUploadForm (file) {
+      this.success_btn2 = this.Index;//显示加载按钮  0成功  1 loaging
       let formData = new FormData()
       formData.append('status', this.status)
       formData.append('auditPreviousDemandDataUuid', this.auditPreviousDemandDataUuid)
@@ -701,7 +708,7 @@ export default {
             message: '上传成功',
             type: 'success'
           });
-          this.success_btn = 0;//隐藏加载按钮
+          this.success_btn2 = false;//隐藏加载按钮
           //刷新列表
           let params = {
             pageNo: this.data_query.pageNo,
@@ -760,14 +767,15 @@ export default {
     },
     // 提交
     post () {
-      this.isDisable = true
-      setTimeout(() => {
-        this.isDisable = false
-      }, 2000)
-      if (this.check_data_list.length == 0) {
-        this.$message.info("请选择至少一条数据进行提交！");
-        return false;
-      }
+      this.success_btn = 1;
+      // this.isDisable = true
+      // setTimeout(() => {
+      //   this.isDisable = false
+      // }, 2000)
+      // if (this.check_data_list.length == 0) {
+      //   this.$message.info("请选择至少一条数据进行提交！");
+      //   return false;
+      // }
       // let array1 = [];//数组1
       // this.check_data_list.forEach((item) => {
       //   array1.push(item);
@@ -789,6 +797,7 @@ export default {
             message: "提交成功",
             type: "success",
           });
+
           this.dialogVisible = false;//关闭弹窗
           let params = {
             pageNo: this.data_query.pageNo,
@@ -808,7 +817,6 @@ export default {
 
 <style  scoped>
 @import "../../../assets/styles/css/lhg.css";
-
 .fileName .cell span:hover {
   cursor: pointer !important;
   color: #1371cc !important;

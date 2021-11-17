@@ -97,6 +97,7 @@
     <!-- 编辑 -->
     <el-dialog title=""
                center
+               @close='closeDialog'
                :visible.sync="dialogVisible_edit"
                width="40%">
       <div class="title">编辑问题</div>
@@ -226,18 +227,23 @@ export default {
     search_list_details () {
       this.page_list_data();//刷新列表
     },
+    // 关闭
+    closeDialog () {
+      this.save.limitTime = '';//清空时间
+    },
     // 编辑
     edit (data) {
+      console.log(data);
       this.dialogVisible_edit = true;
       this.tableData2 = data
       this.save.dutyDeptName = data.dutyDeptName;//主要负责部门
       this.save.dutyPersonName = data.dutyPersonName;//整改责任人
       this.save.planContent = data.planContent;//整改计划
-      this.save.limitTime = data.limitTime;//预计整改完成时限
+      this.save.limitEndTime = data.limitEndTime;//预计整改完成时限
       this.save.remark = data.remark;//备注
-      console.log(data);
 
     },
+
     // 提交
     post () {
       this.isDisable = true
