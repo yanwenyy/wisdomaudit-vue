@@ -35,26 +35,26 @@
             <h3>{{ item.projectName || "--" }}</h3>
             <ul :style="index == 0 ? '' : 'border-left:1px solid #ccc;'">
               <li>
-                <div class="icon-wapper pointer" @click="projectEvent('1')">
+                <div class="icon-wapper pointer" @click="projectEvent('1',item.projectId)">
                   <svg-icon icon-class="fmodel" />
                   <br />
                   <span>模型任务 {{ item.mxCount }}</span>
                 </div>
               </li>
               <li>
-                <div class="icon-wapper pointer" @click="projectEvent('2')">
+                <div class="icon-wapper pointer" @click="projectEvent('2',item.projectId)">
                   <svg-icon icon-class="ftrask" /><br />
                   <span>自建任务 {{ item.zjCount }}</span>
                 </div>
               </li>
               <li>
-                <div class="icon-wapper pointer" @click="projectEvent('3')">
+                <div class="icon-wapper pointer" @click="projectEvent('3',item.projectId)">
                   <svg-icon icon-class="fproblem" /><br />
                   <span>问题 {{ item.wtCount }}</span>
                 </div>
               </li>
               <li>
-                <div class="icon-wapper pointer" @click="projectEvent('4')">
+                <div class="icon-wapper pointer" @click="projectEvent('4',item.projectId)">
                   <svg-icon icon-class="fconfirm" /><br />
                   <span>审计确认单 {{ item.qrdCount }}</span>
                 </div>
@@ -79,7 +79,7 @@
             <ul style="height: 406px; overflow: scroll" class="odd-even">
               <li v-for="(item, index) in modellist" :key="'model' + index">
                 <div class="li-item">
-                  <h5 @click="taskModelEvent" class="pointer">
+                  <h5 @click="taskModelEvent('2-2',item.projectId)" class="pointer">
                     {{ item.projectName || "--" }}
                   </h5>
                   <span>{{ timefilter(item.createTime || "") }}</span>
@@ -87,7 +87,7 @@
                 <el-divider></el-divider>
                 <div class="li-item">
                   <p>{{ item.taskName || "--" }}</p>
-                  <el-button type="primary" size="mini" @click="taskModelEvent"
+                  <el-button type="primary" size="mini" @click="taskModelEvent('2-2',item.managementProjectUuid)"
                     >前去处理<i class="el-icon-d-arrow-right el-icon--right"></i
                   ></el-button>
                 </div>
@@ -109,7 +109,7 @@
             <ul style="height: 200px; overflow: scroll" class="odd-even">
               <li v-for="(item, index) in datalist" :key="'data' + index">
                 <div class="li-item">
-                  <h5 @click="auditInfoEvent" class="pointer">
+                  <h5 @click="auditInfoEvent('2-1',item.projectNumber)" class="pointer">
                     {{ item.projectName || "--" }}
                   </h5>
                   <span>{{ timefilter(item.createTime || "") }}</span>
@@ -464,30 +464,30 @@ export default {
         path: "/audit/auditItems/projectWorkbench",
       });
     },
-    projectEvent(type) {
+    projectEvent(type,projectId) {
       switch (type) {
         case "1":
           this.$router.push({
             path: "/audit/auditItems/projectWorkbench",
-            query: { index: "2-2" },
+            query: { index: "2-2",projectId:projectId },
           });
           break;
         case "2":
           this.$router.push({
             path: "/audit/auditItems/projectWorkbench",
-            query: { index: "2-2" },
+            query: { index: "2-2",projectId:projectId },
           });
           break;
         case "3":
           this.$router.push({
             path: "/audit/auditItems/projectWorkbench",
-            query: { index: "2-3" },
+            query: { index: "2-3" ,projectId:projectId},
           });
           break;
         case "4":
           this.$router.push({
             path: "/audit/auditItems/projectWorkbench",
-            query: { index: "2-4" },
+            query: { index: "2-4",projectId:projectId },
           });
           break;
 
@@ -496,17 +496,17 @@ export default {
       }
     },
 
-    taskModelEvent(data) {
+    taskModelEvent(data,projectId) {
       this.$router.push({
         path: "/audit/auditItems/projectWorkbench",
-        query: { index: "2-2" },
+        query: { index: "2-2",projectId:projectId },
       });
     },
 
-    auditInfoEvent(data) {
+    auditInfoEvent(data,projectId) {
       this.$router.push({
         path: "/audit/auditItems/projectWorkbench",
-        query: { index: "2-1" },
+        query: { index: "2-1",projectId:projectId  },
       });
     },
 

@@ -110,14 +110,11 @@
           <div class="menu">
             <el-menu
               :key="key"
-              :default-active="
-                userInfo.userRole == '1' || userInfo.userRole == '3'
-                  ? '1-1'
-                  : '2-1'
-              "
+              :default-active="defaultActive"
               class="el-menu-vertical-demo"
               @select="open"
               background-color="#F1F5FB"
+              :default-openeds="['1','2','3']"
             >
               <el-submenu
                 v-if="userInfo.userRole == '1' || userInfo.userRole == '3'"
@@ -895,6 +892,8 @@ export default {
   },
   data() {
     return {
+      defaultActive:'1-1',
+      queryInfo:{},
       isdisabled: false,
       key: 0,
       enclosure_details_list: [],
@@ -1127,6 +1126,11 @@ export default {
     };
   },
   watch: {
+    userInfo(val){
+      var that=this;
+      that.defaultActive = that.userInfo.userRole == '1' || that.userInfo.userRole == '3' ? '1-1' : '2-1';
+      that.index = that.userInfo.userRole == '1' || that.userInfo.userRole == '3' ? '1-1' : '2-1';
+    },
     active_project(val) {
       this.refreash = true; // loading
       let _this = this;
@@ -1146,22 +1150,48 @@ export default {
   created() {
     this.get_user();
     // console.log(this.active_project);
-   
+
   },
   mounted() {
+
     this.getprojectList(this.queryManage);
-    
     this.thematicSelect(this.thematic);
     this.areasSelect(this.areas);
     this.moreProject(this.queryManageAll);
-   
+    this.queryInfo=this.$route.query;
+    if(this.queryInfo.index&&this.queryInfo.projectId){
+      // console.log(this.queryInfo.projectId)
+      this.active_project=this.queryInfo.projectId;
+      this.defaultActive=this.queryInfo.index;
+      this.index=this.queryInfo.index;
+      // 更新项目接口
+      setprojectInit(this.active_project).then((resp) => {
+        // console.log(resp);
+        if(resp.code == 0 ){
+          this.userInfo.userRole=resp.data;
+          this.defaultActive = this.userInfo.userRole == '1' || this.userInfo.userRole == '3' ? '1-1' : '2-1';
+          this.index = this.defaultActive;
+
+        }
+
+      });
+    }else {
+      var that=this;
+      let p = new Promise(function(reslove,reject){
+        that.get_user();
+        reslove(111)
+      });
+      p.then((data)=>{
+        that.defaultActive = that.userInfo.userRole == '1' || that.userInfo.userRole == '3' ? '1-1' : '2-1';
+        that.index = that.userInfo.userRole == '1' || that.userInfo.userRole == '3' ? '1-1' : '2-1';
+      });
+    }
   },
   methods: {
     //获取当前登录人信息
     get_user() {
       get_userInfo().then((resp) => {
         this.userInfo = resp.data;
-        console.log(this.userInfo);
         this.queryProject.condition.peopleTableUuid = this.userInfo.people.userId;
       });
     },
@@ -1173,7 +1203,7 @@ export default {
     getprojectList(data) {
       projectListByuser(data).then((resp) => {
         this.projectNum = resp.data.records;
-        console.log(this.queryProject);
+        // console.log(this.queryProject);
         this.getInitProject(this.queryProject);
          this.project_more();
       });
@@ -1237,20 +1267,24 @@ export default {
         this.projectInitUuid = this.projectInit[index].managementProjectUuid;
         this.project_data = false;
       }
-
       // 更新项目接口
       setprojectInit(this.active_project).then((resp) => {
-        console.log(resp);
+        // console.log(resp);
         if(resp.code == 0 ){
-          this.get_user();
+          this.$forceUpdate();
+          this.userInfo.userRole=resp.data;
+          this.key=Math.random();
+          this.defaultActive = this.userInfo.userRole == '1' || this.userInfo.userRole == '3' ? '1-1' : '2-1';
+          this.index = this.defaultActive;
+
         }
-        
+
       });
     },
 
     //责任人选择事件
     selectChange(row) {
-      console.log(row);
+      // console.log(row);
       this.modelPerson.managementProjectUuid = row.managementProjectUuid;
       this.modelPerson.peopleTableUuid = row.peopleTableUuid;
       this.modelPerson.auditTaskUuid = row.auditTaskUuid;
@@ -1306,7 +1340,7 @@ export default {
     },
     // 选择组员事件
     selectMember(val, to, list) {
-      console.log(val, to, list);
+      // console.log(val, to, list);
       // this.updataPerson.projectId = this.managementProjectUuid;
       // this.updataPerson.projectMemberships = [];
       // for (let i = 0; i < val.length; i++) {
@@ -1327,7 +1361,7 @@ export default {
       } else {
         this.data.forEach((e) => {
           if (list.indexOf(e.key) != -1) {
-            console.log(e);
+            // console.log(e);
             e.isLiaison = 0;
           }
         });
@@ -1352,7 +1386,7 @@ export default {
             peopleTableUuid: String(e.id),
           });
         });
-        console.log(resp.data.list);
+        // console.log(resp.data.list);
         this.projectMember(this.query);
         this.loading = false;
       });
@@ -1370,7 +1404,7 @@ export default {
       projectMembership(data).then((resp) => {
         this.peopleSelection = resp.data.records;
         this.tableData = resp.data.records;
-        console.log(this.peopleSelection);
+        // console.log(this.peopleSelection);
         this.value = [];
         this.peopleSelection.forEach((e) => {
           if (e.isCanDelete == 0) {
@@ -1955,7 +1989,7 @@ export default {
       })
         .then((res) => {
           const content = res.data;
-          console.log(res);
+          // console.log(res);
           const blob = new Blob([content], {
             type: "application/octet-stream,charset=UTF-8",
           });
@@ -1978,7 +2012,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          // console.log(err);
         });
     },
     // 附件点击弹框事件
