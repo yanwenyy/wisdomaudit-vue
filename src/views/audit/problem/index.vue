@@ -124,7 +124,7 @@ export default {
       // 问题记录数
       total: 0,
       listLoading: false,
-      headers: { 'Content-Type': 'multipart/form-data' }, // 导入属性
+      headers: { 'Content-Type': 'multipart/form-data','TOKEN':sessionStorage.getItem("TOKEN") }, // 导入属性
       file: '', // 初始化导入文件
       // text 精确查询   fuzzyText 模糊查询  select下拉框  timePeriod时间区间
       queryFields: [

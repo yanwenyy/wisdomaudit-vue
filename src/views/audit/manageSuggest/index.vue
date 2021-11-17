@@ -252,7 +252,7 @@ export default {
       disableUpdate: false,
       closeStatus: false,
       downloadLoading: false,
-      headers: { 'Content-Type': 'multipart/form-data' },
+      headers: { 'Content-Type': 'multipart/form-data','TOKEN':sessionStorage.getItem("TOKEN") },
       file: ''
     }
   },

@@ -107,6 +107,7 @@
             :file-list="fileList"
             multiple
             :key="key"
+            :headers="{'TOKEN':sessionStorage.getItem('TOKEN')}"
           >
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">
