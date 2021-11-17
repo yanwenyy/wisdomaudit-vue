@@ -81,7 +81,7 @@
             :limit="3"
             :key="key"
             :on-exceed="handleExceed"
-            :headers="{'TOKEN':sessionStorage.getItem('TOKEN')}"
+            :headers="headers"
             :file-list="fileList1">
             <el-button class="zl-up-btn" size="small" icon="el-icon-upload2">点击上传</el-button>
           </el-upload>
@@ -105,7 +105,7 @@
             :limit="3"
             :key="key"
             :on-exceed="handleExceed"
-            :headers="{'TOKEN':sessionStorage.getItem('TOKEN')}"
+            :headers="headers"
             :file-list="fileList2">
             <el-button class="zl-up-btn" size="small" icon="el-icon-upload2">点击上传</el-button>
           </el-upload>
@@ -129,7 +129,7 @@
             :limit="3"
             :key="key"
             :on-exceed="handleExceed"
-            :headers="{'TOKEN':sessionStorage.getItem('TOKEN')}"
+            :headers="headers"
             :file-list="fileList3">
             <el-button class="zl-up-btn" size="small" icon="el-icon-upload2">点击上传</el-button>
           </el-upload>
@@ -193,6 +193,7 @@
     export default {
        data(){
          return{
+           headers:'',
            people:'',
            key:0,
            isExamine:false,
@@ -225,6 +226,9 @@
            fileList2_del:[],
            fileList3_del:[],
          }
+       },
+       created(){
+         this.headers = {'TOKEN':sessionStorage.getItem('TOKEN')}
        },
       methods:{
         handleExceed(){},

@@ -107,7 +107,7 @@
             :file-list="fileList"
             multiple
             :key="key"
-            :headers="{'TOKEN':sessionStorage.getItem('TOKEN')}"
+            :headers="headers"
           >
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">
@@ -138,6 +138,7 @@ export default {
   components: {},
   data() {
     return {
+      headers:'',
       canClick:true,
       ifLook:false,
       key:0,
@@ -525,7 +526,9 @@ export default {
       })
     }
   },
-  created() {},
+  created() {
+    this.headers = {'TOKEN':sessionStorage.getItem('TOKEN')}
+  },
   mounted() {
     this.list_data_start()
   },
