@@ -291,3 +291,11 @@ export function recAccountCorrect_correctStepPageList(data) {
     data
   })
 }
+//获取审核人
+export function projectMembership_listUserInfo(data) {
+  return request({
+    baseURL: baseURL,
+    url:'projectMembership/listUserInfo',
+    method: 'get',
+  })
+}

@@ -139,9 +139,15 @@
         <el-form-item prop="reviewerName"
                       class="itemThree"
                       label="复核人:">
-          <el-input :disabled="ifLook"
-                    placeholder="请输入"
-                    v-model="formDetail.reviewerName"></el-input>
+          <el-select :disabled="ifLook" v-model="formDetail.reviewerName	" placeholder="请选择" clearable>
+            <el-option
+              v-for="(item,index) in FhrList"
+              :label="item.realName"
+              :value="item.realName"
+              :key="index"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item prop="compileDate"
                       class="itemThree"
@@ -150,6 +156,7 @@
                           v-model="formDetail.compileDate"
                           type="date"
                           placeholder="选择日期"
+                          format="yyyy-MM-dd"
                           value-format="yyyy-MM-dd"
                           style="width: 100%"></el-date-picker>
         </el-form-item>
@@ -228,7 +235,7 @@
 </template>
 
 <script>
-import { down_file, auditBasy_getFileList, auditConfirmation_pageList, auditConfirmation_save, auditConfirmation_delete, auditConfirmation_getDetail, auditConfirmation_update } from
+import {get_userInfo,projectMembership_listUserInfo, down_file, auditBasy_getFileList, auditConfirmation_pageList, auditConfirmation_save, auditConfirmation_delete, auditConfirmation_getDetail, auditConfirmation_update } from
   '@SDMOBILE/api/shandong/ls'
 import { task_pageList_wt } from
   '@SDMOBILE/api/shandong/AuditReport'
@@ -263,6 +270,8 @@ export default {
       auditOrgName: '',//被审计单位
       projectType: '',//项目类型 jzsj经责审计  zxsj专项审计
       tableFileList: [],//确认单附件列表
+      FhrList:[],//复核人列表
+      userInfo:{},//用户信息
       // 新增的表单验证
       rules: {
         matter: [
@@ -285,8 +294,26 @@ export default {
   },
   created () {
     this.list_data_start();
+    this.getFhrList();
   },
   methods: {
+    //获取用户信息
+    getUser(){
+      var that=this;
+      get_userInfo().then(resp => {
+        that.userInfo = resp.data;
+        that.formDetail.auditorsName=this.userInfo.user.realName;
+        var sj=new Date().toLocaleDateString().split('/');
+        sj[1]=sj[1]<10?'0'+sj[1]:sj[1];
+        that.formDetail.compileDate=sj[0]+"-"+sj[1]+"-"+sj[2];
+      })
+    },
+    //复核人列表
+    getFhrList(){
+      projectMembership_listUserInfo().then(resp => {
+        this.FhrList = resp.data.list;
+      })
+    },
     //附件上传时
     fileChange (file, fileList) {
       const loading = this.$loading({
@@ -380,6 +407,7 @@ export default {
       this.clearForm();
       this.isAdd = true;
       this.confirmationDialogTitle = "编辑确认单";
+      this.ifLook=false;
       this.getDetail(row);
     },
     getDetail (row) {
@@ -423,6 +451,8 @@ export default {
       this.clearForm();
       this.confirmationDialogTitle = "新增确认单";
       this.confirmationDialogVisible = true;
+      this.getUser();
+      this.ifLook=false;
     },
     // 增加弹出框关闭事件
     handleClose () {
