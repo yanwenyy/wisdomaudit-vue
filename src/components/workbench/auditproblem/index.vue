@@ -541,7 +541,7 @@ export default {
         auditTaskUuid: [
           { required: true, message: "请选择关联任务", trigger: "change" },
         ],
-        basis: [{ required: true, message: "请选择依据", trigger: "change" }],
+        // basis: [{ required: true, message: "请选择依据", trigger: "change" }],
         describe: [
           { required: true, message: "请填写描述", trigger: "change" },
         ],
@@ -741,7 +741,7 @@ export default {
       }).then((res) => {
         this.dqProblem = res.data.data;
         this.dqProblem.auditTaskUuid = this.dqProblem.auditTaskUuid.split(",");
-        this.dqProblem.basis = this.dqProblem.basis.split(",");
+        this.dqProblem.basis = this.dqProblem.basis?this.dqProblem.basis.split(","):[];
         this.ifupdata = true;
         this.dialogDetailVisible = true;
         this.$nextTick(() => {
@@ -758,7 +758,7 @@ export default {
       }).then((res) => {
         this.dqProblem = res.data.data;
         this.dqProblem.auditTaskUuid = this.dqProblem.auditTaskUuid.split(",");
-        this.dqProblem.basis = this.dqProblem.basis.split(",");
+        this.dqProblem.basis = this.dqProblem.basis?this.dqProblem.basis.split(","):[];
         this.ifupdata = false;
         this.dialogDetailVisible = true;
         this.$nextTick(() => {
@@ -805,6 +805,7 @@ export default {
       this.dialogFormVisible = true;
       this.ifadd = 0;
       this.temp.problemFindPeople = this.me
+      this.temp.problemDiscoveryTime = new Date()
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
       });
