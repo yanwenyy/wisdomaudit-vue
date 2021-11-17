@@ -1126,11 +1126,7 @@ export default {
     };
   },
   watch: {
-    userInfo(val){
-      var that=this;
-      that.defaultActive = that.userInfo.userRole == '1' || that.userInfo.userRole == '3' ? '1-1' : '2-1';
-      that.index = that.userInfo.userRole == '1' || that.userInfo.userRole == '3' ? '1-1' : '2-1';
-    },
+
     active_project(val) {
       this.refreash = true; // loading
       let _this = this;
@@ -1153,26 +1149,18 @@ export default {
 
   },
   mounted() {
-
-    this.getprojectList(this.queryManage);
-    this.thematicSelect(this.thematic);
-    this.areasSelect(this.areas);
-    this.moreProject(this.queryManageAll);
+    this.defaultActive='';
+    this.index='';
     this.queryInfo=this.$route.query;
     if(this.queryInfo.index&&this.queryInfo.projectId){
+      // debugger;
       // console.log(this.queryInfo.projectId)
       this.active_project=this.queryInfo.projectId;
       this.defaultActive=this.queryInfo.index;
       this.index=this.queryInfo.index;
+      // this.key=Math.random();
       // 更新项目接口
       setprojectInit(this.active_project).then((resp) => {
-        // console.log(resp);
-        if(resp.code == 0 ){
-          this.userInfo.userRole=resp.data;
-          this.defaultActive = this.userInfo.userRole == '1' || this.userInfo.userRole == '3' ? '1-1' : '2-1';
-          this.index = this.defaultActive;
-
-        }
 
       });
     }else {
@@ -1186,6 +1174,12 @@ export default {
         that.index = that.userInfo.userRole == '1' || that.userInfo.userRole == '3' ? '1-1' : '2-1';
       });
     }
+    this.getprojectList(this.queryManage);
+    this.thematicSelect(this.thematic);
+    this.areasSelect(this.areas);
+    this.moreProject(this.queryManageAll);
+
+
   },
   methods: {
     //获取当前登录人信息
