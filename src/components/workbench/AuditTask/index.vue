@@ -82,7 +82,7 @@
                              label="问题数">
               <template slot-scope="scope">
                 <!-- scope.row.taskType ：1 模型  2自建 -->
-                <div v-if="scope.row.taskType ==1">
+                <div>
                   <el-button v-if="scope.row.problemsNumber !==0"
                              @click="probleNum_click(scope.row.auditTaskUuid,scope.row.auditModelName)"
                              type="text"
@@ -890,6 +890,7 @@
                         style="margin-bottom:30px!important">
             <p><span>*</span>专题：</p>
             <el-select v-model="save_zj_query.belongSpcial  "
+                       v-if="input_select==true"
                        @change="changeHeader_zj_zt">
               <el-option v-for="item in zt_slect"
                          :key="item.value"
@@ -897,6 +898,8 @@
                          :value="item.label">
               </el-option>
             </el-select>
+            <el-input v-model="save_zj_query.belongSpcial"
+                      v-if="input_select==false"></el-input>
           </el-form-item>
 
           <!-- 任务描述 -->
@@ -1041,6 +1044,7 @@ export default {
   },
   data () {
     return {
+      input_select: true,
       task_type: 0, //默认显示任务/自建任务
       tab: [{ name: "审计资料任务列表" }, { name: "已操作的资料列表" }], //任务切换
       dialogVisible_quote: false, //模型任务引用
@@ -2182,7 +2186,12 @@ export default {
     },
     // 专题 change
     changeHeader_zj_zt (val) {
-      this.save_zj_query.belongSpcial = val
+      this.save_zj_query.belongSpcial = val;
+      if (val == '其他') {
+        this.input_select = false;
+        this.save_zj_query.belongSpcial = ''
+      }
+
     },
     // 新增  问题数 保存
     add_list_save (formName) {

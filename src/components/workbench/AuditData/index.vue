@@ -669,10 +669,13 @@
 
         <el-button type="primary"
                    v-if="success_btn==0"
-                   :disabled="isDisable"
                    @click="save_data_btn('add_data')">确定</el-button>
         <el-button v-if="success_btn==1"
+                   type="primary"
                    :loading="true">上传中</el-button>
+        <el-button v-if="success_btn==2"
+                   type="primary"
+                   :loading="true">添加中</el-button>
       </span>
     </el-dialog>
 
@@ -1395,7 +1398,7 @@ export default {
         }
 
 
-        this.list_data_start()
+        this.list_data_start(params)
       } else {
         // alert('b', this.search_title2)
         // 已完成
@@ -1417,6 +1420,9 @@ export default {
     on_list (id) {
       this.operation_query.id = id
       this.operation_data()//操作记录
+      this.loading_history = true;
+      this.history = true;
+
     },
     // 操作记录
     operation_data () {
@@ -1427,7 +1433,6 @@ export default {
         pageNo: this.operation_query.pageNo,
         pageSize: this.operation_query.pageSize,
       }
-      this.loading_history = true;
       enclosure_sysLogById(params).then(resp => {
         console.log(resp.data);
         this.history_log = resp.data
@@ -1994,15 +1999,10 @@ export default {
 
     //添加资料 保存按钮
     save_data_btn (formName) {
-      this.isDisable = true
-      setTimeout(() => {
-        this.isDisable = false
-      }, 2000)
-
-
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.fileList.length !== 0) {
+            this.success_btn = 1;//显示加载按钮  0成功  1 loaging
             let formData = new FormData()
             formData.append('file', this.file.raw)
             this.fileList.forEach((item) => {
@@ -2018,7 +2018,7 @@ export default {
             }).then(resp => {
               // 上传成功
               if (resp.data.code == 0) {
-                this.success_btn = 0;//显示加载按钮  0成功  1 loaging
+                // this.success_btn = 0;//显示加载按钮  0成功  1 loaging
                 // console.log(resp.data.data);
                 this.Upload_file = resp.data.data;//上传成功大的文件
 
@@ -2048,6 +2048,7 @@ export default {
               }
             })
           } else {
+            this.success_btn = 2;//显示加载按钮  0成功  1 loaging  2:确认中
             // 如果未上传
             let params = {
               dataCategory: this.add_data.dataCategory,//类别
@@ -2081,7 +2082,7 @@ export default {
             message: '添加资料成功',
             type: 'success'
           });
-
+          // this.success_btn = 0;
           this.dialogVisible2 = false;
           // 新增未完成任务列表
           this.add_add_csh();

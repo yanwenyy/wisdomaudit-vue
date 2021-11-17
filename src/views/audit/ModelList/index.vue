@@ -1,6 +1,6 @@
 <template>
   <div class="modelList">
-    <p class="title">知识库/模型清单</p>
+    <!-- <p class="title">知识库/模型清单</p> -->
 
     <!--知识库/模型清单 筛选 -->
     <div class="search">
@@ -86,8 +86,8 @@
       <div class="dlag">
         <div class="son list_four">
           <p>模型编号：<span>{{list_index}}</span> </p>
-          <p>所属领域：<span>{{details.belogField}}</span> </p>
-          <p>所属专题：<span>{{details.belogSpcial}}</span> </p>
+          <p>所属领域：<span>{{details.belongField}}</span> </p>
+          <p>所属专题：<span>{{details.belongSpcial}}</span> </p>
           <p>模型名称：<span>{{details.modelName}}</span> </p>
         </div>
         <div class="son flex">

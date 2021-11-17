@@ -191,9 +191,9 @@
                       placeholder="请输入发现人"></el-input>
           </el-form-item>
 
-          <!--评审依据 -->
+          <!--审计依据 -->
           <el-form-item>
-            <p>评审依据：</p>
+            <p>审计依据：</p>
             <el-select v-model="add.auditBasis"
                        @change="changeHeader_yj">
               <el-option v-for="item in problems_slect_yj"
@@ -240,7 +240,7 @@
 
           <!-- 风险金额 -->
           <el-form-item>
-            <p>风险金额：</p>
+            <p>风险金额（万元)：</p>
             <el-input v-model="add.riskAmount"
                       placeholder="请输入风险金额"></el-input>
           </el-form-item>
