@@ -612,7 +612,7 @@ export default {
     },
     //获取当前人员信息
     getme () {
-      axios({
+      this.$axios({
         url: `/wisdomaudit/init/getCurrentInfo`,
         method: "get",
         data: {},
@@ -622,7 +622,7 @@ export default {
     },
     //获取人员
     getperson () {
-      axios({
+      this.$axios({
         url: `/wisdomaudit/user/listUserInfo?pageCurrent=1&pageSize=1000`,
         method: "get",
         data: {},
@@ -666,7 +666,7 @@ export default {
     },
     //获取依据
     getbasis () {
-      axios({
+      this.$axios({
         url: `/wisdomaudit/auditBasy/getAuditbasyList`,
         method: "get",
         data: {},
@@ -677,7 +677,7 @@ export default {
     //获取依据详情
     getbasisdetail (bid) {
       this.basisload = true;
-      axios({
+      this.$axios({
         url: `/wisdomaudit/auditBasy/getById/` + bid + ``,
         method: "get",
         data: {},
@@ -707,7 +707,7 @@ export default {
       return rep;
     },
     getSelectTask () {
-      axios({
+      this.$axios({
         url: `/wisdomaudit/auditTask/selectTask`,
         method: "post",
         data: {
@@ -718,7 +718,7 @@ export default {
       });
     },
     getloadcascader (str) {
-      axios({
+      this.$axios({
         url: `/wisdomaudit/init/loadcascader`,
         method: "post",
         data: {
@@ -734,7 +734,7 @@ export default {
     },
     openDetail (int) {
       this.ifadd = 1;
-      axios({
+      this.$axios({
         url:
           `/wisdomaudit/problemList/getById/` + this.list[int].problemListUuid,
         method: "get",
@@ -752,7 +752,7 @@ export default {
     },
     checkDetail (pid) {
       this.ifadd = 2;
-      axios({
+      this.$axios({
         url: `/wisdomaudit/problemList/getById/` + pid,
         method: "get",
         data: {},
@@ -790,7 +790,7 @@ export default {
         this.pageQuery.pageNo = 1
       }
       this.listLoading = true;
-      axios({
+      this.$axios({
         url: `/wisdomaudit/problemList/pageList`,
         method: "post",
         data: this.pageQuery,
@@ -820,7 +820,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        axios({
+        this.$axios({
           url: `/wisdomaudit/problemList/delete/` + pid,
           method: "delete",
           data: {},
@@ -846,7 +846,7 @@ export default {
           let rep = this.temp;
           rep.auditTaskUuid = rep.auditTaskUuid.join(",");
           rep.basis = rep.basis.join(",");
-          axios({
+          this.$axios({
             url: `/wisdomaudit/problemList/save`,
             method: "post",
             data: rep,
@@ -882,7 +882,7 @@ export default {
           rep.auditTaskUuid = rep.auditTaskUuid.join(",");
           rep.basis = rep.basis.join(",");
           this.dialogDetailVisible = false;
-          axios({
+          this.$axios({
             url: `/wisdomaudit/problemList/update`,
             method: "put",
             data: rep,
