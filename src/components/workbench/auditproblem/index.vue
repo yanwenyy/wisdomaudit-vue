@@ -559,6 +559,7 @@ export default {
         special: [{ required: true, message: "请选择专题", trigger: "change" }],
         riskAmount: [
           { required: true, message: "请填写风险金额", trigger: "change" },
+          { type: 'number', message: '风险金额必须为数字值'}
         ],
       },
       closeStatus: false,
