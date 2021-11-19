@@ -217,7 +217,7 @@ export default {
       query: {
         condition: {
           managementProjectUuid: "",
-          peopleRole: "2",
+          peopleRole:"",
           peopleName: "",
         },
         pageNo: 1,
