@@ -45,14 +45,17 @@
             <!-- </el-table-column> -->
             <el-table-column prop="title"
                              align="center"
+                             show-overflow-tooltip
                              label="标题">
             </el-table-column>
             <el-table-column prop="launchPeople"
                              align="center"
+                             show-overflow-tooltip
                              label="发起人">
             </el-table-column>
             <el-table-column prop="addTime"
                              align="center"
+                             show-overflow-tooltip
                              label="发起日期">
               <template slot-scope="scope">
                 {{  scope.row.createTime|filtedate }}
@@ -73,6 +76,7 @@
 
             <el-table-column prop="status"
                              align="center"
+                             show-overflow-tooltip
                              label="操作记录">
               <template slot-scope="scope">
                 <a href="javascript:;"
@@ -188,10 +192,12 @@
             </el-table-column>
             <el-table-column prop="dataName"
                              align="center"
+                             show-overflow-tooltip
                              label="资料名称">
             </el-table-column>
             <el-table-column prop="createTime"
                              align="center"
+                             show-overflow-tooltip
                              label="反馈日期">
 
               <template slot-scope="scope">
@@ -200,19 +206,23 @@
             </el-table-column>
             <el-table-column prop="dataNumber"
                              align="center"
+                             show-overflow-tooltip
                              label="编号">
             </el-table-column>
             <el-table-column prop="secondLevelDataNumber"
                              align="center"
+                             show-overflow-tooltip
                              label="二级编号">
             </el-table-column>
 
             <el-table-column prop="department"
                              align="center"
+                             show-overflow-tooltip
                              label="部门">
             </el-table-column>
             <el-table-column prop="remarks"
                              align="center"
+                             show-overflow-tooltip
                              label="备注">
             </el-table-column>
 
@@ -327,11 +337,13 @@
               </el-table-column>
               <el-table-column prop="dataCategory"
                                align="center"
+                               show-overflow-tooltip
                                label="类别">
                 <!-- <template slot-scope="scope">{{ scope.row.dataCategory }}</template> -->
               </el-table-column>
               <el-table-column prop="dataNumber"
                                align="center"
+                               show-overflow-tooltip
                                label="编号">
               </el-table-column>
               <el-table-column prop="secondLevelDataNumber"
@@ -411,6 +423,7 @@
 
               </el-table-column>
               <el-table-column prop="dataNumber"
+                               show-overflow-tooltip
                                label="编号">
               </el-table-column>
               <el-table-column prop="secondLevelDataNumber"
@@ -567,7 +580,7 @@
                v-if="user_data">
             <el-form-item label-width="80px"
                           prop="addPeople">
-              <p>添加人：</p>
+              <p>添加人1：</p>
               <el-input v-model="add_data.addPeople"
                         :disabled="disabled"
                         class="addPeople"></el-input>
@@ -589,7 +602,7 @@
                v-else>
             <el-form-item label-width="80px"
                           prop="addPeople">
-              <p>添加人：</p>
+              <p>添加人2：</p>
               <el-input class="addPeople"></el-input>
               <!-- <div class="addPeople">{{add_data.addPeople}}</div> -->
             </el-form-item>
@@ -634,14 +647,11 @@
           </div>
 
           <!-- 模版新增： -->
-          <div class="son cd">
+          <!-- <div class="son cd" >
             <el-form-item label-width="80px"
                           style="margin-bottom:0!important"
                           class="up">
               <p>模版新增：</p>
-              <!-- <el-input type="textarea"
-                        v-model="add_data.file"
-                        placeholder=""></el-input> -->
               <el-upload class="upload-demo"
                          :disabled="edit_title == '详细信息'?true:false"
                          drag
@@ -659,10 +669,11 @@
               </el-upload>
 
             </el-form-item>
-          </div>
+          </div> -->
 
         </el-form>
       </div>
+
       <span slot="footer">
         <el-button plain
                    @click="dialogVisible2 = false">取 消</el-button>
@@ -787,7 +798,6 @@
                            show-overflow-tooltip>
             <template slot-scope="scope">
 
-              <!-- enclosure_details_list enclosureCount-->
               <el-popover :popper-class="enclosure_details_list==''?'no-padding':''"
                           v-if="scope.row.enclosureCount"
                           placement="bottom"
@@ -1035,22 +1045,27 @@
           </el-table-column> -->
           <el-table-column prop="opOperate"
                            align="center"
+                           show-overflow-tooltip
                            label="动作">
           </el-table-column>
           <el-table-column prop="opUserName"
                            align="center"
+                           show-overflow-tooltip
                            label="操作人">
           </el-table-column>
           <el-table-column prop="opTime"
                            align="center"
+                           show-overflow-tooltip
                            label="操作时间">
           </el-table-column>
           <el-table-column prop="opInfo"
                            align="center"
+                           show-overflow-tooltip
                            label="备注">
           </el-table-column>
           <el-table-column prop="fileCount"
                            align="center"
+                           show-overflow-tooltip
                            label="附件">
             <template slot-scope="scope">
 
@@ -1658,9 +1673,9 @@ export default {
 
     // 添加资料
     add_data_click () {
+      this.add_data = {}; //清空
       this.dialogVisible2 = true;
       this.edit_title = '添加资料'
-      this.add_data = {}; //清空
     },
     // 新增任务初始化 列表
     add_add_csh () {
@@ -1932,13 +1947,24 @@ export default {
     },
     // 类别类型 change
     PrjType_change (val) {
-      console.log(val);
       this.add_data.dataCategory = val;
-
       let params = {
-        dataCategory: this.add_data.dataCategory,
-      };
+        dataCategory: this.add_data.dataCategory
+      }
+      this.change_people(params);//审核回显 添加人
 
+    },
+
+    change_people (params) {
+      //  if (this.edit_title = '详细信息') {
+
+      //   alert(1)
+      // } else {
+      //   let params = {
+      //     dataCategory: this.add_data.dataCategory,
+      //   };
+      //   alert(2)
+      // }
       //根据类型查看新增的 资料信息
       select_user_data(params).then(resp => {
         console.log(resp.data);
@@ -2018,7 +2044,7 @@ export default {
             }).then(resp => {
               // 上传成功
               if (resp.data.code == 0) {
-                // this.success_btn = 0;//显示加载按钮  0成功  1 loaging
+                this.success_btn = 0;//显示加载按钮  0成功  1 loaging
                 // console.log(resp.data.data);
                 this.Upload_file = resp.data.data;//上传成功大的文件
 
@@ -2044,7 +2070,7 @@ export default {
                   message: resp.data.msg,
                   type: 'error'
                 });
-                this.success_btn = 1;//显示加载按钮  0成功  1 loaging
+                this.success_btn = 0;//显示加载按钮  0成功  1 loaging
               }
             })
           } else {
@@ -2082,7 +2108,7 @@ export default {
             message: '添加资料成功',
             type: 'success'
           });
-          // this.success_btn = 0;
+          this.success_btn = 0;
           this.dialogVisible2 = false;
           // 新增未完成任务列表
           this.add_add_csh();
@@ -2269,7 +2295,6 @@ export default {
     handleSelectionChange_operation (val) {
       this.multipleSelection_operation = val;
     },
-
     //查看操作 记录
     look_record (data, index) {
       this.isDisable = true
@@ -2281,6 +2306,14 @@ export default {
       this.record_query.id = data.auditPreviousDemandDataUuid;
       this.dialogVisible2 = true//显示编辑
       this.edit_title = '详细信息'
+      let params = {
+        dataCategory: data.dataCategory
+      }
+      this.change_people(params);//审核回显 添加人
+
+
+
+
       this.add_data.dataCategory = data.dataCategory;//基本类型
       this.add_data.dataName = data.dataName;//资料名称
       this.add_data.dataNumber = data.dataNumber;//编号 

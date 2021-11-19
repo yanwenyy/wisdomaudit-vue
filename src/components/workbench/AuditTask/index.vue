@@ -41,16 +41,19 @@
             <!-- 任务/自建任务名称 -->
             <el-table-column prop="taskName"
                              width="180"
+                             show-overflow-tooltip
                              label="任务名称"> </el-table-column>
             <!-- 专题 -->
             <el-table-column prop="belongSpcial"
                              align="center"
+                             show-overflow-tooltip
                              label="专题">
             </el-table-column>
 
             <!-- 类型 -->
             <el-table-column prop="taskType"
                              align="center"
+                             show-overflow-tooltip
                              label="类型">
               <template slot-scope="scope">
                 {{
@@ -63,6 +66,7 @@
             <!-- 责任人 -->
             <el-table-column prop="peopleName"
                              align="center"
+                             show-overflow-tooltip
                              label="责任人 ">
               <!-- <template slot-scope="scope">
                 <el-select v-model="scope.row.peopleName"
@@ -79,6 +83,7 @@
             <!-- 问题数 -->
             <el-table-column prop="problemsNumber"
                              align="center"
+                             show-overflow-tooltip
                              label="问题数">
               <template slot-scope="scope">
                 <!-- scope.row.taskType ：1 模型  2自建 -->
@@ -102,6 +107,7 @@
             <!-- 结果数 -->
             <el-table-column prop="resultsNumber"
                              align="center"
+                             show-overflow-tooltip
                              label="结果数">
               <template slot-scope="scope">
                 <div v-if=" scope.row.taskType ==1">
@@ -180,6 +186,7 @@
             <!-- 状态 -->
             <el-table-column prop="resultsNumber"
                              align="center"
+                             show-overflow-tooltip
                              label="运行状态">
 
               <template slot-scope="scope">
@@ -234,6 +241,7 @@
 
                   <!-- 删除 -->
                   <el-button @click="delete_model(scope.row.auditTaskUuid)"
+                             v-if="scope.row.status==1"
                              type="
                            text"
                              style="color: red;border:none;"
@@ -518,20 +526,25 @@
           <!-- <el-table-column type="selection"
                          align="center"> </el-table-column> -->
           <el-table-column prop="field"
+                           show-overflow-tooltip
                            align="center"
                            label="领域"> </el-table-column>
           <el-table-column prop="problem"
                            align="center"
+                           show-overflow-tooltip
                            label="问题"> </el-table-column>
           <el-table-column prop="basis"
+                           show-overflow-tooltip
                            align="center"
                            label="依据"> </el-table-column>
           <el-table-column prop="describe"
                            align="center"
+                           show-overflow-tooltip
                            label="描述"> </el-table-column>
 
           <el-table-column prop="problemDiscoveryTime"
                            align="center"
+                           show-overflow-tooltip
                            label="发现时间">
             <template slot-scope="scope">
               {{scope.row.problemDiscoveryTime |filtedate }}
@@ -542,6 +555,7 @@
           <el-table-column prop="riskAmount"
                            align="center"
                            width="180"
+                           show-overflow-tooltip
                            label="风险金额（万元）"> </el-table-column>
           <el-table-column prop="problemFindPeople"
                            align="center"
@@ -871,7 +885,7 @@
 
           <!-- 领域 -->
           <el-form-item label-width="80px"
-                        prop="belongField "
+                        prop="belongField"
                         style="margin-bottom:30px!important">
             <p><span>*</span>领域：</p>
             <el-select v-model="save_zj_query.belongField"
@@ -1131,8 +1145,8 @@ export default {
       rules_task: {
         // taskName: [{ required: true, message: '请输入任务名称', trigger: 'blur' }],
         // peopleTableUuid: [{ required: true, message: '请选择责任人', trigger: 'change' }],
-        belongSpcial: [{ required: true, message: '请选择领域', trigger: 'change' }],
-        belongField: [{ required: true, message: '请选择专题', trigger: 'change' }],
+        belongSpcial: [{ required: true, message: '请选择专题', trigger: 'change' }],
+        belongField: [{ required: true, message: '请选择领域', trigger: 'change' }],
         // taskDescription: [{ required: true, message: '请输入任务描述', trigger: 'blur' }],
         // fileList: [{ required: true, message: '请上传文件', trigger: 'change' }],
       },
@@ -1252,9 +1266,6 @@ export default {
       attachmentList2: [],
       attachmentList3: [],
       isDisable: false,//防止重复提交
-
-
-
     };
   },
   computed: {},
@@ -1549,8 +1560,8 @@ export default {
             peopleName: this.save_zj_query.peopleName,//责任人
             peopleTableUuid: this.save_zj_query.peopleTableUuid,//责任人id
 
-            belongSpcial: this.save_zj_query.belongSpcial,//领域
-            belongField: this.save_zj_query.belongField,//专题
+            belongSpcial: this.save_zj_query.belongSpcial,//专题
+            belongField: this.save_zj_query.belongField,//领域
             attachmentList: upList,//上传成功de 的文件
           }
           this.edit_data_update(params2);//编辑
@@ -1968,13 +1979,13 @@ export default {
 
 
     // 核实上传 保存附件
-    verify_save (formName) {
+    verify_save (verify_model) {
       this.isDisable = true
       setTimeout(() => {
         this.isDisable = false
       }, 2000)
 
-      this.$refs[formName].validate((valid) => {
+      this.$refs[verify_model].validate((valid) => {
         if (valid) {
           if (this.fileList2.length > 0) {
             this.success_btn2 = 1;//显示加载按钮  0成功  1 loaging
@@ -2051,9 +2062,9 @@ export default {
       });
     },
     // 结果数 核实上传关闭
-    resetForm_verify (formName) {
-      this.$refs[formName].resetFields();
-      this.verify_model = '';//清空输入
+    resetForm_verify (verify_model) {
+      this.$refs[verify_model].resetFields();
+      this.verify_model = {};//清空输入
       this.$refs.upload2.clearFiles();
       this.success_btn2 = 0;//显示加载按钮  0成功  1 loaging
     },
@@ -2073,8 +2084,6 @@ export default {
 
           // 新表单
           this.new_table();//新接口 table
-
-
           // 刷新任务列表
           let params = {
             pageNo: this.params.pageNo,
@@ -2087,8 +2096,6 @@ export default {
             }
           }
           this.list_data(params);
-
-
         } else {
           this.$message({
             message: resp.msg,

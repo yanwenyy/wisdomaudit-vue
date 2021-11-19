@@ -67,13 +67,15 @@
                      :loading="true">生成中</el-button>
         </span>
         <div class="flex_end">
-          <p>附件：</p>
+          <p style="padding-top:10px">附件：</p>
           <ul>
             <li v-for="(item,index) in file_list.attachmentList"
                 :key="index">
               <p @click="download_click(item.attachmentUuid,item.fileName)">{{item.fileName}}</p>
               <span>版本1.0</span><span>时间{{item.createTime|filtedate
 }}</span>
+              <el-button type="primary"
+                         @click="remove_list(item.attachmentUuid)">删除</el-button>
             </li>
 
           </ul>
@@ -84,7 +86,7 @@
     </div>
 
     <!-- 关联指标 -->
-    <el-dialog width="40%"
+    <el-dialog width="60%"
                center
                @close='closeDialog'
                popper-class="status_data_dlag_verify"
@@ -241,7 +243,7 @@
 <script>
 import { down_file } from
   '@SDMOBILE/api/shandong/ls'
-import { operatingIndicators_list, task_pageList_wt, task_pageList_export, export_selectFile } from '@SDMOBILE/api/shandong/AuditReport'
+import { operatingIndicators_list, task_pageList_wt, task_pageList_export, export_selectFile, file_remove_list } from '@SDMOBILE/api/shandong/AuditReport'
 import { fmtDate } from '@SDMOBILE/model/time.js';
 
 export default {
@@ -280,10 +282,8 @@ export default {
   computed: {},
   watch: {},
   created () {
-    let params = {
-      id: this.active_project,//项目id
-    }
-    this.export_selectFile_data(params)
+
+    this.export_selectFile_data()//附件
   },
   mounted () {
 
@@ -295,7 +295,6 @@ export default {
     }
   },
   methods: {
-
     // 公用筛选
     search_list (index) {
       if (index == 1) {
@@ -322,7 +321,10 @@ export default {
       this.search_jy_name = '';
     },
     // 附件 以及默认显示
-    export_selectFile_data (params) {
+    export_selectFile_data () {
+      let params = {
+        id: this.active_project,//项目id
+      }
       export_selectFile(params).then(resp => {
         this.file_list = resp.data;
         console.log(11)
@@ -344,11 +346,8 @@ export default {
       operatingIndicators_list(params).then(resp => {
         this.correlation = resp.data;
         this.loading = false;
-
       })
     },
-
-
     // 指标多选
     handleSelectionChange_zb (val) {
       this.multipleSelection = val;
@@ -368,10 +367,6 @@ export default {
       this.administrativeAdvice = array_list;
       this.dlag_Correlation_zb = false;//关闭弹窗
     },
-
-
-
-
     // 添加关联问题====================================
     Correlation_wt () {
       let params = {
@@ -387,7 +382,6 @@ export default {
     },
     // 关联问题
     correlation_problem (params) {
-
       task_pageList_wt(params).then(resp => {
         this.tableData2 = resp.data;
         this.tableData2_list = resp.data.records;
@@ -397,7 +391,7 @@ export default {
     handleSelectionChange_wt (val) {
       this.multipleSelection2 = val;
     },
-    // 指标确认保存
+    // 问题保存
     query_save_wt () {
       if (this.multipleSelection2.length == 0) {
         this.$message.info("至少关联一条数据！");
@@ -408,9 +402,7 @@ export default {
         array1.push((i + 1) + '.' + item.problemFindPeople + ',' + item.discoveryTime + ',' + item.basis + ',' + item.field + ',' + item.problem + ',' + item.describe + ',' + item.riskAmount + ',' + item.managementAdvice + '\n');
       });
       var array_list = array1.join('')
-
       this.businessEvaluation = array_list;
-
       this.dlag_Correlation_wt = false;//添加关联问题
 
     },
@@ -423,8 +415,8 @@ export default {
       this.success_btn = 1;//显示加载按钮  0成功  1 loaging
       let params2 = {
         managementProjectUuid: this.active_project,//项目id
-        administrativeAdvice: this.administrativeAdvice,//管理建议
-        businessEvaluation: this.businessEvaluation//经营评价
+        businessEvaluation: this.administrativeAdvice,//指标
+        administrativeAdvice: this.businessEvaluation  //问题的内容
       }
       this.generate(params2);//生成
     },
@@ -440,10 +432,7 @@ export default {
           });
           this.administrativeAdvice = '';//管理建议
           this.businessEvaluation = '';//经营评价
-          let params = {
-            id: this.active_project,//项目id
-          }
-          this.export_selectFile_data(params)//附件列表
+          this.export_selectFile_data()//附件列表
         } else if (resp.code == 2201) {
           this.$message({
             message: resp.msg,
@@ -487,6 +476,45 @@ export default {
         console.log(err);
       })
     },
+
+
+    // 删除
+    remove_list (id) {
+      this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          let params = {
+            fileId: id,
+          }
+          this.file_remove(params);
+        })
+        .catch(() => { });
+
+    },
+    // 删除接口
+    file_remove (params) {
+      file_remove_list(params).then(resp => {
+        console.log(resp.data);
+        if (resp.code == 0) {
+          // 上传失败
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          });
+          this.export_selectFile_data();//刷新列表
+        } else {
+          // 上传失败
+          this.$message({
+            message: resp.data.msg,
+            type: 'error'
+          });
+        }
+      })
+    }
+
   },
 
 }
@@ -578,6 +606,7 @@ export default {
 .flex_end ul li {
   width: 100%;
   display: flex;
+  align-items: center;
   color: #4f9fdd;
   margin-bottom: 20px;
 }

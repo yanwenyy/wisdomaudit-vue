@@ -47,3 +47,14 @@ export function export_selectFile (data) {
     data,
   })
 }
+// 删除
+// 删除附件
+export function file_remove_list (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/attachment/fileRemove`,
+    method: 'post',
+    isLoading: false,
+    data: qs.stringify(data),
+  })
+}

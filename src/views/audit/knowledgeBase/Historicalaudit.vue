@@ -42,29 +42,34 @@
         <!-- 历史审计发现 -->
         <el-table-column prop="historyAuditFindDescribe"
                          align="center"
+                         show-overflow-tooltip
                          label="历史审计发现描述">
         </el-table-column>
         <!-- 被审计单位 -->
         <el-table-column prop="auditedEntityName"
                          align="center"
+                         show-overflow-tooltip
                          label="被审计单位">
         </el-table-column>
 
         <!-- 发现人 -->
         <el-table-column prop="findPeople"
                          align="center"
+                         show-overflow-tooltip
                          label="发现人">
         </el-table-column>
 
         <!-- 审计依据 -->
         <el-table-column prop="auditBasisName"
                          align="center"
+                         show-overflow-tooltip
                          label="审计依据">
 
         </el-table-column>
         <!-- 发现时间 -->
         <el-table-column prop="findData"
                          align="center"
+                         show-overflow-tooltip
                          label="发现时间">
           <template slot-scope="scope">
             <p>{{scope.row.findData |filtedate}}</p>
@@ -73,12 +78,14 @@
         <!-- 发现来源 -->
         <el-table-column prop="source"
                          align="center"
+                         show-overflow-tooltip
                          label="发现来源 ">
         </el-table-column>
 
         <!-- 风险金额 -->
         <el-table-column prop="riskAmount"
                          align="center"
+                         show-overflow-tooltip
                          label="风险金额">
         </el-table-column>
 
@@ -231,7 +238,7 @@
 
           </el-form-item>
 
-          <!-- 发现来源 -->
+          <!-- 发现来源 -->3
           <el-form-item>
             <p>发现来源：</p>
             <el-input v-model="add.source"

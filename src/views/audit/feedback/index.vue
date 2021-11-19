@@ -10,6 +10,7 @@
                 style="width: 100%">
         <el-table-column prop="createTime"
                          align="center"
+                         show-overflow-tooltip
                          label="发起日期">
           <template slot-scope="scope">
             <p>{{scope.row.createTime | filtedate}}</p>
@@ -17,18 +18,22 @@
         </el-table-column>
         <el-table-column prop="projectNumber"
                          align="center"
+                         show-overflow-tooltip
                          label="项目名称">
         </el-table-column>
         <el-table-column prop="title"
                          align="center"
+                         show-overflow-tooltip
                          label="标题">
         </el-table-column>
         <el-table-column prop="launchPeople"
                          align="center"
+                         show-overflow-tooltip
                          label="发起人">
         </el-table-column>
         <el-table-column prop="status"
                          align="center"
+                         show-overflow-tooltip
                          label="状态">
           <template slot-scope="scope">
             {{
