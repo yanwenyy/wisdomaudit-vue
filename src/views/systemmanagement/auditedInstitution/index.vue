@@ -301,7 +301,7 @@ export default {
           if ("download" in document.createElement("a")) {
             // 非IE下载
             const elink = document.createElement("a");
-            elink.download = fileName; //下载后文件名
+            elink.download = '模板.xlsx'; //下载后文件名
             elink.style.display = "none";
             elink.href = window.URL.createObjectURL(blob);
             document.body.appendChild(elink);
