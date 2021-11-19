@@ -78,6 +78,7 @@
                       v-model="scope.row.peopleTableUuid"
                       filterable
                       @change="selectChange(scope.row)"
+                      :disabled = "userRole == '3'"
                     >
                       <el-option
                         v-for="item in tableData"
