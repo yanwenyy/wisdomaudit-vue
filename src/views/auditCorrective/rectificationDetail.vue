@@ -38,7 +38,14 @@
           placeholder="请输入"
         ></el-input>
       </el-form-item>
-      <el-form-item class="itemTwo zgLabel" label="整改责任部门及联系人:">
+      <el-form-item class="itemTwo zgLabel" label="整改责任部门:">
+        <el-input
+          :disabled="ifLook"
+          v-model="formState.correctDeptName"
+          placeholder="请输入"
+        ></el-input>
+      </el-form-item>
+      <el-form-item class="itemTwo" label="整改联系人:">
         <el-input
           :disabled="ifLook"
           v-model="formState.correctPersonName"
@@ -204,7 +211,8 @@
              problemDesc:'',
              correctAdvice:'',
              correctLimit:'',
-             correctPerson:'',
+             correctDeptName:'',
+             correctPersonName:'',
              correctPlan:'',
              correctResult:'',
              unfinishedReason:'',
