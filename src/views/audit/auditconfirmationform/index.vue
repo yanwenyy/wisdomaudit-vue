@@ -205,8 +205,8 @@
           </tr>
           <tr>
             <td>被审计(调查)单位确认意见</td>
-            <!--<td colspan="5"><el-input  :disabled="ifLook" type="textarea" v-model="formDetail.auditOrgOpinion"></el-input></td>-->
-            <td colspan="5">{{formDetail.auditOrgOpinion}}</td>
+            <td colspan="5"><el-input  :disabled="ifLook" type="textarea" v-model="formDetail.auditOrgOpinion"></el-input></td>
+            <!--<td colspan="5">{{formDetail.auditOrgOpinion}}</td>-->
           </tr>
           <tr>
             <td>相关负责人(签名)</td>
@@ -302,6 +302,7 @@ export default {
       var that=this;
       get_userInfo().then(resp => {
         that.userInfo = resp.data;
+        that.formDetail.reviewerName=that.userInfo.managementProject.projectChargemanName;
         that.formDetail.auditorsName=this.userInfo.user.realName;
         var sj=new Date().toLocaleDateString().split('/');
         sj[1]=sj[1]<10?'0'+sj[1]:sj[1];
@@ -418,8 +419,8 @@ export default {
           this.confirmationDialogVisible = true;
         } else if (this.projectType == 'zxsj') {
           this.confirmationDialogVisibleZx = true;
+          this.formDetail.auditOrgOpinion="情况属实\n"+this.formDetail.auditOrgOpinion
         }
-
       })
     },
     getLook (row, column, event) {
@@ -536,7 +537,11 @@ export default {
         principalName: '',
         principalPost: '',
         signatureDate: '',
+      };
+      if(this.$refs['addForm']){
+        this.$refs['addForm'].resetFields();
       }
+
     },
   },
 };

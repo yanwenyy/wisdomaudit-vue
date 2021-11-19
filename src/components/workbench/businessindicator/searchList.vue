@@ -131,7 +131,7 @@
         <el-form-item label="资料提供部门" prop="dataProvidingDepartment">
           <el-select v-model="temp.dataProvidingDepartment" placeholder="请选择"
                      @change="
-                      getName(
+                      getName2(
                         temp.dataProvidingDepartment	,
                         selectList.zltgbm,
                         'dataProvidingDepartmentName',
@@ -139,9 +139,9 @@
                     ">
             <el-option
               v-for="item in selectList.zltgbm"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              :key="item.auditOrgUuid"
+              :label="item.orgName"
+              :value="item.auditOrgUuid"
             >
             </el-option>
           </el-select>
@@ -189,6 +189,7 @@
       '@SDMOBILE/api/shandong/ls'
   import {select_loadcascader} from
       '@SDMOBILE/api/shandong/data'
+  import {loadaudittorg,} from "@SDMOBILE/api/shandong/projectmanagement.js";
   export default {
     name: "search-list",
     data() {
@@ -278,6 +279,14 @@
           ).label;
         }
       },
+      getName2(id,list,name){
+        if(id){
+          this.$forceUpdate();
+          this.temp[name] = list.find(
+            (item) => item.auditOrgUuid == id
+          ).orgName;
+        }
+      },
       //指标新增确定按钮点击
       addSave(){
         this.$refs['dataForm'].validate((valid) => {
@@ -325,7 +334,10 @@
         this.dialogFormVisible=true;
         this.getSelList("indexType",'zblx')
         this.getSelList("IndexUnit",'dw')
-        this.getSelList("Department",'zltgbm')
+        loadaudittorg({}).then((resp) => {
+          this.selectList.zltgbm = resp.data;
+        });
+        // this.getSelList("Department",'zltgbm')
         this.getSelList("caliberFormula",'qskjgs')
       },
       // 初始化
