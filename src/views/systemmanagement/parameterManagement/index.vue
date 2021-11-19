@@ -169,11 +169,11 @@
                   </el-row>
                   <el-row>
                     <el-col :offset="2" :span="20">
-                      <el-form-item label="字典编码" prop="dictcode">
+                      <el-form-item label="字典编码" prop="dictcode" >
                         <!-- <span v-if="this.form.uuid">{{
                           this.form.dictcode
                         }}</span> -->
-                        <el-input v-model="form.dictcode"></el-input>
+                        <el-input v-model="form.dictcode" :disabled="isInput"></el-input>
                       </el-form-item>
                     </el-col>
                   </el-row>
@@ -323,6 +323,7 @@ export default {
         pageSize: 10,
       },
       isdisabled: false,
+      isInput:false, //编辑字典编码
     };
   },
   created() {
@@ -459,7 +460,6 @@ export default {
 
     // 增加
     append(data) {
-      console.log(data);
       if (this.editpanel) {
         return this.$message({
           showClose: true,
@@ -471,6 +471,7 @@ export default {
       this.form.uuid = this.form.dictName = this.form.dictCode = "";
       this.editpanel = true;
       this.editicon = false;
+      this.isInput = false;
     },
 
     // 编辑
@@ -478,6 +479,7 @@ export default {
       if (this.treeData.dictname !== "" && this.treeData.dictcode !== "") {
         this.editpanel = true;
         this.editicon = false;
+        this.isInput = true;
         this.form = JSON.parse(JSON.stringify(this.treeData)); // clone到form，避免双向绑定
       } else {
         this.$message.warning("请选择要编辑的字典！");

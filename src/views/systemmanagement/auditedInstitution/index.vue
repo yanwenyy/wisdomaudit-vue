@@ -1,7 +1,7 @@
 <template>
   <div class="auditedInstitution">
     <el-row :gutter="24">
-      <el-col :span="6">
+      <el-col :span="6" class="filterTree" >
         <el-input placeholder="输入关键字进行过滤" v-model="filterText">
         </el-input>
 
@@ -273,9 +273,11 @@ export default {
         },
       }).then((resp) => {
         console.log(resp);
-        if(resp.data.code == 0){
+        if(resp.data.data == 'SUCCESS'){
           this.$message.success("文件导入成功！")
           this.getauditOrgList(this.queryInfo);
+        }else{
+          this.$message.info("请检查文件格式以及导入数据是否重复！")
         }
       });
     },
@@ -289,7 +291,6 @@ export default {
       })
         .then((res) => {
           const content = res.data;
-          console.log(res);
           const blob = new Blob([content], {
             type: "application/octet-stream,charset=UTF-8",
           });
@@ -394,6 +395,9 @@ export default {
   border-radius: 0 5px 5px 0;
 }
 .search >>> .el-input__inner::-webkit-input-placeholder {
+  color: #c0c4cc !important;
+}
+.filterTree >>> .el-input__inner::-webkit-input-placeholder {
   color: #c0c4cc !important;
 }
 </style>
