@@ -1164,15 +1164,7 @@ export default {
 
       });
     }else {
-      var that=this;
-      let p = new Promise(function(reslove,reject){
-        that.get_user();
-        reslove(111)
-      });
-      p.then((data)=>{
-        that.defaultActive = that.userInfo.userRole == '1' || that.userInfo.userRole == '3' ? '1-1' : '2-1';
-        that.index = that.userInfo.userRole == '1' || that.userInfo.userRole == '3' ? '1-1' : '2-1';
-      });
+      this.get_user(true);
     }
     this.getprojectList(this.queryManage);
     this.thematicSelect(this.thematic);
@@ -1183,10 +1175,14 @@ export default {
   },
   methods: {
     //获取当前登录人信息
-    get_user() {
+    get_user(ifMounted) {
       get_userInfo().then((resp) => {
         this.userInfo = resp.data;
         this.queryProject.condition.peopleTableUuid = this.userInfo.people.userId;
+        if(ifMounted){
+          this.defaultActive = this.userInfo.userRole == '1' || this.userInfo.userRole == '3' ? '1-1' : '2-1';
+          this.index = this.userInfo.userRole == '1' || this.userInfo.userRole == '3' ? '1-1' : '2-1';
+        }
       });
     },
     filterMethod(query, item) {
