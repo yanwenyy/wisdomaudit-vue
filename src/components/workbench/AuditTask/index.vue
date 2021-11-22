@@ -1258,7 +1258,7 @@ export default {
 
       arr: [],//旧表单
       arr2: [],//新表单 //核实后的新表单数据
-
+      loading_data: false,
 
       // 新版附件详情
       file_new: [],
@@ -1384,7 +1384,7 @@ export default {
     // 删除 接口
     fileRemove (params) {
       task_fileRemove(params).then(resp => {
-        console.log(resp);
+
       })
     },
     // 新增自建任务 保存
@@ -1417,7 +1417,7 @@ export default {
                 // 上传成功
                 if (resp.data.code == 0) {
                   this.success_btn = 0;//显示加载按钮  0成功  1 loaging
-                  // console.log(resp.data.data);
+                  // 
                   this.Upload_file = resp.data.data;//上传成功大的文件
                   // 提交步骤
                   let params1 = {
@@ -1492,7 +1492,7 @@ export default {
             // 上传成功
             if (resp.data.code == 0) {
               this.success_btn = 0;//显示加载按钮  0成功  1 loaging
-              // console.log(resp.data.data);
+              // 
               this.Upload_file = resp.data.data;//上传成功大的文件
               // var upList = this.edit_file_list.concat(this.Upload_file);
               var upList = [...this.edit_file_list, ...this.Upload_file];
@@ -1528,7 +1528,7 @@ export default {
 
               this.edit_data_update(params2);//编辑
             } else {
-              console.log(resp);
+
               // 上传失败
               this.$message({
                 message: resp.data.msg,
@@ -1573,14 +1573,14 @@ export default {
     new_add (params) {
       // 新增
       task_add(params).then(resp => {
-        // console.log(resp);
+        // 
         if (resp.code == 0) {
           this.$message({
             message: '新增成功',
             type: 'success'
           });
           this.dialogVisible_zj = false;//关闭当前弹窗
-          // 刷新自建列表
+          // 刷新外层列表
           let params = {
             pageNo: this.params.pageNo,
             pageSize: this.params.pageSize,
@@ -1668,7 +1668,7 @@ export default {
       task_details(params).then(resp => {
         this.edit_details = resp.data
         this.save_zj_query = this.edit_details
-        // console.log(this.edit_details);
+        // 
         let params2 = {
           pageNo: 1,
           pageSize: 10,
@@ -1691,7 +1691,7 @@ export default {
     },
     // 列表 附件详情  新版
     file_list_details (params) {
-      console.log(params);
+
       projectRel_taskAttachment(params).then(resp => {
         this.file_new = resp.data;
         this.attachmentList1 = resp.data.attachmentList1;
@@ -1760,7 +1760,7 @@ export default {
           navigator.msSaveBlob(blob, fileName)
         }
       }).catch((err) => {
-        console.log(err);
+
       })
     },
 
@@ -1814,7 +1814,6 @@ export default {
     select_data (index) {
       this.date_index = index
       this.data_active = index
-      console.log(this.date_index);
       // 结果列表
       let params3 = {
         basePageParam: {
@@ -1840,7 +1839,6 @@ export default {
     // 结果弹窗 结果列表
     data_tab_list (params) {
       task_selectTable(params).then(resp => {
-        // this.loading = true
         this.status_data_list_data = resp.data;
         this.status_data_list = resp.data.records
         this.arr = resp.data.records[0].result //原列表
@@ -1848,7 +1846,6 @@ export default {
         // arr.forEach(item => {
         //   this.$set(item, 'yes_no', false)//是否问题
         // })
-
       })
     },
     // 合并 结果列表 新旧数表单
@@ -1861,14 +1858,11 @@ export default {
             this.$set(item, 'isProbleam', i.isProbleam)//是否问题 0否 1.是
             this.$set(item, 'count', i.count)//附件数
             this.$set(item, 'resultDetailProjectRelId', i.resultDetailProjectRelId)//核实信息表主键
-
           }
         })
       })
+      // 
     },
-
-
-
     // 新增核实 表头
     new_table () {
       let params_query = {
@@ -1880,7 +1874,6 @@ export default {
       };
       projectRel_pgeList(params_query).then(resp => {
         this.arr2 = resp.data.records
-        console.log(this.arr2);
         if (this.arr2) {
           this.merge();//合并新旧
         }
@@ -1940,9 +1933,6 @@ export default {
         this.$message.info("请选择一条进行数据核实");
         return false
       }
-
-      console.log(this.multipleSelection_data_list);
-
       this.multipleSelection_data_list.forEach(item => {
         if (item.isProbleam == 1) {
           this.$message.info("请选择未核实的结果进行核实");
@@ -1976,8 +1966,6 @@ export default {
         // }
       }
     },
-
-
     // 核实上传 保存附件
     verify_save (verify_model) {
       this.isDisable = true
@@ -2006,18 +1994,18 @@ export default {
               // 上传成功
               if (resp.data.code == 0) {
                 this.success_btn2 = 0;//显示加载按钮  0成功  1 loaging
-                // console.log(resp.data.data);
+                // 
                 this.Upload_file2 = resp.data.data;//上传成功大的文件
 
                 // var arr = this.multipleSelection_data_list.map(function (item, index) {
                 //   return item.resultDetailId;
                 // }).join(",");
-                // console.log(this.multipleSelection_data_list);
-                console.log(this.multipleSelection_data_list);
+                // 
+
                 var arr = this.multipleSelection_data_list.map(function (item, index) {
                   return item.onlyuuid;
                 }).join(",");
-                // console.log(arr);
+                // 
                 // 提交
                 let resultDetailProjectRelDto = {
                   handleIdea: this.verify_model.handleIdea,//核实信息
@@ -2072,9 +2060,8 @@ export default {
 
     // 核实保存
     verify_preservation (resultDetailProjectRelDto) {
-
       task_data_verify(resultDetailProjectRelDto).then(resp => {
-        console.log(resp);
+
         if (resp.code == 0) {
           this.$message({
             message: "核实成功",
@@ -2083,9 +2070,9 @@ export default {
           this.dialogVisible_data_verify = false;//关闭核实  弹窗
 
           // 新表单
-          this.new_table();//新接口 table
+          // this.new_table();//新接口 table
           // 刷新任务列表
-          let params = {
+          let params1 = {
             pageNo: this.params.pageNo,
             pageSize: this.params.pageSize,
             condition: {
@@ -2095,7 +2082,35 @@ export default {
               // taskType: 2//自建任务列表
             }
           }
-          this.list_data(params);
+          this.list_data(params1);
+          let params2 = {
+            runTaskRelUuid: this.paramTaskUuid,
+            // runTaskRelUuid: '8ee17c4b77c51747207aab278d804381'
+          }
+          this.data_tab(params2);//结果分类
+
+          // 结果列表
+          let params3 = {
+            basePageParam: {
+              condition: {
+                keyword: null,
+                runResultTableUuid: this.status_data[this.date_index].runResultTableUuid,
+                // runTaskRelUuid: this.status_data[this.date_index].runTaskRelUuid,
+                // runTaskRelUuid: this.status_data[this.date_index].paramTaskUuid,
+                runTaskRelUuid: this.paramTaskUuid,
+                resultTableName: this.status_data[this.date_index].resultTableName,//- 实际表名
+                resultShowName: this.status_data[this.date_index].resultShowName,
+                tableType: this.status_data[this.date_index].tableType,//  主副表标识, 主表 = 1、副表1 = 2、副表2 = 3···
+                dataCount: 1
+              },
+              pageNo: this.basePageParam_query.pageNo, //当前页数
+              pageSize: this.basePageParam_query.pageSize //分页数量
+            },
+            filterSql: "undefined",
+          }
+
+          this.data_tab_list(params3)// 结果列表
+
         } else {
           this.$message({
             message: resp.msg,
@@ -2229,7 +2244,7 @@ export default {
     // 保存接口
     add_task_problems_save (problemList) {
       task_problems_save(problemList).then(resp => {
-        console.log(resp);
+
         if (resp.code == 0) {
           this.$message({
             message: "新增成功",
@@ -2346,7 +2361,7 @@ export default {
     // 删除接口
     task_problems_delete_btn (params) {
       task_problems_delete(params).then(resp => {
-        console.log(resp);
+
         if (resp.code == 0) {
           this.$message({
             message: "删除成功",
@@ -2382,7 +2397,7 @@ export default {
     },
     // 引用知识库
     // quote_knowledge () {
-    //   console.log('引用知识库');
+    //   
     // },
     // 设置参数
     setParameters (data) {
@@ -2392,12 +2407,12 @@ export default {
       let modelUuids = [this.modelId];
       // let modelUuids = ['3e9ea48186fef8481a88c85891908c4e'];
       task_findModelList(modelUuids).then(resp => {
-        console.log(resp.data);
+
         if (resp.code == 0) {
 
           // 有设置参数
           if (resp.data[0].parammModelRel.length !== 0) {
-            console.log(resp);
+
             this.arr = [JSON.parse(resp.data[0].parammModelRel[0].paramValue)];
             this.sql = resp.data[0].sqlValue;
             this.setParametersDialogVisible = true;//显示设置参数
@@ -2414,7 +2429,7 @@ export default {
             }, 200);
           } else {
             // 没有设置参数
-            console.log(resp);
+
             this.arr = [];
             this.sql = resp.data[0].sqlValue;
             this.setParametersDialogVisible = true;//显示设置参数
@@ -2467,7 +2482,7 @@ export default {
 
       // 运行接口
       Task_run(runTaskRel).then(resp => {
-        console.log(resp.data);
+
         this.runTaskRelUuid = resp.data;//参数任务id
         if (resp.code == 0) {
           this.$message({
@@ -2502,7 +2517,7 @@ export default {
     // 更新状态
     update_setting (params2) {
       Task_update_status(params2).then(resp => {
-        console.log(resp.data);
+
         if (resp.code == 0) {
           // this.$message({
           //   message: "运行成功",
@@ -2530,7 +2545,7 @@ export default {
         runTaskRelId: this.runTaskRelId,
       }
       Task_data_status(params).then(resp => {
-        console.log(resp);
+
       })
     },
 
@@ -2540,7 +2555,7 @@ export default {
         if (item.peopleTable.peopleName === val.peopleName) {//筛选出匹配数据
           let peopleTableUuid = item.peopleTable.peopleTableUuid.replace('{', '').replace('}', '').trim();
           this.save_zj_query.peopleTableUuid = peopleTableUuid;
-          console.log(peopleTableUuid);
+
         }
       })
       let params2 = {
@@ -2586,7 +2601,7 @@ export default {
       //   if (item.peopleTable.peopleName === val) {//筛选出匹配数据
       //     let peopleTableUuid = item.peopleTable.peopleTableUuid.replace('{', '').replace('}', '').trim();
       //     this.save_zj_query.peopleTableUuid = peopleTableUuid;
-      //     console.log(this.save_zj_query.peopleTableUuid);
+      //     
       //   }
       // })
       for (let i = 0; i < this.select_list.length; i++) {
@@ -2612,7 +2627,7 @@ export default {
             ids: ids
           }
           task_remove(params).then(resp => {
-            console.log(resp);
+
             if (resp.code == 0) {
               this.$message({
                 message: '删除成功',

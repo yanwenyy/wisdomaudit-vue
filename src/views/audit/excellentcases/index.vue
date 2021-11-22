@@ -232,14 +232,41 @@
             </el-col>
           </el-row>
 
-          <!-- <el-table :data="file_table.records"
+          <el-table :data="file_table"
                     v-loading="loading_file_table"
                     :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
-                    style="width: 100%;">
+                    style="width: 100%;"
+                    @selection-change="handleSelectionChange_operation">
+
+            >
             <el-table-column type="selection"
                              width="55">
             </el-table-column>
-          </el-table> -->
+            <el-table-column prop="name"
+                             align="center"
+                             show-overflow-tooltip
+                             label="文件名称">
+            </el-table-column>
+
+            <el-table-column prop="name"
+                             align="center"
+                             show-overflow-tooltip
+                             label="上传时间">
+            </el-table-column>
+
+            <el-table-column prop="name"
+                             align="center"
+                             show-overflow-tooltip
+                             label="上传人">
+            </el-table-column>
+
+            <el-table-column prop="name"
+                             align="center"
+                             show-overflow-tooltip
+                             label="下载次数">
+            </el-table-column>
+
+          </el-table>
 
         </div>
 
@@ -318,10 +345,11 @@ export default {
         label: 'label'
       },
 
+      loading_file_table: false,//资料右侧列表loading
       file_table: [
-        // records:[],
+        { name: '11' }
       ],// 文件列表
-
+      data_list_check: [],//列表多选
 
 
 
@@ -381,6 +409,14 @@ export default {
     handleNodeClick (data) {
       console.log(data);
     },
+    // 文件管理列表选择
+    handleSelectionChange_operation (val) {
+      this.data_list_check = val
+    },
+
+
+
+
     // 删除
     remove () {
       this.isDisable = true
@@ -481,7 +517,6 @@ export default {
   display: flex;
 }
 .left_data_list {
-  border: 1px solid red;
   min-width: 300px;
 }
 .el-tree {
@@ -519,12 +554,11 @@ export default {
 .right_table {
   flex: 1;
   padding: 0 10px 0 20px;
-  border: 1px solid blue;
   box-sizing: border-box;
 }
 .btn_type {
-  border: 1px solid black;
   display: flex;
   justify-content: space-around;
+  margin-bottom: 20px;
 }
 </style>>
