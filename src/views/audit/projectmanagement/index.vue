@@ -85,12 +85,12 @@
         show-overflow-tooltip
       >
       </el-table-column>
-      <el-table-column
+      <!-- <el-table-column
         align="center"
         prop="specialName"
         label="专题"
         show-overflow-tooltip
-      ></el-table-column>
+      ></el-table-column> -->
       <el-table-column
         align="center"
         prop="fieldName"
@@ -287,11 +287,13 @@
             </el-form-item>
           </el-row> -->
           <el-row>
-            <el-form-item label="ㅤㅤㅤ领域:" prop="fieldName">
+            <el-form-item label="ㅤㅤㅤ领域:" prop="field">
               <el-select
                 placeholder="请选择"
-                v-model="addProjectManagement.fieldName"
+                v-model="addProjectManagement.field"
+                value-key="addProjectManagement.field"
                 @change="selectField"
+                multiple
                 filterable
               >
                 <el-option
@@ -723,11 +725,13 @@
             </el-form-item>
           </el-row> -->
           <el-row>
-            <el-form-item label="ㅤㅤㅤ领域:" prop="fieldName">
+            <el-form-item label="ㅤㅤㅤ领域:" prop="field">
               <el-select
                 placeholder="请选择"
-                v-model="addProjectManagement.fieldName"
+                v-model="addProjectManagement.field"
                 @change="selectField"
+                multiple
+                filterable
               >
                 <el-option
                   v-for="item in areasOption"
@@ -2118,14 +2122,9 @@ export default {
     },
     //领域下拉框
     selectField(val) {
-      this.addProjectManagement.field = val;
-      this.addprojectjing.field = val;
-      for (let i = 0; i < this.areasOption.length; i++) {
-        if (val == this.areasOption[i].value) {
-          this.addProjectManagement.fieldName = this.areasOption[i].label;
-          this.addprojectjing.fieldName = this.areasOption[i].label;
-        }
-      }
+      console.log(val.toString());
+      let field = val.toString();
+      console.log(this.addProjectManagement);
     },
     selectorg(val) {
       this.addprojectjing.auditOrgUuid = val;
@@ -2234,6 +2233,7 @@ export default {
           setTimeout(() => {
             this.isDisable = false;
           }, 2000);
+          this.addProjectManagement.field = this.addProjectManagement.field.toString();
           addProject(this.addProjectManagement).then((resp) => {
             this.$message.success("添加项目成功！");
             this.addDialogVisible = false;
@@ -2260,6 +2260,7 @@ export default {
         this.prjType = 1;
         editProject(rows.managementProjectUuid).then((resp) => {
           this.addProjectManagement = resp.data;
+          this.addProjectManagement.field = this.addProjectManagement.field.split(',');
         });
       }
     },
@@ -2271,6 +2272,7 @@ export default {
           setTimeout(() => {
             this.isDisable = false;
           }, 2000);
+          this.addProjectManagement.field = this.addProjectManagement.field.toString();
           editProjectUpdata(this.addProjectManagement).then((resp) => {
             this.$message.success("修改成功！");
             this.editDialogVisible = false;

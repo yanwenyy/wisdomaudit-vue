@@ -135,6 +135,7 @@
               <el-form-item label-width="80px"
                             prop="beginTime">
                 <el-date-picker type="date"
+                                value-format=“yyyy-MM-dd”
                                 v-model="save_project_prople.beginTime"
                                 style="margin-right:15px;"
                                 placeholder="选择日期">
@@ -143,6 +144,7 @@
               <el-form-item label-width="80px"
                             prop="endTime">
                 <el-date-picker type="date"
+                                value-format=“yyyy-MM-dd”
                                 v-model="save_project_prople.endTime"
                                 placeholder="选择日期">
                 </el-date-picker>

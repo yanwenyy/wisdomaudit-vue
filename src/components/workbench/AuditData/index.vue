@@ -1,5 +1,5 @@
 <template>
-  <div class="sjzl anmition_show">
+  <div class="sjzl ">
     <!-- tab 切换 -->
     <el-tabs v-model="activeName"
              @tab-click="handleClick">
