@@ -34,6 +34,17 @@
       </div>
     </el-row>
     <auditbasis ref="listShow"></auditbasis>
+    <Vault
+      :vaultV="vaultV"
+      :sceneId="sceneId"
+      :approvers="approvers"
+      :maxTime="maxTime"
+      :dqtime="dqtime"
+      :account="account"
+      :appSessionId="appSessionId"
+      @changevault="changevault"
+      @download="download"
+    ></Vault>
   </div>
 </template>
 
@@ -97,7 +108,7 @@ export default {
           return;
         } else {
           console.log(rep);
-          this.approvers = rep.approvers;
+          this.approvers = rep.approvers || '';
           this.maxTime = rep.maxTime;
           this.dqtime = new Date();
           this.account = resp.data.data.account;
