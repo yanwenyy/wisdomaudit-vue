@@ -24,7 +24,7 @@ export function  getTypes (data) {
 export function  getSignature (data) {
   return request({
     baseURL: baseURL,
-    url:  `/dataAuditApi/getSignature?user=${data}`,
+    url:  `/dataAuditApi/getSignature?userName=${data}`,
     method: 'get',
   })
 }
