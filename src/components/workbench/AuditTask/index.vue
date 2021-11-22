@@ -1934,7 +1934,7 @@ export default {
         return false
       }
       this.multipleSelection_data_list.forEach(item => {
-        if (item.isProbleam == 1) {
+        if (item.isProbleam == 0) {
           this.$message.info("请选择未核实的结果进行核实");
           return false
         } else {
