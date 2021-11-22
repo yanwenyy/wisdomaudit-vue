@@ -62,7 +62,8 @@
 </template>
 
 <script>
-import { getTabList ,getTypes } from '@SDMOBILE/api/risk/personage'
+import { getTabList ,getTypes ,getSignature, getdataAuditApi} from '@SDMOBILE/api/risk/personage'
+import { mapGetters } from 'vuex'
 export default {
   name: "personalRiskScan",
 
@@ -92,6 +93,12 @@ export default {
     this.gettapylist()
   
   },
+   computed: {
+    ...mapGetters([
+      'name',
+    
+    ])
+  },
   mounted() {
 
   
@@ -117,13 +124,27 @@ export default {
 // 获取二级分类
       async gettapylist(){
         try {
-           let res = await getTypes('area=1');
-        this.options= res.data
-        this.value= res.data[0].type
+        let result =  await getSignature(this.name)
+        if(result.status == 0){
+
+            let req = await getdataAuditApi(result.date)
+
+            if(req.status == 0){
+        let rem = await getTypes('area=1');
+        this.options= rem.data
+        this.value= rem.data[0].type
         this.gettablelist(this.value)
+
+            }
+
+
+        }
+
+
+
           
         } catch (error) {
-          log(error)
+     console.log(error);
           
         }
 
