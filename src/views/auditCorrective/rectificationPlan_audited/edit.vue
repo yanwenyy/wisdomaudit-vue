@@ -129,6 +129,7 @@
           <el-form-item prop="limitEndTime"
                         label="预计整改完成时限：">
             <el-date-picker type="date"
+                            value-format="yyyy-MM-dd"
                             v-model="save.limitEndTime"
                             placeholder="选择日期">
             </el-date-picker>
