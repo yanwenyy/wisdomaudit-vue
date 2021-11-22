@@ -809,6 +809,7 @@
                       placeholder="请选择"
                       v-model="scope.row.projectChargemanName"
                       @change="LeaderSelectEdit(scope.row)"
+                      :disabled="setLeaderDisable"
                     >
                       <el-option
                         v-for="item in projectpeopleoptions"
@@ -983,6 +984,7 @@
                 placeholder="请选择"
                 v-model="addprojectjing.projectChargemanName"
                 @change="selectChargeman"
+                :disabled="setLeaderDisable"
               >
                 <el-option
                   v-for="item in projectpeopleoptions"
@@ -1479,6 +1481,7 @@ export default {
   components: { Pagination },
   data() {
     return {
+      setLeaderDisable:false,//设置组长可编辑
       total: 0,
       isdisabled: true,
       loading: false,
@@ -2122,8 +2125,6 @@ export default {
     },
     //领域下拉框
     selectField(val) {
-      console.log(val.toString());
-      let field = val.toString();
       console.log(this.addProjectManagement);
     },
     selectorg(val) {
@@ -2255,12 +2256,22 @@ export default {
         this.prjType = 2;
         editProject(rows.managementProjectUuid).then((resp) => {
           this.addprojectjing = resp.data;
+           if(this.addprojectjing.isChargemanCanChenge == 0){
+            this.setLeaderDisable = true;
+          }else{
+            this.setLeaderDisable = false;
+          }
         });
       } else {
         this.prjType = 1;
         editProject(rows.managementProjectUuid).then((resp) => {
           this.addProjectManagement = resp.data;
           this.addProjectManagement.field = this.addProjectManagement.field.split(',');
+          if(this.addProjectManagement.isChargemanCanChenge == 0){
+            this.setLeaderDisable = true;
+          }else{
+            this.setLeaderDisable = false;
+          }
         });
       }
     },
