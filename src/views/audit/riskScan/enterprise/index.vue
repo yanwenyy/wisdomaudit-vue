@@ -124,13 +124,17 @@ export default {
 // 获取二级分类
       async gettapylist(){
         try {
-        let result =  getSignature(this.name)
+
+
+          let p = sessionStorage.getItem("store");
+    let q= JSON.parse(p).user.datauserid;
+        let result =  await getSignature(q)
         if(result.status == 0){
 
-            let req =  getdataAuditApi(result.date)
+            let req = await getdataAuditApi(result.data)
 
             if(req.status == 0){
-        let rem = getTypes('area=2');
+        let rem = await getTypes('area=2');
         this.options= rem.data
         this.value= rem.data[0].type
         this.gettablelist(this.value)
@@ -144,7 +148,7 @@ export default {
 
           
         } catch (error) {
-        console.log(error);
+     console.log(error);
           
         }
 
