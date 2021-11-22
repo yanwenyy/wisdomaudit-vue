@@ -456,21 +456,24 @@
           <div v-for="(item, index) in dqbasis.info.arr"
                :key="'dqbasisarr' + index">
             <div slot="header"
-                 class="clearfix">
-              <span style="font-weight: bold"
+                 class="clearfix" style="padding:5px 0;">
+              <span style="font-weight: bold;"
                     :style="
                   item.contentLev == 1
                     ? 'font-size:18px;'
                     : item.contentLev == 2
                     ? 'font-size:16px;'
                     : 'font-size:14px;'
-                ">{{ item.label }}</span>
-              <el-button style="padding: 3px 0 3px 20px; color: #ffba00"
-                         v-if="item.contentLev == 3"
-                         @click="choosebasis(item.label)"
-                         type="text">引用</el-button>
+                    "
+                    v-if="item.contentLev != 3"
+                    >{{ item.label }}</span>
+              
             </div>
-            <p class="">{{ item.attachmentContent }}</p>
+            <el-button style="padding: 3px 0 3px 20px; color: #ffba00;float:right;"
+                         v-if="item.contentLev == 3"
+                         @click="choosebasis(item.attachmentContent)"
+                         type="text">引用</el-button>
+            <p class="" v-if="item.contentLev == 3">{{ item.attachmentContent }}</p>
           </div>
         </el-card>
       </div>
