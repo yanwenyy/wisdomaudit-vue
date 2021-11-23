@@ -97,13 +97,14 @@
     <!-- 编辑 -->
     <el-dialog title=""
                center
-               @close='closeDialog'
+               @close="resetForm_verify('save')"
                :visible.sync="dialogVisible_edit"
                width="40%">
       <div class="title">编辑问题</div>
 
       <div class="dialog">
         <el-form ref="save"
+                 :rules="saveRules"
                  :model="save">
           <el-form-item label="主要负责部门："
                         prop="dutyDeptName">
@@ -146,7 +147,8 @@
       <div slot="footer">
         <el-button @click="dialogVisible_edit = false">取 消</el-button>
         <el-button type="primary"
-                   @click="save_btn()">确 定</el-button>
+                   :disabled="isDisable"
+                   @click="save_btn('save')">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -154,7 +156,7 @@
 </template>
 
 <script>
-import { pageList, editProblemCorrect, submitReview } from "@SDMOBILE/api/shandong/rectificationPlan_audited_edit";//lhg
+import { pageList, editProblemCorrect, submitReview, post_rules } from "@SDMOBILE/api/shandong/rectificationPlan_audited_edit";//lhg
 export default {
   components: {},
   data () {
@@ -178,6 +180,24 @@ export default {
         remark: '',//备注
       },
       isDisable: false,//防止重复提交
+      // 添加经责表单校验
+      saveRules: {
+        dutyDeptName: [
+          { required: true, message: "请填写主要部门", trigger: "blur" },
+        ],
+        dutyPersonName: [
+          { required: true, message: "请填写整改责任人", trigger: "blur" },
+        ],
+        planContent: [
+          { required: true, message: "请填写整改计划", trigger: "blur" },
+        ],
+        limitEndTime: [
+          { required: true, message: "请选择预计完成时限", trigger: "change" },
+        ],
+        remark: [
+          { required: true, message: "请填写备注", trigger: "blur" },
+        ],
+      },
 
     }
   },
@@ -228,10 +248,6 @@ export default {
     search_list_details () {
       this.page_list_data();//刷新列表
     },
-    // 关闭
-    closeDialog () {
-      this.save.limitTime = '';//清空时间
-    },
     // 编辑
     edit (data) {
       console.log(data);
@@ -243,7 +259,13 @@ export default {
       this.save.limitEndTime = data.limitEndTime;//预计整改完成时限
       this.save.remark = data.remark;//备注
 
+      this.save = JSON.parse(JSON.stringify(this.save));
+
+      this.$nextTick(() => {
+        this.$refs["save"].clearValidate();
+      });
     },
+
 
     // 提交
     post () {
@@ -254,15 +276,32 @@ export default {
       let params = {
         managementProjectUuid: this.list_query.id
       };
-      submitReview(params).then(resp => {
-        console.log(resp.data);
+      // 判断是否可以审核
+      post_rules(params).then(resp => {
         if (resp.code == 0) {
-          this.$message({
-            message: '提交成功',
-            type: 'success'
-          });
-          // this.page_list_data()//刷新列表
-          this.$router.push({ path: '/auditCorrective/rectificationPlan_audited' })
+          if (resp.data.submitPro == 0) {
+            submitReview(params).then(resp => {
+              console.log(resp.data);
+              if (resp.code == 0) {
+                this.$message({
+                  message: '提交成功',
+                  type: 'success'
+                });
+                // this.page_list_data()//刷新列表
+                this.$router.push({ path: '/auditCorrective/rectificationPlan_audited' })
+              } else {
+                this.$message({
+                  message: resp.msg,
+                  type: 'error'
+                });
+              }
+            })
+          } else {
+            this.$message({
+              message: '请先完善信息再提交',
+              type: 'warning'
+            });
+          }
         } else {
           this.$message({
             message: resp.msg,
@@ -272,17 +311,35 @@ export default {
       })
     },
 
+    // 关闭弹窗
+    resetForm_verify (save) {
+      this.save.limitTime = '';//清空时间
+      this.save = {};
+      this.$refs[save].resetFields();
+    },
     // 保存
-    save_btn () {
-      let params = {
-        dutyDeptName: this.save.dutyDeptName,//主要负责部门
-        dutyPersonName: this.save.dutyPersonName,//整改责任人
-        planContent: this.save.planContent,//整改计划
-        limitEndTime: this.save.limitEndTime,//选择日期
-        remark: this.save.remark,//备注
-        problemCorrectUuid: this.tableData2.problemCorrectUuid,//  problemCorrectUuid
-      };
-      this.post_save(params);
+    save_btn (save) {
+      this.isDisable = true;
+      setTimeout(() => {
+        this.isDisable = false;
+      }, 2000);
+
+      this.$refs[save].validate((valid) => {
+        if (valid) {
+          let params = {
+            dutyDeptName: this.save.dutyDeptName,//主要负责部门
+            dutyPersonName: this.save.dutyPersonName,//整改责任人
+            planContent: this.save.planContent,//整改计划
+            limitEndTime: this.save.limitEndTime,//选择日期
+            remark: this.save.remark,//备注
+            problemCorrectUuid: this.tableData2.problemCorrectUuid,//  problemCorrectUuid
+          };
+          this.post_save(params);
+        } else {
+          this.$message.info("请填写信息");
+          return false;
+        }
+      })
     },
 
     post_save (params) {

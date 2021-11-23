@@ -23,6 +23,18 @@ export function editProblemCorrect (data) {
   })
 }
 
+// 提交验证
+export function post_rules (data) {
+  console.log(data);
+  return request({
+    baseURL: baseURL,
+    url: `/problemCorrect/formIsAll`,
+    method: 'post',
+    isLoading: false,
+    data,
+  })
+}
+
 //提交
 export function submitReview (data) {
   console.log(data);
@@ -34,3 +46,4 @@ export function submitReview (data) {
     data,
   })
 }
+
