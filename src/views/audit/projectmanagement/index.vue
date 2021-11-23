@@ -703,22 +703,14 @@
                     <el-select style="width: 120%"
                                placeholder="请选择"
                                v-model="scope.row.projectChargemanName"
-                               @change="LeaderSelectEdit(scope.row)">
+                               @change="LeaderSelectEdit(scope.row)"
+                               :disabled="setLeaderDisable">
                       <el-option v-for="item in projectpeopleoptions"
                                  :key="item.id"
                                  :label="item.realName"
                                  :value="item.realName">
-                        <el-select style="width: 120%"
-                                   placeholder="请选择"
-                                   v-model="scope.row.projectChargemanName"
-                                   @change="LeaderSelectEdit(scope.row)"
-                                   :disabled="setLeaderDisable">
-                          <el-option v-for="item in projectpeopleoptions"
-                                     :key="item.id"
-                                     :label="item.realName"
-                                     :value="item.realName">
-                          </el-option>
-                        </el-select>
+                      </el-option>
+                    </el-select>
                   </el-form-item>
                 </template>
               </el-table-column>
