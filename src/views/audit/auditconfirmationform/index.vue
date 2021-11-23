@@ -509,6 +509,7 @@ export default {
                     type: "success",
                   });
                   this.confirmationDialogVisible = false;
+                  this.confirmationDialogVisibleZx = false;
                   this.list_data_start();
                 } else {
                   this.$message({
