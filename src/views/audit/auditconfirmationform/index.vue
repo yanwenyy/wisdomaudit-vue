@@ -415,11 +415,12 @@ export default {
       auditConfirmation_getDetail(row.auditConfirmationUuid).then(resp => {
         var datas = resp.data;
         this.formDetail = datas;
-        if (this.projectType == 'jzsj') {
-          this.confirmationDialogVisible = true;
-        } else if (this.projectType == 'zxsj') {
+        if (this.projectType == 'zxsj') {
           this.confirmationDialogVisibleZx = true;
           this.formDetail.auditOrgOpinion="情况属实\n"+this.formDetail.auditOrgOpinion
+        // }else if (this.projectType == 'jzsj') {
+        }else{
+          this.confirmationDialogVisible = true;
         }
       })
     },
