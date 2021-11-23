@@ -7,7 +7,7 @@ const baseURL = '/wisdomaudit'
 export function projectList(data) {
     return request({
       baseURL: baseURL,
-      url: `/managementProject/pageList`,
+      url: `/managementProject/pageList1`,
       method: 'post',
       data
     })
