@@ -109,6 +109,9 @@
         width="200px"
       >
         <template slot-scope="scope">
+          <el-button class="blue sh-btn" type="text" @click="look(scope.row)">
+            查看
+          </el-button>
           <el-button v-if="scope.row.correctStatus=='2'" class="blue sh-btn" type="text" @click="examine(scope.row)">
             审核
           </el-button>
