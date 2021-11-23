@@ -474,6 +474,33 @@
               </el-select>
             </el-form-item>
           </el-row>
+           <el-row>
+            <el-form-item label="被审计单位:" prop="auditOrgName">
+              <el-select
+                placeholder="请选择"
+                v-model="addprojectjing.auditOrgName"
+                @change="selectorg"
+                filterable
+              >
+                <el-option
+                  v-for="item in loadaudittorgoptions"
+                  :key="item.auditOrgUuid"
+                  :label="item.orgName"
+                  :value="item.auditOrgUuid"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="被审计领导:" prop="auditOrgLeader">
+              <el-input
+                placeholder="请输入"
+                v-model="addprojectjing.auditOrgLeader"
+              >
+              </el-input>
+            </el-form-item>
+          </el-row>
           <el-row>
             <el-form-item label="ㅤ项目名称:" prop="projectName">
               <el-input
@@ -537,33 +564,7 @@
               </el-select>
             </el-form-item>
           </el-row> -->
-          <el-row>
-            <el-form-item label="被审计单位:" prop="auditOrgName">
-              <el-select
-                placeholder="请选择"
-                v-model="addprojectjing.auditOrgName"
-                @change="selectorg"
-                filterable
-              >
-                <el-option
-                  v-for="item in loadaudittorgoptions"
-                  :key="item.auditOrgUuid"
-                  :label="item.orgName"
-                  :value="item.auditOrgUuid"
-                >
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-row>
-          <el-row>
-            <el-form-item label="被审计领导:" prop="auditOrgLeader">
-              <el-input
-                placeholder="请输入"
-                v-model="addprojectjing.auditOrgLeader"
-              >
-              </el-input>
-            </el-form-item>
-          </el-row>
+         
           <el-row>
             <el-form-item label="ㅤ项目组长:" prop="projectChargemanName">
               <el-select
@@ -892,6 +893,32 @@
               </el-select>
             </el-form-item>
           </el-row>
+           <el-row>
+            <el-form-item label="被审计单位:" prop="auditOrgName">
+              <el-select
+                placeholder="请选择"
+                v-model="addprojectjing.auditOrgName"
+                @change="selectorg"
+              >
+                <el-option
+                  v-for="item in loadaudittorgoptions"
+                  :key="item.auditOrgUuid"
+                  :label="item.orgName"
+                  :value="item.auditOrgUuid"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="被审计领导:" prop="auditOrgLeader">
+              <el-input
+                placeholder="请输入"
+                v-model="addprojectjing.auditOrgLeader"
+              >
+              </el-input>
+            </el-form-item>
+          </el-row>
           <el-row>
             <el-form-item label="ㅤ项目名称:">
               <el-input
@@ -952,32 +979,7 @@
               </el-select>
             </el-form-item>
           </el-row> -->
-          <el-row>
-            <el-form-item label="被审计单位:" prop="auditOrgName">
-              <el-select
-                placeholder="请选择"
-                v-model="addprojectjing.auditOrgName"
-                @change="selectorg"
-              >
-                <el-option
-                  v-for="item in loadaudittorgoptions"
-                  :key="item.auditOrgUuid"
-                  :label="item.orgName"
-                  :value="item.auditOrgUuid"
-                >
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-row>
-          <el-row>
-            <el-form-item label="被审计领导:" prop="auditOrgLeader">
-              <el-input
-                placeholder="请输入"
-                v-model="addprojectjing.auditOrgLeader"
-              >
-              </el-input>
-            </el-form-item>
-          </el-row>
+         
           <el-row>
             <el-form-item label="ㅤ项目组长:" prop="projectChargemanName">
               <el-select

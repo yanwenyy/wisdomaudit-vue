@@ -9,26 +9,27 @@
       <span class="VaultTitle">远程授权</span>
       <div>
         <el-form
-          ref="form"
+          ref="vaultform"
           class="vault-form"
           :model="form"
+          :rules="rules"
           label-position="right"
           label-width="120px"
         >
-          <el-form-item label="访问方式">
+          <el-form-item label="访问方式" prop="region">
             <!-- <el-select v-model="form.region" placeholder="请选择访问方式">
               <el-option label="区域一" value="shanghai"></el-option>
               <el-option label="区域二" value="beijing"></el-option>
             </el-select> -->
             <el-input v-model="form.region" disabled></el-input>
           </el-form-item>
-          <el-form-item label="申请人">
+          <el-form-item label="申请人" prop="people">
             <el-input v-model="form.people" disabled></el-input>
           </el-form-item>
-          <el-form-item label="截止时间">
+          <el-form-item label="截止时间" prop="endTime">
             <el-input v-model="form.endTime" disabled></el-input>
           </el-form-item>
-          <el-form-item label="审批人">
+          <el-form-item label="审批人" prop="approverAccount">
             <el-select
               v-model="form.approverAccount"
               placeholder="请选择审批人"
@@ -47,7 +48,7 @@
               <el-option label="区域二" value="beijing"></el-option>
             </el-select>
           </el-form-item> -->
-          <el-form-item label="申请原因">
+          <el-form-item label="申请原因" prop="cerReason">
             <el-input
               type="textarea"
               v-model="form.cerReason"
@@ -110,6 +111,11 @@ export default {
         endTime: "",
         beginTime: "",
       },
+      rules: {
+        cerReason: [
+          { required: true, message: "请输入申请原因", trigger: "blur" },
+        ],
+      },
       sortform: {
         info: "",
       },
@@ -118,6 +124,9 @@ export default {
   watch: {
     vaultV(val, oldVal) {
       this.vaultVisible = val;
+      if (!val) {
+        this.resetForm();
+      }
     },
     vaultVisible(val, oldVal) {
       this.changevault(val);
@@ -152,27 +161,36 @@ export default {
   },
   created() {
     let p = sessionStorage.getItem("store");
-    this.form.people = JSON.parse(p).name;
+    this.form.people = JSON.parse(p).user.name;
   },
   methods: {
     changevault(val) {
       this.$emit("changevault", val);
     },
+    resetForm() {
+      this.$refs["vaultform"].resetFields();
+    },
     opensort() {
-      axios({
-        method: "post",
-        url: `/wisdomaudit/treasury/remoteFirstAuth`,
-        data: {
-          account: this.account,
-          sceneId: this.sceneId,
-          approverAccount: this.form.approverAccount, //审批人主账号
-          beginTime: this.form.beginTime,
-          endTime: this.form.endTime,
-          appSessionId: this.appSessionId,
-          cerReason: this.form.cerReason, //原因
-        },
-      }).then((resp) => {
-        this.sortinfoVisible = true;
+      this.$refs["vaultform"].validate((valid) => {
+        if (valid) {
+          axios({
+            method: "post",
+            url: `/wisdomaudit/treasury/remoteFirstAuth`,
+            data: {
+              account: this.account,
+              sceneId: this.sceneId,
+              approverAccount: this.form.approverAccount, //审批人主账号
+              beginTime: this.form.beginTime,
+              endTime: this.form.endTime,
+              appSessionId: this.appSessionId,
+              cerReason: this.form.cerReason, //原因
+            },
+          }).then((resp) => {
+            this.sortinfoVisible = true;
+          });
+        } else {
+          return;
+        }
       });
     },
     secondauth() {

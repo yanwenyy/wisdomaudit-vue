@@ -20,7 +20,7 @@
       value-format='yyyyMM'
       placeholder="选择月"
       @change="changesj"
-    
+
       >
     </el-date-picker>
         </el-col>
@@ -91,18 +91,18 @@ export default {
   },
   created() {
     this.gettapylist()
-  
+
   },
    computed: {
     ...mapGetters([
       'name',
-    
+
     ])
   },
   mounted() {
 
-  
-    
+
+
 
   },
   methods: {
@@ -113,7 +113,7 @@ export default {
     console.log(this.value);
     },
   changesj(val){
-  
+
   this.formdates=this.radio2.excuteUrl+'&tab='+this.radio2.tab+'&month='+val;
 
 
@@ -129,9 +129,9 @@ export default {
           let p = sessionStorage.getItem("store");
     let q= JSON.parse(p).user.datauserid;
         let result =  await getSignature(q)
-        if(result.status == 0){
+        if(result.status == 0 && result.data.url!=null){
 
-            let req = await getdataAuditApi(result.data)
+            let req = await getdataAuditApi(result.data.token)
 
             if(req.status == 0){
         let rem = await getTypes('area=1');
@@ -142,17 +142,23 @@ export default {
             }
 
 
+        }else {
+          let rem = await getTypes('area=1');
+          this.options= rem.data
+          this.value= rem.data[0].type
+          this.gettablelist(this.value)
+
         }
 
 
 
-          
+
         } catch (error) {
      console.log(error);
-          
+
         }
 
-       
+
 
 
     },
@@ -164,7 +170,7 @@ gettime(){
   let value= year+ ''+month
   this.value2=year+ '0'+ month
   this.changesj(value)
-  
+
 
 },
 // 获取模型列表
@@ -176,13 +182,13 @@ gettime(){
         this.radio2= res.data[0]
          if (res.code == 0) {
          this.gettime()
-          
+
         }
- 
-         
+
+
        } catch (error) {
          console.log(error);
-         
+
        }
 
 
