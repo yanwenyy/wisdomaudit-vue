@@ -1088,7 +1088,7 @@ export default {
         //查询组员入参
         condition: {
           managementProjectUuid: "",
-          peopleRole: "2",
+          peopleRole: "",
         },
         pageNo: 1,
         pageSize: 1000,
@@ -1304,7 +1304,7 @@ export default {
       }
       // console.log(this.managementProjectUuid);
       this.addDialogVisible = true;
-      this.getSelectData(1, 1000, this.managementProjectUuid);
+      this.getSelectData(1, 1000);
       // auditModelList(this.modelQuery).then((resp) => {
       //   this.modelTableData = resp.data.records;
       //   this.modelSize = resp.data;
@@ -1416,6 +1416,7 @@ export default {
             }
           }
           this.value.push(e.peopleTableUuid);
+          console.log(this.value);
         });
       });
     },
@@ -1451,7 +1452,7 @@ export default {
       this.data.forEach((item) => {
         if (this.value.indexOf(item.key) != -1) {
           item.managementProjectUuid = this.managementProjectUuid;
-          item.peopleRole = 2;
+          // item.peopleRole = 2;
           // item.peopleTableUuid=this.key;
           selectedPeople.push(item);
         }
@@ -1468,7 +1469,7 @@ export default {
         this.updataPerson.projectId = this.managementProjectUuid;
 
         this.updataPerson.projectMemberships = selectedPeople;
-        // console.log(this.updataPerson);
+        console.log(this.updataPerson);
         //下一步 保存组员
         editprojectMembershipList(this.updataPerson).then((resp) => {
           this.queryleader.condition.managementProjectUuid =
@@ -1517,7 +1518,7 @@ export default {
     },
     prevoius() {
       this.step = 1;
-      this.getSelectData(1, 1000, this.managementProjectUuid); //左侧
+      this.getSelectData(1, 1000); //左侧
       // this.projectMember(this.query);//右侧
     },
     // 模糊查询引入模型名称
