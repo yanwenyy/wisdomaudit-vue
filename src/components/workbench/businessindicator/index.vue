@@ -1,7 +1,7 @@
 <template>
   <div class="indocator">
     <div class="filter-container">
-      <el-button type="primary" @click="add()"
+      <el-button type="primary" @click="add()" v-if="userRole=='1'||userRole=='3'"
         >新增指标</el-button
       >
       <!--<div class="indocator-btn-box" v-if="!ifprojectmanage">-->
@@ -42,8 +42,8 @@
           <td><div class="td-100">{{vtem.contactPerson}}</div></td>
           <td>
             <div class="td-100">
-              <el-button type="text" class="blue" @click="edit(vtem)">编辑</el-button>
-              <el-button type="text" class="red" @click="del(vtem.operatingIndicatorsUuid)">删除</el-button>
+              <el-button type="text" class="blue" @click="edit(vtem)" v-if="userRole=='1'||userRole=='3'">编辑</el-button>
+              <el-button type="text" class="red" @click="del(vtem.operatingIndicatorsUuid)" v-if="userRole=='1'||userRole=='3'">删除</el-button>
             </div>
           </td>
         </tr>
