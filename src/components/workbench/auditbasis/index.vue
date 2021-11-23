@@ -119,7 +119,7 @@
           </div>
         </el-form-item>
         <el-form-item label="附件内容:" prop="content" >
-          <el-input :disabled="ifLook" type="textarea" v-model="formState.content" :rows="6" style="flex:1;" :placeholder="'模板:\n第一章 货币资金审计\n第一节 现金盘点\n第一条 现金的账实是否属实\n1.确定所有现金存放地点和用途\n2.现场键盘库存现金'"></el-input>
+          <el-input :disabled="ifLook" type="textarea" v-model="formState.content" :rows="6" style="flex:1;" :placeholder="'模板:\n第一章 货币资金审计\n第一条 现金的账实是否属实\n1.确定所有现金存放地点和用途\n2.现场键盘库存现金'"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
