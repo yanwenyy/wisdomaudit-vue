@@ -87,19 +87,21 @@
                              label="问题数">
               <template slot-scope="scope">
                 <!-- scope.row.taskType ：1 模型  2自建 -->
-                <div>
-                  <el-button v-if="scope.row.problemsNumber !==0"
-                             @click="probleNum_click(scope.row.auditTaskUuid,scope.row.auditModelName)"
-                             type="text"
-                             style="color: #1371cc;background:none"
-                             size="small">
-                    {{ scope.row.problemsNumber }}
-                  </el-button>
-                  <p style="color: #1371cc"
-                     v-else>
-                    {{ scope.row.problemsNumber }}
-                  </p>
-                </div>
+                <el-button v-if="scope.row.problemsNumber!==0"
+                           @click="probleNum_click(scope.row.auditTaskUuid,scope.row.auditModelName)"
+                           type="text"
+                           style="color: #1371cc;background:none"
+                           size="small">
+                  {{ scope.row.problemsNumber }}
+                </el-button>
+
+                <el-button v-else
+                           type="text"
+                           style="color: #1371cc;background:none;
+    cursor: not-allowed;"
+                           size="small">
+                  0
+                </el-button>
 
               </template>
             </el-table-column>
@@ -148,6 +150,7 @@
                             @show="open_enclosure_details_data(scope.row.auditTaskUuid,scope.row.paramTaskUuid,)"
                             :popper-class="file_new==''?'no-padding':''"
                             trigger="click">
+
                   <ul class="fileList-ul">
                     <li class="tableFileList-title">现场提取资料 </li>
                     <li v-for="(item,index) in file_new.attachmentList1"
@@ -1683,6 +1686,7 @@ export default {
     },
     // 列表查看附件
     open_enclosure_details_data (auditTaskUuid, paramTaskUuid) {
+
       let params2 = {
         auditTaskUuid: auditTaskUuid,
         paramTaskUuid: paramTaskUuid,
@@ -1691,12 +1695,16 @@ export default {
     },
     // 列表 附件详情  新版
     file_list_details (params) {
-
+      this.file_new = [];
       projectRel_taskAttachment(params).then(resp => {
+        console.log(resp);
         this.file_new = resp.data;
         this.attachmentList1 = resp.data.attachmentList1;
         this.attachmentList2 = resp.data.attachmentList2;
         this.attachmentList3 = resp.data.attachmentList3;
+
+
+
       })
     },
     // 结果附件

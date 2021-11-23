@@ -69,7 +69,7 @@
         <ul class="list">
           <li>
             <p>序号：<span>{{Index}}</span></p>
-            <p>领域：<span>{{details_list.special}}</span> </p>
+            <p>领域：<span>{{details_list.field}}</span> </p>
             <p>问题：<span>{{details_list.problem}}</span> </p>
           </li>
           <li>
@@ -79,7 +79,7 @@
           </li>
           <li>
             <p>发现人：<span>{{details_list.problemFindPeople}}</span> </p>
-            <p>管理建议：<span>{{details_list.field}}</span> </p>
+            <p>管理建议：<span>{{details_list.managementAdvice}}</span> </p>
           </li>
         </ul>
       </div>

@@ -1,4 +1,4 @@
-<template>
+3<template>
   <!-- 被审计 -->
   <div>
     <div class="header_dlag">
@@ -107,7 +107,7 @@
 </template>
 
 <script>
-import { pageBsjProblemCorrectList, submitReview, notice } from "@SDMOBILE/api/shandong/rectificationPlan_audited";//lhg
+import { pageBsjProblemCorrectList, submitReview, notice, post_rules } from "@SDMOBILE/api/shandong/rectificationPlan_audited";//lhg
 export default {
   components: {},
   data () {
@@ -178,14 +178,35 @@ export default {
       let params = {
         managementProjectUuid: id
       };
-      submitReview(params).then(resp => {
-        console.log(resp.data);
+
+      // 判断是否可以审核
+      post_rules(params).then(resp => {
         if (resp.code == 0) {
-          this.$message({
-            message: '提交成功',
-            type: 'success'
-          });
-          this.pageBsjProblemCorrectList_data();//刷新列表
+          if (resp.data.submitPro == 0) {
+
+
+            submitReview(params).then(resp => {
+              console.log(resp.data);
+              if (resp.code == 0) {
+                this.$message({
+                  message: '提交成功',
+                  type: 'success'
+                });
+                this.pageBsjProblemCorrectList_data();//刷新列表
+              } else {
+                this.$message({
+                  message: resp.msg,
+                  type: 'error'
+                });
+              }
+            })
+
+          } else {
+            this.$message({
+              message: '请先完善信息再提交',
+              type: 'warning'
+            });
+          }
         } else {
           this.$message({
             message: resp.msg,
