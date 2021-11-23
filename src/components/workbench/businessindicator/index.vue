@@ -151,7 +151,7 @@ import {indexManagement_pageList,indexManagement_edit,indexManagement_delete} fr
 export default {
   components: { Pagination ,SearchList},
   filters: {},
-  props:['active_project'],
+  props:['active_project','userRole'],
   data() {
     return {
       editVisible:false,//编辑经营指标
