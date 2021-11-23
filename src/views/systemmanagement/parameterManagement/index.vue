@@ -234,7 +234,7 @@
             <el-input v-model="dictionaryForm.typename"> </el-input>
           </el-form-item>
           <el-form-item prop="typecode" label="分类编码:">
-            <el-input v-model="dictionaryForm.typecode"> </el-input>
+            <el-input v-model="dictionaryForm.typecode" :disabled="editTypeDis"> </el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -271,6 +271,7 @@ export default {
       mainDialogVisible: false, //维护字典弹框
       add_dictionary: false, //增加编辑字典弹框
       isAdd: 0, //判断是增加还是编辑
+      editTypeDis:false, //编辑分类编码禁用
       dictionaryForm: {
         //增加编辑字典弹框表单数据
         typename: "",
@@ -365,6 +366,7 @@ export default {
     },
     //编辑字典按钮事件
     editDictionary(id) {
+      this.editTypeDis = true;
       this.isAdd = 2;
       this.add_dictionary = true;
       //编辑回显接口
@@ -401,6 +403,7 @@ export default {
     },
     // 增加编辑字典弹框关闭事件
     closeDialog(dictionaryRef) {
+      this.editTypeDis = false;
       this.$refs[dictionaryRef].resetFields();
     },
     //维护字典按钮事件

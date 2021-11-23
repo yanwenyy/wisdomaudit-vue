@@ -1,7 +1,7 @@
 <template>
   <div class="auditConfirmation">
     <el-button type="primary"
-               @click="addConfirmation()">新增确认单</el-button>
+               @click="addConfirmation()" v-if="userRole=='1'||userRole=='2'">新增确认单</el-button>
     <!-- 审计确认单列表 -->
     <el-table @row-dblclick="getLook"
               :header-cell-style="{'background-color': '#F4FAFF',}"
@@ -48,8 +48,8 @@
           <el-button size="small"
                      type="text"
                      class="btnStyle editBtn"
-                     @click="edit(scope.row)">编辑</el-button>
-          <el-upload :show-file-list="false"
+                     @click="edit(scope.row)" v-if="userRole=='1'||userRole=='2'">编辑</el-button>
+          <el-upload v-if="userRole=='1'||userRole=='2'" :show-file-list="false"
                      class="upload-demo inline-block btnStyle"
                      :action="'/wisdomaudit/auditConfirmation/fileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid+'&confirmationFileNumber='+(scope.row.confirmationFileNumber||'')"
                      :on-change="fileChange"
@@ -63,7 +63,7 @@
           <el-button size="small"
                      type="text"
                      class="btnStyle red"
-                     @click="deletes(scope.row.auditConfirmationUuid)">删除</el-button>
+                     @click="deletes(scope.row.auditConfirmationUuid)" v-if="userRole=='1'||userRole=='2'">删除</el-button>
         </template>
       </el-table-column>
       <el-table-column label="最终版扫描件"
@@ -242,7 +242,7 @@ import { task_pageList_wt } from
 import SearchList from "./searchList"
 export default {
   components: { SearchList },
-  props: ['active_project'],
+  props: ['active_project','userRole'],
   data () {
     return {
       canClick: true,
@@ -415,11 +415,14 @@ export default {
       auditConfirmation_getDetail(row.auditConfirmationUuid).then(resp => {
         var datas = resp.data;
         this.formDetail = datas;
-        if (this.projectType == 'jzsj') {
-          this.confirmationDialogVisible = true;
-        } else if (this.projectType == 'zxsj') {
+        if (this.projectType == 'zxsj') {
           this.confirmationDialogVisibleZx = true;
-          this.formDetail.auditOrgOpinion="情况属实\n"+this.formDetail.auditOrgOpinion
+          if(this.formDetail.auditOrgOpinion.indexOf("情况属实")==-1){
+            this.formDetail.auditOrgOpinion="情况属实\n"+this.formDetail.auditOrgOpinion
+          }
+        // }else if (this.projectType == 'jzsj') {
+        }else{
+          this.confirmationDialogVisible = true;
         }
       })
     },
@@ -508,6 +511,7 @@ export default {
                     type: "success",
                   });
                   this.confirmationDialogVisible = false;
+                  this.confirmationDialogVisibleZx = false;
                   this.list_data_start();
                 } else {
                   this.$message({

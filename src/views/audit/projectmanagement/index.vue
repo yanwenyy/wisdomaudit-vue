@@ -406,6 +406,33 @@
               </el-select>
             </el-form-item>
           </el-row>
+           <el-row>
+            <el-form-item label="被审计单位:" prop="auditOrgName">
+              <el-select
+                placeholder="请选择"
+                v-model="addprojectjing.auditOrgName"
+                @change="selectorg"
+                filterable
+              >
+                <el-option
+                  v-for="item in loadaudittorgoptions"
+                  :key="item.auditOrgUuid"
+                  :label="item.orgName"
+                  :value="item.auditOrgUuid"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="被审计领导:" prop="auditOrgLeader">
+              <el-input
+                placeholder="请输入"
+                v-model="addprojectjing.auditOrgLeader"
+              >
+              </el-input>
+            </el-form-item>
+          </el-row>
           <el-row>
             <el-form-item label="ㅤ项目名称:"
                           prop="projectName">
@@ -465,6 +492,7 @@
               </el-select>
             </el-form-item>
           </el-row> -->
+<<<<<<< HEAD
           <el-row>
             <el-form-item label="被审计单位:"
                           prop="auditOrgName">
@@ -488,6 +516,9 @@
               </el-input>
             </el-form-item>
           </el-row>
+=======
+         
+>>>>>>> 888179596b810a1a8baf4facb83a5aae9682cb35
           <el-row>
             <el-form-item label="ㅤ项目组长:"
                           prop="projectChargemanName">
@@ -699,6 +730,7 @@
                                label="设置组长">
                 <template slot-scope="scope">
                   <el-form-item prop="projectChargemanName">
+<<<<<<< HEAD
                     <el-select style="width: 120%"
                                placeholder="请选择"
                                v-model="scope.row.projectChargemanName"
@@ -707,6 +739,21 @@
                                  :key="item.id"
                                  :label="item.realName"
                                  :value="item.realName">
+=======
+                    <el-select
+                      style="width: 120%"
+                      placeholder="请选择"
+                      v-model="scope.row.projectChargemanName"
+                      @change="LeaderSelectEdit(scope.row)"
+                      :disabled="setLeaderDisable"
+                    >
+                      <el-option
+                        v-for="item in projectpeopleoptions"
+                        :key="item.id"
+                        :label="item.realName"
+                        :value="item.realName"
+                      >
+>>>>>>> 888179596b810a1a8baf4facb83a5aae9682cb35
                       </el-option>
                     </el-select>
                   </el-form-item>
@@ -776,6 +823,32 @@
               </el-select>
             </el-form-item>
           </el-row>
+           <el-row>
+            <el-form-item label="被审计单位:" prop="auditOrgName">
+              <el-select
+                placeholder="请选择"
+                v-model="addprojectjing.auditOrgName"
+                @change="selectorg"
+              >
+                <el-option
+                  v-for="item in loadaudittorgoptions"
+                  :key="item.auditOrgUuid"
+                  :label="item.orgName"
+                  :value="item.auditOrgUuid"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="被审计领导:" prop="auditOrgLeader">
+              <el-input
+                placeholder="请输入"
+                v-model="addprojectjing.auditOrgLeader"
+              >
+              </el-input>
+            </el-form-item>
+          </el-row>
           <el-row>
             <el-form-item label="ㅤ项目名称:">
               <el-input placeholder="请输入"
@@ -831,6 +904,7 @@
               </el-select>
             </el-form-item>
           </el-row> -->
+<<<<<<< HEAD
           <el-row>
             <el-form-item label="被审计单位:"
                           prop="auditOrgName">
@@ -863,6 +937,23 @@
                            :key="item.id"
                            :label="item.realName"
                            :value="item.id">
+=======
+         
+          <el-row>
+            <el-form-item label="ㅤ项目组长:" prop="projectChargemanName">
+              <el-select
+                placeholder="请选择"
+                v-model="addprojectjing.projectChargemanName"
+                @change="selectChargeman"
+                :disabled="setLeaderDisable"
+              >
+                <el-option
+                  v-for="item in projectpeopleoptions"
+                  :key="item.id"
+                  :label="item.realName"
+                  :value="item.id"
+                >
+>>>>>>> 888179596b810a1a8baf4facb83a5aae9682cb35
                 </el-option>
               </el-select>
             </el-form-item>
@@ -1297,6 +1388,7 @@ export default {
   components: { Pagination },
   data () {
     return {
+      setLeaderDisable:false,//设置组长可编辑
       total: 0,
       isdisabled: true,
       loading: false,
@@ -2004,9 +2096,13 @@ export default {
       //
     },
     //领域下拉框
+<<<<<<< HEAD
     selectField (val) {
       console.log(val.toString());
       let field = val.toString();
+=======
+    selectField(val) {
+>>>>>>> 888179596b810a1a8baf4facb83a5aae9682cb35
       console.log(this.addProjectManagement);
     },
     selectorg (val) {
@@ -2138,12 +2234,22 @@ export default {
         this.prjType = 2;
         editProject(rows.managementProjectUuid).then((resp) => {
           this.addprojectjing = resp.data;
+           if(this.addprojectjing.isChargemanCanChenge == 0){
+            this.setLeaderDisable = true;
+          }else{
+            this.setLeaderDisable = false;
+          }
         });
       } else {
         this.prjType = 1;
         editProject(rows.managementProjectUuid).then((resp) => {
           this.addProjectManagement = resp.data;
           this.addProjectManagement.field = this.addProjectManagement.field.split(',');
+          if(this.addProjectManagement.isChargemanCanChenge == 0){
+            this.setLeaderDisable = true;
+          }else{
+            this.setLeaderDisable = false;
+          }
         });
       }
     },

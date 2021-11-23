@@ -1259,14 +1259,15 @@ export default {
       }
       // 更新项目接口
       setprojectInit(this.active_project).then((resp) => {
+
         // console.log(resp);
         if(resp.code == 0 ){
+
           this.$forceUpdate();
           this.userInfo.userRole=resp.data;
-          this.key=Math.random();
           this.defaultActive = this.userInfo.userRole == '1' || this.userInfo.userRole == '3' ? '1-1' : '2-1';
           this.index = this.defaultActive;
-
+          // this.key=Math.random();
         }
 
       });
