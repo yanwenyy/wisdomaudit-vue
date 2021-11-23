@@ -146,9 +146,9 @@
 
         <span slot="footer"
               class="foot">
-          <el-button size="small"
-                     @click="dlag_Correlation_zb = false">
-            取消</el-button>
+          <!-- <el-button size="small"
+                     @click="">
+            取消</el-button> -->
           <el-button size="small"
                      type="primary"
                      @click="query_save_zb()">确定</el-button>
@@ -412,6 +412,7 @@ export default {
       setTimeout(() => {
         this.isDisable = false
       }, 2000)
+
       this.success_btn = 1;//显示加载按钮  0成功  1 loaging
       let params2 = {
         managementProjectUuid: this.active_project,//项目id
@@ -423,7 +424,6 @@ export default {
     // 生成
     generate (params) {
       task_pageList_export(params).then(resp => {
-
         this.success_btn = 0;
         if (resp.code == 0) {
           this.$message({
@@ -433,6 +433,7 @@ export default {
           this.administrativeAdvice = '';//管理建议
           this.businessEvaluation = '';//经营评价
           this.export_selectFile_data()//附件列表
+
         } else if (resp.code == 2201) {
           this.$message({
             message: resp.msg,
