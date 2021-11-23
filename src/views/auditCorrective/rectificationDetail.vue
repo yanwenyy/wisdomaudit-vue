@@ -93,7 +93,7 @@
             <el-button class="zl-up-btn" size="small" icon="el-icon-upload2">点击上传</el-button>
           </el-upload>
           <div class="inline-block" v-if="ifLook">
-            <div v-for="(item,index) in fileList1" :key="index">{{item.fileName}}</div>
+            <div class="blue pointer" v-for="(item,index) in fileList1" :key="index"  @click="downFile(item.attachmentUuid,item.fileName)">{{item.fileName}}</div>
           </div>
         </el-form-item>
         <el-form-item label="其他措施:">
@@ -117,7 +117,7 @@
             <el-button class="zl-up-btn" size="small" icon="el-icon-upload2">点击上传</el-button>
           </el-upload>
           <div class="inline-block" v-if="ifLook">
-            <div v-for="(item,index) in fileList2" :key="index">{{item.fileName}}</div>
+            <div class="blue pointer" v-for="(item,index) in fileList2" :key="index"  @click="downFile(item.attachmentUuid,item.fileName)">{{item.fileName}}</div>
           </div>
         </el-form-item>
         <el-form-item label="系统升级改造:">
@@ -141,7 +141,7 @@
             <el-button class="zl-up-btn" size="small" icon="el-icon-upload2">点击上传</el-button>
           </el-upload>
           <div class="inline-block" v-if="ifLook">
-            <div v-for="(item,index) in fileList3" :key="index">{{item.fileName}}</div>
+            <div class="blue pointer" v-for="(item,index) in fileList3" :key="index"  @click="downFile(item.attachmentUuid,item.fileName)">{{item.fileName}}</div>
           </div>
         </el-form-item>
       </div>
@@ -195,7 +195,7 @@
 </template>
 
 <script>
-  import { correctStep_getById,correctStep_inputAlter,correctStep_submitAlter,correctStep_verifyLd,correctStep_verifyZgr } from
+  import { down_file,correctStep_getById,correctStep_inputAlter,correctStep_submitAlter,correctStep_verifyLd,correctStep_verifyZgr } from
       '@SDMOBILE/api/shandong/ls'
     export default {
        data(){
@@ -239,6 +239,33 @@
          this.headers = {'TOKEN':sessionStorage.getItem('TOKEN')}
        },
       methods:{
+        //附件下载
+        downFile (id, fileName) {
+          let formData = new FormData()
+          formData.append('fileId', id)
+          down_file(formData).then(resp => {
+            const content = resp;
+            const blob = new Blob([content],
+              { type: 'application/octet-stream,charset=UTF-8' }
+            )
+            if ('download' in document.createElement('a')) {
+              // 非IE下载
+              const elink = document.createElement('a')
+              elink.download = fileName //下载后文件名
+              elink.style.display = 'none'
+              elink.href = window.URL.createObjectURL(blob)
+              document.body.appendChild(elink)
+              elink.click()
+              window.URL.revokeObjectURL(elink.href) // 释放URL 对象
+              document.body.removeChild(elink)
+            } else {
+              // IE10+下载
+              navigator.msSaveBlob(blob, fileName)
+            }
+          }).catch((err) => {
+            console.log(err);
+          })
+        },
         handleExceed(){},
         //附件上传
         uploadPorgress(response,file, fileList,tableList){

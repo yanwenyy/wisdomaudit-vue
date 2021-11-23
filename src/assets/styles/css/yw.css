@@ -81,6 +81,9 @@ table tr:nth-child(odd){
   padding-left: 10px;
   margin-bottom: 10px;
 }
+.el-input.is-disabled .el-input__inner {
+  color: #C0C4CC!important;
+}
 .el-input__inner::placeholder {
   color:#C1C1C1!important;
 }
