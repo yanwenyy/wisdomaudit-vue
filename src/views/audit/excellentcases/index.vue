@@ -218,7 +218,8 @@
                    :props="defaultProps"
                    class="pageTree"
                    highlight-current
-                   ref="tree"
+                   node-key="id"
+                   ref="el_tree"
                    :current-node-key="dataSortId"
                    :default-expanded-keys="expandDefault"
                    @node-click="handleNodeClick">
@@ -226,7 +227,7 @@
             <span class="custom-tree-node content-style"
                   slot-scope="{ node, data }">
               <span>
-                <img src="@/assets/styles/image/file.png"
+                <img src="../../../assets/styles/image/file.png"
                      alt="">
                 <span>{{ node.label }}</span>
               </span>
@@ -371,7 +372,8 @@ export default {
       ],
       defaultProps: {
         // children: 'children',
-        label: 'dictname'
+        label: 'dictname',
+
       },
       checkDefault: [],
       dataSortId: "",//默认选择节点
@@ -625,17 +627,17 @@ export default {
       // 资料树
       queryByFid(params).then(resp => {
         this.data_list = resp.data
-
+        console.log(this.data_list);
         this.dataSortId = this.data_list[0].uuid //默认展开第一个节点
         this.expandDefault.push(this.data_list[0].uuid)
-        // this.$nextTick(() => {
-        if (this.refs.tree) {
-          this.refs.tree.setCurrentKey(this.data_list[0]);
+        if (this.$refs.el_tree) {
+          this.$nextTick(() => {
+            this.$refs.el_tree.setCurrentKey(this.data_list[0]);
+            this.toManagementList_data();//右侧列表
+
+          })
         }
-        // })
-
       })
-
     },
 
     // 文件管理 点击资料树
@@ -879,7 +881,9 @@ export default {
 }
 .left_data_list {
   min-width: 300px;
+  padding: 10px;
   border: 1px solid rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
 }
 .el-tree {
   background: transparent !important;
