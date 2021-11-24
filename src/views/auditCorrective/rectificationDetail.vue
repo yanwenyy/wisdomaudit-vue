@@ -175,9 +175,17 @@
           ></el-input>
         </el-form-item>
       </div>
-      <el-form-item label="审核意见:" v-if="type=='zgcs_examine'">
+      <el-form-item label="审核意见:" v-if="type=='zgcs_examine'&&people=='gjr'">
         <el-input
           v-model="formState.auditCommend"
+          type="textarea"
+          rows="6"
+          placeholder="请输入"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="审核意见:" v-if="type=='zgcs_examine'&&people=='leader'">
+        <el-input
+          v-model="formState.auditCommend2"
           type="textarea"
           rows="6"
           placeholder="请输入"

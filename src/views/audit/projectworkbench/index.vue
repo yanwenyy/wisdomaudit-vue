@@ -1218,6 +1218,7 @@ export default {
       });
     },
     open(index) {
+      this.defaultActive=index;
       this.index = 0;
       this.index = index;
     },
@@ -1270,15 +1271,15 @@ export default {
       // 更新项目接口
       setprojectInit(this.active_project).then((resp) => {
         if(resp.code == 0 ){
-          // that.$forceUpdate();
+          that.$forceUpdate();
           that.defaultActive='';
-          console.log()
           that.userInfo.userRole=resp.data.peopleRole;
           that.userInfo.isLiaison=resp.data.isLiaison;
           that.$set(that.userInfo,'userRole',resp.data.peopleRole);
           that.$set(that.userInfo,'isLiaison',resp.data.isLiaison);
           that.defaultActive = that.userInfo.userRole == '1' || that.userInfo.userRole == '3' ? '1-1' : '2-1';
           that.$set(that.$data,'defaultActive',that.defaultActive);
+          that.$refs.selfMenu.$attrs.active=that.defaultActive;
           that.index = that.defaultActive;
           that.$set(that.$data,'index',this.index);
           // this.key=Math.random();
