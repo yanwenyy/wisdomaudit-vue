@@ -2399,6 +2399,7 @@ export default {
     },
     // 编辑删除
     edit (index, data) {
+      3
       this.list_check = data;
       if (index == 1) {
         let entity = this.list_check; //当前的数据

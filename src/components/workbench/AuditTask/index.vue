@@ -237,7 +237,7 @@
                   <!-- 编辑 模型可以编辑-->
                   <el-button @click="edit_data(scope.row)"
                              :disabled="isDisable"
-                             v-if="scope.row.taskType ==2"
+                             v-if="scope.row.taskType ==2 || scope.row.status==1"
                              type="text"
                              style="color:#1371CC"
                              size="small">编辑</el-button>
@@ -1644,6 +1644,9 @@ export default {
       this.save_zj_query.taskDescription = '';//清空备忘录
       this.save_zj_query.taskName = '';//清空name
       this.success_btn = 0;//显示加载按钮  0成功  1 loaging
+
+      this.input_select = true;//专题 恢复默认
+
     },
 
     // 自建 任务--显示编辑详情
@@ -2248,6 +2251,7 @@ export default {
     // 关闭问题   清空值
     resetForm (formName) {
       this.$refs[formName].resetFields();
+
     },
     // 保存接口
     add_task_problems_save (problemList) {
@@ -2853,6 +2857,7 @@ export default {
   margin-left: 10px !important;
   display: flex;
   min-width: 400px;
+  flex: inherit !important;
 }
 .upload-demo {
   width: 100%;

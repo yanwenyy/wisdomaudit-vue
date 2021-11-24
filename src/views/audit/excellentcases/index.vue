@@ -18,7 +18,7 @@
             <!-- 筛选 -->
             <div class="search">
               <el-input placeholder="请输入资料标题"
-                        v-model="search_title"> </el-input>
+                        v-model="list_query.dataTitle"> </el-input>
               <div class="search_icon"
                    style="background: rgb(12, 135, 214) !important;"
                    @click="search_list(1)">
@@ -28,7 +28,7 @@
             </div>
           </el-row>
 
-          <el-table :data="tableData_list"
+          <el-table :data="tableData_list.records"
                     style="width: 100%;"
                     v-loading="loading"
                     :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}">
@@ -38,48 +38,51 @@
                              label="序号">
             </el-table-column>
             <!-- 资料名称 -->
-            <el-table-column prop="title"
+            <el-table-column prop="dataTitle"
                              align="center"
                              show-overflow-tooltip
                              label="资料名称">
               <template slot-scope="scope"
                         style="color: rgb(19, 113, 204);">
-                {{  scope.row.title }}
+                {{  scope.row.dataTitle }}
               </template>
 
             </el-table-column>
             <!-- 资料分类 -->
-            <el-table-column prop="title"
+            <el-table-column prop="dataSortName"
                              align="center"
                              show-overflow-tooltip
                              label="资料分类">
             </el-table-column>
             <!-- 来源项目 -->
-            <el-table-column prop="title"
+            <el-table-column prop="sourceItem"
                              align="center"
                              show-overflow-tooltip
                              label="来源项目">
             </el-table-column>
             <!-- 资料简介 -->
-            <el-table-column prop="title"
+            <el-table-column prop="dataIntroduce"
                              align="center"
                              show-overflow-tooltip
                              label="资料简介">
             </el-table-column>
             <!-- 创建人 -->
-            <el-table-column prop="title"
+            <el-table-column prop="createUserName"
                              align="center"
                              show-overflow-tooltip
                              label="创建人">
             </el-table-column>
             <!-- 创建时间 -->
-            <el-table-column prop="title"
+            <el-table-column prop="createTime"
                              align="center"
                              show-overflow-tooltip
                              label="创建时间">
+              <template slot-scope="scope">
+                <p>{{scope.row.createTime | filtedate}}</p>
+              </template>
             </el-table-column>
             <!-- 下载总次数 -->
-            <el-table-column prop="title"
+            <el-table-column prop="downNum"
                              align="center"
                              show-overflow-tooltip
                              label="下载总次数">
@@ -100,7 +103,6 @@
 
                 <el-button @click="file_list(scope.row)"
                            type="text"
-                           :disabled="isDisable"
                            style="color:#1371CC;background:none;border:none"
                            size="small">
                   文件管理
@@ -119,13 +121,13 @@
           </el-table>
           <!-- 分页 -->
           <div class="page">
-            <!-- <el-pagination @size-change="handleSizeChange_data"
-                         @current-change="handleCurrentChange_data"
-                         :page-size="this.tableData.size"
-                         layout="total, sizes, prev, pager, next, jumper"
-                         :total="this.tableData.total">
-          </el-pagination> -->
-
+            <el-pagination @size-change="handleSizeChange_data"
+                           @current-change="handleCurrentChange_data"
+                           :page-size="this.tableData_list.size"
+                           :current-page="this.tableData_list.current"
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="this.tableData_list.total">
+            </el-pagination>
           </div>
           <!-- 分页 end-->
         </el-tab-pane>
@@ -152,30 +154,34 @@
                  :rules="rules"
                  :model="add_data"
                  ref="add_data">
-          <el-form-item label="资料标题">
-            <el-input v-model="add_data.title"
+          <el-form-item label="资料标题"
+                        prop="dataTitle">
+            <el-input v-model="add_data.dataTitle"
                       placeholder="请输入资料标题"></el-input>
           </el-form-item>
 
-          <el-form-item label="资料分类">
-            <el-select v-model="add_data.select"
+          <el-form-item label="资料分类"
+                        prop="dataSortName">
+            <el-select v-model="add_data.dataSortName"
+                       @change="select_val"
+                       filterable
                        placeholder="请选择资料分类">
               <el-option v-for="item in options_select"
-                         :key="item.value"
+                         :key="item.uuid"
                          :label="item.label"
-                         :value="item.value">
+                         :value="item.uuid">
               </el-option>
             </el-select>
           </el-form-item>
 
           <el-form-item label="来源项目">
-            <el-input v-model="add_data.source_project"
+            <el-input v-model="add_data.sourceItem"
                       placeholder="请输入来源项目"></el-input>
           </el-form-item>
 
           <el-form-item label="资料简介">
             <el-input type="textarea"
-                      v-model="add_data.source_project"
+                      v-model="add_data.dataIntroduce"
                       placeholder="请输入资料简介"></el-input>
           </el-form-item>
 
@@ -184,7 +190,15 @@
       <div slot="footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary"
-                   @click="dialogVisible = false">确 定</el-button>
+                   v-if="edit_title =='添加资料'"
+                   :disabled="isDisable"
+                   @click="add_save('add_data')">确 定</el-button>
+
+        <el-button type="primary"
+                   v-if="edit_title == '编辑资料'"
+                   :disabled="isDisable"
+                   @click="update_save('add_data')">确 定</el-button>
+
       </div>
     </el-dialog>
     <!-- 资料清单 新增 end-->
@@ -203,16 +217,18 @@
           <el-tree :data="data_list"
                    :props="defaultProps"
                    class="pageTree"
+                   :default-expanded-keys="expandDefault"
                    @node-click="handleNodeClick">
 
             <span class="custom-tree-node content-style"
                   slot-scope="{ node, data }">
               <span>
-                <i :class="['el-icon-folder-opened']"></i>
-                {{ node.label }}
+                <img src="@/assets/styles/image/file.png"
+                     alt="">
+                <span>{{ node.label }}</span>
               </span>
-
             </span>
+            <!-- </span> -->
           </el-tree>
 
         </div>
@@ -222,13 +238,31 @@
         <div class="right_table">
           <el-row class="btn_type">
             <el-col :span="1.5">
-              <el-button type="primary">文件下载</el-button>
+              <el-button type="primary"
+                         @click="download()">文件下载</el-button>
             </el-col>
             <el-col :span="1.5">
-              <el-button type="primary">文件上传</el-button>
+              <!-- <el-button type="primary">文件上传</el-button> -->
+              <el-upload class="upload-demo"
+                         style="margin:0 10px"
+                         :on-progress="up_ing"
+                         action="#"
+                         :show-file-list="false"
+                         :http-request="handleUploadForm"
+                         :file-list="fileList"
+                         accept=".zip,.doc,.docx,.xls,.xlsx,.txt">
+                <el-button type="primary"
+                           v-if="success_btn2 ==0"
+                           @click="up()">文件上传</el-button>
+                <el-button v-if="success_btn2 ==1"
+                           type="primary"
+                           :loading="true">上传中</el-button>
+              </el-upload>
+
             </el-col>
             <el-col :span="1.5">
-              <el-button type="primary">删除</el-button>
+              <el-button type="primary"
+                         @click="remove_list()">删除</el-button>
             </el-col>
           </el-row>
 
@@ -237,30 +271,29 @@
                     :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                     style="width: 100%;"
                     @selection-change="handleSelectionChange_operation">
-
             >
             <el-table-column type="selection"
                              width="55">
             </el-table-column>
-            <el-table-column prop="name"
+            <el-table-column prop="fileName"
                              align="center"
                              show-overflow-tooltip
                              label="文件名称">
             </el-table-column>
 
-            <el-table-column prop="name"
+            <el-table-column prop="createTime"
                              align="center"
                              show-overflow-tooltip
                              label="上传时间">
             </el-table-column>
 
-            <el-table-column prop="name"
+            <el-table-column prop="createUserName"
                              align="center"
                              show-overflow-tooltip
                              label="上传人">
             </el-table-column>
 
-            <el-table-column prop="name"
+            <el-table-column prop="downNum"
                              align="center"
                              show-overflow-tooltip
                              label="下载次数">
@@ -286,14 +319,23 @@
 </template>
 
 <script>
+import { pageList, save_query, loadcascader, update, deleteEntity, toManagementList, uploadFile, queryByFid, deleteAttachment } from
+  '@SDMOBILE/api/shandong/excellentcases'
+import { fmtDate } from "@SDMOBILE/model/time.js";
+
 export default {
   components: {},
   data () {
     return {
       activeName: 0,//0:资料清单,1:主要发现
       is_add: 1,//新增
-      search_title: '',//筛选
       loading: false,
+      list_query: {
+        pageNo: 1,
+        pageSize: 10,
+        dataTitle: '',//筛选
+      },
+      // 列表
       tableData_list: [
         { title: '1' }
       ],//
@@ -302,66 +344,82 @@ export default {
       edit_title: '添加资料',//新增 编辑 资料清单 弹窗
       // 添加资料清单参数
       add_data: {
-        title: '',//标题
-        select: '',//分类
-        source_project: '',//来源项目
-        introduction: '',// 简介
+        dataTitle: '',//标题
+        dataSortId: '',//分类id
+        dataSortCode: '',//分类code
+        dataSortName: '',//分类name 
+        sourceItem: '',//来源项目
+        dataIntroduce: '',// 简介
+        referenceTableUuid: '',//主键id
       },
       // 验证 
       rules: {
-        title: '',//
+        dataTitle: [{ required: true, message: '请填写资料标题', trigger: 'blur' }],
+        dataSortName: [{ required: true, message: '请选择分类', trigger: 'change' }],
       },
+
+      success_btn2: 0,// 上传
       // 资料分类
       options_select: [],
 
       dialogVisible_file: false,//文件管理弹窗
       // 资料树
       data_list: [
-        {
-          label: '一级 1',
-          children: [{
-            label: '二级 1-1',
-            children: [{
-              label: '三级 1-1-1'
-            }]
-          }]
-        }, {
-          label: '一级 2',
-          children: [{
-            label: '二级 2-1',
-            children: [{
-              label: '三级 2-1-1'
-            }]
-          }, {
-            label: '二级 2-2',
-            children: [{
-              label: '三级 2-2-1'
-            }]
-          }]
-        },
       ],
       defaultProps: {
-        children: 'children',
-        label: 'label'
+        // children: 'children',
+        label: 'dictname'
       },
+      expandDefault: [],//接收tree树id的数组
+      checkDefault: [],
+      provincialCenterId: '',//tree id
 
+
+      referenceTableUuid: '',//主键id
+      dataSortId: '',//
       loading_file_table: false,//资料右侧列表loading
-      file_table: [
-        { name: '11' }
-      ],// 文件列表
+      file_table: [],// 文件列表
       data_list_check: [],//列表多选
+      isDisable: false,//防止重复提交
 
-
-
+      // 上传
+      fileList: [],
     }
   },
   computed: {},
   watch: {},
   created () {
-
+    this.pageList_data();//列表
   },
   mounted () {
 
+  },
+  watch: {
+
+    // 默认点击Tree第一个节点
+    // deptTreeData (val) {
+    //   if (val) {
+    //     this.$nextTick(() => {
+    //       document.querySelector('.el-tree-node__content').click()
+    //     })
+    //   }
+    // }
+
+    // 'checkDefault': function (newVal, oldVal) {
+    //   if (newVal) {
+    //     this.$nextTick(() => {
+    //       document.querySelector('.el-tree-node__content').click()
+    //     })
+    //   }
+    // }
+  },
+
+  filters: {
+    filtedate: function (date) {
+      let t = new Date(date);
+      // return fmtDate(t, 'yyyy-MM-dd hh:mm:ss');
+      return fmtDate(t, "yyyy-MM-dd ");
+    },
   },
   methods: {
     // 顶部tab 切换事件
@@ -371,58 +429,372 @@ export default {
         console.log(2);
       }
     },
+    // 列表数据
+    pageList_data () {
+      let params = {
+        pageNo: this.list_query.pageNo,
+        pageSize: this.list_query.pageSize,
+        condition: {
+          dataTitle: this.list_query.dataTitle,
+        }
+      };
+      this.loading = true;
+      pageList(params).then(resp => {
+        this.loading = false;
+        this.tableData_list = resp.data;
+      })
+    },
     // 资料清单 没页
     handleSizeChange_data (val) {
-      // this.tableData.size =val;
+      this.list_query.pageSize = val;
     },
     // 资料清单 分页
-    handleCurrentChange_data () {
-
+    handleCurrentChange_data (val) {
+      this.list_query.pageNo = val;
+      this.pageList_data();//列表
+    },
+    // 筛选
+    search_list (index) {
+      if (index == 1) {
+        // 资料清单
+        this.pageList_data();//列表
+      } else {
+        // 主要发现
+      }
     },
     // 新增资料弹窗
     add_data_click () {
+      this.edit_title = '添加资料'
       this.dialogVisible = true;
+      this.loadcascader_data();//资料分类
     },
+    // 资料分类
+    loadcascader_data () {
+      let params = {
+        typecode: 'zskyxaljnc'
+      }
+      loadcascader(params).then(resp => {
+        this.options_select = resp.data
+      })
+    },
+    // 获取分类
+    select_val (val) {
+      let obj = {};
+      obj = this.options_select.find((item) => {
+        return item.uuid == val;
+      });
+      this.add_data.dataSortId = obj.uuid; //分类id key
+      this.add_data.dataSortCode = obj.value; //分类code
+      this.add_data.dataSortName = obj.label; //分类name
+
+    },
+    // 新增保存
+    add_save (add_data) {
+      this.$refs[add_data].validate((valid) => {
+        if (valid) {
+          let params = {
+            dataTitle: this.add_data.dataTitle,//标题
+            dataSortId: this.add_data.dataSortId,//分类id
+            dataSortCode: this.add_data.dataSortCode,//分类code
+            dataSortName: this.add_data.dataSortName,//分类name 
+            sourceItem: this.add_data.sourceItem,//来源项目
+            dataIntroduce: this.add_data.dataIntroduce,// 简介
+          }
+          save_query(params).then(resp => {
+            console.log(resp.data);
+            if (resp.code == 0) {
+              this.$message({
+                message: "新增成功",
+                type: "success",
+              });
+              this.dialogVisible = false;
+              this.pageList_data(); // 刷新 列表
+            } else {
+              this.$message({
+                message: resp.data.msg,
+                type: "error",
+              });
+            }
+          })
+        } else {
+          this.$message.info("请填写信息");
+          return false;
+        }
+      })
+    },
+
     // 关闭新增资料弹窗
     resetForm (add_data) {
       this.$refs[add_data].resetFields();//清空添加的值
       this.dialogVisible = false;
+      this.add_data = {};//清空
     },
 
     // 编辑
-    edit () {
-      this.isDisable = true
-      setTimeout(() => {
-        this.isDisable = false
-      }, 2000)
-    },
-    // 文件管理
-    file_list () {
+    edit (data) {
+      this.loadcascader_data();//资料分类
       this.isDisable = true
       setTimeout(() => {
         this.isDisable = false
       }, 2000)
 
-      this.dialogVisible_file = true;
+      this.dialogVisible = true;
+      this.edit_title = '编辑资料'
+      this.add_data.dataTitle = data.dataTitle//标题
+      this.add_data.dataSortId = data.dataSortId//分类id
+      this.add_data.dataSortCode = data.dataSortCode //分类code
+      this.add_data.dataSortName = data.dataSortName //分类name 
+      this.add_data.sourceItem = data.sourceItem //来源项目
+      this.add_data.dataIntroduce = data.dataIntroduce // 简介
+      this.add_data.referenceTableUuid = data.referenceTableUuid//主键id
+
+      this.add_data = JSON.parse(JSON.stringify(this.add_data));
     },
-    // 文件管理 资料树
+
+    // 编辑保存
+    update_save (add_data) {
+      this.$refs[add_data].validate((valid) => {
+        if (valid) {
+          let params = {
+            dataTitle: this.add_data.dataTitle,//标题
+            dataSortId: this.add_data.dataSortId,//分类id
+            dataSortCode: this.add_data.dataSortCode,//分类code
+            dataSortName: this.add_data.dataSortName,//分类name 
+            sourceItem: this.add_data.sourceItem,//来源项目
+            dataIntroduce: this.add_data.dataIntroduce,// 简介
+            referenceTableUuid: this.add_data.referenceTableUuid,//主键id
+          }
+          update(params).then(resp => {
+            console.log(resp.data);
+            if (resp.code == 0) {
+              this.$message({
+                message: "编辑成功",
+                type: "success",
+              });
+              this.dialogVisible = false;
+              this.pageList_data(); // 刷新 列表
+            } else {
+              this.$message({
+                message: resp.data.msg,
+                type: "error",
+              });
+            }
+          })
+        } else {
+          this.$message.info("请填写信息");
+          return false;
+        }
+      })
+    },
+    // 外面列表删除
+    remove (data) {
+      this.add_data.referenceTableUuid = data.referenceTableUuid
+      let params = {
+        referenceTableUuid: this.add_data.referenceTableUuid
+      }
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
+
+      this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          deleteEntity(params).then(resp => {
+            console.log(resp.data);
+            if (resp.code == 0) {
+              this.$message({
+                message: "删除成功",
+                type: "success",
+              });
+              this.dialogVisible = false;
+              let lastPageSize = (this.tableData_list.total - 1) % this.tableData_list.size;
+              this.list_query.pageNo = lastPageSize < 1 ? this.tableData_list.current - 1 : this.tableData_list.current;
+              this.pageList_data(); // 刷新 列表
+            } else {
+              this.$message({
+                message: resp.data.msg,
+                type: "error",
+              });
+            }
+
+
+          })
+        })
+        .catch(() => { });
+
+
+    },
+
+
+    // 文件管理
+    file_list (data) {
+      this.dataSortId = data.dataSortId
+      this.referenceTableUuid = data.referenceTableUuid
+      this.dialogVisible_file = true;//显示 文件管理
+      let params = {
+        pdictid: this.dataSortId
+      }
+      // 资料树
+      queryByFid(params).then(resp => {
+        this.data_list = resp.data
+      })
+
+    },
+
+    // 文件管理 点击资料树
     handleNodeClick (data) {
-      console.log(data);
+      this.referenceTableUuid = data.uuid
+      this.toManagementList_data();//右侧列表
     },
+
+    // 获取树形结构默认展开节点
+    getRoleTreeRootNode (provincialCenterId) {
+      this.expandDefault.push(provincialCenterId)
+    },
+    // 资料列表
+    toManagementList_data () {
+      let params = {
+        referenceTableUuid: this.referenceTableUuid
+      }
+      this.loading_file_table = true;
+      toManagementList(params).then(resp => {
+        console.log(resp.data);
+        this.file_table = resp.data;
+        this.loading_file_table = false;
+
+        this.provincialCenterId = this.treeData[0].uuid //默认展开第一个节点
+        this.getRoleTreeRootNode(this.provincialCenterId)
+
+      })
+    },
+
     // 文件管理列表选择
     handleSelectionChange_operation (val) {
       this.data_list_check = val
     },
 
+    // 获取上传的id
+    up (data, index) {
+      // this.Index = index;
+      // this.auditPreviousDemandDataUuid = data.auditPreviousDemandDataUuid
+      // this.status = data.status
+    },
+    // 上传时
+    up_ing (file) {
+    },
+    // 上传
+    handleUploadForm (file) {
+
+      this.success_btn2 = 1;//显示加载按钮  0成功  1 loaging
+      let formData = new FormData()
+      formData.append('referenceTableUuid', this.referenceTableUuid)
+      formData.append('dicId', this.referenceTableUuid)
+      formData.append('file', file.file)
+
+      this.$axios({
+        method: 'post',
+        url: '/wisdomaudit/referenceTable/uploadFile',
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(resp => {
+        console.log(resp.data);
+        if (resp.data.code == 0) {
+          this.$message({
+            message: '上传成功',
+            type: 'success'
+          });
+          this.success_btn2 = 0;//隐藏加载按钮
+          //刷新列表
+          this.toManagementList_data();//右侧列表
+
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: 'error'
+          });
+        }
+      })
+    },
+
+    // 下载
+    download (id, fileName) {
+      if (this.data_list_check.length > 0) {
+        this.$message.info("请选择一条进行下载");
+        return false
+      } else {
+        let formData = new FormData()
+        formData.append('fileId', id)
+        fileDownload(formData).then(resp => {
+          const content = resp;
+          const blob = new Blob([content],
+            { type: 'application/octet-stream,charset=UTF-8' }
+          )
+          if ('download' in document.createElement('a')) {
+            // 非IE下载
+            const elink = document.createElement('a')
+            elink.download = fileName //下载后文件名
+            elink.style.display = 'none'
+            elink.href = window.URL.createObjectURL(blob)
+            document.body.appendChild(elink)
+            elink.click()
+            window.URL.revokeObjectURL(elink.href) // 释放URL 对象
+            document.body.removeChild(elink)
+          } else {
+            // IE10+下载
+            navigator.msSaveBlob(blob, fileName)
+          }
+        }).catch((err) => {
+
+        })
+      }
+    },
+
+    // 文件管理 删除
+    remove_list () {
+      if (this.data_list_check.length > 0) {
+        this.$message.info("请选择一条进行删除");
+        return false
+      } else {
+
+        this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+          .then(() => {
+            let params = {
+              // this.data_list_check
+            }
+            deleteAttachment(params).then(resp => {
+              console.log(resp.data);
+              if (resp.code == 0) {
+                this.$message({
+                  message: "删除成功",
+                  type: "success",
+                });
+                this.dialogVisible = false;
+                let lastPageSize = (this.tableData_list.total - 1) % this.tableData_list.size;
+                this.list_query.pageNo = lastPageSize < 1 ? this.tableData_list.current - 1 : this.tableData_list.current;
+                this.pageList_data(); // 刷新 列表
+              } else {
+                this.$message({
+                  message: resp.data.msg,
+                  type: "error",
+                });
+              }
+            })
+          })
+          .catch(() => { });
 
 
+      }
 
-    // 删除
-    remove () {
-      this.isDisable = true
-      setTimeout(() => {
-        this.isDisable = false
-      }, 2000)
     },
 
   },
@@ -434,6 +806,9 @@ export default {
 .conter {
   padding: 20px;
   box-sizing: border-box;
+}
+.dlag_conter >>> .el-input__inner::placeholder {
+  color: #c1c1c1 !important;
 }
 .titleMes {
   padding: 10px 0 0;
@@ -518,6 +893,7 @@ export default {
 }
 .left_data_list {
   min-width: 300px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
 }
 .el-tree {
   background: transparent !important;
@@ -529,7 +905,11 @@ export default {
   background: none;
 }
 .el-icon-folder-opened {
-  color: #0e87d6 !important;
+  color: #efae4a !important;
+}
+.content-style img {
+  width: 15px;
+  margin-right: 5px;
 }
 /* 更换图标库 */
 /* .pageTree >>> [class*=" el-icon-"],
@@ -542,15 +922,34 @@ export default {
   transform: rotate(0deg);
 } */
 /*  收起 */
-/* .pageTree >>> .el-icon-caret-right:before {
-  content: "\f196";
-  font-size: 18px;
-} */
+.pageTree >>> .el-icon-caret-right:before {
+  content: "+";
+  font-weight: bold;
+  font-size: 16px;
+}
 /* 展开 */
-/* .pageTree >>> .el-tree-node__expand-icon.expanded.el-icon-caret-right:before {
-  content: "\f147";
-  font-size: 18px;
-} */
+.pageTree >>> .el-tree-node__expand-icon.expanded.el-icon-caret-right:before {
+  content: "-";
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* 资料树默认选择样式 */
+.pageTree >>> .is-current {
+  background: #f4fafe;
+}
+.pageTree >>> .is-current span {
+  font-weight: 800;
+}
+
+.pageTree >>> .el-tree-node__expand-icon.expanded {
+  transform: rotate(0deg) !important;
+}
+.content-style span {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
 .right_table {
   flex: 1;
   padding: 0 10px 0 20px;
@@ -558,7 +957,10 @@ export default {
 }
 .btn_type {
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-end;
   margin-bottom: 20px;
+}
+.btn_type >>> .el-col {
+  margin-left: 10px;
 }
 </style>>
