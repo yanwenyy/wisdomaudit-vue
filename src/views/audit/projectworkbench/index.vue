@@ -2410,7 +2410,7 @@ export default {
   color: #000;
   line-height: 50px;
   text-align: right;
-  margin-left: 8%;
+  margin-left: 11%;
   overflow: hidden;
 }
 
@@ -2446,7 +2446,7 @@ export default {
   color: #000;
   line-height: 50px;
   text-align: right;
-  margin-left: 8%;
+  margin-left: 11%;
   overflow: hidden;
 }
 

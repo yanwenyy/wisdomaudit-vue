@@ -397,6 +397,11 @@ export default {
 .search >>> .el-input__inner::-webkit-input-placeholder {
   color: #c0c4cc !important;
 }
+.filterTree {
+  border: 1px solid #c0c4cc;
+  padding: 1%;
+  border-radius: 1%;
+}
 .filterTree >>> .el-input__inner::-webkit-input-placeholder {
   color: #c0c4cc !important;
 }

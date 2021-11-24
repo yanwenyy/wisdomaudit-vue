@@ -55,6 +55,7 @@
           </el-row>
           <!-- 表单 -->
           <el-table
+            v-loading="taskTableLoading"
             :data="taskData"
             style="width: 100%"
             :header-cell-style="{
@@ -218,7 +219,9 @@
           </el-select>
         </el-form-item>
         <el-form-item label="ㅤㅤㅤ专ㅤ题:" prop="belongSpcial">
-          <el-select placeholder="请选择" v-model="editTask.belongSpcial">
+          <el-select placeholder="请选择" v-model="editTask.belongSpcial"
+            v-if="other_input == true" @change="changeBelongSpcial"
+          >
             <el-option
               v-for="item in thematicOption"
               :key="item.value"
@@ -227,6 +230,7 @@
             >
             </el-option>
           </el-select>
+          <el-input v-model="editTask.belongSpcial" v-if="other_input==false"></el-input>
         </el-form-item>
         <el-form-item label="ㅤㅤㅤ领ㅤ域:" prop="belongField">
           <el-select placeholder="请选择" v-model="editTask.belongField">
@@ -317,7 +321,9 @@
             </el-select>
           </el-form-item>
           <el-form-item label="ㅤㅤㅤ专ㅤ题:" prop="belongSpcial">
-            <el-select placeholder="请选择" v-model="taskSelf.belongSpcial">
+            <el-select placeholder="请选择" v-model="taskSelf.belongSpcial"
+             v-if="other_input == true" @change="changeBelongSpcial"
+            >
               <el-option
                 v-for="item in thematicOption"
                 :key="item.value"
@@ -326,6 +332,7 @@
               >
               </el-option>
             </el-select>
+            <el-input v-model="taskSelf.belongSpcial" v-if="other_input==false"></el-input>
           </el-form-item>
           <el-form-item label="ㅤㅤㅤ领ㅤ域:" prop="belongField">
             <el-select placeholder="请选择" v-model="taskSelf.belongField">
@@ -417,6 +424,7 @@
             </div>
           </el-row>
           <el-table
+            v-loading="modelInfoLoading"
             :data="modelTableData"
             style="width: 100%"
             @selection-change="handleSelectionChangeModel"
@@ -522,6 +530,8 @@ export default {
   props: ["active_project","userRole"],
   data() {
     return {
+      modelInfoLoading:false,//需要引入模型列表Loading
+      taskTableLoading:false, //任务列表Loading
       // userRole:"",
       isdisabled: false,
       task: 1,
@@ -698,6 +708,7 @@ export default {
       },
       modelTotal: 0,
       taskTotal: 0,
+      other_input:true, //自建任务专题是否选择其他
       // 自建任务校验
       taskSelfRules: {
         taskName: [
@@ -732,6 +743,15 @@ export default {
     },
   },
   methods: {
+    // 专题选择其他变成可输入
+    changeBelongSpcial(val){
+      console.log(val);
+      if(val == "其他"){
+        this.other_input = false;
+        this.taskSelf.belongSpcial = "";
+        this.editTask.belongSpcial = "";
+      }
+    },
     // 专题下拉框
     thematicSelect(data) {
       thematicAreas(data).then((resp) => {
@@ -811,13 +831,13 @@ export default {
     },
     // 列表显示
     getmodelTaskList(data) {
-      this.loading = true;
+      this.taskTableLoading = true;
       modelTaskList(data).then((resp) => {
         this.taskData = resp.data.records;
         this.modelTotal = resp.data.total;
         console.log(this.taskData);
         this.project = resp.data;
-        this.loading = false;
+        this.taskTableLoading = false;
       });
     },
 
@@ -993,10 +1013,12 @@ export default {
       this.queryModelSql(this.model_QueryInfo);
     },
     queryModelSql(data) {
+      this.modelInfoLoading = true;
       auditModelList(data).then((resp) => {
         this.modelTableData = resp.data.records;
         this.taskTotal = resp.data.total;
         this.modelSize = resp.data;
+        this.modelInfoLoading = false;
       });
     },
 
@@ -1389,10 +1411,12 @@ export default {
     resetForm2(resetForm2) {
       this.$refs[resetForm2].resetFields();
       this.fileList = [];
+      this.other_input = true;
     },
     editResetForm2(ref) {
       this.$refs[ref].resetFields();
       this.fileList = [];
+      this.other_input = true;
     },
     //
     handleRemove(file, fileList) {

@@ -45,6 +45,7 @@
         <!-- 组员维护列表 -->
         <el-form>
           <el-table
+            v-loading="tableMemberLoading"
             ref="singleTable"
             :data="tableData"
             style="width: 100%"
@@ -62,13 +63,11 @@
               prop="peopleName"
             >
             </el-table-column>
-            <el-table-column align="center" label="角色" width="100"
-              >
+            <el-table-column align="center" label="角色" width="100">
               <template slot-scope="scope">
                 <span v-if="scope.row.peopleRole == 2">组员</span>
                 <span v-else>组长</span>
               </template>
-              
             </el-table-column>
             <el-table-column
               align="center"
@@ -105,7 +104,7 @@
                   active-value="1"
                   inactive-value="0"
                   @change="switchChange(scope.row)"
-                  :disabled = "userRole == '3'"
+                  :disabled="userRole == '3'"
                 >
                 </el-switch>
               </template>
@@ -136,7 +135,11 @@
         <!-- 分页 end -->
       </el-tab-pane>
       <el-tab-pane label="审计任务维护" name="second">
-        <TaskMaintenance :active_project="active_project" :key="timer" :userRole="userRole"/>
+        <TaskMaintenance
+          :active_project="active_project"
+          :key="timer"
+          :userRole="userRole"
+        />
       </el-tab-pane>
     </el-tabs>
 
@@ -159,7 +162,7 @@
           :titles="['组员列表', '已选组员']"
           :data="data"
           @change="selectMember"
-           v-loading="transferLoading"
+          v-loading="transferLoading"
         >
         </el-transfer>
       </div>
@@ -206,7 +209,8 @@ export default {
   props: ["active_project", "userRole"],
   data() {
     return {
-      transferLoading:false, //组员添加弹框loading
+      tableMemberLoading: false, //组员维护列表loading
+      transferLoading: false, //组员添加弹框loading
       timer: "", //重新刷新子组件
       savedisabled: false,
       data: [],
@@ -225,7 +229,7 @@ export default {
       query: {
         condition: {
           managementProjectUuid: "",
-          peopleRole:"",
+          peopleRole: "",
           peopleName: "",
         },
         pageNo: 1,
@@ -357,13 +361,11 @@ export default {
     addgroupMember() {
       this.addgroupDialog = true;
       this.savedisabled = false;
-      this.transferLoading = true;
       this.getSelectData(1, 1000);
       this.personMes = this.form;
       auditModelList(this.modelQuery).then((resp) => {
         this.modelTableData = resp.data.records;
         this.modelSize = resp.data;
-        this.transferLoading = false;
       });
     },
     //新增组员确认事件
@@ -371,16 +373,18 @@ export default {
       if (this.updataPerson.projectId == "") {
         this.updataPerson.projectId = this.active_project;
         this.updataPerson.projectMemberships = [];
-        for (let i = 0; i < this.peopleSelection.length; i++) {
-          this.updataPerson.projectMemberships.push({
-            peopleRole: 2,
-            isLiaison: 0,
-            managementProjectUuid: this.active_project,
-            peopleTableUuid: this.peopleSelection[i].peopleTableUuid,
-            projectMembershipUuid:
-              this.peopleSelection[i].projectMembershipUuid,
-          });
-        }
+        this.updataPerson.projectMemberships = this.peopleSelection;
+
+        // for (let i = 0; i < this.peopleSelection.length; i++) {
+        //   this.updataPerson.projectMemberships.push({
+        //     peopleRole: 2,
+        //     isLiaison: 0,
+        //     managementProjectUuid: this.active_project,
+        //     peopleTableUuid: this.peopleSelection[i].peopleTableUuid,
+        //     projectMembershipUuid:
+        //       this.peopleSelection[i].projectMembershipUuid,
+        //   });
+        // }
         this.savedisabled = true;
         editprojectMembershipList(this.updataPerson).then((resp) => {
           this.addgroupDialog = false;
@@ -390,9 +394,22 @@ export default {
           this.projectMember(this.query);
         });
       } else {
+        //  console.log(this.updataPerson);
+        //  let that = this;
+        this.peopleSelection.forEach((item) => {
+          this.updataPerson.projectMemberships.forEach((a) => {
+            if (
+              item.isLiaison == 1 &&
+              item.peopleTableUuid == a.peopleTableUuid
+            ) {
+              a.isLiaison = 1;
+            }
+          });
+        });
+        //  console.log(this.updataPerson);
         this.savedisabled = true;
         editprojectMembershipList(this.updataPerson).then((resp) => {
-           this.addgroupDialog = false;
+          this.addgroupDialog = false;
           this.$message.success("修改成功！");
           this.query.condition.managementProjectUuid = this.active_project;
           // 组员维护接口
@@ -411,38 +428,36 @@ export default {
     },
     // 删除当前人员
     deleteRow(row, rows) {
-      console.log(row);
       this.$confirm("你将删除数据库中的组员数据", "提示", {
         distinguishCancelAndClose: true,
         confirmButtonText: "确定",
         cancelButtonText: "放弃删除",
       })
         .then(() => {
-          if(row.peopleRole == 1) {
-             this.$message.info("组长不允许删除！");
-          }else{
-            if (row.isCanDelete == 0) {
-            this.$message.info("此用户已被分配任务，不允许删除！");
+          if (row.peopleRole == 1) {
+            this.$message.info("组长不允许删除！");
           } else {
-            deletprojectMembership(row.projectMembershipUuid).then((resp) => {
-              if (resp.code == 0) {
-                this.$message.success("删除成功！");
-                // 为了在删除最后一页的最后一条数据时能成功跳转回最后一页的上一页
-                const totalPage = Math.ceil(
-                  (this.total - 1) / this.query.pageSize
-                ); // 总页数
-                this.query.pageNo =
-                  this.query.pageNo > totalPage
-                    ? totalPage
-                    : this.query.pageNo;
-                this.query.pageNo =
-                  this.query.pageNo < 1 ? 1 : this.query.pageNo;
-                this.projectMember(this.query);
-              }
-            });
+            if (row.isCanDelete == 0) {
+              this.$message.info("此用户已被分配任务，不允许删除！");
+            } else {
+              deletprojectMembership(row.projectMembershipUuid).then((resp) => {
+                if (resp.code == 0) {
+                  this.$message.success("删除成功！");
+                  // 为了在删除最后一页的最后一条数据时能成功跳转回最后一页的上一页
+                  const totalPage = Math.ceil(
+                    (this.total - 1) / this.query.pageSize
+                  ); // 总页数
+                  this.query.pageNo =
+                    this.query.pageNo > totalPage
+                      ? totalPage
+                      : this.query.pageNo;
+                  this.query.pageNo =
+                    this.query.pageNo < 1 ? 1 : this.query.pageNo;
+                  this.projectMember(this.query);
+                }
+              });
+            }
           }
-          }
-          
         })
         .catch((action) => {
           // this.$message({
@@ -453,6 +468,8 @@ export default {
     },
     // 组员维护列表回显展示
     projectMember(data) {
+      this.transferLoading = true;
+      this.tableMemberLoading = true;
       projectMembership(data).then((resp) => {
         this.tableData = resp.data.records;
         this.personTableList = resp.data;
@@ -462,7 +479,7 @@ export default {
           this.tableData[i].isLiaison = this.tableData[i].isLiaison + "";
         }
         this.peopleSelection = resp.data.records;
-        // console.log(this.peopleSelection);
+        console.log(this.peopleSelection);
         this.value = [];
         this.peopleSelection.forEach((e) => {
           if (e.isCanDelete == 0) {
@@ -474,6 +491,8 @@ export default {
           }
           this.value.push(e.peopleTableUuid);
         });
+        this.transferLoading = false;
+        this.tableMemberLoading = false;
       });
     },
     //组员列表分页点击事件
@@ -508,21 +527,21 @@ export default {
     },
     //swicth 改变事件
     switchChange(row) {
-      console.log(row.isLiaison);
-      console.log(this.userRole);
-     if(this.userRole != 3){
+      if (this.userRole != 3) {
+        this.tableMemberLoading = true;
         setinterFaceperson(
-        row.isLiaison,
-        this.active_project,
-        row.projectMembershipUuid
-      ).then((resp) => {
-        console.log(resp);
-        this.$message.success("修改成功！");
-        this.projectMember(this.query);
-      });
-     }else{
-       this.$message.info("没有权限修改！")
-     }
+          row.isLiaison,
+          this.active_project,
+          row.projectMembershipUuid
+        ).then((resp) => {
+          // console.log(resp);
+          this.tableMemberLoading = false;
+          this.$message.success("修改成功！");
+          this.projectMember(this.query);
+        });
+      } else {
+        this.$message.info("没有权限修改！");
+      }
     },
     // 姓名下拉框的方法
     selectChange(obj) {

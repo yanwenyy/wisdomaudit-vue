@@ -227,7 +227,11 @@
             <span class="custom-tree-node content-style"
                   slot-scope="{ node, data }">
               <span>
+<<<<<<< HEAD
                 <img src="../../../assets/styles/image/file.png"
+=======
+                <img src="@WISDOMAUDIT/assets/styles/image/file.png"
+>>>>>>> f2514a00f0bbd26c83fa9321cce7659c7d964443
                      alt="">
                 <span>{{ node.label }}</span>
               </span>
