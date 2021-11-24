@@ -112,6 +112,7 @@
               ref="selfMenu"
               :key="key"
               :default-active="defaultActive"
+              :active="defaultActive"
               class="el-menu-vertical-demo"
               @select="open"
               background-color="#F1F5FB"
@@ -176,6 +177,7 @@
               ref="temPersonRef"
               :active_project="active_project"
               :userRole="userInfo.userRole"
+              :isLiaison="userInfo.isLiaison"
             />
           </div>
           <!-- 审计资料 -->
@@ -183,6 +185,7 @@
             <AuditData
               :active_project="active_project"
               :userRole="userInfo.userRole"
+              :isLiaison="userInfo.isLiaison"
             ></AuditData>
           </div>
           <!-- 审计任务 -->
@@ -190,18 +193,21 @@
             <AuditTask
               :active_project="active_project"
               :userRole="userInfo.userRole"
+              :isLiaison="userInfo.isLiaison"
             ></AuditTask>
           </div>
           <div class="routerView" v-else-if="index == '2-3'">
             <Auditproblem
               :active_project="active_project"
               :userRole="userInfo.userRole"
+              :isLiaison="userInfo.isLiaison"
             ></Auditproblem>
           </div>
           <div class="routerView" v-else-if="index == '2-4'">
             <AuditConfirmation
               :active_project="active_project"
               :userRole="userInfo.userRole"
+              :isLiaison="userInfo.isLiaison"
             ></AuditConfirmation>
           </div>
           <div class="routerView" v-else-if="index == '3-1'">
@@ -209,12 +215,14 @@
             <AuditReport
               :active_project="active_project"
               :userRole="userInfo.userRole"
+              :isLiaison="userInfo.isLiaison"
             ></AuditReport>
           </div>
           <div class="routerView" v-else>
             <Businessindicator
               :active_project="active_project"
               :userRole="userInfo.userRole"
+              :isLiaison="userInfo.isLiaison"
             ></Businessindicator>
           </div>
         </el-col>
@@ -1264,8 +1272,11 @@ export default {
         if(resp.code == 0 ){
           // that.$forceUpdate();
           that.defaultActive='';
-          that.userInfo.userRole=resp.data;
-          that.$set(that.userInfo,'userRole',resp.data);
+          console.log()
+          that.userInfo.userRole=resp.data.peopleRole;
+          that.userInfo.isLiaison=resp.data.isLiaison;
+          that.$set(that.userInfo,'userRole',resp.data.peopleRole);
+          that.$set(that.userInfo,'isLiaison',resp.data.isLiaison);
           that.defaultActive = that.userInfo.userRole == '1' || that.userInfo.userRole == '3' ? '1-1' : '2-1';
           that.$set(that.$data,'defaultActive',that.defaultActive);
           that.index = that.defaultActive;

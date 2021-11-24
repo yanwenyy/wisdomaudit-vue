@@ -54,6 +54,7 @@
                      :action="'/wisdomaudit/auditConfirmation/fileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid+'&confirmationFileNumber='+(scope.row.confirmationFileNumber||'')"
                      :on-change="fileChange"
                      :on-success="list_data_start"
+                     :headers="headers"
                      accept=".docx,.xls,.xlsx,.txt,.zip,.doc">
             <el-button size="small"
                        type="text"
@@ -79,6 +80,7 @@
                        :on-change="fileChange"
                        :action="'/wisdomaudit/auditConfirmation/endFileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid"
                        :on-success="list_data_start"
+                       :headers="headers"
                        accept=".docx,.xls,.xlsx,.txt,.zip,.doc">
               <el-button size="small"
                          type="text"
@@ -245,6 +247,7 @@ export default {
   props: ['active_project','userRole'],
   data () {
     return {
+      headers:{},
       canClick: true,
       ifLook: false,
       confirmationDialogTitle: '新增确认单',
@@ -300,7 +303,7 @@ export default {
 
   },
   mounted(){
-
+    this.headers = {'TOKEN':sessionStorage.getItem('TOKEN')}
   },
   methods: {
     //获取用户信息

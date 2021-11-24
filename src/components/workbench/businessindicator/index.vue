@@ -1,7 +1,7 @@
 <template>
   <div class="indocator">
     <div class="filter-container">
-      <el-button type="primary" @click="add()" v-if="userRole=='1'||userRole=='2'"
+      <el-button type="primary" @click="add()" v-if="isLiaison=='1'"
         >新增指标</el-button
       >
       <!--<div class="indocator-btn-box" v-if="!ifprojectmanage">-->
@@ -42,8 +42,8 @@
           <td><div class="td-100">{{vtem.contactPerson}}</div></td>
           <td>
             <div class="td-100">
-              <el-button type="text" class="blue" @click="edit(vtem)" v-if="userRole=='1'||userRole=='2'">编辑</el-button>
-              <el-button type="text" class="red" @click="del(vtem.operatingIndicatorsUuid)" v-if="userRole=='1'||userRole=='2'">删除</el-button>
+              <el-button type="text" class="blue" @click="edit(vtem)" v-if="isLiaison=='1'">编辑</el-button>
+              <el-button type="text" class="red" @click="del(vtem.operatingIndicatorsUuid)" v-if="isLiaison=='1'">删除</el-button>
             </div>
           </td>
         </tr>
@@ -151,7 +151,7 @@ import {get_userInfo,indexManagement_pageList,indexManagement_edit,indexManageme
 export default {
   components: { Pagination ,SearchList},
   filters: {},
-  props:['active_project','userRole'],
+  props:['active_project','userRole','isLiaison'],
   data() {
     return {
       userInfo:{
