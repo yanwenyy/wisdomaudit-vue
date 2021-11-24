@@ -112,14 +112,13 @@
               ref="selfMenu"
               :key="key"
               :default-active="defaultActive"
-              :active="defaultActive"
               class="el-menu-vertical-demo"
               @select="open"
               background-color="#F1F5FB"
               :default-openeds="['1','2','3']"
             >
               <el-submenu
-                v-if="userInfo.userRole == '1' || userInfo.userRole == '3'"
+                v-show="userInfo.userRole == '1' || userInfo.userRole == '3'"
                 index="1"
               >
                 <template slot="title">
@@ -132,7 +131,7 @@
                 </el-menu-item-group>
               </el-submenu>
               <el-submenu
-                v-if="
+                v-show="
                   userInfo.userRole == '1' ||
                   userInfo.userRole == '2' ||
                   userInfo.userRole == '3'
@@ -152,7 +151,7 @@
                 </el-menu-item-group>
               </el-submenu>
               <el-submenu
-                v-if="userInfo.userRole == '1' || userInfo.userRole == '3'"
+                v-show="userInfo.userRole == '1' || userInfo.userRole == '3'"
                 index="3"
               >
                 <template slot="title">
@@ -1128,7 +1127,6 @@ export default {
     };
   },
   watch: {
-
     active_project(val) {
       this.refreash = true; // loading
       let _this = this;
@@ -1263,19 +1261,16 @@ export default {
 
       // 更新项目接口
       setprojectInit(this.active_project).then((resp) => {
-
-        // console.log(resp);
         if(resp.code == 0 ){
           // that.$forceUpdate();
-
+          that.defaultActive='';
           that.userInfo.userRole=resp.data;
-          // that.$set(that.userInfo,'userRole',resp.data);
+          that.$set(that.userInfo,'userRole',resp.data);
           that.defaultActive = that.userInfo.userRole == '1' || that.userInfo.userRole == '3' ? '1-1' : '2-1';
-          // that.$set(that.$data,'defaultActive',that.defaultActive);
-          // console.log(that.defaultActive)
+          that.$set(that.$data,'defaultActive',that.defaultActive);
           that.index = that.defaultActive;
-          // that.$set(that.$data,'index',this.index);
-          this.key=Math.random();
+          that.$set(that.$data,'index',this.index);
+          // this.key=Math.random();
         }
 
       });
