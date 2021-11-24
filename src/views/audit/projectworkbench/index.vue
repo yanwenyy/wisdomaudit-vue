@@ -1401,6 +1401,7 @@ export default {
     projectMember(data) {
       // alert(11)
       projectMembership(data).then((resp) => {
+        console.log(resp);
         this.peopleSelection = resp.data.records;
         this.tableData = resp.data.records;
         // console.log(this.peopleSelection);
@@ -1457,10 +1458,20 @@ export default {
     // 下一步按钮事件
     nextBtn() {
       var selectedPeople = [];
+      console.log(this.data);
+      // console.log(this.value);
+      console.log(this.peopleSelection);
       this.data.forEach((item) => {
         if (this.value.indexOf(item.key) != -1) {
+          // this.peopleSelection.forEach((a)=>{
+          //   if(a.peopleTableUuid == item.key && a.peopleRole == 1){
+          //      item.peopleRole = 1;
+          //   }else{
+          //      item.peopleRole = 2;
+          //   }
+          // })
           item.managementProjectUuid = this.managementProjectUuid;
-          // item.peopleRole = 2;
+          item.peopleRole = 2;
           // item.peopleTableUuid=this.key;
           selectedPeople.push(item);
         }
