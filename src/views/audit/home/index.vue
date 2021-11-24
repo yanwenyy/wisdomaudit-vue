@@ -287,7 +287,7 @@ export default {
     },
     //打开金库
     openVault() {
-      axios({
+      this.$axios({
         method: "post",
         url: `/wisdomaudit/treasury/getTreasuryStatus`,
         data: {
@@ -330,7 +330,7 @@ export default {
       } else {
         if (this.ifpush) {
           this.ifpush = false;
-          axios({
+          this.$axios({
             url: `/wisdomaudit/homePage/shortCutSet`,
             method: "post",
             data: this.dqfastlist,
@@ -399,7 +399,7 @@ export default {
     },
     //获取当前快捷功能
     getdqfastlist() {
-      axios({
+      this.$axios({
         url: `/wisdomaudit/homePage/pageList`,
         method: "post",
         data: {},
@@ -425,7 +425,7 @@ export default {
     },
     //获取菜单权限列表
     getmeunlist() {
-      axios({
+      this.$axios({
         url: `/wisdomaudit/permission/getUserPermissionList`,
         method: "get",
         data: {},
@@ -449,7 +449,7 @@ export default {
     },
     getmodellist() {
       this.floading2 = true;
-      axios({
+      this.$axios({
         url: `/wisdomaudit/homePage/homeMxList`,
         method: "post",
         data: {},
@@ -461,7 +461,7 @@ export default {
     },
     getprojectlist() {
       this.floading1 = true;
-      axios({
+      this.$axios({
         url: `/wisdomaudit/homePage/homeProjectList`,
         method: "post",
         data: {},
@@ -474,7 +474,7 @@ export default {
     },
     getdatalist() {
       this.floading3 = true;
-      axios({
+      this.$axios({
         url: `/wisdomaudit/homePage/homeZlList`,
         method: "post",
         data: {},
