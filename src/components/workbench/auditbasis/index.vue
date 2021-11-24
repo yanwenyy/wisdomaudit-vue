@@ -95,7 +95,7 @@
             placeholder="请输入"
           ></el-input>
         </el-form-item>
-        <el-form-item label="上传到附件:" >
+        <el-form-item label="上传附件:"  class="falseRequired">
           <el-upload
             v-if="!ifLook"
             class="upload-demo"

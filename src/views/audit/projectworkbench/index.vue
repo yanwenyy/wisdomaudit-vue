@@ -109,15 +109,17 @@
         <el-col>
           <div class="menu">
             <el-menu
+              ref="selfMenu"
               :key="key"
               :default-active="defaultActive"
+              :active="defaultActive"
               class="el-menu-vertical-demo"
               @select="open"
               background-color="#F1F5FB"
               :default-openeds="['1','2','3']"
             >
               <el-submenu
-                v-if="userInfo.userRole == '1' || userInfo.userRole == '3'"
+                v-show="userInfo.userRole == '1' || userInfo.userRole == '3'"
                 index="1"
               >
                 <template slot="title">
@@ -130,7 +132,7 @@
                 </el-menu-item-group>
               </el-submenu>
               <el-submenu
-                v-if="
+                v-show="
                   userInfo.userRole == '1' ||
                   userInfo.userRole == '2' ||
                   userInfo.userRole == '3'
@@ -150,7 +152,7 @@
                 </el-menu-item-group>
               </el-submenu>
               <el-submenu
-                v-if="userInfo.userRole == '1' || userInfo.userRole == '3'"
+                v-show="userInfo.userRole == '1' || userInfo.userRole == '3'"
                 index="3"
               >
                 <template slot="title">
@@ -175,6 +177,7 @@
               ref="temPersonRef"
               :active_project="active_project"
               :userRole="userInfo.userRole"
+              :isLiaison="userInfo.isLiaison"
             />
           </div>
           <!-- 审计资料 -->
@@ -182,6 +185,7 @@
             <AuditData
               :active_project="active_project"
               :userRole="userInfo.userRole"
+              :isLiaison="userInfo.isLiaison"
             ></AuditData>
           </div>
           <!-- 审计任务 -->
@@ -189,18 +193,21 @@
             <AuditTask
               :active_project="active_project"
               :userRole="userInfo.userRole"
+              :isLiaison="userInfo.isLiaison"
             ></AuditTask>
           </div>
           <div class="routerView" v-else-if="index == '2-3'">
             <Auditproblem
               :active_project="active_project"
               :userRole="userInfo.userRole"
+              :isLiaison="userInfo.isLiaison"
             ></Auditproblem>
           </div>
           <div class="routerView" v-else-if="index == '2-4'">
             <AuditConfirmation
               :active_project="active_project"
               :userRole="userInfo.userRole"
+              :isLiaison="userInfo.isLiaison"
             ></AuditConfirmation>
           </div>
           <div class="routerView" v-else-if="index == '3-1'">
@@ -208,12 +215,14 @@
             <AuditReport
               :active_project="active_project"
               :userRole="userInfo.userRole"
+              :isLiaison="userInfo.isLiaison"
             ></AuditReport>
           </div>
           <div class="routerView" v-else>
             <Businessindicator
               :active_project="active_project"
               :userRole="userInfo.userRole"
+              :isLiaison="userInfo.isLiaison"
             ></Businessindicator>
           </div>
         </el-col>
@@ -1126,7 +1135,6 @@ export default {
     };
   },
   watch: {
-
     active_project(val) {
       this.refreash = true; // loading
       let _this = this;
@@ -1210,6 +1218,7 @@ export default {
       });
     },
     open(index) {
+      this.defaultActive=index;
       this.index = 0;
       this.index = index;
     },
@@ -1257,16 +1266,22 @@ export default {
         this.projectInitUuid = this.projectInit[index].managementProjectUuid;
         this.project_data = false;
       }
+      var that=this;
+
       // 更新项目接口
       setprojectInit(this.active_project).then((resp) => {
-
-        // console.log(resp);
         if(resp.code == 0 ){
-
-          this.$forceUpdate();
-          this.userInfo.userRole=resp.data;
-          this.defaultActive = this.userInfo.userRole == '1' || this.userInfo.userRole == '3' ? '1-1' : '2-1';
-          this.index = this.defaultActive;
+          that.$forceUpdate();
+          that.defaultActive='';
+          that.userInfo.userRole=resp.data.peopleRole;
+          that.userInfo.isLiaison=resp.data.isLiaison;
+          that.$set(that.userInfo,'userRole',resp.data.peopleRole);
+          that.$set(that.userInfo,'isLiaison',resp.data.isLiaison);
+          that.defaultActive = that.userInfo.userRole == '1' || that.userInfo.userRole == '3' ? '1-1' : '2-1';
+          that.$set(that.$data,'defaultActive',that.defaultActive);
+          that.$refs.selfMenu.$attrs.active=that.defaultActive;
+          that.index = that.defaultActive;
+          that.$set(that.$data,'index',this.index);
           // this.key=Math.random();
         }
 

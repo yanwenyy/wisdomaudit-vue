@@ -1,7 +1,7 @@
 <template>
   <div class="indocator">
     <div class="filter-container">
-      <el-button type="primary" @click="add()" v-if="userRole=='1'||userRole=='2'"
+      <el-button type="primary" @click="add()" v-if="isLiaison=='1'"
         >新增指标</el-button
       >
       <!--<div class="indocator-btn-box" v-if="!ifprojectmanage">-->
@@ -42,8 +42,8 @@
           <td><div class="td-100">{{vtem.contactPerson}}</div></td>
           <td>
             <div class="td-100">
-              <el-button type="text" class="blue" @click="edit(vtem)" v-if="userRole=='1'||userRole=='2'">编辑</el-button>
-              <el-button type="text" class="red" @click="del(vtem.operatingIndicatorsUuid)" v-if="userRole=='1'||userRole=='2'">删除</el-button>
+              <el-button type="text" class="blue" @click="edit(vtem)" v-if="isLiaison=='1'">编辑</el-button>
+              <el-button type="text" class="red" @click="del(vtem.operatingIndicatorsUuid)" v-if="isLiaison=='1'">删除</el-button>
             </div>
           </td>
         </tr>
@@ -146,14 +146,17 @@ import Pagination from "@WISDOMAUDIT/components/Pagination"; // secondary packag
 import SearchList from "./searchList"
 import _ from "lodash";
 import axios from "axios";
-import {indexManagement_pageList,indexManagement_edit,indexManagement_delete} from
+import {get_userInfo,indexManagement_pageList,indexManagement_edit,indexManagement_delete} from
     '@SDMOBILE/api/shandong/ls'
 export default {
   components: { Pagination ,SearchList},
   filters: {},
-  props:['active_project','userRole'],
+  props:['active_project','userRole','isLiaison'],
   data() {
     return {
+      userInfo:{
+        user:{}
+      },//用户信息
       editVisible:false,//编辑经营指标
       formState:{},//编辑的form
       yearRange:['2018','2019','2020'],
@@ -236,6 +239,13 @@ export default {
     this.getList();
   },
   methods: {
+    //获取用户信息
+    getUser(){
+      var that=this;
+      get_userInfo().then(resp => {
+        that.userInfo = resp.data;
+      })
+    },
     //start
     //删除
     del(val){
@@ -294,6 +304,7 @@ export default {
         this.dataList=datas.dataList;
         this.yearRange=datas.titleHeadList;
         this.loading = false;
+        this.getUser();
         // console.log(JSON.stringify(this.dataList))
       })
       // axios({
