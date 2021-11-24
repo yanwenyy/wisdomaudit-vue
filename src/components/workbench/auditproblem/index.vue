@@ -10,7 +10,7 @@
         </el-col>
 
         <div class="search">
-          <el-input placeholder="请输入内容"
+          <el-input placeholder="请输入问题"
                     v-model="pageQuery.condition.problem"
                     class="input-with-select">
             <el-button slot="append"
