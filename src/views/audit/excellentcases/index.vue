@@ -217,6 +217,9 @@
           <el-tree :data="data_list"
                    :props="defaultProps"
                    class="pageTree"
+                   highlight-current
+                   ref="tree"
+                   :current-node-key="dataSortId"
                    :default-expanded-keys="expandDefault"
                    @node-click="handleNodeClick">
 
@@ -370,13 +373,12 @@ export default {
         // children: 'children',
         label: 'dictname'
       },
-      expandDefault: [],//接收tree树id的数组
       checkDefault: [],
-      provincialCenterId: '',//tree id
+      dataSortId: "",//默认选择节点
+      expandDefault: [],//默认展开的资料书
 
 
       referenceTableUuid: '',//主键id
-      dataSortId: '',//
       loading_file_table: false,//资料右侧列表loading
       file_table: [],// 文件列表
       data_list_check: [],//列表多选
@@ -393,25 +395,6 @@ export default {
   },
   mounted () {
 
-  },
-  watch: {
-
-    // 默认点击Tree第一个节点
-    // deptTreeData (val) {
-    //   if (val) {
-    //     this.$nextTick(() => {
-    //       document.querySelector('.el-tree-node__content').click()
-    //     })
-    //   }
-    // }
-
-    // 'checkDefault': function (newVal, oldVal) {
-    //   if (newVal) {
-    //     this.$nextTick(() => {
-    //       document.querySelector('.el-tree-node__content').click()
-    //     })
-    //   }
-    // }
   },
 
   filters: {
@@ -630,6 +613,7 @@ export default {
     },
 
 
+
     // 文件管理
     file_list (data) {
       this.dataSortId = data.dataSortId
@@ -641,20 +625,26 @@ export default {
       // 资料树
       queryByFid(params).then(resp => {
         this.data_list = resp.data
+
+        this.dataSortId = this.data_list[0].uuid //默认展开第一个节点
+        this.expandDefault.push(this.data_list[0].uuid)
+        // this.$nextTick(() => {
+        if (this.refs.tree) {
+          this.refs.tree.setCurrentKey(this.data_list[0]);
+        }
+        // })
+
       })
 
     },
 
     // 文件管理 点击资料树
     handleNodeClick (data) {
-      this.referenceTableUuid = data.uuid
+      this.dataSortId = data.uuid
       this.toManagementList_data();//右侧列表
     },
 
-    // 获取树形结构默认展开节点
-    getRoleTreeRootNode (provincialCenterId) {
-      this.expandDefault.push(provincialCenterId)
-    },
+
     // 资料列表
     toManagementList_data () {
       let params = {
@@ -665,10 +655,6 @@ export default {
         console.log(resp.data);
         this.file_table = resp.data;
         this.loading_file_table = false;
-
-        this.provincialCenterId = this.treeData[0].uuid //默认展开第一个节点
-        this.getRoleTreeRootNode(this.provincialCenterId)
-
       })
     },
 

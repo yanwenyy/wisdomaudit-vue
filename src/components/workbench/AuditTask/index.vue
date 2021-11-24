@@ -237,14 +237,14 @@
                   <!-- 编辑 模型可以编辑-->
                   <el-button @click="edit_data(scope.row)"
                              :disabled="isDisable"
-                             v-if="scope.row.taskType ==2 || scope.row.status==1"
+                             v-if="scope.row.taskType ==2 || scope.row.status==1 || scope.row.status==2"
                              type="text"
                              style="color:#1371CC"
                              size="small">编辑</el-button>
 
                   <!-- 删除 -->
                   <el-button @click="delete_model(scope.row.auditTaskUuid)"
-                             v-if="scope.row.status==1"
+                             v-if="scope.row.status==1 || scope.row.status==2"
                              type="
                            text"
                              style="color: red;border:none;"
