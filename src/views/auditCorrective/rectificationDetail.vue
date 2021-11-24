@@ -523,4 +523,25 @@
     margin-top: 20px;
     font-weight: bold;
   }
+  .formData .el-input.is-disabled .el-input__inner {
+    color: #C0C4CC!important;
+  }
+  .formData .el-input__inner::placeholder {
+    color:#C1C1C1!important;
+  }
+  /* 谷歌 */
+  .formData .el-input__inner::-webkit-input-placeholder {
+    color:#C1C1C1!important;
+  }
+  /* 火狐 */
+  .formData .el-input__inner:-moz-placeholder {
+    color:#C1C1C1!important;
+  }
+  /*ie*/
+  .formData .el-input__inner:-ms-input-placeholder {
+    color:#C1C1C1!important;
+  }
+  .formData ::-webkit-input-placeholder {
+    color:#C1C1C1!important;
+  }
 </style>
