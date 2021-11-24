@@ -146,7 +146,7 @@ import Pagination from "@WISDOMAUDIT/components/Pagination"; // secondary packag
 import SearchList from "./searchList"
 import _ from "lodash";
 import axios from "axios";
-import {indexManagement_pageList,indexManagement_edit,indexManagement_delete} from
+import {get_userInfo,indexManagement_pageList,indexManagement_edit,indexManagement_delete} from
     '@SDMOBILE/api/shandong/ls'
 export default {
   components: { Pagination ,SearchList},
@@ -154,6 +154,9 @@ export default {
   props:['active_project','userRole'],
   data() {
     return {
+      userInfo:{
+        user:{}
+      },//用户信息
       editVisible:false,//编辑经营指标
       formState:{},//编辑的form
       yearRange:['2018','2019','2020'],
@@ -236,6 +239,13 @@ export default {
     this.getList();
   },
   methods: {
+    //获取用户信息
+    getUser(){
+      var that=this;
+      get_userInfo().then(resp => {
+        that.userInfo = resp.data;
+      })
+    },
     //start
     //删除
     del(val){
@@ -294,6 +304,7 @@ export default {
         this.dataList=datas.dataList;
         this.yearRange=datas.titleHeadList;
         this.loading = false;
+        this.getUser();
         // console.log(JSON.stringify(this.dataList))
       })
       // axios({

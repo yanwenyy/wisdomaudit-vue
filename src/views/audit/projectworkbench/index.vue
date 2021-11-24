@@ -109,8 +109,10 @@
         <el-col>
           <div class="menu">
             <el-menu
+              ref="selfMenu"
               :key="key"
               :default-active="defaultActive"
+              :active="defaultActive"
               class="el-menu-vertical-demo"
               @select="open"
               background-color="#F1F5FB"
@@ -1257,17 +1259,23 @@ export default {
         this.projectInitUuid = this.projectInit[index].managementProjectUuid;
         this.project_data = false;
       }
+      var that=this;
+
       // 更新项目接口
       setprojectInit(this.active_project).then((resp) => {
 
         // console.log(resp);
         if(resp.code == 0 ){
+          // that.$forceUpdate();
 
-          this.$forceUpdate();
-          this.userInfo.userRole=resp.data;
-          this.defaultActive = this.userInfo.userRole == '1' || this.userInfo.userRole == '3' ? '1-1' : '2-1';
-          this.index = this.defaultActive;
-          // this.key=Math.random();
+          that.userInfo.userRole=resp.data;
+          // that.$set(that.userInfo,'userRole',resp.data);
+          that.defaultActive = that.userInfo.userRole == '1' || that.userInfo.userRole == '3' ? '1-1' : '2-1';
+          // that.$set(that.$data,'defaultActive',that.defaultActive);
+          // console.log(that.defaultActive)
+          that.index = that.defaultActive;
+          // that.$set(that.$data,'index',this.index);
+          this.key=Math.random();
         }
 
       });
