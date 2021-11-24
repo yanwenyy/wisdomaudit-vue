@@ -102,4 +102,8 @@ table tr:nth-child(odd){
 .formData ::-webkit-input-placeholder {
   color:#C1C1C1!important;
 }
-
+.falseRequired .el-form-item__label:before{
+  content: "*";
+  color: #ff4949;
+  margin-right: 4px;
+}
