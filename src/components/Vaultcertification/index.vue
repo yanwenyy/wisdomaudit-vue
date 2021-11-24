@@ -173,7 +173,7 @@ export default {
     opensort() {
       this.$refs["vaultform"].validate((valid) => {
         if (valid) {
-          axios({
+          this.$axios({
             method: "post",
             url: `/wisdomaudit/treasury/remoteFirstAuth`,
             data: {
@@ -194,7 +194,7 @@ export default {
       });
     },
     secondauth() {
-      axios({
+      this.$axios({
         method: "post",
         url: `/wisdomaudit/treasury/remoteSecondAuth`,
         data: {

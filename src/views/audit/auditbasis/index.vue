@@ -85,7 +85,7 @@ export default {
     },
     //打开金库
     openVault() {
-      axios({
+      this.$axios({
         method: "post",
         url: `/wisdomaudit/treasury/getTreasuryStatus`,
         data: {
@@ -103,17 +103,23 @@ export default {
         //policyAccessMethod
         //maxTime 授权条件（必填属性）单位为小时： 当为0时，为单次授权；否则为时间段授权即允许以当前时间为开始时间，开始时间+maxTime时间为最大结束时间，允许用户在此范围选择；
         //approvers 审批人列表
-        let rep = resp.data.data.treasuryStatusRsp;
-        if (rep.result == 0) {
-          return;
+        //如果是线上环境
+        if (resp.data.data.isVaultProfiles) {
+          let rep = resp.data.data.treasuryStatusRsp;
+          if (rep.result == 0) {
+            return;
+          } else {
+            console.log(rep);
+            this.approvers = rep.approvers || "";
+            this.maxTime = rep.maxTime;
+            this.dqtime = new Date();
+            this.account = resp.data.data.account;
+            this.appSessionId = resp.data.data.appSessionId;
+            this.vaultV = true;
+          }
         } else {
-          console.log(rep);
-          this.approvers = rep.approvers || '';
-          this.maxTime = rep.maxTime;
-          this.dqtime = new Date();
-          this.account = resp.data.data.account;
-          this.appSessionId = resp.data.data.appSessionId;
-          this.vaultV = true;
+          //否则不处理或在此处直接进行后面的操作
+          return;
         }
       });
     },

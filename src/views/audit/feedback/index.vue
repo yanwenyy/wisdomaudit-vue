@@ -88,7 +88,7 @@
                center
                width="60%"
                :before-close="dialogBeforeClose">
-      <div class="title_dlag">资料列表</div>
+      <div class="title_dlag">详情</div>
 
       <div class="dialog_conter">
         <div class="header">

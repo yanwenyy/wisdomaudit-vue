@@ -139,7 +139,7 @@ export default {
       });
     },
     handleLogin() {
-      axios({
+      this.$axios({
         url: `/wisdomaudit/loginsd/login?appAcctId=`+(this.$route.query.appAcctId)+`&flag=`+(this.$route.query.flag)+`&loginNode=`+(this.$route.query.loginNode)+`&token=`+(encodeURI(this.$route.query.token)),
         method: "post",
       }).then((res) => {

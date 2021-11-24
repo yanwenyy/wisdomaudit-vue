@@ -27,34 +27,48 @@
         </div>
 
         <div class="project-wapper" style="height: 270px">
+          <div v-if="projectlist.length == 0" class="nocenterbox">暂 无 数 据</div>
           <div
             class="project-item"
             v-for="(item, index) in projectlist"
             :key="'project' + index"
+            v-else
           >
             <h3>{{ item.projectName || "--" }}</h3>
             <ul :style="index == 0 ? '' : 'border-left:1px solid #ccc;'">
               <li>
-                <div class="icon-wapper pointer" @click="projectEvent('1',item.projectId)">
+                <div
+                  class="icon-wapper pointer"
+                  @click="projectEvent('1', item.projectId)"
+                >
                   <svg-icon icon-class="fmodel" />
                   <br />
                   <span>模型任务 {{ item.mxCount }}</span>
                 </div>
               </li>
               <li>
-                <div class="icon-wapper pointer" @click="projectEvent('2',item.projectId)">
+                <div
+                  class="icon-wapper pointer"
+                  @click="projectEvent('2', item.projectId)"
+                >
                   <svg-icon icon-class="ftrask" /><br />
                   <span>自建任务 {{ item.zjCount }}</span>
                 </div>
               </li>
               <li>
-                <div class="icon-wapper pointer" @click="projectEvent('3',item.projectId)">
+                <div
+                  class="icon-wapper pointer"
+                  @click="projectEvent('3', item.projectId)"
+                >
                   <svg-icon icon-class="fproblem" /><br />
                   <span>问题 {{ item.wtCount }}</span>
                 </div>
               </li>
               <li>
-                <div class="icon-wapper pointer" @click="projectEvent('4',item.projectId)">
+                <div
+                  class="icon-wapper pointer"
+                  @click="projectEvent('4', item.projectId)"
+                >
                   <svg-icon icon-class="fconfirm" /><br />
                   <span>审计确认单 {{ item.qrdCount }}</span>
                 </div>
@@ -75,11 +89,14 @@
                 />我的模型任务</span
               >
             </div>
-
-            <ul style="height: 406px; overflow: scroll" class="odd-even">
+            <div v-if="modellist.length == 0" class="nocenterbox">暂 无 数 据</div>
+            <ul style="height: 406px; overflow: scroll" class="odd-even" v-else>
               <li v-for="(item, index) in modellist" :key="'model' + index">
                 <div class="li-item">
-                  <h5 @click="taskModelEvent('2-2',item.projectId)" class="pointer">
+                  <h5
+                    @click="taskModelEvent('2-2', item.projectId)"
+                    class="pointer"
+                  >
                     {{ item.projectName || "--" }}
                   </h5>
                   <span>{{ timefilter(item.createTime || "") }}</span>
@@ -87,7 +104,10 @@
                 <el-divider></el-divider>
                 <div class="li-item">
                   <p>{{ item.taskName || "--" }}</p>
-                  <el-button type="primary" size="mini" @click="taskModelEvent('2-2',item.managementProjectUuid)"
+                  <el-button
+                    type="primary"
+                    size="mini"
+                    @click="taskModelEvent('2-2', item.managementProjectUuid)"
                     >前去处理<i class="el-icon-d-arrow-right el-icon--right"></i
                   ></el-button>
                 </div>
@@ -105,11 +125,14 @@
                 />审计资料</span
               >
             </div>
-
-            <ul style="height: 200px; overflow: scroll" class="odd-even">
+            <div v-if="datalist.length == 0" class="nocenterbox">暂 无 数 据</div>
+            <ul style="height: 200px; overflow: scroll" class="odd-even" v-else>
               <li v-for="(item, index) in datalist" :key="'data' + index">
                 <div class="li-item">
-                  <h5 @click="auditInfoEvent('2-1',item.projectNumber)" class="pointer">
+                  <h5
+                    @click="auditInfoEvent('2-1', item.projectNumber)"
+                    class="pointer"
+                  >
                     {{ item.projectName || "--" }}
                   </h5>
                   <span>{{ timefilter(item.createTime || "") }}</span>
@@ -264,7 +287,7 @@ export default {
     },
     //打开金库
     openVault() {
-      axios({
+      this.$axios({
         method: "post",
         url: `/wisdomaudit/treasury/getTreasuryStatus`,
         data: {
@@ -282,17 +305,23 @@ export default {
         //policyAccessMethod
         //maxTime 授权条件（必填属性）单位为小时： 当为0时，为单次授权；否则为时间段授权即允许以当前时间为开始时间，开始时间+maxTime时间为最大结束时间，允许用户在此范围选择；
         //approvers 审批人列表
-        let rep = resp.data.data.treasuryStatusRsp;
-        if (rep.result == 0) {
-          return;
+        //如果是线上环境
+        if (resp.data.data.isVaultProfiles) {
+          let rep = resp.data.data.treasuryStatusRsp;
+          if (rep.result == 0) {
+            return;
+          } else {
+            console.log(rep);
+            this.approvers = rep.approvers || "";
+            this.maxTime = rep.maxTime;
+            this.dqtime = new Date();
+            this.account = resp.data.data.account;
+            this.appSessionId = resp.data.data.appSessionId;
+            this.vaultV = true;
+          }
         } else {
-          console.log(rep);
-          this.approvers = rep.approvers;
-          this.maxTime = rep.maxTime;
-          this.dqtime = new Date();
-          this.account = resp.data.data.account;
-          this.appSessionId = resp.data.data.appSessionId;
-          this.vaultV = true;
+          //否则不处理或在此处直接进行后面的操作
+          return;
         }
       });
     },
@@ -307,7 +336,7 @@ export default {
       } else {
         if (this.ifpush) {
           this.ifpush = false;
-          axios({
+          this.$axios({
             url: `/wisdomaudit/homePage/shortCutSet`,
             method: "post",
             data: this.dqfastlist,
@@ -376,7 +405,7 @@ export default {
     },
     //获取当前快捷功能
     getdqfastlist() {
-      axios({
+      this.$axios({
         url: `/wisdomaudit/homePage/pageList`,
         method: "post",
         data: {},
@@ -402,7 +431,7 @@ export default {
     },
     //获取菜单权限列表
     getmeunlist() {
-      axios({
+      this.$axios({
         url: `/wisdomaudit/permission/getUserPermissionList`,
         method: "get",
         data: {},
@@ -426,18 +455,19 @@ export default {
     },
     getmodellist() {
       this.floading2 = true;
-      axios({
+      this.$axios({
         url: `/wisdomaudit/homePage/homeMxList`,
         method: "post",
         data: {},
       }).then((res) => {
         this.floading2 = false;
         this.modellist = res.data.data || "";
+        console.log(res)
       });
     },
     getprojectlist() {
       this.floading1 = true;
-      axios({
+      this.$axios({
         url: `/wisdomaudit/homePage/homeProjectList`,
         method: "post",
         data: {},
@@ -450,7 +480,7 @@ export default {
     },
     getdatalist() {
       this.floading3 = true;
-      axios({
+      this.$axios({
         url: `/wisdomaudit/homePage/homeZlList`,
         method: "post",
         data: {},
@@ -464,30 +494,30 @@ export default {
         path: "/audit/auditItems/projectWorkbench",
       });
     },
-    projectEvent(type,projectId) {
+    projectEvent(type, projectId) {
       switch (type) {
         case "1":
           this.$router.push({
             path: "/audit/auditItems/projectWorkbench",
-            query: { index: "2-2",projectId:projectId },
+            query: { index: "2-2", projectId: projectId },
           });
           break;
         case "2":
           this.$router.push({
             path: "/audit/auditItems/projectWorkbench",
-            query: { index: "2-2",projectId:projectId },
+            query: { index: "2-2", projectId: projectId },
           });
           break;
         case "3":
           this.$router.push({
             path: "/audit/auditItems/projectWorkbench",
-            query: { index: "2-3" ,projectId:projectId},
+            query: { index: "2-3", projectId: projectId },
           });
           break;
         case "4":
           this.$router.push({
             path: "/audit/auditItems/projectWorkbench",
-            query: { index: "2-4",projectId:projectId },
+            query: { index: "2-4", projectId: projectId },
           });
           break;
 
@@ -496,17 +526,17 @@ export default {
       }
     },
 
-    taskModelEvent(data,projectId) {
+    taskModelEvent(data, projectId) {
       this.$router.push({
         path: "/audit/auditItems/projectWorkbench",
-        query: { index: "2-2",projectId:projectId },
+        query: { index: "2-2", projectId: projectId },
       });
     },
 
-    auditInfoEvent(data,projectId) {
+    auditInfoEvent(data, projectId) {
       this.$router.push({
         path: "/audit/auditItems/projectWorkbench",
-        query: { index: "2-1",projectId:projectId  },
+        query: { index: "2-1", projectId: projectId },
       });
     },
 
@@ -520,6 +550,15 @@ export default {
 </script>
 
 <style lang="scss"  scoped>
+.nocenterbox {
+  width: 100%;
+  height: 100%;
+  font-size: 24px;
+  text-align: center;
+  // font-weight: bold;
+  color: #888;
+  line-height: 200px;
+}
 .fastli {
   width: 33%;
   overflow: hidden;

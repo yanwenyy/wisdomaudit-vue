@@ -1,7 +1,7 @@
 <template>
   <div class="auditConfirmation">
     <el-button type="primary"
-               @click="addConfirmation()" v-if="userRole=='1'||userRole=='2'">新增确认单</el-button>
+               @click="addConfirmation()">新增确认单</el-button>
     <!-- 审计确认单列表 -->
     <el-table @row-dblclick="getLook"
               :header-cell-style="{'background-color': '#F4FAFF',}"
@@ -48,12 +48,13 @@
           <el-button size="small"
                      type="text"
                      class="btnStyle editBtn"
-                     @click="edit(scope.row)" v-if="userRole=='1'||userRole=='2'">编辑</el-button>
-          <el-upload v-if="userRole=='1'||userRole=='2'" :show-file-list="false"
+                     @click="edit(scope.row)" v-if="scope.row.createUserUuid==userInfo.user.id">编辑</el-button>
+          <el-upload v-if="scope.row.createUserUuid==userInfo.user.id" :show-file-list="false"
                      class="upload-demo inline-block btnStyle"
                      :action="'/wisdomaudit/auditConfirmation/fileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid+'&confirmationFileNumber='+(scope.row.confirmationFileNumber||'')"
                      :on-change="fileChange"
                      :on-success="list_data_start"
+                     :headers="headers"
                      accept=".docx,.xls,.xlsx,.txt,.zip,.doc">
             <el-button size="small"
                        type="text"
@@ -63,7 +64,7 @@
           <el-button size="small"
                      type="text"
                      class="btnStyle red"
-                     @click="deletes(scope.row.auditConfirmationUuid)" v-if="userRole=='1'||userRole=='2'">删除</el-button>
+                     @click="deletes(scope.row.auditConfirmationUuid)" v-if="scope.row.createUserUuid==userInfo.user.id">删除</el-button>
         </template>
       </el-table-column>
       <el-table-column label="最终版扫描件"
@@ -73,12 +74,13 @@
                      type="text"
                      class="btnStyle"
                      style="color: #1371cc">
-            <el-upload v-if="scope.row.endConfirmationFile==''||scope.row.endConfirmationFile==null"
+            <el-upload v-if="scope.row.endConfirmationFile==''||scope.row.endConfirmationFile==null&&(scope.row.createUserUuid==userInfo.user.id)"
                        :show-file-list="false"
                        class="upload-demo inline-block btnStyle"
                        :on-change="fileChange"
                        :action="'/wisdomaudit/auditConfirmation/endFileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid"
                        :on-success="list_data_start"
+                       :headers="headers"
                        accept=".docx,.xls,.xlsx,.txt,.zip,.doc">
               <el-button size="small"
                          type="text"
@@ -245,6 +247,7 @@ export default {
   props: ['active_project','userRole'],
   data () {
     return {
+      headers:{},
       canClick: true,
       ifLook: false,
       confirmationDialogTitle: '新增确认单',
@@ -271,7 +274,9 @@ export default {
       projectType: '',//项目类型 jzsj经责审计  zxsj专项审计
       tableFileList: [],//确认单附件列表
       FhrList:[],//复核人列表
-      userInfo:{},//用户信息
+      userInfo:{
+        user:{}
+      },//用户信息
       // 新增的表单验证
       rules: {
         matter: [
@@ -295,6 +300,10 @@ export default {
   created () {
     this.list_data_start();
     this.getFhrList();
+
+  },
+  mounted(){
+    this.headers = {'TOKEN':sessionStorage.getItem('TOKEN')}
   },
   methods: {
     //获取用户信息
@@ -447,7 +456,8 @@ export default {
         this.managementProjectName = datas.managementProjectName;
         this.auditOrgName = datas.auditOrgName;
         this.projectType = datas.projectType;
-        this.loading = false
+        this.loading = false;
+        this.getUser();
       })
     },
     //   新增确认单按钮事件
@@ -484,6 +494,8 @@ export default {
         this.$refs['addForm'].validate((valid) => {
           if (valid) {
             if (this.confirmationDialogTitle == '新增确认单') {
+              this.formDetail.managementProjectName=this.managementProjectName;
+              this.formDetail.auditOrgName=this.auditOrgName;
               this.formDetail.managementProjectUuid = this.active_project;
               auditConfirmation_save(this.formDetail).then(resp => {
                 this.canClick = true;

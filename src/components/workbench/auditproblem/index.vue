@@ -10,7 +10,7 @@
         </el-col>
 
         <div class="search">
-          <el-input placeholder="请输入内容"
+          <el-input placeholder="请输入问题"
                     v-model="pageQuery.condition.problem"
                     class="input-with-select">
             <el-button slot="append"
@@ -183,8 +183,8 @@
         </el-form-item>
         <el-form-item label="风险金额（万元）"
                       prop="riskAmount">
-          <el-input v-model.number="temp.riskAmount"
-                    placeholder="请输入风险金额" />
+          <el-input v-model="temp.riskAmount"
+                    placeholder="请输入风险金额" @keyup.native="UpNumber" @keydown.native="UpNumber"/>
         </el-form-item>
         <el-form-item label="关联任务"
                       prop="auditTaskUuid">
@@ -319,9 +319,9 @@
         <el-form-item label="风险金额（万元）"
                       prop="riskAmount"
                       width="180">
-          <el-input v-model.number="dqProblem.riskAmount"
+          <el-input v-model="dqProblem.riskAmount"
                     placeholder="请输入风险金额"
-                    :disabled="ifadd != 2 ? false : true" />
+                    :disabled="ifadd != 2 ? false : true"  @keyup.native="UpNumber" @keydown.native="UpNumber" />
         </el-form-item>
         <el-form-item label="关联任务"
                       prop="auditTaskUuid">
@@ -562,7 +562,6 @@ export default {
         special: [{ required: true, message: "请选择专题", trigger: "change" }],
         riskAmount: [
           { required: true, message: "请填写风险金额", trigger: "change" },
-          { type: 'number', message: '风险金额必须为数字值'}
         ],
       },
       closeStatus: false,
@@ -601,6 +600,12 @@ export default {
     this.getList();
   },
   methods: {
+    UpNumber(e){
+      //输入框中只允许输入数字
+      // e.target.value = e.target.value.replace(/[^\d]/g,'')
+      //输入框只允许输入小数点和数字，小数点后一位
+      e.target.value = (e.target.value.match(/^\d*(\.?\d{0,1})/g)[0]) || null
+    },
     toopen (val) {
       console.log(val);
       if (val) {
