@@ -5,11 +5,11 @@
         <el-form class="search-form" :inline="true" :model="searchForm" @keyup.enter.native="init()">
           <!--<el-button type="success" class="addBtn">设置整改跟进人</el-button>-->
           <el-input
-            placeholder="请输入项目名称"
-            v-model="searchForm.projectName"
+            placeholder="请输入问题名称"
+            v-model="searchForm.problemName"
             class="input-with-select"
           >
-            <el-button type="primary" slot="append" icon="el-icon-search"></el-button>
+            <el-button type="primary" slot="append" icon="el-icon-search" @click="list_data_start"></el-button>
           </el-input>
         </el-form>
       </div>
@@ -117,7 +117,7 @@ export default {
       searchForm: {
         pageNo: 1,
         pageSize: 10,
-        projectName:'',
+        problemName:'',
         projectId:this.$route.query.managementProjectUuid
       },
       page: {
@@ -138,7 +138,7 @@ export default {
         pageNo: this.searchForm.pageNo,
         pageSize: this.searchForm.pageSize,
         condition: {
-          projectName: this.searchForm.projectName,
+          problemName: this.searchForm.problemName,
           managementProjectUuid: this.searchForm.projectId,
         }
       };
