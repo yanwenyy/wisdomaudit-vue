@@ -227,7 +227,7 @@
             <span class="custom-tree-node content-style"
                   slot-scope="{ node, data }">
               <span>
-                <img src="@WISDOMAUDIT/assets/styles/image/file.png"
+                <img src="../../../assets/styles/image/file.png"
                      alt="">
                 <span>{{ node.label }}</span>
               </span>
