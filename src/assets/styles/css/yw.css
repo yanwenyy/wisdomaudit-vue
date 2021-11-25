@@ -83,6 +83,7 @@ table tr:nth-child(odd){
 }
 .formData .el-input.is-disabled .el-input__inner {
   color: #C0C4CC!important;
+  background: #F5F7FA!important;
 }
 .formData .el-input__inner::placeholder {
   color:#C1C1C1!important;

@@ -235,23 +235,26 @@
                   <!-- 模型 ===========---------->
 
                   <!-- 编辑 模型可以编辑-->
-                  <el-button @click="edit_data(scope.row)"
-                             :disabled="isDisable"
-                             v-if="scope.row.taskType ==2 || scope.row.status==1 || scope.row.status==2"
-                             type="text"
-                             style="color:#1371CC"
-                             size="small">编辑</el-button>
+                  <div v-if="scope.row.status!==0">
+                    <el-button @click="edit_data(scope.row)"
+                               :disabled="isDisable"
+                               v-if="scope.row.taskType ==2 && [scope.row.status==1 || scope.row.status==2]"
+                               type="text"
+                               style="color:#1371CC"
+                               size="small">编辑</el-button>
 
-                  <!-- 删除 -->
-                  <el-button @click="delete_model(scope.row.auditTaskUuid)"
-                             v-if="scope.row.status==1 || scope.row.status==2"
-                             type="
+                    <!-- 删除 -->
+                    <el-button @click="delete_model(scope.row.auditTaskUuid,scope.row.problemsNumber )"
+                               v-if="scope.row.status==1 || scope.row.status==2"
+                               type="
                            text"
-                             style="color: red;border:none;"
-                             :disabled="isDisable"
-                             size="small">
-                    删除
-                  </el-button>
+                               style="color: red;border:none;"
+                               :disabled="isDisable"
+                               size="small">
+                      删除
+                    </el-button>
+                  </div>
+
                 </div>
 
               </template>
@@ -1753,6 +1756,7 @@ export default {
       formData.append('fileId', id)
       down_file(formData).then(resp => {
         const content = resp;
+        console.log(resp);
         const blob = new Blob([content],
           { type: 'application/octet-stream,charset=UTF-8' }
         )
@@ -1853,6 +1857,7 @@ export default {
         this.status_data_list_data = resp.data;
         this.status_data_list = resp.data.records
         this.arr = resp.data.records[0].result //原列表
+        console.log(this.status_data_list_data);
         this.new_table();//新接口 table
         // arr.forEach(item => {
         //   this.$set(item, 'yes_no', false)//是否问题
@@ -1897,6 +1902,15 @@ export default {
     },
     // 结果分页
     handleCurrentChange_toatl (val) {
+      this.basePageParam_query.pageNo = val;
+      alert(this.basePageParam_query.pageNo)
+      // 结果列表
+      let params2 = {
+        runTaskRelUuid: this.paramTaskUuid,
+        // runTaskRelUuid: '8ee17c4b77c51747207aab278d804381'
+      }
+      this.data_tab(params2);//结果分类
+
       // 结果列表
       let params3 = {
         basePageParam: {
@@ -1911,7 +1925,7 @@ export default {
             tableType: this.status_data[this.date_index].tableType,//  主副表标识, 主表 = 1、副表1 = 2、副表2 = 3···
             dataCount: 1
           },
-          pageNo: val, //当前页数
+          pageNo: this.basePageParam_query.pageNo, //当前页数
           pageSize: this.basePageParam_query.pageSize //分页数量
         },
         filterSql: "undefined",
@@ -2623,7 +2637,7 @@ export default {
       }
     },
     // 模型/自建 任务--删除
-    delete_model (ids) {
+    delete_model (ids, problemsNumber) {
       this.isDisable = true
       setTimeout(() => {
         this.isDisable = false
@@ -2635,35 +2649,40 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          let params = {
-            ids: ids
-          }
-          task_remove(params).then(resp => {
-
-            if (resp.code == 0) {
-              this.$message({
-                message: '删除成功',
-                type: 'success'
-              });
-              // 刷新自建列表
-              let params = {
-                pageNo: this.params.pageNo,
-                pageSize: this.params.pageSize,
-                condition: {
-                  auditModelCategory: this.params.auditModelCategory,
-                  managementProjectUuid: this.managementProjectUuid,
-                  taskName: this.search_taskName,
-                  // taskType: ''
-                }
-              }
-              this.list_data(params);
-            } else {
-              this.$message({
-                message: resp.msg,
-                type: 'error'
-              });
+          if (problemsNumber !== 0) {
+            this.$message.info("《该任务已被问题关联，请勿删除》");
+            return false
+          } else {
+            let params = {
+              ids: ids
             }
-          })
+            task_remove(params).then(resp => {
+              if (resp.code == 0) {
+                this.$message({
+                  message: '删除成功',
+                  type: 'success'
+                });
+                // 刷新自建列表
+                let params = {
+                  pageNo: this.params.pageNo,
+                  pageSize: this.params.pageSize,
+                  condition: {
+                    auditModelCategory: this.params.auditModelCategory,
+                    managementProjectUuid: this.managementProjectUuid,
+                    taskName: this.search_taskName,
+                    // taskType: ''
+                  }
+                }
+                this.list_data(params);
+              } else {
+                this.$message({
+                  message: resp.msg,
+                  type: 'error'
+                });
+              }
+            })
+          }
+
         })
         .catch(() => { });
     },

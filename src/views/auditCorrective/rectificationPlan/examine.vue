@@ -2,6 +2,10 @@
   <div>
     <div class="header_dlag">
       <div class="search">
+        <el-button type="primary"
+                   @click="go_back()">
+          返回上一页
+        </el-button>
         <el-input placeholder="请输入问题"
                   v-model="details_query.problem"> </el-input>
         <div class="search_icon"
@@ -120,6 +124,9 @@ export default {
 
   },
   methods: {
+    go_back () {
+      this.$router.push({ path: '/auditCorrective/rectificationPlan' })
+    },
     // 审核信息
     details_data () {
       let params = {

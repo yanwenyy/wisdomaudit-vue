@@ -97,7 +97,6 @@
         label="整改结果"
         prop="name"
         align="center"
-        width="150px"
       >
         <template slot-scope="scope">
           <span>{{scope.row.correctState=='0'?'未整改':scope.row.correctStatus=='1'?'整改中':scope.row.correctStatus=='2'?'已完成整改':''}}</span>

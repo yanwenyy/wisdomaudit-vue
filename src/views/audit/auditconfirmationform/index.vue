@@ -100,16 +100,17 @@
       </el-table-column>
     </el-table>
     <!-- 新增确认单弹出框 -->
+    <el-form :rules="rules"
+             ref="addForm"
+             class="formData"
+             label-width="130px"
+             :model="formDetail">
     <el-dialog class="qrd-dialog"
                :visible.sync="confirmationDialogVisible"
                width="70%"
                @close="handleClose">
       <div class="title">{{confirmationDialogTitle}}</div>
-      <el-form :rules="rules"
-               ref="addForm"
-               class="formData"
-               label-width="130px"
-               :model="formDetail">
+
         <el-form-item class="itemTwo"
                       label="审计项目名称:">{{managementProjectName}}</el-form-item>
         <el-form-item class="itemTwo"
@@ -162,7 +163,7 @@
                           value-format="yyyy-MM-dd"
                           style="width: 100%"></el-date-picker>
         </el-form-item>
-      </el-form>
+
       <span slot="footer"
             class="dialog-footer">
         <el-button @click="handleClose">取 消</el-button>
@@ -231,6 +232,7 @@
                    @click="saveForm">确 定</el-button>
       </span>
     </el-dialog>
+    </el-form>
     <search-list ref="searchTabel"
                  @refreshSearch="getSearchInfo"></search-list>
   </div>

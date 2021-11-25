@@ -193,6 +193,7 @@
       :visible.sync="fastDialogVisible"
       width="60%"
       center
+      :before-close="beforeclosefastlist"
     >
       <div class="fastoutbox">
         <div class="fastleft">
@@ -745,7 +746,7 @@ export default {
 .el-card .el-card__header {
   font-size: 15px;
   font-weight: bold;
-  color: #439bd8;
+  color: #888;
   padding: 10px !important;
 }
 .homepage-icon {
