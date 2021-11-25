@@ -217,10 +217,10 @@
           <el-tree :data="data_list"
                    :props="defaultProps"
                    class="pageTree"
-                   highlight-current
-                   node-key="id"
+                   :highlight-current="true"
+                   node-key="uuid"
                    ref="el_tree"
-                   :current-node-key="dataSortId"
+                   :current-node-key="referenceTableUuid"
                    :default-expanded-keys="expandDefault"
                    @node-click="handleNodeClick">
 
@@ -376,7 +376,7 @@ export default {
 
       },
       checkDefault: [],
-      dataSortId: "",//默认选择节点
+      pdictid: "",//默认选择节点
       expandDefault: [],//默认展开的资料书
 
 
@@ -614,35 +614,36 @@ export default {
 
     },
 
-
-
     // 文件管理
     file_list (data) {
-      this.dataSortId = data.dataSortId
-      this.referenceTableUuid = data.referenceTableUuid
       this.dialogVisible_file = true;//显示 文件管理
+      this.pdictid = data.dataSortId//左侧资料树
+      this.referenceTableUuid = data.referenceTableUuid//右侧列表 需要的
+      alert(this.pdictid)
+      console.log(data);
       let params = {
-        pdictid: this.dataSortId
+        pdictid: this.pdictid
       }
       // 资料树
       queryByFid(params).then(resp => {
         this.data_list = resp.data
-        console.log(this.data_list);
-        this.dataSortId = this.data_list[0].uuid //默认展开第一个节点
-        this.expandDefault.push(this.data_list[0].uuid)
-        if (this.$refs.el_tree) {
-          this.$nextTick(() => {
-            this.$refs.el_tree.setCurrentKey(this.data_list[0]);
-            this.toManagementList_data();//右侧列表
-
-          })
+        if (this.data_list.length > 0) {
+          this.pdictid = this.data_list[0].uuid //默认展开第一个节点
+          this.expandDefault.push(this.data_list[0].uuid)
+          if (this.$refs.el_tree) {
+            this.$nextTick(() => {
+              this.$refs.el_tree.setCurrentKey(this.pdictid);
+              this.toManagementList_data();//右侧列表
+            })
+          }
         }
+
       })
     },
 
     // 文件管理 点击资料树
     handleNodeClick (data) {
-      this.dataSortId = data.uuid
+      this.referenceTableUuid = data.referenceTableUuid
       this.toManagementList_data();//右侧列表
     },
 
