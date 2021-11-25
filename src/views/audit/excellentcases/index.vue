@@ -220,7 +220,7 @@
                    :highlight-current="true"
                    node-key="uuid"
                    ref="el_tree"
-                   :current-node-key="referenceTableUuid"
+                   :current-node-key="pdictid"
                    :default-expanded-keys="expandDefault"
                    @node-click="handleNodeClick">
 
@@ -239,14 +239,14 @@
         <!-- 左侧资料树 end-->
 
         <!-- 右侧内容 -->
-        <div class="right_table">
+        <div class="right_table"
+             v-if="this.referenceTableUuid">
           <el-row class="btn_type">
             <el-col :span="1.5">
               <el-button type="primary"
                          @click="download()">文件下载</el-button>
             </el-col>
             <el-col :span="1.5">
-              <!-- <el-button type="primary">文件上传</el-button> -->
               <el-upload class="upload-demo"
                          style="margin:0 10px"
                          :on-progress="up_ing"
@@ -623,10 +623,11 @@ export default {
 
     },
 
-    // 文件管理
+    // 文件管理 资料树
     file_list (data) {
       this.dialogVisible_file = true;//显示 文件管理
       this.pdictid = data.dataSortId//左侧资料树
+      this.referenceTableUuid = data.referenceTableUuid;//主键id
       let params = {
         pdictid: this.pdictid
       }
@@ -634,11 +635,11 @@ export default {
       queryByFid(params).then(resp => {
         this.data_list = resp.data
         if (this.data_list.length > 0) {
-          this.referenceTableUuid = this.data_list[0].uuid //默认展开第一个节点
+          this.pdictid = this.data_list[0].uuid //默认展开第一个节点
           this.expandDefault.push(this.data_list[0].uuid)
           if (this.$refs.el_tree) {
             this.$nextTick(() => {
-              this.$refs.el_tree.setCurrentKey(this.referenceTableUuid);
+              this.$refs.el_tree.setCurrentKey(this.pdictid);
               this.toManagementList_data();//右侧列表
             })
           }
@@ -648,14 +649,15 @@ export default {
 
     // 文件管理 点击资料树
     handleNodeClick (data) {
-      this.referenceTableUuid = data.uuid
+      this.pdictid = data.uuid
       this.toManagementList_data();//右侧列表
     },
 
     // 资料列表
     toManagementList_data () {
       let params = {
-        referenceTableUuid: this.referenceTableUuid
+        referenceTableUuid: this.referenceTableUuid,//主键id
+        dataSortId: this.pdictid,//左侧资料树
       }
       this.loading_file_table = true;//loading
       toManagementList(params).then(resp => {
@@ -683,8 +685,8 @@ export default {
       this.success_btn2 = 1;//显示加载按钮  0成功  1 loaging
       let formData = new FormData()
 
-      formData.append('referenceTableUuid', this.referenceTableUuid)
-      formData.append('dicId', this.referenceTableUuid)
+      formData.append('referenceTableUuid', this.referenceTableUuid)//主键id
+      formData.append('dicId', this.pdictid)
       formData.append('file', file.file)
 
       this.$axios({
@@ -730,7 +732,7 @@ export default {
             { type: 'application/octet-stream,charset=UTF-8' }
           )
           // const fileName = resp.headers["content-disposition"].split("fileName*=utf-8''")[1];
-          let fileName = '11'
+          let fileName = '测试下载名称'
 
           if ('download' in document.createElement('a')) {
             // 非IE下载
