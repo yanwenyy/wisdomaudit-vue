@@ -165,12 +165,12 @@
       Detail
     },
     mounted(){
-      window.onresize = () => {
-        return (() => {
-          window.screenWidth = document.body.clientWidth
-          console.log( window.screenWidth)
-        })()
-      };
+      // window.onresize = () => {
+      //   return (() => {
+      //     window.screenWidth = document.body.clientWidth
+      //     console.log( window.screenWidth)
+      //   })()
+      // };
       this.list_data_start();
       correctStep_getProjectList().then(resp=>{
         this.projectList=resp.data;
