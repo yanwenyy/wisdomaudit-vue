@@ -649,4 +649,15 @@ export default {
 .formStyle >>> .el-form-item__error {
   top: 0;
 }
+.formStyle >>> .el-input.is-disabled .el-input__inner {
+  background-color: #f5f7fa !important;
+  color: #c0c4cc !important;
+}
+.lefttree >>> .el-input__inner::-webkit-input-placeholder {
+  color: #c0c4cc !important;
+}
+.edit >>> .el-input.is-disabled .el-input__inner {
+  background-color: #f5f7fa !important;
+  color: #c0c4cc !important;
+}
 </style>
