@@ -745,7 +745,7 @@ export default {
 .el-card .el-card__header {
   font-size: 15px;
   font-weight: bold;
-  color: #439bd8;
+  color: #1989fa;
   padding: 10px !important;
 }
 .homepage-icon {
