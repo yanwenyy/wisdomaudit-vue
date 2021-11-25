@@ -244,7 +244,7 @@
                                size="small">编辑</el-button>
 
                     <!-- 删除 -->
-                    <el-button @click="delete_model(scope.row.auditTaskUuid)"
+                    <el-button @click="delete_model(scope.row.auditTaskUuid,scope.row.problemsNumber )"
                                v-if="scope.row.status==1 || scope.row.status==2"
                                type="
                            text"
@@ -2627,7 +2627,7 @@ export default {
       }
     },
     // 模型/自建 任务--删除
-    delete_model (ids) {
+    delete_model (ids, problemsNumber) {
       this.isDisable = true
       setTimeout(() => {
         this.isDisable = false
@@ -2639,35 +2639,40 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          let params = {
-            ids: ids
-          }
-          task_remove(params).then(resp => {
-
-            if (resp.code == 0) {
-              this.$message({
-                message: '删除成功',
-                type: 'success'
-              });
-              // 刷新自建列表
-              let params = {
-                pageNo: this.params.pageNo,
-                pageSize: this.params.pageSize,
-                condition: {
-                  auditModelCategory: this.params.auditModelCategory,
-                  managementProjectUuid: this.managementProjectUuid,
-                  taskName: this.search_taskName,
-                  // taskType: ''
-                }
-              }
-              this.list_data(params);
-            } else {
-              this.$message({
-                message: resp.msg,
-                type: 'error'
-              });
+          if (problemsNumber !== 0) {
+            this.$message.info("《该任务已被问题关联，请勿删除》");
+            return false
+          } else {
+            let params = {
+              ids: ids
             }
-          })
+            task_remove(params).then(resp => {
+              if (resp.code == 0) {
+                this.$message({
+                  message: '删除成功',
+                  type: 'success'
+                });
+                // 刷新自建列表
+                let params = {
+                  pageNo: this.params.pageNo,
+                  pageSize: this.params.pageSize,
+                  condition: {
+                    auditModelCategory: this.params.auditModelCategory,
+                    managementProjectUuid: this.managementProjectUuid,
+                    taskName: this.search_taskName,
+                    // taskType: ''
+                  }
+                }
+                this.list_data(params);
+              } else {
+                this.$message({
+                  message: resp.msg,
+                  type: 'error'
+                });
+              }
+            })
+          }
+
         })
         .catch(() => { });
     },
