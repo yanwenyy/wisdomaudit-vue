@@ -1444,23 +1444,48 @@ export default {
 
     //设为接口人事件
     isLiaison_Btn(row, list) {
-      // console.log(row);
-      // console.log(list);
-      this.data.forEach((item) => {
-        if (list.indexOf(item.key) != -1) {
-          item.isLiaison = 0;
-          item.disabled = false;
+      console.log(row);
+      console.log(list);
+      let leader = {}
+      this.peopleSelection.forEach((a)=>{
+        if(a.peopleRole == 1){
+          leader = a;
         }
+      })
+      console.log(leader);
+      // && item.key != leader.peopleTableUuid
+      this.data.forEach((item) => {
+        if (list.indexOf(item.key) != -1 ) {
+         
+          if(item.key == leader.peopleTableUuid){
+             item.isLiaison = 0;
+             item.disabled = true;
+          }else{
+            item.isLiaison = 0;
+            item.disabled = false;
+          }
+          
+        } 
+
       });
       row.isLiaison = 1;
       row.disabled = true;
     },
     //取消设为接口人
     cancel_Btn(row) {
+      console.log(row);
+      console.log(this.peopleSelection);
       // alert(123)
       row.isLiaison = 0;
+      this.peopleSelection.forEach((a)=>{
+        if(a.peopleTableUuid == row.key && a.peopleRole == 1){
+          row.disabled = true;
+        }else{
+            row.disabled = false;
+        }
+      })
       // row.disabled = true;
-      row.disabled = false;
+    
     },
     // 下一步按钮事件
     nextBtn() {
