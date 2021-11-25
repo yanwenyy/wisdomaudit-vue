@@ -772,48 +772,52 @@ export default {
     },
     // 提交
     post () {
-      this.success_btn = 1;
       // this.isDisable = true
       // setTimeout(() => {
       //   this.isDisable = false
       // }, 2000)
-      // if (this.check_data_list.length == 0) {
-      //   this.$message.info("请选择至少一条数据进行提交！");
-      //   return false;
-      // }
-      // let array1 = [];//数组1
-      // this.check_data_list.forEach((item) => {
-      //   array1.push(item);
-      // });
-      // console.log(array1);
-      // return false
-      // auditPreviousDemandDataUuid
+      if (this.check_data_list.length == 0) {
+        this.$message.info("请选择至少一条数据进行提交！");
+        return false;
+      } else {
+        this.success_btn = 1;
 
-      let params = {
-        dataTaskNumber: this.check_data_list[0].dataTaskNumber,//id
-        ids: this.check_data_list,//选择的数组
-        remarks: this.post_remarks,//备注
-      }
-      // 提交数据接口
-      operation_reportData(params).then(resp => {
-        console.log(resp);
-        if (resp.code == 0) {
-          this.$message({
-            message: "提交成功",
-            type: "success",
-          });
 
-          this.dialogVisible = false;//关闭弹窗
-          let params = {
-            pageNo: this.data_query.pageNo,
-            pageSize: this.data_query.pageSize,
-            condition: {
-              dataTaskNumber: this.data_query.condition.dataTaskNumber,
-            }
-          }
-          this.feedback_post(params)//资料列表
+        // let array1 = [];//数组1
+        // this.check_data_list.forEach((item) => {
+        //   array1.push(item);
+        // });
+        // console.log(array1);
+        // return false
+        // auditPreviousDemandDataUuid
+
+        let params = {
+          dataTaskNumber: this.check_data_list[0].dataTaskNumber,//id
+          ids: this.check_data_list,//选择的数组
+          remarks: this.post_remarks,//备注
         }
-      })
+        // 提交数据接口
+        operation_reportData(params).then(resp => {
+          console.log(resp);
+          if (resp.code == 0) {
+            this.$message({
+              message: "提交成功",
+              type: "success",
+            });
+
+            this.dialogVisible = false;//关闭弹窗
+            let params = {
+              pageNo: this.data_query.pageNo,
+              pageSize: this.data_query.pageSize,
+              condition: {
+                dataTaskNumber: this.data_query.condition.dataTaskNumber,
+              }
+            }
+            this.feedback_post(params)//资料列表
+          }
+        })
+      }
+
     },
 
   }

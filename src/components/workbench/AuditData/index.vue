@@ -474,7 +474,11 @@
         <!-- 新增直接下发 -->
         <el-button type="primary"
                    :disabled="isDisable"
+                   v-if="success_btn_push ==0"
                    @click="add_push_save()">下发</el-button>
+        <el-button v-if="success_btn_push ==1"
+                   type="primary"
+                   :loading="true">下发中</el-button>
       </span>
     </el-dialog>
 
@@ -1171,6 +1175,7 @@ export default {
       loading: false,
       loading_history: false,//操作记录
       whether: false,//是否下发
+      success_btn_push: 0,
       sensitiveOptions: [],//添加资料 类型
       sensitiveDepartment: [],//添加资料 部门
       sensitiveDataSource: [],//添加资料 来源
@@ -1391,6 +1396,8 @@ export default {
     // 关闭新增
     close_model () {
       this.get_out();
+      this.success_btn_push = 0;
+
     },
     // 新增资料任务时退出
     get_out () {
@@ -1759,7 +1766,7 @@ export default {
         this.isDisable = false
       }, 2000)
 
-
+      this.success_btn_push = 1;
       // 新增保存
       if (this.add_form.title == '') {
         this.$message.info("请输入标题！");
@@ -1791,6 +1798,7 @@ export default {
         };
         // 新增 直接下发
         data_add_savePush(params_push).then(resp => {
+          this.success_btn_push = 0;
           console.log(resp);
           if (resp.code == 0) {
             this.$message({

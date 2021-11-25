@@ -2,6 +2,7 @@
   <div class="rectificationPlan">
     <!-- 筛选 -->
     <el-row>
+
       <div class="search">
         <el-input placeholder="请输入项目名称"
                   v-model="list_query.projectName"
@@ -231,6 +232,7 @@ export default {
     this.pageProblemCorrectList_data();//列表
   },
   methods: {
+
     // 列表
     pageProblemCorrectList_data () {
       this.loading = true;

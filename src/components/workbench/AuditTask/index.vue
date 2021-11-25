@@ -1857,6 +1857,7 @@ export default {
         this.status_data_list_data = resp.data;
         this.status_data_list = resp.data.records
         this.arr = resp.data.records[0].result //原列表
+        console.log(this.status_data_list_data);
         this.new_table();//新接口 table
         // arr.forEach(item => {
         //   this.$set(item, 'yes_no', false)//是否问题
@@ -1901,6 +1902,15 @@ export default {
     },
     // 结果分页
     handleCurrentChange_toatl (val) {
+      this.basePageParam_query.pageNo = val;
+      alert(this.basePageParam_query.pageNo)
+      // 结果列表
+      let params2 = {
+        runTaskRelUuid: this.paramTaskUuid,
+        // runTaskRelUuid: '8ee17c4b77c51747207aab278d804381'
+      }
+      this.data_tab(params2);//结果分类
+
       // 结果列表
       let params3 = {
         basePageParam: {
@@ -1915,7 +1925,7 @@ export default {
             tableType: this.status_data[this.date_index].tableType,//  主副表标识, 主表 = 1、副表1 = 2、副表2 = 3···
             dataCount: 1
           },
-          pageNo: val, //当前页数
+          pageNo: this.basePageParam_query.pageNo, //当前页数
           pageSize: this.basePageParam_query.pageSize //分页数量
         },
         filterSql: "undefined",
