@@ -731,9 +731,7 @@ export default {
           const blob = new Blob([content],
             { type: 'application/octet-stream,charset=UTF-8' }
           )
-          // const fileName = resp.headers["content-disposition"].split("fileName*=utf-8''")[1];
-          let fileName = '测试下载名称'
-
+          const fileName = resp.headers["content-disposition"].split("fileName*=utf-8''")[1];
           if ('download' in document.createElement('a')) {
             // 非IE下载
             const elink = document.createElement('a')
