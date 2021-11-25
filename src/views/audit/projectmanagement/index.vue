@@ -119,7 +119,7 @@
         show-overflow-tooltip
       >
         <template slot-scope="scope">
-          {{ scope.row.auditStartData }} - {{ scope.row.auditFinishData }}
+          {{ scope.row.auditStartData }} 至 {{ scope.row.auditFinishData }}
         </template>
       </el-table-column>
       <el-table-column
