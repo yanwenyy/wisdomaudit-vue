@@ -1756,6 +1756,7 @@ export default {
       formData.append('fileId', id)
       down_file(formData).then(resp => {
         const content = resp;
+        console.log(resp);
         const blob = new Blob([content],
           { type: 'application/octet-stream,charset=UTF-8' }
         )
