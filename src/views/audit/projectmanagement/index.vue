@@ -1892,12 +1892,13 @@ export default {
           },
         ],
       };
+      // this.$refs.addprojectjing.clearValidate();
       let that = this;
       this.$nextTick(() => {
         if (that.$refs["addprojectjing"] != undefined) {
           that.$refs["addprojectjing"].clearValidate();
         } else {
-          that.$refs["form"].clearValidate();
+          that.$refs["addprojectjing"].clearValidate();
         }
       });
       this.isdisabled = true;
@@ -2276,10 +2277,10 @@ export default {
       } else {
         var that = this;
         this.$nextTick(() => {
-          if (that.$refs["editform"] != undefined) {
-            that.$refs["editform"].clearValidate();
+          if (that.$refs["addprojectjing"] != undefined) {
+            that.$refs["addprojectjing"].clearValidate();
           } else {
-            that.$refs["editform"].clearValidate();
+            that.$refs["addProjectManagement"].clearValidate();
           }
         });
         this.prjType = 1;
