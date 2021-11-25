@@ -15,14 +15,14 @@
         </el-col>
         <el-col :span='3'>
           <el-date-picker
-      v-model="value2"
-      type="month"
-      value-format='yyyyMM'
-      placeholder="选择月"
-      @change="changesj"
+            v-model="value2"
+            type="month"
+            value-format='yyyyMM'
+            placeholder="选择月"
+            @change="changesj"
 
-      >
-    </el-date-picker>
+          >
+          </el-date-picker>
         </el-col>
       </el-row>
 
@@ -44,19 +44,19 @@
                 vertical-align: middle;
                 line-height: 36px;
               "
-              >更多</span
+            >更多</span
             >
           </div>
         </el-col>
       </el-row>
 
-  <el-row >
-      <el-col :span="20">
-      <frameset cols="87%,*" rows="*" frameborder="NO" border="0" framespacing="0" onload="load()">
-    <frame id="linkHtml" :src='formdates'  />
-</frameset>
-      </el-col>
-  </el-row>
+      <el-row >
+        <el-col :span="20">
+          <frameset cols="87%,*" rows="*" frameborder="NO" border="0" framespacing="0" onload="load()">
+            <frame id="linkHtml" :src='formdates'  />
+          </frameset>
+        </el-col>
+      </el-row>
     </div>
   </div>
 </template>
@@ -73,48 +73,40 @@ export default {
 
 
       ],
- value2: "",
+      value2: "",
       radio2:  {
 
 
       },
 
       activeName: "",
-    tablelist:[
+      tablelist:[
 
-    ],
-    value:'',
+      ],
+      value:'',
 
 
       formdates:''
     };
   },
-  created() {
-    this.gettapylist()
 
-  },
-   computed: {
+  computed: {
     ...mapGetters([
       'name',
 
     ])
   },
-  mounted() {
 
-
-
-
-  },
   methods: {
     changemx(val){
 
-    this.formdates=val.excuteUrl+'&tab='+val.tab+'&month='+this.value2;
-    console.log(this.formdates);
-    console.log(this.value);
+      this.formdates=val.excuteUrl+'&tab='+val.tab+'&month='+this.value2;
+      console.log(this.formdates);
+      console.log(this.value);
     },
-  changesj(val){
+    changesj(val){
 
-  this.formdates=this.radio2.excuteUrl+'&tab='+this.radio2.tab+'&month='+val;
+      this.formdates=this.radio2.excuteUrl+'&tab='+this.radio2.tab+'&month='+val;
 
 
 
@@ -122,28 +114,31 @@ export default {
 
     },
 // 获取二级分类
-      async gettapylist(){
-        try {
+    async gettapylist(){
+      try {
 
 
-          let p = sessionStorage.getItem("store");
-    let q= JSON.parse(p).user.datauserid;
+        let p = sessionStorage.getItem("store");
+        let q= JSON.parse(p).user.datauserid;
         let result =  await getSignature(q)
         if(result.status == 0 && result.data.url!=null){
+           console.log('获取token接口',result);
 
-            let req = await getdataAuditApi(result.data.token)
+          let req = await getdataAuditApi(result.data.token,)
 
-            if(req.status == 0){
-        let rem = await getTypes('area=1');
-        this.options= rem.data
-        this.value= rem.data[0].type
-        this.gettablelist(this.value)
+          if(req){
+           
+            let rem = await getTypes('area=1');
+            this.options= rem.data
+            this.value= rem.data[0].type
+            this.gettablelist(this.value)
+             console.log('获取之前的接口',rem);
 
-            }
+          }
 
 
         }else {
-          let rem = await getTypes('area=1');
+          let rem = await getTypes('area=2');
           this.options= rem.data
           this.value= rem.data[0].type
           this.gettablelist(this.value)
@@ -153,55 +148,69 @@ export default {
 
 
 
-        } catch (error) {
-     console.log(error);
+      } catch (error) {
+        console.log(error);
 
-        }
+      }
 
 
 
 
     },
 
-gettime(){
-  let date = new Date
-  let year = date.getFullYear()
-  let month = date.getMonth()-1
-  let value= year+ ''+month
-  this.value2=year+ '0'+ month
-  this.changesj(value)
+    
+
+    gettime(){
+      let date = new Date
+      let year = date.getFullYear()
+      let month = date.getMonth()-1
+      let value= year+ ''+month
+      this.value2=year+ '0'+ month
+      this.changesj(value)
 
 
-},
+    },
 // 获取模型列表
     async gettablelist(){
 
-       try {
-          let res = await getTabList(`type=${this.value}`);
+      try {
+        let res = await getTabList(`type=${this.value}`);
         this.tablelist=res.data
         this.radio2= res.data[0]
-         if (res.code == 0) {
-         this.gettime()
+        if (res.code == 0) {
+          this.gettime()
 
         }
 
 
-       } catch (error) {
-         console.log(error);
+      } catch (error) {
+        console.log(error);
 
-       }
+      }
 
 
 
     },
-     ChooseThetype(){
-       this.gettablelist()
+    ChooseThetype(){
+      this.gettablelist()
 
     },
 
   },
+
+  created() {
+    this.gettapylist()
+
+  },
+
+  mounted() {
+
+
+
+
+  }
 };
-</script>
+</script> 
 
 <style lang="scss" scoped>
 .item-wapper {
@@ -221,4 +230,3 @@ gettime(){
   }
 }
 </style>
-

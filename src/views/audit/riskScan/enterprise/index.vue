@@ -89,22 +89,14 @@ export default {
       formdates:''
     };
   },
-  created() {
-    this.gettapylist()
 
-  },
   computed: {
     ...mapGetters([
       'name',
 
     ])
   },
-  mounted() {
 
-
-
-
-  },
   methods: {
     changemx(val){
 
@@ -130,14 +122,17 @@ export default {
         let q= JSON.parse(p).user.datauserid;
         let result =  await getSignature(q)
         if(result.status == 0 && result.data.url!=null){
+           console.log('获取token接口',result);
 
-          let req = await getdataAuditApi(result.data.token)
+          let req = await getdataAuditApi(result.data.token,)
 
-          if(req.status == 0){
+          if(req){
+           
             let rem = await getTypes('area=2');
             this.options= rem.data
             this.value= rem.data[0].type
             this.gettablelist(this.value)
+             console.log('获取之前的接口',rem);
 
           }
 
@@ -162,6 +157,8 @@ export default {
 
 
     },
+
+    
 
     gettime(){
       let date = new Date
@@ -200,8 +197,20 @@ export default {
     },
 
   },
+
+  created() {
+    this.gettapylist()
+
+  },
+
+  mounted() {
+
+
+
+
+  }
 };
-</script>
+</script> 
 
 <style lang="scss" scoped>
 .item-wapper {
@@ -221,4 +230,3 @@ export default {
   }
 }
 </style>
-
