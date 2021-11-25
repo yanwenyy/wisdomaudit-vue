@@ -189,14 +189,15 @@
           </tr>
           <tr>
             <td>审计(调查)事项</td>
-            <td colspan="5">{{formDetail.matter	}}</td>
+            <td colspan="5"><el-input  :disabled="ifLook" type="textarea" v-model="formDetail.matter"></el-input></td>
+            <!--<td colspan="5">{{formDetail.matter	}}</td>-->
           </tr>
           <tr>
             <td>审计(调查)事项描述</td>
-            <!--<td colspan="5"><el-input  :disabled="ifLook" type="textarea" v-model="formDetail.matterDetail"></el-input></td>-->
-            <td colspan="5">
-              <div>{{formDetail.matterDetail}}</div>
-            </td>
+            <td colspan="5"><el-input  :disabled="ifLook" type="textarea" v-model="formDetail.matterDetail"></el-input></td>
+            <!--<td colspan="5">-->
+              <!--<div>{{formDetail.matterDetail}}</div>-->
+            <!--</td>-->
           </tr>
           <tr>
             <td>审计人员(签名)</td>
