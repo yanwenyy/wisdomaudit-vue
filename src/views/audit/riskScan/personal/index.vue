@@ -121,7 +121,7 @@ export default {
       let p = sessionStorage.getItem("store");
       let q = JSON.parse(p).user.datauserid;
       getSignature(q).then((result) => {
-        if (result.status == 0 && result.data.url != null) {
+        if (result.code == 0 && result.data.url != null) {
           console.log("获取token接口", result);
           let req = getdataAuditApi(result.data.token);
           if (req) {
@@ -173,7 +173,7 @@ export default {
 
   mounted() {},
 };
-</script> 
+</script>
 
 <style lang="scss" scoped>
 .item-wapper {
