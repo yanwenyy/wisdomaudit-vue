@@ -436,6 +436,8 @@ export default {
         .then(() => {
           if (row.peopleRole == 1) {
             this.$message.info("组长不允许删除！");
+          } else if (row.isLiaison == 1) {
+            this.$message.info("接口人不可删除！");
           } else {
             if (row.isCanDelete == 0) {
               this.$message.info("此用户已被分配任务，不允许删除！");
