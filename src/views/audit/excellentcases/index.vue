@@ -37,11 +37,11 @@
                              align="center"
                              label="序号">
             </el-table-column>
-            <!-- 资料名称 -->
+            <!-- 标题 -->
             <el-table-column prop="dataTitle"
                              align="center"
                              show-overflow-tooltip
-                             label="资料名称">
+                             label="标题">
               <template slot-scope="scope"
                         style="color: rgb(19, 113, 204);">
                 {{  scope.row.dataTitle }}
@@ -289,6 +289,10 @@
                              align="center"
                              show-overflow-tooltip
                              label="上传时间">
+              <template slot-scope="scope">
+                <p>{{scope.row.createTime | filtedate}}</p>
+              </template>
+
             </el-table-column>
 
             <el-table-column prop="createUserName"
@@ -301,6 +305,11 @@
                              align="center"
                              show-overflow-tooltip
                              label="下载次数">
+              <template slot-scope="scope">
+                <p v-if="scope.row.downNum">{{scope.row.downNum}}</p>
+                <p v-else>0</p>
+              </template>
+
             </el-table-column>
 
           </el-table>
@@ -323,7 +332,7 @@
 </template>
 
 <script>
-import { pageList, save_query, loadcascader, update, deleteEntity, toManagementList, uploadFile, queryByFid, deleteAttachment } from
+import { pageList, save_query, loadcascader, update, deleteEntity, toManagementList, uploadFile, queryByFid, deleteAttachment, fileDownload } from
   '@SDMOBILE/api/shandong/excellentcases'
 import { fmtDate } from "@SDMOBILE/model/time.js";
 
@@ -618,9 +627,6 @@ export default {
     file_list (data) {
       this.dialogVisible_file = true;//显示 文件管理
       this.pdictid = data.dataSortId//左侧资料树
-      this.referenceTableUuid = data.referenceTableUuid//右侧列表 需要的
-      alert(this.pdictid)
-      console.log(data);
       let params = {
         pdictid: this.pdictid
       }
@@ -628,36 +634,33 @@ export default {
       queryByFid(params).then(resp => {
         this.data_list = resp.data
         if (this.data_list.length > 0) {
-          this.pdictid = this.data_list[0].uuid //默认展开第一个节点
+          this.referenceTableUuid = this.data_list[0].uuid //默认展开第一个节点
           this.expandDefault.push(this.data_list[0].uuid)
           if (this.$refs.el_tree) {
             this.$nextTick(() => {
-              this.$refs.el_tree.setCurrentKey(this.pdictid);
+              this.$refs.el_tree.setCurrentKey(this.referenceTableUuid);
               this.toManagementList_data();//右侧列表
             })
           }
         }
-
       })
     },
 
     // 文件管理 点击资料树
     handleNodeClick (data) {
-      this.referenceTableUuid = data.referenceTableUuid
+      this.referenceTableUuid = data.uuid
       this.toManagementList_data();//右侧列表
     },
-
 
     // 资料列表
     toManagementList_data () {
       let params = {
         referenceTableUuid: this.referenceTableUuid
       }
-      this.loading_file_table = true;
+      this.loading_file_table = true;//loading
       toManagementList(params).then(resp => {
-        console.log(resp.data);
         this.file_table = resp.data;
-        this.loading_file_table = false;
+        this.loading_file_table = false;//loading
       })
     },
 
@@ -677,9 +680,9 @@ export default {
     },
     // 上传
     handleUploadForm (file) {
-
       this.success_btn2 = 1;//显示加载按钮  0成功  1 loaging
       let formData = new FormData()
+
       formData.append('referenceTableUuid', this.referenceTableUuid)
       formData.append('dicId', this.referenceTableUuid)
       formData.append('file', file.file)
@@ -712,18 +715,23 @@ export default {
     },
 
     // 下载
-    download (id, fileName) {
-      if (this.data_list_check.length > 0) {
+    download () {
+      if (this.data_list_check.length == 0) {
         this.$message.info("请选择一条进行下载");
         return false
       } else {
-        let formData = new FormData()
-        formData.append('fileId', id)
-        fileDownload(formData).then(resp => {
+        // let formData = new FormData()
+        // formData.append(this.data_list_check)
+        let list = this.data_list_check;
+        fileDownload(list).then(resp => {
           const content = resp;
+          console.log(resp);
           const blob = new Blob([content],
             { type: 'application/octet-stream,charset=UTF-8' }
           )
+          // const fileName = resp.headers["content-disposition"].split("fileName*=utf-8''")[1];
+          let fileName = '11'
+
           if ('download' in document.createElement('a')) {
             // 非IE下载
             const elink = document.createElement('a')
@@ -746,7 +754,7 @@ export default {
 
     // 文件管理 删除
     remove_list () {
-      if (this.data_list_check.length > 0) {
+      if (this.data_list_check.length == 0) {
         this.$message.info("请选择一条进行删除");
         return false
       } else {
@@ -757,20 +765,22 @@ export default {
           type: "warning",
         })
           .then(() => {
-            let params = {
-              // this.data_list_check
-            }
-            deleteAttachment(params).then(resp => {
+
+            let list = this.data_list_check;
+            deleteAttachment(list).then(resp => {
               console.log(resp.data);
               if (resp.code == 0) {
                 this.$message({
                   message: "删除成功",
                   type: "success",
                 });
-                this.dialogVisible = false;
-                let lastPageSize = (this.tableData_list.total - 1) % this.tableData_list.size;
-                this.list_query.pageNo = lastPageSize < 1 ? this.tableData_list.current - 1 : this.tableData_list.current;
-                this.pageList_data(); // 刷新 列表
+                // this.dialogVisible = false;
+                // let lastPageSize = (this.tableData_list.total - 1) % this.tableData_list.size;
+                // this.list_query.pageNo = lastPageSize < 1 ? this.tableData_list.current - 1 : this.tableData_list.current;
+                // this.pageList_data(); // 刷新 列表
+
+                this.toManagementList_data();//右侧列表
+
               } else {
                 this.$message({
                   message: resp.data.msg,
