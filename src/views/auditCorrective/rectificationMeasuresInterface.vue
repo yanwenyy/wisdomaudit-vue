@@ -75,7 +75,6 @@
       </el-table-column>
       <el-table-column
         label="整改责任部门及联系人"
-        width="200px"
         align="center"
         prop="name"
       >
