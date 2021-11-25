@@ -4,7 +4,7 @@
     <el-row>
       <el-col :span="18">
         <!-- 添加按钮 -->
-        <el-button class="queryBtn" @click="addProject('addjingForm')"
+        <el-button class="queryBtn" @click="addProject_s()"
           >新增项目</el-button
         >
       </el-col>
@@ -44,7 +44,7 @@
 
     <!-- 项目管理列表 -->
     <el-table
-      v-loading = "projectTableLoading"
+      v-loading="projectTableLoading"
       class="table"
       :data="tableData"
       style="margin-top: 1%; width: 100%; min-height: 400px"
@@ -194,16 +194,16 @@
     <el-dialog
       :visible.sync="addDialogVisible"
       width="47%"
-      @close="addDialogClosed('addjingForm')"
+      @close="addDialogClosed('addProjectManagement')"
     >
       <div class="title">新增项目</div>
       <!-- 新增专项以及其他的页面 -->
       <div class="addzhuanForm" v-if="prjType == 1">
         <el-form
           label-width="100px"
-          :rules="rules"
+          :rules="addzhuanRules"
           :model="addProjectManagement"
-          ref="addjingForm"
+          ref="addProjectManagement"
           label-position="right"
           hide-required-asterisk
         >
@@ -239,13 +239,7 @@
             <el-form-item
               label="ㅤ项目名称:"
               prop="projectName"
-              :rules="[
-                {
-                  required: true,
-                  message: '请选择项目名称',
-                  trigger: 'change',
-                },
-              ]"
+             
             >
               <el-input
                 placeholder="请输入"
@@ -316,6 +310,7 @@
                     placeholder="请选择"
                     v-model="addProjectManagement.auditStartData"
                     :picker-options="startPickerOptions"
+                    value-format="yyyy-MM-dd HH:mm:ss"
                   ></el-date-picker>
                 </el-form-item>
               </el-col>
@@ -327,6 +322,7 @@
                     v-model="addProjectManagement.auditFinishData"
                     style="margin-left: 5px"
                     :picker-options="endPickerOptions"
+                    value-format="yyyy-MM-dd HH:mm:ss"
                   ></el-date-picker>
                 </el-form-item>
               </el-col>
@@ -431,7 +427,7 @@
           <el-button
             class="nextBtn"
             :disabled="isDisable"
-            @click="addSave('addjingForm')"
+            @click="addSave('addProjectManagement')"
             >确认</el-button
           >
         </div>
@@ -441,7 +437,7 @@
         <el-form
           label-width="100px"
           :model="addprojectjing"
-          ref="addjingForm"
+          ref="addprojectjing"
           :rules="addprojectjingRules"
           hide-required-asterisk
         >
@@ -592,6 +588,7 @@
                     placeholder="请选择"
                     v-model="addprojectjing.auditStartData"
                     :picker-options="startPickerOptions"
+                    value-format="yyyy-MM-dd HH:mm:ss"
                   ></el-date-picker>
                 </el-form-item>
               </el-col>
@@ -604,6 +601,7 @@
                     v-model="addprojectjing.auditFinishData"
                     style="margin-left: 3px"
                     :picker-options="endPickerOptions"
+                    value-format="yyyy-MM-dd HH:mm:ss"
                   ></el-date-picker>
                 </el-form-item>
               </el-col>
@@ -626,7 +624,7 @@
           <el-button
             class="nextBtn"
             :disabled="isDisable"
-            @click="nextBtn('addjingForm')"
+            @click="nextBtn('addProjectManagement')"
             >确认</el-button
           >
         </div>
@@ -636,7 +634,7 @@
     <!-- 编辑项目 -->
     <el-dialog
       :visible.sync="editDialogVisible"
-      @close="editDialogClosed('addjingForm')"
+      @close="editDialogClosed('addProjectManagement')"
       width="50%"
     >
       <div class="title">编辑项目</div>
@@ -645,7 +643,7 @@
         <el-form
           label-width="100px"
           :model="addProjectManagement"
-          ref="editform"
+          ref="addProjectManagement"
           hide-required-asterisk
         >
           <el-row>
@@ -753,6 +751,7 @@
                     placeholder="请选择"
                     v-model="addProjectManagement.auditStartData"
                     :picker-options="startPickerOptions"
+                    value-format="yyyy-MM-dd"
                   ></el-date-picker>
                 </el-form-item>
               </el-col>
@@ -764,6 +763,7 @@
                     v-model="addProjectManagement.auditFinishData"
                     style="margin-left: 5px"
                     :picker-options="endPickerOptions"
+                    value-format="yyyy-MM-dd"
                   ></el-date-picker>
                 </el-form-item>
               </el-col>
@@ -849,18 +849,18 @@
 
         <div class="addzhuanBtn">
           <el-button @click="editDialogVisible = false">取消</el-button>
-          <el-button class="nextBtn" :disabled="isDisable" @click="editBtn"
+          <el-button class="nextBtn" :disabled="isDisable" @click="editBtn('addProjectManagement')"
             >确认</el-button
           >
         </div>
       </div>
-      <!-- 经责 -->
+      <!-- 编辑经责 -->
       <div class="addForm" v-if="prjType == 2">
         <el-form
           label-width="100px"
           :model="addprojectjing"
           :rules="addprojectjingRules"
-          ref="editform"
+          ref="addprojectjing"
           hide-required-asterisk
         >
           <el-row>
@@ -918,7 +918,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="ㅤ项目名称:">
+            <el-form-item label="ㅤ项目名称:" prop="projectName">
               <el-input
                 placeholder="请输入"
                 v-model="addprojectjing.projectName"
@@ -1005,6 +1005,7 @@
                     placeholder="请选择"
                     v-model="addprojectjing.auditStartData"
                     :picker-options="startPickerOptions"
+                    value-format="yyyy-MM-dd"
                   ></el-date-picker>
                 </el-form-item>
               </el-col>
@@ -1016,6 +1017,7 @@
                     v-model="addprojectjing.auditFinishData"
                     style="margin-left: 3px"
                     :picker-options="endPickerOptions"
+                    value-format="yyyy-MM-dd"
                   ></el-date-picker>
                 </el-form-item>
               </el-col>
@@ -1484,7 +1486,7 @@ export default {
   components: { Pagination },
   data() {
     return {
-      projectTableLoading:false,//项目管理Loading
+      projectTableLoading: false, //项目管理Loading
       setLeaderDisable: false, //设置组长可编辑
       total: 0,
       isdisabled: true,
@@ -1593,32 +1595,19 @@ export default {
       startPickerOptions: this.startDate(), //新增经责审计期间判断
       endPickerOptions: this.endDate(), //新增专项审计期间判断
       // 新增专项的表单验证
-      rules: {
-        projectName: [
-          { required: true, message: "请填写项目名称", trigger: "blur" },
-        ],
+      addzhuanRules: {
+        // projectName: [
+        //   { required: true, message: "请填写项目名称", trigger: "blur" },
+        //   { max: 20, message: "被审计领导在20个字符之内", trigger: "change" },
+        // ],
         projectTypeName: [
           { required: true, message: "请选择项目分类", trigger: "change" },
         ],
-        projectLeaderName: [
-          {
-            required: true,
-            message: "请选择项目负责人",
-            trigger: ["blur", "change"],
-          },
-        ],
-        specialName: [
-          {
-            required: true,
-            message: "请选择专题",
-            trigger: ["blur", "change"],
-          },
-        ],
-        fieldName: [
+        field: [
           {
             required: true,
             message: "请选择领域",
-            trigger: ["blur", "change"],
+            trigger: "change",
           },
         ],
         auditStartData: [
@@ -1638,6 +1627,20 @@ export default {
       },
       // 添加经责表单校验
       addprojectjingRules: {
+        projectTypeName: [
+          {
+            required: true,
+            message: "请选择项目类型",
+            trigger: "change",
+          },
+        ],
+        auditOrgName: [
+          {
+            required: true,
+            message: "请选择被审计单位",
+            trigger: "change",
+          },
+        ],
         projectName: [
           { required: true, message: "请填写项目名称", trigger: "blur" },
         ],
@@ -1816,6 +1819,15 @@ export default {
       return fmtDate(t, "yyyy-MM-dd ");
     },
   },
+// watch: {
+//     active_project(val) {
+//       this.refreash = true; // loading
+//       let _this = this;
+//       setTimeout(function name() {
+//         _this.refreash = false;
+//       }, 500);
+//     },
+// },
   methods: {
     // 限制开始  结束时间范围
     beginDate() {
@@ -1963,7 +1975,7 @@ export default {
       });
     },
     //新增项目按钮事件
-    addProject() {
+    addProject_s() {
       this.addprojectjing = {
         projectCode: "",
         projectType: "",
@@ -2007,11 +2019,10 @@ export default {
           },
         ],
       };
-
-      var that = this;
+      let that = this;
       this.$nextTick(() => {
-        if (that.$refs["addjingForm"] != undefined) {
-          that.$refs["addjingForm"].clearValidate();
+        if (that.$refs["addprojectjing"] != undefined) {
+          that.$refs["addprojectjing"].clearValidate();
         } else {
           that.$refs["form"].clearValidate();
         }
@@ -2057,8 +2068,8 @@ export default {
       rows.splice(index, 1);
     },
     //新增经责项目确认按钮
-    nextBtn(addjingForm) {
-      this.$refs[addjingForm].validate((valid) => {
+    nextBtn() {
+      this.$refs.addprojectjing.validate((valid) => {
         if (valid) {
           this.isDisable = true;
           setTimeout(() => {
@@ -2076,9 +2087,12 @@ export default {
       });
     },
     //监听添加用户对话框的关闭事件
-    addDialogClosed(ref) {
+    addDialogClosed(addProjectManagement) {
       // this.$router.go(0);
-      this.$refs[ref].resetFields();
+      if(this.$refs[addProjectManagement]){
+      this.$refs[addProjectManagement].resetFields();
+
+      }
       this.addprojectjing = {
         projectCode: "",
         projectType: "",
@@ -2124,8 +2138,8 @@ export default {
       };
     },
     //编辑项目对话框关闭事件
-    editDialogClosed(editref) {
-      this.$refs[editref].resetFields();
+    editDialogClosed(editDialogClosed) {
+      this.$refs[editDialogClosed].resetFields();
     },
     // 项目管理列表分页
     handleCurrentChangeProject(val) {
@@ -2147,6 +2161,7 @@ export default {
     selectprojectType(val) {
       // 如果不是经责分类
       if (val !== "jzsj") {
+        
         this.prjType = 1;
         this.addProjectManagement.projectType = val;
         for (let i = 0; i < this.projectTypeoptions.length; i++) {
@@ -2183,10 +2198,10 @@ export default {
       var that = this;
       if (val) {
         this.$nextTick(() => {
-          if (that.$refs["addjingForm"] != undefined) {
-            that.$refs["addjingForm"].clearValidate();
+          if (that.$refs["addprojectjing"] != undefined) {
+            that.$refs["addprojectjing"].clearValidate();
           } else {
-            that.$refs["form"].clearValidate();
+            that.$refs["addProjectManagement"].clearValidate();
           }
         });
       }
@@ -2323,8 +2338,8 @@ export default {
       this.addProjectManagement.auditList = result;
     },
 
-    addSave(form) {
-      this.$refs[form].validate((valid) => {
+    addSave(addProjectManagement) {
+      this.$refs[addProjectManagement].validate((valid) => {
         if (valid) {
           this.isDisable = true;
           setTimeout(() => {
@@ -2366,10 +2381,16 @@ export default {
     // 编辑
     editDialog(rows) {
       this.editDialogVisible = true;
-      //  this.$refs.rules.clearValidate();
-      //   this.$refs.addjingForm.clearValidate();
       this.selectprojectPeople(1, 1000);
       if (rows.projectType == "jzsj") {
+        var that = this;
+        this.$nextTick(() => {
+          if (that.$refs["addprojectjing"] != undefined) {
+            that.$refs["addprojectjing"].clearValidate();
+          } else {
+            that.$refs["addProjectManagement"].clearValidate();
+          }
+        });
         this.prjType = 2;
         editProject(rows.managementProjectUuid).then((resp) => {
           this.addprojectjing = resp.data;
@@ -2380,6 +2401,14 @@ export default {
           }
         });
       } else {
+        var that = this;
+        this.$nextTick(() => {
+          if (that.$refs["editform"] != undefined) {
+            that.$refs["editform"].clearValidate();
+          } else {
+            that.$refs["editform"].clearValidate();
+          }
+        });
         this.prjType = 1;
         editProject(rows.managementProjectUuid).then((resp) => {
           this.addProjectManagement = resp.data;
@@ -2394,8 +2423,8 @@ export default {
       }
     },
     // 专项修改按钮事件
-    editBtn() {
-      this.$refs.editform.validate((valid) => {
+    editBtn(addProjectManagement) {
+          this.$refs["addProjectManagement"].validate((valid) => {
         if (valid) {
           this.isDisable = true;
           setTimeout(() => {
@@ -2432,7 +2461,7 @@ export default {
     },
     // 经责项目类型按钮事件
     editSave() {
-      this.$refs.editform.validate((valid) => {
+      this.$refs.addprojectjing.validate((valid) => {
         if (valid) {
           this.isDisable = true;
           setTimeout(() => {
@@ -2843,7 +2872,7 @@ export default {
     width: 65%;
   }
   .el-form-item {
-    margin-bottom: -25px !important;
+    margin-bottom: -10px !important;
   }
   .addIcon {
     background-color: #fff;
@@ -2866,7 +2895,7 @@ export default {
     width: 65%;
   }
   .el-form-item {
-    margin-bottom: -25px !important;
+    margin-bottom: -15px !important;
   }
   .addIcon {
     background-color: #fff;
@@ -3113,18 +3142,18 @@ export default {
 
 .addForm /deep/ .el-form-item__error {
   position: absolute;
-  top: -70%;
-  left: 35%;
+  top: 0%;
+  left: 0%;
 }
 .addzhuanForm /deep/ .el-form-item__error {
   position: absolute;
-  top: -70%;
-  left: 35%;
+  top: 0%;
+  left: 0%;
 }
 .projectTable /deep/ .el-form-item__error {
   position: absolute;
-  top: 15%;
-  left: 45%;
+  top: 23%;
+  left: 5%;
 }
 .page {
   width: 100%;
