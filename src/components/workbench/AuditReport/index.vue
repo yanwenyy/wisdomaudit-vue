@@ -16,6 +16,7 @@
           <el-col>
             <p>经营评价：</p>
             <el-button plain
+                       v-if="userRole==3 "
                        @click="Correlation_zb()">关联指标</el-button>
 
           </el-col>
@@ -37,6 +38,7 @@
           <el-col>
             <p>管理建议：</p>
             <el-button plain
+                       v-if="userRole==3 "
                        @click="Correlation_wt()">关联问题</el-button>
           </el-col>
 
@@ -54,16 +56,16 @@
 
       <div class="bottom">
         <span slot="footer">
-          <el-button size="small"
+          <!-- <el-button size="small"
                      @click="dlag_Correlation_zb = false">
-            取消</el-button>
+            取消</el-button> -->
           <el-button size="small"
                      type="primary"
-                     v-if="success_btn==0"
+                     v-if="userRole==3 && success_btn==0"
                      :disabled="isDisable"
                      @click="query_report()">生成报告</el-button>
           <el-button type="primary"
-                     v-if="success_btn==1"
+                     v-if="userRole==3  && success_btn==1"
                      :loading="true">生成中</el-button>
         </span>
         <div class="flex_end">
@@ -75,6 +77,7 @@
               <span>版本1.0</span><span>时间{{item.createTime|filtedate
 }}</span>
               <el-button type="primary"
+                         v-if="userRole==3 "
                          @click="remove_list(item.attachmentUuid)">删除</el-button>
             </li>
 
@@ -277,7 +280,7 @@ export default {
       success_btn: 0,//文件上传完成
     }
   },
-  props: ['active_project'],
+  props: ['active_project', 'userRole'],
 
   computed: {},
   watch: {},
@@ -361,6 +364,10 @@ export default {
       let array1 = [];//数组1
       this.multipleSelection.forEach((item, i) => {
         array1.push((i + 1) + '.' + item.indexDate + ',' + item.indexTypeName + ',' + item.dataProvideDepartmentName + ',' + item.accessCaliberName + ',' + item.indexValue + ',' + item.indexUnitName + '\n');
+
+        // array1.push((i + 1) + '.' + item.indexDate + ',' + item.indexTypeName + ',' + item.dataProvideDepartmentName + ',' + item.accessCaliberName + ',' + item.indexValue + ',' + item.indexUnitName + '\n');
+
+
       });
       var array_list = array1.join('')
       // var array_list = array1.toString();  //把数组转换为字符串
@@ -399,7 +406,10 @@ export default {
       }
       let array1 = [];//数组1
       this.multipleSelection2.forEach((item, i) => {
-        array1.push((i + 1) + '.' + item.problemFindPeople + ',' + item.discoveryTime + ',' + item.basis + ',' + item.field + ',' + item.problem + ',' + item.describe + ',' + item.riskAmount + ',' + item.managementAdvice + '\n');
+        // array1.push((i + 1) + '.' + item.problemFindPeople + ',' + item.discoveryTime + ',' + item.basis + ',' + item.field + ',' + item.problem + ',' + item.describe + ',' + item.riskAmount + ',' + item.managementAdvice + '\n');
+
+        array1.push((i + 1) + '.' + item.describe + ',' + '\n' + '管理建议：' + '\n' + item.managementAdvice + '\n');
+
       });
       var array_list = array1.join('')
       this.businessEvaluation = array_list;

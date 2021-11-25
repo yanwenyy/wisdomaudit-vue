@@ -309,11 +309,11 @@
                 float: right;
                 color: #8492a6;
                 font-size: 13px;
-                margin-right: 20px;
+                margin-right: 0px;
                 cursor: pointer;
               "
               @click="cancel_Btn(option)"
-              >接口人</span
+              >取消接口人</span
             >
           </div>
         </el-transfer>
@@ -357,7 +357,7 @@
             <!-- 条件查询模型名称 -->
             <div class="search">
               <el-input
-                placeholder="请输入模型任务名称"
+                placeholder="请输入任务名称"
                 v-model="getModelList.condition.taskName"
                 @keyup.enter.native="queryNameInput"
               >
@@ -391,7 +391,7 @@
             style="width: 100%"
             :header-cell-style="{ 'background-color': '#F4FAFF' }"
           >
-            <el-table-column prop="taskName" label="模型任务名称">
+            <el-table-column prop="taskName" label="任务名称">
             </el-table-column>
             <el-table-column prop="taskType" label="任务类型">
               <template slot-scope="scope">
@@ -1512,7 +1512,7 @@ export default {
     },
     //删除任务按钮事件
     deleteModel(row) {
-      this.$confirm("你将删除引入的模型任务分配", "提示", {
+      this.$confirm("你将删除此任务分配", "提示", {
         distinguishCancelAndClose: true,
         confirmButtonText: "确定",
         cancelButtonText: "放弃删除",
@@ -2571,6 +2571,7 @@ export default {
     right: 0;
     color: #8492a6;
     font-size: 13px;
+    cursor: pointer;
   }
 }
 </style>
