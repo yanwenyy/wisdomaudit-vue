@@ -184,7 +184,7 @@
         <el-form-item label="风险金额（万元）"
                       prop="riskAmount">
           <el-input v-model="temp.riskAmount"
-                    placeholder="请输入风险金额" @keyup.native="UpNumber" @keydown.native="UpNumber"/>
+                    placeholder="请输入风险金额" @keyup.native="UpNumber" />
         </el-form-item>
         <el-form-item label="关联任务"
                       prop="auditTaskUuid">
@@ -321,7 +321,7 @@
                       width="180">
           <el-input v-model="dqProblem.riskAmount"
                     placeholder="请输入风险金额"
-                    :disabled="ifadd != 2 ? false : true"  @keyup.native="UpNumber" @keydown.native="UpNumber" />
+                    :disabled="ifadd != 2 ? false : true"  @keyup.native="UpNumber" />
         </el-form-item>
         <el-form-item label="关联任务"
                       prop="auditTaskUuid">
