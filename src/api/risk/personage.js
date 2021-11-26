@@ -49,13 +49,11 @@ export function getdataAuditApi (Thirdtoken ) {
                 
                   if (res.errorCode) {
                     console.log('帆软认证接口调用失败',res);
-                          
-                    
                   } else {
                     console.log('帆软认证接口调用成功',res);
-                    request=true
-                   
-                      
+                    request=res  
+
+                  
                   }
           },
           error: function () {
@@ -63,6 +61,7 @@ export function getdataAuditApi (Thirdtoken ) {
           }
   });
 
-  return request
+return request
+
 }
 
