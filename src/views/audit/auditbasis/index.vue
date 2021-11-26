@@ -2,6 +2,7 @@
   <div class="sjyj-body">
     <el-button @click="openVault">金库认证测试</el-button>
     <el-row type="flex" :gutter="20">
+      <div><el-button type="primary" @click="addlist">新增依据</el-button></div>
       <div>
         <el-col :span="6">
           <div class="kuan">资料名称:</div>
@@ -29,10 +30,11 @@
         </el-col>
         <el-col :span="3">
           <el-button type="primary" @click="getData">查询</el-button>
-          <el-button type="primary" @click="addlist">新增依据</el-button>
+
         </el-col>
       </div>
     </el-row>
+
     <auditbasis ref="listShow"></auditbasis>
     <Vault
       :vaultV="vaultV"

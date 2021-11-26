@@ -16,7 +16,7 @@
       </div>
     </div>
     <el-table
-      :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+      :header-cell-style="{'text-align':'left','background-color': '#F4FAFF',}"
         style="width: 100%"
         border
         :data="tableData"
@@ -25,11 +25,11 @@
       <el-table-column
           label="序号"
           type="index"
-          align="center"
+          algin="left"
       />
       <el-table-column
           label="问题"
-          width="250px"
+          width="150px"
           prop="problemName"
           align="left"
       >
@@ -39,7 +39,7 @@
       </el-table-column>
       <el-table-column
           label="问题描述"
-          width="250px"
+          width="150px"
           prop="problemDesc"
           align="left"
       />
@@ -47,7 +47,7 @@
           label="整改期间"
           width="200px"
           prop="date"
-          align="center"
+          algin="left"
       >
         <template slot-scope="scope">
           <span>{{scope.row.beginTimeStr}}</span>至 <span>{{scope.row.endTimeStr}}</span>
@@ -56,7 +56,7 @@
       <el-table-column
           label="整改责任部门及联系人"
           prop="name"
-          align="center"
+          algin="left"
       >
         <template slot-scope="scope">
           <span>{{scope.row.correctDeptName+scope.row.correctPersonName||''}}</span>
@@ -65,7 +65,7 @@
 
       <el-table-column
           label="状态"
-          align="center"
+          algin="left"
           prop="correctStatus"
       >
         <template slot-scope="scope">
@@ -74,11 +74,11 @@
       </el-table-column>
       <el-table-column
         label="整改结果"
-        align="center"
+        algin="left"
         prop="correctState"
       >
         <template slot-scope="scope">
-          <span>{{scope.row.correctState=='0'?'未整改':scope.row.correctStatus=='1'?'整改中':scope.row.correctStatus=='2'?'已完成整改':''}}</span>
+          <span>{{scope.row.correctState=='0'?'未整改':scope.row.correctStatus=='1'?'整改中':scope.row.correctStatus=='2'?'已完成整改':'--'}}</span>
         </template>
       </el-table-column>
     </el-table>
