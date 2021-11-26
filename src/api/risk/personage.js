@@ -38,7 +38,7 @@ export function  getSignature (data) {
 // }
 
 
-export function getdataAuditApi (Thirdtoken,arr) {
+export function getdataAuditApi (Thirdtoken) {
   let request =''
   var url = "http://10.19.206.196:8088/WebReport/decision/third/auth/cross/login";
  return  $.ajax({
@@ -52,15 +52,6 @@ export function getdataAuditApi (Thirdtoken,arr) {
                   } else {
                     console.log('帆软认证接口调用成功',res);
                      request =res
-
-                     getTypes(arr).then((rem) => {
-                      this.options = rem.data;
-                      this.value = rem.data[0].type;
-                      this.gettablelist(this.value);
-                      console.log("里面调用", rem);
-                    });
-
-                  
                   }
           },
           error: function () {
