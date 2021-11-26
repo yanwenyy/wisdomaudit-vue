@@ -12,20 +12,23 @@ table tr:nth-child(odd){
   border-collapse:collapse!important;
 }
 .blue{
-  color: #79BDF0!important;
+  color: #0c87d6!important;
 }
 .red{
-  color: #ff8a72 !important;
+  color:#ff8a72!important
 }
 .pointer{
   cursor: pointer;
 }
-
+.subBtn{
+  background: #0c87d6!important;
+  color:#fff;
+}
 .orange{
   color:orange;
 }
 .editBtn{
-  color:#49BAE8!important;
+  color: #0c87d6!important;
   border: none!important;
 }
 .el-button{
@@ -63,7 +66,7 @@ table tr:nth-child(odd){
   width: 50%;
 }
 .search-form>.el-form-item{
-  margin-left: 30px;
+  margin-right: 20px;
 }
 .inline-block{
   display: inline-block;
@@ -85,26 +88,40 @@ table tr:nth-child(odd){
   color: #C0C4CC!important;
   background: #F5F7FA!important;
 }
-.formData .el-input__inner::placeholder {
+.formData .el-input__inner::placeholder ,.search-form .el-input__inner::placeholder{
   color:#C1C1C1!important;
 }
 /* 谷歌 */
-.formData .el-input__inner::-webkit-input-placeholder {
+.formData .el-input__inner::-webkit-input-placeholder ,.search-form .el-input__inner::-webkit-input-placeholder{
   color:#C1C1C1!important;
 }
 /* 火狐 */
-.formData .el-input__inner:-moz-placeholder {
+.formData .el-input__inner:-moz-placeholder,.search-form .el-input__inner:-moz-placeholder {
   color:#C1C1C1!important;
 }
 /*ie*/
-.formData .el-input__inner:-ms-input-placeholder {
+.formData .el-input__inner:-ms-input-placeholder ,.search-form .el-input__inner:-ms-input-placeholder{
   color:#C1C1C1!important;
 }
-.formData ::-webkit-input-placeholder {
+.formData ::-webkit-input-placeholder,.search ::-webkit-input-placeholder {
   color:#C1C1C1!important;
 }
 .falseRequired .el-form-item__label:before{
   content: "*";
   color: #ff4949;
   margin-right: 4px;
+}
+.formData .el-form-item__label{
+  padding: 0!important;
+}
+.title {
+  border-bottom: 1px solid #d2d2d2;
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+.el-input-group__append button{
+  border-top-left-radius: 0!important;
+  border-bottom-left-radius: 0!important;
 }

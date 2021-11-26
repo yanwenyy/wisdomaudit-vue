@@ -4,8 +4,8 @@
 
     <div>
       <div class="projectTab">
-        <el-table @row-dblclick="getLook" :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}" :data="tableData" style="width: 100%" @select="Selects">
-          <el-table-column align="center" type="index" label="编号"> </el-table-column>
+        <el-table @row-dblclick="getLook" :header-cell-style="{'text-align':'left','background-color': '#F4FAFF',}" :data="tableData" style="width: 100%" @select="Selects">
+          <el-table-column algin="left" type="index" label="编号"> </el-table-column>
           <el-table-column align="left" prop="basyName" label="资料名称">
             <template slot-scope="scope">
               <el-popover
@@ -23,15 +23,15 @@
               </el-popover>
             </template>
           </el-table-column>
-          <el-table-column align="center" prop="basySymbol" label="文号"> </el-table-column>
-          <el-table-column align="center" prop="publishDepartment" label="发文部门"> </el-table-column>
-          <el-table-column align="center" prop="issueDate" label="发文日期">
+          <el-table-column algin="left" prop="basySymbol" label="文号"> </el-table-column>
+          <el-table-column algin="left" prop="publishDepartment" label="发文部门"> </el-table-column>
+          <el-table-column algin="left" prop="issueDate" label="发文日期">
             <template slot-scope="scope">{{
               scope.row.issueDate | dateformat
               }}</template>
           </el-table-column>
-          <el-table-column align="center" prop="keyClauses" label="重点条款"> </el-table-column>
-          <el-table-column align="center" label="操作">
+          <el-table-column algin="left" prop="keyClauses" label="重点条款"> </el-table-column>
+          <el-table-column algin="left" label="操作">
             <template slot-scope="scope">
               <el-link type="primary blue" @click="edit(scope.row)">编辑</el-link>
               <el-link type="primary" class="delete red" @click="deletes(scope.row.basyUuid)">删除</el-link>
@@ -55,13 +55,13 @@
     </div>
     <el-dialog
       @close="close"
-      :title="title"
       :visible.sync="isAdd"
       v-if="isAdd"
       :destroy-on-close="true"
       width="70%"
       center
-    > <el-divider></el-divider>
+      class="qrd-dialog"
+    >  <div class="title">{{title}}</div>
       <el-form ref="addForm" :model="formState" :rules="rules" class="formData"  label-width="100px">
         <el-form-item class="itemTwo" prop="basyName" label="资料名称:">
           <el-input
@@ -124,7 +124,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="close">取 消</el-button>
-        <el-button v-if="!ifLook" class="btn" @click="sub">确 定</el-button>
+        <el-button v-if="!ifLook" class="subBtn"  type="primary">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -540,12 +540,6 @@ export default {
 .el-tabs{
   padding: 1%;
 }
-
-
-.btn {
-  background: dodgerblue !important;
-  color: #fff !important;
-}
 .delete {
   margin-left: 10px;
 }
@@ -597,5 +591,19 @@ export default {
 .update_icon svg{
   margin-top: 5px;
 }
-
+  >>> .qrd-dialog .el-dialog__header,
+  >>> .qrd-dialog .el-dialog__body {
+    padding: 0 !important;
+  }
+  .formData{
+    padding-top: 20px!important;
+  }
+  >>> .qrd-dialog .el-dialog__headerbtn {
+    top: 15px !important;
+    right: 15px !important;
+  }
+  >>> .qrd-dialog .el-dialog__footer {
+    padding-left: 35px !important;
+    padding-right: 35px !important;
+  }
 </style>

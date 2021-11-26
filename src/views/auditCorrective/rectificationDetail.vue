@@ -194,10 +194,10 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="close">取 消</el-button>
-      <el-button v-if="!ifLook" type="primary" @click="save">保存</el-button>
-      <el-button v-if="!ifLook&&(formState.correctStatus==1||formState.correctStatus==4)" type="primary" @click="sub">提交</el-button>
-      <el-button v-if="type=='zgcs_examine'&&(formState.correctStatus==2||formState.correctStatus==3)" type="primary" @click="examine('1')">提交</el-button>
-      <el-button v-if="type=='zgcs_examine'&&(formState.correctStatus==2||formState.correctStatus==3)" type="primary" @click="examine('2')">驳回</el-button>
+      <el-button class="subBtn" v-if="!ifLook" type="primary" @click="save">保存</el-button>
+      <el-button class="subBtn" v-if="!ifLook&&(formState.correctStatus==1||formState.correctStatus==4)" type="primary" @click="sub">提交</el-button>
+      <el-button class="subBtn" v-if="type=='zgcs_examine'&&(formState.correctStatus==2||formState.correctStatus==3)" type="primary" @click="examine('1')">提交</el-button>
+      <el-button class="subBtn" v-if="type=='zgcs_examine'&&(formState.correctStatus==2||formState.correctStatus==3)" type="primary" @click="examine('2')">驳回</el-button>
     </div>
   </el-dialog>
 </template>

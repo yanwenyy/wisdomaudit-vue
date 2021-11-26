@@ -1,7 +1,7 @@
 <template>
   <div class="rectificationMeasures">
     <div style="width: 100%; overflow: hidden">
-      <div style="float: right;">
+      <div style="float: left;">
         <el-form class="search-form" :inline="true" :model="searchForm" @keyup.enter.native="list_data_start()">
           <el-form-item label="状态:">
             <el-select v-model="searchForm.correctStatus" placeholder="请选择" clearable>
@@ -30,32 +30,36 @@
               v-model="searchForm.problemName"
               class="input-with-select"
             >
-              <el-button type="primary" slot="append" icon="el-icon-search" @click="list_data_start"></el-button>
+
             </el-input>
           </el-form-item>
+          <el-button type="primary"  @click="list_data_start">搜索</el-button>
         </el-form>
       </div>
     </div>
     <el-table
       style="width: 100%"
-      :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+      :header-cell-style="{'text-align':'left','background-color': '#F4FAFF',}"
       border
       :data="tableData"
       highlight-current-row
     >
       <el-table-column
+        :resizable="false"
         label="序号"
         type="index"
       />
       <el-table-column
+        :resizable="false"
         label="项目名称"
         width="250px"
         prop="projectName"
         algin="left"
       />
       <el-table-column
+        :resizable="false"
         label="问题"
-        width="250px"
+        width="150px"
         prop="problemName"
         algin="left"
       >
@@ -64,18 +68,20 @@
         </template>
       </el-table-column>
       <el-table-column
+        :resizable="false"
         label="整改期间"
         width="200px"
         prop="createTime"
-        align="center"
+        algin="left"
       >
         <template slot-scope="scope">
           <span>{{scope.row.beginTime | dateformat}}</span>至 <span>{{scope.row.endTime | dateformat}}</span>
         </template>
       </el-table-column>
       <el-table-column
+        :resizable="false"
         label="整改责任部门及联系人"
-        align="center"
+        algin="left"
         prop="name"
         width="200px"
       >
@@ -84,27 +90,30 @@
         </template>
       </el-table-column>
       <el-table-column
+        :resizable="false"
         label="状态"
         prop="correctStatus"
-        align="center"
+        algin="left"
         width="150px"
       >
         <template slot-scope="scope">
-          <span>{{scope.row.correctStatus=='1'?'待提交':scope.row.correctStatus=='2'?'待审核':scope.row.correctStatus=='3'?'领导审核通过':scope.row.correctStatus=='4'?'整改跟进人审核通过':scope.row.correctStatus=='5'?'驳回待提交':''}}</span>
+          <span>{{scope.row.correctStatus=='1'?'待提交':scope.row.correctStatus=='2'?'待审核':scope.row.correctStatus=='3'?'领导审核通过':scope.row.correctStatus=='4'?'整改跟进人审核通过':scope.row.correctStatus=='5'?'驳回待提交':'--'}}</span>
         </template>
       </el-table-column>
       <el-table-column
+        :resizable="false"
         label="整改结果"
         prop="name"
-        align="center"
+        algin="left"
         >
       <template slot-scope="scope">
         <span>{{scope.row.correctState=='0'?'未整改':scope.row.correctStatus=='1'?'整改中':scope.row.correctStatus=='2'?'已完成整改':''}}</span>
       </template>
       </el-table-column>
       <el-table-column
+        :resizable="false"
         label="操作"
-        align="center"
+        algin="left"
         width="200px"
       >
         <template slot-scope="scope">

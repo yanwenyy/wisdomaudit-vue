@@ -32,6 +32,7 @@
             <el-table-column prop="userName" label="用户账户">
             </el-table-column>
             <el-table-column prop="mobile" label="手机号"> </el-table-column>
+            <el-table-column prop="orgId" label="所属组织"> </el-table-column>
             <el-table-column prop="realName" label="真实姓名">
             </el-table-column>
             <el-table-column prop="email" label="邮箱"> </el-table-column>
