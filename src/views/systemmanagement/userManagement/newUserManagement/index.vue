@@ -2,31 +2,31 @@
   <div class="new-user-management-g-wrapper">
     <!-- 面包屑导航 -->
     <el-form
-      ref="newUserManagementForm"
-      :model="form"
-      :rules="rules"
-      label-position="right"
-      label-width="108px"
-      class="auditInfoForm"
+        ref="newUserManagementForm"
+        :model="form"
+        :rules="rules"
+        label-position="right"
+        label-width="108px"
+        class="auditInfoForm"
     >
       <el-form-item class="u-margin-top-20" label-width="108px" label="用户账号：" prop="userAccout">
         <el-input
-          minlength="6"
-          maxlength="50"
-          class="m-input-normal"
-          placeholder="请输入"
-          v-model.trim="form.userAccout"
+            minlength="6"
+            maxlength="50"
+            class="m-input-normal"
+            placeholder="请输入"
+            v-model.trim="form.userAccout"
         ></el-input>
         <!-- 防止浏览器自动填充用户名 -->
-        <input type="text" style="position:fixed;bottom:-9999px;" />
+        <input type="text" style="position:fixed;bottom:-9999px;"/>
       </el-form-item>
       <el-form-item class="u-margin-top-20" label-width="108px" label="真实姓名：" prop="realName">
         <el-input
-          minlength="2"
-          maxlength="50"
-          class="m-input-normal"
-          placeholder="请输入"
-          v-model="form.realName"
+            minlength="2"
+            maxlength="50"
+            class="m-input-normal"
+            placeholder="请输入"
+            v-model="form.realName"
         ></el-input>
       </el-form-item>
       <el-form-item class="u-margin-top-20" label-width="108px" label="手机号：" prop="mobile">
@@ -36,12 +36,12 @@
         <el-input class="m-input-normal" placeholder="请输入" v-model="form.email"></el-input>
       </el-form-item>
       <el-form-item class="u-margin-top-20" label-width="108px" label="角色名称：" prop="roleName">
-        <el-select v-model="form.roleName" class="m-select-normal"  multiple placeholder="请选择" @change='getRoleName'>
+        <el-select v-model="form.roleName" class="m-select-normal" multiple placeholder="请选择" @change='getRoleName'>
           <el-option
-            v-for="item in roleNameList"
-            :key="item.id"
-            :label="item.roleName"
-            :value="item.id"
+              v-for="item in roleNameList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id"
           ></el-option>
         </el-select>
       </el-form-item>
@@ -61,13 +61,12 @@
               @change="areaCodeChange"
             /> -->
             <el-cascader
-            ref="user"
-    :options="areaList"
-    :props="props"
-    @change='getUserId'
-    ></el-cascader>
+                ref="user"
+                :options="areaList"
+                :props="props"
+                @change='getUserId'
+            ></el-cascader>
           </el-form-item>
-
 
 
         </el-col>
@@ -95,7 +94,8 @@
 </template>
 
 <script>
-import {getUserTree,searchRole,addUser} from '../../../../api/user'
+import {getUserTree, searchRole, addUser} from '../../../../api/user'
+
 /**
  * @name: newUserManagement.vue
  * @description: 用户管理新建
@@ -116,7 +116,7 @@ export default {
         callback()
       } else {
         return callback(
-          new Error('姓名只能包含中英文,最后可以是数字，如张三，张三1')
+            new Error('姓名只能包含中英文,最后可以是数字，如张三，张三1')
         )
       }
     }
@@ -140,9 +140,9 @@ export default {
         callback()
       } else {
         return callback(
-          new Error(
-            '密码应为8-50个大小写字母、数字和特殊字符的组合，特殊字符范围：!@#$%^&*'
-          )
+            new Error(
+                '密码应为8-50个大小写字母、数字和特殊字符的组合，特殊字符范围：!@#$%^&*'
+            )
         )
       }
     }
@@ -156,7 +156,7 @@ export default {
       }
     }
     return {
-       props: { children: 'childList',label: 'orgName',value:'id', checkStrictly: true},
+      props: {children: 'childList', label: 'orgName', value: 'id', checkStrictly: true},
       form: {
         userAccout: '',
         password: '',
@@ -168,7 +168,7 @@ export default {
         oaId: '',
         areaCode: '',
         countyCode: '',
-        roleName:''
+        roleName: ''
       },
       roleNameList: [],
       areaList: [],
@@ -265,27 +265,27 @@ export default {
      *
      * orgTree树查询方法
      */
-    getRoleName(val){
-     this.form.roleId=[...val]
-     console.log(this.form.roleId);
+    getRoleName(val) {
+      this.form.roleId = [...val]
+      console.log(this.form.roleId)
     },
 
 
-    getUserId(val){
-       this.form.orgId=val[val.length-1]
+    getUserId(val) {
+      this.form.orgId = val[val.length - 1]
     },
-   async getRoleList(){
-      let res= await searchRole()
-      console.log(res);
-     this.roleNameList=res.data.list
+    async getRoleList() {
+      let res = await searchRole()
+      console.log(res)
+      this.roleNameList = res.data.list
 
     },
 
-   async getOrgTree() {
+    async getOrgTree() {
 
       let res = await getUserTree()
-      console.log(res);
-      this.areaList=res.data
+      console.log(res)
+      this.areaList = res.data
       // this.form.countyCode=res.data
       // console.log();
       // this.$http.get(OrgTree).then(
@@ -311,13 +311,13 @@ export default {
      */
     getRoleListInfo() {
       this.$http
-        .get(GetRoleListInfo, {
-          pageCurrent: 1,
-          pageSize: 100
-        })
-        .then(res => {
-          this.roleNameList = res.data.list
-        })
+          .get(GetRoleListInfo, {
+            pageCurrent: 1,
+            pageSize: 100
+          })
+          .then(res => {
+            this.roleNameList = res.data.list
+          })
     },
     /**
      * 确定按钮点击事件
@@ -326,33 +326,34 @@ export default {
     submit() {
       // let target = e.target
       let _self = this
-      _self.$refs.newUserManagementForm.validate( async valid => {
+      _self.$refs.newUserManagementForm.validate(async valid => {
         if (!valid) {
           return
         }
-      let data={
-        userName:this.form.userAccout,  //用户账号：
-        realName:this.form.realName, //真实姓名
-        mobile:this.form.mobile, //手机号：
-        email:this.form.email, //邮箱：
-        orgId:this.form.orgId, //所属组织：
-        oaId:this.form.oaId, //OA账号
-        roleId:this.form.roleId//角色名称：
-      }
+        let data = {
+          userName: this.form.userAccout,  //用户账号：
+          realName: this.form.realName, //真实姓名
+          mobile: this.form.mobile, //手机号：
+          email: this.form.email, //邮箱：
+          orgId: this.form.orgId, //所属组织：
+          oaId: this.form.oaId, //OA账号
+          roleId: this.form.roleId//角色名称：
+        }
 
-      let res = await addUser(data)
-      console.log(res,'添加');
-         if(res.status==0){
-           this.$message({
-          message: '添加成功',
-          type: 'success'
-        });
-           _self.$router.go(-1)
-        }else{
+        let res = await addUser(data)
+        console.log(res, '添加')
+        if (res.status == 0) {
           this.$message({
-          message: '添加失败',
-          type: 'warning'
-        });}
+            message: '添加成功',
+            type: 'success'
+          })
+          _self.$router.go(-1)
+        } else {
+          this.$message({
+            message: '添加失败',
+            type: 'warning'
+          })
+        }
         // let data = {
         //   userName: this.common.encryptAES(_self.form.userAccout),
         //   realName: _self.form.realName,
@@ -505,20 +506,23 @@ export default {
 .buttom-upload {
   width: 68px !important;
 }
+
 .auditInfoForm {
   margin-top: 5%;
   margin-left: 30%;
-  .el-input,.el-select{
+
+  .el-input, .el-select {
     position: relative;
-    top:-35px ;
+    //top: -35px;
     width: 30%;
     /* left: -30px; */
   }
-  .el-button{
-     position: relative;
+
+  .el-button {
+    position: relative;
     margin-top: 30px;
-     left:-35%;
+    left: -35%;
 
   }
-  }
+}
 </style>
