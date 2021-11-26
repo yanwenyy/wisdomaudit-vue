@@ -35,7 +35,7 @@
         <div class="task_type">
           <!-- 表单 -->
           <el-table :data="tableData_list"
-                    :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                    :header-cell-style="{'background-color': '#F4FAFF',}"
                     v-loading="loading"
                     style="width: 100%">
             <!-- 任务/自建任务名称 -->
@@ -43,16 +43,32 @@
                              width="180"
                              show-overflow-tooltip
                              label="任务名称"> </el-table-column>
+
+            <template slot-scope="scope">
+              <p v-if="scope.row.taskName">
+                {{scope.row.taskName}}
+              </p>
+              <p v-else>
+                --
+              </p>
+            </template>
+
             <!-- 专题 -->
             <el-table-column prop="belongSpcial"
-                             align="center"
                              show-overflow-tooltip
                              label="专题">
+              <template slot-scope="scope">
+                <p v-if="scope.row.belongSpcial">
+                  {{scope.row.belongSpcial}}
+                </p>
+                <p v-else>
+                  --
+                </p>
+              </template>
             </el-table-column>
 
             <!-- 类型 -->
             <el-table-column prop="taskType"
-                             align="center"
                              show-overflow-tooltip
                              label="类型">
               <template slot-scope="scope">
@@ -65,24 +81,20 @@
 
             <!-- 责任人 -->
             <el-table-column prop="peopleName"
-                             align="center"
                              show-overflow-tooltip
                              label="责任人 ">
-              <!-- <template slot-scope="scope">
-                <el-select v-model="scope.row.peopleName"
-                           @change="changeHeader(scope.row)">
-                  <el-option v-for="item in select_list"
-                             :key="item.peopleTable.peopleTableUuid"
-                             :label="item.peopleTable.peopleName"
-                             :value="item.peopleTable.peopleName">
-                  </el-option>
-                </el-select>
-              </template> -->
+              <template slot-scope="scope">
+                <p v-if="scope.row.peopleName">
+                  {{scope.row.peopleName}}
+                </p>
+                <p v-else>
+                  --
+                </p>
+              </template>
             </el-table-column>
 
             <!-- 问题数 -->
             <el-table-column prop="problemsNumber"
-                             align="center"
                              show-overflow-tooltip
                              label="问题数">
               <template slot-scope="scope">
@@ -97,10 +109,9 @@
 
                 <el-button v-else
                            type="text"
-                           style="color: #1371cc;background:none;
-    cursor: not-allowed;"
+                           style="color: #1371cc;background:none;cursor: not-allowed;"
                            size="small">
-                  0
+                  --
                 </el-button>
 
               </template>
@@ -108,41 +119,32 @@
 
             <!-- 结果数 -->
             <el-table-column prop="resultsNumber"
-                             align="center"
                              show-overflow-tooltip
                              label="结果数">
               <template slot-scope="scope">
-                <div v-if=" scope.row.taskType ==1">
-                  <el-button @click="data_num_click(scope.row)"
-                             type="text"
-                             style="color: #1371cc;background:none"
-                             size="small">
-                    {{ scope.row.resultsNumber }}
-                  </el-button>
+                <el-button @click="data_num_click(scope.row)"
+                           v-if="scope.row.taskType ==1 &&  scope.row.resultsNumber!==0"
+                           type="text"
+                           style="color: #1371cc;background:none"
+                           size="small">
+                  {{ scope.row.resultsNumber }}
+                </el-button>
 
-                  <!-- <el-button v-if="scope.row.problemsNumber !==0"
-                             @click="data_num_click(scope.row)"
-                             type="text"
-                             style="color: #1371cc"
-                             size="small">
-                    {{ scope.row.resultsNumber }}
-                  </el-button>
-                  <p style="color: #1371cc"
-                     v-else>
-                    {{ scope.row.resultsNumber }}
-                  </p> -->
-                </div>
+                <el-button v-else
+                           type="text"
+                           style="color: #1371cc;background:none;cursor: not-allowed;"
+                           size="small">
+                  --
+                </el-button>
 
               </template>
             </el-table-column>
             <!-- 附件 -->
             <el-table-column prop="file_details_li"
-                             align="center"
                              label="附件"
                              width="90">
 
               <template slot-scope="scope">
-
                 <!-- createUserUuid fileCount-->
                 <el-popover placement="bottom"
                             width="350"
@@ -183,17 +185,20 @@
                        class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.fileCount}}
                   </div>
                 </el-popover>
+
+                <div v-if="!scope.row.fileCount">
+                  --
+                </div>
               </template>
             </el-table-column>
 
             <!-- 状态 -->
             <el-table-column prop="resultsNumber"
-                             align="center"
                              show-overflow-tooltip
                              label="运行状态">
 
               <template slot-scope="scope">
-                <div v-if=" scope.row.taskType == 1">
+                <div v-if="scope.row.taskType == 1 && scope.row.runStatus!==0">
                   {{
                   scope.row.runStatus == 0
                     ? "未开始"
@@ -203,22 +208,26 @@
                     ? "已完成":'运行失败'
                 }}
                 </div>
+                <div v-if="scope.row.taskType ==2">
+                  --
+                </div>
               </template>
             </el-table-column>
 
             <!-- 操作 -->
             <el-table-column label="操作"
-                             align="center"
                              width="250">
               <template slot-scope="scope">
-                <div v-if="userRole==1 || userRole==2 ">
+                <div v-if="userRole==1 || userRole==2 "
+                     style="display: flex;">
 
                   <!-- 模型 ---------->
                   <!-- 重新执行设置 -->
                   <el-button @click="setParameters(scope.row)"
                              type="text"
                              v-if=" scope.row.taskType == 1"
-                             style="color: #1371cc"
+                             style="color: #49bae8!important;
+"
                              size="small">
                     运行
                   </el-button>
@@ -227,7 +236,8 @@
                   <el-button @click="data_num_click(scope.row)"
                              type="text"
                              v-if=" scope.row.taskType == 1"
-                             style="color:#1371CC"
+                             style="color: #49bae8!important;
+"
                              size="small">
                     查看结果
                   </el-button>
@@ -240,7 +250,8 @@
                                :disabled="isDisable"
                                v-if="scope.row.taskType ==2 && [scope.row.status==1 || scope.row.status==2]"
                                type="text"
-                               style="color:#1371CC"
+                               style="color: #49bae8!important;
+"
                                size="small">编辑</el-button>
 
                     <!-- 删除 -->
@@ -248,13 +259,16 @@
                                v-if="scope.row.status==1 || scope.row.status==2"
                                type="
                            text"
-                               style="color: red;border:none;"
+                               style="  color: #49bae8!important;border:none;"
                                :disabled="isDisable"
                                size="small">
                       删除
                     </el-button>
                   </div>
 
+                </div>
+                <div v-else>
+                  --
                 </div>
 
               </template>
@@ -292,6 +306,7 @@
           <ul class="status_data">
             <li v-for="(item,index) in status_data"
                 :key="index">
+
               <el-button type="primary"
                          v-if="item.tableType==1"
                          :class="data_active == index ? 'active':''"
@@ -325,7 +340,7 @@
                   ref="multipleTable"
                   tooltip-effect="dark"
                   style="width: 100%"
-                  :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                  :header-cell-style="{'background-color': '#F4FAFF',}"
                   @selection-change="handleSelectionChange_operation">
           >
           <el-table-column type="selection"
@@ -343,7 +358,6 @@
           <!-- 固定 -->
           <!-- 是否问题 -->
           <el-table-column prop="isProbleam"
-                           align="center"
                            label="是否问题">
             <template slot-scope="scope">
               {{
@@ -357,7 +371,6 @@
 
           <!-- 核实人 -->
           <el-table-column prop="handlePersonName"
-                           align="center"
                            label="核实人">
             <template slot-scope="scope">
               <p v-if="scope.row.handlePersonName"> {{scope.row.handlePersonName }}</p>
@@ -367,7 +380,6 @@
 
           <!-- 核实信息-->
           <el-table-column prop="handleIdea"
-                           align="center"
                            label="核实信息">
             <template slot-scope="scope">
               <p v-if="scope.row.handleIdea"> {{scope.row.handleIdea }}</p>
@@ -376,7 +388,6 @@
           </el-table-column>
           <!-- 附件 -->
           <el-table-column prop="count"
-                           align="center"
                            label=附件>
             <template slot-scope="scope">
               <el-popover placement="bottom"
@@ -443,8 +454,8 @@
                  :model="verify_model"
                  :inline="false">
           <!-- 是否问题-->
-          <el-form-item prop="isProbleam">
-            <p><span>*</span>是否问题：</p>
+          <el-form-item prop="isProbleam"
+                        label="是否问题：">
             <el-select v-model="verify_model.isProbleam_data"
                        @change="isProbleam_change">
               <el-option v-for="item in isProbleam_data_select"
@@ -455,15 +466,14 @@
             </el-select>
           </el-form-item>
           <!-- 核实信息 -->
-          <el-form-item>
-            <p>核实信息：</p>
+          <el-form-item label="核实信息：">
             <el-input type="textarea"
                       v-model="verify_model.handleIdea"
                       placeholder="请输入核实信息"></el-input>
           </el-form-item>
           <!-- 上传文件 -->
-          <el-form-item prop="dataName">
-            <p>上传文件：</p>
+          <el-form-item prop="dataName"
+                        label="上传文件：">
             <el-upload class="upload-demo"
                        drag
                        ref="upload2"
@@ -867,33 +877,22 @@
                  :rules='rules_task'>
 
           <!-- 任务名称 -->
-          <el-form-item label-width="80px"
+          <el-form-item label="任务名称："
                         style="margin-bottom:30px!important">
-            <p>任务名称：</p>
             <el-input v-model="save_zj_query.taskName"
                       placeholder="请输入任务新增"></el-input>
           </el-form-item>
           <!-- 责任人 -->
-          <el-form-item label-width="80px"
+          <el-form-item label="责任人："
                         style="margin-bottom:30px!important">
-            <p>责任人：</p>
-            <!-- <el-select v-model="save_zj_query.peopleTableUuid"
-                       @change="changeHeader2">
-              <el-option v-for="item in select_list"
-                         :key="item.peopleTableUuid"
-                         :label="item.peopleName"
-                         :value="item.peopleTableUuid">
-              </el-option>
-            </el-select> -->
             <el-input v-model="save_zj_query.peopleName"
                       :disabled="disabled"></el-input>
           </el-form-item>
 
           <!-- 领域 -->
-          <el-form-item label-width="80px"
-                        prop="belongField"
+          <el-form-item prop="belongField"
+                        label="领域："
                         style="margin-bottom:30px!important">
-            <p><span>*</span>领域：</p>
             <el-select v-model="save_zj_query.belongField"
                        @change="changeHeader_zj_ly">
               <el-option v-for="item in problems_slect"
@@ -905,10 +904,9 @@
           </el-form-item>
 
           <!-- 专题 -->
-          <el-form-item label-width="80px"
+          <el-form-item label="专题："
                         prop="belongSpcial"
                         style="margin-bottom:30px!important">
-            <p><span>*</span>专题：</p>
             <el-select v-model="save_zj_query.belongSpcial  "
                        v-if="input_select==true"
                        @change="changeHeader_zj_zt">
@@ -923,18 +921,16 @@
           </el-form-item>
 
           <!-- 任务描述 -->
-          <el-form-item label-width="80px"
+          <el-form-item label="任务描述："
                         style="margin-bottom:30px!important">
-            <p>任务描述：</p>
             <el-input v-model="save_zj_query.taskDescription"
                       ref="bz"
                       placeholder="请输入任务描述"></el-input>
           </el-form-item>
           <!-- 上传附件 -->
-          <el-form-item label-width="80px"
+          <el-form-item label="上传附件："
                         prop="fileList"
                         style="margin-bottom:30px!important">
-            <p>上传附件：</p>
             <el-upload class="upload-demo"
                        drag
                        ref="upload"
@@ -1903,7 +1899,7 @@ export default {
     // 结果分页
     handleCurrentChange_toatl (val) {
       this.basePageParam_query.pageNo = val;
-      alert(this.basePageParam_query.pageNo)
+      // alert(this.basePageParam_query.pageNo)
       // 结果列表
       let params2 = {
         runTaskRelUuid: this.paramTaskUuid,
@@ -2643,14 +2639,14 @@ export default {
         this.isDisable = false
       }, 2000)
 
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      this.$confirm('将永久删除任务和关联的附件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
           if (problemsNumber !== 0) {
-            this.$message.info("《该任务已被问题关联，请勿删除》");
+            this.$message.info("该任务已被问题关联，请勿删除");
             return false
           } else {
             let params = {
@@ -2692,7 +2688,17 @@ export default {
   
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
-/* @import "../../../assets/styles/css/yw.css"; */
+>>> .foot .el-button {
+  font-weight: normal;
+}
+>>> .el-dialog--center .el-dialog__body {
+  padding: 0 !important;
+}
+.dlag_conter >>> .el-form-item__label {
+  font-size: 14px !important;
+  padding: 0 !important;
+  width: 100px;
+}
 
 .task_type >>> .el-button:hover,
 .task_type >>> .el-button,
@@ -2935,7 +2941,7 @@ export default {
 }
 .dlag_conter3 >>> .el-form-item__content {
   display: flex;
-  margin-top: 20px;
+  /* margin-top: 20px; */
 }
 .dlag_conter3 >>> .el-form-item__content textarea,
 .dlag_conter3 >>> .el-form-item__content .el-input {
@@ -2991,34 +2997,44 @@ export default {
 
 /* 核实  */
 .verify {
-  padding: 0 20px 20px 20px;
+  padding: 17px 20px;
   box-sizing: border-box;
 }
 .verify >>> .el-form-item__content textarea,
 .verify >>> .el-form-item__content .el-input {
   width: 300px;
 }
+.verify >>> .el-form-item__label {
+  width: 90px;
+}
 
 .cxjg >>> .el-button {
   background: #ffffff;
   border: 1px solid #dcdfe6;
 }
-
+.verify >>> .el-form-item__content {
+  flex: 1;
+}
 .verify >>> .el-form-item__content span {
   color: red;
 }
 .verify >>> .el-upload {
   width: 100% !important;
 }
+.verify >>> .el-form-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px !important;
+}
 
-.dlag_conter >>> .el-upload-list__item-name {
+/* .dlag_conter >>> .el-upload-list__item-name {
   max-width: 285px;
   margin-right: 0;
 }
 
 .dlag_conter >>> .el-upload {
   width: 305px !important;
-}
+} */
 
 /* 新版附件详 */
 .list-folder {

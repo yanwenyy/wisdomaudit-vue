@@ -1,38 +1,53 @@
 <template>
   <div class="feeback">
-    <p class="title">反馈资料列表</p>
+    <!-- <p class="title">反馈资料列表</p> -->
 
     <div class="task_type">
       <!-- 表单 -->
       <el-table :data="list_data_list"
                 v-loading="loading"
-                :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                :header-cell-style="{'background-color': '#F4FAFF',}"
                 style="width: 100%">
         <el-table-column prop="createTime"
-                         align="center"
                          show-overflow-tooltip
                          label="发起日期">
           <template slot-scope="scope">
-            <p>{{scope.row.createTime | filtedate}}</p>
+            <p v-if="scope.row.createTime">{{scope.row.createTime | filtedate}}</p>
+            <p v-else></p>
           </template>
         </el-table-column>
         <el-table-column prop="projectNumber"
-                         align="center"
                          show-overflow-tooltip
                          label="项目名称">
         </el-table-column>
         <el-table-column prop="title"
-                         align="center"
                          show-overflow-tooltip
                          label="标题">
+
+          <template slot-scope="scope">
+            <p v-if="scope.row.title">
+              {{scope.row.title}}
+            </p>
+            <p v-else>
+              --
+            </p>
+          </template>
+
         </el-table-column>
         <el-table-column prop="launchPeople"
-                         align="center"
                          show-overflow-tooltip
                          label="发起人">
+
+          <template slot-scope="scope">
+            <p v-if="scope.row.launchPeople">
+              {{scope.row.launchPeople}}
+            </p>
+            <p v-else>
+              --
+            </p>
+          </template>
         </el-table-column>
         <el-table-column prop="status"
-                         align="center"
                          show-overflow-tooltip
                          label="状态">
           <template slot-scope="scope">
@@ -48,22 +63,24 @@
         </el-table-column>
 
         <el-table-column label="操作"
-                         align="center"
                          width="250">
           <template slot-scope="scope">
             <el-button @click="see(scope.row)"
-                       type="primary"
-                       style="color:#1371CC"
+                       type="text"
+                       plain
+                       style="color:rgb(19, 113, 204);"
                        size="small">
               查看
             </el-button>
             <el-button @click="feedback_tag(scope.row)"
                        v-if="scope.row.status ==1"
-                       type="primary"
-                       style="color:#1371CC"
+                       type="text"
+                       plain
+                       style="color:rgb(19, 113, 204);"
                        size="small">
               反馈
             </el-button>
+
           </template>
         </el-table-column>
       </el-table>
@@ -116,22 +133,63 @@
                       :data="feedback_list.records"
                       tooltip-effect="dark"
                       style="width: 100%"
+                      :header-cell-style="{'background-color': '#F4FAFF',}"
                       @selection-change="handleSelectionChange_query">
               <el-table-column type="selection"
                                width="55">
               </el-table-column>
               <el-table-column prop="dataNumber"
                                label="编号">
+
+                <template slot-scope="scope">
+                  <p v-if="scope.row.dataNumber">
+                    {{scope.row.dataNumber}}
+                  </p>
+                  <p v-else>
+                    --
+                  </p>
+                </template>
+
               </el-table-column>
               <el-table-column prop="secondLevelDataNumber"
                                label="二级编号">
+
+                <template slot-scope="scope">
+                  <p v-if="scope.row.secondLevelDataNumber">
+                    {{scope.row.secondLevelDataNumber}}
+                  </p>
+                  <p v-else>
+                    --
+                  </p>
+                </template>
+
               </el-table-column>
 
               <el-table-column prop="dataName"
                                label="资料名称">
+
+                <template slot-scope="scope">
+                  <p v-if="scope.row.dataName">
+                    {{scope.row.dataName}}
+                  </p>
+                  <p v-else>
+                    --
+                  </p>
+                </template>
+
               </el-table-column>
               <el-table-column prop="department"
                                label="部门">
+
+                <template slot-scope="scope">
+                  <p v-if="scope.row.department">
+                    {{scope.row.department}}
+                  </p>
+                  <p v-else>
+                    --
+                  </p>
+                </template>
+
               </el-table-column>
               <el-table-column prop="enclosure"
                                label="模版">
@@ -158,11 +216,23 @@
                     </div>
                   </el-popover>
 
+                  <p v-else>--</p>
+
                 </template>
 
               </el-table-column>
               <el-table-column prop="remarks"
                                label="备注">
+
+                <template slot-scope="scope">
+                  <p v-if="scope.row.remarks">
+                    {{scope.row.remarks}}
+                  </p>
+                  <p v-else>
+                    --
+                  </p>
+                </template>
+
               </el-table-column>
               <el-table-column prop="updateTime"
                                label="提供时间">
@@ -238,7 +308,8 @@
                                :file-list="fileList"
                                accept=".zip,.doc,.docx,.xls,.xlsx,.txt">
                       <el-button size="small"
-                                 type="primary"
+                                 type="text"
+                                 style="color:#49bae8"
                                  v-if="success_btn2 !== scope.$index"
                                  @click="up(scope.row,scope.$index)">上传</el-button>
                       <el-button v-if="success_btn2 === scope.$index"
@@ -247,8 +318,8 @@
                     </el-upload>
 
                     <el-button @click="look_record(scope.row)"
-                               type="primary"
-                               style="color:#1371CC"
+                               type="text"
+                               style="color:#49bae8"
                                size="mini">
                       查看
                     </el-button>
@@ -279,6 +350,7 @@
           <el-form label-width="80px">
             <el-table :data="record_log.records"
                       v-loading="loading_list2"
+                      :header-cell-style="{'background-color': '#F4FAFF',}"
                       style="width: 100%">
               <el-table-column prop="opOperate"
                                label="动作"
@@ -780,7 +852,6 @@ export default {
         this.$message.info("请选择至少一条数据进行提交！");
         return false;
       } else {
-        this.success_btn = 1;
 
 
         // let array1 = [];//数组1
@@ -790,6 +861,7 @@ export default {
         // console.log(array1);
         // return false
         // auditPreviousDemandDataUuid
+        this.success_btn = 1;
 
         let params = {
           dataTaskNumber: this.check_data_list[0].dataTaskNumber,//id
@@ -800,6 +872,7 @@ export default {
         operation_reportData(params).then(resp => {
           console.log(resp);
           if (resp.code == 0) {
+            this.success_btn = 0;
             this.$message({
               message: "提交成功",
               type: "success",
@@ -826,6 +899,15 @@ export default {
 
 <style  scoped>
 @import "../../../assets/styles/css/lhg.css";
+>>> .foot .el-button {
+  font-weight: normal;
+}
+>>> .el-dialog--center .el-dialog__body {
+  padding: 0 !important;
+}
+>>> .el-dialog--center .el-dialog__body .el-form-item__label {
+  font-size: 14px;
+}
 .fileName .cell span:hover {
   cursor: pointer !important;
   color: #1371cc !important;
@@ -856,7 +938,7 @@ export default {
   width: 100%;
 }
 .task_type {
-  padding: 10px 10px 20px 10px;
+  padding: 0 10px 20px 10px;
 }
 
 .page {
@@ -906,12 +988,6 @@ export default {
   top: 0;
 }
 
-.dialog_conter >>> .has-gutter .cell,
-.dialog_conter >>> .el-table__row .cell {
-  text-align: center;
-  justify-content: center !important;
-}
-
 .remarks {
   display: flex;
   padding: 30px 10px 20px;
@@ -938,6 +1014,9 @@ export default {
 
 .update_cell {
   display: flex;
-  justify-content: space-around;
+}
+
+.blue {
+  color: #49bae8 !important;
 }
 </style>

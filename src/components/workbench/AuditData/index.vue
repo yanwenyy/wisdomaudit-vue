@@ -34,7 +34,7 @@
           <el-table :data="tableData_list"
                     style="width: 100%;"
                     v-loading="loading"
-                    :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}">
+                    :header-cell-style="{'background-color': '#F4FAFF',}">
 
             <el-table-column type="index"
                              align="center"
@@ -44,17 +44,14 @@
                              label="流水单号"> -->
             <!-- </el-table-column> -->
             <el-table-column prop="title"
-                             align="center"
                              show-overflow-tooltip
                              label="标题">
             </el-table-column>
             <el-table-column prop="launchPeople"
-                             align="center"
                              show-overflow-tooltip
                              label="发起人">
             </el-table-column>
             <el-table-column prop="addTime"
-                             align="center"
                              show-overflow-tooltip
                              label="发起日期">
               <template slot-scope="scope">
@@ -62,7 +59,6 @@
               </template>
             </el-table-column>
             <el-table-column prop="status"
-                             align="center"
                              label="状态">
               <template slot-scope="scope">
                 {{
@@ -75,7 +71,6 @@
             </el-table-column>
 
             <el-table-column prop="status"
-                             align="center"
                              show-overflow-tooltip
                              label="操作记录">
               <template slot-scope="scope">
@@ -87,8 +82,7 @@
               </template>
             </el-table-column>
 
-            <el-table-column label="操作"
-                             align="center">
+            <el-table-column label="操作">
               <template slot-scope="scope">
                 <!-- isDeleted  0:不是接口人 1:s是接口人 -->
                 <div v-if="scope.row.isDeleted==1">
@@ -96,7 +90,7 @@
                     <el-button @click="edit_common(scope.row)"
                                type="text"
                                :disabled="isDisable"
-                               style="color:#1371CC;background:none;border:none"
+                               style="color:#49bae8;background:none;border:none"
                                size="small">
                       编辑
                     </el-button>
@@ -109,7 +103,7 @@
                     <el-button @click="yes_push(scope.row)"
                                type="text"
                                :disabled="isDisable"
-                               style="color:#1371CC;background:none;border:none"
+                               style="color:#49bae8;background:none;border:none"
                                size="small">
                       下发
                     </el-button>
@@ -117,7 +111,7 @@
                     <el-button @click="deleteRow(scope.row)"
                                type="text"
                                :disabled="isDisable"
-                               style="color:red;background:none;border:none"
+                               style="color:ff8a72;background:none;border:none"
                                size="small">
                       删除
                     </el-button>
@@ -128,18 +122,21 @@
                                v-if="scope.row.doingCount>=1"
                                type="text"
                                :disabled="isDisable"
-                               style="color:#1371CC;background:none;border:none"
+                               style="color:#49bae8;background:none;border:none"
                                size="small">
                       审批
                     </el-button>
                     <el-button @click="deleteRow(scope.row)"
                                type="text"
                                :disabled="isDisable"
-                               style="color:red;background:none;border:none"
+                               style="color::#ff8a72;background:none;border:none"
                                size="small">
                       删除
                     </el-button>
                   </div>
+                </div>
+                <div v-else>
+                  --
                 </div>
               </template>
 
@@ -182,21 +179,18 @@
           <el-table :data="tableData_list2"
                     style="width: 100%;"
                     v-loading="loading"
-                    :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}">
+                    :header-cell-style="{'background-color': '#F4FAFF',}">
             <!-- <el-table-column prop="dataTaskNumber"
                              label="流水单号">
             </el-table-column> -->
             <el-table-column type="index"
-                             align="center"
                              label="序号">
             </el-table-column>
             <el-table-column prop="dataName"
-                             align="center"
                              show-overflow-tooltip
                              label="资料名称">
             </el-table-column>
             <el-table-column prop="createTime"
-                             align="center"
                              show-overflow-tooltip
                              label="反馈日期">
 
@@ -205,30 +199,33 @@
               </template>
             </el-table-column>
             <el-table-column prop="dataNumber"
-                             align="center"
                              show-overflow-tooltip
                              label="编号">
             </el-table-column>
             <el-table-column prop="secondLevelDataNumber"
-                             align="center"
                              show-overflow-tooltip
                              label="二级编号">
             </el-table-column>
 
             <el-table-column prop="department"
-                             align="center"
                              show-overflow-tooltip
                              label="部门">
             </el-table-column>
             <el-table-column prop="remarks"
-                             align="center"
                              show-overflow-tooltip
                              label="备注">
+              <template slot-scope="scope">
+                <p v-if="scope.row.remarks">
+                  {{scope.row.remarks}}
+                </p>
+                <p v-else>
+                  --
+                </p>
+              </template>
             </el-table-column>
 
             <!-- 附件 -->
             <el-table-column prop="enclosureCount"
-                             align="center"
                              label="附件"
                              show-overflow-tooltip>
               <template slot-scope="scope">
@@ -326,7 +323,7 @@
                       :data="task_list_records"
                       tooltip-effect="dark"
                       style="width: 100%"
-                      :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                      :header-cell-style="{'background-color': '#F4FAFF',}"
                       @selection-change="handleSelectionChange_query">
               <el-table-column type="selection"
                                width="55">
@@ -334,25 +331,59 @@
               <el-table-column prop="dataName"
                                label="资料名称"
                                show-overflow-tooltip>
+
+                <template slot-scope="scope">
+                  <div v-if="scope.row.dataName">
+                    {{
+                  scope.row.dataName
+                }}
+                  </div>
+                  <div v-else>--</div>
+                </template>
+
               </el-table-column>
               <el-table-column prop="dataCategory"
-                               align="center"
                                show-overflow-tooltip
                                label="类别">
+
+                <template slot-scope="scope">
+                  <div v-if="scope.row.dataCategory">
+                    {{
+                  scope.row.dataCategory
+                }}
+                  </div>
+                  <div v-else>--</div>
+                </template>
+
                 <!-- <template slot-scope="scope">{{ scope.row.dataCategory }}</template> -->
               </el-table-column>
               <el-table-column prop="dataNumber"
-                               align="center"
                                show-overflow-tooltip
                                label="编号">
+
+                <template slot-scope="scope">
+                  <div v-if="scope.row.dataNumber">
+                    {{
+                  scope.row.dataNumber
+                }}
+                  </div>
+                  <div v-else>--</div>
+                </template>
               </el-table-column>
               <el-table-column prop="secondLevelDataNumber"
-                               align="center"
                                label="二级编号"
                                show-overflow-tooltip>
+                <template slot-scope="scope">
+                  <div v-if="scope.row.secondLevelDataNumber">
+                    {{
+                  scope.row.secondLevelDataNumber
+                }}
+                  </div>
+                  <div v-else>--</div>
+                </template>
+
               </el-table-column>
               <el-table-column prop="dataNumber"
-                               align="center"
                                label="附件">
                 <template slot-scope="scope">
 
@@ -379,14 +410,31 @@
               </el-table-column>
 
               <el-table-column prop="department"
-                               align="center"
                                label="部门"
                                show-overflow-tooltip>
+
+                <template slot-scope="scope">
+                  <div v-if="scope.row.department">
+                    {{
+                  scope.row.department
+                }}
+                  </div>
+                  <div v-else>--</div>
+                </template>
+
               </el-table-column>
               <el-table-column prop="remarks"
-                               align="center"
                                label="备注"
                                show-overflow-tooltip>
+                <template slot-scope="scope">
+                  <div v-if="scope.row.remarks">
+                    {{
+                  scope.row.remarks
+                }}
+                  </div>
+                  <div v-else>--</div>
+                </template>
+
               </el-table-column>
 
             </el-table>
@@ -490,15 +538,14 @@
       <div class="title_dlag">{{edit_title}} </div>
       <div class="dlag_conter2 shenhe">
 
-        <el-form label-width="80px"
-                 :rules="rules"
+        <el-form :rules="rules"
                  :model="add_data"
                  ref="add_data">
 
           <div class="son">
-            <el-form-item label-width="80px"
-                          prop="dataCategory">
-              <p><span style="color:red">*</span>类别：</p>
+            <el-form-item prop="dataCategory"
+                          label-width="120px"
+                          label="类别：">
               <el-select v-model="add_data.dataCategory"
                          @change="PrjType_change"
                          :disabled="edit_title == '详细信息'"
@@ -511,9 +558,9 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item label-width="80px"
+            <el-form-item label="资料名称："
+                          label-width="120px"
                           prop="dataName">
-              <p><span style="color:red">*</span>资料名称：</p>
               <el-input v-model="add_data.dataName"
                         :disabled="edit_title == '详细信息'"
                         placeholder="请输入资料名称"></el-input>
@@ -522,38 +569,37 @@
 
           <div class="son"
                v-if="user_data">
-
-            <el-form-item label-width="80px"
+            <el-form-item label="编号："
+                          label-width="120px"
                           prop="dataNumber">
-              <p>编号 ：</p>
               <el-input v-model="add_data.dataNumber"
                         :disabled="disabled"></el-input>
             </el-form-item>
-            <el-form-item label-width="80px"
+            <el-form-item label="二级编号："
+                          label-width="120px"
                           prop="secondLevelDataNumber">
-              <p>二级编号：</p>
               <el-input v-model="add_data.secondLevelDataNumber"
                         :disabled="disabled"></el-input>
             </el-form-item>
           </div>
           <div class="son"
                v-else>
-            <el-form-item label-width="80px"
+            <el-form-item label="编号："
+                          label-width="120px"
                           prop="dataNumber">
-              <p>编号 ：</p>
               <el-input :disabled="disabled"></el-input>
             </el-form-item>
-            <el-form-item label-width="80px"
+            <el-form-item label="二级编号："
+                          label-width="120px"
                           prop="secondLevelDataNumber">
-              <p>二级编号：</p>
               <el-input :disabled="disabled"></el-input>
             </el-form-item>
           </div>
           <div class="son">
 
-            <el-form-item label-width="80px"
+            <el-form-item label="部门："
+                          label-width="120px"
                           prop="department">
-              <p><span style="color:red">*</span>部门：</p>
               <el-select v-model="add_data.department"
                          @change="Department_change"
                          :disabled="edit_title == '详细信息'"
@@ -565,9 +611,9 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label-width="80px"
+            <el-form-item label="来源："
+                          label-width="120px"
                           prop="source">
-              <p><span style="color:red">*</span>来源：</p>
               <el-select v-model="add_data.source"
                          @change="DataSource_change"
                          :disabled="edit_title == '详细信息'"
@@ -582,18 +628,18 @@
           </div>
           <div class="son"
                v-if="user_data">
-            <el-form-item label-width="80px"
+            <el-form-item label="添加人："
+                          label-width="120px"
                           prop="addPeople">
-              <p>添加人1：</p>
               <el-input v-model="add_data.addPeople"
                         :disabled="disabled"
                         class="addPeople"></el-input>
               <!-- <div class="addPeople">{{add_data.addPeople}}</div> -->
             </el-form-item>
 
-            <el-form-item label-width="80px"
+            <el-form-item label="添加日期："
+                          label-width="120px"
                           prop="addTime">
-              <p>添加日期：</p>
               <div class="block">
                 <el-date-picker v-model="add_data.addTime"
                                 :disabled="disabled"
@@ -604,16 +650,16 @@
           </div>
           <div class="son"
                v-else>
-            <el-form-item label-width="80px"
+            <el-form-item label="添加人："
+                          label-width="120px"
                           prop="addPeople">
-              <p>添加人2：</p>
               <el-input class="addPeople"></el-input>
               <!-- <div class="addPeople">{{add_data.addPeople}}</div> -->
             </el-form-item>
 
-            <el-form-item label-width="80px"
+            <el-form-item label="添加日期："
+                          label-width="120px"
                           prop="addTime">
-              <p>添加日期：</p>
               <div class="block">
                 <el-date-picker type="date">
                 </el-date-picker>
@@ -623,11 +669,11 @@
           </div>
 
           <div class="son cd">
-
-            <el-form-item label-width="100px"
+            <el-form-item label="是否沉淀为常规需求资料："
+                          label-width="240px"
                           prop="status">
-              <p style="padding:0 0 0 30px;"><span style="color:red">*</span>是否沉淀为常规需求资料：</p>
               <el-radio-group v-model="add_data.status"
+                              style="padding-top:10px;    box-sizing: border-box;"
                               @change="changeHandler">
                 <el-radio :label="2"
                           :disabled="edit_title == '详细信息'">否</el-radio>
@@ -640,40 +686,15 @@
 
           <div class="son cd">
 
-            <el-form-item label-width="80px"
+            <el-form-item label="备注："
+                          label-width="260px"
                           prop="remarks">
-              <p>备注：</p>
               <el-input type="textarea"
                         :disabled="edit_title == '详细信息'"
                         v-model="add_data.remarks"
                         placeholder=""></el-input>
             </el-form-item>
           </div>
-
-          <!-- 模版新增： -->
-          <!-- <div class="son cd" >
-            <el-form-item label-width="80px"
-                          style="margin-bottom:0!important"
-                          class="up">
-              <p>模版新增：</p>
-              <el-upload class="upload-demo"
-                         :disabled="edit_title == '详细信息'?true:false"
-                         drag
-                         ref="upload"
-                         action="#"
-                         :on-change="handleChangePic_verify"
-                         :on-remove="handleRemoveApk"
-                         :file-list="edit_file_list"
-                         :auto-upload="false"
-                         accept=".zip,.doc,.docx,.xls,.xlsx,.txt"
-                         multiple>
-
-                <i class="el-icon-upload"></i>
-                <div class="el-upload__text">点击上传或将文件拖到虚线框<br />支持.zip,.doc,.docx,.xls,.xlsx,.txt</div>
-              </el-upload>
-
-            </el-form-item>
-          </div> -->
 
         </el-form>
       </div>
@@ -733,24 +754,21 @@
                   tooltip-effect="dark"
                   style="width: 100%"
                   v-loading="loading"
-                  :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                  :header-cell-style="{'background-color': '#F4FAFF',}"
                   @selection-change="handleSelectionChange_operation">
           <el-table-column type="selection"
                            width="55">
           </el-table-column>
           <el-table-column label="类型"
-                           align="center"
                            prop="dataCategory"
                            width="120">
             <!-- <template slot-scope="scope">{{ scope.row.date }}</template> -->
           </el-table-column>
           <el-table-column prop="dataNumber"
-                           align="center"
                            label="编号"
                            width="120">
           </el-table-column>
           <el-table-column prop="secondLevelDataNumber"
-                           align="center"
                            label="二级编号"
                            show-overflow-tooltip>
           </el-table-column>
@@ -759,17 +777,14 @@
                            show-overflow-tooltip>
           </el-table-column>
           <el-table-column prop="department"
-                           align="center"
                            label="部门"
                            show-overflow-tooltip>
           </el-table-column>
           <el-table-column prop="remarks"
-                           align="center"
                            label="备注"
                            show-overflow-tooltip>
           </el-table-column>
           <el-table-column prop="createTime"
-                           align="center"
                            label="提供时间"
                            show-overflow-tooltip>
 
@@ -780,7 +795,6 @@
           </el-table-column>
           <!-- 状态 -->
           <el-table-column prop="status"
-                           align="center"
                            label="状态"
                            show-overflow-tooltip>
             <template slot-scope="scope">
@@ -797,7 +811,6 @@
           </el-table-column>
           <!-- 附件 -->
           <el-table-column prop="enclosureCount"
-                           align="center"
                            label="附件"
                            show-overflow-tooltip>
             <template slot-scope="scope">
@@ -832,7 +845,9 @@
                            label="操作">
             <template slot-scope="scope">
               <el-button size="small"
-                         type="primary"
+                         type="text"
+                         plain
+                         style="  color: #49bae8!important;"
                          :disabled="isDisable"
                          @click="look_record(scope.row)">查看</el-button>
               <!-- <el-button size="small"
@@ -862,35 +877,30 @@
         <div v-if="record_status==true">
 
           <el-table :data="record_list_table"
-                    :header-cell-style="{'text-align':'center',
+                    :header-cell-style="{
                     'background-color': '#F4FAFF',}"
                     style="width: 100%">
 
             <el-table-column prop="opOperate"
                              label="动作"
-                             align="center"
                              width="180">
             </el-table-column>
             <el-table-column prop="opUserName"
                              label="操作人"
-                             align="center"
                              width="180">
             </el-table-column>
             <el-table-column prop="opTime"
-                             align="center"
                              label="操作时间">
               <template slot-scope="scope">
                 {{scope.row.opTime |filtedate }}
               </template>
             </el-table-column>
             <el-table-column prop="opInfo"
-                             align="center"
                              label="备注">
             </el-table-column>
 
             <!-- 附件 -->
             <el-table-column prop="count"
-                             align="center"
                              label="附件"
                              width="90">
               <template slot-scope="scope">
@@ -955,7 +965,7 @@
     <!-- 附件详情 -->
     <el-dialog width="20%"
                center
-               :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+               :header-cell-style="{'background-color': '#F4FAFF',}"
                :visible.sync="dialogVisibl_enclosure_details"
                style="padding-bottom: 59px; ">
 
@@ -964,7 +974,6 @@
                 v-if="moban_list==0"
                 style="width: 100%;">
         <el-table-column prop="fileName"
-                         align="center"
                          label="文件名称">
           <template slot-scope="scope">
             <el-button @click="download(scope.row.attachmentUuid,scope.row.fileName)"
@@ -1038,7 +1047,7 @@
       <div class="dlag_conter4">
         <el-table :data="history_log.records"
                   v-loading="loading_history"
-                  :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                  :header-cell-style="{'background-color': '#F4FAFF',}"
                   style="width: 100%;">
           <!-- <el-table-column type="selection"
                              width="55">
@@ -1048,27 +1057,22 @@
                            width="50">
           </el-table-column> -->
           <el-table-column prop="opOperate"
-                           align="center"
                            show-overflow-tooltip
                            label="动作">
           </el-table-column>
           <el-table-column prop="opUserName"
-                           align="center"
                            show-overflow-tooltip
                            label="操作人">
           </el-table-column>
           <el-table-column prop="opTime"
-                           align="center"
                            show-overflow-tooltip
                            label="操作时间">
           </el-table-column>
           <el-table-column prop="opInfo"
-                           align="center"
                            show-overflow-tooltip
                            label="备注">
           </el-table-column>
           <el-table-column prop="fileCount"
-                           align="center"
                            show-overflow-tooltip
                            label="附件">
             <template slot-scope="scope">
@@ -1766,12 +1770,10 @@ export default {
         this.isDisable = false
       }, 2000)
 
-      this.success_btn_push = 1;
       // 新增保存
       if (this.add_form.title == '') {
         this.$message.info("请输入标题！");
         return false
-
       }
       // else if (this.add_form.name == '') {
       //   this.$message.info("请输入发起人！");
@@ -1781,6 +1783,7 @@ export default {
         this.$message.info("请选择至少一条数据！");
         return false
       }
+      this.success_btn_push = 1;
 
       let array1 = [];//数组1
       this.multipleSelection_list.forEach((item) => {
@@ -2191,7 +2194,7 @@ export default {
         this.isDisable = false
       }, 2000)
       // console.log(data);
-      this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, "提示", {
+      this.$confirm(`将永久删除资料和关联的附件?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -2631,7 +2634,15 @@ export default {
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
 /* @import "../../../assets/styles/css/yw.css"; */
-
+>>> .foot .el-button {
+  font-weight: normal;
+}
+>>> .el-dialog--center .el-dialog__body {
+  padding: 0 !important;
+}
+>>> .el-dialog--center .el-dialog__body .el-form-item__label {
+  font-size: 14px;
+}
 .sjzl >>> .is-plain {
   background: #ffffff !important;
   border: 1px solid #dcdfe6 !important;
@@ -2758,7 +2769,6 @@ export default {
 .update {
   display: flex;
   align-items: center;
-  justify-content: center;
   cursor: pointer;
   position: relative;
 }
@@ -2846,8 +2856,9 @@ export default {
 .dlag_conter2 >>> .el-form-item {
   margin-bottom: 20px !important;
   display: flex;
+  align-items: flex-start;
   box-sizing: border-box;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
 }
 .dlag_conter2 >>> .el-form-item__content {
 }
@@ -2866,7 +2877,6 @@ export default {
   min-width: 800px;
 }
 .addPeople {
-  padding-top: 10px;
   width: 220px;
   display: flex;
   align-items: center;
@@ -2962,5 +2972,8 @@ export default {
   position: absolute;
   left: 0;
   top: 0;
+}
+.dlag_conter4 {
+  padding: 17px 20px;
 }
 </style>

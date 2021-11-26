@@ -20,57 +20,106 @@
 
     <div class="padding">
       <el-table :data="tableData.records"
-                :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                :header-cell-style="{'background-color': '#F4FAFF',}"
                 v-loading="loading"
                 style="width: 100%">
         <el-table-column type="index"
                          label="序号"
                          width="50">
         </el-table-column>
-        <el-table-column align="center"
-                         prop="problem"
+        <el-table-column prop="problem"
                          show-overflow-tooltip
                          label="问题">
+
+          <template slot-scope="scope">
+            <p v-if="scope.row.problem">
+              {{scope.row.problem}}
+            </p>
+            <p v-else>
+              --
+            </p>
+          </template>
+
         </el-table-column>
-        <el-table-column align="center"
-                         prop="dutyDeptName"
+        <el-table-column prop="dutyDeptName"
                          show-overflow-tooltip
                          label="主要负责部门">
+          <template slot-scope="scope">
+            <p v-if="scope.row.dutyDeptName">
+              {{scope.row.dutyDeptName}}
+            </p>
+            <p v-else>
+              --
+            </p>
+          </template>
         </el-table-column>
-        <el-table-column align="center"
-                         prop="dutyPersonName"
+        <el-table-column prop="dutyPersonName"
                          show-overflow-tooltip
                          label="整改责任人">
 
+          <template slot-scope="scope">
+            <p v-if="scope.row.dutyPersonName">
+              {{scope.row.dutyPersonName}}
+            </p>
+            <p v-else>
+              --
+            </p>
+          </template>
+
         </el-table-column>
-        <el-table-column align="center"
-                         prop="planContent"
+        <el-table-column prop="planContent"
                          show-overflow-tooltip
                          label="整改计划">
+
+          <template slot-scope="scope">
+            <p v-if="scope.row.planContent">
+              {{scope.row.planContent}}
+            </p>
+            <p v-else>
+              --
+            </p>
+          </template>
         </el-table-column>
-        <el-table-column align="center"
-                         prop="limitTime"
+        <el-table-column prop="limitTime"
                          show-overflow-tooltip
                          label="预计整改完成时限">
+
+          <template slot-scope="scope">
+            <p v-if="scope.row.limitTime">
+              {{scope.row.limitTime}}
+            </p>
+            <p v-else>
+              --
+            </p>
+          </template>
         </el-table-column>
-        <el-table-column align="center"
-                         prop="remark"
+        <el-table-column prop="remark"
                          show-overflow-tooltip
                          label="备注">
-
+          <template slot-scope="scope">
+            <p v-if="scope.row.remark">
+              {{scope.row.remark}}
+            </p>
+            <p v-else>
+              --
+            </p>
+          </template>
         </el-table-column>
 
-        <el-table-column align="center"
-                         prop="problem"
+        <el-table-column prop="problem"
                          label="操作">
           <template slot-scope="scope">
 
             <el-button type="text"
                        v-if="!type"
                        @click="edit(scope.row)"
-                       style="color: rgb(68, 163, 223);">
+                       style="color: #49bae8;">
               编辑
             </el-button>
+
+            <p v-else>
+              --
+            </p>
 
           </template>
         </el-table-column>
@@ -108,6 +157,7 @@
 
       <div class="dialog">
         <el-form ref="save"
+                 label-width="150px"
                  :rules="saveRules"
                  :model="save">
           <el-form-item label="主要负责部门："
@@ -149,7 +199,11 @@
         </el-form>
       </div>
       <div slot="footer">
-        <el-button @click="dialogVisible_edit = false">取 消</el-button>
+
+        <el-button @click="dialogVisible_edit = false"
+                   plain
+                   style="background: #FFFFFF;
+    border: 1px solid #DCDFE6;">取 消</el-button>
         <el-button type="primary"
                    :disabled="isDisable"
                    @click="save_btn('save')">确 定</el-button>
@@ -374,8 +428,18 @@ export default {
 </script>
 
 <style scoped>
+>>> .foot .el-button {
+  font-weight: normal;
+}
 .search >>> .el-input__inner::-webkit-input-placeholder {
   color: #c0c4cc !important;
+}
+>>> .el-dialog--center .el-dialog__body {
+  padding: 0 !important;
+}
+
+>>> .el-dialog--center .el-dialog__body .el-form-item__label {
+  font-size: 14px;
 }
 /* 筛选 */
 .search {
@@ -455,6 +519,7 @@ export default {
 /* 弹窗 title end*/
 .dialog >>> .el-form-item__content {
   flex: inherit !important;
+  margin-left: 0 !important;
 }
 .dialog >>> .el-date-editor.el-input,
 .el-date-editor.el-input__inner {

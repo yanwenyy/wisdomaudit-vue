@@ -12,15 +12,16 @@
         <p style="min-width:130px;text-align:right">发现人：</p>
         <el-input placeholder="请输入发现人"
                   v-model="query.findPeople"> </el-input>
-        <div class="search_icon">
-          <i class="el-icon-search"
-             @click="search_list()"
-             style="color: rgba(0, 0, 0, 0.5)"></i>
-        </div>
 
       </div>
+      <el-button type="primary"
+                 style="margin-left:17px;"
+                 @click="search_list()">
+        查询
+      </el-button>
     </div>
-    <div class="header">
+    <div class="header"
+         style="padding:0 20px 20px">
       <el-button type="primary"
                  :disabled="isDisable"
                  @click="add_sj()">新增省内历史审计发现</el-button>
@@ -31,44 +32,66 @@
       <!-- 表单 -->
       <el-table :data="tableData_list"
                 v-loading="loading"
-                :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                :header-cell-style="{'background-color': '#F4FAFF',}"
                 style="width: 100%">
 
         <el-table-column type="index"
                          label="序号"
-                         align="center"
                          width="50">
         </el-table-column>
         <!-- 历史审计发现 -->
         <el-table-column prop="historyAuditFindDescribe"
-                         align="center"
                          show-overflow-tooltip
                          label="历史审计发现描述">
+          <template slot-scope="scope">
+            <div v-if="scope.row.historyAuditFindDescribe">
+              {{scope.row.historyAuditFindDescribe }}
+            </div>
+            <div v-else>
+              --
+            </div>
+          </template>
         </el-table-column>
         <!-- 被审计单位 -->
         <el-table-column prop="auditedEntityName"
-                         align="center"
                          show-overflow-tooltip
                          label="被审计单位">
+
+          <template slot-scope="scope">
+            <div v-if="scope.row.auditedEntityName">
+              {{scope.row.auditedEntityName }}
+            </div>
+            <div v-else>
+              --
+            </div>
+          </template>
+
         </el-table-column>
 
         <!-- 发现人 -->
         <el-table-column prop="findPeople"
-                         align="center"
                          show-overflow-tooltip
                          label="发现人">
+          <template slot-scope="scope">
+            <div v-if="scope.row.findPeople">
+              {{scope.row.findPeople }}
+            </div>
+            <div v-else>
+              --
+            </div>
+          </template>
+
         </el-table-column>
 
         <!-- 审计依据 -->
-        <el-table-column prop="auditBasisName"
+        <!-- <el-table-column prop="auditBasisName"
                          align="center"
                          show-overflow-tooltip
                          label="审计依据">
 
-        </el-table-column>
+        </el-table-column> -->
         <!-- 发现时间 -->
         <el-table-column prop="findData"
-                         align="center"
                          show-overflow-tooltip
                          label="发现时间">
           <template slot-scope="scope">
@@ -77,9 +100,16 @@
         </el-table-column>
         <!-- 发现来源 -->
         <el-table-column prop="source"
-                         align="center"
                          show-overflow-tooltip
                          label="发现来源 ">
+          <template slot-scope="scope">
+            <div v-if="scope.row.source">
+              {{scope.row.source }}
+            </div>
+            <div v-else>
+              --
+            </div>
+          </template>
         </el-table-column>
 
         <!-- 风险金额 -->
@@ -87,23 +117,32 @@
                          align="center"
                          show-overflow-tooltip
                          label="风险金额">
+          <template slot-scope="scope">
+            <div v-if="scope.row.riskAmount">
+              {{scope.row.riskAmount }}
+            </div>
+            <div v-else>
+              --
+            </div>
+          </template>
         </el-table-column>
 
         <!-- 操作 -->
         <el-table-column prop="edit"
-                         align="center"
                          width="180"
                          label="操作">
           <template slot-scope="scope">
             <el-button @click="edit(scope.row.historyAuditFindUuid)"
-                       type="primary"
+                       type="text"
+                       plain
                        :disabled="isDisable"
                        style="color: #1371cc"
                        size="small">
               编辑
             </el-button>
             <el-button @click="delete_model(scope.row.historyAuditFindUuid)"
-                       type="primary"
+                       plain
+                       type="text"
                        style="color: red"
                        size="small">
               删除
@@ -202,14 +241,24 @@
           <!--审计依据 -->
           <el-form-item>
             <p>审计依据：</p>
-            <el-select v-model="add.auditBasis"
+            <!-- <el-select v-model="add.auditBasis"
                        @change="changeHeader_yj">
               <el-option v-for="item in problems_slect_yj"
                          :key="item.basyUuid"
                          :label="item.basyName"
                          :value="item.basyUuid">
               </el-option>
+            </el-select> -->
+            <!-- <el-select v-model="dqProblem.basis" -->
+            <el-select v-model="add.auditBasis"
+                       multiple
+                       @visible-change="toopen"
+                       no-data-text="请点击引用审计依据">
             </el-select>
+            <el-button type="primary"
+                       ref="basisbtn0"
+                       class="citebtn"
+                       @click="openbasis()">引用</el-button>
           </el-form-item>
 
           <!--发现日期 -->
@@ -239,7 +288,7 @@
 
           </el-form-item>
 
-          <!-- 发现来源 -->3
+          <!-- 发现来源 -->
           <el-form-item>
             <p>发现来源：</p>
             <el-input v-model="add.source"
@@ -273,14 +322,97 @@
       </div>
     </el-dialog>
 
+    <!-- 引用审计依据 -->
+    <el-dialog title="引用审计依据"
+               center
+               :visible.sync="basisdialog"
+               width="60%"
+               custom-class="outmax">
+      <div style="display: flex; height: 100%; padding: 20px">
+        <div style="max-height: 60vh; width: 50%; overflow: scroll">
+          <el-form ref="basisform"
+                   class="problem-form"
+                   :model="dqbasis"
+                   label-width="120px"
+                   label-position="right">
+            <el-form-item label="审计依据名称"
+                          class="long">
+              <el-select v-model="dqbasis.val"
+                         placeholder="请选择依据名称"
+                         @change="getbasisdetail(dqbasis.val)">
+                <el-option v-for="item in basislist"
+                           :key="item.basy_uuid"
+                           :label="item.basy_name"
+                           :value="item.basy_uuid">
+                </el-option>
+              </el-select>
+
+              <!-- <el-select v-model="add.auditBasis"
+                        placeholder="请选择依据名称"
+                       @change="changeHeader_yj">
+              <el-option v-for="item in problems_slect_yj"
+                         :key="item.basyUuid"
+                         :label="item.basyName"
+                         :value="item.basyUuid">
+              </el-option>
+            </el-select> -->
+            </el-form-item>
+          </el-form>
+          <el-card class="box-card"
+                   style="width: 70%; min-height: 300px; margin: auto">
+            <el-tree :data="dqbasis.info.tree"
+                     :props="defaultProps"
+                     @node-click="treeNodeClick"
+                     default-expand-all
+                     v-loading="basisload"></el-tree>
+          </el-card>
+        </div>
+        <el-card class="box-card basiscard"
+                 style="width: 50%"
+                 v-loading="basisload">
+          <div v-for="(item, index) in dqbasis.info.arr"
+               :key="'dqbasisarr' + index">
+            <div slot="header"
+                 class="clearfix"
+                 style="padding: 5px 0">
+              <span style="font-weight: bold"
+                    :style="
+                  item.contentLev == 1
+                    ? 'font-size:18px;'
+                    : item.contentLev == 2
+                    ? 'font-size:16px;'
+                    : 'font-size:14px;'
+                "
+                    v-if="item.contentLev != 3">{{ item.label }}</span>
+            </div>
+            <el-button style="padding: 3px 0 3px 20px; color: #ffba00; float: right"
+                       v-if="item.contentLev == 3"
+                       @click="choosebasis(item.attachmentContent)"
+                       type="text">引用</el-button>
+            <p class=""
+               v-if="item.contentLev == 3">
+              {{ item.attachmentContent }}
+            </p>
+          </div>
+        </el-card>
+      </div>
+      <span slot="footer"
+            class="dialog-footer">
+        <el-button @click="basisdialog = false">取 消</el-button>
+        <el-button type="primary"
+                   @click="surebasis()">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { fmtDate } from '@SDMOBILE/model/time.js';
 import { historicalaudit_pageList, historicalaudit_add, historicalaudit_details, historicalaudit_update, historicalaudit_delete, historicalaudit_loaauditorg, historicalaudit_yj } from '@SDMOBILE/api/shandong/Historicalaudit'
-
 import { task_problems_loadcascader } from '@SDMOBILE/api/shandong/task'
+import axios from "axios";
+import $ from "jquery";
+
 export default {
   components: {},
   data () {
@@ -308,7 +440,7 @@ export default {
         field: '',//领域
         special: '',//专题
         findPeople: '',//发现人
-        auditBasis: '',//依据
+        auditBasis: [],//依据
         auditBasisName: '',//依据name
         findData: '',//发现日期
         year: '',//所属年份
@@ -348,6 +480,26 @@ export default {
       },
       isDisable: false,//防止重复提交
       ld: false,
+
+
+      // 审计依据
+      dqProblem: {},
+      dqbasis: {
+        val: "",
+        info: "",
+        choose: [],
+      },
+      basislist: [],
+      defaultProps: {
+        children: "children",
+        label: "label",
+      },
+      basisdialog: false,
+      basisload: false,
+      ifadd: 0,
+      personlist: [],
+      me: "",
+      userRole: 0
     }
   },
   computed: {},
@@ -387,6 +539,8 @@ export default {
     }
     this.yiju(params5)
 
+    this.getbasis();//依据
+
   },
   mounted () {
 
@@ -402,6 +556,81 @@ export default {
   },
 
   methods: {
+    toopen (val) {
+      console.log(val);
+      if (val) {
+        let _this = this;
+        setTimeout(function () {
+          _this.$refs["basisbtn0"].handleClick();
+        }, 100);
+
+        console.log(_this.$refs["basisbtn0"]);
+        return false;
+      }
+    },
+    //打开依据
+    openbasis () {
+      this.basisdialog = true;
+      this.dqbasis.choose = [];
+    },
+    //确定选择依据
+    surebasis () {
+      this.basisdialog = false;
+      // if (this.ifadd == 0) {
+      // this.temp.basis = this.dqbasis.choose;
+      // } else {
+      this.add.auditBasis = this.dqbasis.choose;
+      // }
+      this.dqbasis.choose = [];
+    },
+    //选择依据
+    choosebasis (val) {
+      if (this.dqbasis.choose.indexOf(val) > -1) {
+        this.$message({
+          message: "您已引用这一条",
+          type: "warning",
+        });
+        return;
+      } else {
+        this.dqbasis.choose.push(val);
+        this.$message({
+          message: "引用成功",
+          type: "success",
+        });
+      }
+    },
+    //依据树
+    treeNodeClick () { },
+    //打开依据
+    openbasis () {
+      this.basisdialog = true;
+      this.dqbasis.choose = [];
+    },
+    //获取依据
+    getbasis () {
+      this.$axios({
+        url: `/wisdomaudit/auditBasy/getAuditbasyList`,
+        method: "get",
+        data: {},
+      }).then((res) => {
+        this.basislist = res.data.data;
+      });
+    },
+    //获取依据 change详情
+    getbasisdetail (bid) {
+      this.basisload = true;
+      this.$axios({
+        url: `/wisdomaudit/auditBasy/getById/` + bid + ``,
+        method: "get",
+        data: {},
+      }).then((res) => {
+        this.dqbasis.info = res.data.data.treeData;
+        console.log(this.dqbasis.info);
+        this.basisload = false;
+      });
+    },
+
+
     // 列表
     page_list (params) {
       this.loading = true
@@ -446,7 +675,7 @@ export default {
         this.isDisable = false
       }, 2000)
       this.add = {};
-      this.title = '新增';
+      this.title = '新增省内历史审计发现';
       this.dialogVisible = true;
       this.$nextTick(() => {
         this.$refs["add"].clearValidate();
@@ -462,12 +691,14 @@ export default {
         this.$refs[add].validate((valid) => {
           if (valid) {
             // 新增保存
+            let auditBasis = this.add.auditBasis.join(",");
+
             let params = {
               historyAuditFindDescribe: this.add.historyAuditFindDescribe,//发现描述
               auditedEntity: this.add.auditedEntity,//被审计单位
               auditedEntityName: this.add.auditedEntityName,//被审计单位 name
               field: this.add.field,//领域
-              auditBasis: this.add.auditBasis,//依据
+              auditBasis: auditBasis,//依据
               auditBasisName: this.add.auditBasisName,//依据name
               special: this.add.special,//专题
               findPeople: this.add.findPeople,//发现人
@@ -512,6 +743,9 @@ export default {
       } else {
         this.$refs[add].validate((valid) => {
           if (valid) {
+
+            let auditBasis = this.add.auditBasis.join(",");
+
             // 编辑保存
             let params = {
               historyAuditFindDescribe: this.add.historyAuditFindDescribe,//发现描述
@@ -521,7 +755,7 @@ export default {
               field: this.add.field,//领域
               special: this.add.special,//专题
               findPeople: this.add.findPeople,//发现人
-              auditBasis: this.add.auditBasis,//依据
+              auditBasis: auditBasis,//依据
               auditBasisName: this.add.auditBasisName,//依据name
 
               findData: this.add.findData,//发现日期
@@ -573,7 +807,7 @@ export default {
         this.isDisable = false
       }, 2000)
       this.historyAuditFindUuid = id
-      this.title = '编辑';
+      this.title = '编辑省内历史审计发现';
       this.dialogVisible = true;
       let params = {
         id: this.historyAuditFindUuid
@@ -605,7 +839,7 @@ export default {
         this.add.field = data.field//领域
         this.add.special = data.special;//专题
         this.add.findPeople = data.findPeople;//发现人
-        this.add.auditBasis = data.auditBasis; //依据
+        this.add.auditBasis = data.auditBasis ? data.auditBasis.split(",") : [];//依据
         // this.add.auditBasisName = data
         // auditBasisName:this.add.auditBasisName ,
         this.add.findData = data.findData;//发现日期
@@ -621,17 +855,14 @@ export default {
     // 新增任务关闭
     resetForm2 (add) {
       this.$refs[add].resetFields();
+      this.add.auditBasis = [];//清空 依据
+      this.dqbasis.info = [];
       // 关闭验证
     },
-
-
-
-
-
     // 删除
     delete_model (id) {
 
-      this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, "提示", {
+      this.$confirm(`将永久删除当前内容`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -705,8 +936,6 @@ export default {
         console.log(resp.data);
       })
     },
-
-
     // 单位
     changeHeader_danwei (val) {
       // this.add.auditedEntity = val;
@@ -753,6 +982,30 @@ export default {
 
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
+>>> .el-dialog--center .el-dialog__body {
+  padding: 0 !important;
+}
+>>> .foot .el-button {
+  font-weight: normal;
+}
+.dlag_conter >>> ::-webkit-input-placeholder {
+  color: #c0c4cc !important;
+}
+.dlag_conter >>> .el-form {
+  padding: 20px 0 0;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  width: 525px;
+}
+/* 引用按钮 */
+.dlag_conter >>> .citebtn {
+  margin-left: 10px;
+  height: 40px;
+}
+
 .header >>> .el-input__inner::-webkit-input-placeholder {
   color: #c0c4cc !important;
 }
@@ -874,10 +1127,5 @@ export default {
   padding: 20px 10px;
   display: flex;
   justify-content: flex-end;
-}
-.title_dlag {
-  border-bottom: 1px solid #d2d2d2;
-  padding: 10px;
-  text-align: left;
 }
 </style>

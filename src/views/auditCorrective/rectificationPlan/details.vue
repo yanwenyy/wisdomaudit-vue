@@ -19,7 +19,7 @@
     <div class="dialog table">
 
       <el-table :data="tableData_details.records"
-                :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                :header-cell-style="{'background-color': '#F4FAFF',}"
                 v-loading="loading_details"
                 ref="table_width"
                 style="width: 100%;min-height:400px">
@@ -27,30 +27,60 @@
                          label="序号"
                          width="50">
         </el-table-column>
-        <el-table-column align="center"
-                         prop="problem"
+        <el-table-column prop="problem"
                          label="问题"
                          show-overflow-tooltip>
           <template slot-scope="scope">
             <p @click="details_show(scope.row,scope.$index+1)"
-               style="cursor: pointer;">{{scope.row.problem}}</p>
+               v-if="scope.row.problem"
+               style="cursor: pointer;color:rgb(68, 163, 223);">{{scope.row.problem}}</p>
+
+            <p v-else>--</p>
           </template>
 
         </el-table-column>
-        <el-table-column align="center"
-                         prop="discoveryTime"
+        <el-table-column prop="discoveryTime"
                          label="发现日期"
                          show-overflow-tooltip>
+
+          <template slot-scope="scope">
+            <p v-if="scope.row.discoveryTime">
+              {{scope.row.discoveryTime}}
+            </p>
+            <p v-else>
+              --
+            </p>
+          </template>
+
         </el-table-column>
-        <el-table-column align="center"
-                         prop="riskAmount"
+        <el-table-column prop="riskAmount"
+                         align="center"
                          label="风险金额（元）"
                          show-overflow-tooltip>
+
+          <template slot-scope="scope">
+            <p v-if="scope.row.riskAmount">
+              {{scope.row.riskAmount}}
+            </p>
+            <p v-else>
+              --
+            </p>
+          </template>
+
         </el-table-column>
-        <el-table-column align="center"
-                         prop="problemFindPeople"
+        <el-table-column prop="problemFindPeople"
                          label="发现人"
                          show-overflow-tooltip>
+
+          <template slot-scope="scope">
+            <p v-if="scope.row.problemFindPeople">
+              {{scope.row.problemFindPeople}}
+            </p>
+            <p v-else>
+              --
+            </p>
+          </template>
+
         </el-table-column>
 
       </el-table>
@@ -74,18 +104,34 @@
            v-if="details == true">
         <ul class="list">
           <li>
-            <p>序号：<span>{{Index}}</span></p>
-            <p>领域：<span>{{details_list.field}}</span> </p>
-            <p>问题：<span>{{details_list.problem}}</span> </p>
+            <p>序号：<span v-if="Index">{{Index}}</span>
+              <span v-else>--</span>
+            </p>
+            <p>领域：<span v-if="details_list.field">{{details_list.field}}</span>
+              <span v-else>--</span>
+            </p>
+            <p>问题：<span v-if="details_list.problem">{{details_list.problem}}</span>
+              <span v-else>--</span>
+            </p>
           </li>
           <li>
-            <p>发现日期：<span>{{details_list.discoveryTime}}</span> </p>
-            <p>风险金额（元）：<span>{{details_list.riskAmount}}</span> </p>
-            <p>描述：<span>{{details_list.describe}}</span> </p>
+            <p>发现日期：<span v-if="details_list.discoveryTime">{{details_list.discoveryTime}}</span>
+              <span v-else>--</span>
+            </p>
+            <p>风险金额（元）：<span v-if="details_list.riskAmount">{{details_list.riskAmount}}</span>
+              <span v-else>--</span>
+            </p>
+            <p>描述：<span v-if="details_list.describe">{{details_list.describe}}</span>
+              <span v-else>--</span>
+            </p>
           </li>
           <li>
-            <p>发现人：<span>{{details_list.problemFindPeople}}</span> </p>
-            <p>管理建议：<span>{{details_list.managementAdvice}}</span> </p>
+            <p>发现人：<span v-if="details_list.problemFindPeople">{{details_list.problemFindPeople}}</span>
+              <span v-else>--</span>
+            </p>
+            <p>管理建议：<span v-if="details_list.managementAdvice">{{details_list.managementAdvice}}</span>
+              <span v-else>--</span>
+            </p>
           </li>
         </ul>
       </div>
@@ -179,13 +225,10 @@ export default {
 
 }
 </script>
-<style>
-/* .problem_details_conter {
-  width: auto;
-  min-width: 800px;
-} */
-</style>
 <style scoped>
+>>> .foot .el-button {
+  font-weight: normal;
+}
 /* 筛选 */
 .search {
   display: flex;
