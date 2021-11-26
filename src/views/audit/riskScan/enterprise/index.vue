@@ -125,12 +125,15 @@ export default {
           getdataAuditApi(result.data.token).then((res)=>{
            
            if (res.status== 'success') {
-             getTypes("area=2").then((rem) => {
-              this.options = rem.data;
-              this.value = rem.data[0].type;
-              this.gettablelist(this.value);
-              console.log("获取外面之前的接口", rem);
-            });
+             this.formdates=res.url
+
+
+            //  getTypes("area=2").then((rem) => {
+            //   this.options = rem.data;
+            //   this.value = rem.data[0].type;
+            //   this.gettablelist(this.value);
+            //   console.log("获取外面之前的接口", rem);
+            // });
              
            }
              
