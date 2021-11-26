@@ -109,7 +109,7 @@
 
                 <el-button v-else
                            type="text"
-                           style="color: #1371cc;background:none;cursor: not-allowed;"
+                           style="background:none;cursor: not-allowed;"
                            size="small">
                   --
                 </el-button>
@@ -132,7 +132,7 @@
 
                 <el-button v-else
                            type="text"
-                           style="color: #1371cc;background:none;cursor: not-allowed;"
+                           style="background:none;cursor: not-allowed;"
                            size="small">
                   --
                 </el-button>

@@ -68,9 +68,11 @@
                      v-if="userRole==1  && success_btn==1"
                      :loading="true">生成中</el-button>
         </span>
-        <div class="flex_end">
+        <div class="flex_end"
+             v-if="file_list">
           <p style="padding-top:10px;color:#606266">附件：</p>
-          <ul v-if=" file_list.attachmentList.length!==0">
+          <ul v-if="file_list.attachmentList">暂无...</ul>
+          <ul v-else>
             <li v-for="(item,index) in file_list.attachmentList"
                 :key="index">
               <p @click="download_click(item.attachmentUuid,item.fileName)">{{item.fileName}}</p>
@@ -83,7 +85,6 @@
                          @click="remove_list(item.attachmentUuid)">删除</el-button>
             </li>
           </ul>
-          <ul v-else>暂无...</ul>
 
         </div>
       </div>
@@ -393,7 +394,7 @@ export default {
       }
       export_selectFile(params).then(resp => {
         this.file_list = resp.data;
-        console.log(11)
+        // console.log(11)
       })
     },
 
