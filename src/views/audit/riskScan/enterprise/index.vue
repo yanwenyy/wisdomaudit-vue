@@ -123,17 +123,22 @@ export default {
       getSignature(q).then((result) => {
         if (result.code== 0 && result.data.url !== null) {
           console.log("获取token接口", result);
-          let req = getdataAuditApi(result.data.token);
-          console.log(req,'验证成功返回值');
-          if (req.status== 'success') {
-              console.log("获取之前的接口", rem);
+          getdataAuditApi(result.data.token,"area=2").then((res)=>{
+            console.log(res,'页面');
+          
             getTypes("area=2").then((rem) => {
               this.options = rem.data;
               this.value = rem.data[0].type;
               this.gettablelist(this.value);
-              console.log("获取之前的接口", rem);
+              console.log("获取之前的接口外面", rem);
             });
-          }
+             
+           
+
+          
+          });
+    
+        
         } else {
           let rem = getTypes("area=2");
           this.options = rem.data;
