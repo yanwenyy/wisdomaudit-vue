@@ -100,7 +100,7 @@
               <li v-for="(item, index) in modellist" :key="'model' + index">
                 <div class="li-item">
                   <h5
-                    @click="taskModelEvent('2-2', item.projectId)"
+                    @click="taskModelEvent('2-2', item.managementProjectUuid)"
                     class="pointer"
                   >
                     {{ item.projectName || "--" }}
