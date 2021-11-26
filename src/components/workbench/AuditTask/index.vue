@@ -42,16 +42,16 @@
             <el-table-column prop="taskName"
                              width="180"
                              show-overflow-tooltip
-                             label="任务名称"> </el-table-column>
-
-            <template slot-scope="scope">
-              <p v-if="scope.row.taskName">
-                {{scope.row.taskName}}
-              </p>
-              <p v-else>
-                --
-              </p>
-            </template>
+                             label="任务名称">
+              <template slot-scope="scope">
+                <p v-if="scope.row.taskName">
+                  {{scope.row.taskName}}
+                </p>
+                <p v-else>
+                  --
+                </p>
+              </template>
+            </el-table-column>
 
             <!-- 专题 -->
             <el-table-column prop="belongSpcial"
@@ -2688,9 +2688,6 @@ export default {
   
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
->>> .foot .el-button {
-  font-weight: normal;
-}
 >>> .el-dialog--center .el-dialog__body {
   padding: 0 !important;
 }
