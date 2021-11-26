@@ -17,56 +17,64 @@
 
     <el-table
       fit
-      :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+      :header-cell-style="{'text-align':'left','background-color': '#F4FAFF',}"
       style="width: 100%"
       border
       :data="tableData"
       highlight-current-row
     >
       <el-table-column
+        :resizable="false"
         label="项目编号"
         width="100"
         type="index"
-        align="center"
+        algin="left"
       />
       <el-table-column
+        :resizable="false"
         label="审计项目名称"
         width="250px"
         prop="projectName"
         align="left"
       />
       <el-table-column
+        :resizable="false"
         label="被审计单位"
         prop="auditOrgName"
-        align="center"
-        width="150"
+        algin="left"
+        width="100"
       />
       <el-table-column
+        :resizable="false"
         label="项目类型"
         prop="projectTypeName"
-        align="center"
+        algin="left"
       />
       <el-table-column
+        :resizable="false"
         label="项目负责人"
         prop="projectLeaderName"
-        align="center"
-        width="150"
+        algin="left"
+        width="100"
       />
       <el-table-column
+        :resizable="false"
         label="项目组长"
-        align="center"
+        algin="left"
         prop="projectChargemanName"
       />
       <el-table-column
+        :resizable="false"
         label="项目跟进人"
-        align="center"
+        algin="left"
         prop="correctUserName"
-        width="150"
+        width="100"
       />
       <el-table-column
+        :resizable="false"
         label="整改期间"
-        width="250"
-        align="center"
+        width="200"
+        algin="left"
         prop="date"
       >
         <template slot-scope="scope">
@@ -74,19 +82,22 @@
         </template>
       </el-table-column>
       <el-table-column
+        :resizable="false"
         label="创建人"
         prop="createUserName"
-        align="center"
+        algin="left"
       />
       <el-table-column
+        :resizable="false"
         label="创建日期"
-        align="center"
+        algin="left"
         prop="createTimeStr"
         width="150"
       />
       <el-table-column
+        :resizable="false"
         label="操作"
-        align="center"
+        algin="left"
       >
         <template slot-scope="scope">
           <el-button type="text" class="sh-btn blue" @click="toEditList(scope.row)">

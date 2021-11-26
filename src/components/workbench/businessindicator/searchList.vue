@@ -7,20 +7,20 @@
       :visible.sync="visible"
       :append-to-body="true">
       <div>
-        <el-button @click="" type="primary" @click="addIndex">新增指标</el-button>
+        <el-button @click="" type="primary" @click="addIndex"  class="subBtn">新增指标</el-button>
         <el-table
           :data="dataList"
           border
           highlight-current-row
           @selection-change="selList"
           :header-cell-style="{
-          'text-align': 'center',
+          'text-align': 'left',
           'background-color': '#F4FAFF',
         }"
           style="width: 100%;">
           <el-table-column
             :selectable="selectable"
-            align="center"
+            algin="left"
             type="selection"
             width="55">
           </el-table-column>
@@ -31,25 +31,25 @@
           </el-table-column>
           <el-table-column
             prop="indexName"
-            header-align="center"
+            header-algin="left"
             align="left"
             label="指标名称">
           </el-table-column>
           <el-table-column
             prop="numericSymbolName"
-            header-align="center"
-            align="center"
+            header-algin="left"
+            algin="left"
             label="单位">
           </el-table-column>
           <el-table-column
             prop="dataProvidingDepartmentName"
-            header-align="center"
-            align="center"
+            header-algin="left"
+            algin="left"
             label="资料提供部门">
           </el-table-column>
           <el-table-column
             prop="accessCaliberFormulaName"
-            header-align="center"
+            header-algin="left"
             align="left"
             label="取数口径或公式">
           </el-table-column>
@@ -68,17 +68,18 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="visible = false">取消</el-button>
-        <el-button type="primary" @click="sub">确定</el-button>
+        <el-button type="primary" @click="sub"  class="subBtn">确定</el-button>
       </div>
     </el-dialog>
     <el-dialog
       center
-      title="新增指标 "
       :visible.sync="dialogFormVisible"
       :close-on-click-modal="false"
       width="50%"
       @close="dialogFormVisible = false,clearTemp()"
+      class="qrd-dialog"
     >
+      <div class="title">新增指标</div>
       <el-form
         ref="dataForm"
         :rules="rules"
@@ -86,7 +87,7 @@
         label-position="right"
         class="zb-form"
       >
-        <el-form-item label="指标类型" prop="indexType">
+        <el-form-item label="指标类型:" prop="indexType">
           <el-select v-model="temp.indexType" placeholder="请选择"
                      @change="
                       getName(
@@ -104,13 +105,13 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="指标名称" prop="indexName">
+        <el-form-item label="指标名称:" prop="indexName">
           <el-input
             v-model="temp.indexName"
             placeholder="请输入指标名称"
           />
         </el-form-item>
-        <el-form-item label="单位" prop="numericSymbol">
+        <el-form-item label="单位:" prop="numericSymbol">
           <el-select v-model="temp.numericSymbol" placeholder="请选择"
                      @change="
                       getName(
@@ -128,7 +129,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="资料提供部门" prop="dataProvidingDepartment">
+        <el-form-item label="资料提供部门:" prop="dataProvidingDepartment">
           <el-select v-model="temp.dataProvidingDepartment" placeholder="请选择"
                      @change="
                       getName2(
@@ -146,7 +147,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="取数口径或公式" prop="accessCaliberFormula">
+        <el-form-item label="取数口径或公式:" prop="accessCaliberFormula">
           <el-select v-model="temp.accessCaliberFormula" placeholder="请选择"
                      @change="
                       getName(
@@ -164,7 +165,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="是否同步到指标库" prop="isAddIndex">
+        <el-form-item label="是否同步到指标库:" prop="isAddIndex">
           <el-radio-group v-model="temp.isAddIndex">
             <el-radio :label="true">是</el-radio>
             <el-radio :label="false">否</el-radio>
@@ -176,6 +177,7 @@
         <el-button
           type="primary"
           @click="addSave"
+          class="subBtn"
         >保存</el-button
         >
       </div>
@@ -437,5 +439,13 @@
   }
   .page{
     text-align: right;
+  }
+  >>> .qrd-dialog .el-dialog__header,
+  >>> .qrd-dialog .el-dialog__body {
+    padding: 0 !important;
+  }
+  >>> .qrd-dialog .el-dialog__headerbtn {
+    top: 15px !important;
+    right: 15px !important;
   }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="indocator">
     <div class="filter-container">
-      <el-button type="primary" @click="add()" v-if="isLiaison=='1'"
+      <el-button type="primary" @click="add()" v-if="isLiaison=='1'"  class="subBtn"
         >新增指标</el-button
       >
       <!--<div class="indocator-btn-box" v-if="!ifprojectmanage">-->

@@ -1,26 +1,30 @@
 <template>
   <div class="auditConfirmation">
     <el-button type="primary"
-               @click="addConfirmation()">新增确认单</el-button>
+               @click="addConfirmation()"  class="subBtn">新增确认单</el-button>
     <!-- 审计确认单列表 -->
     <el-table @row-dblclick="getLook"
               :header-cell-style="{'background-color': '#F4FAFF',}"
               :data="confirmaryData"
               style="margin-top: 1%"
               class="confirmaryTable">
-      <el-table-column align="center"
+      <el-table-column algin="left"
                        type="index"
                        label="序号"></el-table-column>
-      <el-table-column align="center"
+      <el-table-column algin="left"
                        label="审计(调查)事项"
                        prop="matter"></el-table-column>
-      <el-table-column align="center"
+      <el-table-column algin="left"
                        label="责任人"
                        prop="liablePerson"></el-table-column>
-      <el-table-column align="center"
+      <el-table-column algin="left"
                        label="问题数"
-                       prop="problemsNumber"></el-table-column>
-      <el-table-column align="center"
+                       prop="problemsNumber">
+        <template slot-scope="scope">
+          {{scope.row.problemsNumber?scope.row.problemsNumber:'--'}}
+        </template>
+      </el-table-column>
+      <el-table-column algin="left"
                        label="确认单附件">
         <template slot-scope="scope">
           <el-popover :popper-class="tableFileList==''?'no-padding':''"
@@ -43,7 +47,7 @@
         </template>
       </el-table-column>
       <el-table-column label="操作"
-                       align="center">
+                       algin="left">
         <template slot-scope="scope">
           <el-button size="small"
                      type="text"
@@ -68,7 +72,7 @@
         </template>
       </el-table-column>
       <el-table-column label="最终版扫描件"
-                       align="center">
+                       algin="left">
         <template slot-scope="scope">
           <el-button size="small"
                      type="text"
@@ -112,9 +116,9 @@
       <div class="title">{{confirmationDialogTitle}}</div>
 
         <el-form-item class="itemTwo"
-                      label="审计项目名称:">{{managementProjectName}}</el-form-item>
+                      label="审计项目名称:">{{managementProjectName!=''?managementProjectName:'--'}}</el-form-item>
         <el-form-item class="itemTwo"
-                      label="被审计单位:">{{auditOrgName}}</el-form-item>
+                      label="被审计单位:">{{auditOrgName!=''?auditOrgName:'--'}}</el-form-item>
         <el-form-item prop="matter"
                       label="审计（调查）事项:">
           <el-input :disabled="ifLook"
@@ -178,7 +182,7 @@
         <el-button @click="handleClose">取 消</el-button>
         <el-button v-if="!ifLook"
                    type="primary"
-                   @click="saveForm">确 定</el-button>
+                   @click="saveForm"  class="subBtn">确 定</el-button>
       </span>
     </el-dialog>
     <el-dialog class="qrd-dialog"
@@ -239,7 +243,7 @@
         <el-button @click="handleClose">取 消</el-button>
         <el-button v-if="!ifLook"
                    type="primary"
-                   @click="saveForm">确 定</el-button>
+                   @click="saveForm" class="subBtn">确 定</el-button>
       </span>
     </el-dialog>
     </el-form>
@@ -621,6 +625,8 @@ export default {
   border-bottom: 1px solid #d2d2d2;
   padding: 15px;
   text-align: center;
+  font-weight: bold;
+  font-size: 14px;
 }
 .formData {
   // border: 1px solid red;
@@ -647,6 +653,7 @@ export default {
 }
 .relationBtn {
   margin-bottom: 10px;
+  border-color: #dcdfe6!important;
 }
 .list-folder {
   color: orange;
