@@ -27,7 +27,10 @@
         </div>
 
         <div class="project-wapper" style="height: 270px">
-          <div v-if="projectlist.length == 0" class="nocenterbox">暂 无 数 据</div>
+          <el-empty
+            description="暂无数据"
+            v-if="projectlist.length == 0"
+          ></el-empty>
           <div
             class="project-item"
             v-for="(item, index) in projectlist"
@@ -89,7 +92,10 @@
                 />我的模型任务</span
               >
             </div>
-            <div v-if="modellist.length == 0" class="nocenterbox">暂 无 数 据</div>
+            <el-empty
+              description="暂无数据"
+              v-if="modellist.length == 0"
+            ></el-empty>
             <ul style="height: 406px; overflow: scroll" class="odd-even" v-else>
               <li v-for="(item, index) in modellist" :key="'model' + index">
                 <div class="li-item">
@@ -125,7 +131,10 @@
                 />审计资料</span
               >
             </div>
-            <div v-if="datalist.length == 0" class="nocenterbox">暂 无 数 据</div>
+            <el-empty
+              description="暂无数据"
+              v-if="datalist.length == 0"
+            ></el-empty>
             <ul style="height: 200px; overflow: scroll" class="odd-even" v-else>
               <li v-for="(item, index) in datalist" :key="'data' + index">
                 <div class="li-item">
@@ -145,7 +154,7 @@
             </ul>
           </el-card>
 
-          <el-card style="margin-top: 20px">
+          <el-card style="margin-top: 20px" v-loading="floading4">
             <div slot="header" class="clearfix">
               <span>
                 <svg-icon
@@ -160,7 +169,11 @@
                 ><i class="el-icon-setting" style="font-size: 18px"></i
               ></el-button>
             </div>
-            <div class="shortcut-wapper" style="">
+            <el-empty
+              description="暂无数据"
+              v-if="outfastlist.length == 0"
+            ></el-empty>
+            <div class="shortcut-wapper" style="" v-else>
               <div
                 @click="shortcutEvent(item.url)"
                 v-for="(item, index) in outfastlist"
@@ -257,6 +270,7 @@ export default {
       floading1: false,
       floading2: false,
       floading3: false,
+      floading4: false,
       fastDialogVisible: false,
       fastlist: [],
       dqfastlist: [],
@@ -406,40 +420,43 @@ export default {
     },
     //获取当前快捷功能
     getdqfastlist() {
-      this.$axios({
-        url: `/wisdomaudit/homePage/pageList`,
-        method: "post",
-        data: {},
-      }).then((res) => {
-        let rep = [];
-        for (let j = 0; j < res.data.data.records.length; j++) {
-          rep.push({
-            menuName: res.data.data.records[j].menuName,
-            url: res.data.data.records[j].url,
-          });
-        }
-        this.dqfastlist = rep;
-        this.outfastlist = rep;
-        let _this = this;
-        for (let i = 0; i < res.data.data.records.length; i++) {
-          this.fastlist.forEach((row) => {
-            if (row.menuName == res.data.data.records[i].menuName) {
-              _this.handlechoose(row);
-            }
-          });
-        }
-      });
+      (this.floading4 = true),
+        this.$axios({
+          url: `/wisdomaudit/homePage/pageList`,
+          method: "post",
+          data: {},
+        }).then((res) => {
+          this.floading4 = false;
+          let rep = [];
+          for (let j = 0; j < res.data.data.records.length; j++) {
+            rep.push({
+              menuName: res.data.data.records[j].menuName,
+              url: res.data.data.records[j].url,
+            });
+          }
+          this.dqfastlist = rep;
+          this.outfastlist = rep;
+          let _this = this;
+          for (let i = 0; i < res.data.data.records.length; i++) {
+            this.fastlist.forEach((row) => {
+              if (row.menuName == res.data.data.records[i].menuName) {
+                _this.handlechoose(row);
+              }
+            });
+          }
+        });
     },
     //获取菜单权限列表
     getmeunlist() {
-      this.$axios({
-        url: `/wisdomaudit/permission/getUserPermissionList`,
-        method: "get",
-        data: {},
-      }).then((res) => {
-        this.finishinglist(res.data.data);
-        this.getdqfastlist();
-      });
+      (this.floading4 = true),
+        this.$axios({
+          url: `/wisdomaudit/permission/getUserPermissionList`,
+          method: "get",
+          data: {},
+        }).then((res) => {
+          this.finishinglist(res.data.data);
+          this.getdqfastlist();
+        });
     },
     timefilter(time) {
       let pattern = "YYYY-MM-DD HH:mm:ss";
@@ -463,7 +480,7 @@ export default {
       }).then((res) => {
         this.floading2 = false;
         this.modellist = res.data.data || "";
-        console.log(res)
+        console.log(res);
       });
     },
     getprojectlist() {
@@ -551,15 +568,6 @@ export default {
 </script>
 
 <style lang="scss"  scoped>
-.nocenterbox {
-  width: 100%;
-  height: 100%;
-  font-size: 24px;
-  text-align: center;
-  // font-weight: bold;
-  color: #888;
-  line-height: 200px;
-}
 .fastli {
   width: 33%;
   overflow: hidden;

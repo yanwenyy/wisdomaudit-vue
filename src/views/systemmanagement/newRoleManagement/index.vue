@@ -4,45 +4,45 @@
     <!-- <com-bread-crumb :items="breadCrumdItems" /> -->
 
     <el-form
-      ref="newRoleManagementForm"
-      :model="form"
-      :rules="rules"
-      label-position="right"
-      label-width="108px"
-      class="g-form"
+        ref="newRoleManagementForm"
+        :model="form"
+        :rules="rules"
+        label-position="right"
+        label-width="108px"
+        class="g-form"
     >
-      <el-form-item class="u-margin-top-20" label="角色名称：" prop="roleName">
+      <el-form-item class="u-margin-top-20 fixElForm" label="角色名称：" prop="roleName">
         <el-input
-          minlength="2"
-          maxlength="50"
-          class="m-input-normal"
-          placeholder="请输入"
-          v-model="form.roleName"
+            minlength="2"
+            maxlength="50"
+            class="m-input-normal"
+            placeholder="请输入"
+            v-model="form.roleName"
         ></el-input>
       </el-form-item>
       <el-form-item class="u-margin-top-20" label="角色描述：" prop="roleDesc">
         <el-input
-          minlength="2"
-          maxlength="200"
-          class="m-input-normal"
-          placeholder="请输入"
-          v-model="form.roleDesc"
-          type="textarea"
-          resize="none"
-          row="4"
+            minlength="2"
+            maxlength="200"
+            class="m-input-normal"
+            placeholder="请输入"
+            v-model="form.roleDesc"
+            type="textarea"
+            resize="none"
+            row="4"
         ></el-input>
       </el-form-item>
-      <el-form-item  label="角色权限：" prop="permissionIdList">
+      <el-form-item label="角色权限：" prop="permissionIdList">
         <el-tree
-          :data="permissionIdList"
-          show-checkbox
-          node-key="id"
-          ref="tree"
-          highlight-current
-           @check="checkId"
-          :check-strictly="false"
-          :props="defaultProps"
-          :default-expand-all="false"
+            :data="permissionIdList"
+            show-checkbox
+            node-key="id"
+            ref="tree"
+            highlight-current
+            @check="checkId"
+            :check-strictly="false"
+            :props="defaultProps"
+            :default-expand-all="false"
         ></el-tree>
       </el-form-item>
       <el-form-item>
@@ -66,7 +66,7 @@
 
 
 // 接口引入
-import {getPermission ,addRole}  from "../../../api/user";
+import {getPermission, addRole} from '../../../api/user'
 
 export default {
   name: 'newRoleManagement',
@@ -258,14 +258,14 @@ export default {
         }
         console.log(data)
         addRole(data).then(
-          res => {
-            console.log(res)
-            _self.$router.go(-1)
-          },
-          err => {
-            console.log('err', err)
-            this.common.showErrorToast(err.message || err.msg)
-          }
+            res => {
+              console.log(res)
+              _self.$router.go(-1)
+            },
+            err => {
+              console.log('err', err)
+              this.common.showErrorToast(err.message || err.msg)
+            }
         )
       })
     },
@@ -281,13 +281,21 @@ export default {
 </script>
 
 <style scoped lang='scss'>
+.fixElForm {
+  .el-form-item__label, .el-form-item__content {
+    float: left !important
+  }
+}
+
+
 .el-tree {
   border: 1px solid #dadde4;
   border-radius: 0px;
   background-color: #fff;
 }
-.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
-    background-color: #ffff !important ;
+
+.el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
+  background-color: #ffff !important;
 }
 
 .sidebar-g-container {
@@ -409,19 +417,22 @@ export default {
 .buttom-upload {
   width: 68px !important;
 }
+
 .auditInfoForm {
   margin-top: 5%;
   margin-left: 30%;
-  .el-input,.el-select{
+
+  .el-input, .el-select {
     position: relative;
-    top:-35px ;
+    top: -35px;
     width: 30%;
     /* left: -30px; */
   }
-  .el-button{
-     position: relative;
+
+  .el-button {
+    position: relative;
     margin-top: 30px;
-     left:-35%;
+    left: -35%;
   }
-  }
+}
 </style>

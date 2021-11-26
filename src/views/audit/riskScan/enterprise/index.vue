@@ -122,16 +122,24 @@ export default {
       let q = JSON.parse(p).user.datauserid;
       getSignature(q).then((result) => {
         if (result.code== 0 && result.data.url !== null) {
-          console.log("获取token接口", result);
-          let req = getdataAuditApi(result.data.token);
-          if (req) {
-            getTypes("area=2").then((rem) => {
+          getdataAuditApi(result.data.token).then((res)=>{
+           
+           if (res.status== 'success') {
+             getTypes("area=2").then((rem) => {
               this.options = rem.data;
               this.value = rem.data[0].type;
               this.gettablelist(this.value);
-              console.log("获取之前的接口", rem);
+              console.log("获取外面之前的接口", rem);
             });
-          }
+             
+           }
+             
+           
+
+          
+          });
+    
+        
         } else {
           let rem = getTypes("area=2");
           this.options = rem.data;
@@ -173,7 +181,7 @@ export default {
 
   mounted() {},
 };
-</script>
+</script> 
 
 <style lang="scss" scoped>
 .item-wapper {
