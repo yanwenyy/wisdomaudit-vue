@@ -77,7 +77,11 @@
         </template>
       </el-table-column>
       <el-table-column label="发现人" prop="problemFindPeople" />
-      <el-table-column label="操作" width="200" v-if="userRole==1||userRole==2">
+      <el-table-column
+        label="操作"
+        width="200"
+        v-if="userRole == 1 || userRole == 2"
+      >
         <template slot-scope="scope">
           <el-button
             @click="openDetail(scope.$index)"
@@ -200,7 +204,7 @@
           <el-input
             v-model="temp.riskAmount"
             placeholder="请输入风险金额"
-            @keyup.native="onlyNumOnePoint"
+            @keyup.native="onlyNumOnePoint('temp')"
           />
         </el-form-item>
         <el-form-item label="关联任务" prop="auditTaskUuid">
@@ -359,7 +363,7 @@
             v-model="dqProblem.riskAmount"
             placeholder="请输入风险金额"
             :disabled="ifadd != 2 ? false : true"
-            @keyup.native="onlyNumOnePoint"
+            @keyup.native="onlyNumOnePoint('dqProblem')"
           />
         </el-form-item>
         <el-form-item label="关联任务" prop="auditTaskUuid">
@@ -648,7 +652,7 @@ export default {
       ifadd: 0,
       personlist: [],
       me: "",
-      userRole:0
+      userRole: 0,
     };
   },
   watch: {},
@@ -668,8 +672,13 @@ export default {
     //   //输入框只允许输入小数点和数字，小数点后一位
     //   e.target.value = (e.target.value.match(/^\d*(\.?\d{0,1})/g)[0])
     // },
-    onlyNumOnePoint(e) {
-      let number_only = e.target.value;
+    onlyNumOnePoint(str) {
+      let number_only = "";
+      if (str == "temp") {
+        number_only = this.temp.riskAmount;
+      } else {
+        number_only = this.dqProblem.riskAmount;
+      }
       //先把非数字的都替换掉，除了数字和小数点
       number_only = number_only.replace(/[^\d.]/g, "");
       //必须保证第一个为数字而不是小数点
@@ -682,8 +691,12 @@ export default {
         .replace(/\./g, "")
         .replace("$#$", ".");
       //保证只能输入两个小数
-      number_only = number_only.replace(/^(\-)*(\d+)\.(\d\d).*$/, "$1$2.$3");
-      e.target.value = number_only;
+      number_only = number_only.replace(/^(\-)*(\d+)\.(\d{6}).*$/, "$1$2.$3");
+      if (str == "temp") {
+        this.temp.riskAmount = number_only;
+      } else {
+        this.dqProblem.riskAmount = number_only;
+      }
     },
     toopen(val) {
       console.log(val);
