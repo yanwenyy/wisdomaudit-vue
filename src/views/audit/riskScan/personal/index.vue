@@ -126,6 +126,8 @@ export default {
            
            if (res.status== 'success') {
               this.formdates=res.url
+
+              console.log('我调用了');
             //  getTypes("area=1").then((rem) => {
             //   this.options = rem.data;
             //   this.value = rem.data[0].type;
