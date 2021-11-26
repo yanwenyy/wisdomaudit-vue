@@ -14,12 +14,12 @@
                 <el-button class="search_icon" @click="searchName">
                   <i class="el-icon-search" style="color: #fff"></i>
                 </el-button>
-                <el-button type="primary" @click="searchName">搜索</el-button>
+<!--                <el-button type="primary" @click="searchName">搜索</el-button>-->
+                <el-button type="primary" @click="new_add()">新增</el-button>
               </div>
             </el-col>
-            <el-col :span="2">
-              <el-button type="primary" @click="new_add()">新增</el-button>
-            </el-col>
+<!--            <el-col :span="2">-->
+<!--            </el-col>-->
 
             <!-- <el-col :span="1.5">
               <el-button type="primary"

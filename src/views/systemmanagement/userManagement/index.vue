@@ -7,19 +7,20 @@
             <el-col :span="7">
               <div class="search">
                 <el-input
-                  placeholder="请输入角色名称搜索"
+                  placeholder="用户账号"
                   v-model="queryInfo.userName"
                 >
                 </el-input>
                 <el-button class="search_icon" @click="searchUser">
                   <i class="el-icon-search" style="color: #fff"></i>
                 </el-button>
-                <el-button type="primary" @click="searchUser">搜索</el-button>
+<!--                <el-button type="primary" @click="searchUser">搜索</el-button>-->
+                <el-button type="primary" @click="new_add()">新增</el-button>
+
               </div>
             </el-col>
-            <el-col :span="2">
-              <el-button type="primary" @click="new_add()">新增</el-button>
-            </el-col>
+<!--            <el-col :span="2">-->
+<!--            </el-col>-->
 
             <!-- <el-col :span="1.5">
               <el-button type="primary"
@@ -30,7 +31,7 @@
           <el-table :data="tableData" style="width: 100%">
             <el-table-column prop="userName" label="用户账户">
             </el-table-column>
-            <el-table-column prop="mobile" label="OA账号"> </el-table-column>
+            <el-table-column prop="mobile" label="手机号"> </el-table-column>
             <el-table-column prop="realName" label="真实姓名">
             </el-table-column>
             <el-table-column prop="email" label="邮箱"> </el-table-column>
