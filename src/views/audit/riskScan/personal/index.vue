@@ -124,7 +124,9 @@ export default {
         if (result.code == 0 && result.data.url != null) {
           console.log("获取token接口", result);
           let req = getdataAuditApi(result.data.token);
-          if (req) {
+           console.log(req,'验证成功返回值');
+          if (req.status== 'success') {
+              console.log("获取之前的接口", rem);
             getTypes("area=1").then((rem) => {
               this.options = rem.data;
               this.value = rem.data[0].type;
@@ -173,7 +175,7 @@ export default {
 
   mounted() {},
 };
-</script>
+</script> 
 
 <style lang="scss" scoped>
 .item-wapper {
