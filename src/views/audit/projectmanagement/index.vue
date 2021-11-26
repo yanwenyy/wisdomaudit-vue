@@ -23,7 +23,7 @@
         </el-input>
         <div
           class="search_icon"
-          style="background: rgb(12, 135, 214) !important"
+          style="background: #0c87d6 !important"
           @click="queryName"
         >
           <i class="el-icon-search" style="color: white"></i>
@@ -63,22 +63,22 @@
       </el-table-column> -->
       <el-table-column
         min-width="130px"
-        align="center"
+        align="left"
         prop="projectName"
         label="审计项目名称"
         show-overflow-tooltip
       >
       </el-table-column>
       <el-table-column
-        align="center"
+        align="left"
         min-width="90px"
         prop="auditOrgName"
-        label="被审计对象"
+        label="被审计单位"
         show-overflow-tooltip
       >
       </el-table-column>
       <el-table-column
-        align="center"
+        align="left"
         prop="projectTypeName"
         label="项目类型"
         show-overflow-tooltip
@@ -91,13 +91,13 @@
         show-overflow-tooltip
       ></el-table-column> -->
       <el-table-column
-        align="center"
+        align="left"
         prop="fieldName"
         label="领域"
         show-overflow-tooltip
       ></el-table-column>
       <el-table-column
-        align="center"
+        align="left"
         min-width="90px"
         prop="projectLeaderName"
         label="项目负责人"
@@ -105,7 +105,7 @@
       >
       </el-table-column>
       <el-table-column
-        align="center"
+        align="left"
         prop="projectChargemanName"
         label="项目组长"
         show-overflow-tooltip
@@ -113,7 +113,7 @@
       </el-table-column>
       <el-table-column
         prop="auditStartData"
-        align="center"
+        align="left"
         label="审计期间"
         show-overflow-tooltip
         min-width="130px"
@@ -123,14 +123,14 @@
         </template>
       </el-table-column>
       <el-table-column
-        align="center"
+        align="left"
         prop="createUserName"
         label="创建人"
         show-overflow-tooltip
       >
       </el-table-column>
       <el-table-column
-        align="center"
+        align="left"
         prop="createTime"
         label="创建日期"
         show-overflow-tooltip
@@ -141,10 +141,11 @@
       </el-table-column>
 
       <el-table-column
-        align="center"
+        align="left"
         prop="managementAdvice"
         label="是否启动整改"
         show-overflow-tooltip
+        min-width="110px"
       >
         <template slot-scope="scope">
           {{
@@ -157,11 +158,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" width="180">
+      <el-table-column label="操作" width="150">
         <template slot-scope="scope">
           <el-button
             type="text"
-            style="color: #44a3df; background: none; border: 0"
+            style="color: #0c87d6; background: none; border: 0; font-size:14px"
             size="small"
             @click="editDialog(scope.row)"
           >
@@ -171,7 +172,7 @@
           <el-button
             type="text"
             v-if="scope.row.auditConf == 1"
-            style="color: #44a3df; background: none; border: 0"
+            style="color: #0c87d6; background: none; border: 0;font-size:14px"
             size="small"
             @click="confirm_problem(scope.row.managementProjectUuid)"
           >
@@ -183,7 +184,7 @@
 
     <!--  启动整改 -->
     <div class="setting_people">
-      <el-button type="primary" @click="run_rectification()"
+      <el-button  style="color: #FFF; background: #0c87d6; border: 0; " @click="run_rectification()"
         >启动整改</el-button
       >
     </div>
@@ -657,7 +658,7 @@
         <el-form
           label-width="100px"
           :model="addProjectManagement"
-          ref="addProjectManagement"
+          
           hide-required-asterisk
         >
           <el-row>
@@ -876,7 +877,7 @@
         <el-form
           label-width="100px"
           :model="addprojectjing"
-          ref="addprojectjing"
+        
           hide-required-asterisk
         >
           <el-row>
@@ -2887,7 +2888,7 @@ export default {
 
 <style lang="scss" scoped>
 .projectmanagement {
-  padding: 1%;
+  padding: 1.2%;
   .addBtn {
     background: #4bdcb4 !important;
   }
@@ -2897,13 +2898,11 @@ export default {
   margin-left: 20%;
   .el-select,
   .el-input {
-    position: relative;
-    top: -35px;
     width: 65%;
   }
-  .el-form-item {
-    margin-bottom: -10px !important;
-  }
+  // .el-form-item {
+  //   margin-bottom: -10px !important;
+  // }
   .addIcon {
     background-color: #fff;
     width: 95%;
@@ -2915,18 +2914,17 @@ export default {
     // margin-bottom: 5%;
   }
 }
+ 
 .addzhuanForm {
   padding: 2%;
   margin-top: 2%;
   .el-select,
   .el-input {
-    position: relative;
-    top: -35px;
     width: 65%;
   }
-  .el-form-item {
-    margin-bottom: -15px !important;
-  }
+  // .el-form-item {
+  //   margin-bottom: -15px !important;
+  // }
   .addIcon {
     background-color: #fff;
     width: 100%;
@@ -2943,8 +2941,11 @@ export default {
   margin-top: 3%;
   text-align: center;
   .nextBtn {
-    background: #508ce6 !important;
+    background: #0c87d6 !important;
     color: #fff;
+  }
+   .el-button{
+    font-weight: 400 !important;
   }
 }
 .stepBtn {
@@ -2955,8 +2956,12 @@ export default {
   margin-top: 3%;
   text-align: center;
   .nextBtn {
-    background: #508ce6 !important;
+    background: #0c87d6 !important;
     color: #fff;
+  }
+  .el-button{
+    font-weight: 400 !important;
+  
   }
 }
 .dataTime .el-input {
@@ -2971,7 +2976,7 @@ export default {
 .projectTable {
   .el-select {
     width: 200px;
-    margin: 45px 0 0 -100px;
+    margin: 20px 0 0 -100px;
   }
 }
 .title {
@@ -2979,6 +2984,8 @@ export default {
   padding: 10px;
   text-align: center;
   margin-bottom: 3%;
+  font-size: 14px;
+  color: #000;
 }
 .cancel {
   border: 1px solid #d2d2d2;
@@ -3172,18 +3179,18 @@ export default {
 
 .addForm /deep/ .el-form-item__error {
   position: absolute;
-  top: 0%;
+  top: 100%;
   left: 0%;
 }
 .addzhuanForm /deep/ .el-form-item__error {
   position: absolute;
-  top: 0%;
+  top: 100%;
   left: 0%;
 }
 .projectTable /deep/ .el-form-item__error {
   position: absolute;
-  top: 23%;
-  left: 5%;
+  top: 56%;
+  left: 0%;
 }
 .page {
   width: 100%;
@@ -3246,5 +3253,10 @@ export default {
 }
 .projectmanagement >>> .el-table__header {
   border-top: none !important;
+}
+>>> .el-form-item__label {
+  font-size:14px !important;
+  color: #606266 !important;
+  font-weight: 500;
 }
 </style>

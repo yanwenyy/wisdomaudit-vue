@@ -2559,20 +2559,20 @@ export default {
   left: 279px;
 }
 .selfTask .el-input {
-  position: relative;
-  top: -35px;
+  // position: relative;
+  // top: -35px;
   width: 100%;
 }
 .selfTask .el-select {
-  position: relative;
-  top: -35px;
+  // position: relative;
+  // top: -35px;
   width: 100%;
 }
 .selfTask >>> .el-textarea__inner {
   width: 100%;
 }
 .selfTask .el-form-item {
-  margin-bottom: -10px !important;
+  // margin-bottom: -10px !important;
 }
 .upload-demo {
   margin-top: -35px;
