@@ -24,7 +24,7 @@
             <!-- 条件查询模型名称 -->
             <div class="search">
               <el-input
-                placeholder="请输入模型任务名称"
+                placeholder="请输入任务名称"
                 v-model="queryInfo.condition.taskName"
                 @keyup.enter.native="queryNameInput"
               >
@@ -63,7 +63,7 @@
               'font-weight': '400',
             }"
           >
-            <el-table-column prop="taskName" label="模型任务名称">
+            <el-table-column prop="taskName" label="任务名称">
             </el-table-column>
             <el-table-column prop="taskType" label="任务类型">
               <template slot-scope="scope">
@@ -550,7 +550,7 @@ export default {
           managementProjectUuid: "",
         },
         pageNo: 1,
-        pageSize: 10,
+        pageSize: 10000,
       },
       queryInfo: {
         condition: {
@@ -842,7 +842,7 @@ export default {
     },
 
     deleteModel(row) {
-      this.$confirm("你将删除引入的模型任务分配", "提示", {
+      this.$confirm("你将删除此任务分配", "提示", {
         distinguishCancelAndClose: true,
         confirmButtonText: "确定",
         cancelButtonText: "放弃删除",

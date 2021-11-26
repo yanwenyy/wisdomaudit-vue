@@ -38,10 +38,10 @@ export function  getSignature (data) {
 // }
 
 
-export function getdataAuditApi (Thirdtoken ) {
+export function getdataAuditApi (Thirdtoken,arr) {
   let request =''
   var url = "http://10.19.206.196:8088/WebReport/decision/third/auth/cross/login";
-  $.ajax({
+ return  $.ajax({
           url: url,
           dataType: "jsonp",
           data:{third_token:Thirdtoken},
@@ -49,13 +49,18 @@ export function getdataAuditApi (Thirdtoken ) {
                 
                   if (res.errorCode) {
                     console.log('帆软认证接口调用失败',res);
-                          
-                    
                   } else {
                     console.log('帆软认证接口调用成功',res);
-                    request=true
-                   
-                      
+                     request =res
+
+                     getTypes(arr).then((rem) => {
+                      this.options = rem.data;
+                      this.value = rem.data[0].type;
+                      this.gettablelist(this.value);
+                      console.log("里面调用", rem);
+                    });
+
+                  
                   }
           },
           error: function () {
@@ -63,6 +68,7 @@ export function getdataAuditApi (Thirdtoken ) {
           }
   });
 
-  return request
+
+
 }
 

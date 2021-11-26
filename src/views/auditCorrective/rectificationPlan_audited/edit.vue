@@ -3,6 +3,10 @@
   <div>
     <div class="header_dlag">
       <div class="search">
+        <el-button type="primary"
+                   @click="go_back()">
+          返回上一页
+        </el-button>
         <el-input placeholder="请输入项目名称"
                   v-model="list_query.problem"> </el-input>
         <div class="search_icon"
@@ -219,6 +223,11 @@ export default {
     }
   },
   methods: {
+    go_back () {
+      this.$router.push({ path: '/auditCorrective/rectificationPlan_audited' })
+    },
+
+
     // 列表
     page_list_data () {
       this.loading = true;
@@ -444,7 +453,9 @@ export default {
   margin-bottom: 3%;
 }
 /* 弹窗 title end*/
-
+.dialog >>> .el-form-item__content {
+  flex: inherit !important;
+}
 .dialog >>> .el-date-editor.el-input,
 .el-date-editor.el-input__inner {
   width: 100% !important;

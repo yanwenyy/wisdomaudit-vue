@@ -309,11 +309,11 @@
                 float: right;
                 color: #8492a6;
                 font-size: 13px;
-                margin-right: 20px;
+                margin-right: 0px;
                 cursor: pointer;
               "
               @click="cancel_Btn(option)"
-              >接口人</span
+              >取消接口人</span
             >
           </div>
         </el-transfer>
@@ -357,7 +357,7 @@
             <!-- 条件查询模型名称 -->
             <div class="search">
               <el-input
-                placeholder="请输入模型任务名称"
+                placeholder="请输入任务名称"
                 v-model="getModelList.condition.taskName"
                 @keyup.enter.native="queryNameInput"
               >
@@ -391,7 +391,7 @@
             style="width: 100%"
             :header-cell-style="{ 'background-color': '#F4FAFF' }"
           >
-            <el-table-column prop="taskName" label="模型任务名称">
+            <el-table-column prop="taskName" label="任务名称">
             </el-table-column>
             <el-table-column prop="taskType" label="任务类型">
               <template slot-scope="scope">
@@ -1444,23 +1444,48 @@ export default {
 
     //设为接口人事件
     isLiaison_Btn(row, list) {
-      // console.log(row);
-      // console.log(list);
-      this.data.forEach((item) => {
-        if (list.indexOf(item.key) != -1) {
-          item.isLiaison = 0;
-          item.disabled = false;
+      console.log(row);
+      console.log(list);
+      let leader = {}
+      this.peopleSelection.forEach((a)=>{
+        if(a.peopleRole == 1){
+          leader = a;
         }
+      })
+      console.log(leader);
+      // && item.key != leader.peopleTableUuid
+      this.data.forEach((item) => {
+        if (list.indexOf(item.key) != -1 ) {
+         
+          if(item.key == leader.peopleTableUuid){
+             item.isLiaison = 0;
+             item.disabled = true;
+          }else{
+            item.isLiaison = 0;
+            item.disabled = false;
+          }
+          
+        } 
+
       });
       row.isLiaison = 1;
       row.disabled = true;
     },
     //取消设为接口人
     cancel_Btn(row) {
+      console.log(row);
+      console.log(this.peopleSelection);
       // alert(123)
       row.isLiaison = 0;
+      this.peopleSelection.forEach((a)=>{
+        if(a.peopleTableUuid == row.key && a.peopleRole == 1){
+          row.disabled = true;
+        }else{
+            row.disabled = false;
+        }
+      })
       // row.disabled = true;
-      row.disabled = false;
+    
     },
     // 下一步按钮事件
     nextBtn() {
@@ -1512,7 +1537,7 @@ export default {
     },
     //删除任务按钮事件
     deleteModel(row) {
-      this.$confirm("你将删除引入的模型任务分配", "提示", {
+      this.$confirm("你将删除此任务分配", "提示", {
         distinguishCancelAndClose: true,
         confirmButtonText: "确定",
         cancelButtonText: "放弃删除",
@@ -2571,6 +2596,7 @@ export default {
     right: 0;
     color: #8492a6;
     font-size: 13px;
+    cursor: pointer;
   }
 }
 </style>

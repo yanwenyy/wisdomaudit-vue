@@ -100,16 +100,17 @@
       </el-table-column>
     </el-table>
     <!-- 新增确认单弹出框 -->
+    <el-form :rules="rules"
+             ref="addForm"
+             class="formData"
+             label-width="130px"
+             :model="formDetail">
     <el-dialog class="qrd-dialog"
                :visible.sync="confirmationDialogVisible"
                width="70%"
                @close="handleClose">
       <div class="title">{{confirmationDialogTitle}}</div>
-      <el-form :rules="rules"
-               ref="addForm"
-               class="formData"
-               label-width="130px"
-               :model="formDetail">
+
         <el-form-item class="itemTwo"
                       label="审计项目名称:">{{managementProjectName}}</el-form-item>
         <el-form-item class="itemTwo"
@@ -134,9 +135,18 @@
         <el-form-item prop="auditorsName"
                       class="itemThree"
                       label="审计人员:">
-          <el-input :disabled="ifLook"
-                    placeholder="请输入"
-                    v-model="formDetail.auditorsName"></el-input>
+          <el-select :disabled="ifLook" v-model="formDetail.auditorsName" placeholder="请选择" clearable>
+            <el-option
+              v-for="(item,index) in sjryList"
+              :label="item.peopleName"
+              :value="item.peopleName"
+              :key="index"
+            >
+            </el-option>
+          </el-select>
+          <!--<el-input :disabled="ifLook"-->
+                    <!--placeholder="请输入"-->
+                    <!--v-model="formDetail.auditorsName"></el-input>-->
         </el-form-item>
         <el-form-item prop="reviewerName"
                       class="itemThree"
@@ -162,7 +172,7 @@
                           value-format="yyyy-MM-dd"
                           style="width: 100%"></el-date-picker>
         </el-form-item>
-      </el-form>
+
       <span slot="footer"
             class="dialog-footer">
         <el-button @click="handleClose">取 消</el-button>
@@ -188,14 +198,15 @@
           </tr>
           <tr>
             <td>审计(调查)事项</td>
-            <td colspan="5">{{formDetail.matter	}}</td>
+            <td colspan="5"><el-input  :disabled="ifLook" type="textarea" v-model="formDetail.matter"></el-input></td>
+            <!--<td colspan="5">{{formDetail.matter	}}</td>-->
           </tr>
           <tr>
             <td>审计(调查)事项描述</td>
-            <!--<td colspan="5"><el-input  :disabled="ifLook" type="textarea" v-model="formDetail.matterDetail"></el-input></td>-->
-            <td colspan="5">
-              <div>{{formDetail.matterDetail}}</div>
-            </td>
+            <td colspan="5"><el-input  :disabled="ifLook" type="textarea" v-model="formDetail.matterDetail"></el-input></td>
+            <!--<td colspan="5">-->
+              <!--<div>{{formDetail.matterDetail}}</div>-->
+            <!--</td>-->
           </tr>
           <tr>
             <td>审计人员(签名)</td>
@@ -231,6 +242,7 @@
                    @click="saveForm">确 定</el-button>
       </span>
     </el-dialog>
+    </el-form>
     <search-list ref="searchTabel"
                  @refreshSearch="getSearchInfo"></search-list>
   </div>
@@ -241,6 +253,8 @@ import {get_userInfo,projectMembership_listUserInfo, down_file, auditBasy_getFil
   '@SDMOBILE/api/shandong/ls'
 import { task_pageList_wt } from
   '@SDMOBILE/api/shandong/AuditReport'
+import { task_select_people } from
+    '@SDMOBILE/api/shandong/task'
 import SearchList from "./searchList"
 export default {
   components: { SearchList },
@@ -274,6 +288,7 @@ export default {
       projectType: '',//项目类型 jzsj经责审计  zxsj专项审计
       tableFileList: [],//确认单附件列表
       FhrList:[],//复核人列表
+      sjryList:[],//审计人员列表
       userInfo:{
         user:{}
       },//用户信息
@@ -300,7 +315,7 @@ export default {
   created () {
     this.list_data_start();
     this.getFhrList();
-
+    this.getSjryList();
   },
   mounted(){
     this.headers = {'TOKEN':sessionStorage.getItem('TOKEN')}
@@ -322,6 +337,19 @@ export default {
     getFhrList(){
       projectMembership_listUserInfo().then(resp => {
         this.FhrList = resp.data.list;
+      })
+    },
+    //审计人员列表
+    getSjryList(){
+      var params={
+        condition:{
+          managementProjectUuid:this.active_project,
+        },
+        pageNo:1,
+        pageSize:1000000,
+      };
+      task_select_people(params).then(resp => {
+        this.sjryList = resp.data.records;
       })
     },
     //附件上传时
