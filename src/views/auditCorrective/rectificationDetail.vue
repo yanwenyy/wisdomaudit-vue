@@ -545,6 +545,11 @@
   .formData ::-webkit-input-placeholder {
     color:#C1C1C1!important;
   }
+  @media (min-width: 1500px) and (max-width: 1600px) {
+    .itemTwo {
+      width: 49.5%;
+    }
+  }
   @media (min-width: 1600px) and (max-width: 1800px) {
     .itemTwo {
       width: 49%;

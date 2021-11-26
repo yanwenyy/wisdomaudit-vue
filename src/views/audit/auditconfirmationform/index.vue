@@ -135,9 +135,18 @@
         <el-form-item prop="auditorsName"
                       class="itemThree"
                       label="审计人员:">
-          <el-input :disabled="ifLook"
-                    placeholder="请输入"
-                    v-model="formDetail.auditorsName"></el-input>
+          <el-select :disabled="ifLook" v-model="formDetail.auditorsName" placeholder="请选择" clearable>
+            <el-option
+              v-for="(item,index) in sjryList"
+              :label="item.peopleName"
+              :value="item.peopleName"
+              :key="index"
+            >
+            </el-option>
+          </el-select>
+          <!--<el-input :disabled="ifLook"-->
+                    <!--placeholder="请输入"-->
+                    <!--v-model="formDetail.auditorsName"></el-input>-->
         </el-form-item>
         <el-form-item prop="reviewerName"
                       class="itemThree"
@@ -244,6 +253,8 @@ import {get_userInfo,projectMembership_listUserInfo, down_file, auditBasy_getFil
   '@SDMOBILE/api/shandong/ls'
 import { task_pageList_wt } from
   '@SDMOBILE/api/shandong/AuditReport'
+import { task_select_people } from
+    '@SDMOBILE/api/shandong/task'
 import SearchList from "./searchList"
 export default {
   components: { SearchList },
@@ -277,6 +288,7 @@ export default {
       projectType: '',//项目类型 jzsj经责审计  zxsj专项审计
       tableFileList: [],//确认单附件列表
       FhrList:[],//复核人列表
+      sjryList:[],//审计人员列表
       userInfo:{
         user:{}
       },//用户信息
@@ -303,7 +315,7 @@ export default {
   created () {
     this.list_data_start();
     this.getFhrList();
-
+    this.getSjryList();
   },
   mounted(){
     this.headers = {'TOKEN':sessionStorage.getItem('TOKEN')}
@@ -325,6 +337,19 @@ export default {
     getFhrList(){
       projectMembership_listUserInfo().then(resp => {
         this.FhrList = resp.data.list;
+      })
+    },
+    //审计人员列表
+    getSjryList(){
+      var params={
+        condition:{
+          managementProjectUuid:this.active_project,
+        },
+        pageNo:1,
+        pageSize:1000000,
+      };
+      task_select_people(params).then(resp => {
+        this.sjryList = resp.data.records;
       })
     },
     //附件上传时
