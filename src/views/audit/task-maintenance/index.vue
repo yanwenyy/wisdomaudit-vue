@@ -550,7 +550,7 @@ export default {
           managementProjectUuid: "",
         },
         pageNo: 1,
-        pageSize: 10,
+        pageSize: 10000,
       },
       queryInfo: {
         condition: {
