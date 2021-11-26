@@ -37,7 +37,17 @@
             :key="'project' + index"
             v-else
           >
-            <h3>{{ item.projectName || "--" }}</h3>
+            <el-tooltip
+              class="item"
+              effect="light"
+              :content="item.projectName"
+              placement="top"
+            >
+              <div class="title">
+                {{ item.projectName || "--" }}
+              </div>
+            </el-tooltip>
+
             <ul :style="index == 0 ? '' : 'border-left:1px solid #ccc;'">
               <li>
                 <div
@@ -604,17 +614,20 @@ export default {
 
   .project-item {
     width: 33%;
+    min-width: 350px;
     font-size: 0;
     height: 270px;
-
     // display: flex;
-
-    h3 {
-      text-align: center;
-      font-size: 18px;
+    .title {
+      font-size: 16px;
+      height: 16px;
       margin-bottom: 10px;
+      padding: 0 10px;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
-
     ul {
       padding: 0 60px;
     }
@@ -754,7 +767,6 @@ export default {
 .el-card .el-card__header {
   font-size: 15px;
   font-weight: bold;
-  color: #888;
   padding: 10px !important;
 }
 .homepage-icon {

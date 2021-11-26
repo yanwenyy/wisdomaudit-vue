@@ -125,12 +125,15 @@ export default {
           getdataAuditApi(result.data.token).then((res)=>{
            
            if (res.status== 'success') {
-             getTypes("area=1").then((rem) => {
-              this.options = rem.data;
-              this.value = rem.data[0].type;
-              this.gettablelist(this.value);
-              console.log("获取外面之前的接口", rem);
-            });
+            this.formdates='http:10.19.206.196:8088/WebReport/decision/view/form?viewlet=vendor/zhuowang/test.cpt&ref_t=design&ref_c=d6740dbd-0279-40d0-b361-3cc1adb80d35'
+
+              console.log('我调用了');
+            //  getTypes("area=1").then((rem) => {
+            //   this.options = rem.data;
+            //   this.value = rem.data[0].type;
+            //   this.gettablelist(this.value);
+            //   console.log("获取外面之前的接口", rem);
+            // });
              
            }
              

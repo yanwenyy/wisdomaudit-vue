@@ -441,10 +441,7 @@
           <el-button @click="addDialogVisible = false" class="cancel"
             >取消</el-button
           >
-          <el-button
-            class="nextBtn"
-            :disabled="isDisable"
-            @click="addSave('addProjectManagement')"
+          <el-button class="nextBtn" :disabled="isDisable" @click="addSave()"
             >确认</el-button
           >
         </div>
@@ -879,7 +876,6 @@
         <el-form
           label-width="100px"
           :model="addprojectjing"
-          :rules="addprojectjingRules"
           ref="addprojectjing"
           hide-required-asterisk
         >
@@ -1616,7 +1612,7 @@ export default {
       addzhuanRules: {
         projectName: [
           { required: true, message: "请填写项目名称", trigger: "blur" },
-          { max: 5, message: "项目名称在5个字符之内", trigger: "change" },
+          { max: 20, message: "项目名称在20个字符之内", trigger: "change" },
         ],
         projectTypeName: [
           { required: true, message: "请选择项目分类", trigger: "change" },
@@ -2037,12 +2033,12 @@ export default {
           },
         ],
       };
-        // if (this.$refs["addprojectjing"] != undefined) {
-        //   this.$refs["addprojectjing"].clearValidate();
-        // } else {
-        //   this.$refs["addProjectManagement"].clearValidate();
-        // }
-     this.isdisabled = true;
+      var that = this;
+      this.$nextTick(() => {
+         that.$refs["addprojectjing"].clearValidate();
+          // that.$refs["addProjectManagement"].clearValidate();
+      });
+      this.isdisabled = true;
       this.prjType = 2;
       this.addDialogVisible = true;
       //  this.$refs.addjingForm.clearValidate();
@@ -2101,7 +2097,7 @@ export default {
     },
     //监听添加用户对话框的关闭事件
     addDialogClosed() {
-       this.addprojectjing = {
+      this.addprojectjing = {
         projectCode: "",
         projectType: "",
         projectTypeName: "",
@@ -2145,19 +2141,31 @@ export default {
         ],
       };
       // this.$router.go(0);
-     if (this.$refs["addprojectjing"] != undefined) {
-        this.$refs["addprojectjing"].resetFields();
-      } else {
-        this.$refs["addProjectManagement"].resetFields();
-      }
+      var that = this;
+      this.$nextTick(() => {
+        if (that.$refs["addprojectjing"] != undefined) {
+          that.$refs["addprojectjing"].clearValidate();
+        }
+        if (that.$refs["addProjectManagement"] != undefined) {
+          that.$refs["addProjectManagement"].clearValidate();
+        }
+      });
     },
     //编辑项目对话框关闭事件
     editDialogClosed() {
       if (this.$refs["addprojectjing"] != undefined) {
-        this.$refs["addprojectjing"].resetFields();       
+        this.$refs["addprojectjing"].resetFields();
       } else {
         this.$refs["addProjectManagement"].resetFields();
       }
+      // var that = this;
+      //   this.$nextTick(() => {
+      //     if (that.$refs["addprojectjing"] != undefined) {
+      //       that.$refs["addprojectjing"].clearValidate();
+      //     } else {
+      //       that.$refs["addProjectManagement"].clearValidate();
+      //     }
+      //   });
     },
     // 项目管理列表分页
     handleCurrentChangeProject(val) {
@@ -2355,8 +2363,8 @@ export default {
       this.addProjectManagement.auditList = result;
     },
 
-    addSave(addProjectManagement) {
-      this.$refs[addProjectManagement].validate((valid) => {
+    addSave() {
+      this.$refs["addProjectManagement"].validate((valid) => {
         if (valid) {
           this.isDisable = true;
           setTimeout(() => {
@@ -2389,6 +2397,11 @@ export default {
               this.projectData(this.query);
             }
           });
+          // if (this.$refs["addprojectjing"] != undefined) {
+          //   this.$refs["addprojectjing"].clearValidate();
+          // } else {
+
+          // }
         } else {
           return false;
         }

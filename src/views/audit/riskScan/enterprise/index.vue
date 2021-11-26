@@ -123,23 +123,26 @@ export default {
       getSignature(q).then((result) => {
         if (result.code== 0 && result.data.url !== null) {
           getdataAuditApi(result.data.token).then((res)=>{
-           
-           if (res.status== 'success') {
-             getTypes("area=2").then((rem) => {
-              this.options = rem.data;
-              this.value = rem.data[0].type;
-              this.gettablelist(this.value);
-              console.log("获取外面之前的接口", rem);
-            });
-             
-           }
-             
-           
 
-          
+           if (res.status== 'success') {
+             this.formdates='http:10.19.206.196:8088/WebReport/decision/view/form?viewlet=vendor/zhuowang/test.cpt&ref_t=design&ref_c=d6740dbd-0279-40d0-b361-3cc1adb80d35'
+
+
+            //  getTypes("area=2").then((rem) => {
+            //   this.options = rem.data;
+            //   this.value = rem.data[0].type;
+            //   this.gettablelist(this.value);
+            //   console.log("获取外面之前的接口", rem);
+            // });
+
+           }
+
+
+
+
           });
-    
-        
+
+
         } else {
           let rem = getTypes("area=2");
           this.options = rem.data;
