@@ -12,13 +12,13 @@
             {{ value.projectName }}
           </p>
           <el-row>
-            <el-col :span="9">
+            <el-col :span="12">
               <div>
                 <p class="textOver">被审计对象：</p>
                 <p class="textOver">{{ value.auditOrgName }}</p>
               </div>
             </el-col>
-            <el-col :span="15">
+            <el-col :span="12">
               <div>
                 <p>审计周期：</p>
                 <p class="textOver">
