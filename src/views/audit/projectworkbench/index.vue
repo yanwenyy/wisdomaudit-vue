@@ -1,31 +1,33 @@
 <template>
   <div class="projectWorkbench" style="background: #fff">
-    <div class="title" v-show="projectNum.length > 0">未初始化项目</div>
+    <div class="title1" v-show="projectNum.length > 0">未初始化项目</div>
     <ul class="projectInit" v-show="projectNum.length > 0">
       <li
         @click="projectClick(index)"
         v-for="(value, index) in projectNum"
         :key="index"
       >
-        <p class="companyName" style="margin-bottom: 2%">
-          {{ value.projectName }}
-        </p>
-        <el-row>
-          <el-col :span="9">
-            <div>
-              <p class="textOver">被审计对象：</p>
-              <p class="textOver">{{ value.auditOrgName }}</p>
-            </div>
-          </el-col>
-          <el-col :span="15">
-            <div>
-              <p>审计周期：</p>
-              <p class="textOver">
-                {{ value.auditStartData }}至{{ value.auditFinishData }}
-              </p>
-            </div>
-          </el-col>
-        </el-row>
+        <div class="peojectMessage">
+          <p class="projectName" style="margin-bottom: 2%">
+            {{ value.projectName }}
+          </p>
+          <el-row>
+            <el-col :span="9">
+              <div>
+                <p class="textOver">被审计对象：</p>
+                <p class="textOver">{{ value.auditOrgName }}</p>
+              </div>
+            </el-col>
+            <el-col :span="15">
+              <div>
+                <p>审计周期：</p>
+                <p class="textOver">
+                  {{ value.auditStartData }}至{{ value.auditFinishData }}
+                </p>
+              </div>
+            </el-col>
+          </el-row>
+        </div>
       </li>
       <span
         class="moreBtn"
@@ -76,7 +78,7 @@
     <!-- 初始化项目 -->
     <!-- v-show="projectNum.length > 0" -->
     <div class="initializeProject" v-if="active_project">
-      <div class="title" style="margin-top: -1%">初始化项目</div>
+      <div class="title1" style="margin-top: 0%">初始化项目</div>
       <ul v-if="projectInit">
         <li
           v-for="(item, index) in projectInit"
@@ -116,7 +118,7 @@
               class="el-menu-vertical-demo"
               @select="open"
               background-color="#F1F5FB"
-              :default-openeds="['1','2','3']"
+              :default-openeds="['1', '2', '3']"
             >
               <el-submenu
                 v-show="userInfo.userRole == '1' || userInfo.userRole == '3'"
@@ -339,7 +341,7 @@
           <el-row :gutter="24">
             <el-col :span="15" style="margin-right: 4%">
               <el-button
-                style="background: #1897e4; color: #fff"
+                style="background: #0c87d6; color: #fff"
                 @click="selectModel"
                 >新增模型任务</el-button
               >
@@ -348,7 +350,7 @@
               </span> -->
 
               <el-button
-                style="background: #1897e4; color: #fff"
+                style="background: #0c87d6; color: #fff"
                 @click="addTaskSelf"
                 >新增自建任务</el-button
               >
@@ -364,7 +366,7 @@
               </el-input>
               <div
                 class="search_icon"
-                style="background: #1897e4 !important"
+                style="background: #0c87d6 !important"
                 @click="queryNameInput"
               >
                 <i class="el-icon-search" style="color: white"></i>
@@ -474,7 +476,7 @@
               <template slot-scope="scope">
                 <el-button
                   type="text"
-                  style="color: #1371cc; background: none; border: 0"
+                  style="color: #0c87d6; background: none; border: 0;font-size:14px"
                   size="small"
                   v-if="scope.row.taskType == 2"
                   @click.native.prevent="edit_data(scope.row)"
@@ -483,7 +485,7 @@
                 </el-button>
                 <el-button
                   type="text"
-                  style="color: #db454b; background: none; border: 0"
+                  style="color: #ff8a72; background: none; border: 0;font-size:14px"
                   size="small"
                   @click.native.prevent="deleteModel(scope.row)"
                 >
@@ -901,8 +903,8 @@ export default {
   },
   data() {
     return {
-      defaultActive:'1-1',
-      queryInfo:{},
+      defaultActive: "1-1",
+      queryInfo: {},
       isdisabled: false,
       key: 0,
       enclosure_details_list: [],
@@ -1154,42 +1156,44 @@ export default {
   created() {
     this.get_user();
     // console.log(this.active_project);
-
   },
   mounted() {
-    this.defaultActive='';
-    this.index='';
-    this.queryInfo=this.$route.query;
-    if(this.queryInfo.index&&this.queryInfo.projectId){
+    this.defaultActive = "";
+    this.index = "";
+    this.queryInfo = this.$route.query;
+    if (this.queryInfo.index && this.queryInfo.projectId) {
       // debugger;
       // console.log(this.queryInfo.projectId)
-      this.active_project=this.queryInfo.projectId;
-      this.defaultActive=this.queryInfo.index;
-      this.index=this.queryInfo.index;
+      this.active_project = this.queryInfo.projectId;
+      this.defaultActive = this.queryInfo.index;
+      this.index = this.queryInfo.index;
       // this.key=Math.random();
       // 更新项目接口
-      setprojectInit(this.active_project).then((resp) => {
-
-      });
-    }else {
+      setprojectInit(this.active_project).then((resp) => {});
+    } else {
       this.get_user(true);
     }
     this.getprojectList(this.queryManage);
     this.thematicSelect(this.thematic);
     this.areasSelect(this.areas);
     this.moreProject(this.queryManageAll);
-
-
   },
   methods: {
     //获取当前登录人信息
     get_user(ifMounted) {
       get_userInfo().then((resp) => {
         this.userInfo = resp.data;
-        this.queryProject.condition.peopleTableUuid = this.userInfo.people.userId;
-        if(ifMounted){
-          this.defaultActive = this.userInfo.userRole == '1' || this.userInfo.userRole == '3' ? '1-1' : '2-1';
-          this.index = this.userInfo.userRole == '1' || this.userInfo.userRole == '3' ? '1-1' : '2-1';
+        this.queryProject.condition.peopleTableUuid =
+          this.userInfo.people.userId;
+        if (ifMounted) {
+          this.defaultActive =
+            this.userInfo.userRole == "1" || this.userInfo.userRole == "3"
+              ? "1-1"
+              : "2-1";
+          this.index =
+            this.userInfo.userRole == "1" || this.userInfo.userRole == "3"
+              ? "1-1"
+              : "2-1";
         }
       });
     },
@@ -1203,7 +1207,7 @@ export default {
         this.projectNum = resp.data.records;
         // console.log(this.queryProject);
         this.getInitProject(this.queryProject);
-         this.project_more();
+        this.project_more();
       });
     },
     // 初始化项目
@@ -1218,7 +1222,7 @@ export default {
       });
     },
     open(index) {
-      this.defaultActive=index;
+      this.defaultActive = index;
       this.index = 0;
       this.index = index;
     },
@@ -1227,7 +1231,8 @@ export default {
     },
     // 查看更多初始化项目
     project_more() {
-      this.queryProjectAll.condition.peopleTableUuid = this.userInfo.people.userId;
+      this.queryProjectAll.condition.peopleTableUuid =
+        this.userInfo.people.userId;
       initProject(this.queryProjectAll).then((resp) => {
         this.projectInitMore = resp.data.records;
         if (this.projectInitMore.length > 6) {
@@ -1266,25 +1271,27 @@ export default {
         this.projectInitUuid = this.projectInit[index].managementProjectUuid;
         this.project_data = false;
       }
-      var that=this;
+      var that = this;
 
       // 更新项目接口
       setprojectInit(this.active_project).then((resp) => {
-        if(resp.code == 0 ){
+        if (resp.code == 0) {
           that.$forceUpdate();
-          that.defaultActive='';
-          that.userInfo.userRole=resp.data.peopleRole;
-          that.userInfo.isLiaison=resp.data.isLiaison;
-          that.$set(that.userInfo,'userRole',resp.data.peopleRole);
-          that.$set(that.userInfo,'isLiaison',resp.data.isLiaison);
-          that.defaultActive = that.userInfo.userRole == '1' || that.userInfo.userRole == '3' ? '1-1' : '2-1';
-          that.$set(that.$data,'defaultActive',that.defaultActive);
-          that.$refs.selfMenu.$attrs.active=that.defaultActive;
+          that.defaultActive = "";
+          that.userInfo.userRole = resp.data.peopleRole;
+          that.userInfo.isLiaison = resp.data.isLiaison;
+          that.$set(that.userInfo, "userRole", resp.data.peopleRole);
+          that.$set(that.userInfo, "isLiaison", resp.data.isLiaison);
+          that.defaultActive =
+            that.userInfo.userRole == "1" || that.userInfo.userRole == "3"
+              ? "1-1"
+              : "2-1";
+          that.$set(that.$data, "defaultActive", that.defaultActive);
+          that.$refs.selfMenu.$attrs.active = that.defaultActive;
           that.index = that.defaultActive;
-          that.$set(that.$data,'index',this.index);
+          that.$set(that.$data, "index", this.index);
           // this.key=Math.random();
         }
-
       });
     },
 
@@ -1446,27 +1453,24 @@ export default {
     isLiaison_Btn(row, list) {
       console.log(row);
       console.log(list);
-      let leader = {}
-      this.peopleSelection.forEach((a)=>{
-        if(a.peopleRole == 1){
+      let leader = {};
+      this.peopleSelection.forEach((a) => {
+        if (a.peopleRole == 1) {
           leader = a;
         }
-      })
+      });
       console.log(leader);
       // && item.key != leader.peopleTableUuid
       this.data.forEach((item) => {
-        if (list.indexOf(item.key) != -1 ) {
-         
-          if(item.key == leader.peopleTableUuid){
-             item.isLiaison = 0;
-             item.disabled = true;
-          }else{
+        if (list.indexOf(item.key) != -1) {
+          if (item.key == leader.peopleTableUuid) {
+            item.isLiaison = 0;
+            item.disabled = true;
+          } else {
             item.isLiaison = 0;
             item.disabled = false;
           }
-          
-        } 
-
+        }
       });
       row.isLiaison = 1;
       row.disabled = true;
@@ -1477,15 +1481,14 @@ export default {
       console.log(this.peopleSelection);
       // alert(123)
       row.isLiaison = 0;
-      this.peopleSelection.forEach((a)=>{
-        if(a.peopleTableUuid == row.key && a.peopleRole == 1){
+      this.peopleSelection.forEach((a) => {
+        if (a.peopleTableUuid == row.key && a.peopleRole == 1) {
           row.disabled = true;
-        }else{
-            row.disabled = false;
+        } else {
+          row.disabled = false;
         }
-      })
+      });
       // row.disabled = true;
-    
     },
     // 下一步按钮事件
     nextBtn() {
@@ -1532,7 +1535,7 @@ export default {
           this.managementProjectUuid;
         this.getauditModelList(this.getModelList);
       } else {
-        this.$message.info("请设置接口人！")
+        this.$message.info("请设置接口人！");
       }
     },
     //删除任务按钮事件
@@ -2172,7 +2175,7 @@ export default {
 .projectWorkbench {
   margin-top: -1%;
   padding: 1%;
-  .title {
+  .title1 {
     font-weight: 700;
     font-size: 15px;
     // border-bottom: 1px solid #d2d2d2;
@@ -2236,8 +2239,8 @@ export default {
       word-break: break-all;
       font-size: 13px;
       &:hover {
-        box-shadow: 0 2px 10px 5px rgba(0, 0, 0, 0.1);
-        border: 1px solid #ebf0f6;
+        box-shadow: 0 2px 10px 5px rgba(0, 0, 0, 0.05);
+        // border: 1px solid #ebf0f6;
         text-overflow: inherit;
         overflow: visible;
         white-space: pre-line;
@@ -2364,7 +2367,7 @@ export default {
   font-size: 0;
   position: relative;
   float: left;
-  background: #559ed4;
+  background:#0c87d6;
   z-index: 50;
   /* 更改此处的颜色即可完成 */
 }
@@ -2411,7 +2414,7 @@ export default {
 .auditStepOneN span:nth-of-type(1) {
   border-width: 25px 0 25px 25px;
   border-style: solid;
-  border-color: #1897e4 transparent #1897e4 transparent;
+  border-color: #0c87d6 transparent #0c87d6 transparent;
   position: absolute;
   top: 0;
   right: 0;
@@ -2461,7 +2464,7 @@ export default {
   position: relative;
   left: -5%;
   float: left;
-  background: #1897e4;
+  background: #0c87d6;
 }
 .auditStepTwoN div {
   width: 70%;
@@ -2478,7 +2481,7 @@ export default {
 .auditStepTwoN span:nth-of-type(1) {
   border-width: 25px 0 25px 25px;
   border-style: solid;
-  border-color: transparent transparent transparent #1897e4;
+  border-color: transparent transparent transparent #0c87d6;
   position: absolute;
   top: 0;
   left: 0;
@@ -2506,13 +2509,14 @@ export default {
   text-align: center;
 }
 .addAudit .nextBtn {
-  background: #1897e4 !important;
+  background: #0c87d6 !important;
   color: #fff;
 }
 .addPerson .nextBtn {
-  background: #559ed4 !important;
+  background: #0c87d6 !important;
   color: #fff;
 }
+
 .page {
   width: 100%;
   padding: 20px 10px;
@@ -2559,13 +2563,13 @@ export default {
   left: 279px;
 }
 .selfTask .el-input {
-  // position: relative;
-  // top: -35px;
+  position: relative;
+  top: -35px;
   width: 100%;
 }
 .selfTask .el-select {
-  // position: relative;
-  // top: -35px;
+  position: relative;
+  top: -35px;
   width: 100%;
 }
 .selfTask >>> .el-textarea__inner {
@@ -2607,8 +2611,9 @@ export default {
 .dialogTitle {
   /* border: 1px solid red; */
   padding: 10px;
-  font-weight: 700;
-  font-size: 15px;
+  font-weight: bolder;
+  color: #000;
+  font-size: 14px;
   margin-bottom: 1%;
   border-bottom: 1px solid #d2d2d2;
   text-align: center;
@@ -2626,18 +2631,27 @@ export default {
   box-shadow: 0 2px 10px 5px rgb(12, 135, 214, 0.5) !important;
   border: 1px solid rgb(12, 135, 214, 1) !important;
 }
-.companyName {
-  font-weight: 500;
-  font-size: 16px;
+.peojectMessage {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   word-break: break-all;
 }
-.companyName:hover {
+.projectName {
+  font-weight: 500;
+  font-size: 16px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.peojectMessage:hover {
   text-overflow: inherit;
   overflow: visible;
   white-space: pre-line;
+}
+.textOver {
+  font-size: 14px;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .projectInit >>> .el-row div p {
   margin-top: 10px;
@@ -2703,7 +2717,7 @@ export default {
   align-items: center;
   border-radius: 0 5px 5px 0;
 }
-.textOver {
+/* .textOver {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -2714,8 +2728,11 @@ export default {
   text-overflow: inherit;
   overflow: visible;
   white-space: pre-line;
-}
+} */
 .projectWorkbench >>> .el-table__header {
   border-top: none !important;
+}
+.addPerson >>>  .el-button--primary{
+  background:#0c87d6 !important;
 }
 </style>

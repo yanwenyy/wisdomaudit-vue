@@ -169,7 +169,7 @@
       <div class="stepBtn" style="margin-right: 2%">
         <el-button @click="addgroupDialog = false">取消</el-button>
         <el-button
-          type="primary"
+          style="background: #0c87d6;color: #fff;"
           @click="saveGroupMember"
           :disabled="savedisabled"
           >确认</el-button
@@ -757,6 +757,9 @@ export default {
   border-bottom: 1px solid #d2d2d2;
   padding: 10px;
   text-align: center;
+  font-weight: bolder;
+  font-size: 14px;
+  color: #000;
 }
 /* 方法二 */
 .stepNew {
@@ -919,11 +922,11 @@ export default {
   text-align: center;
 }
 .addAudit .nextBtn {
-  background: #508ce6 !important;
+  background: #0c87d6 !important;
   color: #fff;
 }
 .addPerson .nextBtn {
-  background: #508ce6 !important;
+  background: #0c87d6 !important;
   color: #fff;
 }
 .addPerson {
@@ -1020,5 +1023,8 @@ export default {
 }
 .personMain >>> .el-table__header {
   border-top: none !important;
+}
+.addPerson >>>  .el-button--primary{
+  background:#0c87d6 !important;
 }
 </style>
