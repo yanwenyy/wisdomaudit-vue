@@ -16,7 +16,7 @@
           <el-col>
             <p>经营评价：</p>
             <el-button plain
-                       v-if="userRole==1 "
+                       v-if="userRole==1||isLiaison==1"
                        @click="Correlation_zb()">关联指标</el-button>
 
           </el-col>
@@ -38,7 +38,7 @@
           <el-col>
             <p>管理建议：</p>
             <el-button plain
-                       v-if="userRole==1 "
+                       v-if="userRole==1||isLiaison==1 "
                        @click="Correlation_wt()">关联问题</el-button>
           </el-col>
 
@@ -61,18 +61,18 @@
             取消</el-button> -->
           <el-button size="small"
                      type="primary"
-                     v-if="userRole==1 && success_btn==0"
+                     v-if="(userRole==1||isLiaison==1) && success_btn==0"
                      :disabled="isDisable"
                      @click="query_report()">生成报告</el-button>
           <el-button type="primary"
-                     v-if="userRole==1  && success_btn==1"
+                     v-if="(userRole==1||isLiaison==1)  && success_btn==1"
                      :loading="true">生成中</el-button>
         </span>
         <div class="flex_end"
              v-if="file_list">
           <p style="padding-top:10px;color:#606266">附件：</p>
-          <ul v-if="file_list.attachmentList">暂无...</ul>
-          <ul v-else>
+          <!-- <ul v-if="file_list.attachmentList">暂无...</ul> -->
+          <ul>
             <li v-for="(item,index) in file_list.attachmentList"
                 :key="index">
               <p @click="download_click(item.attachmentUuid,item.fileName)">{{item.fileName}}</p>
@@ -81,7 +81,7 @@
               <el-button type="text"
                          plain
                          style="color:red"
-                         v-if="userRole==1"
+                         v-if="userRole==1||isLiaison==1"
                          @click="remove_list(item.attachmentUuid)">删除</el-button>
             </li>
           </ul>
@@ -344,7 +344,7 @@ export default {
       success_btn: 0,//文件上传完成
     }
   },
-  props: ['active_project', 'userRole'],
+  props: ['active_project', 'userRole','isLiaison'],
 
   computed: {},
   watch: {},
@@ -487,10 +487,11 @@ export default {
         this.isDisable = false
       }, 2000)
 
-      if (this.administrativeAdvice == '' || this.businessEvaluation) {
+      if (this.administrativeAdvice == '' && this.businessEvaluation == '') {
         this.$message({ message: '请填写内容后生成报告' })
         return
       }
+
       this.success_btn = 1;//显示加载按钮  0成功  1 loaging
       let params2 = {
         managementProjectUuid: this.active_project,//项目id

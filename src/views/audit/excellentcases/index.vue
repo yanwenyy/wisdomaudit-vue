@@ -116,20 +116,23 @@
             </el-table-column>
             <!-- 操作 -->
             <el-table-column prop="title"
+                             width="180"
                              show-overflow-tooltip
                              label="操作">
               <template slot-scope="scope">
                 <el-button @click="edit(scope.row)"
                            type="text"
                            :disabled="isDisable"
-                           style="color:#1371CC;background:none;border:none"
+                           style="color:#0c87d6;background:none;border:none;
+                            font-size: 14px !important;"
                            size="small">
                   编辑
                 </el-button>
 
                 <el-button @click="file_list(scope.row)"
                            type="text"
-                           style="color:#1371CC;background:none;border:none"
+                           style="color:#0c87d6;background:none;border:none;
+                            font-size: 14px !important;"
                            size="small">
                   文件管理
                 </el-button>
@@ -137,7 +140,8 @@
                 <el-button @click="remove(scope.row)"
                            type="text"
                            :disabled="isDisable"
-                           style="color:red;background:none;border:none"
+                           style="color:#ff8a72;background:none;border:none;
+                            font-size: 14px !important;"
                            size="small">
                   删除
                 </el-button>
@@ -270,6 +274,7 @@
           <el-row class="btn_type">
             <el-col :span="1.5">
               <el-button type="primary"
+                         :disabled="isDisable"
                          @click="download()">文件下载</el-button>
             </el-col>
             <el-col :span="1.5">
@@ -292,6 +297,7 @@
             </el-col>
             <el-col :span="1.5">
               <el-button type="primary"
+                         :disabled="isDisable"
                          @click="remove_list()">删除</el-button>
             </el-col>
           </el-row>
@@ -402,12 +408,12 @@ export default {
         dataTitle: '',//标题
         dataSortId: '',//分类id
         dataSortCode: '',//分类code
-        dataSortName: '',//分类name 
+        dataSortName: '',//分类name
         sourceItem: '',//来源项目
         dataIntroduce: '',// 简介
         referenceTableUuid: '',//主键id
       },
-      // 验证 
+      // 验证
       rules: {
         dataTitle: [{ required: true, message: '请填写资料标题', trigger: 'blur' }],
         dataSortName: [{ required: true, message: '请选择分类', trigger: 'change' }],
@@ -526,13 +532,18 @@ export default {
     },
     // 新增保存
     add_save (add_data) {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
+
       this.$refs[add_data].validate((valid) => {
         if (valid) {
           let params = {
             dataTitle: this.add_data.dataTitle,//标题
             dataSortId: this.add_data.dataSortId,//分类id
             dataSortCode: this.add_data.dataSortCode,//分类code
-            dataSortName: this.add_data.dataSortName,//分类name 
+            dataSortName: this.add_data.dataSortName,//分类name
             sourceItem: this.add_data.sourceItem,//来源项目
             dataIntroduce: this.add_data.dataIntroduce,// 简介
           }
@@ -579,7 +590,7 @@ export default {
       this.add_data.dataTitle = data.dataTitle//标题
       this.add_data.dataSortId = data.dataSortId//分类id
       this.add_data.dataSortCode = data.dataSortCode //分类code
-      this.add_data.dataSortName = data.dataSortName //分类name 
+      this.add_data.dataSortName = data.dataSortName //分类name
       this.add_data.sourceItem = data.sourceItem //来源项目
       this.add_data.dataIntroduce = data.dataIntroduce // 简介
       this.add_data.referenceTableUuid = data.referenceTableUuid//主键id
@@ -595,7 +606,7 @@ export default {
             dataTitle: this.add_data.dataTitle,//标题
             dataSortId: this.add_data.dataSortId,//分类id
             dataSortCode: this.add_data.dataSortCode,//分类code
-            dataSortName: this.add_data.dataSortName,//分类name 
+            dataSortName: this.add_data.dataSortName,//分类name
             sourceItem: this.add_data.sourceItem,//来源项目
             dataIntroduce: this.add_data.dataIntroduce,// 简介
             referenceTableUuid: this.add_data.referenceTableUuid,//主键id
@@ -760,42 +771,60 @@ export default {
 
     // 下载
     download () {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
+
       if (this.data_list_check.length == 0) {
         this.$message.info("请选择一条进行下载");
         return false
       } else {
         // let formData = new FormData()
         // formData.append(this.data_list_check)
-        let list = this.data_list_check;
-        fileDownload(list).then(resp => {
-          const content = resp;
-          console.log(resp);
-          const blob = new Blob([content],
-            { type: 'application/octet-stream,charset=UTF-8' }
-          )
-          const fileName = resp.headers["content-disposition"].split("fileName*=utf-8''")[1];
-          if ('download' in document.createElement('a')) {
-            // 非IE下载
-            const elink = document.createElement('a')
-            elink.download = fileName //下载后文件名
-            elink.style.display = 'none'
-            elink.href = window.URL.createObjectURL(blob)
-            document.body.appendChild(elink)
-            elink.click()
-            window.URL.revokeObjectURL(elink.href) // 释放URL 对象
-            document.body.removeChild(elink)
-          } else {
-            // IE10+下载
-            navigator.msSaveBlob(blob, fileName)
-          }
-        }).catch((err) => {
-
+        const fileName = [];//文件名称
+        this.data_list_check.forEach((item) => {
+          // fileName.push(item.fileName)
+          this.download_click(item.fileName)//下载事件
         })
+
       }
+    },
+    // 下载事件
+    download_click (fileName) {
+      let list = this.data_list_check;
+      fileDownload(list).then(resp => {
+        const content = resp;
+        const blob = new Blob([content],
+          { type: 'application/octet-stream,charset=UTF-8' }
+        )
+        if ('download' in document.createElement('a')) {
+          // 非IE下载
+          const elink = document.createElement('a')
+          elink.download = fileName //下载后文件名
+          elink.style.display = 'none'
+          elink.href = window.URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象
+          document.body.removeChild(elink)
+        } else {
+          // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
+      }).catch((err) => {
+
+      })
     },
 
     // 文件管理 删除
     remove_list () {
+
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
+
       if (this.data_list_check.length == 0) {
         this.$message.info("请选择一条进行删除");
         return false

@@ -68,7 +68,7 @@
             <el-button @click="see(scope.row)"
                        type="text"
                        plain
-                       style="color:rgb(19, 113, 204);"
+                       style="color:rgb(19, 113, 204);  font-size: 14px !important;"
                        size="small">
               查看
             </el-button>
@@ -76,7 +76,7 @@
                        v-if="scope.row.status ==1"
                        type="text"
                        plain
-                       style="color:rgb(19, 113, 204);"
+                       style="color:rgb(19, 113, 204);  font-size: 14px !important;"
                        size="small">
               反馈
             </el-button>

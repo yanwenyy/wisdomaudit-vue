@@ -226,7 +226,8 @@
                   <el-button @click="setParameters(scope.row)"
                              type="text"
                              v-if=" scope.row.taskType == 1"
-                             style="color: #49bae8!important;
+                             style="color: #0c87d6!important;
+                               font-size: 14px !important;
 "
                              size="small">
                     运行
@@ -236,7 +237,8 @@
                   <el-button @click="data_num_click(scope.row)"
                              type="text"
                              v-if=" scope.row.taskType == 1"
-                             style="color: #49bae8!important;
+                             style="color: #0c87d6!important;
+                               font-size: 14px !important;
 "
                              size="small">
                     查看结果
@@ -250,7 +252,8 @@
                                :disabled="isDisable"
                                v-if="scope.row.taskType ==2 && [scope.row.status==1 || scope.row.status==2]"
                                type="text"
-                               style="color: #49bae8!important;
+                               style="color: #0c87d6!important;
+                                 font-size: 14px !important;
 "
                                size="small">编辑</el-button>
 
@@ -259,7 +262,8 @@
                                v-if="scope.row.status==1 || scope.row.status==2"
                                type="
                            text"
-                               style="  color: #49bae8!important;border:none;"
+                               style="color:#ff8a72!important;
+                                 font-size: 14px !important;border:none;"
                                :disabled="isDisable"
                                size="small">
                       删除
