@@ -1480,16 +1480,17 @@ export default {
     //取消设为接口人
     cancel_Btn(row) {
       console.log(row);
-      console.log(this.peopleSelection);
-      // alert(123)
+      // console.log(this.peopleSelection);
       row.isLiaison = 0;
-      this.peopleSelection.forEach((a) => {
-        if (a.peopleTableUuid == row.key && a.peopleRole == 1) {
-          row.disabled = true;
-        } else {
+      for(let k=0;k<this.peopleSelection.length;k++){
+        if (this.peopleSelection[k].peopleTableUuid == row.key && this.peopleSelection[k].peopleRole == 1) {
+          return row.disabled = true;
+        }else{
           row.disabled = false;
+          console.log(this.value);
+          // this.value = [];
         }
-      });
+      }
       // row.disabled = true;
     },
     // 下一步按钮事件
