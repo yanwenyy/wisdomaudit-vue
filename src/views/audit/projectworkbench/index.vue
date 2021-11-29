@@ -2211,6 +2211,7 @@ export default {
     border-radius: 5px;
     border: 2px solid #ebf0f6;
     line-height: 100px;
+    font-size: 0.73vw;
     &:hover {
       box-shadow: 0 2px 10px 5px rgba(0, 0, 0, 0.05);
     }
@@ -2247,15 +2248,20 @@ export default {
         white-space: pre-line;
       }
     }
-    span {
+    .moreBtn {
       color: #12579a;
-      margin: 0 10px;
-      min-width: 80px;
+      margin: 0 0px;
+      min-width: 70px; 
       box-sizing: border-box;
       cursor: pointer;
       padding: 0.5%;
       border-radius: 5px;
       border: 2px solid #ebf0f6;
+      font-size: 0.73vw;
+      text-align: center;
+       &:hover {
+      box-shadow: 0 2px 10px 5px rgba(0, 0, 0, 0.05);
+    }
     }
   }
 }
