@@ -626,7 +626,7 @@ export default {
     // display: flex;
     .homepagetitle {
       font-size: 16px;
-      height: 18px;
+      height: 20px;
       margin-bottom: 10px;
       padding: 0 10px;
       text-align: center;

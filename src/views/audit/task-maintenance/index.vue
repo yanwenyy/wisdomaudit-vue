@@ -73,7 +73,7 @@
             </el-table-column>
             <el-table-column prop="peopleName" label="责任人">
               <template slot-scope="scope">
-                <el-form>
+                <el-form class="taskTable">
                   <el-form-item>
                     <el-select
                       style="width:180px;margin-top:5px"
@@ -1730,7 +1730,9 @@ export default {
 }
 .selfTask >>> .el-form-item__label{
 text-align: left !important;
- 
+}
+.selfTask >>>  .el-form-item {
+   margin-bottom: -10px !important;
 }
 .taskAdd {
   width: 70%;
@@ -1763,6 +1765,12 @@ text-align: left !important;
 }
 .taskAdd /deep/ .upload-demo {
   margin-top: -35px;
+}
+.taskAdd >>>  .el-form-item {
+   margin-bottom: -10px !important;
+}
+.taskTable >>> .el-form-item {
+   margin-bottom: 0px !important;
 }
 .addPerson .text {
   font-size: 14px;

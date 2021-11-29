@@ -40,7 +40,7 @@
             <!-- 标题 -->
             <el-table-column prop="dataTitle"
                              show-overflow-tooltip
-                             label="标题">
+                             label="资料标题">
 
               <template slot-scope="scope">
                 <p v-if="scope.row.dataTitle">{{scope.row.dataTitle}}</p>
@@ -785,19 +785,26 @@ export default {
         const fileName = [];//文件名称
         this.data_list_check.forEach((item) => {
           // fileName.push(item.fileName)
-          this.download_click(item.fileName)//下载事件
+          this.download_click(item.attachmentUuid, item.fileName)//下载事件
         })
+
 
       }
     },
     // 下载事件
-    download_click (fileName) {
-      let list = this.data_list_check;
-      fileDownload(list).then(resp => {
+    download_click (attachmentUuid, fileName) {
+      // let list = this.data_list_check;
+      let formData = new FormData()
+      formData.append('attachmentUuid', attachmentUuid)
+      fileDownload(formData).then(resp => {
         const content = resp;
         const blob = new Blob([content],
           { type: 'application/octet-stream,charset=UTF-8' }
         )
+        // 刷新列 
+        this.pageList_data();//外层列表
+        this.toManagementList_data();//右侧列表
+
         if ('download' in document.createElement('a')) {
           // 非IE下载
           const elink = document.createElement('a')

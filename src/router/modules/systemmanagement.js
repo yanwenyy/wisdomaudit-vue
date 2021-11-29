@@ -50,7 +50,7 @@ const Systemmanagement = {
       hidden:true,
       component: () => import('@WISDOMAUDIT/views/systemmanagement/newRoleManagement'),
       meta: {
-        title: '新增用户'
+        title: '新增角色'
       },
     },
     {
