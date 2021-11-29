@@ -80,7 +80,8 @@
 }}</span>
               <el-button type="text"
                          plain
-                         style="color:red"
+                         style="color:#ff8a72!important;
+                                 font-size: 14px "
                          v-if="userRole==1||isLiaison==1"
                          @click="remove_list(item.attachmentUuid)">删除</el-button>
             </li>
@@ -344,7 +345,7 @@ export default {
       success_btn: 0,//文件上传完成
     }
   },
-  props: ['active_project', 'userRole','isLiaison'],
+  props: ['active_project', 'userRole', 'isLiaison'],
 
   computed: {},
   watch: {},
@@ -491,7 +492,6 @@ export default {
         this.$message({ message: '请填写内容后生成报告' })
         return
       }
-
       this.success_btn = 1;//显示加载按钮  0成功  1 loaging
       let params2 = {
         managementProjectUuid: this.active_project,//项目id
