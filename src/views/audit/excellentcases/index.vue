@@ -787,9 +787,7 @@ export default {
           // fileName.push(item.fileName)
           this.download_click(item.attachmentUuid, item.fileName)//下载事件
         })
-        // 刷新列 
-        this.pageList_data();//外层列表
-        this.toManagementList_data();//右侧列表
+
 
       }
     },
@@ -803,6 +801,9 @@ export default {
         const blob = new Blob([content],
           { type: 'application/octet-stream,charset=UTF-8' }
         )
+        // 刷新列 
+        this.pageList_data();//外层列表
+        this.toManagementList_data();//右侧列表
 
         if ('download' in document.createElement('a')) {
           // 非IE下载
