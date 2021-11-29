@@ -4,7 +4,7 @@
       <div class="two">
         <div class="projectTab">
           <el-row class="titleMes" type="flex" justify="space-between">
-            <el-col :span="7">
+            <el-col :span="6">
               <div class="search">
                 <el-input
                   placeholder="用户账号"
@@ -15,12 +15,12 @@
                   <i class="el-icon-search" style="color: #fff"></i>
                 </el-button>
 <!--                <el-button type="primary" @click="searchUser">搜索</el-button>-->
-                <el-button type="primary" @click="new_add()">新增</el-button>
 
               </div>
             </el-col>
-<!--            <el-col :span="2">-->
-<!--            </el-col>-->
+            <el-col :span="2">
+              <el-button type="primary" @click="new_add()">新增</el-button>
+            </el-col>
 
             <!-- <el-col :span="1.5">
               <el-button type="primary"
@@ -288,7 +288,7 @@ export default {
 .search_icon {
   position: absolute;
   top: 0;
-  right: 70px;
+  //right: 70px;
   background: #1371cc;
   width: 37px;
   height: 37px;

@@ -292,6 +292,7 @@
           filterable
           :filter-method="filterMethod"
           filter-placeholder="请输入组员名称"
+          target-order = "push"
           v-model="value"
           :titles="['组员列表', '已选组员']"
           :data="data"
