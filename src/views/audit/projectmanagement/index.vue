@@ -162,7 +162,7 @@
         <template slot-scope="scope">
           <el-button
             type="text"
-            style="color: #0c87d6; background: none; border: 0; font-size:14px"
+            style="color: #0c87d6; background: none; border: 0; font-size: 14px"
             size="small"
             @click="editDialog(scope.row)"
           >
@@ -172,7 +172,7 @@
           <el-button
             type="text"
             v-if="scope.row.auditConf == 1"
-            style="color: #0c87d6; background: none; border: 0;font-size:14px"
+            style="color: #0c87d6; background: none; border: 0; font-size: 14px"
             size="small"
             @click="confirm_problem(scope.row.managementProjectUuid)"
           >
@@ -184,7 +184,9 @@
 
     <!--  启动整改 -->
     <div class="setting_people">
-      <el-button  style="color: #FFF; background: #0c87d6; border: 0; " @click="run_rectification()"
+      <el-button
+        style="color: #fff; background: #0c87d6; border: 0"
+        @click="run_rectification()"
         >启动整改</el-button
       >
     </div>
@@ -223,7 +225,6 @@
       <div class="addzhuanForm" v-if="prjType == 1">
         <el-form
           label-width="100px"
-          :rules="addzhuanRules"
           :model="addProjectManagement"
           ref="addProjectManagement"
           label-position="right"
@@ -258,7 +259,17 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="ㅤ项目名称:" prop="projectName">
+            <el-form-item
+              label="ㅤ项目名称:"
+              prop="projectName"
+              :rules="[
+                {
+                  required: true,
+                  message: '请填写项目名称',
+                  trigger: 'blur',
+                },
+              ]"
+            >
               <el-input
                 placeholder="请输入"
                 v-model="addProjectManagement.projectName"
@@ -300,7 +311,13 @@
             </el-form-item>
           </el-row> -->
           <el-row>
-            <el-form-item label="ㅤㅤㅤ领域:" prop="field">
+            <el-form-item label="ㅤㅤㅤ领域:" prop="field"  :rules="[
+                {
+                  required: true,
+                  message: '请选择领域',
+                  trigger: 'change',
+                },
+              ]">
               <el-select
                 placeholder="请选择"
                 v-model="addProjectManagement.field"
@@ -658,7 +675,6 @@
         <el-form
           label-width="100px"
           :model="addProjectManagement"
-          
           hide-required-asterisk
         >
           <el-row>
@@ -877,7 +893,6 @@
         <el-form
           label-width="100px"
           :model="addprojectjing"
-        
           hide-required-asterisk
         >
           <el-row>
@@ -1611,13 +1626,13 @@ export default {
       endPickerOptions: this.endDate(), //新增专项审计期间判断
       // 新增专项的表单验证
       addzhuanRules: {
-        projectName: [
-          { required: true, message: "请填写项目名称", trigger: "blur" },
-          { max: 20, message: "项目名称在20个字符之内", trigger: "change" },
-        ],
-        projectTypeName: [
-          { required: true, message: "请选择项目分类", trigger: "change" },
-        ],
+        // projectName: [
+        //   { required: true, message: "请填写项目名称", trigger: "blur" },
+        //   { max: 20, message: "项目名称在20个字符之内", trigger: "change" },
+        // ],
+        // projectTypeName: [
+        //   { required: true, message: "请选择项目分类", trigger: "change" },
+        // ],
         field: [
           {
             required: true,
@@ -2036,8 +2051,8 @@ export default {
       };
       var that = this;
       this.$nextTick(() => {
-         that.$refs["addprojectjing"].clearValidate();
-          // that.$refs["addProjectManagement"].clearValidate();
+        that.$refs["addprojectjing"].clearValidate();
+        // that.$refs["addProjectManagement"].clearValidate();
       });
       this.isdisabled = true;
       this.prjType = 2;
@@ -2902,9 +2917,9 @@ export default {
     top: -35px;
     width: 65%;
   }
-  // .el-form-item {
-  //   margin-bottom: -10px !important;
-  // }
+  .el-form-item {
+    margin-bottom: -15px !important;
+  }
   .addIcon {
     background-color: #fff;
     width: 95%;
@@ -2916,7 +2931,7 @@ export default {
     // margin-bottom: 5%;
   }
 }
- 
+
 .addzhuanForm {
   padding: 2%;
   margin-top: 2%;
@@ -2926,9 +2941,9 @@ export default {
     top: -35px;
     width: 65%;
   }
-  // .el-form-item {
-  //   margin-bottom: -15px !important;
-  // }
+  .el-form-item {
+    margin-bottom: -15px !important;
+  }
   .addIcon {
     background-color: #fff;
     width: 100%;
@@ -2948,7 +2963,7 @@ export default {
     background: #0c87d6 !important;
     color: #fff;
   }
-   .el-button{
+  .el-button {
     font-weight: 400 !important;
   }
 }
@@ -2963,9 +2978,8 @@ export default {
     background: #0c87d6 !important;
     color: #fff;
   }
-  .el-button{
+  .el-button {
     font-weight: 400 !important;
-  
   }
 }
 .dataTime .el-input {
@@ -2980,7 +2994,7 @@ export default {
 .projectTable {
   .el-select {
     width: 200px;
-    margin: 15px 0 0 -100px;
+    margin: 20px 0 0 -100px;
   }
 }
 .title {
@@ -3193,7 +3207,7 @@ export default {
 }
 .projectTable /deep/ .el-form-item__error {
   position: absolute;
-  top: -20%;
+  top: 20%;
   left: 0%;
 }
 .page {
@@ -3259,8 +3273,12 @@ export default {
   border-top: none !important;
 }
 >>> .el-form-item__label {
-  font-size:14px !important;
+  font-size: 14px !important;
   color: #606266 !important;
   font-weight: 500;
+}
+.projectTable >>> .el-select{
+  position: relative;
+  top: -17px !important; 
 }
 </style>
