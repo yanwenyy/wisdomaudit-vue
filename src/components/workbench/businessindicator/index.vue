@@ -1,6 +1,7 @@
 <template>
   <div class="indocator">
     <div class="filter-container">
+      <!--isLiaison是否接口人  1是，0否-->
       <el-button type="primary" @click="add()" v-if="isLiaison=='1'"  class="subBtn"
         >新增指标</el-button
       >
