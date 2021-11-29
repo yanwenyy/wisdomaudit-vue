@@ -237,7 +237,7 @@
               <el-select placeholder="请选择"
                          v-model="addProjectManagement.projectLeaderName"
                          @change="selectprojectLeader"
-                         filterable>
+                         disabled>
                 <el-option v-for="item in projectpeopleoptions"
                            :key="item.id"
                            :label="item.realName"
@@ -451,7 +451,8 @@
               <el-select placeholder="请选择"
                          v-model="addprojectjing.projectLeaderName"
                          @change="selectprojectLeader"
-                         filterable>
+                         filterable
+                         disabled>
                 <el-option v-for="item in projectpeopleoptions"
                            :key="item.id"
                            :label="item.realName"
@@ -610,7 +611,8 @@
                           prop="projectLeaderName">
               <el-select placeholder="请选择"
                          v-model="addProjectManagement.projectLeaderName"
-                         @change="selectprojectLeader">
+                         @change="selectprojectLeader"
+                         disabled>
                 <el-option v-for="item in projectpeopleoptions"
                            :key="item.id"
                            :label="item.realName"
@@ -820,7 +822,8 @@
                           prop="projectLeaderName">
               <el-select placeholder="请选择"
                          v-model="addprojectjing.projectLeaderName"
-                         @change="selectprojectLeader">
+                         @change="selectprojectLeader"
+                         disabled>
                 <el-option v-for="item in projectpeopleoptions"
                            :key="item.id"
                            :label="item.realName"
