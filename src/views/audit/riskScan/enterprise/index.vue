@@ -125,7 +125,6 @@ export default {
           getdataAuditApi(result.data.token).then((res)=>{
 
            if (res.status== 'success') {
-            //  this.formdates='http:10.19.206.196:8088/WebReport/decision/view/form?viewlet=vendor/zhuowang/test.cpt&ref_t=design&ref_c=d6740dbd-0279-40d0-b361-3cc1adb80d35'
             this.formdates=res.url.replace('&amp;','&')
              getTypes("area=2").then((rem) => {
               this.options = rem.data;
