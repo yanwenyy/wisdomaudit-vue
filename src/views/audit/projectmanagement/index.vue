@@ -98,7 +98,7 @@
       ></el-table-column>
       <el-table-column
         align="left"
-        min-width="90px"
+        width="100px"
         prop="projectLeaderName"
         label="项目负责人"
         show-overflow-tooltip
@@ -109,6 +109,7 @@
         prop="projectChargemanName"
         label="项目组长"
         show-overflow-tooltip
+         width="100px"
       >
       </el-table-column>
       <el-table-column
@@ -127,6 +128,7 @@
         prop="createUserName"
         label="创建人"
         show-overflow-tooltip
+         width="80px"
       >
       </el-table-column>
       <el-table-column
@@ -649,6 +651,8 @@
           label-width="100px"
           :model="addProjectManagement"
           hide-required-asterisk
+          :rules="addzhuanRules"
+          ref="addProjectManagement"
         >
           <el-row>
             <el-form-item label="ㅤ项目编号:" prop="projectCode">
@@ -681,13 +685,7 @@
           <el-row>
             <el-form-item
               label="ㅤ项目名称:"
-              :rules="[
-                {
-                  required: true,
-                  message: '请输入项目名称',
-                  trigger: 'change',
-                },
-              ]"
+              prop="projectName"
             >
               <el-input
                 placeholder="请输入"
@@ -786,7 +784,8 @@
               </el-table-column>
               <el-table-column prop="auditOrgName" label="被审计单位">
                 <template slot-scope="scope">
-                  <el-form-item prop="auditOrgName">
+                  <el-form-item  :prop="'auditList.' + scope.$index + '.auditOrgName'"
+                  :rules='addzhuanRules.auditOrgName'>
                     <el-select
                       style="width: 120%"
                       placeholder="请选择"
@@ -804,9 +803,10 @@
                   </el-form-item>
                 </template>
               </el-table-column>
-              <el-table-column prop="projectChargemanName" label="设置组长">
+              <el-table-column prop="projectChargemanName" label="分配组长">
                 <template slot-scope="scope">
-                  <el-form-item prop="projectChargemanName">
+                  <el-form-item  :prop="'auditList.' + scope.$index + '.projectChargemanName'"
+                  :rules="addzhuanRules.projectChargemanName">
                     <el-select
                       style="width: 120%"
                       placeholder="请选择"
@@ -867,6 +867,7 @@
           label-width="100px"
           :model="addprojectjing"
           hide-required-asterisk
+           :rules="addprojectjingRules"
         >
           <el-row>
             <el-form-item label="ㅤ项目编号:" prop="projectCode">
