@@ -788,17 +788,12 @@ export default {
     },
     // 下载事件
     download_click (fileName) {
-
       let list = this.data_list_check;
       fileDownload(list).then(resp => {
-        const content = resp.data;
-        // console.log(resp);
+        const content = resp;
         const blob = new Blob([content],
           { type: 'application/octet-stream,charset=UTF-8' }
         )
-        // const fileName = resp.headers["content-disposition"].split("fileName*=utf-8''")[1];
-        // const filteType = resp.headers["content-disposition"].split(".")[1];
-
         if ('download' in document.createElement('a')) {
           // 非IE下载
           const elink = document.createElement('a')
