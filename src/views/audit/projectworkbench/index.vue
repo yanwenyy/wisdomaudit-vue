@@ -78,7 +78,7 @@
     <!-- 初始化项目 -->
     <!-- v-show="projectNum.length > 0" -->
     <div class="initializeProject" v-if="active_project">
-      <div class="title1" style="margin-top: 0%">初始化项目</div>
+      <div class="title1" style="margin-top: 3%">初始化项目</div>
       <ul v-if="projectInit">
         <li
           v-for="(item, index) in projectInit"
@@ -2584,7 +2584,10 @@ export default {
   width: 100%;
 }
 .selfTask .el-form-item {
-  // margin-bottom: -10px !important;
+  margin-bottom: -10px !important;
+}
+.optionBtn .el-form-item {
+  margin-bottom: 0px !important;
 }
 .upload-demo {
   margin-top: -35px;
@@ -2613,6 +2616,12 @@ export default {
 }
 </style>
 <style scoped>
+.selfTask >>> .el-form-item {
+  margin-bottom: -10px !important;
+}
+.optionBtn >>> .el-form-item {
+  margin-bottom: 0px !important;
+}
 >>> .el-input__inner::-webkit-input-placeholder {
   color: #c0c4cc !important;
 }
@@ -2657,7 +2666,7 @@ export default {
   white-space: pre-line;
 }
 .textOver {
-  font-size: 14px;
+  font-size: 12px;
   text-overflow: ellipsis;
   overflow: hidden;
 }
