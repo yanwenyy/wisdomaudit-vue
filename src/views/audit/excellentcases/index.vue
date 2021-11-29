@@ -270,6 +270,7 @@
           <el-row class="btn_type">
             <el-col :span="1.5">
               <el-button type="primary"
+                         :disabled="isDisable"
                          @click="download()">文件下载</el-button>
             </el-col>
             <el-col :span="1.5">
@@ -292,6 +293,7 @@
             </el-col>
             <el-col :span="1.5">
               <el-button type="primary"
+                         :disabled="isDisable"
                          @click="remove_list()">删除</el-button>
             </el-col>
           </el-row>
@@ -526,6 +528,11 @@ export default {
     },
     // 新增保存
     add_save (add_data) {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
+
       this.$refs[add_data].validate((valid) => {
         if (valid) {
           let params = {
@@ -760,6 +767,11 @@ export default {
 
     // 下载
     download () {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
+
       if (this.data_list_check.length == 0) {
         this.$message.info("请选择一条进行下载");
         return false
@@ -774,6 +786,8 @@ export default {
             { type: 'application/octet-stream,charset=UTF-8' }
           )
           const fileName = resp.headers["content-disposition"].split("fileName*=utf-8''")[1];
+          const filteType = res.headers["content-disposition"].split(".")[1];
+
           if ('download' in document.createElement('a')) {
             // 非IE下载
             const elink = document.createElement('a')
@@ -796,6 +810,12 @@ export default {
 
     // 文件管理 删除
     remove_list () {
+
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
+
       if (this.data_list_check.length == 0) {
         this.$message.info("请选择一条进行删除");
         return false
