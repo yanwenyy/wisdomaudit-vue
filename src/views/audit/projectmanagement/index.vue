@@ -116,7 +116,7 @@
         align="left"
         label="审计期间"
         show-overflow-tooltip
-        min-width="130px"
+        min-width="140px"
       >
         <template slot-scope="scope">
           {{ scope.row.auditStartData }} 至 {{ scope.row.auditFinishData }}
@@ -145,7 +145,7 @@
         prop="managementAdvice"
         label="是否启动整改"
         show-overflow-tooltip
-        min-width="110px"
+        width="110px"
       >
         <template slot-scope="scope">
           {{
@@ -158,7 +158,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" width="150">
+      <el-table-column label="操作" width="170">
         <template slot-scope="scope">
           <el-button
             type="text"
