@@ -104,6 +104,8 @@
     <el-dialog :visible.sync="dialogVisible"
                center
                width="60%"
+               @close="resetForm2()"
+               :close-on-click-modal="false"
                :before-close="dialogBeforeClose">
       <div class="title_dlag">详情</div>
 
@@ -779,7 +781,6 @@ export default {
           'Content-Type': 'multipart/form-data'
         }
       }).then(resp => {
-        console.log(resp.data);
         if (resp.data.code == 0) {
           this.$message({
             message: '上传成功',
@@ -804,6 +805,10 @@ export default {
       })
     },
 
+    // 关闭
+    resetForm2 () {
+      this.success_btn2 = false;//隐藏加载按钮
+    },
     //查看操作 记录
     look_record (data) {
       this.record_status = true;
