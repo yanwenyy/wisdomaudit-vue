@@ -871,13 +871,13 @@ export default {
         // 提交数据接口
         operation_reportData(params).then(resp => {
           console.log(resp);
+          this.success_btn = 0;
+
           if (resp.code == 0) {
-            this.success_btn = 0;
             this.$message({
               message: "提交成功",
               type: "success",
             });
-
             this.dialogVisible = false;//关闭弹窗
             let params = {
               pageNo: this.data_query.pageNo,
@@ -887,6 +887,11 @@ export default {
               }
             }
             this.feedback_post(params)//资料列表
+          } else {
+            this.$message({
+              message: resp.msg,
+              type: "error",
+            });
           }
         })
       }

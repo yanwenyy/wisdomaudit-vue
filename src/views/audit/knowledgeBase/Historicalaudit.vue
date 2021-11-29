@@ -311,7 +311,7 @@
               class="foot">
           <el-button size="small"
                      type="primary"
-                     v-if="title=='新增'"
+                     v-if="title=='新增省内历史审计发现'"
                      :disabled="isDisable"
                      @click="save(1,'add')">确 定</el-button>
           <el-button size="small"
@@ -695,14 +695,18 @@ export default {
         this.$refs[add].validate((valid) => {
           if (valid) {
             // 新增保存
-            let auditBasis = this.add.auditBasis.join(",");
+            if (this.add.auditBasis) {
+              this.auditBasis = this.add.auditBasis.join(",");
+            } else {
+              this.auditBasis = [];
+            }
 
             let params = {
               historyAuditFindDescribe: this.add.historyAuditFindDescribe,//发现描述
               auditedEntity: this.add.auditedEntity,//被审计单位
               auditedEntityName: this.add.auditedEntityName,//被审计单位 name
               field: this.add.field,//领域
-              auditBasis: auditBasis,//依据
+              auditBasis: this.auditBasis,//依据
               auditBasisName: this.add.auditBasisName,//依据name
               special: this.add.special,//专题
               findPeople: this.add.findPeople,//发现人
@@ -715,7 +719,6 @@ export default {
             }
             // 新增
             historicalaudit_add(params).then(resp => {
-
               if (resp.code == 0) {
                 this.$message({
                   message: '新增成功',
@@ -748,8 +751,11 @@ export default {
         this.$refs[add].validate((valid) => {
           if (valid) {
 
-            let auditBasis = this.add.auditBasis.join(",");
-
+            if (this.add.auditBasis) {
+              this.auditBasis = this.add.auditBasis.join(",");
+            } else {
+              this.auditBasis = []
+            }
             // 编辑保存
             let params = {
               historyAuditFindDescribe: this.add.historyAuditFindDescribe,//发现描述
@@ -759,7 +765,7 @@ export default {
               field: this.add.field,//领域
               special: this.add.special,//专题
               findPeople: this.add.findPeople,//发现人
-              auditBasis: auditBasis,//依据
+              auditBasis: this.auditBasis,//依据
               auditBasisName: this.add.auditBasisName,//依据name
 
               findData: this.add.findData,//发现日期
