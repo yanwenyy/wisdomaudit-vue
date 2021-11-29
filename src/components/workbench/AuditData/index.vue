@@ -129,7 +129,7 @@
                     <el-button @click="deleteRow(scope.row)"
                                type="text"
                                :disabled="isDisable"
-                               style="color::#ff8a72;background:none;border:none"
+                               style="color:#ff8a72;background:none;border:none"
                                size="small">
                       删除
                     </el-button>

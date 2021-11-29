@@ -259,7 +259,7 @@
                                v-if="scope.row.status==1 || scope.row.status==2"
                                type="
                            text"
-                               style="  color: #49bae8!important;border:none;"
+                               style="color:#ff8a72!important;border:none;"
                                :disabled="isDisable"
                                size="small">
                       删除

@@ -487,10 +487,12 @@ export default {
         this.isDisable = false
       }, 2000)
 
-      if (this.administrativeAdvice == '' || this.businessEvaluation) {
+      if (this.administrativeAdvice == '' && this.businessEvaluation == '') {
         this.$message({ message: '请填写内容后生成报告' })
         return
       }
+      return false
+
       this.success_btn = 1;//显示加载按钮  0成功  1 loaging
       let params2 = {
         managementProjectUuid: this.active_project,//项目id
