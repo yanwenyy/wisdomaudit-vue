@@ -852,7 +852,7 @@
               <el-button size="small"
                          type="text"
                          plain
-                         style="  color: #49bae8!important;"
+                         style="border:none!important;background:none!important; color: #49bae8!important;"
                          :disabled="isDisable"
                          @click="look_record(scope.row)">查看</el-button>
               <!-- <el-button size="small"
@@ -2481,6 +2481,17 @@ export default {
             };
             this.audit_query.posy_remarks = ''//清空备注
             this.operation_list(params2); // 操作 资料列表
+
+            let params = {
+              pageNo: this.params.pageNo,
+              pageSize: this.params.pageSize,
+              condition: {
+                projectNumber: this.projectNumber,
+                title: this.search_title,
+              }
+            }
+            this.list_data_start(params)
+
           } else {
             this.$message({
               message: resp.data.msg,
@@ -2511,6 +2522,16 @@ export default {
             };
             this.operation_list(params2); // 操作 资料列表
             this.audit_query.posy_remarks = ''//清空备注
+
+            let params = {
+              pageNo: this.params.pageNo,
+              pageSize: this.params.pageSize,
+              condition: {
+                projectNumber: this.projectNumber,
+                title: this.search_title,
+              }
+            }
+            this.list_data_start(params)
 
           } else {
             this.$message({
