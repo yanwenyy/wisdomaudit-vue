@@ -113,7 +113,9 @@
             <el-button type="text"
                        v-if="!type"
                        @click="edit(scope.row)"
-                       style="color: #49bae8;">
+                       style="color: #0c87d6!important;
+                               font-size: 14px !important;
+">
               编辑
             </el-button>
 

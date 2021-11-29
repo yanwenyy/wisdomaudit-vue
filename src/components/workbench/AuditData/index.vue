@@ -90,7 +90,8 @@
                     <el-button @click="edit_common(scope.row)"
                                type="text"
                                :disabled="isDisable"
-                               style="color:#49bae8;background:none;border:none"
+                               style="color:#0c87d6;
+                                 font-size: 14px !important;background:none;border:none"
                                size="small">
                       编辑
                     </el-button>
@@ -103,7 +104,8 @@
                     <el-button @click="yes_push(scope.row)"
                                type="text"
                                :disabled="isDisable"
-                               style="color:#49bae8;background:none;border:none"
+                               style="color:#0c87d6;
+                                 font-size: 14px !important;background:none;border:none"
                                size="small">
                       下发
                     </el-button>
@@ -111,7 +113,8 @@
                     <el-button @click="deleteRow(scope.row)"
                                type="text"
                                :disabled="isDisable"
-                               style="color:#ff8a72;background:none;border:none"
+                               style="color:#ff8a72;
+                                 font-size: 14px !important;background:none;border:none"
                                size="small">
                       删除
                     </el-button>
@@ -122,14 +125,16 @@
                                v-if="scope.row.doingCount>=1"
                                type="text"
                                :disabled="isDisable"
-                               style="color:#49bae8;background:none;border:none"
+                               style="color:#0c87d6;
+                                 font-size: 14px !important;background:none;border:none"
                                size="small">
                       审批
                     </el-button>
                     <el-button @click="deleteRow(scope.row)"
                                type="text"
                                :disabled="isDisable"
-                               style="color:#ff8a72;background:none;border:none"
+                               style="color:#ff8a72;
+                                 font-size: 14px !important;background:none;border:none"
                                size="small">
                       删除
                     </el-button>
@@ -2634,6 +2639,7 @@ export default {
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
 /* @import "../../../assets/styles/css/yw.css"; */
+
 >>> .foot .el-button {
   font-weight: normal;
 }

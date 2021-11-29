@@ -116,20 +116,23 @@
             </el-table-column>
             <!-- 操作 -->
             <el-table-column prop="title"
+                             width="180"
                              show-overflow-tooltip
                              label="操作">
               <template slot-scope="scope">
                 <el-button @click="edit(scope.row)"
                            type="text"
                            :disabled="isDisable"
-                           style="color:#1371CC;background:none;border:none"
+                           style="color:#0c87d6;background:none;border:none;
+                            font-size: 14px !important;"
                            size="small">
                   编辑
                 </el-button>
 
                 <el-button @click="file_list(scope.row)"
                            type="text"
-                           style="color:#1371CC;background:none;border:none"
+                           style="color:#0c87d6;background:none;border:none;
+                            font-size: 14px !important;"
                            size="small">
                   文件管理
                 </el-button>
@@ -137,7 +140,8 @@
                 <el-button @click="remove(scope.row)"
                            type="text"
                            :disabled="isDisable"
-                           style="color:red;background:none;border:none"
+                           style="color:#ff8a72;background:none;border:none;
+                            font-size: 14px !important;"
                            size="small">
                   删除
                 </el-button>
@@ -778,34 +782,39 @@ export default {
       } else {
         // let formData = new FormData()
         // formData.append(this.data_list_check)
-        let list = this.data_list_check;
-        fileDownload(list).then(resp => {
-          const content = resp.data;
-          console.log(resp);
-          const blob = new Blob([content],
-            { type: 'application/octet-stream,charset=UTF-8' }
-          )
-          const fileName = resp.headers["content-disposition"].split("fileName*=utf-8''")[1];
-          const filteType = resp.headers["content-disposition"].split(".")[1];
-
-          if ('download' in document.createElement('a')) {
-            // 非IE下载
-            const elink = document.createElement('a')
-            elink.download = fileName //下载后文件名
-            elink.style.display = 'none'
-            elink.href = window.URL.createObjectURL(blob)
-            document.body.appendChild(elink)
-            elink.click()
-            window.URL.revokeObjectURL(elink.href) // 释放URL 对象
-            document.body.removeChild(elink)
-          } else {
-            // IE10+下载
-            navigator.msSaveBlob(blob, fileName)
-          }
-        }).catch((err) => {
-
+        const fileName = [];//文件名称
+        this.data_list_check.forEach((item) => {
+          // fileName.push(item.fileName)
+          this.download_click(item.fileName)//下载事件
         })
+
       }
+    },
+    // 下载事件
+    download_click (fileName) {
+      let list = this.data_list_check;
+      fileDownload(list).then(resp => {
+        const content = resp;
+        const blob = new Blob([content],
+          { type: 'application/octet-stream,charset=UTF-8' }
+        )
+        if ('download' in document.createElement('a')) {
+          // 非IE下载
+          const elink = document.createElement('a')
+          elink.download = fileName //下载后文件名
+          elink.style.display = 'none'
+          elink.href = window.URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象
+          document.body.removeChild(elink)
+        } else {
+          // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
+      }).catch((err) => {
+
+      })
     },
 
     // 文件管理 删除

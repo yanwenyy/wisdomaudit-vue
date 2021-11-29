@@ -136,14 +136,18 @@
                        type="text"
                        plain
                        :disabled="isDisable"
-                       style="color: #1371cc"
+                       style="color: #0c87d6!important;
+                               font-size: 14px !important;
+"
                        size="small">
               编辑
             </el-button>
             <el-button @click="delete_model(scope.row.historyAuditFindUuid)"
                        plain
                        type="text"
-                       style="color: red"
+                       style="color: #ff8a72!important;
+                               font-size: 14px !important;
+"
                        size="small">
               删除
             </el-button>
@@ -1111,7 +1115,7 @@ export default {
   left: 130px !important;
 }
 .dlag_conter >>> .el-form-item__content {
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
   width: 100%;
   display: flex;
   justify-content: center;
