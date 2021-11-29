@@ -746,7 +746,6 @@ export default {
   methods: {
     // 专题选择其他变成可输入
     changeBelongSpcial(val){
-      console.log(val);
       if(val == "其他"){
         this.other_input = false;
         this.taskSelf.belongSpcial = "";

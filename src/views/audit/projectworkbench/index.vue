@@ -293,6 +293,7 @@
           :filter-method="filterMethod"
           filter-placeholder="请输入组员名称"
           target-order = "push"
+          @right-check-change="rightArray"
           v-model="value"
           :titles="['组员列表', '已选组员']"
           :data="data"
@@ -662,7 +663,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="ㅤㅤㅤ专ㅤ题:" prop="belongSpcial">
-            <el-select placeholder="请选择" v-model="taskSelf.belongSpcial">
+            <el-select placeholder="请选择" v-model="taskSelf.belongSpcial"  v-if="other_input == true" @change="changeBelongSpcial">
               <el-option
                 v-for="item in thematicOption"
                 :key="item.value"
@@ -671,6 +672,7 @@
               >
               </el-option>
             </el-select>
+            <el-input v-model="taskSelf.belongSpcial" v-if="other_input==false"></el-input>
           </el-form-item>
           <el-form-item label="ㅤㅤㅤ领ㅤ域:" prop="belongField">
             <el-select placeholder="请选择" v-model="taskSelf.belongField">
@@ -765,6 +767,7 @@
             <el-select
               placeholder="请选择"
               v-model="edittaskSelfForm.belongSpcial"
+              v-if="other_input == true" @change="changeBelongSpcial"
             >
               <el-option
                 v-for="item in thematicOption"
@@ -774,6 +777,7 @@
               >
               </el-option>
             </el-select>
+            <el-input v-model="edittaskSelfForm.belongSpcial" v-if="other_input==false"></el-input>
           </el-form-item>
           <el-form-item label="ㅤㅤㅤ领ㅤ域:" prop="belongField">
             <el-select
@@ -905,6 +909,7 @@ export default {
   },
   data() {
     return {
+      other_input:true, //专题下拉框显示隐藏
       defaultActive: "1-1",
       queryInfo: {},
       isdisabled: false,
@@ -1136,6 +1141,7 @@ export default {
           { required: true, message: "请输入任务描述", trigger: "change" },
         ],
       },
+      arrRightValue:[]
     };
   },
   watch: {
@@ -1181,6 +1187,14 @@ export default {
     this.moreProject(this.queryManageAll);
   },
   methods: {
+     // 专题选择其他变成可输入
+    changeBelongSpcial(val){
+      if(val == "其他"){
+        this.other_input = false;
+        this.taskSelf.belongSpcial = "";
+        this.edittaskSelfForm.belongSpcial = "";
+      }
+    },
     //获取当前登录人信息
     get_user(ifMounted) {
       get_userInfo().then((resp) => {
@@ -1453,8 +1467,6 @@ export default {
 
     //设为接口人事件
     isLiaison_Btn(row, list) {
-      console.log(row);
-      console.log(list);
       let leader = {};
       this.peopleSelection.forEach((a) => {
         if (a.peopleRole == 1) {
@@ -1477,9 +1489,15 @@ export default {
       row.isLiaison = 1;
       row.disabled = true;
     },
+    rightArray(arr){
+      // alert(23)
+      console.log(arr);
+      this.arrRightValue = arr;
+    },
     //取消设为接口人
     cancel_Btn(row) {
       console.log(row);
+      
       // console.log(this.peopleSelection);
       row.isLiaison = 0;
       for(let k=0;k<this.peopleSelection.length;k++){
@@ -1487,7 +1505,14 @@ export default {
           return row.disabled = true;
         }else{
           row.disabled = false;
-          console.log(this.value);
+          // console.log(this.value);
+          // for(let p=0; p<this.arrRightValue.length;p++){
+          //   if(this.arrRightValue[p] == row.peopleTableUuid){
+          //    return this.arrRightValue.remove('this.arrRightValue[p')
+          //   }
+            
+          // }
+          // console.log(this.arrRightValue);
           // this.value = [];
         }
       }
@@ -1883,6 +1908,7 @@ export default {
     },
     // 编辑自建按钮
     edit_data(row) {
+      this.other_input = true;
       this.edit_file_list = [];
       this.Upload_file = [];
       this.fileList_Delet = [];
@@ -2015,6 +2041,7 @@ export default {
     resetForm2(resetForm2) {
       this.$refs[resetForm2].resetFields();
       this.fileList = [];
+      this.other_input = true;
     },
     editResetForm2(ref) {
       this.$refs[ref].resetFields();
