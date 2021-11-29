@@ -78,7 +78,7 @@
     <!-- 初始化项目 -->
     <!-- v-show="projectNum.length > 0" -->
     <div class="initializeProject" v-if="active_project">
-      <div class="title1" style="margin-top: 0%">初始化项目</div>
+      <div class="title1" style="margin-top: 3%">初始化项目</div>
       <ul v-if="projectInit">
         <li
           v-for="(item, index) in projectInit"
@@ -1480,16 +1480,17 @@ export default {
     //取消设为接口人
     cancel_Btn(row) {
       console.log(row);
-      console.log(this.peopleSelection);
-      // alert(123)
+      // console.log(this.peopleSelection);
       row.isLiaison = 0;
-      this.peopleSelection.forEach((a) => {
-        if (a.peopleTableUuid == row.key && a.peopleRole == 1) {
-          row.disabled = true;
-        } else {
+      for(let k=0;k<this.peopleSelection.length;k++){
+        if (this.peopleSelection[k].peopleTableUuid == row.key && this.peopleSelection[k].peopleRole == 1) {
+          return row.disabled = true;
+        }else{
           row.disabled = false;
+          console.log(this.value);
+          // this.value = [];
         }
-      });
+      }
       // row.disabled = true;
     },
     // 下一步按钮事件
@@ -2584,7 +2585,10 @@ export default {
   width: 100%;
 }
 .selfTask .el-form-item {
-  // margin-bottom: -10px !important;
+  margin-bottom: -10px !important;
+}
+.optionBtn .el-form-item {
+  margin-bottom: 0px !important;
 }
 .upload-demo {
   margin-top: -35px;
@@ -2613,6 +2617,12 @@ export default {
 }
 </style>
 <style scoped>
+.selfTask >>> .el-form-item {
+  margin-bottom: -10px !important;
+}
+.optionBtn >>> .el-form-item {
+  margin-bottom: 0px !important;
+}
 >>> .el-input__inner::-webkit-input-placeholder {
   color: #c0c4cc !important;
 }
@@ -2657,7 +2667,7 @@ export default {
   white-space: pre-line;
 }
 .textOver {
-  font-size: 14px;
+  font-size: 12px;
   text-overflow: ellipsis;
   overflow: hidden;
 }
