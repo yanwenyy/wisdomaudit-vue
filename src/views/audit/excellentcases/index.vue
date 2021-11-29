@@ -404,12 +404,12 @@ export default {
         dataTitle: '',//标题
         dataSortId: '',//分类id
         dataSortCode: '',//分类code
-        dataSortName: '',//分类name 
+        dataSortName: '',//分类name
         sourceItem: '',//来源项目
         dataIntroduce: '',// 简介
         referenceTableUuid: '',//主键id
       },
-      // 验证 
+      // 验证
       rules: {
         dataTitle: [{ required: true, message: '请填写资料标题', trigger: 'blur' }],
         dataSortName: [{ required: true, message: '请选择分类', trigger: 'change' }],
@@ -539,7 +539,7 @@ export default {
             dataTitle: this.add_data.dataTitle,//标题
             dataSortId: this.add_data.dataSortId,//分类id
             dataSortCode: this.add_data.dataSortCode,//分类code
-            dataSortName: this.add_data.dataSortName,//分类name 
+            dataSortName: this.add_data.dataSortName,//分类name
             sourceItem: this.add_data.sourceItem,//来源项目
             dataIntroduce: this.add_data.dataIntroduce,// 简介
           }
@@ -586,7 +586,7 @@ export default {
       this.add_data.dataTitle = data.dataTitle//标题
       this.add_data.dataSortId = data.dataSortId//分类id
       this.add_data.dataSortCode = data.dataSortCode //分类code
-      this.add_data.dataSortName = data.dataSortName //分类name 
+      this.add_data.dataSortName = data.dataSortName //分类name
       this.add_data.sourceItem = data.sourceItem //来源项目
       this.add_data.dataIntroduce = data.dataIntroduce // 简介
       this.add_data.referenceTableUuid = data.referenceTableUuid//主键id
@@ -602,7 +602,7 @@ export default {
             dataTitle: this.add_data.dataTitle,//标题
             dataSortId: this.add_data.dataSortId,//分类id
             dataSortCode: this.add_data.dataSortCode,//分类code
-            dataSortName: this.add_data.dataSortName,//分类name 
+            dataSortName: this.add_data.dataSortName,//分类name
             sourceItem: this.add_data.sourceItem,//来源项目
             dataIntroduce: this.add_data.dataIntroduce,// 简介
             referenceTableUuid: this.add_data.referenceTableUuid,//主键id
