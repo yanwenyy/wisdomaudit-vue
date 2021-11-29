@@ -2898,6 +2898,8 @@ export default {
   margin-left: 20%;
   .el-select,
   .el-input {
+    position: relative;
+    top: -35px;
     width: 65%;
   }
   // .el-form-item {
@@ -2920,6 +2922,8 @@ export default {
   margin-top: 2%;
   .el-select,
   .el-input {
+    position: relative;
+    top: -35px;
     width: 65%;
   }
   // .el-form-item {
@@ -2976,7 +2980,7 @@ export default {
 .projectTable {
   .el-select {
     width: 200px;
-    margin: 20px 0 0 -100px;
+    margin: 15px 0 0 -100px;
   }
 }
 .title {
@@ -3179,17 +3183,17 @@ export default {
 
 .addForm /deep/ .el-form-item__error {
   position: absolute;
-  top: 100%;
+  top: 0%;
   left: 0%;
 }
 .addzhuanForm /deep/ .el-form-item__error {
   position: absolute;
-  top: 100%;
+  top: 0%;
   left: 0%;
 }
 .projectTable /deep/ .el-form-item__error {
   position: absolute;
-  top: 56%;
+  top: -20%;
   left: 0%;
 }
 .page {

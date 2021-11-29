@@ -417,7 +417,7 @@
               </el-input>
               <div
                 class="search_icon"
-                style="background: #1897e4 !important"
+                style="background: #0c87d6 !important"
                 @click="queryModelInput"
               >
                 <i class="el-icon-search" style="color: white"></i>
@@ -1518,6 +1518,9 @@ export default {
   border-bottom: 1px solid #d2d2d2;
   padding: 10px;
   text-align: center;
+   font-weight: bolder;
+  font-size: 14px;
+  color: #000;
 }
 /* 方法二 */
 .stepNew {
@@ -1701,24 +1704,29 @@ export default {
   /* border: 1px solid red; */
 }
 .selfTask .el-input {
+  position: relative;
+  top: -35px;
   width: 100%;
 }
 .selfTask .el-select {
+  position: relative;
+  top: -35px;
   width: 100%;
 }
 .selfTask /deep/ .el-textarea__inner {
   width: 100%;
-  margin-top: 12%;
 }
 /* .selfTask /deep/ .upload-demo {
   margin-top: -35px;
 } */
 .selfTask /deep/ .el-upload-dragger {
   width: 100% !important;
-   margin-top: -5%;
 }
 .selfTask >>> .el-upload {
   width: 100% !important;
+}
+.selfTask /deep/ .upload-demo {
+  margin-top: -35px;
 }
 .selfTask >>> .el-form-item__label{
 text-align: left !important;
@@ -1731,32 +1739,30 @@ text-align: left !important;
   /* text-align: center; */
 }
 .taskAdd .el-input {
-  /* position: relative;
-  top: -35px; */
+  position: relative;
+  top: -35px;
   width: 65%;
 }
 .taskAdd .el-select {
-  /* position: relative;
-  top: -35px; */
+  position: relative;
+  top: -35px;
   width: 65%;
 }
 .taskAdd >>> .el-form-item__label{
 text-align: left !important;
 }
 .taskAdd /deep/ .el-textarea__inner {
-  margin-top:8% ;
   width: 65%;
 }
 .taskAdd /deep/ .el-upload-dragger {
   width: 80% !important;
-  margin-top:-5% ;
 
 }
 .taskAdd >>> .el-upload {
   width: 80% !important;
 }
 .taskAdd /deep/ .upload-demo {
-  /* margin-top: -35px; */
+  margin-top: -35px;
 }
 .addPerson .text {
   font-size: 14px;
@@ -1795,7 +1801,7 @@ text-align: left !important;
 }
 .taskAdd /deep/ .el-form-item__error {
   position: absolute;
-  top: 20%;
+   top: -70%;
   left: 35%;
 }
 >>> .el-input.is-disabled .el-input__inner {
