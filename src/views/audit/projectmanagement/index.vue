@@ -226,6 +226,7 @@
         <el-form
           label-width="100px"
           :model="addProjectManagement"
+          :rules="addzhuanRules"
           ref="addProjectManagement"
           label-position="right"
           hide-required-asterisk
@@ -259,17 +260,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item
-              label="ㅤ项目名称:"
-              prop="projectName"
-              :rules="[
-                {
-                  required: true,
-                  message: '请填写项目名称',
-                  trigger: 'blur',
-                },
-              ]"
-            >
+            <el-form-item label="ㅤ项目名称:" prop="projectName">
               <el-input
                 placeholder="请输入"
                 v-model="addProjectManagement.projectName"
@@ -311,13 +302,7 @@
             </el-form-item>
           </el-row> -->
           <el-row>
-            <el-form-item label="ㅤㅤㅤ领域:" prop="field"  :rules="[
-                {
-                  required: true,
-                  message: '请选择领域',
-                  trigger: 'change',
-                },
-              ]">
+            <el-form-item label="ㅤㅤㅤ领域:" prop="field">
               <el-select
                 placeholder="请选择"
                 v-model="addProjectManagement.field"
@@ -379,13 +364,7 @@
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'auditList.' + scope.$index + '.auditOrgName'"
-                  :rules="[
-                    {
-                      required: true,
-                      message: '请选择被审计单位',
-                      trigger: 'change',
-                    },
-                  ]"
+                  :rules='addzhuanRules.auditOrgName'
                 >
                   <el-select
                     style="width: 120%"
@@ -409,13 +388,7 @@
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'auditList.' + scope.$index + '.projectChargemanName'"
-                  :rules="[
-                    {
-                      required: true,
-                      message: '请选择负责人',
-                      trigger: 'change',
-                    },
-                  ]"
+                  :rules="addzhuanRules.projectChargemanName"
                 >
                   <el-select
                     style="width: 120%"
@@ -1626,13 +1599,13 @@ export default {
       endPickerOptions: this.endDate(), //新增专项审计期间判断
       // 新增专项的表单验证
       addzhuanRules: {
-        // projectName: [
-        //   { required: true, message: "请填写项目名称", trigger: "blur" },
-        //   { max: 20, message: "项目名称在20个字符之内", trigger: "change" },
-        // ],
-        // projectTypeName: [
-        //   { required: true, message: "请选择项目分类", trigger: "change" },
-        // ],
+        projectName: [
+          { required: true, message: "请填写项目名称", trigger: "blur" },
+          { max: 20, message: "项目名称在20个字符之内", trigger: "change" },
+        ],
+        projectTypeName: [
+          { required: true, message: "请选择项目分类", trigger: "change" },
+        ],
         field: [
           {
             required: true,
@@ -1651,6 +1624,20 @@ export default {
           {
             required: true,
             message: "请选择审计结束时间",
+            trigger: "change",
+          },
+        ],
+        projectChargemanName: [
+          {
+            required: true,
+            message: "请选择负责人",
+            trigger: "change",
+          },
+        ],
+        auditOrgName: [
+          {
+            required: true,
+            message: "请选择被审计单位",
             trigger: "change",
           },
         ],
@@ -3277,8 +3264,8 @@ export default {
   color: #606266 !important;
   font-weight: 500;
 }
-.projectTable >>> .el-select{
+.projectTable >>> .el-select {
   position: relative;
-  top: -17px !important; 
+  top: -17px !important;
 }
 </style>
