@@ -116,20 +116,23 @@
             </el-table-column>
             <!-- 操作 -->
             <el-table-column prop="title"
+                             width="180"
                              show-overflow-tooltip
                              label="操作">
               <template slot-scope="scope">
                 <el-button @click="edit(scope.row)"
                            type="text"
                            :disabled="isDisable"
-                           style="color:#1371CC;background:none;border:none"
+                           style="color:#0c87d6;background:none;border:none;
+                            font-size: 14px !important;"
                            size="small">
                   编辑
                 </el-button>
 
                 <el-button @click="file_list(scope.row)"
                            type="text"
-                           style="color:#1371CC;background:none;border:none"
+                           style="color:#0c87d6;background:none;border:none;
+                            font-size: 14px !important;"
                            size="small">
                   文件管理
                 </el-button>
@@ -137,7 +140,8 @@
                 <el-button @click="remove(scope.row)"
                            type="text"
                            :disabled="isDisable"
-                           style="color:red;background:none;border:none"
+                           style="color:#ff8a72;background:none;border:none;
+                            font-size: 14px !important;"
                            size="small">
                   删除
                 </el-button>

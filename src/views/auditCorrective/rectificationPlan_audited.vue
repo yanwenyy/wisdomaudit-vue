@@ -45,20 +45,26 @@
             <el-button type="text"
                        v-if="scope.row.correctStatus==1 || scope.row.correctStatus==4"
                        @click="edit(scope.row)"
-                       style="color: rgb(68, 163, 223);">
+                       style="color: #0c87d6!important;
+                               font-size: 14px !important;
+">
               编辑
             </el-button>
             <el-button type="text"
                        v-if="scope.row.correctStatus==1 || scope.row.correctStatus==4"
                        :disabled="isDisable"
                        @click="post(scope.row.managementProjectUuid)"
-                       style="color: rgb(68, 163, 223);">
+                       style="color: #0c87d6!important;
+                               font-size: 14px !important;
+">
               提交
             </el-button>
 
             <el-button type="text"
                        @click="look(scope.row)"
-                       style="color: rgb(68, 163, 223);">
+                       style="color: #0c87d6!important;
+                               font-size: 14px !important;
+">
               查看
             </el-button>
           </template>
