@@ -6,18 +6,19 @@
           <el-row class="titleMes" type="flex" justify="space-between">
             <el-col :span="6">
               <div class="search">
+                <el-button type="primary" @click="new_add()">新增</el-button>
                 <el-input
                   placeholder="请输入角色名称搜索"
                   v-model="queryInfo.roleName"
                 >
                 </el-input>
-                <el-button class="search_icon" @click="searchName">
-                  <i class="el-icon-search" style="color: #fff"></i>
-                </el-button>
+
               </div>
             </el-col>
             <el-col :span="2">
-              <el-button type="primary" @click="new_add()">新增</el-button>
+              <el-button class="search_icon" @click="searchName">
+                <i class="el-icon-search" style="color: #fff"></i>
+              </el-button>
             </el-col>
 
             <!-- <el-col :span="1.5">
@@ -282,8 +283,6 @@ export default {
   float: right;
 }
 .search_icon {
-  position: absolute;
-  top: 0;
   background: #1371cc;
   width: 37px;
   height: 37px;
