@@ -480,6 +480,7 @@ export default {
     openfast() {
       this.getdqfastlist();
       this.fastDialogVisible = true;
+      this.$refs.multipleTable.clearSelection();
     },
     getmodellist() {
       this.floading2 = true;
