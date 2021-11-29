@@ -406,6 +406,7 @@
                 <el-form>
                   <el-form-item>
                     <el-select
+                      style="margin-top:5px"
                       v-model="scope.row.peopleTableUuid"
                       filterable
                       @change="selectChange(scope.row)"
