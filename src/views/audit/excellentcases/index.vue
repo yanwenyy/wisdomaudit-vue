@@ -31,7 +31,7 @@
           <el-table :data="tableData_list.records"
                     style="width: 100%;"
                     v-loading="loading"
-                    :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}">
+                    :header-cell-style="{'background-color': '#F4FAFF',}">
 
             <el-table-column type="index"
                              align="center"
@@ -39,71 +39,100 @@
             </el-table-column>
             <!-- 标题 -->
             <el-table-column prop="dataTitle"
-                             align="center"
                              show-overflow-tooltip
                              label="标题">
-              <template slot-scope="scope"
-                        style="color: rgb(19, 113, 204);">
-                {{  scope.row.dataTitle }}
+
+              <template slot-scope="scope">
+                <p v-if="scope.row.dataTitle">{{scope.row.dataTitle}}</p>
+                <p v-else>--</p>
               </template>
 
             </el-table-column>
             <!-- 资料分类 -->
             <el-table-column prop="dataSortName"
-                             align="center"
                              show-overflow-tooltip
                              label="资料分类">
+
+              <template slot-scope="scope">
+                <p v-if="scope.row.dataSortName">{{scope.row.dataSortName}}</p>
+                <p v-else>--</p>
+              </template>
+
             </el-table-column>
             <!-- 来源项目 -->
             <el-table-column prop="sourceItem"
-                             align="center"
                              show-overflow-tooltip
                              label="来源项目">
+
+              <template slot-scope="scope">
+                <p v-if="scope.row.sourceItem">{{scope.row.sourceItem}}</p>
+                <p v-else>--</p>
+              </template>
+
             </el-table-column>
             <!-- 资料简介 -->
             <el-table-column prop="dataIntroduce"
-                             align="center"
                              show-overflow-tooltip
                              label="资料简介">
+
+              <template slot-scope="scope">
+                <p v-if="scope.row.dataIntroduce">{{scope.row.dataIntroduce}}</p>
+                <p v-else>--</p>
+              </template>
+
             </el-table-column>
             <!-- 创建人 -->
             <el-table-column prop="createUserName"
-                             align="center"
                              show-overflow-tooltip
                              label="创建人">
+
+              <template slot-scope="scope">
+                <p v-if="scope.row.createUserName">{{scope.row.createUserName}}</p>
+                <p v-else>--</p>
+              </template>
+
             </el-table-column>
             <!-- 创建时间 -->
             <el-table-column prop="createTime"
-                             align="center"
                              show-overflow-tooltip
                              label="创建时间">
+
               <template slot-scope="scope">
-                <p>{{scope.row.createTime | filtedate}}</p>
+                <p v-if="scope.row.createTime">{{scope.row.createTime | filtedate}}</p>
+                <p v-else>--</p>
               </template>
+
             </el-table-column>
             <!-- 下载总次数 -->
             <el-table-column prop="downNum"
-                             align="center"
                              show-overflow-tooltip
                              label="下载总次数">
+
+              <template slot-scope="scope">
+                <p v-if="scope.row.downNum">{{scope.row.downNum}}</p>
+                <p v-else>--</p>
+              </template>
+
             </el-table-column>
             <!-- 操作 -->
             <el-table-column prop="title"
-                             align="center"
+                             width="180"
                              show-overflow-tooltip
                              label="操作">
               <template slot-scope="scope">
                 <el-button @click="edit(scope.row)"
                            type="text"
                            :disabled="isDisable"
-                           style="color:#1371CC;background:none;border:none"
+                           style="color:#0c87d6;background:none;border:none;
+                            font-size: 14px !important;"
                            size="small">
                   编辑
                 </el-button>
 
                 <el-button @click="file_list(scope.row)"
                            type="text"
-                           style="color:#1371CC;background:none;border:none"
+                           style="color:#0c87d6;background:none;border:none;
+                            font-size: 14px !important;"
                            size="small">
                   文件管理
                 </el-button>
@@ -111,7 +140,8 @@
                 <el-button @click="remove(scope.row)"
                            type="text"
                            :disabled="isDisable"
-                           style="color:red;background:none;border:none"
+                           style="color:#ff8a72;background:none;border:none;
+                            font-size: 14px !important;"
                            size="small">
                   删除
                 </el-button>
@@ -150,17 +180,17 @@
 
       <div class="dlag_conter">
 
-        <el-form label-width="80px"
+        <el-form label-width="100px"
                  :rules="rules"
                  :model="add_data"
                  ref="add_data">
-          <el-form-item label="资料标题"
+          <el-form-item label="资料标题："
                         prop="dataTitle">
             <el-input v-model="add_data.dataTitle"
                       placeholder="请输入资料标题"></el-input>
           </el-form-item>
 
-          <el-form-item label="资料分类"
+          <el-form-item label="资料分类："
                         prop="dataSortName">
             <el-select v-model="add_data.dataSortName"
                        @change="select_val"
@@ -174,12 +204,12 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="来源项目">
+          <el-form-item label="来源项目：">
             <el-input v-model="add_data.sourceItem"
                       placeholder="请输入来源项目"></el-input>
           </el-form-item>
 
-          <el-form-item label="资料简介">
+          <el-form-item label="资料简介：">
             <el-input type="textarea"
                       v-model="add_data.dataIntroduce"
                       placeholder="请输入资料简介"></el-input>
@@ -190,7 +220,7 @@
       <div slot="footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary"
-                   v-if="edit_title =='添加资料'"
+                   v-if="edit_title =='新增资料'"
                    :disabled="isDisable"
                    @click="add_save('add_data')">确 定</el-button>
 
@@ -244,6 +274,7 @@
           <el-row class="btn_type">
             <el-col :span="1.5">
               <el-button type="primary"
+                         :disabled="isDisable"
                          @click="download()">文件下载</el-button>
             </el-col>
             <el-col :span="1.5">
@@ -266,13 +297,14 @@
             </el-col>
             <el-col :span="1.5">
               <el-button type="primary"
+                         :disabled="isDisable"
                          @click="remove_list()">删除</el-button>
             </el-col>
           </el-row>
 
           <el-table :data="file_table"
                     v-loading="loading_file_table"
-                    :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                    :header-cell-style="{'background-color': '#F4FAFF',}"
                     style="width: 100%;"
                     @selection-change="handleSelectionChange_operation">
             >
@@ -280,29 +312,45 @@
                              width="55">
             </el-table-column>
             <el-table-column prop="fileName"
-                             align="center"
                              show-overflow-tooltip
                              label="文件名称">
+
+              <template slot-scope="scope">
+                <p v-if="scope.row.fileName">
+                  {{scope.row.fileName}}
+                </p>
+                <p v-else>
+                  --
+                </p>
+              </template>
+
             </el-table-column>
 
             <el-table-column prop="createTime"
-                             align="center"
                              show-overflow-tooltip
                              label="上传时间">
               <template slot-scope="scope">
-                <p>{{scope.row.createTime | filtedate}}</p>
+                <p v-if="scope.row.createTime">{{scope.row.createTime | filtedate}}</p>
+                <p v-else>--</p>
               </template>
 
             </el-table-column>
 
             <el-table-column prop="createUserName"
-                             align="center"
                              show-overflow-tooltip
                              label="上传人">
+
+              <template slot-scope="scope">
+                <p v-if="scope.row.createUserName">
+                  {{scope.row.createUserName}}
+                </p>
+                <p v-else>
+                  --
+                </p>
+              </template>
             </el-table-column>
 
             <el-table-column prop="downNum"
-                             align="center"
                              show-overflow-tooltip
                              label="下载次数">
               <template slot-scope="scope">
@@ -319,11 +367,11 @@
         <!-- 右侧内容 end-->
       </div>
 
-      <div slot="footer">
+      <!-- <div slot="footer">
         <el-button @click="dialogVisible_file = false">取 消</el-button>
         <el-button type="primary"
                    @click="dialogVisible_file = false">确 定</el-button>
-      </div>
+      </div> -->
     </el-dialog>
 
     <!-- 文件管理 end-->
@@ -354,18 +402,18 @@ export default {
       ],//
       isDisable: false,
       dialogVisible: false,//弹窗
-      edit_title: '添加资料',//新增 编辑 资料清单 弹窗
+      edit_title: '新增资料',//新增 编辑 资料清单 弹窗
       // 添加资料清单参数
       add_data: {
         dataTitle: '',//标题
         dataSortId: '',//分类id
         dataSortCode: '',//分类code
-        dataSortName: '',//分类name 
+        dataSortName: '',//分类name
         sourceItem: '',//来源项目
         dataIntroduce: '',// 简介
         referenceTableUuid: '',//主键id
       },
-      // 验证 
+      // 验证
       rules: {
         dataTitle: [{ required: true, message: '请填写资料标题', trigger: 'blur' }],
         dataSortName: [{ required: true, message: '请选择分类', trigger: 'change' }],
@@ -458,7 +506,7 @@ export default {
     },
     // 新增资料弹窗
     add_data_click () {
-      this.edit_title = '添加资料'
+      this.edit_title = '新增资料'
       this.dialogVisible = true;
       this.loadcascader_data();//资料分类
     },
@@ -484,13 +532,18 @@ export default {
     },
     // 新增保存
     add_save (add_data) {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
+
       this.$refs[add_data].validate((valid) => {
         if (valid) {
           let params = {
             dataTitle: this.add_data.dataTitle,//标题
             dataSortId: this.add_data.dataSortId,//分类id
             dataSortCode: this.add_data.dataSortCode,//分类code
-            dataSortName: this.add_data.dataSortName,//分类name 
+            dataSortName: this.add_data.dataSortName,//分类name
             sourceItem: this.add_data.sourceItem,//来源项目
             dataIntroduce: this.add_data.dataIntroduce,// 简介
           }
@@ -537,7 +590,7 @@ export default {
       this.add_data.dataTitle = data.dataTitle//标题
       this.add_data.dataSortId = data.dataSortId//分类id
       this.add_data.dataSortCode = data.dataSortCode //分类code
-      this.add_data.dataSortName = data.dataSortName //分类name 
+      this.add_data.dataSortName = data.dataSortName //分类name
       this.add_data.sourceItem = data.sourceItem //来源项目
       this.add_data.dataIntroduce = data.dataIntroduce // 简介
       this.add_data.referenceTableUuid = data.referenceTableUuid//主键id
@@ -553,7 +606,7 @@ export default {
             dataTitle: this.add_data.dataTitle,//标题
             dataSortId: this.add_data.dataSortId,//分类id
             dataSortCode: this.add_data.dataSortCode,//分类code
-            dataSortName: this.add_data.dataSortName,//分类name 
+            dataSortName: this.add_data.dataSortName,//分类name
             sourceItem: this.add_data.sourceItem,//来源项目
             dataIntroduce: this.add_data.dataIntroduce,// 简介
             referenceTableUuid: this.add_data.referenceTableUuid,//主键id
@@ -591,7 +644,7 @@ export default {
         this.isDisable = false
       }, 2000)
 
-      this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, "提示", {
+      this.$confirm(`将永久删除当前资料清单`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -718,48 +771,66 @@ export default {
 
     // 下载
     download () {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
+
       if (this.data_list_check.length == 0) {
         this.$message.info("请选择一条进行下载");
         return false
       } else {
         // let formData = new FormData()
         // formData.append(this.data_list_check)
-        let list = this.data_list_check;
-        fileDownload(list).then(resp => {
-          const content = resp;
-          console.log(resp);
-          const blob = new Blob([content],
-            { type: 'application/octet-stream,charset=UTF-8' }
-          )
-          const fileName = resp.headers["content-disposition"].split("fileName*=utf-8''")[1];
-          if ('download' in document.createElement('a')) {
-            // 非IE下载
-            const elink = document.createElement('a')
-            elink.download = fileName //下载后文件名
-            elink.style.display = 'none'
-            elink.href = window.URL.createObjectURL(blob)
-            document.body.appendChild(elink)
-            elink.click()
-            window.URL.revokeObjectURL(elink.href) // 释放URL 对象
-            document.body.removeChild(elink)
-          } else {
-            // IE10+下载
-            navigator.msSaveBlob(blob, fileName)
-          }
-        }).catch((err) => {
-
+        const fileName = [];//文件名称
+        this.data_list_check.forEach((item) => {
+          // fileName.push(item.fileName)
+          this.download_click(item.fileName)//下载事件
         })
+
       }
+    },
+    // 下载事件
+    download_click (fileName) {
+      let list = this.data_list_check;
+      fileDownload(list).then(resp => {
+        const content = resp;
+        const blob = new Blob([content],
+          { type: 'application/octet-stream,charset=UTF-8' }
+        )
+        if ('download' in document.createElement('a')) {
+          // 非IE下载
+          const elink = document.createElement('a')
+          elink.download = fileName //下载后文件名
+          elink.style.display = 'none'
+          elink.href = window.URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象
+          document.body.removeChild(elink)
+        } else {
+          // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
+      }).catch((err) => {
+
+      })
     },
 
     // 文件管理 删除
     remove_list () {
+
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 2000)
+
       if (this.data_list_check.length == 0) {
         this.$message.info("请选择一条进行删除");
         return false
       } else {
 
-        this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, "提示", {
+        this.$confirm(`将永久删除当前文件`, "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning",
@@ -802,6 +873,20 @@ export default {
 </script>
 <style  scoped>
 @import "../../../assets/styles/css/lhg.css";
+>>> .el-dialog--center .el-dialog__body {
+  padding: 0 !important;
+}
+>>> .foot .el-button {
+  font-weight: normal;
+}
+>>> .el-dialog--center .el-dialog__body .el-form-item__label {
+  font-size: 14px;
+}
+>>> .el-input__inner::-webkit-input-placeholder,
+>>> .el-textarea__inner::-webkit-input-placeholder {
+  font-size: 12px;
+  color: #c0c4cc !important;
+}
 .conter {
   padding: 20px;
   box-sizing: border-box;

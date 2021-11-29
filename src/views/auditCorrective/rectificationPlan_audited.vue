@@ -1,4 +1,4 @@
-3<template>
+<template>
   <!-- 被审计 -->
   <div>
     <div class="header_dlag">
@@ -16,55 +16,55 @@
 
     <div class="padding">
       <el-table :data="tableData.records"
-                :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                :header-cell-style="{'background-color': '#F4FAFF',}"
                 v-loading="loading"
                 style="width: 100%;min-height:400px">
         <el-table-column type="index"
                          label="编号"
                          width="50">
         </el-table-column>
-        <el-table-column align="center"
-                         prop="projectName"
+        <el-table-column prop="projectName"
                          label="审计项目名称">
         </el-table-column>
-        <el-table-column align="center"
-                         prop="auditOrgName"
+        <el-table-column prop="auditOrgName"
                          label="被审计单位">
         </el-table-column>
-        <el-table-column align="center"
-                         prop="projectType"
+        <el-table-column prop="projectType"
                          label="项目类型">
         </el-table-column>
-        <el-table-column align="center"
-                         prop="projectLeaderName"
+        <el-table-column prop="projectLeaderName"
                          label="项目负责人">
         </el-table-column>
-        <el-table-column align="center"
-                         prop="projectChargemanName"
+        <el-table-column prop="projectChargemanName"
                          label="项目组长">
         </el-table-column>
-        <el-table-column align="center"
-                         prop="problem"
+        <el-table-column prop="problem"
                          label="操作">
           <template slot-scope="scope">
 
             <el-button type="text"
                        v-if="scope.row.correctStatus==1 || scope.row.correctStatus==4"
                        @click="edit(scope.row)"
-                       style="color: rgb(68, 163, 223);">
+                       style="color: #0c87d6!important;
+                               font-size: 14px !important;
+">
               编辑
             </el-button>
             <el-button type="text"
                        v-if="scope.row.correctStatus==1 || scope.row.correctStatus==4"
                        :disabled="isDisable"
                        @click="post(scope.row.managementProjectUuid)"
-                       style="color: rgb(68, 163, 223);">
+                       style="color: #0c87d6!important;
+                               font-size: 14px !important;
+">
               提交
             </el-button>
 
             <el-button type="text"
                        @click="look(scope.row)"
-                       style="color: rgb(68, 163, 223);">
+                       style="color: #0c87d6!important;
+                               font-size: 14px !important;
+">
               查看
             </el-button>
           </template>
@@ -221,6 +221,9 @@ export default {
 </script>
 
 <style scoped>
+>>> .foot .el-button {
+  font-weight: normal;
+}
 /* 筛选 */
 .search >>> .el-input__inner::-webkit-input-placeholder {
   color: #c0c4cc !important;

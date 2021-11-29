@@ -43,7 +43,7 @@
               :content="item.projectName"
               placement="top"
             >
-              <div class="title">
+              <div class="homepagetitle">
                 {{ item.projectName || "--" }}
               </div>
             </el-tooltip>
@@ -185,7 +185,7 @@
             ></el-empty>
             <div class="shortcut-wapper" style="" v-else>
               <div
-                @click="shortcutEvent(item.url)"
+                @click="shortcutEvent(item)"
                 v-for="(item, index) in outfastlist"
                 :key="'fastli' + index"
                 class="fastli"
@@ -568,10 +568,16 @@ export default {
       });
     },
 
-    shortcutEvent(url) {
-      this.$router.push({
-        path: url,
+    shortcutEvent(item) {
+      if(item.menuName=="审计概览"){
+        window.open(item.url)
+        return
+      }else{
+        this.$router.push({
+        path: item.url,
       });
+      }
+      
     },
   },
 };
@@ -618,9 +624,9 @@ export default {
     font-size: 0;
     height: 270px;
     // display: flex;
-    .title {
+    .homepagetitle {
       font-size: 16px;
-      height: 16px;
+      height: 20px;
       margin-bottom: 10px;
       padding: 0 10px;
       text-align: center;

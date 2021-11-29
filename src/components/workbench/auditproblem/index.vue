@@ -7,7 +7,7 @@
           <el-button type="primary" @click="add()">新增审计问题</el-button>
         </el-col>
 
-        <div class="search">
+        <!-- <div class="search">
           <el-input
             placeholder="请输入问题"
             v-model="pageQuery.condition.problem"
@@ -20,6 +20,22 @@
               @click="getList(1)"
             ></el-button>
           </el-input>
+        </div> -->
+        <div class="search">
+          <el-input
+            placeholder="请输入问题"
+            v-model="pageQuery.condition.problem"
+          >
+          </el-input>
+          <div
+            class="search_icon"
+            style="background: rgb(12, 135, 214) !important"
+            @click="getList(1)"
+          >
+            <i class="el-icon-search" style="color: white"></i>
+          </div>
+          <!-- <el-button type="primary"
+                      >筛选</el-button> -->
         </div>
       </el-row>
       <!-- <div class="auditproblem-btn-box"></div> -->
@@ -39,7 +55,7 @@
       max-height="calc(100vh - 300px)"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column label="序号">
+      <el-table-column label="序号" width="70">
         <template slot-scope="scope">
           {{ scope.$index + 1 }}
         </template>
@@ -68,9 +84,11 @@
       </el-table-column>
       <el-table-column
         label="风险金额（万元）"
-        width="180px"
+        width="140px"
         prop="riskAmount"
+        align="right"
       />
+      <el-table-column label="" width="40px"> </el-table-column>
       <el-table-column label="发现日期">
         <template slot-scope="scope">
           {{ repDate(scope.row.problemDiscoveryTime) }}
@@ -79,20 +97,20 @@
       <el-table-column label="发现人" prop="problemFindPeople" />
       <el-table-column
         label="操作"
-        width="200"
+        width="100"
         v-if="userRole == 1 || userRole == 2"
       >
         <template slot-scope="scope">
           <el-button
             @click="openDetail(scope.$index)"
             type="text"
-            style="color: #1371cc"
+            style="color: #0c87d6"
             >编辑</el-button
           >
           <el-button
             @click="del(scope.row.problemListUuid)"
             type="text"
-            style="color: red"
+            style="color: #ff8a72"
             >删除</el-button
           >
         </template>
@@ -107,7 +125,7 @@
     />
     <!-- 新增和编辑的弹框 -->
     <el-dialog
-      title="新增问题"
+      title="新增审计问题"
       :visible.sync="dialogFormVisible"
       :close-on-click-modal="false"
       center
@@ -117,13 +135,13 @@
         :rules="rules"
         :model="temp"
         label-position="right"
-        label-width="120px"
+        label-width="140px"
         class="problem-form"
       >
-        <el-form-item label="问题" prop="problem">
+        <el-form-item label="问题：" prop="problem">
           <el-input v-model="temp.problem" placeholder="请输入问题" />
         </el-form-item>
-        <el-form-item label="领域" prop="field">
+        <el-form-item label="领域：" prop="field">
           <el-select v-model="temp.field" placeholder="请选择领域">
             <el-option
               v-for="item in CategoryList"
@@ -134,7 +152,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="专题" prop="special">
+        <el-form-item label="专题：" prop="special">
           <el-select v-model="temp.special" placeholder="请选择专题">
             <el-option
               v-for="item in SPECIALList"
@@ -146,7 +164,7 @@
           </el-select>
         </el-form-item>
         <el-form-item> </el-form-item>
-        <el-form-item label="依据" prop="basis" class="long">
+        <el-form-item label="依据：" prop="basis" class="long">
           <el-select
             v-model="temp.basis"
             multiple
@@ -163,16 +181,16 @@
           @click="openbasis()"
           >引用审计依据</el-button
         >
-        <el-form-item label="描述" prop="describe" class="long">
+        <el-form-item label="描述：" prop="describe" class="long">
           <el-input v-model="temp.describe" placeholder="请输入描述" />
         </el-form-item>
-        <el-form-item label="管理建议" prop="managementAdvice" class="long">
+        <el-form-item label="管理建议：" prop="managementAdvice" class="long">
           <el-input
             v-model="temp.managementAdvice"
             placeholder="请输入管理建议"
           />
         </el-form-item>
-        <el-form-item label="发现日期" prop="problemDiscoveryTime">
+        <el-form-item label="发现日期：" prop="problemDiscoveryTime">
           <!-- <el-input
             v-model="temp.problemDiscoveryTime"
             type="date"
@@ -185,7 +203,7 @@
             style="width: 100%"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="发现人" prop="problemFindPeople">
+        <el-form-item label="发现人：" prop="problemFindPeople">
           <el-select
             v-model="temp.problemFindPeople"
             placeholder="请选择发现人"
@@ -200,14 +218,14 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="风险金额（万元）" prop="riskAmount">
+        <el-form-item label="风险金额（万元）：" prop="riskAmount">
           <el-input
             v-model="temp.riskAmount"
             placeholder="请输入风险金额"
             @keyup.native="onlyNumOnePoint('temp')"
           />
         </el-form-item>
-        <el-form-item label="关联任务" prop="auditTaskUuid">
+        <el-form-item label="关联任务：" prop="auditTaskUuid">
           <el-select v-model="temp.auditTaskUuid" multiple placeholder="请选择">
             <el-option
               v-for="item in auditTasklList"
@@ -250,26 +268,27 @@
     </el-dialog>
 
     <el-dialog
-      title="问题详情"
+      :title="ifadd == 1 ? '编辑问题' : '问题详情'"
       :visible.sync="dialogDetailVisible"
       :close-on-click-modal="false"
+      center
     >
       <el-form
         ref="detailForm"
         :model="dqProblem"
         :rules="rules"
         label-position="right"
-        label-width="120px"
+        label-width="140px"
         class="problem-form"
       >
-        <el-form-item label="问题" prop="problem">
+        <el-form-item label="问题：" prop="problem">
           <el-input
             v-model="dqProblem.problem"
             placeholder="请输入问题"
             :disabled="ifadd != 2 ? false : true"
           />
         </el-form-item>
-        <el-form-item label="领域" prop="field">
+        <el-form-item label="领域：" prop="field">
           <el-select
             v-model="dqProblem.field"
             placeholder="请选择领域"
@@ -284,7 +303,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="专题" prop="special">
+        <el-form-item label="专题：" prop="special">
           <el-select
             v-model="dqProblem.special"
             placeholder="请选择专题"
@@ -300,7 +319,7 @@
           </el-select>
         </el-form-item>
         <el-form-item></el-form-item>
-        <el-form-item label="依据" prop="basis" class="long">
+        <el-form-item label="依据：" prop="basis" class="long">
           <el-select
             v-model="dqProblem.basis"
             multiple
@@ -319,21 +338,21 @@
           @click="openbasis()"
           >引用审计依据</el-button
         >
-        <el-form-item label="描述" prop="describe" class="long">
+        <el-form-item label="描述：" prop="describe" class="long">
           <el-input
             v-model="dqProblem.describe"
             placeholder="请输入描述"
             :disabled="ifadd != 2 ? false : true"
           />
         </el-form-item>
-        <el-form-item label="管理建议" prop="managementAdvice" class="long">
+        <el-form-item label="管理建议：" prop="managementAdvice" class="long">
           <el-input
             v-model="dqProblem.managementAdvice"
             placeholder="请输入管理建议"
             :disabled="ifadd != 2 ? false : true"
           />
         </el-form-item>
-        <el-form-item label="发现日期" prop="problemDiscoveryTime">
+        <el-form-item label="发现日期：" prop="problemDiscoveryTime">
           <el-date-picker
             type="date"
             placeholder="选择日期"
@@ -342,7 +361,7 @@
             :disabled="ifadd != 2 ? false : true"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="发现人" prop="problemFindPeople">
+        <el-form-item label="发现人：" prop="problemFindPeople">
           <el-select
             v-model="dqProblem.problemFindPeople"
             placeholder="请选择发现人"
@@ -358,7 +377,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="风险金额（万元）" prop="riskAmount" width="180">
+        <el-form-item label="风险金额（万元）：" prop="riskAmount" width="180">
           <el-input
             v-model="dqProblem.riskAmount"
             placeholder="请输入风险金额"
@@ -366,7 +385,7 @@
             @keyup.native="onlyNumOnePoint('dqProblem')"
           />
         </el-form-item>
-        <el-form-item label="关联任务" prop="auditTaskUuid">
+        <el-form-item label="关联任务：" prop="auditTaskUuid">
           <el-select
             disabled
             v-model="dqProblem.auditTaskUuid"
@@ -447,7 +466,7 @@
           />
         </el-form-item> -->
       </el-form>
-      <div slot="footer">
+      <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="updateData()" v-if="ifupdata"
           >保存修改</el-button
         >
@@ -1014,6 +1033,11 @@ export default {
 }
 </style>
 <style>
+.auditproblem .titleMes .el-button--primary {
+  border-radius: 0 !important;
+  border: #0c87d6 !important;
+  border-color: #0c87d6 !important;
+}
 .auditproblem .el-form-item {
   width: 49%;
   margin: 10px 1% 10px 0 !important;
@@ -1033,32 +1057,36 @@ export default {
 }
 .auditproblem .citebtn {
   height: 40px;
-  margin-bottom: 6px;
+  margin-bottom: 1%;
 }
 .canclick {
-  color: rgb(27, 168, 250);
+  color: #0c87d6;
   cursor: pointer;
 }
-.search {
+.auditproblem .search {
   display: flex;
   justify-content: flex-end;
   position: relative;
 }
-.search .el-input__inner {
+.auditproblem .search .el-input__inner {
   width: 220px !important;
   border-radius: 5px 0 0 5px;
 }
-.search .el-input__inner {
-  width: 180px;
+.auditproblem .search .el-input__inner {
+  width: 250px !important;
   display: flex;
   float: right;
+  border-radius: 0 !important;
 }
-.search .search_icon {
+.auditproblem .titleMes .el-button {
+  border-radius: 0 !important;
+}
+.auditproblem .search .search_icon {
   position: absolute;
   top: 0;
-  right: 70px;
-  width: 37px;
-  height: 37px;
+  right: 0;
+  width: 36px;
+  height: 36px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1069,7 +1097,7 @@ export default {
   -ms-flex-align: center;
   align-items: center;
 }
-.search .el-button {
+.auditproblem .search .el-button {
   border-radius: 0 5px 5px 0;
   /* background: #1371cc !important; */
 }

@@ -24,7 +24,7 @@
       <el-table :data="tableData.records"
                 v-loading="loading"
                 @selection-change="handleSelectionChange_list"
-                :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                :header-cell-style="{'background-color': '#F4FAFF',}"
                 style="width: 100%;min-height:400px">
 
         <el-table-column type="selection"
@@ -34,34 +34,37 @@
                          label="序号"
                          width="50">
         </el-table-column>
-        <el-table-column align="center"
-                         prop="projectName"
+        <el-table-column prop="projectName"
                          label="审计项目名称"
                          show-overflow-tooltip>
         </el-table-column>
-        <el-table-column align="center"
-                         prop="projectTypeName"
+        <el-table-column prop="projectTypeName"
                          label="项目类型"
                          show-overflow-tooltip>
-
         </el-table-column>
-        <el-table-column align="center"
-                         prop="projectLeaderName"
+        <el-table-column prop="projectLeaderName"
                          label="项目负责人"
                          show-overflow-tooltip>
         </el-table-column>
-        <el-table-column align="center"
-                         prop="correctUserName"
+        <el-table-column prop="correctUserName"
                          label="整改跟进人"
                          show-overflow-tooltip>
 
+          <template slot-scope="scope">
+            <div v-if="scope.row.correctUserName">
+              {{scope.row.correctUserName }}
+            </div>
+            <div v-else>
+              --
+            </div>
+          </template>
+
         </el-table-column>
-        <el-table-column align="center"
-                         prop="correctSend"
+        <el-table-column prop="correctSend"
                          label="计划是否下发"
                          show-overflow-tooltip>
           <template slot-scope="scope">
-            <div>
+            <div v-if="scope.row.correctSend">
               {{
                   scope.row.correctSend == 0
                     ? "未下发"
@@ -69,30 +72,36 @@
                     ? "已下发":''
                 }}
             </div>
+            <div v-else>--</div>
           </template>
 
         </el-table-column>
-        <el-table-column align="center"
-                         prop="problem"
+        <el-table-column prop="problem"
                          label="操作"
                          show-overflow-tooltip>
           <template slot-scope="scope">
             <el-button type="text"
                        @click="details_click(scope.row.managementProjectUuid)"
-                       style="color: rgb(68, 163, 223);">
+                       style="color: #0c87d6!important;
+                               font-size: 14px !important;
+">
               查看
             </el-button>
             <el-button type="text"
                        v-if="scope.row.auditConf == 2"
                        @click="push(scope.row)"
-                       style="color: rgb(68, 163, 223);">
+                       style="color: #0c87d6!important;
+                               font-size: 14px !important;
+">
               下发
             </el-button>
             <!--  -->
             <el-button type="text"
                        v-if="scope.row.auditConf == 3"
                        @click="examine(scope.row.managementProjectUuid)"
-                       style="color: rgb(68, 163, 223);">
+                       style="color: #0c87d6!important;
+                               font-size: 14px !important;
+">
               审核
             </el-button>
           </template>
@@ -427,6 +436,16 @@ export default {
 </script>
 
 <style scoped>
+/* @import "../../../assets/styles/css/lhg.css"; */
+>>> .foot .el-button {
+  font-weight: normal;
+}
+>>> .el-dialog--center .el-dialog__body {
+  padding: 0 !important;
+}
+>>> .el-dialog--center .el-dialog__body .el-form-item__label {
+  font-size: 14px;
+}
 /* 筛选 */
 .search >>> .el-input__inner::-webkit-input-placeholder {
   color: #c0c4cc !important;
@@ -467,7 +486,7 @@ export default {
 /* 筛选  end*/
 
 .table_padding {
-  padding: 20px;
+  padding: 0 20px 20px;
   box-sizing: border-box;
 }
 /* 分页 */
@@ -525,7 +544,7 @@ export default {
 /* 弹窗 title end*/
 
 .setting_people {
-  padding: 20px;
+  padding: 0 20px 20px;
   display: flex;
   justify-content: center;
   box-sizing: border-box;

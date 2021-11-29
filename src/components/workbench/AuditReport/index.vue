@@ -2,7 +2,7 @@
   <div class="report anmition_show">
     <div class="header">
       <el-col :span="12">
-        <p>审计项目：{{file_list.projectName}}</p>
+        <p>审计项目 ：{{file_list.projectName}}</p>
       </el-col>
       <el-col :span="12">
         <p>被审计单位：{{file_list.auditOrgName}}</p>
@@ -16,7 +16,7 @@
           <el-col>
             <p>经营评价：</p>
             <el-button plain
-                       v-if="userRole==3 "
+                       v-if="userRole==1||isLiaison==1"
                        @click="Correlation_zb()">关联指标</el-button>
 
           </el-col>
@@ -38,7 +38,7 @@
           <el-col>
             <p>管理建议：</p>
             <el-button plain
-                       v-if="userRole==3 "
+                       v-if="userRole==1||isLiaison==1 "
                        @click="Correlation_wt()">关联问题</el-button>
           </el-col>
 
@@ -61,26 +61,29 @@
             取消</el-button> -->
           <el-button size="small"
                      type="primary"
-                     v-if="userRole==3 && success_btn==0"
+                     v-if="(userRole==1||isLiaison==1) && success_btn==0"
                      :disabled="isDisable"
                      @click="query_report()">生成报告</el-button>
           <el-button type="primary"
-                     v-if="userRole==3  && success_btn==1"
+                     v-if="(userRole==1||isLiaison==1)  && success_btn==1"
                      :loading="true">生成中</el-button>
         </span>
-        <div class="flex_end">
-          <p style="padding-top:10px">附件：</p>
+        <div class="flex_end"
+             v-if="file_list">
+          <p style="padding-top:10px;color:#606266">附件：</p>
+          <!-- <ul v-if="file_list.attachmentList">暂无...</ul> -->
           <ul>
             <li v-for="(item,index) in file_list.attachmentList"
                 :key="index">
               <p @click="download_click(item.attachmentUuid,item.fileName)">{{item.fileName}}</p>
-              <span>版本1.0</span><span>时间{{item.createTime|filtedate
+              <span style="color:#606266">版本1.0</span><span style="color:#606266">时间{{item.createTime|filtedate
 }}</span>
-              <el-button type="primary"
-                         v-if="userRole==3 "
+              <el-button type="text"
+                         plain
+                         style="color:red"
+                         v-if="userRole==1||isLiaison==1"
                          @click="remove_list(item.attachmentUuid)">删除</el-button>
             </li>
-
           </ul>
 
         </div>
@@ -115,34 +118,65 @@
                   tooltip-effect="dark"
                   v-loading="loading"
                   style="width: 100%"
-                  :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                  :header-cell-style="{'background-color': '#F4FAFF',}"
                   @selection-change="handleSelectionChange_zb">
           >
           <el-table-column type="selection"
                            width="55">
           </el-table-column>
           <el-table-column prop="indexTypeName"
-                           align="center"
-                           label="指标类型"> </el-table-column>
+                           label="指标类型">
+
+            <template slot-scope="scope">
+              <p v-if="scope.row.indexTypeName">{{scope.row.indexTypeName}}</p>
+              <p v-else>--</p>
+            </template>
+
+          </el-table-column>
 
           <el-table-column prop="accessCaliberName"
-                           align="center"
-                           label="依据"> </el-table-column>
+                           label="依据">
+            <template slot-scope="scope">
+              <p v-if="scope.row.accessCaliberName">{{scope.row.accessCaliberName}}</p>
+              <p v-else>--</p>
+            </template>
+          </el-table-column>
 
           <el-table-column prop="indexUnitName"
-                           align="center"
-                           label="单位"> </el-table-column>
+                           label="单位">
+
+            <template slot-scope="scope">
+              <p v-if="scope.row.indexUnitName">{{scope.row.indexUnitName}}</p>
+              <p v-else>--</p>
+            </template>
+
+          </el-table-column>
 
           <el-table-column prop="dataProvideDepartmentName"
-                           align="center"
-                           label="资料提供部门"> </el-table-column>
+                           label="资料提供部门">
+
+            <template slot-scope="scope">
+              <p v-if="scope.row.dataProvideDepartmentName">{{scope.row.dataProvideDepartmentName}}</p>
+              <p v-else>--</p>
+            </template>
+
+          </el-table-column>
           <el-table-column prop="indexDate"
-                           align="center"
-                           label="指标值期间"> </el-table-column>
+                           label="指标值期间">
+
+            <template slot-scope="scope">
+              <p v-if="scope.row.indexDate">{{scope.row.indexDate}}</p>
+              <p v-else>--</p>
+            </template>
+
+          </el-table-column>
 
           <el-table-column prop="indexValue"
-                           align="center"
                            label="指标值">
+            <template slot-scope="scope">
+              <p v-if="scope.row.indexValue">{{scope.row.indexValue}}</p>
+              <p v-else>--</p>
+            </template>
 
           </el-table-column>
         </el-table>
@@ -186,45 +220,75 @@
                   tooltip-effect="dark"
                   v-loading="loading"
                   style="width: 100%"
-                  :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                  :header-cell-style="{'background-color': '#F4FAFF',}"
                   @selection-change="handleSelectionChange_wt">
           >
           <el-table-column type="selection"
                            width="55">
           </el-table-column>
           <el-table-column prop="field"
-                           align="center"
-                           label="领域"> </el-table-column>
+                           label="领域">
+            <template slot-scope="scope">
+              <p v-if="scope.row.field">{{scope.row.field}}</p>
+              <p v-else>--</p>
+            </template>
+          </el-table-column>
 
           <el-table-column prop="problem"
-                           align="center"
-                           label="问题"> </el-table-column>
+                           label="问题">
+            <template slot-scope="scope">
+              <p v-if="scope.row.problem">{{scope.row.problem}}</p>
+              <p v-else>--</p>
+            </template>
+          </el-table-column>
 
           <el-table-column prop="basis"
-                           align="center"
-                           label="依据"> </el-table-column>
+                           label="依据">
+            <template slot-scope="scope">
+              <p v-if="scope.row.basis">{{scope.row.basis}}</p>
+              <p v-else>--</p>
+            </template>
+          </el-table-column>
 
           <el-table-column prop="describe"
-                           align="center"
                            label="描述">
+            <template slot-scope="scope">
+              <p v-if="scope.row.describe">{{scope.row.describe}}</p>
+              <p v-else>--</p>
+            </template>
           </el-table-column>
           <el-table-column prop="discoveryTime"
-                           align="center"
                            label="发现日期">
             <template slot-scope="scope">
-              <p>{{scope.row.discoveryTime}}</p>
+              <p v-if="scope.row.discoveryTime">{{scope.row.discoveryTime}}</p>
+              <p v-else>--</p>
             </template>
 
           </el-table-column>
           <el-table-column prop="riskAmount"
                            align="center"
-                           label="风险金额（元）"> </el-table-column>
+                           label="风险金额（元）">
+
+            <template slot-scope="scope">
+              <p v-if="scope.row.riskAmount">{{scope.row.riskAmount}}</p>
+              <p v-else>--</p>
+            </template>
+          </el-table-column>
           <el-table-column prop="managementAdvice"
-                           align="center"
-                           label="管理建议"> </el-table-column>
+                           label="管理建议">
+
+            <template slot-scope="scope">
+              <p v-if="scope.row.managementAdvice">{{scope.row.managementAdvice}}</p>
+              <p v-else>--</p>
+            </template>
+          </el-table-column>
           <el-table-column prop="problemFindPeople"
-                           align="center"
-                           label="发现人"> </el-table-column>
+                           label="发现人">
+            <template slot-scope="scope">
+              <p v-if="scope.row.problemFindPeople">{{scope.row.problemFindPeople}}</p>
+              <p v-else>--</p>
+            </template>
+          </el-table-column>
         </el-table>
 
         <span slot="footer"
@@ -280,7 +344,7 @@ export default {
       success_btn: 0,//文件上传完成
     }
   },
-  props: ['active_project', 'userRole'],
+  props: ['active_project', 'userRole','isLiaison'],
 
   computed: {},
   watch: {},
@@ -330,7 +394,7 @@ export default {
       }
       export_selectFile(params).then(resp => {
         this.file_list = resp.data;
-        console.log(11)
+        // console.log(11)
       })
     },
 
@@ -423,6 +487,11 @@ export default {
         this.isDisable = false
       }, 2000)
 
+      if (this.administrativeAdvice == '' && this.businessEvaluation == '') {
+        this.$message({ message: '请填写内容后生成报告' })
+        return
+      }
+
       this.success_btn = 1;//显示加载按钮  0成功  1 loaging
       let params2 = {
         managementProjectUuid: this.active_project,//项目id
@@ -491,7 +560,7 @@ export default {
 
     // 删除
     remove_list (id) {
-      this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, "提示", {
+      this.$confirm(`将永久删除附件?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -533,7 +602,15 @@ export default {
 
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
-
+>>> .foot .el-button {
+  font-weight: normal;
+}
+>>> .el-dialog--center .el-dialog__body {
+  padding: 0 !important;
+}
+>>> .el-dialog--center .el-dialog__body .el-form-item__label {
+  font-size: 14px;
+}
 .report {
 }
 .report >>> .header {
@@ -602,24 +679,23 @@ export default {
   min-width: 45px;
 }
 .flex_end {
-  -webkit-box-flex: 1;
-  -ms-flex: 1;
-  display: flex;
-  flex: 1;
+  width: 100%;
   padding: 0 10px 20px;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
 .flex_end ul {
+  padding: 10px 0;
   display: flex;
   flex-wrap: wrap;
+  box-sizing: border-box;
 }
+
 .flex_end ul li {
   width: 100%;
   display: flex;
   align-items: center;
   color: #4f9fdd;
-  margin-bottom: 20px;
 }
 .flex_end ul li p {
   cursor: pointer;

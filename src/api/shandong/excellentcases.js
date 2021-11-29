@@ -109,6 +109,8 @@ export function fileDownload (data) {
     baseURL: baseURL,
     url: '/referenceTable/fileDownload',
     method: 'post',
+    ifDownFile: true,
+    responseType: "blob",
     isLoading: false,
     data
   })

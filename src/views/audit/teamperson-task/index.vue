@@ -5,7 +5,7 @@
         <el-row :gutter="24">
           <el-col :span="17">
             <el-button
-              style="background: #1897e4; color: #fff"
+              style="background: #0c87d6; color: #fff"
               @click="addgroupMember()"
               v-if="userRole != 3"
               >组员维护</el-button
@@ -20,7 +20,7 @@
             </el-input>
             <div
               class="search_icon"
-              style="background: #1897e4 !important"
+              style="background: #0c87d6 !important"
               @click="queryNameInput"
             >
               <i class="el-icon-search" style="color: white"></i>
@@ -50,41 +50,41 @@
             :data="tableData"
             style="width: 100%"
             border
-            align="center"
+
             :header-cell-style="{
               'background-color': '#F4FAFF',
               'font-weight': '400',
             }"
           >
             <el-table-column
-              align="center"
+              align="left"
               label="姓名"
-              width="150"
               prop="peopleName"
+              width="130"
             >
             </el-table-column>
-            <el-table-column align="center" label="角色" width="100">
+            <el-table-column align="left" label="角色" width="130">
               <template slot-scope="scope">
                 <span v-if="scope.row.peopleRole == 2">组员</span>
                 <span v-else>组长</span>
               </template>
             </el-table-column>
             <el-table-column
-              align="center"
+              align="left"
               property="userMobile"
               label="联系方式"
-              width="200"
             >
             </el-table-column>
             <el-table-column
-              align="center"
+              align="left"
               property="belongCompany"
               label="所属单位"
               show-overflow-tooltip
+              min-width="100"
             >
             </el-table-column>
             <el-table-column
-              align="center"
+              align="left"
               property="belongDept"
               label="所属部门"
               show-overflow-tooltip
@@ -92,9 +92,8 @@
             </el-table-column>
             <el-table-column
               property="isLiaison"
-              label="是否接口人"
-              width="150"
-              align="center"
+              label="设置为接口人"
+              align="left"
             >
               <template slot-scope="scope">
                 <el-switch
@@ -109,11 +108,11 @@
                 </el-switch>
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="150" v-if="userRole != 3">
+            <el-table-column label="操作" width="50" v-if="userRole != 3">
               <template slot-scope="scope">
                 <el-button
                   type="text"
-                  style="color: #db454b; background: none; border: 0"
+                  style="color: #ff8a72; background: none; border: 0; font-size:14px"
                   size="small"
                   @click.native.prevent="deleteRow(scope.row, tableData)"
                 >
@@ -158,6 +157,7 @@
           filterable
           :filter-method="filterMethod"
           filter-placeholder="请输入组员名称"
+          target-order = "push"
           v-model="value"
           :titles="['组员列表', '已选组员']"
           :data="data"
@@ -170,7 +170,7 @@
       <div class="stepBtn" style="margin-right: 2%">
         <el-button @click="addgroupDialog = false">取消</el-button>
         <el-button
-          type="primary"
+          style="background: #0c87d6;color: #fff;"
           @click="saveGroupMember"
           :disabled="savedisabled"
           >确认</el-button
@@ -758,6 +758,9 @@ export default {
   border-bottom: 1px solid #d2d2d2;
   padding: 10px;
   text-align: center;
+  font-weight: bolder;
+  font-size: 14px;
+  color: #000;
 }
 /* 方法二 */
 .stepNew {
@@ -920,11 +923,11 @@ export default {
   text-align: center;
 }
 .addAudit .nextBtn {
-  background: #508ce6 !important;
+  background: #0c87d6 !important;
   color: #fff;
 }
 .addPerson .nextBtn {
-  background: #508ce6 !important;
+  background: #0c87d6 !important;
   color: #fff;
 }
 .addPerson {
@@ -1021,5 +1024,8 @@ export default {
 }
 .personMain >>> .el-table__header {
   border-top: none !important;
+}
+.addPerson >>>  .el-button--primary{
+  background:#0c87d6 !important;
 }
 </style>

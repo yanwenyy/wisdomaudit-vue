@@ -19,27 +19,34 @@
     <div class="model_list_table">
       <el-table :data="tableData.records"
                 v-loading="loading"
-                :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
+                :header-cell-style="{'background-color': '#F4FAFF',}"
                 style="width: 100%">
 
         <el-table-column label="模型编号"
-                         width="80"
-                         align="center">
+                         width="80">
           <template slot-scope="scope">
             {{ scope.$index + 1 }}
           </template>
         </el-table-column>
 
         <el-table-column prop="belongField"
-                         align="center"
                          label="所属领域">
+
+          <template slot-scope="scope">
+            <p v-if="scope.row.belongField">{{scope.row.belongField}}</p>
+            <p v-else>--</p>
+          </template>
         </el-table-column>
         <el-table-column prop="belongSpcial"
-                         align="center"
                          label="所属专题">
+
+          <template slot-scope="scope">
+            <p v-if="scope.row.belongSpcial">{{scope.row.belongSpcial}}</p>
+            <p v-else>--</p>
+          </template>
+
         </el-table-column>
         <el-table-column prop="modelName"
-                         align="center"
                          label="模型名称">
 
           <template slot-scope="scope">
@@ -48,13 +55,19 @@
           </template>
         </el-table-column>
         <el-table-column prop="logicalDescription"
-                         align="center"
                          label="逻辑说明">
+          <template slot-scope="scope">
+            <p v-if="scope.row.logicalDescription">{{scope.row.logicalDescription}}</p>
+            <p v-else>--</p>
+          </template>
         </el-table-column>
 
         <el-table-column prop="ruleDescription"
-                         align="center"
                          label="业务规则">
+          <template slot-scope="scope">
+            <p v-if="scope.row.ruleDescription">{{scope.row.ruleDescription}}</p>
+            <p v-else>--</p>
+          </template>
 
         </el-table-column>
       </el-table>
@@ -99,11 +112,7 @@
         </div>
 
       </div>
-      <div slot="footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary"
-                   @click="dialogVisible = false">确 定</el-button>
-      </div>
+
     </el-dialog>
 
   </div>
@@ -198,6 +207,15 @@ export default {
 
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
+>>> .foot .el-button {
+  font-weight: normal;
+}
+>>> .el-dialog--center .el-dialog__body {
+  padding: 0 !important;
+}
+>>> .el-dialog--center .el-dialog__body .el-form-item__label {
+  font-size: 14px;
+}
 .search >>> .el-input__inner::-webkit-input-placeholder {
   color: #c0c4cc !important;
 }
@@ -212,7 +230,7 @@ export default {
 /* 筛选 */
 .search {
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
   position: relative;
   padding: 20px 0 10px;
   box-sizing: border-box;
@@ -264,7 +282,7 @@ export default {
   justify-content: flex-end;
 }
 .details {
-  color: #79bdf0 !important;
+  color: rgb(19, 113, 204) !important;
   cursor: pointer;
 }
 /* 查看 */
