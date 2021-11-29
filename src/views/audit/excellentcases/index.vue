@@ -780,13 +780,13 @@ export default {
         // formData.append(this.data_list_check)
         let list = this.data_list_check;
         fileDownload(list).then(resp => {
-          const content = resp;
+          const content = resp.data;
           console.log(resp);
           const blob = new Blob([content],
             { type: 'application/octet-stream,charset=UTF-8' }
           )
           const fileName = resp.headers["content-disposition"].split("fileName*=utf-8''")[1];
-          const filteType = res.headers["content-disposition"].split(".")[1];
+          const filteType = resp.headers["content-disposition"].split(".")[1];
 
           if ('download' in document.createElement('a')) {
             // 非IE下载

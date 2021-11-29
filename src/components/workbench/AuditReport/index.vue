@@ -71,8 +71,8 @@
         <div class="flex_end"
              v-if="file_list">
           <p style="padding-top:10px;color:#606266">附件：</p>
-          <ul v-if="file_list.attachmentList">暂无...</ul>
-          <ul v-else>
+          <!-- <ul v-if="file_list.attachmentList">暂无...</ul> -->
+          <ul>
             <li v-for="(item,index) in file_list.attachmentList"
                 :key="index">
               <p @click="download_click(item.attachmentUuid,item.fileName)">{{item.fileName}}</p>
@@ -491,7 +491,6 @@ export default {
         this.$message({ message: '请填写内容后生成报告' })
         return
       }
-      return false
 
       this.success_btn = 1;//显示加载按钮  0成功  1 loaging
       let params2 = {
