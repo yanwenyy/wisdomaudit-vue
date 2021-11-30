@@ -723,6 +723,7 @@
     <!-- 操作 审批-->
     <el-dialog width="90%"
                center
+               @close="editDialogClosed()"
                :visible.sync="dialogVisibl_operation"
                style="padding-bottom: 59px; ">
       <div class="title_dlag">审批</div>
@@ -2389,7 +2390,6 @@ export default {
     },
     // 通过
     adopt () {
-      this.success_btn2 = 1;//显示加载按钮  0成功  1 loaging
 
       this.isDisable = true
       setTimeout(() => {
@@ -2399,6 +2399,8 @@ export default {
         this.$message.info("请选择一条数据进行操作");
         return
       }
+      this.success_btn2 = 1;//显示加载按钮  0成功  1 loaging
+
       let array1 = [];//数组1
       this.multipleSelection_operation.forEach((item) => {
         array1.push(item);
@@ -2409,19 +2411,9 @@ export default {
         auditPreviousDemandData: array1,
       }
       this.audit(3, params2);//通过
-      let params = {
-        pageNo: this.params.pageNo,
-        pageSize: this.params.pageSize,
-        condition: {
-          projectNumber: this.projectNumber,
-          title: this.search_title,
-        }
-      }
-      this.list_data_start(params)
     },
     // 驳回
     reject () {
-      this.success_btn1 = 1;//显示加载按钮  0成功  1 loaging
 
       this.isDisable = true
       setTimeout(() => {
@@ -2432,6 +2424,7 @@ export default {
         this.$message.info("请选择一条数据进行操作");
         return
       }
+      this.success_btn1 = 1;//显示加载按钮  0成功  1 loaging
       // this.dialogVisible2 = false
       let array1 = [];//数组1
       this.multipleSelection_operation.forEach((item) => {
@@ -2444,19 +2437,13 @@ export default {
         auditPreviousDemandData: array1,
       }
       this.audit(2, params2)//2:驳回  3:通过
-
-      let params = {
-        pageNo: this.params.pageNo,
-        pageSize: this.params.pageSize,
-        condition: {
-          projectNumber: this.projectNumber,
-          title: this.search_title,
-        }
-      }
-      this.list_data_start(params)
-
     },
-
+    // 关闭审核
+    editDialogClosed () {
+      this.dialogVisibl_operation = false;//关闭
+      this.success_btn1 = 0
+      this.success_btn2 = 0
+    },
 
     // 审核
     audit (index, params) {
@@ -2471,7 +2458,6 @@ export default {
                 message: "驳回成功",
                 type: "success",
               });
-              this.dialogVisibl_operation = false
               let params2 = {
                 pageNo: this.operation_query.pageNo,
                 pageSize: this.operation_query.pageSize,
@@ -2519,7 +2505,6 @@ export default {
                 message: "通过成功",
                 type: "success",
               });
-              this.dialogVisibl_operation = false
 
               let params2 = {
                 pageNo: this.operation_query.pageNo,
