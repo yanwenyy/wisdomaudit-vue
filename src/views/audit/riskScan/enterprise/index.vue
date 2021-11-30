@@ -109,8 +109,8 @@ export default {
     changemx(val) {
       this.formdates =
         val.excuteUrl + "&tab=" + val.tab + "&month=" + this.value2;
-      console.log(this.formdates);
-      console.log(this.value);
+      console.log(this.formdates,'打印访问的链接');
+      console.log(this.value,'接口值');
     },
     changesj(val) {
       this.formdates =
@@ -123,9 +123,11 @@ export default {
       getSignature(q).then((result) => {
         if (result.code== 0 && result.data.url !== null) {
           getdataAuditApi(result.data.token,result.data.url).then((res)=>{
-
            if (res.status== 'success') {
             this.formdates=res.url.replace('&amp;','&')
+            
+            window.location.href='http://10.19.206.196:8088/WebReport/decision/view/form?viewlet=vendor/zhuowang/test.cpt&ref_t=design&ref_c=d6740dbd-0279-40d0-b361-3cc1adb80d35'
+
 
 
             //  getTypes("area=2").then((rem) => {
@@ -136,7 +138,6 @@ export default {
             // });
 
            }
-            this.formdates='http://10.19.206.196:8088/WebReport/decision/view/form?viewlet=vendor/zhuowang/test.cpt&ref_t=design&ref_c=d6740dbd-0279-40d0-b361-3cc1adb80d35 '
 
 
 

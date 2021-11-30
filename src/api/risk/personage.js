@@ -39,8 +39,6 @@ export function  getSignature (data) {
 
 
 export function getdataAuditApi (Thirdtoken,urel) {
-  let request =''
-  // var url = "http://10.19.206.196:8088/WebReport/decision/third/auth/cross/login";
  return  $.ajax({
           url: urel,
           dataType: "jsonp",
