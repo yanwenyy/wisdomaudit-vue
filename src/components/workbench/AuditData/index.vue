@@ -2494,6 +2494,12 @@ export default {
               this.list_data_start(params)
               this.dialogVisibl_operation = false;//关闭
             }
+            if (resp.data.result == 3) {
+              this.$message({
+                message: "已审核通过的数据不可再次驳回！",
+                type: "success",
+              });
+            }
           } else {
             this.$message({
               message: resp.data.msg,
@@ -2538,13 +2544,18 @@ export default {
               this.list_data_start(params)
               this.dialogVisibl_operation = false;//关闭
             }
-          } else {
-            this.$message({
-              message: resp.data.msg,
-              type: "error",
-            });
-          }
-        })
+            if (resp.data.result == 3) {
+              this.$message({
+                message: "已通过的数据不可再次通过！",
+                type: "success",
+              });
+            } else {
+              this.$message({
+                message: resp.data.msg,
+                type: "error",
+              });
+            }
+          })
       }
 
     },
