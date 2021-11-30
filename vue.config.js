@@ -64,6 +64,14 @@ module.exports = {
           '^/wisdomaudit/': '/'
         }
       },
+      '/gailan/': {
+        timeout: 1800000,
+        target: 'http://10.19.206.196:8088',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/gailan/': '/'
+        }
+      },
       '/wisdomaudit_wei/': {
         timeout: 1800000,
         target: process.env.WEI,

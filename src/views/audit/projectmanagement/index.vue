@@ -2711,7 +2711,7 @@ export default {
 }
 .addForm {
   margin-top: 2%;
-  margin-left: 20%;
+  margin-left: 25%;
   .el-select,
   .el-input {
     position: relative;
@@ -3001,10 +3001,16 @@ export default {
   top: 0%;
   left: 0%;
 }
+.addForm >>> .el-form-item__content{
+  margin-left: 83px !important;
+}
 .addzhuanForm /deep/ .el-form-item__error {
   position: absolute;
   top: 0%;
   left: 0%;
+}
+.addzhuanForm >>> .el-form-item__content{
+  margin-left: 83px !important;
 }
 .projectTable /deep/ .el-form-item__error {
   position: absolute;

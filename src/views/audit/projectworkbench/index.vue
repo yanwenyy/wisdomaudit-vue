@@ -2591,7 +2591,7 @@ export default {
   padding: 2%;
 }
 .selfTask {
-  width: 60%;
+  width: 50%;
   margin: 20px auto;
   // border: 1px solid red;
 }
@@ -2652,6 +2652,9 @@ export default {
 .selfTask >>> .el-form-item__label {
    font-size: 14px !important;
   color: #606266 !important;
+}
+.selfTask >>> .el-form-item__content{
+  margin-left: 86px !important;
 }
 .optionBtn >>> .el-form-item {
   margin-bottom: 0px !important;

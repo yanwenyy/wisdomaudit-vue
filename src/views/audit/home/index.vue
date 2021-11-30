@@ -582,7 +582,7 @@ export default {
             if (res.data.code == 0) {
               let reptoken = res.data.data.token;
               this.$axios({
-                url: `http://10.19.206.196:8088/WebReport/decision/third/auth/cross/login`,
+                url: `/gailan/WebReport/decision/third/auth/cross/login`,
                 method: "get",
                 data: { third_token: reptoken },
               }).then((res2) => {
