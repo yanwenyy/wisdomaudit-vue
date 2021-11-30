@@ -1175,7 +1175,8 @@
           <el-form-item label="风险金额（万元）"
                         prop="riskAmount"
                         width="180">
-            <el-input v-model.number="dqProblem.riskAmount"
+            <!--v-model.number="dqProblem.riskAmount"-->
+            <el-input v-model="dqProblem.riskAmount"
                       type="number"
                       @keyup.native="dqProblem.riskAmount = oninput(dqProblem.riskAmount)"
                       placeholder="请输入风险金额" />
@@ -1710,6 +1711,7 @@ export default {
       //正则替换
       str = str.replace(/[^\d^\.]+/g, ""); // 保留数字和小数点
       str = str.replace(/^\D*([0-9]\d*\.?\d{0,6})?.*$/, "$1"); // 小数点后只能输 2 位
+      str=str.slice(0,27);
       return str;
     },
     // 限制开始  结束时间范围
@@ -2581,7 +2583,7 @@ export default {
           this.dqProblem.basis = '';
         }
 
-        // this.dqProblem.basis = entity.basis; 
+        // this.dqProblem.basis = entity.basis;
         this.dqProblem.auditTaskUuid = entity.auditTaskUuid ? entity.auditTaskUuid.split(",") : [];//任务
 
         this.dqProblem = JSON.parse(JSON.stringify(this.dqProblem));

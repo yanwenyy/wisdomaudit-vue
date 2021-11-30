@@ -302,9 +302,11 @@
           <!-- 风险金额 -->
           <el-form-item>
             <p>风险金额（万元)：</p>
+            <!--v-model.number="add.riskAmount"-->
             <el-input v-model="add.riskAmount"
-                      v-model.number="add.riskAmount"
+
                       type="number"
+
                       @keyup.native="add.riskAmount = oninput(add.riskAmount)"
                       placeholder="请输入风险金额"></el-input>
           </el-form-item>
@@ -593,6 +595,10 @@ export default {
       //正则替换
       str = str.replace(/[^\d^\.]+/g, ""); // 保留数字和小数点
       str = str.replace(/^\D*([0-9]\d*\.?\d{0,6})?.*$/, "$1"); // 小数点后只能输 2 位
+      // str=str.slice(0,27);
+      if(str.length>27){
+        str=str.slice(0,27);
+      }
       return str;
     },
     toopen (val) {
@@ -869,7 +875,7 @@ export default {
         source: '',//来源
         riskAmount: '',//金额
       },
-        //清空 
+        //清空
         this.$nextTick(() => {
           this.$refs["add"].clearValidate();
         });
