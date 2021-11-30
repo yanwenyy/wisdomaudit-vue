@@ -2653,9 +2653,7 @@ export default {
    font-size: 14px !important;
   color: #606266 !important;
 }
-.selfTask >>> .el-form-item__content{
-  margin-left: 86px !important;
-}
+
 .optionBtn >>> .el-form-item {
   margin-bottom: 0px !important;
 }

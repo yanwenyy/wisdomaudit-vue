@@ -3053,17 +3053,18 @@ export default {
   top: 0%;
   left: 0%;
 }
-.addForm >>> .el-form-item__content{
-  margin-left: 83px !important;
+.addForm >>> .el-form-item__label{
+  margin-left: 15px !important;
 }
+
 .addzhuanForm /deep/ .el-form-item__error {
   position: absolute;
   top: 0%;
   left: 0%;
 }
-.addzhuanForm >>> .el-form-item__content{
+/* .addzhuanForm >>> .el-form-item__content{
   margin-left: 83px !important;
-}
+} */
 .projectTable /deep/ .el-form-item__error {
   position: absolute;
   top: 20%;
