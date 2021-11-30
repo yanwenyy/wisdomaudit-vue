@@ -124,7 +124,7 @@ export default {
         if (result.code== 0 && result.data.url !== null) {
           console.log("获取token接口", result);
           getdataAuditApi(result.data.token,"area=1").then((res)=>{
-            this.formdates=res.url.replace('&amp;','&')
+          
           
            console.log("获取之前的接口", rem);
             getTypes("area=1").then((rem) => {
