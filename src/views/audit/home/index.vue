@@ -105,7 +105,9 @@
             <el-empty
               description="暂无数据"
               v-if="modellist.length == 0"
-            ></el-empty>
+            >
+            <div style="height:375px;width:100%;"></div>
+            </el-empty>
             <ul style="height: 406px; overflow: scroll" class="odd-even" v-else>
               <li v-for="(item, index) in modellist" :key="'model' + index">
                 <div class="li-item">
