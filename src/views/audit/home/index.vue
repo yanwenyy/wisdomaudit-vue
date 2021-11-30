@@ -588,9 +588,9 @@ export default {
               data: { third_token: reptoken },
               success: function (res2) {
                 if (res2.errorCode) {
-                  console.log("帆软认证接口调用失败", res);
+                  console.log("帆软认证接口调用失败", res2);
                 } else {
-                  console.log("帆软认证接口调用成功", res);
+                  console.log("帆软认证接口调用成功", res2);
                   window.open(item.url);
                   return;
                 }
