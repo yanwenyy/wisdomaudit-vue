@@ -959,11 +959,19 @@
       <span slot="footer">
         <el-button @click="reject()"
                    :disabled="isDisable"
+                   v-if="success_btn1==0"
                    plain>驳回</el-button>
+        <el-button plain
+                   v-if="success_btn1==1"
+                   :loading="true">驳回中</el-button>
+
         <el-button type="primary"
+                   v-if=" success_btn2==0"
                    :disabled="isDisable"
                    @click="adopt()">通过</el-button>
-
+        <el-button type="primary"
+                   v-if=" success_btn2==1"
+                   :loading="true">通过中</el-button>
       </span>
     </el-dialog>
 
@@ -1340,6 +1348,9 @@ export default {
       // 是否显示新增
       isDisable: false,//防止重复提交
 
+
+      success_btn1: 0,
+      success_btn2: 0,
     }
   },
   computed: {},
@@ -2394,6 +2405,8 @@ export default {
     },
     // 通过
     adopt () {
+      this.success_btn1 = 1;//显示加载按钮  0成功  1 loaging
+
       this.isDisable = true
       setTimeout(() => {
         this.isDisable = false
@@ -2424,10 +2437,13 @@ export default {
     },
     // 驳回
     reject () {
+      this.success_btn1 = 1;//显示加载按钮  0成功  1 loaging
+
       this.isDisable = true
       setTimeout(() => {
         this.isDisable = false
       }, 2000)
+
       if (this.multipleSelection_operation.length == 0) {
         this.$message.info("请选择一条数据进行操作");
         return
@@ -2463,10 +2479,11 @@ export default {
       // 驳回
       if (index == 2) {
         operation_audit(params).then(resp => {
+          this.success_btn2 = 0
           console.log(resp.data);
           if (resp.code == 0) {
             this.$message({
-              message: "驳回",
+              message: "驳回成功",
               type: "success",
             });
             this.dialogVisibl_operation = false
@@ -2481,7 +2498,6 @@ export default {
             };
             this.audit_query.posy_remarks = ''//清空备注
             this.operation_list(params2); // 操作 资料列表
-
             let params = {
               pageNo: this.params.pageNo,
               pageSize: this.params.pageSize,
@@ -2491,7 +2507,7 @@ export default {
               }
             }
             this.list_data_start(params)
-
+            this.dialogVisibl_operation = false;//关闭
           } else {
             this.$message({
               message: resp.data.msg,
@@ -2504,9 +2520,10 @@ export default {
       if (index == 3) {
         operation_audit(params).then(resp => {
           console.log(resp.data);
+          this.success_btn1 = 0
           if (resp.code == 0) {
             this.$message({
-              message: "通过",
+              message: "通过成功",
               type: "success",
             });
             this.dialogVisibl_operation = false
@@ -2532,6 +2549,7 @@ export default {
               }
             }
             this.list_data_start(params)
+            this.dialogVisibl_operation = false;//关闭
 
           } else {
             this.$message({
