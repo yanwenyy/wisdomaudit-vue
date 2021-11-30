@@ -268,8 +268,6 @@
 
 <script>
 import Vault from "@WISDOMAUDIT/components/Vaultcertification";
-import axios from "axios";
-
 import moment from "moment";
 import { validUsername } from "@/utils/validate";
 export default {
@@ -299,7 +297,6 @@ export default {
     };
   },
   mounted() {
-    axios.defaults.headers.common["TOKEN"] = sessionStorage.getItem("TOKEN");
     this.getmodellist();
     this.getprojectlist();
     this.getdatalist();
