@@ -7,7 +7,7 @@
       :visible.sync="visible"
       :append-to-body="true">
       <div class="relation-div">
-        <div class="relation-div-search">
+        <div class="relation-div-search search-form">
           <el-form :inline="true" :model="searchform" @keyup.enter.native="init(id)" class="queryForm">
             <el-form-item class="searchBtn">
               <el-input v-model="searchform.problem" placeholder="问题名称" clearable>
@@ -17,7 +17,7 @@
           </el-form>
         </div>
         <el-table
-          :header-cell-style="{'text-align': 'center','background-color': 'whitesmoke',}"
+          :header-cell-style="{'text-align': 'center','background-color': '#F4FAFF',}"
           ref="multipleTable"
           :data="relationTabel"
           class="relationTabelClass"
