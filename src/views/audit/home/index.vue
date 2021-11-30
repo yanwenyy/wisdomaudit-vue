@@ -604,7 +604,6 @@ export default {
             return;
           }
         });
-        return;
       } else {
         this.$router.push({
           path: item.url,
