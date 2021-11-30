@@ -521,58 +521,59 @@ export default {
 
     //保存审计确认单
     saveForm () {
-      if (this.canClick) {
-        this.canClick = false;
-        this.$refs['addForm'].validate((valid) => {
-          if (valid) {
-            if (this.confirmationDialogTitle == '新增确认单') {
-              this.formDetail.managementProjectName=this.managementProjectName;
-              this.formDetail.auditOrgName=this.auditOrgName;
-              this.formDetail.managementProjectUuid = this.active_project;
-              auditConfirmation_save(this.formDetail).then(resp => {
-                this.canClick = true;
-                if (resp.code == 0) {
-                  this.$message({
-                    message: "保存成功",
-                    type: "success",
-                  });
-                  this.confirmationDialogVisible = false;
-                  this.list_data_start();
-                } else {
-                  this.$message({
-                    message: resp.data.msg,
-                    type: "error",
-                  });
-                }
+      this.$refs['addForm'].validate((valid) => {
+        if (valid) {
+          if (this.confirmationDialogTitle == '新增确认单') {
+            this.formDetail.managementProjectName=this.managementProjectName;
+            this.formDetail.auditOrgName=this.auditOrgName;
+            this.formDetail.managementProjectUuid = this.active_project;
+            var timer=null;
+            timer=setTimeout(auditConfirmation_save(this.formDetail).then(resp => {
+              this.canClick = true;
+              if (resp.code == 0) {
+                this.$message({
+                  message: "保存成功",
+                  type: "success",
+                });
+                this.confirmationDialogVisible = false;
+                this.list_data_start();
+              } else {
+                this.$message({
+                  message: resp.data.msg,
+                  type: "error",
+                });
+              }
 
-              })
-            } else {
-              auditConfirmation_update(this.formDetail).then(resp => {
-                this.canClick = true;
-                if (resp.code == 0) {
-                  this.$message({
-                    message: "修改成功",
-                    type: "success",
-                  });
-                  this.confirmationDialogVisible = false;
-                  this.confirmationDialogVisibleZx = false;
-                  this.list_data_start();
-                } else {
-                  this.$message({
-                    message: resp.data.msg,
-                    type: "error",
-                  });
-                }
+            }),0);
 
-              })
-            }
           } else {
-            this.canClick = true;
-            this.$message.error("请添加必填项和正确的数据格式");
-            return false;
+            var timer=null;
+            timer=setTimeout( auditConfirmation_update(this.formDetail).then(resp => {
+              this.canClick = true;
+              if (resp.code == 0) {
+                this.$message({
+                  message: "修改成功",
+                  type: "success",
+                });
+                this.confirmationDialogVisible = false;
+                this.confirmationDialogVisibleZx = false;
+                this.list_data_start();
+              } else {
+                this.$message({
+                  message: resp.data.msg,
+                  type: "error",
+                });
+              }
+
+            }),0);
+
           }
-        });
-      }
+        } else {
+          this.canClick = true;
+          this.$message.error("请添加必填项和正确的数据格式");
+          return false;
+        }
+      });
     },
     clearForm () {
       this.formDetail = {
