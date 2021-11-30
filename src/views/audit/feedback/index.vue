@@ -807,7 +807,8 @@ export default {
 
     // 关闭
     resetForm2 () {
-      this.success_btn2 = false;//隐藏加载按钮
+      this.success_btn2 = false;//隐藏上传按钮
+      this.success_btn = 0//隐藏反馈按钮
     },
     //查看操作 记录
     look_record (data) {
@@ -856,50 +857,52 @@ export default {
       if (this.check_data_list.length == 0) {
         this.$message.info("请选择至少一条数据进行提交！");
         return false;
-      } else {
-
-
-        // let array1 = [];//数组1
-        // this.check_data_list.forEach((item) => {
-        //   array1.push(item);
-        // });
-        // console.log(array1);
-        // return false
-        // auditPreviousDemandDataUuid
-        this.success_btn = 1;
-
-        let params = {
-          dataTaskNumber: this.check_data_list[0].dataTaskNumber,//id
-          ids: this.check_data_list,//选择的数组
-          remarks: this.post_remarks,//备注
-        }
-        // 提交数据接口
-        operation_reportData(params).then(resp => {
-          console.log(resp);
-          this.success_btn = 0;
-
-          if (resp.code == 0) {
-            this.$message({
-              message: "提交成功",
-              type: "success",
-            });
-            this.dialogVisible = false;//关闭弹窗
-            let params = {
-              pageNo: this.data_query.pageNo,
-              pageSize: this.data_query.pageSize,
-              condition: {
-                dataTaskNumber: this.data_query.condition.dataTaskNumber,
-              }
-            }
-            this.feedback_post(params)//资料列表
-          } else {
-            this.$message({
-              message: resp.msg,
-              type: "error",
-            });
-          }
-        })
       }
+
+
+      // let array1 = [];//数组1
+      // this.check_data_list.forEach((item) => {
+      //   array1.push(item);
+      // });
+      // console.log(array1);
+      // return false
+      // auditPreviousDemandDataUuid
+      this.success_btn = 1;
+      let params = {
+        dataTaskNumber: this.check_data_list[0].dataTaskNumber,//id
+        ids: this.check_data_list,//选择的数组
+        remarks: this.post_remarks,//备注
+      }
+      // 提交数据接口
+      operation_reportData(params).then(resp => {
+        this.success_btn = 0;
+        if (resp.data.result == 0) {
+          this.$message({
+            message: "提交成功",
+            type: "success",
+          });
+          this.dialogVisible = false;//关闭弹窗
+          let params2 = {
+            pageNo: this.data_query.pageNo,
+            pageSize: this.data_query.pageSize,
+            condition: {
+              dataTaskNumber: this.data_query.condition.dataTaskNumber,
+            }
+          }
+          this.feedback_post(params2)//资料列表
+        } else if (resp.data.result == 1) {
+          this.$message({
+            message: '请上传附件',
+            type: "warning",
+          });
+        } else {
+          this.$message({
+            message: '提交失败',
+            type: "error",
+          });
+        }
+
+      })
 
     },
 

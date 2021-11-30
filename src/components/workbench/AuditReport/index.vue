@@ -136,6 +136,7 @@
           </el-table-column>
 
           <el-table-column prop="accessCaliberName"
+                           show-overflow-tooltip
                            label="依据">
             <template slot-scope="scope">
               <p v-if="scope.row.accessCaliberName">{{scope.row.accessCaliberName}}</p>
@@ -228,6 +229,7 @@
                            width="55">
           </el-table-column>
           <el-table-column prop="field"
+                           show-overflow-tooltip
                            label="领域">
             <template slot-scope="scope">
               <p v-if="scope.row.field">{{scope.row.field}}</p>
@@ -236,6 +238,7 @@
           </el-table-column>
 
           <el-table-column prop="problem"
+                           show-overflow-tooltip
                            label="问题">
             <template slot-scope="scope">
               <p v-if="scope.row.problem">{{scope.row.problem}}</p>
@@ -244,6 +247,7 @@
           </el-table-column>
 
           <el-table-column prop="basis"
+                           show-overflow-tooltip
                            label="依据">
             <template slot-scope="scope">
               <p v-if="scope.row.basis">{{scope.row.basis}}</p>
@@ -252,6 +256,7 @@
           </el-table-column>
 
           <el-table-column prop="describe"
+                           show-overflow-tooltip
                            label="描述">
             <template slot-scope="scope">
               <p v-if="scope.row.describe">{{scope.row.describe}}</p>
@@ -259,6 +264,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="discoveryTime"
+                           show-overflow-tooltip
                            label="发现日期">
             <template slot-scope="scope">
               <p v-if="scope.row.discoveryTime">{{scope.row.discoveryTime}}</p>
@@ -267,6 +273,7 @@
 
           </el-table-column>
           <el-table-column prop="riskAmount"
+                           show-overflow-tooltip
                            align="center"
                            label="风险金额（元）">
 
@@ -276,6 +283,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="managementAdvice"
+                           show-overflow-tooltip
                            label="管理建议">
 
             <template slot-scope="scope">
@@ -284,6 +292,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="problemFindPeople"
+                           show-overflow-tooltip
                            label="发现人">
             <template slot-scope="scope">
               <p v-if="scope.row.problemFindPeople">{{scope.row.problemFindPeople}}</p>
