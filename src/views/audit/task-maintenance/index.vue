@@ -100,10 +100,12 @@
               <template slot-scope="scope">
                 <el-popover
                   placement="bottom"
-                  width="300"
+                  width="250"
                   trigger="click"
                   v-loading="nearbyLoading"
+                  :popper-options="{boundariesElement: 'body'}"
                 >
+                <div>
                   <el-table :data="enclosure_details_list">
                     <el-table-column prop="fileName" label="文件名称">
                       <template slot-scope="scope">
@@ -120,6 +122,7 @@
                       </template>
                     </el-table-column>
                   </el-table>
+                  </div>
                   <!-- <el-button slot="reference" >click 激活</el-button> -->
                    <!-- <div slot="reference"
                      style="color: #1371cc;"

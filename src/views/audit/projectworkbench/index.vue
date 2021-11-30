@@ -429,7 +429,7 @@
             </el-table-column>
             <el-table-column prop="address" label="附件" width="90">
               <template slot-scope="scope">
-                <el-popover placement="bottom" width="300" trigger="click">
+                <el-popover placement="bottom" width="300" trigger="click" :popper-options="{boundariesElement: 'body'}">
                   <el-table :data="enclosure_details_list">
                     <el-table-column prop="fileName" label="文件名称">
                       <template slot-scope="scope">
