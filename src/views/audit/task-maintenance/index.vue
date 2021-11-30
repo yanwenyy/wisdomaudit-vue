@@ -289,7 +289,7 @@
           </el-upload>
         </el-form-item>
       </el-form>
-      <div class="stepBtn" style="margin-right: 2%">
+      <div class="stepBtn" style="margin-right: 2%;margin-bottom:1.5%">
         <el-button @click="resBtn('editTaskRef')" style="border: 1px solid #d2d2d2"
           >取消</el-button
         >
