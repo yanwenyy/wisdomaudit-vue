@@ -570,15 +570,24 @@ export default {
     },
 
     shortcutEvent(item) {
-      if(item.menuName=="审计概览"){
-        window.open(item.url)
-        return
-      }else{
+      if (item.menuName == "审计概览") {
+        this.$axios({
+          url:
+            `/wisdomaudit/dataAuditApi/getSignature?userName=` +
+            sessionStorage.getItem(""),
+          method: "get",
+          data: {},
+        }).then((res) => {
+          if (res.data.code == 0) {
+            window.open(res.data.data.url);
+            return;
+          }
+        });
+      } else {
         this.$router.push({
-        path: item.url,
-      });
+          path: item.url,
+        });
       }
-      
     },
   },
 };
