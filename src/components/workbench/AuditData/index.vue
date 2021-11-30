@@ -2549,13 +2549,14 @@ export default {
                 message: "已通过的数据不可再次通过！",
                 type: "success",
               });
-            } else {
-              this.$message({
-                message: resp.data.msg,
-                type: "error",
-              });
             }
-          })
+          } else {
+            this.$message({
+              message: resp.data.msg,
+              type: "error",
+            });
+          }
+        })
       }
 
     },
