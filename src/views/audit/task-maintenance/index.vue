@@ -76,11 +76,11 @@
                 <el-form class="taskTable">
                   <el-form-item>
                     <el-select
-                      style="width:180px;margin-top:5px"
+                      style="width: 180px; margin-top: 5px"
                       v-model="scope.row.peopleTableUuid"
                       filterable
                       @change="selectChange(scope.row)"
-                      :disabled = "userRole == '3'"
+                      :disabled="userRole == '3'"
                     >
                       <el-option
                         v-for="item in tableData"
@@ -96,35 +96,40 @@
             </el-table-column>
             <el-table-column prop="taskDescription" label="任务描述">
             </el-table-column>
-            <el-table-column prop="address" label="附件" width="90"  show-overflow-tooltip>
+            <el-table-column
+              prop="address"
+              label="附件"
+              width="90"
+              show-overflow-tooltip
+            >
               <template slot-scope="scope">
                 <el-popover
                   placement="bottom"
                   width="250"
                   trigger="click"
                   v-loading="nearbyLoading"
-                  :popper-options="{boundariesElement: 'body'}"
+                  :popper-options="{ boundariesElement: 'body' }"
                 >
-                <div>
-                  <el-table :data="enclosure_details_list">
-                    <el-table-column prop="fileName" label="文件名称">
-                      <template slot-scope="scope">
-                        <el-link
-                          type="primary"
-                          @click="
-                            enclosureDownload(
-                              scope.row.attachmentUuid,
-                              scope.row.fileName
-                            )
-                          "
-                          >{{ scope.row.fileName }}</el-link
-                        >
-                      </template>
-                    </el-table-column>
-                  </el-table>
+                  <div>
+                    <el-table :data="enclosure_details_list">
+                      <el-table-column prop="fileName" label="文件名称">
+                        <template slot-scope="scope">
+                          <el-link
+                            type="primary"
+                            @click="
+                              enclosureDownload(
+                                scope.row.attachmentUuid,
+                                scope.row.fileName
+                              )
+                            "
+                            >{{ scope.row.fileName }}</el-link
+                          >
+                        </template>
+                      </el-table-column>
+                    </el-table>
                   </div>
                   <!-- <el-button slot="reference" >click 激活</el-button> -->
-                   <!-- <div slot="reference"
+                  <!-- <div slot="reference"
                      style="color: #1371cc;"
                      class="pointer" @click="nearbyDetails(scope.row)"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.count}}
                    </div> -->
@@ -161,7 +166,7 @@
               <template slot-scope="scope">
                 <el-button
                   type="text"
-                  style="color: #0c87d6; font-size:14px"
+                  style="color: #0c87d6; font-size: 14px"
                   size="small"
                   v-if="scope.row.taskType == 2"
                   @click.native.prevent="editModel(scope.row)"
@@ -170,7 +175,7 @@
                 </el-button>
                 <el-button
                   type="text"
-                  style="color:#ff8a72;font-size:14px"
+                  style="color: #ff8a72; font-size: 14px"
                   size="small"
                   @click.native.prevent="deleteModel(scope.row)"
                 >
@@ -227,8 +232,11 @@
           </el-select>
         </el-form-item>
         <el-form-item label="ㅤㅤㅤ专ㅤ题:" prop="belongSpcial">
-          <el-select placeholder="请选择" v-model="editTask.belongSpcial"
-            v-if="other_input == true" @change="changeBelongSpcial"
+          <el-select
+            placeholder="请选择"
+            v-model="editTask.belongSpcial"
+            v-if="other_input == true"
+            @change="changeBelongSpcial"
           >
             <el-option
               v-for="item in thematicOption"
@@ -238,7 +246,10 @@
             >
             </el-option>
           </el-select>
-          <el-input v-model="editTask.belongSpcial" v-if="other_input==false"></el-input>
+          <el-input
+            v-model="editTask.belongSpcial"
+            v-if="other_input == false"
+          ></el-input>
         </el-form-item>
         <el-form-item label="ㅤㅤㅤ领ㅤ域:" prop="belongField">
           <el-select placeholder="请选择" v-model="editTask.belongField">
@@ -329,8 +340,11 @@
             </el-select>
           </el-form-item>
           <el-form-item label="ㅤㅤㅤ专ㅤ题:" prop="belongSpcial">
-            <el-select placeholder="请选择" v-model="taskSelf.belongSpcial"
-             v-if="other_input == true" @change="changeBelongSpcial"
+            <el-select
+              placeholder="请选择"
+              v-model="taskSelf.belongSpcial"
+              v-if="other_input == true"
+              @change="changeBelongSpcial"
             >
               <el-option
                 v-for="item in thematicOption"
@@ -340,7 +354,10 @@
               >
               </el-option>
             </el-select>
-            <el-input v-model="taskSelf.belongSpcial" v-if="other_input==false"></el-input>
+            <el-input
+              v-model="taskSelf.belongSpcial"
+              v-if="other_input == false"
+            ></el-input>
           </el-form-item>
           <el-form-item label="ㅤㅤㅤ领ㅤ域:" prop="belongField">
             <el-select placeholder="请选择" v-model="taskSelf.belongField">
@@ -535,11 +552,11 @@ import {
 } from "@WISDOMAUDIT/api/shandong/projectmanagement.js";
 export default {
   components: { Pagination },
-  props: ["active_project","userRole"],
+  props: ["active_project", "userRole"],
   data() {
     return {
-      modelInfoLoading:false,//需要引入模型列表Loading
-      taskTableLoading:false, //任务列表Loading
+      modelInfoLoading: false, //需要引入模型列表Loading
+      taskTableLoading: false, //任务列表Loading
       // userRole:"",
       isdisabled: false,
       task: 1,
@@ -716,7 +733,7 @@ export default {
       },
       modelTotal: 0,
       taskTotal: 0,
-      other_input:true, //自建任务专题是否选择其他
+      other_input: true, //自建任务专题是否选择其他
       // 自建任务校验
       taskSelfRules: {
         taskName: [
@@ -745,15 +762,15 @@ export default {
   //     console.log(this.managementProjectUuid);
   //   }
   // },
-   watch: {
+  watch: {
     userRole(newValue, oldValue) {
       this.userRole = newValue;
     },
   },
   methods: {
     // 专题选择其他变成可输入
-    changeBelongSpcial(val){
-      if(val == "其他"){
+    changeBelongSpcial(val) {
+      if (val == "其他") {
         this.other_input = false;
         this.taskSelf.belongSpcial = "";
         this.editTask.belongSpcial = "";
@@ -855,14 +872,23 @@ export default {
         cancelButtonText: "放弃删除",
       })
         .then(() => {
-          deletmodelTask(row.auditTaskUuid).then((resp) => {
-            // 为了在删除最后一页的最后一条数据时能成功跳转回最后一页的上一页
-            const totalPage = Math.ceil((this.modelTotal - 1) / this.queryInfo.pageSize); // 总页数
-            this.queryInfo.pageNo =
-            this.queryInfo.pageNo > totalPage ? totalPage : this.queryInfo.pageNo;
-            this.queryInfo.pageNo = this.queryInfo.pageNo < 1 ? 1 : this.queryInfo.pageNo;
-            this.getmodelTaskList(this.queryInfo);
-          });
+          if (row.problemsNumber != 0) {
+            this.$message.info("该任务已被关联,请勿删除！");
+          } else {
+            deletmodelTask(row.auditTaskUuid).then((resp) => {
+              // 为了在删除最后一页的最后一条数据时能成功跳转回最后一页的上一页
+              const totalPage = Math.ceil(
+                (this.modelTotal - 1) / this.queryInfo.pageSize
+              ); // 总页数
+              this.queryInfo.pageNo =
+                this.queryInfo.pageNo > totalPage
+                  ? totalPage
+                  : this.queryInfo.pageNo;
+              this.queryInfo.pageNo =
+                this.queryInfo.pageNo < 1 ? 1 : this.queryInfo.pageNo;
+              this.getmodelTaskList(this.queryInfo);
+            });
+          }
         })
         .catch((action) => {
           // this.$message({
@@ -1522,7 +1548,7 @@ export default {
   border-bottom: 1px solid #d2d2d2;
   padding: 10px;
   text-align: center;
-   font-weight: bolder;
+  font-weight: bolder;
   font-size: 14px;
   color: #000;
 }
@@ -1732,14 +1758,14 @@ export default {
 .selfTask /deep/ .upload-demo {
   margin-top: -35px;
 }
-.selfTask >>> .el-form-item__label{
-text-align: left !important;
+.selfTask >>> .el-form-item__label {
+  text-align: left !important;
 }
-.selfTask >>>  .el-form-item {
-   margin-bottom: -10px !important;
+.selfTask >>> .el-form-item {
+  margin-bottom: -10px !important;
 }
 .selfTask >>> .el-form-item__label {
-   font-size: 14px !important;
+  font-size: 14px !important;
   color: #606266 !important;
 }
 .taskAdd {
@@ -1758,15 +1784,14 @@ text-align: left !important;
   top: -35px;
   width: 65%;
 }
-.taskAdd >>> .el-form-item__label{
-text-align: left !important;
+.taskAdd >>> .el-form-item__label {
+  text-align: left !important;
 }
 .taskAdd /deep/ .el-textarea__inner {
   width: 65%;
 }
 .taskAdd /deep/ .el-upload-dragger {
   width: 80% !important;
-
 }
 .taskAdd >>> .el-upload {
   width: 80% !important;
@@ -1774,15 +1799,15 @@ text-align: left !important;
 .taskAdd /deep/ .upload-demo {
   margin-top: -35px;
 }
-.taskAdd >>>  .el-form-item {
-   margin-bottom: -10px !important;
+.taskAdd >>> .el-form-item {
+  margin-bottom: -10px !important;
 }
 .taskAdd >>> .el-form-item__label {
-   font-size: 14px !important;
+  font-size: 14px !important;
   color: #606266 !important;
 }
 .taskTable >>> .el-form-item {
-   margin-bottom: 0px !important;
+  margin-bottom: 0px !important;
 }
 .addPerson .text {
   font-size: 14px;
@@ -1821,7 +1846,7 @@ text-align: left !important;
 }
 .taskAdd /deep/ .el-form-item__error {
   position: absolute;
-   top: -70%;
+  top: -70%;
   left: 35%;
 }
 >>> .el-input.is-disabled .el-input__inner {
