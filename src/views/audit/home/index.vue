@@ -577,24 +577,33 @@ export default {
             this.$store.state.user.datauserid,
           method: "get",
           data: {},
-        })
-          .then((res) => {
-            if (res.data.code == 0) {
-              let reptoken = res.data.data.token;
-              this.$axios({
-                url: `http://10.19.206.196:8088/WebReport/decision/third/auth/cross/login`,
-                method: "get",
-                data: { third_token: reptoken },
-              }).then((res2) => {
-                if (res2.data.code == 0) {
+        }).then((res) => {
+          if (res.data.code == 0) {
+            let reptoken = res.data.data.token;
+            let url =
+              "http://10.19.206.196:8088/WebReport/decision/third/auth/cross/login";
+            $.ajax({
+              url: url,
+              dataType: "jsonp",
+              data: { third_token: reptoken },
+              success: function (res2) {
+                if (res2.errorCode) {
+                  console.log("帆软认证接口调用失败", res);
+                } else {
+                  console.log("帆软认证接口调用成功", res);
                   window.open(res2.data.data.url);
                   return;
                 }
-              });
-            } else {
-              return;
-            }
-          })
+              },
+              error: function () {
+                alert("超时或服务器其他错误"); // 登录失败（超时或服务器其他错误）
+                return;
+              },
+            });
+          } else {
+            return;
+          }
+        });
         return;
       } else {
         this.$router.push({

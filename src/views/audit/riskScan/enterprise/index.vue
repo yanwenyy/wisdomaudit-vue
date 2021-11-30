@@ -118,16 +118,19 @@ export default {
     },
     // 获取二级分类
     gettapylist() {
+  
+           
+     
       let p = sessionStorage.getItem("store");
       let q = JSON.parse(p).user.datauserid;
       getSignature(q).then((result) => {
         if (result.code== 0 && result.data.url !== null) {
-          getdataAuditApi(result.data.token,result.data.url).then((res)=>{
+          getdataAuditApi(result.data.token).then((res)=>{
            if (res.status== 'success') {
             this.formdates=res.url.replace('&amp;','&')
             
-            window.location.href='http://10.19.206.196:8088/WebReport/decision/view/form?viewlet=vendor/zhuowang/test.cpt&ref_t=design&ref_c=d6740dbd-0279-40d0-b361-3cc1adb80d35'
-
+      
+ window.open('http://10.19.206.196:8088/WebReport/decision/view/form?viewlet=vendor/zhuowang/test.cpt&ref_t=design&ref_c=d6740dbd-0279-40d0-b361-3cc1adb80d35')
 
 
             //  getTypes("area=2").then((rem) => {
@@ -145,6 +148,8 @@ export default {
 
 
         } else {
+     
+       
           let rem = getTypes("area=2");
           this.options = rem.data;
           this.value = rem.data[0].type;
