@@ -1644,7 +1644,7 @@ export default {
     this.selectProjectData(this.projectTypeNum);
     // this.selectprojectPeople(this.selectprojectPeopleNum);
     this.selectloadaudittorg(this.selectprojectPeopleNum);
-    this.thematicSelect(this.thematic);
+    
     this.areasSelect(this.areas);
     this.get_user(); //获取当前登录人接口
 
@@ -1820,12 +1820,11 @@ export default {
       });
     },
     // 专题下拉框
-    thematicSelect (data) {
-      thematicAreas(data).then((resp) => {
-        this.thematicOption = resp.data;
-        //
-      });
-    },
+    // thematicSelect (data) {
+    //   thematicAreas(data).then((resp) => {
+    //     this.thematicOption = resp.data;
+    //   });
+    // },
     //领域下拉框
     areasSelect (data) {
       thematicAreas(data).then((resp) => {
