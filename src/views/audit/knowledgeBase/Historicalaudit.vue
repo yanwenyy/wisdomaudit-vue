@@ -181,14 +181,15 @@
                style="padding-bottom: 59px">
       <div class="title_dlag">{{title}}</div>
 
-      <div class="dlag_conter">
+      <div class="dlag_conter add">
         <el-form ref="add"
                  :model="add"
                  v-loading="ld"
                  :rules="rules">
 
           <!-- 历史审计发现描述 -->
-          <el-form-item prop="historyAuditFindDescribe">
+          <el-form-item prop="historyAuditFindDescribe"
+                        style="margin-bottom: 22px!important;">
             <p><span style="color:red;">*</span> 历史审计发现描述：</p>
             <el-input v-model="add.historyAuditFindDescribe"
                       prop="historyAuditFindDescribe"
@@ -196,7 +197,8 @@
           </el-form-item>
 
           <!-- 被审计单位 -->
-          <el-form-item prop="auditedEntity">
+          <el-form-item prop="auditedEntity"
+                        style="margin-bottom: 22px!important;">
             <p style="padding-top: 10px;"><span style="color:red;">*</span> 被审计单位：</p>
             <el-select v-model="add.auditedEntity"
                        @change="changeHeader_danwei">
@@ -210,7 +212,8 @@
           </el-form-item>
 
           <!-- 领域 -->
-          <el-form-item prop="field">
+          <el-form-item prop="field"
+                        style="margin-bottom: 22px!important;">
             <p><span style="color:red;">*</span> 领域：</p>
             <el-select v-model="add.field"
                        @change="changeHeader_ly">
@@ -223,7 +226,8 @@
           </el-form-item>
 
           <!-- 专题 -->
-          <el-form-item prop="special">
+          <el-form-item prop="special"
+                        style="margin-bottom: 22px!important;">
             <p><span style="color:red;">*</span> 专题：</p>
             <el-select v-model="add.special"
                        @change="changeHeader_zt">
@@ -236,14 +240,14 @@
           </el-form-item>
 
           <!-- 发现人 -->
-          <el-form-item>
+          <el-form-item style="margin-bottom: 22px!important;">
             <p>发现人：</p>
             <el-input v-model="add.findPeople"
                       placeholder="请输入发现人"></el-input>
           </el-form-item>
 
           <!--审计依据 -->
-          <el-form-item>
+          <el-form-item style="margin-bottom: 22px!important;">
             <p>审计依据：</p>
             <!-- <el-select v-model="add.auditBasis"
                        @change="changeHeader_yj">
@@ -266,7 +270,8 @@
           </el-form-item>
 
           <!--发现日期 -->
-          <el-form-item prop="findData">
+          <el-form-item prop="findData"
+                        style="margin-bottom: 22px;">
             <p><span style="color:red;">*</span>发现日期：</p>
             <el-date-picker v-model="add.findData"
                             type="date"
@@ -275,7 +280,7 @@
           </el-form-item>
 
           <!--所属年份 -->
-          <el-form-item>
+          <el-form-item style="margin-bottom: 22px!important;">
             <p>所属年份：</p>
             <!-- <el-select v-model="add.year"
                      @change="changeHeader_nf">
@@ -293,20 +298,18 @@
           </el-form-item>
 
           <!-- 发现来源 -->
-          <el-form-item>
+          <el-form-item style="margin-bottom: 22px!important;">
             <p>发现来源：</p>
             <el-input v-model="add.source"
                       placeholder="请输入发现来源"></el-input>
           </el-form-item>
 
           <!-- 风险金额 -->
-          <el-form-item>
+          <el-form-item style="margin-bottom: 22px!important;">
             <p>风险金额（万元)：</p>
             <!--v-model.number="add.riskAmount"-->
             <el-input v-model="add.riskAmount"
-
                       type="number"
-
                       @keyup.native="add.riskAmount = oninput(add.riskAmount)"
                       placeholder="请输入风险金额"></el-input>
           </el-form-item>
@@ -596,8 +599,8 @@ export default {
       str = str.replace(/[^\d^\.]+/g, ""); // 保留数字和小数点
       str = str.replace(/^\D*([0-9]\d*\.?\d{0,6})?.*$/, "$1"); // 小数点后只能输 2 位
       // str=str.slice(0,27);
-      if(str.length>27){
-        str=str.slice(0,27);
+      if (str.length > 27) {
+        str = str.slice(0, 27);
       }
       return str;
     },
@@ -1090,13 +1093,10 @@ export default {
   align-items: center;
 }
 .search >>> .el-input__inner {
-  width: 220px !important;
-  border-radius: 0;
-}
-.search >>> .el-input__inner {
   width: 180px;
   display: flex;
   float: right;
+  border-radius: 0;
 }
 .search >>> .search_icon {
   position: absolute;
