@@ -1733,6 +1733,10 @@ text-align: left !important;
 .selfTask >>>  .el-form-item {
    margin-bottom: -10px !important;
 }
+.selfTask >>> .el-form-item__label {
+   font-size: 14px !important;
+  color: #606266 !important;
+}
 .taskAdd {
   width: 70%;
   margin: 10px auto;
@@ -1767,6 +1771,10 @@ text-align: left !important;
 }
 .taskAdd >>>  .el-form-item {
    margin-bottom: -10px !important;
+}
+.taskAdd >>> .el-form-item__label {
+   font-size: 14px !important;
+  color: #606266 !important;
 }
 .taskTable >>> .el-form-item {
    margin-bottom: 0px !important;

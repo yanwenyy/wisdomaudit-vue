@@ -2614,6 +2614,7 @@ export default {
 .selfTask .el-form-item {
   margin-bottom: -10px !important;
 }
+
 .optionBtn .el-form-item {
   margin-bottom: 0px !important;
 }
@@ -2646,6 +2647,10 @@ export default {
 <style scoped>
 .selfTask >>> .el-form-item {
   margin-bottom: -10px !important;
+}
+.selfTask >>> .el-form-item__label {
+   font-size: 14px !important;
+  color: #606266 !important;
 }
 .optionBtn >>> .el-form-item {
   margin-bottom: 0px !important;
