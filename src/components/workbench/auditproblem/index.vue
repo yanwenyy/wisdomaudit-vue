@@ -233,6 +233,7 @@
             v-model="temp.riskAmount"
             placeholder="请输入风险金额"
             @keyup.native="onlyNumOnePoint('temp')"
+            @input="temp.riskAmount=temp.riskAmount.slice(0,27)"
           />
         </el-form-item>
         <el-form-item label="关联任务：" prop="auditTaskUuid">
