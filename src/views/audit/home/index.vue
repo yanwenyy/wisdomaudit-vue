@@ -574,13 +574,22 @@ export default {
         this.$axios({
           url:
             `/wisdomaudit/dataAuditApi/getSignature?userName=` +
-            sessionStorage.getItem(""),
+            this.$store.state.user.datauserid,
           method: "get",
           data: {},
         }).then((res) => {
           if (res.data.code == 0) {
-            window.open(res.data.data.url);
-            return;
+            let reptoken = res.data.data.token;
+            this.$axios({
+              url: `http://10.19.206.196:8088/WebReport/decision/third/auth/cross/login`,
+              method: "get",
+              data: { third_token: reptoken },
+            }).then((res2) => {
+              if (res2.data.code == 0) {
+                window.open(res2.data.data.url);
+                return;
+              }
+            });
           }
         });
       } else {
