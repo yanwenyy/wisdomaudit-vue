@@ -333,8 +333,11 @@ export default {
         that.formDetail.reviewerName=that.userInfo.managementProject.projectChargemanName;
         that.formDetail.auditorsName=this.userInfo.user.realName;
         var sj=new Date().toLocaleDateString().split('/');
-        sj[1]=sj[1]<10?'0'+sj[1]:sj[1];
+        // sj[1]=sj[1]<10?'0'+sj[1]:sj[1];
+        sj[1]=sj[1].padStart(2, '0');
+        sj[2]=sj[2].padStart(2, '0');
         that.formDetail.compileDate=sj[0]+"-"+sj[1]+"-"+sj[2];
+        console.log(that.formDetail.compileDate)
       })
     },
     //复核人列表
