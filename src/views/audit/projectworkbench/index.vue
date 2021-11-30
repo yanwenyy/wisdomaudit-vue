@@ -448,12 +448,13 @@
                   </el-table>
                   <div
                     class="update"
-                    style="margin-top: 5px; cursor: pointer"
+                    style="cursor: pointer"
                     @click="nearbyDetails(scope.row)"
                     slot="reference"
                   >
-                    <i class="update_icon" style="margin-top: -3px">
+                    <i class="update_icon">
                       <svg
+                        style="margin-top: 5px;"
                         t="1631877671204"
                         class="icon"
                         viewBox="0 0 1024 1024"
@@ -470,7 +471,7 @@
                         ></path>
                       </svg>
                     </i>
-                    <span>{{ scope.row.count }}</span>
+                    <span style="margin-top: -5px;margin-left:4px">{{ scope.row.count }}</span>
                   </div>
                 </el-popover>
               </template>
@@ -2614,9 +2615,10 @@ export default {
 .selfTask .el-form-item {
   margin-bottom: -10px !important;
 }
-.optionBtn .el-form-item {
-  margin-bottom: 0px !important;
-}
+
+// .optionBtn .el-form-item {
+//   margin-bottom: -5px !important;
+// }
 .upload-demo {
   margin-top: -35px;
 }
@@ -2647,8 +2649,15 @@ export default {
 .selfTask >>> .el-form-item {
   margin-bottom: -10px !important;
 }
+.selfTask >>> .el-form-item__label {
+   font-size: 14px !important;
+  color: #606266 !important;
+}
 .optionBtn >>> .el-form-item {
   margin-bottom: 0px !important;
+}
+.optionBtn >>> .el-select {
+ margin-top: 0px !important;
 }
 >>> .el-input__inner::-webkit-input-placeholder {
   color: #c0c4cc !important;
