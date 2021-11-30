@@ -122,7 +122,7 @@ export default {
       let q = JSON.parse(p).user.datauserid;
       getSignature(q).then((result) => {
         if (result.code== 0 && result.data.url !== null) {
-          getdataAuditApi(result.data.token).then((res)=>{
+          getdataAuditApi(result.data.token,result.data.url).then((res)=>{
 
            if (res.status== 'success') {
             this.formdates=res.url.replace('&amp;','&')
@@ -184,7 +184,7 @@ export default {
 
   mounted() {},
 };
-</script>
+</script> 
 
 <style lang="scss" scoped>
 .item-wapper {
