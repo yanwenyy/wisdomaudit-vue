@@ -893,7 +893,7 @@ export default {
         } else if (resp.data.result == 1) {
           this.$message({
             message: '请上传附件',
-            type: "warning",
+            type: "error",
           });
         } else {
           this.$message({

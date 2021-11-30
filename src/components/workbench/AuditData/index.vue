@@ -1710,7 +1710,10 @@ export default {
       let params = {
         pageNo: this.params_add.pageNo,
         pageSize: this.params_add.pageSize,
-        projectType: this.projectNumber,//项目id
+        condition: {
+          projectType: this.projectNumber,//项目id
+        }
+
       }
 
       add_pageList(params).then(resp => {
@@ -2337,10 +2340,6 @@ export default {
         dataCategory: data.dataCategory
       }
       this.change_people(params);//审核回显 添加人
-
-
-
-
       this.add_data.dataCategory = data.dataCategory;//基本类型
       this.add_data.dataName = data.dataName;//资料名称
       this.add_data.dataNumber = data.dataNumber;//编号 
@@ -2363,21 +2362,6 @@ export default {
           this.edit_file_list.push(item);
         })
       }
-
-
-
-      // }
-
-
-
-      // let query_params = {
-      //   condition: {
-      //     logSysActiUuid: this.record_query.id
-      //   },
-      //   pageNo: this.record_query.pageNo,
-      //   pageSize: this.record_query.pageSize
-      // }
-      // this.post_operation_record(query_params)//刷新 操作记录 列表
     },
     // 审批操作记录  分页每页条数
     handleSizeChange_record_list (val) {
@@ -2482,32 +2466,40 @@ export default {
           this.success_btn1 = 0
           console.log(resp.data);
           if (resp.code == 0) {
-            this.$message({
-              message: "驳回成功",
-              type: "success",
-            });
-            this.dialogVisibl_operation = false
-            let params2 = {
-              pageNo: this.operation_query.pageNo,
-              pageSize: this.operation_query.pageSize,
-              condition: {
-                dataName: this.operation_query.dataName,
-                dataCategory: this.operation_query.dataCategory,
-                dataTaskNumber: this.addDataTaskUuid,
+            if (resp.data.result == 1) {
+              this.$message({
+                message: "驳回成功",
+                type: "success",
+              });
+              this.dialogVisibl_operation = false
+              let params2 = {
+                pageNo: this.operation_query.pageNo,
+                pageSize: this.operation_query.pageSize,
+                condition: {
+                  dataName: this.operation_query.dataName,
+                  dataCategory: this.operation_query.dataCategory,
+                  dataTaskNumber: this.addDataTaskUuid,
+                }
+              };
+              this.audit_query.posy_remarks = ''//清空备注
+              this.operation_list(params2); // 操作 资料列表
+              let params = {
+                pageNo: this.params.pageNo,
+                pageSize: this.params.pageSize,
+                condition: {
+                  projectNumber: this.projectNumber,
+                  title: this.search_title,
+                }
               }
-            };
-            this.audit_query.posy_remarks = ''//清空备注
-            this.operation_list(params2); // 操作 资料列表
-            let params = {
-              pageNo: this.params.pageNo,
-              pageSize: this.params.pageSize,
-              condition: {
-                projectNumber: this.projectNumber,
-                title: this.search_title,
-              }
+              this.list_data_start(params)
+              this.dialogVisibl_operation = false;//关闭
             }
-            this.list_data_start(params)
-            this.dialogVisibl_operation = false;//关闭
+            if (resp.data.result == 3) {
+              this.$message({
+                message: "已审核通过的数据不可再次驳回！",
+                type: "success",
+              });
+            }
           } else {
             this.$message({
               message: resp.data.msg,
@@ -2522,42 +2514,48 @@ export default {
           console.log(resp.data);
           this.success_btn2 = 0
           if (resp.code == 0) {
-            this.$message({
-              message: "通过成功",
-              type: "success",
-            });
-            this.dialogVisibl_operation = false
+            if (resp.data.result == 1) {
+              this.$message({
+                message: "通过成功",
+                type: "success",
+              });
+              this.dialogVisibl_operation = false
 
-            let params2 = {
-              pageNo: this.operation_query.pageNo,
-              pageSize: this.operation_query.pageSize,
-              condition: {
-                dataName: this.operation_query.dataName,
-                dataCategory: this.operation_query.dataCategory,
-                dataTaskNumber: this.addDataTaskUuid,
-              }
-            };
-            this.operation_list(params2); // 操作 资料列表
-            this.audit_query.posy_remarks = ''//清空备注
+              let params2 = {
+                pageNo: this.operation_query.pageNo,
+                pageSize: this.operation_query.pageSize,
+                condition: {
+                  dataName: this.operation_query.dataName,
+                  dataCategory: this.operation_query.dataCategory,
+                  dataTaskNumber: this.addDataTaskUuid,
+                }
+              };
+              this.operation_list(params2); // 操作 资料列表
+              this.audit_query.posy_remarks = ''//清空备注
 
-            let params = {
-              pageNo: this.params.pageNo,
-              pageSize: this.params.pageSize,
-              condition: {
-                projectNumber: this.projectNumber,
-                title: this.search_title,
+              let params = {
+                pageNo: this.params.pageNo,
+                pageSize: this.params.pageSize,
+                condition: {
+                  projectNumber: this.projectNumber,
+                  title: this.search_title,
+                }
               }
+              this.list_data_start(params)
+              this.dialogVisibl_operation = false;//关闭
             }
-            this.list_data_start(params)
-            this.dialogVisibl_operation = false;//关闭
-
-          } else {
-            this.$message({
-              message: resp.data.msg,
-              type: "error",
-            });
-          }
-        })
+            if (resp.data.result == 3) {
+              this.$message({
+                message: "已通过的数据不可再次通过！",
+                type: "success",
+              });
+            } else {
+              this.$message({
+                message: resp.data.msg,
+                type: "error",
+              });
+            }
+          })
       }
 
     },
