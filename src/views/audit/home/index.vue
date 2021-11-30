@@ -570,15 +570,33 @@ export default {
     },
 
     shortcutEvent(item) {
-      if(item.menuName=="审计概览"){
-        window.open(item.url)
-        return
-      }else{
+      if (item.menuName == "审计概览") {
+        this.$axios({
+          url:
+            `/wisdomaudit/dataAuditApi/getSignature?userName=` +
+            this.$store.state.user.datauserid,
+          method: "get",
+          data: {},
+        }).then((res) => {
+          if (res.data.code == 0) {
+            let reptoken = res.data.data.token;
+            this.$axios({
+              url: `http://10.19.206.196:8088/WebReport/decision/third/auth/cross/login`,
+              method: "get",
+              data: { third_token: reptoken },
+            }).then((res2) => {
+              if (res2.data.code == 0) {
+                window.open(res2.data.data.url);
+                return;
+              }
+            });
+          }
+        });
+      } else {
         this.$router.push({
-        path: item.url,
-      });
+          path: item.url,
+        });
       }
-      
     },
   },
 };

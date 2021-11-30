@@ -154,7 +154,7 @@
                 </el-menu-item-group>
               </el-submenu>
               <el-submenu
-                v-show="userInfo.userRole == '1' || userInfo.userRole == '3'||(userInfo.isLiaison=='1'&&userInfo.userRole == '3')"
+                v-show="userInfo.userRole == '1' || userInfo.userRole == '3'||(userInfo.isLiaison=='1'&&userInfo.userRole == '2')"
                 index="3"
               >
                 <template slot="title">
