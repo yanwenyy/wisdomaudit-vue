@@ -591,7 +591,7 @@ export default {
                   console.log("帆软认证接口调用失败", res);
                 } else {
                   console.log("帆软认证接口调用成功", res);
-                  window.open(res2.data.data.url);
+                  window.open(item.url);
                   return;
                 }
               },
