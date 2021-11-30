@@ -540,6 +540,8 @@ export default {
                 });
                 this.confirmationDialogVisible = false;
                 this.list_data_start();
+                timer=null;
+                clearTimeout(timer);
               } else {
                 this.$message({
                   message: resp.data.msg,
@@ -561,6 +563,8 @@ export default {
                 this.confirmationDialogVisible = false;
                 this.confirmationDialogVisibleZx = false;
                 this.list_data_start();
+                timer=null;
+                clearTimeout(timer);
               } else {
                 this.$message({
                   message: resp.data.msg,
