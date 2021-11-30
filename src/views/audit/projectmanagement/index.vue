@@ -573,7 +573,7 @@
                  :model="addProjectManagement"
                  hide-required-asterisk
                  :rules="addzhuanRules"
-                 ref="addProjectManagement">
+                 ref="editProjectManagement">
           <el-row>
             <el-form-item label="ㅤ项目编号:"
                           prop="projectCode">
@@ -754,7 +754,7 @@
           <el-button @click="editDialogVisible = false">取消</el-button>
           <el-button class="nextBtn"
                      :disabled="isDisable"
-                     @click="editBtn('addProjectManagement')">确认</el-button>
+                     @click="editBtn('editProjectManagement')">确认</el-button>
         </div>
       </div>
       <!-- 编辑经责 -->
@@ -763,7 +763,8 @@
         <el-form label-width="100px"
                  :model="addprojectjing"
                  hide-required-asterisk
-                 :rules="addprojectjingRules">
+                 :rules="addprojectjingRules"
+                  ref="editprojectjing">
           <el-row>
             <el-form-item label="ㅤ项目编号:"
                           prop="projectCode">
@@ -921,7 +922,7 @@
           <el-button @click="editDialogVisible = false">取消</el-button>
           <el-button class="nextBtn"
                      :disabled="isDisable"
-                     @click="editSave">确认</el-button>
+                     @click="editSave()">确认</el-button>
         </div>
       </div>
     </el-dialog>
@@ -1093,7 +1094,7 @@
                  :model="dqProblem"
                  :rules="rules"
                  label-position="right"
-                 label-width="120px"
+                 label-width="140px"
                  class="problem-form">
           <el-form-item label="问题"
                         prop="problem">
@@ -1175,6 +1176,8 @@
                         prop="riskAmount"
                         width="180">
             <el-input v-model.number="dqProblem.riskAmount"
+                      type="number"
+                      @keyup.native="dqProblem.riskAmount = oninput(dqProblem.riskAmount)"
                       placeholder="请输入风险金额" />
           </el-form-item>
           <el-form-item label="关联任务"
@@ -1280,6 +1283,7 @@ import {
   updateManagementProject,
   isStartProject,
   startProject,
+  selectTask_s,
 } from "@SDMOBILE/api/shandong/adminProject"; //lhg
 // import axios from "axios";
 import Pagination from "@WISDOMAUDIT/components/Pagination";
@@ -1298,6 +1302,7 @@ import {
 } from "@WISDOMAUDIT/api/shandong/projectmanagement.js";
 import { Checkbox } from "element-ui";
 import { fmtDate } from "@SDMOBILE/model/time.js";
+
 
 export default {
   components: { Pagination },
@@ -1516,7 +1521,18 @@ export default {
       },
 
       confirm_problem_dlag_edit: false, //问题清单编辑
-      dqProblem: {},
+      dqProblem: {
+        problem: '', //问题
+        field: '',//领域3
+        special: '',//专题
+        describe: '', //描述
+        managementAdvice: '',//建议
+        problemDiscoveryTime: '', //发现日期
+        problemFindPeople: '',//发现人
+        riskAmount: '',//风险金额
+        basis: '',//依据
+        auditTaskUuid: '',//依据
+      },
       // auditTaskUuidArr: [],//关联人物
       // basisArr: [],//依据
 
@@ -1540,7 +1556,7 @@ export default {
         ],
         special: [{ required: true, message: "请选择专题", trigger: "change" }],
         riskAmount: [
-          { required: true, message: "请填写风险金额", trigger: "blue" },
+          { required: false, message: "请填写风险金额", trigger: "blue" },
         ],
       },
       temp: {
@@ -1616,8 +1632,12 @@ export default {
       },
       isDisable: false, //防止重复提交
       projectid: "", //获取项目的id
+
+
+
     };
   },
+
   created () {
     this.projectData(this.query);
     this.selectProjectData(this.projectTypeNum);
@@ -1631,7 +1651,6 @@ export default {
     this.getloadcascader("Category");
     this.getloadcascader("SPECIAL");
     // this.getbasis();//获取依据 任务select
-    this.getSelectTask(); //关联任务
 
     this.setDialogWidth(); //启动整改动态宽度
   },
@@ -1650,16 +1669,49 @@ export default {
       return fmtDate(t, "yyyy-MM-dd ");
     },
   },
-  // watch: {
-  //     active_project(val) {
-  //       this.refreash = true; // loading
-  //       let _this = this;
-  //       setTimeout(function name() {
-  //         _this.refreash = false;
-  //       }, 500);
-  //     },
-  // },
+  watch: {
+    //     active_project(val) {
+    //       this.refreash = true; // loading
+    //       let _this = this;
+    //       setTimeout(function name() {
+    //         _this.refreash = false;
+    //       }, 500);
+    //     },
+  },
   methods: {
+
+    // 金额限制
+    oninput (number) {
+      let str = number.toString().replace();
+      let len1 = str.substr(0, 1);
+      let len2 = str.substr(1, 1);
+      //如果第一位是0，第二位不是点，就用数字把点替换掉
+      if (str.length > 1 && len1 == 0 && len2 != ".") {
+        str = str.substr(1, 1);
+      }
+      //第一位不能是.
+      if (len1 == ".") {
+        str = "";
+      }
+      if (len1 == "+") {
+        str = "";
+      }
+      if (len1 == "-") {
+        str = "";
+      }
+
+      //限制只能输入一个小数点
+      if (str.indexOf(".") != -1) {
+        let str_ = str.substr(str.indexOf(".") + 1);
+        if (str_.indexOf(".") != -1) {
+          str = str.substr(0, str.indexOf(".") + str_.indexOf(".") + 1);
+        }
+      }
+      //正则替换
+      str = str.replace(/[^\d^\.]+/g, ""); // 保留数字和小数点
+      str = str.replace(/^\D*([0-9]\d*\.?\d{0,6})?.*$/, "$1"); // 小数点后只能输 2 位
+      return str;
+    },
     // 限制开始  结束时间范围
     beginDate () {
       const that = this;
@@ -1853,7 +1905,6 @@ export default {
       var that = this;
       this.$nextTick(() => {
         that.$refs["addprojectjing"].clearValidate();
-        // that.$refs["addProjectManagement"].clearValidate();
       });
       this.isdisabled = true;
       this.prjType = 2;
@@ -1967,22 +2018,15 @@ export default {
           that.$refs["addProjectManagement"].clearValidate();
         }
       });
+      
     },
     //编辑项目对话框关闭事件
     editDialogClosed () {
-      if (this.$refs["addprojectjing"] != undefined) {
-        this.$refs["addprojectjing"].resetFields();
-      } else {
-        this.$refs["addProjectManagement"].resetFields();
+      if(this.prjType == 2){
+        this.$refs["editprojectjing"].resetFields();
+      }else{
+        this.$refs["editProjectManagement"].resetFields();
       }
-      // var that = this;
-      //   this.$nextTick(() => {
-      //     if (that.$refs["addprojectjing"] != undefined) {
-      //       that.$refs["addprojectjing"].clearValidate();
-      //     } else {
-      //       that.$refs["addProjectManagement"].clearValidate();
-      //     }
-      //   });
     },
     // 项目管理列表分页
     handleCurrentChangeProject (val) {
@@ -2037,6 +2081,7 @@ export default {
           //
         });
       }
+
       var that = this;
       if (val) {
         this.$nextTick(() => {
@@ -2044,6 +2089,7 @@ export default {
             that.$refs["addprojectjing"].clearValidate();
           } else {
             that.$refs["addProjectManagement"].clearValidate();
+            // that.$refs["addprojectjing"].clearValidate();
           }
         });
       }
@@ -2232,11 +2278,7 @@ export default {
       if (rows.projectType == "jzsj") {
         var that = this;
         this.$nextTick(() => {
-          if (that.$refs["addprojectjing"] != undefined) {
-            that.$refs["addprojectjing"].clearValidate();
-          } else {
-            that.$refs["addProjectManagement"].clearValidate();
-          }
+           that.$refs["editprojectjing"].clearValidate();
         });
         this.prjType = 2;
         editProject(rows.managementProjectUuid).then((resp) => {
@@ -2250,11 +2292,7 @@ export default {
       } else {
         var that = this;
         this.$nextTick(() => {
-          if (that.$refs["addprojectjing"] != undefined) {
-            that.$refs["addprojectjing"].clearValidate();
-          } else {
-            that.$refs["addProjectManagement"].clearValidate();
-          }
+          that.$refs["editProjectManagement"].clearValidate();
         });
         this.prjType = 1;
         editProject(rows.managementProjectUuid).then((resp) => {
@@ -2270,8 +2308,8 @@ export default {
       }
     },
     // 专项修改按钮事件
-    editBtn (addProjectManagement) {
-      this.$refs[addProjectManagement].validate((valid) => {
+    editBtn (editProjectManagement) {
+      this.$refs[editProjectManagement].validate((valid) => {
         if (valid) {
           this.isDisable = true;
           setTimeout(() => {
@@ -2308,7 +2346,7 @@ export default {
     },
     // 经责项目类型按钮事件
     editSave () {
-      this.$refs.addprojectjing.validate((valid) => {
+      this.$refs["editprojectjing"].validate((valid) => {
         if (valid) {
           this.isDisable = true;
           setTimeout(() => {
@@ -2472,7 +2510,6 @@ export default {
         },
       };
       confirm_rectification(params).then((resp) => {
-        console.log(resp);
         this.issues_list = resp.data;
         this.issues_list_loading = false;
       });
@@ -2512,21 +2549,23 @@ export default {
     },
     // 关联任务
     getSelectTask () {
-      this.$axios({
-        url: `/wisdomaudit/auditTask/selectTask`,
-        method: "post",
-        data: {
-          managementProjectUuid: this.active_project,
-        },
-      }).then((res) => {
-        this.auditTasklList = res.data.data;
-      });
+      let params = {
+        // managementProjectUuid: this.problem_list_query.managementProjectUuid,
+        auditTask: '',
+
+      }
+      selectTask_s(params).then(resp => {
+        this.auditTasklList = resp.data;
+        // console.log(this.auditTasklList);
+      })
     },
     // 编辑删除
     edit (index, data) {
+      this.getSelectTask(); //关联任务
       this.list_check = data;
       if (index == 1) {
         let entity = this.list_check; //当前的数据
+        this.confirm_problem_dlag_edit = true; //审计问题清单 编辑
         this.problemCorrectUuid = entity.problemCorrectUuid;
         // let _data = resp.data
         this.dqProblem.problem = entity.problem; //问题
@@ -2537,12 +2576,18 @@ export default {
         this.dqProblem.problemDiscoveryTime = entity.problemDiscoveryTime; //发现日期
         this.dqProblem.problemFindPeople = entity.problemFindPeople; //发现人
         this.dqProblem.riskAmount = entity.riskAmount; //风险金额
-        this.dqProblem.basis = entity.basis.split(","); //依据
-        this.dqProblem.auditTaskUuid = entity.auditTaskUuid.split(","); //关联任务
+        // 依据
+        if (entity.basis) {
+          this.dqProblem.basis = entity.basis;
+        } else {
+          this.dqProblem.basis = '';
+        }
+
+        // this.dqProblem.basis = entity.basis; 
+        this.dqProblem.auditTaskUuid = entity.auditTaskUuid ? entity.auditTaskUuid.split(",") : [];//任务
 
         this.dqProblem = JSON.parse(JSON.stringify(this.dqProblem));
         // this.edit_remove_data(1, entity)// 编辑 删除  数据
-        this.confirm_problem_dlag_edit = true; //审计问题清单 编辑
         this.$nextTick(() => {
           this.$refs["detailForm"].clearValidate();
         });
@@ -2606,7 +2651,14 @@ export default {
           ); //id
           this.$set(this.dqProblem, "isDeleted", 0); //依据
           let entity = this.dqProblem; //当前的数据
-          this.edit_remove_data(3, entity); // 编辑 删除  数据
+          if (b !== []) {
+            this.edit_remove_data(3, entity); // 编辑 删除  数据
+          } else {
+            this.$message({
+              message: "请填写信息",
+              type: "error",
+            });
+          }
         } else {
           this.$message({
             message: "请填写信息",
