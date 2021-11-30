@@ -573,7 +573,7 @@
                  :model="addProjectManagement"
                  hide-required-asterisk
                  :rules="addzhuanRules"
-                 ref="addProjectManagement">
+                 ref="editProjectManagement">
           <el-row>
             <el-form-item label="ㅤ项目编号:"
                           prop="projectCode">
@@ -754,7 +754,7 @@
           <el-button @click="editDialogVisible = false">取消</el-button>
           <el-button class="nextBtn"
                      :disabled="isDisable"
-                     @click="editBtn('addProjectManagement')">确认</el-button>
+                     @click="editBtn('editProjectManagement')">确认</el-button>
         </div>
       </div>
       <!-- 编辑经责 -->
@@ -763,7 +763,8 @@
         <el-form label-width="100px"
                  :model="addprojectjing"
                  hide-required-asterisk
-                 :rules="addprojectjingRules">
+                 :rules="addprojectjingRules"
+                  ref="editprojectjing">
           <el-row>
             <el-form-item label="ㅤ项目编号:"
                           prop="projectCode">
@@ -921,7 +922,7 @@
           <el-button @click="editDialogVisible = false">取消</el-button>
           <el-button class="nextBtn"
                      :disabled="isDisable"
-                     @click="editSave">确认</el-button>
+                     @click="editSave()">确认</el-button>
         </div>
       </div>
     </el-dialog>
@@ -1904,7 +1905,6 @@ export default {
       var that = this;
       this.$nextTick(() => {
         that.$refs["addprojectjing"].clearValidate();
-        // that.$refs["addProjectManagement"].clearValidate();
       });
       this.isdisabled = true;
       this.prjType = 2;
@@ -2018,22 +2018,15 @@ export default {
           that.$refs["addProjectManagement"].clearValidate();
         }
       });
+      
     },
     //编辑项目对话框关闭事件
     editDialogClosed () {
-      if (this.$refs["addprojectjing"] != undefined) {
-        this.$refs["addprojectjing"].resetFields();
-      } else {
-        this.$refs["addProjectManagement"].resetFields();
+      if(this.prjType == 2){
+        this.$refs["editprojectjing"].resetFields();
+      }else{
+        this.$refs["editProjectManagement"].resetFields();
       }
-      // var that = this;
-      //   this.$nextTick(() => {
-      //     if (that.$refs["addprojectjing"] != undefined) {
-      //       that.$refs["addprojectjing"].clearValidate();
-      //     } else {
-      //       that.$refs["addProjectManagement"].clearValidate();
-      //     }
-      //   });
     },
     // 项目管理列表分页
     handleCurrentChangeProject (val) {
@@ -2088,6 +2081,7 @@ export default {
           //
         });
       }
+
       var that = this;
       if (val) {
         this.$nextTick(() => {
@@ -2095,6 +2089,7 @@ export default {
             that.$refs["addprojectjing"].clearValidate();
           } else {
             that.$refs["addProjectManagement"].clearValidate();
+            // that.$refs["addprojectjing"].clearValidate();
           }
         });
       }
@@ -2283,11 +2278,7 @@ export default {
       if (rows.projectType == "jzsj") {
         var that = this;
         this.$nextTick(() => {
-          if (that.$refs["addprojectjing"] != undefined) {
-            that.$refs["addprojectjing"].clearValidate();
-          } else {
-            that.$refs["addProjectManagement"].clearValidate();
-          }
+           that.$refs["editprojectjing"].clearValidate();
         });
         this.prjType = 2;
         editProject(rows.managementProjectUuid).then((resp) => {
@@ -2301,11 +2292,7 @@ export default {
       } else {
         var that = this;
         this.$nextTick(() => {
-          if (that.$refs["addprojectjing"] != undefined) {
-            that.$refs["addprojectjing"].clearValidate();
-          } else {
-            that.$refs["addProjectManagement"].clearValidate();
-          }
+          that.$refs["editProjectManagement"].clearValidate();
         });
         this.prjType = 1;
         editProject(rows.managementProjectUuid).then((resp) => {
@@ -2321,8 +2308,8 @@ export default {
       }
     },
     // 专项修改按钮事件
-    editBtn (addProjectManagement) {
-      this.$refs[addProjectManagement].validate((valid) => {
+    editBtn (editProjectManagement) {
+      this.$refs[editProjectManagement].validate((valid) => {
         if (valid) {
           this.isDisable = true;
           setTimeout(() => {
@@ -2359,7 +2346,7 @@ export default {
     },
     // 经责项目类型按钮事件
     editSave () {
-      this.$refs.addprojectjing.validate((valid) => {
+      this.$refs["editprojectjing"].validate((valid) => {
         if (valid) {
           this.isDisable = true;
           setTimeout(() => {
