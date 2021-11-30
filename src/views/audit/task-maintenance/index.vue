@@ -290,7 +290,7 @@
         </el-form-item>
       </el-form>
       <div class="stepBtn" style="margin-right: 2%">
-        <el-button @click="resBtn" style="border: 1px solid #d2d2d2"
+        <el-button @click="resBtn('editTaskRef')" style="border: 1px solid #d2d2d2"
           >取消</el-button
         >
         <el-button
@@ -413,7 +413,7 @@
           </el-form-item>
         </el-form>
         <div class="temBtn">
-          <el-button @click="resBtn" style="border: 1px solid #d2d2d2"
+          <el-button @click="addresBtn('selfTaskRef')" style="border: 1px solid #d2d2d2"
             >取消</el-button
           >
           <el-button
@@ -1335,10 +1335,15 @@ export default {
       }
     },
     // 自建取消按钮
-    resBtn() {
-      this.taskSelf = [];
+    resBtn(ref) {
+      this.$refs[ref].resetFields();
+      // this.taskSelf = [];
       this.TaskDialogVisible = false;
       this.editModelDialogVisible = false;
+    },
+    addresBtn(ref){
+      this.$refs[ref].resetFields();
+      this.TaskDialogVisible = false;
     },
     // 模型取消按钮
     returnStep() {
