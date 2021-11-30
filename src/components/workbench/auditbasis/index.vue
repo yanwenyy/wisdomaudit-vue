@@ -124,7 +124,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="close">取 消</el-button>
-        <el-button v-if="!ifLook" class="subBtn"  type="primary">确 定</el-button>
+        <el-button v-if="!ifLook" class="subBtn"  type="primary" @click="sub">确 定</el-button>
       </div>
     </el-dialog>
   </div>

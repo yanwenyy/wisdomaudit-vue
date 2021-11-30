@@ -125,3 +125,7 @@ table tr:nth-child(odd){
   border-top-left-radius: 0!important;
   border-bottom-left-radius: 0!important;
 }
+.el-tooltip__popper{
+  max-width: 400px;
+  line-height: 180%;
+}

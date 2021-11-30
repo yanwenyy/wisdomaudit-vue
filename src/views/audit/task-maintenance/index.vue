@@ -73,7 +73,7 @@
             </el-table-column>
             <el-table-column prop="peopleName" label="责任人">
               <template slot-scope="scope">
-                <el-form>
+                <el-form class="taskTable">
                   <el-form-item>
                     <el-select
                       style="width:180px;margin-top:5px"
@@ -746,7 +746,6 @@ export default {
   methods: {
     // 专题选择其他变成可输入
     changeBelongSpcial(val){
-      console.log(val);
       if(val == "其他"){
         this.other_input = false;
         this.taskSelf.belongSpcial = "";
@@ -1730,7 +1729,13 @@ export default {
 }
 .selfTask >>> .el-form-item__label{
 text-align: left !important;
- 
+}
+.selfTask >>>  .el-form-item {
+   margin-bottom: -10px !important;
+}
+.selfTask >>> .el-form-item__label {
+   font-size: 14px !important;
+  color: #606266 !important;
 }
 .taskAdd {
   width: 70%;
@@ -1763,6 +1768,16 @@ text-align: left !important;
 }
 .taskAdd /deep/ .upload-demo {
   margin-top: -35px;
+}
+.taskAdd >>>  .el-form-item {
+   margin-bottom: -10px !important;
+}
+.taskAdd >>> .el-form-item__label {
+   font-size: 14px !important;
+  color: #606266 !important;
+}
+.taskTable >>> .el-form-item {
+   margin-bottom: 0px !important;
 }
 .addPerson .text {
   font-size: 14px;

@@ -78,7 +78,7 @@
     <!-- 初始化项目 -->
     <!-- v-show="projectNum.length > 0" -->
     <div class="initializeProject" v-if="active_project">
-      <div class="title1" style="margin-top: 0%">初始化项目</div>
+      <div class="title1" style="margin-top: 3%">初始化项目</div>
       <ul v-if="projectInit">
         <li
           v-for="(item, index) in projectInit"
@@ -154,7 +154,7 @@
                 </el-menu-item-group>
               </el-submenu>
               <el-submenu
-                v-show="userInfo.userRole == '1' || userInfo.userRole == '3'"
+                v-show="userInfo.userRole == '1' || userInfo.userRole == '3'||(userInfo.isLiaison=='1'&&userInfo.userRole == '2')"
                 index="3"
               >
                 <template slot="title">
@@ -293,6 +293,7 @@
           :filter-method="filterMethod"
           filter-placeholder="请输入组员名称"
           target-order = "push"
+          @right-check-change="rightArray"
           v-model="value"
           :titles="['组员列表', '已选组员']"
           :data="data"
@@ -447,12 +448,13 @@
                   </el-table>
                   <div
                     class="update"
-                    style="margin-top: 5px; cursor: pointer"
+                    style="cursor: pointer"
                     @click="nearbyDetails(scope.row)"
                     slot="reference"
                   >
-                    <i class="update_icon" style="margin-top: -3px">
+                    <i class="update_icon">
                       <svg
+                        style="margin-top: 5px;"
                         t="1631877671204"
                         class="icon"
                         viewBox="0 0 1024 1024"
@@ -469,7 +471,7 @@
                         ></path>
                       </svg>
                     </i>
-                    <span>{{ scope.row.count }}</span>
+                    <span style="margin-top: -5px;margin-left:4px">{{ scope.row.count }}</span>
                   </div>
                 </el-popover>
               </template>
@@ -662,7 +664,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="ㅤㅤㅤ专ㅤ题:" prop="belongSpcial">
-            <el-select placeholder="请选择" v-model="taskSelf.belongSpcial">
+            <el-select placeholder="请选择" v-model="taskSelf.belongSpcial"  v-if="other_input == true" @change="changeBelongSpcial">
               <el-option
                 v-for="item in thematicOption"
                 :key="item.value"
@@ -671,6 +673,7 @@
               >
               </el-option>
             </el-select>
+            <el-input v-model="taskSelf.belongSpcial" v-if="other_input==false"></el-input>
           </el-form-item>
           <el-form-item label="ㅤㅤㅤ领ㅤ域:" prop="belongField">
             <el-select placeholder="请选择" v-model="taskSelf.belongField">
@@ -765,6 +768,7 @@
             <el-select
               placeholder="请选择"
               v-model="edittaskSelfForm.belongSpcial"
+              v-if="other_input == true" @change="changeBelongSpcial"
             >
               <el-option
                 v-for="item in thematicOption"
@@ -774,6 +778,7 @@
               >
               </el-option>
             </el-select>
+            <el-input v-model="edittaskSelfForm.belongSpcial" v-if="other_input==false"></el-input>
           </el-form-item>
           <el-form-item label="ㅤㅤㅤ领ㅤ域:" prop="belongField">
             <el-select
@@ -905,6 +910,7 @@ export default {
   },
   data() {
     return {
+      other_input:true, //专题下拉框显示隐藏
       defaultActive: "1-1",
       queryInfo: {},
       isdisabled: false,
@@ -1136,6 +1142,7 @@ export default {
           { required: true, message: "请输入任务描述", trigger: "change" },
         ],
       },
+      arrRightValue:[]
     };
   },
   watch: {
@@ -1181,6 +1188,14 @@ export default {
     this.moreProject(this.queryManageAll);
   },
   methods: {
+     // 专题选择其他变成可输入
+    changeBelongSpcial(val){
+      if(val == "其他"){
+        this.other_input = false;
+        this.taskSelf.belongSpcial = "";
+        this.edittaskSelfForm.belongSpcial = "";
+      }
+    },
     //获取当前登录人信息
     get_user(ifMounted) {
       get_userInfo().then((resp) => {
@@ -1453,8 +1468,6 @@ export default {
 
     //设为接口人事件
     isLiaison_Btn(row, list) {
-      console.log(row);
-      console.log(list);
       let leader = {};
       this.peopleSelection.forEach((a) => {
         if (a.peopleRole == 1) {
@@ -1477,19 +1490,33 @@ export default {
       row.isLiaison = 1;
       row.disabled = true;
     },
+    rightArray(arr){
+      // alert(23)
+      console.log(arr);
+      this.arrRightValue = arr;
+    },
     //取消设为接口人
     cancel_Btn(row) {
       console.log(row);
-      console.log(this.peopleSelection);
-      // alert(123)
+      
+      // console.log(this.peopleSelection);
       row.isLiaison = 0;
-      this.peopleSelection.forEach((a) => {
-        if (a.peopleTableUuid == row.key && a.peopleRole == 1) {
-          row.disabled = true;
-        } else {
+      for(let k=0;k<this.peopleSelection.length;k++){
+        if (this.peopleSelection[k].peopleTableUuid == row.key && this.peopleSelection[k].peopleRole == 1) {
+          return row.disabled = true;
+        }else{
           row.disabled = false;
+          // console.log(this.value);
+          // for(let p=0; p<this.arrRightValue.length;p++){
+          //   if(this.arrRightValue[p] == row.peopleTableUuid){
+          //    return this.arrRightValue.remove('this.arrRightValue[p')
+          //   }
+            
+          // }
+          // console.log(this.arrRightValue);
+          // this.value = [];
         }
-      });
+      }
       // row.disabled = true;
     },
     // 下一步按钮事件
@@ -1882,6 +1909,7 @@ export default {
     },
     // 编辑自建按钮
     edit_data(row) {
+      this.other_input = true;
       this.edit_file_list = [];
       this.Upload_file = [];
       this.fileList_Delet = [];
@@ -2014,6 +2042,7 @@ export default {
     resetForm2(resetForm2) {
       this.$refs[resetForm2].resetFields();
       this.fileList = [];
+      this.other_input = true;
     },
     editResetForm2(ref) {
       this.$refs[ref].resetFields();
@@ -2562,7 +2591,7 @@ export default {
   padding: 2%;
 }
 .selfTask {
-  width: 60%;
+  width: 50%;
   margin: 20px auto;
   // border: 1px solid red;
 }
@@ -2584,8 +2613,12 @@ export default {
   width: 100%;
 }
 .selfTask .el-form-item {
-  // margin-bottom: -10px !important;
+  margin-bottom: -10px !important;
 }
+
+// .optionBtn .el-form-item {
+//   margin-bottom: -5px !important;
+// }
 .upload-demo {
   margin-top: -35px;
 }
@@ -2613,6 +2646,22 @@ export default {
 }
 </style>
 <style scoped>
+.selfTask >>> .el-form-item {
+  margin-bottom: -10px !important;
+}
+.selfTask >>> .el-form-item__label {
+   font-size: 14px !important;
+  color: #606266 !important;
+}
+.selfTask >>> .el-form-item__content{
+  margin-left: 86px !important;
+}
+.optionBtn >>> .el-form-item {
+  margin-bottom: 0px !important;
+}
+.optionBtn >>> .el-select {
+ margin-top: 0px !important;
+}
 >>> .el-input__inner::-webkit-input-placeholder {
   color: #c0c4cc !important;
 }
@@ -2657,7 +2706,7 @@ export default {
   white-space: pre-line;
 }
 .textOver {
-  font-size: 14px;
+  font-size: 12px;
   text-overflow: ellipsis;
   overflow: hidden;
 }

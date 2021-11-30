@@ -78,7 +78,7 @@
       <el-table-column label="专题" prop="special">
         <template slot-scope="scope">
           <div>
-            {{ specialFilter(scope.row.special) }}
+            {{ scope.row.special }}
           </div>
         </template>
       </el-table-column>
@@ -128,6 +128,7 @@
       title="新增审计问题"
       :visible.sync="dialogFormVisible"
       :close-on-click-modal="false"
+      @close="resetForm('temp')"
       center
     >
       <el-form
@@ -153,15 +154,24 @@
           </el-select>
         </el-form-item>
         <el-form-item label="专题：" prop="special">
-          <el-select v-model="temp.special" placeholder="请选择专题">
+          <el-select
+            v-model="temp.special"
+            placeholder="请选择专题"
+            v-if="input_select == true"
+            @change="change_zt"
+          >
             <el-option
               v-for="item in SPECIALList"
               :key="item.value"
               :label="item.label"
-              :value="item.value"
+              :value="item.label"
             >
             </el-option>
           </el-select>
+          <el-input
+            v-model="temp.special"
+            v-if="input_select == false"
+          ></el-input>
         </el-form-item>
         <el-form-item> </el-form-item>
         <el-form-item label="依据：" prop="basis" class="long">
@@ -271,6 +281,7 @@
       :title="ifadd == 1 ? '编辑问题' : '问题详情'"
       :visible.sync="dialogDetailVisible"
       :close-on-click-modal="false"
+      @close="resetForm('dqProblem')"
       center
     >
       <el-form
@@ -308,15 +319,22 @@
             v-model="dqProblem.special"
             placeholder="请选择专题"
             :disabled="ifadd != 2 ? false : true"
+            v-if="input_selecte == true"
+            @change="change_zte"
           >
             <el-option
               v-for="item in SPECIALList"
               :key="item.value"
               :label="item.label"
-              :value="item.value"
+              :value="item.label"
             >
             </el-option>
           </el-select>
+          <el-input
+            v-model="dqProblem.special"
+            v-if="input_selecte == false"
+            :disabled="ifadd != 2 ? false : true"
+          ></el-input>
         </el-form-item>
         <el-form-item></el-form-item>
         <el-form-item label="依据：" prop="basis" class="long">
@@ -672,6 +690,8 @@ export default {
       personlist: [],
       me: "",
       userRole: 0,
+      input_select: true,
+      input_selecte: true,
     };
   },
   watch: {},
@@ -685,6 +705,29 @@ export default {
     this.getList();
   },
   methods: {
+    // 新增问题关闭
+    resetForm(str) {
+      if (str == "temp") {
+        this.temp = {};
+      } else if (str == "dqProblem") {
+        this.dqProblem = {};
+      }
+      this.input_select = true; //专题 恢复默认
+    },
+    change_zt(val) {
+      this.temp.special = val;
+      if (val == "其他") {
+        this.input_select = false;
+        this.temp.special = "";
+      }
+    },
+    change_zte(val) {
+      this.dqProblem.special = val;
+      if (val == "其他") {
+        this.input_selecte = false;
+        this.dqProblem.special = "";
+      }
+    },
     // UpNumber(e){
     //   //输入框中只允许输入数字
     //   e.target.value = e.target.value.replace(/[^\d.]/g,'')

@@ -95,3 +95,16 @@ export function startProject (data) {
     data,
   })
 }
+
+
+
+// 任务 select（
+export function selectTask_s (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/auditTask/selectTask`,
+    method: 'post',
+    isLoading: false,
+    data,
+  })
+}
