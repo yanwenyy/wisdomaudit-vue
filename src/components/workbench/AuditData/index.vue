@@ -2405,7 +2405,7 @@ export default {
     },
     // 通过
     adopt () {
-      this.success_btn1 = 1;//显示加载按钮  0成功  1 loaging
+      this.success_btn2 = 1;//显示加载按钮  0成功  1 loaging
 
       this.isDisable = true
       setTimeout(() => {
@@ -2479,7 +2479,7 @@ export default {
       // 驳回
       if (index == 2) {
         operation_audit(params).then(resp => {
-          this.success_btn2 = 0
+          this.success_btn1 = 0
           console.log(resp.data);
           if (resp.code == 0) {
             this.$message({
@@ -2520,7 +2520,7 @@ export default {
       if (index == 3) {
         operation_audit(params).then(resp => {
           console.log(resp.data);
-          this.success_btn1 = 0
+          this.success_btn2 = 0
           if (resp.code == 0) {
             this.$message({
               message: "通过成功",
