@@ -122,19 +122,17 @@ export default {
       let q = JSON.parse(p).user.datauserid;
       getSignature(q).then((result) => {
         if (result.code== 0 && result.data.url !== null) {
-          getdataAuditApi(result.data.token).then((res)=>{
-           
-           if (res.status== 'success') {
+          console.log("获取token接口", result);
+          getdataAuditApi(result.data.token,"area=1").then((res)=>{
             this.formdates=res.url.replace('&amp;','&')
-              console.log('我调用了');
-             getTypes("area=1").then((rem) => {
+          
+           console.log("获取之前的接口", rem);
+            getTypes("area=1").then((rem) => {
               this.options = rem.data;
               this.value = rem.data[0].type;
               this.gettablelist(this.value);
               console.log("获取外面之前的接口", rem);
             });
-             
-           }
              
            
 
