@@ -298,7 +298,7 @@ export default {
       dqtime: "",
     };
   },
-  created() {
+  mounted() {
     axios.defaults.headers.common["TOKEN"] = sessionStorage.getItem("TOKEN");
     this.getmodellist();
     this.getprojectlist();
