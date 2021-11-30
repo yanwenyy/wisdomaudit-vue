@@ -102,7 +102,7 @@ export function startProject (data) {
 export function selectTask_s (data) {
   return request({
     baseURL: baseURL,
-    url: `/auditTask/selectTask`,
+    url: `/auditTask/selectTaskProblem`,
     method: 'post',
     isLoading: false,
     data,

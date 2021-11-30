@@ -764,7 +764,7 @@
                  :model="addprojectjing"
                  hide-required-asterisk
                  :rules="addprojectjingRules"
-                  ref="editprojectjing">
+                 ref="editprojectjing">
           <el-row>
             <el-form-item label="ㅤ项目编号:"
                           prop="projectCode">
@@ -2018,13 +2018,13 @@ export default {
           that.$refs["addProjectManagement"].clearValidate();
         }
       });
-      
+
     },
     //编辑项目对话框关闭事件
     editDialogClosed () {
-      if(this.prjType == 2){
+      if (this.prjType == 2) {
         this.$refs["editprojectjing"].resetFields();
-      }else{
+      } else {
         this.$refs["editProjectManagement"].resetFields();
       }
     },
@@ -2278,7 +2278,7 @@ export default {
       if (rows.projectType == "jzsj") {
         var that = this;
         this.$nextTick(() => {
-           that.$refs["editprojectjing"].clearValidate();
+          that.$refs["editprojectjing"].clearValidate();
         });
         this.prjType = 2;
         editProject(rows.managementProjectUuid).then((resp) => {
@@ -2550,9 +2550,7 @@ export default {
     // 关联任务
     getSelectTask () {
       let params = {
-        // managementProjectUuid: this.problem_list_query.managementProjectUuid,
-        auditTask: '',
-
+        managementProjectUuid: this.problem_list_query.managementProjectUuid,
       }
       selectTask_s(params).then(resp => {
         this.auditTasklList = resp.data;
@@ -3053,7 +3051,7 @@ export default {
   top: 0%;
   left: 0%;
 }
-.addForm >>> .el-form-item__label{
+.addForm >>> .el-form-item__label {
   margin-left: 15px !important;
 }
 
