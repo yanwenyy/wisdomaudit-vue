@@ -402,6 +402,7 @@
             placeholder="请输入风险金额"
             :disabled="ifadd != 2 ? false : true"
             @keyup.native="onlyNumOnePoint('dqProblem')"
+            @input="temp.riskAmount=temp.riskAmount.slice(0,27)"
           />
         </el-form-item>
         <el-form-item label="关联任务：" prop="auditTaskUuid">
