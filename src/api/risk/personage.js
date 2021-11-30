@@ -39,6 +39,7 @@ export function  getSignature (data) {
 
 
 export function getdataAuditApi (Thirdtoken) {
+  let request =''
   var url = "http://10.19.206.196:8088/WebReport/decision/third/auth/cross/login";
  return  $.ajax({
           url: url,
@@ -50,6 +51,9 @@ export function getdataAuditApi (Thirdtoken) {
                     console.log('帆软认证接口调用失败',res);
                   } else {
                     console.log('帆软认证接口调用成功',res);
+                     request =res
+
+                  
                   }
           },
           error: function () {

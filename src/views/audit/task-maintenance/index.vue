@@ -96,14 +96,16 @@
             </el-table-column>
             <el-table-column prop="taskDescription" label="任务描述">
             </el-table-column>
-            <el-table-column prop="address" label="附件" width="90">
+            <el-table-column prop="address" label="附件" width="90"  show-overflow-tooltip>
               <template slot-scope="scope">
                 <el-popover
                   placement="bottom"
-                  width="300"
+                  width="250"
                   trigger="click"
                   v-loading="nearbyLoading"
+                  :popper-options="{boundariesElement: 'body'}"
                 >
+                <div>
                   <el-table :data="enclosure_details_list">
                     <el-table-column prop="fileName" label="文件名称">
                       <template slot-scope="scope">
@@ -120,12 +122,17 @@
                       </template>
                     </el-table-column>
                   </el-table>
+                  </div>
                   <!-- <el-button slot="reference" >click 激活</el-button> -->
+                   <!-- <div slot="reference"
+                     style="color: #1371cc;"
+                     class="pointer" @click="nearbyDetails(scope.row)"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.count}}
+                   </div> -->
                   <div
                     class="update"
                     style="margin-left: -40px; cursor: pointer"
-                    @click="nearbyDetails(scope.row)"
                     slot="reference"
+                    @click="nearbyDetails(scope.row)"
                   >
                     <i class="update_icon" style="margin-top: -3px">
                       <svg
@@ -1452,8 +1459,6 @@ export default {
 .titleMes {
   box-sizing: border-box;
 }
-.table {
-}
 .sjzl >>> .el-table__header {
   border-top: none !important;
 }
@@ -1859,7 +1864,7 @@ text-align: left !important;
   align-items: center;
   border-radius: 0 5px 5px 0;
 }
-/deep/ .el-popover {
+/* /deep/ .el-popover {
   width: 500px !important;
-}
+} */
 </style>
