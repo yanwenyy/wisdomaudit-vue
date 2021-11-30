@@ -7,17 +7,17 @@
       :visible.sync="visible"
       :append-to-body="true">
       <div class="relation-div">
-        <div class="relation-div-search">
-          <el-form :inline="true" :model="searchform" @keyup.enter.native="init()" class="queryForm">
+        <div class="relation-div-search search-form">
+          <el-form :inline="true" :model="searchform" @keyup.enter.native="init(id)" class="queryForm">
             <el-form-item class="searchBtn">
               <el-input v-model="searchform.problem" placeholder="问题名称" clearable>
-                <el-button slot="append" icon="el-icon-search" @click="init"></el-button>
+                <el-button slot="append" icon="el-icon-search" @click="init(id)"></el-button>
               </el-input>
             </el-form-item>
           </el-form>
         </div>
         <el-table
-          :header-cell-style="{'text-align': 'center','background-color': 'whitesmoke',}"
+          :header-cell-style="{'text-align': 'center','background-color': '#F4FAFF',}"
           ref="multipleTable"
           :data="relationTabel"
           class="relationTabelClass"
@@ -46,12 +46,14 @@
             align="center"
             prop="basis"
             width="180"
+            :show-overflow-tooltip="true"
             label="依据">
           </el-table-column>
           <el-table-column
             align="center"
             prop="describe"
             width="200"
+            :show-overflow-tooltip="true"
             label="描述">
           </el-table-column>
           <el-table-column
@@ -99,6 +101,7 @@
     name: "search-list",
     data() {
       return {
+        id:'',
         relationTabel:[],
         multipleSelection:[],
         visible: false,
@@ -118,6 +121,9 @@
     methods: {
       // 初始化
       init(id) {
+       if(id){
+         this.id=id;
+       }
         var params={
           condition:{
             managementProjectUuid:id,
@@ -160,7 +166,6 @@
     }
   }
 </script>
-
 <style scoped>
   >>>.zb-form .el-form-item{
     margin-bottom: 10px!important;
@@ -200,4 +205,5 @@
     background: #0089D6!important;
     color:#fff;
   }
+
 </style>
