@@ -1022,7 +1022,8 @@
         <!-- 选择后的的问题清单 -->
         <div class="table_list">
           <el-table :data="issues_list.records"
-                    :header-cell-style="{              'background-color': '#F4FAFF',
+                    :header-cell-style="{              
+                      'background-color': '#F4FAFF',
             }"
                     v-loading="issues_list_loading"
                     style="width: 100%"
@@ -1038,12 +1039,16 @@
                              show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="discoveryTime"
-                             label="发表日期"
+                             label="发现日期"
                              show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="riskAmount"
-                             label="风险金额(元)"
+                             label="风险金额(万元)"
                              show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{scope.row.riskAmount}}
+              </template>
+
             </el-table-column>
             <el-table-column prop="problemFindPeople"
                              label="发现人"
@@ -1252,8 +1257,11 @@
                              show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="riskAmount"
-                             label="风险金额"
+                             label="风险金额(万元)"
                              show-overflow-tooltip>
+              <template slot-scope="scope">
+                <p>{{ scope.row.riskAmount }}</p>
+              </template>
             </el-table-column>
             <el-table-column prop="problemFindPeople"
                              label="发现人"
@@ -1644,7 +1652,7 @@ export default {
     this.selectProjectData(this.projectTypeNum);
     // this.selectprojectPeople(this.selectprojectPeopleNum);
     this.selectloadaudittorg(this.selectprojectPeopleNum);
-    
+
     this.areasSelect(this.areas);
     this.get_user(); //获取当前登录人接口
 
@@ -1711,7 +1719,7 @@ export default {
       //正则替换
       str = str.replace(/[^\d^\.]+/g, ""); // 保留数字和小数点
       str = str.replace(/^\D*([0-9]\d*\.?\d{0,6})?.*$/, "$1"); // 小数点后只能输 2 位
-      str=str.slice(0,27);
+      str = str.slice(0, 27);
       return str;
     },
     // 限制开始  结束时间范围
