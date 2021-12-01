@@ -72,7 +72,7 @@ const AuditCorrective = {
       name: 'rectificationMeasures',
       component: () => import('@WISDOMAUDIT/views/auditCorrective/rectificationMeasures'),
       meta: {
-        title: '审计整改-整改措施(跟进人)'
+        title: '整改措施'
       },
     },
     {
@@ -80,7 +80,7 @@ const AuditCorrective = {
       name: 'rectificationMeasuresInterface',
       component: () => import('@WISDOMAUDIT/views/auditCorrective/rectificationMeasuresInterface'),
       meta: {
-        title: '审计整改-整改措施(接口人)'
+        title: '整改措施反馈'
       },
     },
     {
@@ -88,7 +88,7 @@ const AuditCorrective = {
       name: 'rectificationMeasuresLeader',
       component: () => import('@WISDOMAUDIT/views/auditCorrective/rectificationMeasuresLeader'),
       meta: {
-        title: '审计整改-整改措施(领导)'
+        title: '整改措施审核'
       },
     },
     {

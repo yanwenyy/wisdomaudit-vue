@@ -52,8 +52,6 @@ export function getdataAuditApi (Thirdtoken) {
                   } else {
                     console.log('帆软认证接口调用成功',res);
                      request =res
-
-                  
                   }
           },
           error: function () {

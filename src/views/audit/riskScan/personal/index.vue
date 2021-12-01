@@ -101,9 +101,6 @@ export default {
     };
   },
 
-  computed: {
-    ...mapGetters(["name"]),
-  },
 
   methods: {
     changemx(val) {
@@ -122,17 +119,17 @@ export default {
       let q = JSON.parse(p).user.datauserid;
       getSignature(q).then((result) => {
         if (result.code== 0 && result.data.url !== null) {
-          console.log("获取token接口", result);
-          getdataAuditApi(result.data.token,"area=1").then((res)=>{
-          
-          
-           console.log("获取之前的接口", rem);
-            getTypes("area=1").then((rem) => {
+          getdataAuditApi(result.data.token).then((res)=>{
+           
+           if (res.status== 'success') {
+             getTypes("area=1").then((rem) => {
               this.options = rem.data;
               this.value = rem.data[0].type;
               this.gettablelist(this.value);
               console.log("获取外面之前的接口", rem);
             });
+             
+           }
              
            
 
@@ -159,6 +156,7 @@ export default {
     },
     // 获取模型列表
     async gettablelist() {
+      console.log('执行了gettablelist');
       try {
         let res = await getTabList(`type=${this.value}`);
         this.tablelist = res.data;

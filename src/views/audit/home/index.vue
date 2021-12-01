@@ -102,11 +102,8 @@
                 />我的模型任务</span
               >
             </div>
-            <el-empty
-              description="暂无数据"
-              v-if="modellist.length == 0"
-            >
-            <div style="height:375px;width:100%;"></div>
+            <el-empty description="暂无数据" v-if="modellist.length == 0">
+              <div style="height: 375px; width: 100%"></div>
             </el-empty>
             <ul style="height: 406px; overflow: scroll" class="odd-even" v-else>
               <li v-for="(item, index) in modellist" :key="'model' + index">
@@ -294,13 +291,20 @@ export default {
       account: "",
       appSessionId: "",
       dqtime: "",
+      dqtoken: "",
     };
   },
   mounted() {
-    this.getmodellist();
-    this.getprojectlist();
-    this.getdatalist();
-    this.getmeunlist();
+    this.dqtoken = sessionStorage.getItem("TOKEN");
+    console.log("-----当前token-----" + this.dqtoken);
+    if (this.dqtoken) {
+      this.getmodellist();
+      this.getprojectlist();
+      this.getdatalist();
+      this.getmeunlist();
+    }else{
+      window.reload()
+    }
   },
   methods: {
     //通过认证后的方法
@@ -314,6 +318,9 @@ export default {
       this.$axios({
         method: "post",
         url: `/wisdomaudit/treasury/getTreasuryStatus`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         data: {
           sceneId: this.sceneId,
           sceneName: "导出授权场景", //场景名称
@@ -362,6 +369,9 @@ export default {
           this.ifpush = false;
           this.$axios({
             url: `/wisdomaudit/homePage/shortCutSet`,
+            headers: {
+              TOKEN: this.dqtoken,
+            },
             method: "post",
             data: this.dqfastlist,
           }).then((res) => {
@@ -432,6 +442,9 @@ export default {
       (this.floading4 = true),
         this.$axios({
           url: `/wisdomaudit/homePage/pageList`,
+          headers: {
+            TOKEN: this.dqtoken,
+          },
           method: "post",
           data: {},
         }).then((res) => {
@@ -460,6 +473,9 @@ export default {
       (this.floading4 = true),
         this.$axios({
           url: `/wisdomaudit/permission/getUserPermissionList`,
+          headers: {
+            TOKEN: this.dqtoken,
+          },
           method: "get",
           data: {},
         }).then((res) => {
@@ -485,6 +501,9 @@ export default {
       this.floading2 = true;
       this.$axios({
         url: `/wisdomaudit/homePage/homeMxList`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "post",
         data: {},
       }).then((res) => {
@@ -497,6 +516,9 @@ export default {
       this.floading1 = true;
       this.$axios({
         url: `/wisdomaudit/homePage/homeProjectList`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "post",
         data: {},
       }).then((res) => {
@@ -510,6 +532,9 @@ export default {
       this.floading3 = true;
       this.$axios({
         url: `/wisdomaudit/homePage/homeZlList`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "post",
         data: {},
       }).then((res) => {
@@ -574,6 +599,9 @@ export default {
           url:
             `/wisdomaudit/dataAuditApi/getSignature?userName=` +
             this.$store.state.user.datauserid,
+          headers: {
+            TOKEN: this.dqtoken,
+          },
           method: "get",
           data: {},
         }).then((res) => {

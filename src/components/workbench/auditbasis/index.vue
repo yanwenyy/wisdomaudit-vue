@@ -387,7 +387,10 @@ export default {
               that.apkFiles.remove(file.response.data);
               that.key=Math.random();
             }else{
+              // console.log(file)
               that.fileList.remove(file);
+              that.formState.attachmentList=that.formState.attachmentList.filter((item)=>{item.attachment_uuid!=file.attachmentUuid})
+              // console.log(that.formState.attachmentList,222)
             }
             return true;
 
@@ -435,6 +438,7 @@ export default {
     },
     //保存数据
     sub(){
+      // debugger;
       var attachmentUuidList=[];
       this.apkFiles.forEach((item)=>{
         attachmentUuidList.push(item.attachmentUuid)
@@ -448,6 +452,7 @@ export default {
 
       this.$refs['addForm'].validate((valid) => {
         if (valid) {
+         console.log(this.formState.attachmentUuidList)
           if(this.formState.attachmentUuidList.length==0){
             this.$message.error("请上传附件");
             this.canClick=true;
