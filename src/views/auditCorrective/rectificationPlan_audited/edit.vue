@@ -188,11 +188,10 @@
             <el-date-picker type="date"
                             value-format="yyyy-MM-dd"
                             v-model="save.limitEndTime"
-                            placeholder="选择日期">
+                            placeholder="请选择预计整改完成时限">
             </el-date-picker>
           </el-form-item>
-          <el-form-item prop="remark"
-                        label="备注：">
+          <el-form-item label="备注：">
             <el-input type="textarea"
                       placeholder="请输入备注"
                       v-model="save.remark"
@@ -546,7 +545,9 @@ export default {
   line-height: 36px;
   width: 220px !important;
 }
-.dialog >>> .el-input__inner::-webkit-input-placeholder {
+.dialog >>> .el-input__inner::-webkit-input-placeholder,
+.dialog >>> textarea::-webkit-input-placeholder {
   color: #c0c4cc !important;
+  font-size: 12px;
 }
 </style>

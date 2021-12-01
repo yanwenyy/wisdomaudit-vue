@@ -1150,14 +1150,14 @@
         <!-- 分页 end-->
 
       </div>
-      <div slot="footer">
+      <!-- <div slot="footer">
         <el-button @click="history = false"
                    plain
                    style="background: #FFFFFF;
     border: 1px solid #DCDFE6;">取 消</el-button>
         <el-button type="primary"
                    @click="history = false">确 定</el-button>
-      </div>
+      </div> -->
     </el-dialog>
 
   </div>

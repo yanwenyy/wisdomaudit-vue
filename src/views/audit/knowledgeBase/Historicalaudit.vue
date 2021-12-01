@@ -2,7 +2,7 @@
   <div class="sjzl anmition_show">
     <div class="header">
       <div class="search_ms">
-        <p>历史审计发现描述</p>
+        <p>历史审计发现描述：</p>
         <el-input v-model="query.historyAuditFindDescribe "
                   placeholder="请输入描述名称"></el-input>
       </div>

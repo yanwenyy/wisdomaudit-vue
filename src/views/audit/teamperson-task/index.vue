@@ -536,10 +536,16 @@ export default {
           this.active_project,
           row.projectMembershipUuid
         ).then((resp) => {
-          // console.log(resp);
+          console.log(resp);
           this.tableMemberLoading = false;
-          this.$message.success("修改成功！");
-          this.projectMember(this.query);
+          if(resp.data == "设置接口人操作成功"){
+             this.$message.success("修改成功！");
+             this.projectMember(this.query);
+          }else{
+             this.$message.info("取消接口人操作失败，请直接将其他人员设置为项目负责人");
+             this.projectMember(this.query);
+          }
+         
         });
       } else {
         this.$message.info("没有权限修改！");
