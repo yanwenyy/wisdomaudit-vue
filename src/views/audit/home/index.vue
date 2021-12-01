@@ -291,13 +291,20 @@ export default {
       account: "",
       appSessionId: "",
       dqtime: "",
+      dqtoken: "",
     };
   },
   mounted() {
-    this.getmodellist();
-    this.getprojectlist();
-    this.getdatalist();
-    this.getmeunlist();
+    this.dqtoken = sessionStorage.getItem("TOKEN");
+    console.log("-----当前token-----" + this.dqtoken);
+    if (this.dqtoken) {
+      this.getmodellist();
+      this.getprojectlist();
+      this.getdatalist();
+      this.getmeunlist();
+    }else{
+      window.reload()
+    }
   },
   methods: {
     //通过认证后的方法
@@ -312,7 +319,7 @@ export default {
         method: "post",
         url: `/wisdomaudit/treasury/getTreasuryStatus`,
         headers: {
-          TOKEN: sessionStorage.getItem("TOKEN"),
+          TOKEN: this.dqtoken,
         },
         data: {
           sceneId: this.sceneId,
@@ -363,7 +370,7 @@ export default {
           this.$axios({
             url: `/wisdomaudit/homePage/shortCutSet`,
             headers: {
-              TOKEN: sessionStorage.getItem("TOKEN"),
+              TOKEN: this.dqtoken,
             },
             method: "post",
             data: this.dqfastlist,
@@ -436,7 +443,7 @@ export default {
         this.$axios({
           url: `/wisdomaudit/homePage/pageList`,
           headers: {
-            TOKEN: sessionStorage.getItem("TOKEN"),
+            TOKEN: this.dqtoken,
           },
           method: "post",
           data: {},
@@ -467,7 +474,7 @@ export default {
         this.$axios({
           url: `/wisdomaudit/permission/getUserPermissionList`,
           headers: {
-            TOKEN: sessionStorage.getItem("TOKEN"),
+            TOKEN: this.dqtoken,
           },
           method: "get",
           data: {},
@@ -495,7 +502,7 @@ export default {
       this.$axios({
         url: `/wisdomaudit/homePage/homeMxList`,
         headers: {
-          TOKEN: sessionStorage.getItem("TOKEN"),
+          TOKEN: this.dqtoken,
         },
         method: "post",
         data: {},
@@ -510,7 +517,7 @@ export default {
       this.$axios({
         url: `/wisdomaudit/homePage/homeProjectList`,
         headers: {
-          TOKEN: sessionStorage.getItem("TOKEN"),
+          TOKEN: this.dqtoken,
         },
         method: "post",
         data: {},
@@ -526,7 +533,7 @@ export default {
       this.$axios({
         url: `/wisdomaudit/homePage/homeZlList`,
         headers: {
-          TOKEN: sessionStorage.getItem("TOKEN"),
+          TOKEN: this.dqtoken,
         },
         method: "post",
         data: {},
@@ -593,7 +600,7 @@ export default {
             `/wisdomaudit/dataAuditApi/getSignature?userName=` +
             this.$store.state.user.datauserid,
           headers: {
-            TOKEN: sessionStorage.getItem("TOKEN"),
+            TOKEN: this.dqtoken,
           },
           method: "get",
           data: {},
