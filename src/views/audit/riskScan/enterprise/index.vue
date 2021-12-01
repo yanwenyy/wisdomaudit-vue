@@ -118,34 +118,44 @@ export default {
     },
     // 获取二级分类
     gettapylist() {
-      let p = sessionStorage.getItem("store");
-      let q = JSON.parse(p).user.datauserid;
-      getSignature(q).then((result) => {
-        if (result.code== 0 && result.data.url !== null) {
-          console.log("获取token接口", result);
-          getdataAuditApi(result.data.token,"area=2").then((res)=>{
-            console.log(res,'页面');
-            this.formdates=res.url.replace('&amp;','&')
-            getTypes("area=2").then((rem) => {
+ this.$axios({
+          url:
+            `/wisdomaudit/dataAuditApi/getSignature?userName=` +
+            this.$store.state.user.datauserid,
+          method: "get",
+          data: {},
+        }).then((res) => {
+          if (res.data.code == 0) {
+            let reptoken = res.data.data.token;
+            let url =
+              "http://10.19.206.196:8088/WebReport/decision/third/auth/cross/login";
+            $.ajax({
+              url: url,
+              dataType: "jsonp",
+              data: { third_token: reptoken },
+              success: function (res2) {
+                if (res2.errorCode) {
+                  console.log("帆软认证接口调用失败", res2);
+                } else {
+                  console.log("帆软认证接口调用成功", res2);
+              getTypes("area=2").then((rem) => {
               this.options = rem.data;
               this.value = rem.data[0].type;
               this.gettablelist(this.value);
               console.log("获取之前的接口外面", rem);
             });
              
-           
-
-          
-          });
-    
-        
-        } else {
-          let rem = getTypes("area=2");
-          this.options = rem.data;
-          this.value = rem.data[0].type;
-          this.gettablelist(this.value);
-        }
-      });
+                }
+              },
+              error: function () {
+                alert("超时或服务器其他错误"); // 登录失败（超时或服务器其他错误）
+                return;
+              },
+            });
+          } else {
+            return;
+          }
+        });
     },
 
     gettime() {
