@@ -1026,6 +1026,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import {
   task_pageList,
   //task_model_pageList,
@@ -1417,7 +1418,7 @@ export default {
               this.fileList.forEach((item) => {
                 formData.append('files', item.raw);
               })
-              this.$axios({
+              axios({
                 method: 'post',
                 url: '/wisdomaudit/attachment/fileUploads',
                 data: formData,
@@ -1492,7 +1493,7 @@ export default {
             }
           })
 
-          this.$axios({
+          axios({
             method: 'post',
             url: '/wisdomaudit/attachment/fileUploads',
             data: formData,
@@ -2013,7 +2014,7 @@ export default {
             this.fileList2.forEach((item) => {
               formData.append('files', item.raw);
             })
-            this.$axios({
+            axios({
               method: 'post',
               url: '/wisdomaudit/attachment/fileUploads',
               data: formData,

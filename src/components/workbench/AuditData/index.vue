@@ -1164,6 +1164,7 @@
 </template>
 
 <script>
+import axios  from "axios";
 import {
   data_pageList, data_push, data_save, add_pageList, data_pageListDone, data_delete, data_push_ing, data_edit_details, data_update, data_add_savePush, data_edit_savePush, loadcascader, saveTemp, operation_list_data, operation_record_list, operation_audit, operation_uploadData, select_loadcascader, enclosure_details, select_user_data,
   enclosure_sysLogById, enclosure_details_file, enclosure_downloadByFileId, operation_addExit, operation_addTitle
@@ -2065,7 +2066,7 @@ export default {
             this.fileList.forEach((item) => {
               formData.append('files', item.raw);
             })
-            this.$axios({
+            axios({
               method: 'post',
               url: '/wisdomaudit/attachment/fileUploads',
               data: formData,

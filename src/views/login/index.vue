@@ -63,7 +63,7 @@
 <script>
 import { validUsername } from "@/utils/validate";
 import { cacheDict } from "../../api/base/sys-dict";
-import axios from "axios"
+import axios from "axios";
 export default {
   name: "Login",
   data() {
@@ -139,7 +139,7 @@ export default {
       });
     },
     handleLogin() {
-      this.$axios({
+      axios({
         url: `/wisdomaudit/loginsd/login?appAcctId=`+(this.$route.query.appAcctId)+`&flag=`+(this.$route.query.flag)+`&loginNode=`+(this.$route.query.loginNode)+`&token=`+(encodeURI(this.$route.query.token)),
         method: "post",
       }).then((res) => {

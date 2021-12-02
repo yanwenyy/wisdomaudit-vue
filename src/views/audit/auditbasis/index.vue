@@ -86,7 +86,7 @@ export default {
     },
     //打开金库
     openVault() {
-      this.$axios({
+      axios({
         method: "post",
         url: `/wisdomaudit/treasury/getTreasuryStatus`,
         data: {
