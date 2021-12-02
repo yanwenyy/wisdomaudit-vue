@@ -148,9 +148,9 @@ export default {
     gettime() {
       let date = new Date();
       let year = date.getFullYear();
-      let month = date.getMonth() - 1;
+      let month = date.getMonth();
       let value = year + "" + month;
-      this.value2 = year + "0" + month;
+      this.value2 = year + "" + month;
       this.changesj(value);
     },
     // 获取模型列表
