@@ -1303,7 +1303,7 @@ import {
   startProject,
   selectTask_s,
 } from "@SDMOBILE/api/shandong/adminProject"; //lhg
-// import axios from "axios";
+import axios from "axios";
 import Pagination from "@WISDOMAUDIT/components/Pagination";
 import {
   projectList,
@@ -2567,7 +2567,7 @@ export default {
     },
     // 专题 领域
     getloadcascader (str) {
-      this.$axios({
+      axios({
         url: `/wisdomaudit/init/loadcascader`,
         method: "post",
         data: {

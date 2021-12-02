@@ -52,14 +52,17 @@ Vue.use(ElementUI, {
   size: Cookies.get('size') || 'medium', // set element-ui default size
   i18n: (key, value) => i18n.t(key, value)
 })
-Vue.filter('dateformat', function(dataStr, pattern = 'YYYY-MM-DD') {
+
+axios.defaults.headers.common['TOKEN'] = sessionStorage.getItem('TOKEN');
+
+Vue.filter('dateformat', function (dataStr, pattern = 'YYYY-MM-DD') {
   if (dataStr) {
     return moment(dataStr).format(pattern)
   } else {
     return ''
   }
 })
-Vue.filter('monthdateformat', function(dataStr, pattern = 'YYYY-MM') {
+Vue.filter('monthdateformat', function (dataStr, pattern = 'YYYY-MM') {
   if (dataStr) {
     return moment(dataStr).format(pattern)
   } else {
@@ -67,10 +70,10 @@ Vue.filter('monthdateformat', function(dataStr, pattern = 'YYYY-MM') {
   }
 })
 
-Vue.filter('formatMoney', function(num) {
+Vue.filter('formatMoney', function (num) {
   return utils.formatMoney(num, 4)
 })
-Vue.filter('datetimeformat', function(
+Vue.filter('datetimeformat', function (
   dataStr,
   pattern = 'YYYY-MM-DD HH:mm:ss'
 ) {
@@ -80,13 +83,13 @@ Vue.filter('datetimeformat', function(
     return ''
   }
 });
-Array.prototype.indexOf = function(val) {
+Array.prototype.indexOf = function (val) {
   for (var i = 0; i < this.length; i++) {
     if (this[i] == val) return i;
   }
   return -1;
 };
-Array.prototype.remove = function(val) {
+Array.prototype.remove = function (val) {
   var index = this.indexOf(val);
   if (index > -1) {
     this.splice(index, 1);
@@ -96,7 +99,7 @@ Array.prototype.remove = function(val) {
 // Vue.use(ElementUI)
 
 Vue.config.productionTip = false;
-axios.defaults.headers.common['TOKEN'] = sessionStorage.getItem('TOKEN');
+
 new Vue({
   el: '#app',
   router,

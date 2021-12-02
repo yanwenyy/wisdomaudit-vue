@@ -477,6 +477,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import { down_file } from
   '@SDMOBILE/api/shandong/ls'
 
@@ -705,7 +706,7 @@ export default {
       //模版下载
       let formData = new FormData()
       formData.append('fileId', id)
-      this.$axios({
+      axios({
         method: 'post',
         url: '/wisdomaudit/auditPreviousDemandData/downloadByFileId',
         data: formData,
@@ -776,13 +777,14 @@ export default {
       formData.append('status', this.status)
       formData.append('auditPreviousDemandDataUuid', this.auditPreviousDemandDataUuid)
       formData.append('file', file.file)
-      this.$axios({
+      axios({
         method: 'post',
         url: '/wisdomaudit/auditPreviousDemandData/uploadData',
         data: formData,
         headers: {
           'Content-Type': 'multipart/form-data'
-        }
+        },
+
       }).then(resp => {
         if (resp.data.code == 0) {
           this.$message({

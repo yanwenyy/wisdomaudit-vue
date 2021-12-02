@@ -1026,6 +1026,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import {
   task_pageList,
   //task_model_pageList,
@@ -1288,7 +1289,6 @@ export default {
   props: ['active_project', 'userRole'],
   created () {
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
-
     this.managementProjectUuid = this.active_project;
     // 模型  自建任务列表
     let params = {
@@ -1417,7 +1417,7 @@ export default {
               this.fileList.forEach((item) => {
                 formData.append('files', item.raw);
               })
-              this.$axios({
+              axios({
                 method: 'post',
                 url: '/wisdomaudit/attachment/fileUploads',
                 data: formData,
@@ -1492,7 +1492,7 @@ export default {
             }
           })
 
-          this.$axios({
+          axios({
             method: 'post',
             url: '/wisdomaudit/attachment/fileUploads',
             data: formData,
@@ -2013,7 +2013,7 @@ export default {
             this.fileList2.forEach((item) => {
               formData.append('files', item.raw);
             })
-            this.$axios({
+            axios({
               method: 'post',
               url: '/wisdomaudit/attachment/fileUploads',
               data: formData,
