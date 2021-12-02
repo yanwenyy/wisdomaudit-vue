@@ -87,7 +87,11 @@
         width="140px"
         prop="riskAmount"
         align="right"
-      />
+      >
+        <template slot-scope="scope">
+          {{ parseFloat(scope.row.riskAmount) }}
+        </template>
+      </el-table-column>
       <el-table-column label="" width="40px"> </el-table-column>
       <el-table-column label="发现日期">
         <template slot-scope="scope">
@@ -233,7 +237,7 @@
             v-model="temp.riskAmount"
             placeholder="请输入风险金额"
             @keyup.native="onlyNumOnePoint('temp')"
-            @input="temp.riskAmount=temp.riskAmount.slice(0,27)"
+            @input="temp.riskAmount = temp.riskAmount.slice(0, 27)"
           />
         </el-form-item>
         <el-form-item label="关联任务：" prop="auditTaskUuid">
@@ -402,7 +406,7 @@
             placeholder="请输入风险金额"
             :disabled="ifadd != 2 ? false : true"
             @keyup.native="onlyNumOnePoint('dqProblem')"
-            @input="temp.riskAmount=temp.riskAmount.slice(0,27)"
+            @input="temp.riskAmount = temp.riskAmount.slice(0, 27)"
           />
         </el-form-item>
         <el-form-item label="关联任务：" prop="auditTaskUuid">
