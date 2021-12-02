@@ -1423,12 +1423,12 @@ export default {
                 method: 'post',
                 url: '/wisdomaudit/attachment/fileUploads',
                 headers: {
-              TOKEN: this.dqtoken,
-            },
-                data: formData,
-                headers: {
+                  TOKEN: this.dqtoken,
                   'Content-Type': 'multipart/form-data'
-                }
+
+                },
+                data: formData,
+
               }).then(resp => {
                 // 上传成功
                 if (resp.data.code == 0) {
@@ -1502,11 +1502,11 @@ export default {
             url: '/wisdomaudit/attachment/fileUploads',
             headers: {
               TOKEN: this.dqtoken,
+              'Content-Type': 'multipart/form-data'
+
             },
             data: formData,
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
+
           }).then(resp => {
             // 上传成功
             if (resp.data.code == 0) {
@@ -2025,12 +2025,12 @@ export default {
               method: 'post',
               url: '/wisdomaudit/attachment/fileUploads',
               headers: {
-              TOKEN: this.dqtoken,
-            },
-              data: formData,
-              headers: {
+                TOKEN: this.dqtoken,
                 'Content-Type': 'multipart/form-data'
-              }
+
+              },
+              data: formData,
+
             }).then(resp => {
               // 上传成功
               if (resp.data.code == 0) {

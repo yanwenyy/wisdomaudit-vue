@@ -752,12 +752,12 @@ export default {
         method: 'post',
         url: '/wisdomaudit/referenceTable/uploadFile',
         headers: {
-          TOKEN: this.dqtoken,
-        },
-        data: formData,
-        headers: {
+          TOKEN: this.dqtoken,
           'Content-Type': 'multipart/form-data'
-        }
+
+        },
+        data: formData,
+
       }).then(resp => {
         console.log(resp.data);
         if (resp.data.code == 0) {
