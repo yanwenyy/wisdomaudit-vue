@@ -888,7 +888,7 @@
                     style="width: 100%">
 
             <el-table-column prop="opOperate"
-                             label="动作"
+                             label="操作类型"
                              width="180">
             </el-table-column>
             <el-table-column prop="opUserName"
@@ -1072,7 +1072,7 @@
           </el-table-column> -->
           <el-table-column prop="opOperate"
                            show-overflow-tooltip
-                           label="动作">
+                           label="操作类型">
           </el-table-column>
           <el-table-column prop="opUserName"
                            show-overflow-tooltip

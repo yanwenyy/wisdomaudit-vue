@@ -83,7 +83,6 @@ import {
   getSignature,
   getdataAuditApi,
 } from "@SDMOBILE/api/risk/personage";
-import { mapGetters } from "vuex";
 export default {
   name: "personalRiskScan",
 
@@ -115,14 +114,13 @@ export default {
     },
     // 获取二级分类
     gettapylist() {
-      let p = sessionStorage.getItem("store");
-      let q = JSON.parse(p).user.datauserid;
-      getSignature(q).then((result) => {
+      let p = this.$store.state.user.datauserid
+      getSignature(p).then((result) => {
         if (result.code== 0 && result.data.url !== null) {
           getdataAuditApi(result.data.token).then((res)=>{
            
            if (res.status== 'success') {
-             getTypes("area=1").then((rem) => {
+             getTypes("area=2").then((rem) => {
               this.options = rem.data;
               this.value = rem.data[0].type;
               this.gettablelist(this.value);
@@ -130,10 +128,6 @@ export default {
             });
              
            }
-             
-           
-
-          
           });
     
         
@@ -143,6 +137,11 @@ export default {
           this.value = rem.data[0].type;
           this.gettablelist(this.value);
         }
+      }).catch(err => {
+          let rem = getTypes("area=1");
+          this.options = rem.data;
+          this.value = rem.data[0].type;
+          this.gettablelist(this.value);
       });
     },
 

@@ -1291,7 +1291,6 @@ export default {
   created () {
     this.dqtoken = sessionStorage.getItem("TOKEN");
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
-
     this.managementProjectUuid = this.active_project;
     // 模型  自建任务列表
     let params = {
