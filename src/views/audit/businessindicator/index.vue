@@ -192,6 +192,7 @@ export default {
   },
   data() {
     return {
+      dqtoken: "",
       tableKey: 'manageSuggestUuid',
       list: null,
       total: 0,
@@ -264,6 +265,7 @@ export default {
   },
   created() {
     this.headers = { 'Content-Type': 'multipart/form-data','TOKEN':sessionStorage.getItem("TOKEN") }
+    this.dqtoken = sessionStorage.getItem("TOKEN");
     this.getList()
   },
   methods: {
@@ -434,6 +436,9 @@ export default {
       var num = Math.random()
       axios({
         url: `/wisdomaudit/manageSuggest/importFiles?${num}`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: 'post',
         data: formData
       }).then((res) => {
@@ -470,6 +475,9 @@ export default {
       axios({
         method: 'get',
         url: `/wisdomaudit/manageSuggest/downloadManageSuggestTemplate`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         responseType: 'blob'
       }).then((res) => {
         // if (res.code !== 0) this.$message.error(res.msg)

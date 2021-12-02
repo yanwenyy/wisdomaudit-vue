@@ -464,6 +464,7 @@ export default {
   components: {},
   data() {
     return {
+      dqtoken: "",
       loading: false,
       dialogVisible: false,
       title: "",
@@ -551,6 +552,7 @@ export default {
   computed: {},
   watch: {},
   created() {
+    this.dqtoken = sessionStorage.getItem("TOKEN");
     // list
     let params = {
       pageNo: this.query.pageNo,
@@ -686,6 +688,9 @@ export default {
     getbasis() {
       axios({
         url: `/wisdomaudit/auditBasy/getAuditbasyList`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "get",
         data: {},
       }).then((res) => {
@@ -697,6 +702,9 @@ export default {
       this.basisload = true;
       axios({
         url: `/wisdomaudit/auditBasy/getById/` + bid + ``,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "get",
         data: {},
       }).then((res) => {

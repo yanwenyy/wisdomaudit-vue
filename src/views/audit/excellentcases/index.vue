@@ -390,6 +390,7 @@ export default {
   components: {},
   data () {
     return {
+      dqtoken: "",
       headers: '',
       activeName: 0,//0:资料清单,1:主要发现
       is_add: 1,//新增
@@ -454,7 +455,7 @@ export default {
   watch: {},
   created () {
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
-
+    this.dqtoken = sessionStorage.getItem("TOKEN");
     this.pageList_data();//列表
   },
   mounted () {
@@ -750,6 +751,9 @@ export default {
       axios({
         method: 'post',
         url: '/wisdomaudit/referenceTable/uploadFile',
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         data: formData,
         headers: {
           'Content-Type': 'multipart/form-data'

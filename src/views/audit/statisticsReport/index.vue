@@ -252,6 +252,7 @@ export default {
   components: { QueryField },
   data() {
     return {
+      dqtoken: "",
       listLoading: false,
       activeName: "first",
       total1: 20,
@@ -338,6 +339,7 @@ export default {
     };
   },
   created() {
+    this.dqtoken = sessionStorage.getItem("TOKEN");
     this.getdate();
     // 打开窗口前获取所有的职务
     getPositionList(this.pageQueryPositionList).then(resp => {
@@ -429,6 +431,9 @@ export default {
       axios({
         method: "post",
         url: `/wisdomaudit/report/exportPersonReportExcel`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         responseType: "blob",
         data: {
           entryOrgTimeEnd: this.$refs.queryfield1.query.entryOrgTimeEnd,
@@ -466,6 +471,9 @@ export default {
       axios({
         method: "post",
         url: `/wisdomaudit/report/auditItemReportExcel`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         responseType: "blob",
         data: {
           auditStartTimeEnd: this.$refs.queryfield2.query.auditStartTimeEnd,

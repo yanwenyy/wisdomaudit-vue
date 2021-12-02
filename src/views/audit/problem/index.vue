@@ -118,6 +118,7 @@ export default {
   components: { Pagination, QueryField, ProblemPopover },
   data() {
     return {
+      dqtoken: "",
       dialogFormVisiblenew: false,
       tableKey: 'problemUuid',
       list: null, // 问题结果集
@@ -206,6 +207,7 @@ export default {
     }
   },
   created() {
+    this.dqtoken = sessionStorage.getItem("TOKEN");
     this.getList()
   },
   methods: {
@@ -343,6 +345,9 @@ export default {
       axios({
         method: 'get',
         url: `/wisdomaudit/problem/downloadProblemTemplate`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         responseType: 'blob'
       }).then((res) => {
         // if (res.code !== 0) this.$message.error(res.msg)
@@ -386,6 +391,9 @@ export default {
       var num = Math.random()
       axios({
         url: `/wisdomaudit/problem/importFiles?${num}`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: 'post',
         data: formData
       }).then((res) => {

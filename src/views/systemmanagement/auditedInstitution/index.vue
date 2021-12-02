@@ -163,6 +163,7 @@ export default {
   components: { Pagination },
   data() {
     return {
+      dqtoken: "",
       orgTableData: [], //被审计机构table
       total: 0, //table 总条数
       queryTree: {},
@@ -192,6 +193,7 @@ export default {
     },
   },
   created() {
+    this.dqtoken = sessionStorage.getItem("TOKEN");
     // 获取左侧树形List
     this.getauditOrgTree(this.queryTree);
   },
@@ -271,6 +273,7 @@ export default {
         data: formData,
         headers: {
           "Content-Type": "multipart/form-data",
+          TOKEN: this.dqtoken,
         },
       }).then((resp) => {
         console.log(resp);
@@ -288,6 +291,9 @@ export default {
       axios({
         method: "get",
         url: "/wisdomaudit/auditOrg/downloadAuditOrgModel",
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         responseType: "blob",
       })
         .then((res) => {

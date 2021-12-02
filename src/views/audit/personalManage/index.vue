@@ -508,6 +508,7 @@ export default {
     }
 
     return {
+      dqtoken: "",
       tableKey: 'personaluuid',
       list: null, // 人员结果集
       orgList: null, // 审计机构结果集
@@ -711,6 +712,7 @@ export default {
   },
   // 界面加载时调用的函数
   created() {
+    this.dqtoken = sessionStorage.getItem("TOKEN");
     this.getList()
     // 打开添加窗口前遍历所有的审计机构
     getOrgList(this.pageQueryOrgList).then(resp => {
