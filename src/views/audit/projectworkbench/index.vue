@@ -1179,6 +1179,12 @@ export default {
       // this.key=Math.random();
       // 更新项目接口
       setprojectInit(this.active_project).then((resp) => {});
+      // chrome
+      document.body.scrollTop = 0;
+      // firefox
+      document.documentElement.scrollTop = 0;
+      // safari
+      window.pageYOffset = 0;
     } else {
       this.get_user(true);
     }
@@ -1498,7 +1504,7 @@ export default {
     //取消设为接口人
     cancel_Btn(row) {
       console.log(row);
-      
+
       // console.log(this.peopleSelection);
       row.isLiaison = 0;
       for(let k=0;k<this.peopleSelection.length;k++){
@@ -1511,7 +1517,7 @@ export default {
           //   if(this.arrRightValue[p] == row.peopleTableUuid){
           //    return this.arrRightValue.remove('this.arrRightValue[p')
           //   }
-            
+
           // }
           // console.log(this.arrRightValue);
           // this.value = [];
@@ -2281,7 +2287,7 @@ export default {
     .moreBtn {
       color: #12579a;
       margin: 0 0px;
-      min-width: 70px; 
+      min-width: 70px;
       box-sizing: border-box;
       cursor: pointer;
       padding: 0.5%;
