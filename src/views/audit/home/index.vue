@@ -102,9 +102,15 @@
                 />我的模型任务</span
               >
             </div>
-            <el-empty description="暂无数据" v-if="modellist.length == 0">
-              <div style="height: 375px; width: 100%"></div>
-            </el-empty>
+            <div v-if="modellist.length == 0" style="height: 406px">
+              <div class="homeemptyicon">
+                <svg-icon
+                  icon-class="home-empty"
+                  style="width: 50px; height: 50px"
+                />
+              </div>
+              <div class="homeemptytext">暂无内容，稍后再来</div>
+            </div>
             <ul style="height: 406px; overflow: scroll" class="odd-even" v-else>
               <li v-for="(item, index) in modellist" :key="'model' + index">
                 <div class="li-item">
@@ -140,10 +146,15 @@
                 />审计资料</span
               >
             </div>
-            <el-empty
-              description="暂无数据"
-              v-if="datalist.length == 0"
-            ></el-empty>
+            <div v-if="datalist.length == 0" style="height: 200px">
+              <div class="homeemptyicon">
+                <svg-icon
+                  icon-class="home-empty"
+                  style="width: 50px; height: 50px"
+                />
+              </div>
+              <div class="homeemptytext">暂无内容，稍后再来</div>
+            </div>
             <ul style="height: 200px; overflow: scroll" class="odd-even" v-else>
               <li v-for="(item, index) in datalist" :key="'data' + index">
                 <div class="li-item">
@@ -178,10 +189,11 @@
                 ><i class="el-icon-setting" style="font-size: 18px"></i
               ></el-button>
             </div>
-            <el-empty
-              description="暂无数据"
-              v-if="outfastlist.length == 0"
-            ></el-empty>
+
+            <div v-if="outfastlist.length == 0" style="height: 98px">
+              <div class="homeemptyicon"></div>
+              <div class="homeemptytext">设置您的常用功能</div>
+            </div>
             <div class="shortcut-wapper" style="" v-else>
               <div
                 @click="shortcutEvent(item)"
@@ -264,7 +276,7 @@
 </template>
 
 <script>
-import axios from "axios"
+import axios from "axios";
 import Vault from "@WISDOMAUDIT/components/Vaultcertification";
 import moment from "moment";
 import { validUsername } from "@/utils/validate";
@@ -303,8 +315,8 @@ export default {
       this.getprojectlist();
       this.getdatalist();
       this.getmeunlist();
-    }else{
-      window.reload()
+    } else {
+      window.reload();
     }
   },
   methods: {
@@ -643,6 +655,15 @@ export default {
 </script>
 
 <style lang="scss"  scoped>
+.homeemptyicon {
+  padding: 20px 0;
+  text-align: center;
+}
+.homeemptytext {
+  font-size: 14px;
+  text-align: center;
+  color: #999;
+}
 .fastli {
   width: 33%;
   overflow: hidden;
