@@ -807,6 +807,7 @@ export default {
       formData.append('attachmentUuid', attachmentUuid)
       fileDownload(formData).then(resp => {
         const content = resp;
+        console.log(content);
         const blob = new Blob([content],
           { type: 'application/octet-stream,charset=UTF-8' }
         )
