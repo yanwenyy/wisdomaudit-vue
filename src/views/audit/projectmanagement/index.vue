@@ -84,7 +84,14 @@
       <el-table-column align="left"
                        prop="fieldName"
                        label="领域"
-                       show-overflow-tooltip></el-table-column>
+                       show-overflow-tooltip>
+                       <template slot-scope="scope">
+                         <div v-if="scope.row.fieldName == ''">--</div>
+                         <div v-else>
+                           {{scope.row.fieldName}}
+                         </div>
+                       </template>
+                       </el-table-column>
       <el-table-column align="left"
                        width="100px"
                        prop="projectLeaderName"
