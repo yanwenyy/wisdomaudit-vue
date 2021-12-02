@@ -87,7 +87,11 @@
         width="140px"
         prop="riskAmount"
         align="right"
-      />
+      >
+        <template slot-scope="scope">
+          {{ parseFloat(scope.row.riskAmount) }}
+        </template>
+      </el-table-column>
       <el-table-column label="" width="40px"> </el-table-column>
       <el-table-column label="发现日期">
         <template slot-scope="scope">
@@ -233,7 +237,7 @@
             v-model="temp.riskAmount"
             placeholder="请输入风险金额"
             @keyup.native="onlyNumOnePoint('temp')"
-            @input="temp.riskAmount=temp.riskAmount.slice(0,27)"
+            @input="temp.riskAmount = temp.riskAmount.slice(0, 27)"
           />
         </el-form-item>
         <el-form-item label="关联任务：" prop="auditTaskUuid">
@@ -402,7 +406,7 @@
             placeholder="请输入风险金额"
             :disabled="ifadd != 2 ? false : true"
             @keyup.native="onlyNumOnePoint('dqProblem')"
-            @input="temp.riskAmount=temp.riskAmount.slice(0,27)"
+            @input="temp.riskAmount = temp.riskAmount.slice(0, 27)"
           />
         </el-form-item>
         <el-form-item label="关联任务：" prop="auditTaskUuid">
@@ -776,7 +780,7 @@ export default {
     },
     //获取当前人员信息
     getme() {
-      this.$axios({
+      axios({
         url: `/wisdomaudit/init/getCurrentInfo`,
         method: "get",
         data: {},
@@ -787,7 +791,7 @@ export default {
     },
     //获取人员
     getperson() {
-      this.$axios({
+      axios({
         url: `/wisdomaudit/user/listUserInfo?pageCurrent=1&pageSize=1000`,
         method: "get",
         data: {},
@@ -830,7 +834,7 @@ export default {
     },
     //获取依据
     getbasis() {
-      this.$axios({
+      axios({
         url: `/wisdomaudit/auditBasy/getAuditbasyList`,
         method: "get",
         data: {},
@@ -841,7 +845,7 @@ export default {
     //获取依据详情
     getbasisdetail(bid) {
       this.basisload = true;
-      this.$axios({
+      axios({
         url: `/wisdomaudit/auditBasy/getById/` + bid + ``,
         method: "get",
         data: {},
@@ -871,7 +875,7 @@ export default {
       return rep;
     },
     getSelectTask() {
-      this.$axios({
+      axios({
         url: `/wisdomaudit/auditTask/selectTask`,
         method: "post",
         data: {
@@ -882,7 +886,7 @@ export default {
       });
     },
     getloadcascader(str) {
-      this.$axios({
+      axios({
         url: `/wisdomaudit/init/loadcascader`,
         method: "post",
         data: {
@@ -898,7 +902,7 @@ export default {
     },
     openDetail(int) {
       this.ifadd = 1;
-      this.$axios({
+      axios({
         url:
           `/wisdomaudit/problemList/getById/` + this.list[int].problemListUuid,
         method: "get",
@@ -918,7 +922,7 @@ export default {
     },
     checkDetail(pid) {
       this.ifadd = 2;
-      this.$axios({
+      axios({
         url: `/wisdomaudit/problemList/getById/` + pid,
         method: "get",
         data: {},
@@ -958,7 +962,7 @@ export default {
         this.pageQuery.pageNo = 1;
       }
       this.listLoading = true;
-      this.$axios({
+      axios({
         url: `/wisdomaudit/problemList/pageList`,
         method: "post",
         data: this.pageQuery,
@@ -988,7 +992,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        this.$axios({
+        axios({
           url: `/wisdomaudit/problemList/delete/` + pid,
           method: "delete",
           data: {},
@@ -1014,7 +1018,7 @@ export default {
           let rep = this.temp;
           rep.auditTaskUuid = rep.auditTaskUuid.join(",");
           rep.basis = rep.basis.join(",");
-          this.$axios({
+          axios({
             url: `/wisdomaudit/problemList/save`,
             method: "post",
             data: rep,
@@ -1050,7 +1054,7 @@ export default {
           rep.auditTaskUuid = rep.auditTaskUuid.join(",");
           rep.basis = rep.basis.join(",");
           this.dialogDetailVisible = false;
-          this.$axios({
+          axios({
             url: `/wisdomaudit/problemList/update`,
             method: "put",
             data: rep,

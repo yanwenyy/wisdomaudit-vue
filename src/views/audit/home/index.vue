@@ -264,6 +264,7 @@
 </template>
 
 <script>
+import axios from "axios"
 import Vault from "@WISDOMAUDIT/components/Vaultcertification";
 import moment from "moment";
 import { validUsername } from "@/utils/validate";
@@ -315,7 +316,7 @@ export default {
     },
     //打开金库
     openVault() {
-      this.$axios({
+      axios({
         method: "post",
         url: `/wisdomaudit/treasury/getTreasuryStatus`,
         headers: {
@@ -367,7 +368,7 @@ export default {
       } else {
         if (this.ifpush) {
           this.ifpush = false;
-          this.$axios({
+          axios({
             url: `/wisdomaudit/homePage/shortCutSet`,
             headers: {
               TOKEN: this.dqtoken,
@@ -440,7 +441,7 @@ export default {
     //获取当前快捷功能
     getdqfastlist() {
       (this.floading4 = true),
-        this.$axios({
+        axios({
           url: `/wisdomaudit/homePage/pageList`,
           headers: {
             TOKEN: this.dqtoken,
@@ -471,7 +472,7 @@ export default {
     //获取菜单权限列表
     getmeunlist() {
       (this.floading4 = true),
-        this.$axios({
+        axios({
           url: `/wisdomaudit/permission/getUserPermissionList`,
           headers: {
             TOKEN: this.dqtoken,
@@ -499,7 +500,7 @@ export default {
     },
     getmodellist() {
       this.floading2 = true;
-      this.$axios({
+      axios({
         url: `/wisdomaudit/homePage/homeMxList`,
         headers: {
           TOKEN: this.dqtoken,
@@ -514,7 +515,7 @@ export default {
     },
     getprojectlist() {
       this.floading1 = true;
-      this.$axios({
+      axios({
         url: `/wisdomaudit/homePage/homeProjectList`,
         headers: {
           TOKEN: this.dqtoken,
@@ -530,7 +531,7 @@ export default {
     },
     getdatalist() {
       this.floading3 = true;
-      this.$axios({
+      axios({
         url: `/wisdomaudit/homePage/homeZlList`,
         headers: {
           TOKEN: this.dqtoken,
@@ -595,7 +596,7 @@ export default {
 
     shortcutEvent(item) {
       if (item.menuName == "审计概览") {
-        this.$axios({
+        axios({
           url:
             `/wisdomaudit/dataAuditApi/getSignature?userName=` +
             this.$store.state.user.datauserid,

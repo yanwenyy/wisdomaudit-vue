@@ -152,6 +152,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import {
   auditOrgList,
   auditOrgTree,
@@ -264,7 +265,7 @@ export default {
         }
       });
 
-      this.$axios({
+      axios({
         method: "post",
         url: "/wisdomaudit/auditOrg/importFiles",
         data: formData,
@@ -284,7 +285,7 @@ export default {
 
     //下载模板
     orgDownload() {
-      this.$axios({
+      axios({
         method: "get",
         url: "/wisdomaudit/auditOrg/downloadAuditOrgModel",
         responseType: "blob",

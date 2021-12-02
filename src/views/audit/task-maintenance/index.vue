@@ -528,6 +528,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import Pagination from "@WISDOMAUDIT/components/Pagination";
 import {
   projectMembership,
@@ -1194,7 +1195,7 @@ export default {
               formData.append("files", item.raw);
             });
 
-            this.$axios({
+            axios({
               method: "post",
               url: "/wisdomaudit/attachment/fileUploads",
               data: formData,
@@ -1267,7 +1268,7 @@ export default {
           }
         });
 
-        this.$axios({
+        axios({
           method: "post",
           url: "/wisdomaudit/attachment/fileUploads",
           data: formData,
@@ -1412,7 +1413,7 @@ export default {
       const fileName = name.split(".")[0];
       let formData = new FormData();
       formData.append("fileId", id);
-      this.$axios({
+      axios({
         method: "post",
         url: "/wisdomaudit/auditPreviousDemandData/downloadByFileId",
         data: formData,

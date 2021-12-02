@@ -381,6 +381,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import { pageList, save_query, loadcascader, update, deleteEntity, toManagementList, uploadFile, queryByFid, deleteAttachment, fileDownload } from
   '@SDMOBILE/api/shandong/excellentcases'
 import { fmtDate } from "@SDMOBILE/model/time.js";
@@ -746,7 +747,7 @@ export default {
       formData.append('dicId', this.pdictid)
       formData.append('file', file.file)
 
-      this.$axios({
+      axios({
         method: 'post',
         url: '/wisdomaudit/referenceTable/uploadFile',
         data: formData,
