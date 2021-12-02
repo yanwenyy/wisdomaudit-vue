@@ -282,6 +282,7 @@
                          style="margin:0 10px"
                          :on-progress="up_ing"
                          action="#"
+                         :headers="headers"
                          :show-file-list="false"
                          :http-request="handleUploadForm"
                          :file-list="fileList"
@@ -388,6 +389,7 @@ export default {
   components: {},
   data () {
     return {
+      headers: '',
       activeName: 0,//0:资料清单,1:主要发现
       is_add: 1,//新增
       loading: false,
@@ -450,6 +452,8 @@ export default {
   computed: {},
   watch: {},
   created () {
+    this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
+
     this.pageList_data();//列表
   },
   mounted () {

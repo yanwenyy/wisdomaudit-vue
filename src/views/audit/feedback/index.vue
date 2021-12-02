@@ -300,6 +300,7 @@
                   </el-button> -->
                   <div class="update_cell">
                     <el-upload class="upload-demo"
+                               :headers="headers"
                                style="margin:0 10px"
                                :on-progress="up_ing"
                                v-if="scope.row.status !== 3"
@@ -488,6 +489,7 @@ export default {
   },
   data () {
     return {
+      headers: '',
       loading: false,
       loading_list: false,
       list_data_loading: false,
@@ -557,6 +559,7 @@ export default {
   },
   props: ['active_project'],
   created () {
+    this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
     // this.managementProjectUuid = this.active_project;
     let params = {
       pageNo: this.params.pageNo,

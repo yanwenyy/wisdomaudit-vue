@@ -481,6 +481,7 @@
             <el-upload class="upload-demo"
                        drag
                        ref="upload2"
+                       :headers="headers"
                        action="#"
                        :on-change="handleChangePic_verify"
                        :on-remove="handleRemoveApk"
@@ -938,6 +939,7 @@
             <el-upload class="upload-demo"
                        drag
                        ref="upload"
+                       :headers="headers"
                        action="#"
                        v-model="save_zj_query.enclosure"
                        :on-change="handleChangePic"
@@ -1064,6 +1066,7 @@ export default {
   },
   data () {
     return {
+      headers: '',
       input_select: true,
       task_type: 0, //默认显示任务/自建任务
       tab: [{ name: "审计资料任务列表" }, { name: "已操作的资料列表" }], //任务切换
@@ -1284,6 +1287,8 @@ export default {
   },
   props: ['active_project', 'userRole'],
   created () {
+    this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
+
     this.managementProjectUuid = this.active_project;
     // 模型  自建任务列表
     let params = {

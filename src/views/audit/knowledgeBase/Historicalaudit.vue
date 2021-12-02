@@ -119,7 +119,7 @@
                          label="风险金额">
           <template slot-scope="scope">
             <div v-if="scope.row.riskAmount">
-              {{scope.row.riskAmount }}
+              {{parseFloat(scope.row.riskAmount.toString()) }}
             </div>
             <div v-else>
               --
