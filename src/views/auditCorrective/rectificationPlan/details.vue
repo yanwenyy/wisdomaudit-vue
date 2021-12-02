@@ -55,12 +55,12 @@
         </el-table-column>
         <el-table-column prop="riskAmount"
                          align="center"
-                         label="风险金额（元）"
+                         label="风险金额（万元）"
                          show-overflow-tooltip>
 
           <template slot-scope="scope">
             <p v-if="scope.row.riskAmount">
-              {{scope.row.riskAmount}}
+              {{ parseFloat(scope.row.riskAmount.toString()) }}
             </p>
             <p v-else>
               --

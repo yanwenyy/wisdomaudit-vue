@@ -1,7 +1,8 @@
 <template>
   <div class="auditConfirmation">
     <el-button type="primary"
-               @click="addConfirmation()"  class="subBtn">新增确认单</el-button>
+               @click="addConfirmation()"
+               class="subBtn">新增确认单</el-button>
     <!-- 审计确认单列表 -->
     <el-table @row-dblclick="getLook"
               :header-cell-style="{'background-color': '#F4FAFF',}"
@@ -52,8 +53,10 @@
           <el-button size="small"
                      type="text"
                      class="btnStyle editBtn"
-                     @click="edit(scope.row)" v-if="scope.row.createUserUuid==userInfo.user.id">编辑</el-button>
-          <el-upload v-if="scope.row.createUserUuid==userInfo.user.id" :show-file-list="false"
+                     @click="edit(scope.row)"
+                     v-if="scope.row.createUserUuid==userInfo.user.id">编辑</el-button>
+          <el-upload v-if="scope.row.createUserUuid==userInfo.user.id"
+                     :show-file-list="false"
                      class="upload-demo inline-block btnStyle"
                      :action="'/wisdomaudit/auditConfirmation/fileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid+'&confirmationFileNumber='+(scope.row.confirmationFileNumber||'')"
                      :on-change="fileChange"
@@ -68,7 +71,8 @@
           <el-button size="small"
                      type="text"
                      class="btnStyle red"
-                     @click="deletes(scope.row.auditConfirmationUuid)" v-if="scope.row.createUserUuid==userInfo.user.id">删除</el-button>
+                     @click="deletes(scope.row.auditConfirmationUuid)"
+                     v-if="scope.row.createUserUuid==userInfo.user.id">删除</el-button>
         </template>
       </el-table-column>
       <el-table-column label="最终版扫描件"
@@ -109,11 +113,11 @@
              class="formData"
              label-width="130px"
              :model="formDetail">
-    <el-dialog class="qrd-dialog"
-               :visible.sync="confirmationDialogVisible"
-               width="70%"
-               @close="handleClose">
-      <div class="title">{{confirmationDialogTitle}}</div>
+      <el-dialog class="qrd-dialog"
+                 :visible.sync="confirmationDialogVisible"
+                 width="70%"
+                 @close="handleClose">
+        <div class="title">{{confirmationDialogTitle}}</div>
 
         <el-form-item class="itemTwo"
                       label="审计项目名称:">{{managementProjectName!=''?managementProjectName:'--'}}</el-form-item>
@@ -139,29 +143,31 @@
         <el-form-item prop="auditorsName"
                       class="itemThree"
                       label="审计人员:">
-          <el-select :disabled="ifLook" v-model="formDetail.auditorsName" placeholder="请选择" clearable>
-            <el-option
-              v-for="(item,index) in sjryList"
-              :label="item.peopleName"
-              :value="item.peopleName"
-              :key="index"
-            >
+          <el-select :disabled="ifLook"
+                     v-model="formDetail.auditorsName"
+                     placeholder="请选择"
+                     clearable>
+            <el-option v-for="(item,index) in sjryList"
+                       :label="item.peopleName"
+                       :value="item.peopleName"
+                       :key="index">
             </el-option>
           </el-select>
           <!--<el-input :disabled="ifLook"-->
-                    <!--placeholder="请输入"-->
-                    <!--v-model="formDetail.auditorsName"></el-input>-->
+          <!--placeholder="请输入"-->
+          <!--v-model="formDetail.auditorsName"></el-input>-->
         </el-form-item>
         <el-form-item prop="reviewerName"
                       class="itemThree"
                       label="复核人:">
-          <el-select :disabled="ifLook" v-model="formDetail.reviewerName	" placeholder="请选择" clearable>
-            <el-option
-              v-for="(item,index) in FhrList"
-              :label="item.realName"
-              :value="item.realName"
-              :key="index"
-            >
+          <el-select :disabled="ifLook"
+                     v-model="formDetail.reviewerName	"
+                     placeholder="请选择"
+                     clearable>
+            <el-option v-for="(item,index) in FhrList"
+                       :label="item.realName"
+                       :value="item.realName"
+                       :key="index">
             </el-option>
           </el-select>
         </el-form-item>
@@ -177,75 +183,89 @@
                           style="width: 100%"></el-date-picker>
         </el-form-item>
 
-      <span slot="footer"
-            class="dialog-footer">
-        <el-button @click="handleClose">取 消</el-button>
-        <el-button v-if="!ifLook"
-                   type="primary"
-                   @click="saveForm"  class="subBtn">确 定</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog class="qrd-dialog"
-               :visible.sync="confirmationDialogVisibleZx"
-               width="70%"
-               @close="handleClose">
-      <div class="title">{{confirmationDialogTitle}}</div>
-      <div class="zxTabel-div">
-        <table class="zxTabel">
-          <tr>
-            <td>项目名称</td>
-            <td colspan="5">{{formDetail.managementProjectName}}</td>
-          </tr>
-          <tr>
-            <td>被审计(调查)单位</td>
-            <td colspan="5">{{formDetail.auditOrgName	}}</td>
-          </tr>
-          <tr>
-            <td>审计(调查)事项</td>
-            <td colspan="5"><el-input  :disabled="ifLook" type="textarea" v-model="formDetail.matter"></el-input></td>
-            <!--<td colspan="5">{{formDetail.matter	}}</td>-->
-          </tr>
-          <tr>
-            <td>审计(调查)事项描述</td>
-            <td colspan="5"><el-input  :disabled="ifLook" type="textarea" v-model="formDetail.matterDetail"></el-input></td>
-            <!--<td colspan="5">-->
+        <span slot="footer"
+              class="dialog-footer">
+          <el-button @click="handleClose">取 消</el-button>
+          <el-button v-if="!ifLook"
+                     type="primary"
+                     @click="saveForm"
+                     class="subBtn">确 定</el-button>
+        </span>
+      </el-dialog>
+      <el-dialog class="qrd-dialog"
+                 :visible.sync="confirmationDialogVisibleZx"
+                 width="70%"
+                 @close="handleClose">
+        <div class="title">{{confirmationDialogTitle}}</div>
+        <div class="zxTabel-div">
+          <table class="zxTabel">
+            <tr>
+              <td>项目名称</td>
+              <td colspan="5">{{formDetail.managementProjectName}}</td>
+            </tr>
+            <tr>
+              <td>被审计(调查)单位</td>
+              <td colspan="5">{{formDetail.auditOrgName	}}</td>
+            </tr>
+            <tr>
+              <td>审计(调查)事项</td>
+              <td colspan="5">
+                <el-input :disabled="ifLook"
+                          type="textarea"
+                          v-model="formDetail.matter"></el-input>
+              </td>
+              <!--<td colspan="5">{{formDetail.matter	}}</td>-->
+            </tr>
+            <tr>
+              <td>审计(调查)事项描述</td>
+              <td colspan="5">
+                <el-input :disabled="ifLook"
+                          type="textarea"
+                          v-model="formDetail.matterDetail"></el-input>
+              </td>
+              <!--<td colspan="5">-->
               <!--<div>{{formDetail.matterDetail}}</div>-->
-            <!--</td>-->
-          </tr>
-          <tr>
-            <td>审计人员(签名)</td>
-            <td width="20%">{{formDetail.auditorsName}}</td>
-            <td>复审人(签名)</td>
-            <td width="20%">{{formDetail.reviewerName}}</td>
-            <td>编制日期</td>
-            <td>{{formDetail.compileDate | dateformat}}</td>
-          </tr>
-          <tr>
-            <td>被审计(调查)单位确认意见</td>
-            <td colspan="5"><el-input  :disabled="ifLook" type="textarea" v-model="formDetail.auditOrgOpinion"></el-input></td>
-            <!--<td colspan="5">{{formDetail.auditOrgOpinion}}</td>-->
-          </tr>
-          <tr>
-            <td>相关负责人(签名)</td>
-            <!--<td><el-input  :disabled="ifLook" v-model="formDetail.principalName"></el-input></td>-->
-            <td>{{formDetail.principalPost}}</td>
-            <td>职务</td>
-            <!--<td><el-input  :disabled="ifLook" v-model="formDetail.principalPost"></el-input></td>-->
-            <td>{{formDetail.principalPost}}</td>
-            <td>日期</td>
-            <!--<td><el-input  :disabled="ifLook" v-model="formDetail.signatureDate"></el-input></td>-->
-            <td>{{formDetail.principalPost | dateformat}}</td>
-          </tr>
-        </table>
-      </div>
-      <span slot="footer"
-            class="dialog-footer">
-        <el-button @click="handleClose">取 消</el-button>
-        <el-button v-if="!ifLook"
-                   type="primary"
-                   @click="saveForm" class="subBtn">确 定</el-button>
-      </span>
-    </el-dialog>
+              <!--</td>-->
+            </tr>
+            <tr>
+              <td>审计人员(签名)</td>
+              <td width="20%">{{formDetail.auditorsName}}</td>
+              <td>复审人(签名)</td>
+              <td width="20%">{{formDetail.reviewerName}}</td>
+              <td>编制日期</td>
+              <td>{{formDetail.compileDate | dateformat}}</td>
+            </tr>
+            <tr>
+              <td>被审计(调查)单位确认意见</td>
+              <td colspan="5">
+                <el-input :disabled="ifLook"
+                          type="textarea"
+                          v-model="formDetail.auditOrgOpinion"></el-input>
+              </td>
+              <!--<td colspan="5">{{formDetail.auditOrgOpinion}}</td>-->
+            </tr>
+            <tr>
+              <td>相关负责人(签名)</td>
+              <!--<td><el-input  :disabled="ifLook" v-model="formDetail.principalName"></el-input></td>-->
+              <td>{{formDetail.principalPost}}</td>
+              <td>职务</td>
+              <!--<td><el-input  :disabled="ifLook" v-model="formDetail.principalPost"></el-input></td>-->
+              <td>{{formDetail.principalPost}}</td>
+              <td>日期</td>
+              <!--<td><el-input  :disabled="ifLook" v-model="formDetail.signatureDate"></el-input></td>-->
+              <td>{{formDetail.principalPost | dateformat}}</td>
+            </tr>
+          </table>
+        </div>
+        <span slot="footer"
+              class="dialog-footer">
+          <el-button @click="handleClose">取 消</el-button>
+          <el-button v-if="!ifLook"
+                     type="primary"
+                     @click="saveForm"
+                     class="subBtn">确 定</el-button>
+        </span>
+      </el-dialog>
     </el-form>
     <search-list ref="searchTabel"
                  @refreshSearch="getSearchInfo"></search-list>
@@ -253,19 +273,19 @@
 </template>
 
 <script>
-import {get_userInfo,projectMembership_listUserInfo, down_file, auditBasy_getFileList, auditConfirmation_pageList, auditConfirmation_save, auditConfirmation_delete, auditConfirmation_getDetail, auditConfirmation_update } from
+import { get_userInfo, projectMembership_listUserInfo, down_file, auditBasy_getFileList, auditConfirmation_pageList, auditConfirmation_save, auditConfirmation_delete, auditConfirmation_getDetail, auditConfirmation_update } from
   '@SDMOBILE/api/shandong/ls'
 import { task_pageList_wt } from
   '@SDMOBILE/api/shandong/AuditReport'
 import { task_select_people } from
-    '@SDMOBILE/api/shandong/task'
+  '@SDMOBILE/api/shandong/task'
 import SearchList from "./searchList"
 export default {
   components: { SearchList },
-  props: ['active_project','userRole'],
+  props: ['active_project', 'userRole'],
   data () {
     return {
-      headers:{},
+      headers: {},
       canClick: true,
       ifLook: false,
       confirmationDialogTitle: '新增确认单',
@@ -291,10 +311,10 @@ export default {
       auditOrgName: '',//被审计单位
       projectType: '',//项目类型 jzsj经责审计  zxsj专项审计
       tableFileList: [],//确认单附件列表
-      FhrList:[],//复核人列表
-      sjryList:[],//审计人员列表
-      userInfo:{
-        user:{}
+      FhrList: [],//复核人列表
+      sjryList: [],//审计人员列表
+      userInfo: {
+        user: {}
       },//用户信息
       // 新增的表单验证
       rules: {
@@ -321,39 +341,39 @@ export default {
     this.getFhrList();
     this.getSjryList();
   },
-  mounted(){
-    this.headers = {'TOKEN':sessionStorage.getItem('TOKEN')}
+  mounted () {
+    this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
   },
   methods: {
     //获取用户信息
-    getUser(){
-      var that=this;
+    getUser () {
+      var that = this;
       get_userInfo().then(resp => {
         that.userInfo = resp.data;
-        that.formDetail.reviewerName=that.userInfo.managementProject.projectChargemanName;
-        that.formDetail.auditorsName=this.userInfo.user.realName;
-        var sj=new Date().toLocaleDateString().split('/');
+        that.formDetail.reviewerName = that.userInfo.managementProject.projectChargemanName;
+        that.formDetail.auditorsName = this.userInfo.user.realName;
+        var sj = new Date().toLocaleDateString().split('/');
         // sj[1]=sj[1]<10?'0'+sj[1]:sj[1];
-        sj[1]=sj[1].padStart(2, '0');
-        sj[2]=sj[2].padStart(2, '0');
-        that.formDetail.compileDate=sj[0]+"-"+sj[1]+"-"+sj[2];
+        sj[1] = sj[1].padStart(2, '0');
+        sj[2] = sj[2].padStart(2, '0');
+        that.formDetail.compileDate = sj[0] + "-" + sj[1] + "-" + sj[2];
         console.log(that.formDetail.compileDate)
       })
     },
     //复核人列表
-    getFhrList(){
+    getFhrList () {
       projectMembership_listUserInfo().then(resp => {
         this.FhrList = resp.data.list;
       })
     },
     //审计人员列表
-    getSjryList(){
-      var params={
-        condition:{
-          managementProjectUuid:this.active_project,
+    getSjryList () {
+      var params = {
+        condition: {
+          managementProjectUuid: this.active_project,
         },
-        pageNo:1,
-        pageSize:1000000,
+        pageNo: 1,
+        pageSize: 1000000,
       };
       task_select_people(params).then(resp => {
         this.sjryList = resp.data.records;
@@ -452,7 +472,7 @@ export default {
       this.clearForm();
       this.isAdd = true;
       this.confirmationDialogTitle = "编辑确认单";
-      this.ifLook=false;
+      this.ifLook = false;
       this.getDetail(row);
     },
     getDetail (row) {
@@ -461,11 +481,11 @@ export default {
         this.formDetail = datas;
         if (this.projectType == 'zxsj') {
           this.confirmationDialogVisibleZx = true;
-          if(this.formDetail.auditOrgOpinion.indexOf("情况属实")==-1){
-            this.formDetail.auditOrgOpinion="情况属实\n"+this.formDetail.auditOrgOpinion
+          if (this.formDetail.auditOrgOpinion.indexOf("情况属实") == -1) {
+            this.formDetail.auditOrgOpinion = "情况属实\n" + this.formDetail.auditOrgOpinion
           }
-        // }else if (this.projectType == 'jzsj') {
-        }else{
+          // }else if (this.projectType == 'jzsj') {
+        } else {
           this.confirmationDialogVisible = true;
         }
       })
@@ -501,7 +521,7 @@ export default {
       this.confirmationDialogTitle = "新增确认单";
       this.confirmationDialogVisible = true;
       this.getUser();
-      this.ifLook=false;
+      this.ifLook = false;
     },
     // 增加弹出框关闭事件
     handleClose () {
@@ -527,11 +547,11 @@ export default {
       this.$refs['addForm'].validate((valid) => {
         if (valid) {
           if (this.confirmationDialogTitle == '新增确认单') {
-            this.formDetail.managementProjectName=this.managementProjectName;
-            this.formDetail.auditOrgName=this.auditOrgName;
+            this.formDetail.managementProjectName = this.managementProjectName;
+            this.formDetail.auditOrgName = this.auditOrgName;
             this.formDetail.managementProjectUuid = this.active_project;
-            var timer=null;
-            timer=setTimeout(auditConfirmation_save(this.formDetail).then(resp => {
+            var timer = null;
+            timer = setTimeout(auditConfirmation_save(this.formDetail).then(resp => {
               this.canClick = true;
               if (resp.code == 0) {
                 this.$message({
@@ -540,7 +560,7 @@ export default {
                 });
                 this.confirmationDialogVisible = false;
                 this.list_data_start();
-                timer=null;
+                timer = null;
                 clearTimeout(timer);
               } else {
                 this.$message({
@@ -549,11 +569,11 @@ export default {
                 });
               }
 
-            }),0);
+            }), 0);
 
           } else {
-            var timer=null;
-            timer=setTimeout( auditConfirmation_update(this.formDetail).then(resp => {
+            var timer = null;
+            timer = setTimeout(auditConfirmation_update(this.formDetail).then(resp => {
               this.canClick = true;
               if (resp.code == 0) {
                 this.$message({
@@ -563,7 +583,7 @@ export default {
                 this.confirmationDialogVisible = false;
                 this.confirmationDialogVisibleZx = false;
                 this.list_data_start();
-                timer=null;
+                timer = null;
                 clearTimeout(timer);
               } else {
                 this.$message({
@@ -572,7 +592,7 @@ export default {
                 });
               }
 
-            }),0);
+            }), 0);
 
           }
         } else {
@@ -594,7 +614,7 @@ export default {
         principalPost: '',
         signatureDate: '',
       };
-      if(this.$refs['addForm']){
+      if (this.$refs['addForm']) {
         this.$refs['addForm'].resetFields();
       }
 
@@ -661,20 +681,20 @@ export default {
 }
 .relationBtn {
   margin-bottom: 10px;
-  border-color: #dcdfe6!important;
+  border-color: #dcdfe6 !important;
 }
 .list-folder {
   color: orange;
   margin-right: 5px;
 }
-.smb-folder{
+.smb-folder {
   transform: scale(1.1);
   display: inline-block;
 }
-.smb-btn{
-  font-size: 14px!important;
-  color:#666;
-  font-weight: normal!important;
+.smb-btn {
+  font-size: 14px !important;
+  color: #666;
+  font-weight: normal !important;
 }
 >>> .list-folder-btn {
   font-weight: normal;
@@ -715,12 +735,12 @@ export default {
 >>> .el-form-item {
   margin-bottom: 20px !important;
 }
-  >>>.el-dialog__footer{
-    text-align: center;
-  }
-  >>>.btnStyle .el-upload{
-    width: 100%!important;
-    margin: 0!important;
-    text-align: center!important;
-  }
+>>> .el-dialog__footer {
+  text-align: center;
+}
+>>> .btnStyle .el-upload {
+  width: 100% !important;
+  margin: 0 !important;
+  text-align: center !important;
+}
 </style>

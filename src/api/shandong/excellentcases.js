@@ -111,6 +111,7 @@ export function fileDownload (data) {
     method: 'post',
     ifDownFile: true,
     responseType: "blob",
+
     isLoading: false,
     data
   })

@@ -4,144 +4,183 @@
 
     <div>
       <div class="projectTab">
-        <el-table @row-dblclick="getLook" :header-cell-style="{'text-align':'left','background-color': '#F4FAFF',}" :data="tableData" style="width: 100%" @select="Selects">
-          <el-table-column algin="left" type="index" label="编号"> </el-table-column>
-          <el-table-column align="left" prop="basyName" label="资料名称">
+        <el-table @row-dblclick="getLook"
+                  :header-cell-style="{'text-align':'left','background-color': '#F4FAFF',}"
+                  :data="tableData"
+                  style="width: 100%"
+                  @select="Selects">
+          <el-table-column algin="left"
+                           type="index"
+                           label="编号"> </el-table-column>
+          <el-table-column align="left"
+                           prop="basyName"
+                           label="资料名称">
             <template slot-scope="scope">
-              <el-popover
-                :popper-class="tableFileList==''?'no-padding':''"
-                placement="bottom"
-                width="250"
-                @show="getFileList(scope.row.basyUuid)"
-                trigger="click">
-                <ul v-if="tableFileList!=''" class="fileList-ul">
+              <el-popover :popper-class="tableFileList==''?'no-padding':''"
+                          placement="bottom"
+                          width="250"
+                          @show="getFileList(scope.row.basyUuid)"
+                          trigger="click">
+                <ul v-if="tableFileList!=''"
+                    class="fileList-ul">
                   <li class="tableFileList-title">文件名称</li>
                   <!--<li v-for="item in tableFileList" class="pointer blue" @click="downFile(item.attachment_uuid,item.file_name)"><i class="orange el-icon-folder-opened"></i>{{item.file_name}}</li>-->
-                  <li v-for="item in tableFileList" class="pointer blue" @click="downFile(item.attachment_uuid,item.file_name)">{{item.file_name}}</li>
+                  <li v-for="item in tableFileList"
+                      class="pointer blue"
+                      @click="downFile(item.attachment_uuid,item.file_name)">{{item.file_name}}</li>
                 </ul>
-                <div slot="reference" class="pointer blue">{{scope.row.basyName}}</div>
+                <div slot="reference"
+                     class="pointer blue">{{scope.row.basyName}}</div>
               </el-popover>
             </template>
           </el-table-column>
-          <el-table-column algin="left" prop="basySymbol" label="文号"> </el-table-column>
-          <el-table-column algin="left" prop="publishDepartment" label="发文部门"> </el-table-column>
-          <el-table-column algin="left" prop="issueDate" label="发文日期">
+          <el-table-column algin="left"
+                           prop="basySymbol"
+                           label="文号"> </el-table-column>
+          <el-table-column algin="left"
+                           prop="publishDepartment"
+                           label="发文部门"> </el-table-column>
+          <el-table-column algin="left"
+                           prop="issueDate"
+                           label="发文日期">
             <template slot-scope="scope">{{
               scope.row.issueDate | dateformat
               }}</template>
           </el-table-column>
-          <el-table-column algin="left" prop="keyClauses" label="重点条款"> </el-table-column>
-          <el-table-column algin="left" label="操作">
+          <el-table-column algin="left"
+                           prop="keyClauses"
+                           label="重点条款"> </el-table-column>
+          <el-table-column algin="left"
+                           label="操作">
             <template slot-scope="scope">
-              <el-link type="primary blue" @click="edit(scope.row)">编辑</el-link>
-              <el-link type="primary" class="delete red" @click="deletes(scope.row.basyUuid)">删除</el-link>
+              <el-link type="primary blue"
+                       @click="edit(scope.row)">编辑</el-link>
+              <el-link type="primary"
+                       class="delete red"
+                       @click="deletes(scope.row.basyUuid)">删除</el-link>
             </template>
           </el-table-column>
         </el-table>
       </div>
       <!-- 分页 -->
       <div class="page">
-        <el-pagination
-          :current-page="page.current"
-          :page-size="page.size"
-          :page-sizes="[10, 50, 100]"
-          :total="page.total"
-          @current-change="handleCurrentChange"
-          @size-change="handleSizeChange"
-          layout="total, sizes, prev, pager, next, jumper"
-        ></el-pagination>
+        <el-pagination :current-page="page.current"
+                       :page-size="page.size"
+                       :page-sizes="[10, 50, 100]"
+                       :total="page.total"
+                       @current-change="handleCurrentChange"
+                       @size-change="handleSizeChange"
+                       layout="total, sizes, prev, pager, next, jumper"></el-pagination>
       </div>
       <!-- 分页 end-->
     </div>
-    <el-dialog
-      @close="close"
-      :visible.sync="isAdd"
-      v-if="isAdd"
-      :destroy-on-close="true"
-      width="70%"
-      center
-      class="qrd-dialog"
-    >  <div class="title">{{title}}</div>
-      <el-form ref="addForm" :model="formState" :rules="rules" class="formData"  label-width="100px">
-        <el-form-item class="itemTwo" prop="basyName" label="资料名称:">
-          <el-input
-            :disabled="ifLook"
-            v-model="formState.basyName"
-            placeholder="请输入"
-          ></el-input>
+    <el-dialog @close="close"
+               :visible.sync="isAdd"
+               v-if="isAdd"
+               :destroy-on-close="true"
+               width="70%"
+               center
+               class="qrd-dialog">
+      <div class="title">{{title}}</div>
+      <el-form ref="addForm"
+               :model="formState"
+               :rules="rules"
+               class="formData"
+               label-width="100px">
+        <el-form-item class="itemTwo"
+                      prop="basyName"
+                      label="资料名称:">
+          <el-input :disabled="ifLook"
+                    v-model="formState.basyName"
+                    placeholder="请输入"></el-input>
         </el-form-item>
-        <el-form-item class="itemTwo" prop="basySymbol" label="文号:">
-          <el-input
-            :disabled="ifLook"
-            v-model="formState.basySymbol"
-            placeholder="请输入"
-          ></el-input>
+        <el-form-item class="itemTwo"
+                      prop="basySymbol"
+                      label="文号:">
+          <el-input :disabled="ifLook"
+                    v-model="formState.basySymbol"
+                    placeholder="请输入"></el-input>
         </el-form-item>
-        <el-form-item class="itemTwo" prop="keyClauses" label="重点条款:" >
-          <el-input
-            :disabled="ifLook"
-            v-model="formState.keyClauses"
-            placeholder="请输入"
-          ></el-input>
+        <el-form-item class="itemTwo"
+                      prop="keyClauses"
+                      label="重点条款:">
+          <el-input :disabled="ifLook"
+                    v-model="formState.keyClauses"
+                    placeholder="请输入"></el-input>
         </el-form-item>
-        <el-form-item class="itemTwo" prop="issueDate" label="发文日期:" >
-          <el-date-picker :disabled="ifLook" v-model="formState.issueDate" type="date"  placeholder="请选择" format="yyyy-MM-dd">
+        <el-form-item class="itemTwo"
+                      prop="issueDate"
+                      label="发文日期:">
+          <el-date-picker :disabled="ifLook"
+                          v-model="formState.issueDate"
+                          type="date"
+                          placeholder="请选择"
+                          format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
-        <el-form-item class="itemTwo" prop="publishDepartment" label="发文部门:" >
-          <el-input
-            :disabled="ifLook"
-            v-model="formState.publishDepartment"
-            placeholder="请输入"
-          ></el-input>
+        <el-form-item class="itemTwo"
+                      prop="publishDepartment"
+                      label="发文部门:">
+          <el-input :disabled="ifLook"
+                    v-model="formState.publishDepartment"
+                    placeholder="请输入"></el-input>
         </el-form-item>
-        <el-form-item label="上传附件:"  class="falseRequired">
-          <el-upload
-            v-if="!ifLook"
-            class="upload-demo"
-            drag
-            action="/wisdomaudit/auditBasy/filesUpload"
-            :on-success="handleChangePic"
-            :before-remove="handleRemoveApk"
-            accept=".docx,.xls,.xlsx,.txt,.zip,.doc"
-            :file-list="fileList"
-            multiple
-            :key="key"
-            :headers="headers"
-          >
+        <el-form-item label="上传附件:"
+                      class="falseRequired">
+          <el-upload v-if="!ifLook"
+                     class="upload-demo"
+                     drag
+                     action="/wisdomaudit/auditBasy/filesUpload"
+                     :on-success="handleChangePic"
+                     :before-remove="handleRemoveApk"
+                     accept=".docx,.xls,.xlsx,.txt,.zip,.doc"
+                     :file-list="fileList"
+                     multiple
+                     :key="key"
+                     :headers="headers">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">
               点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc
             </div>
           </el-upload>
-          <div  v-if="ifLook">
+          <div v-if="ifLook">
             <div v-for="(item,index) in fileList">{{item.name}}</div>
           </div>
         </el-form-item>
-        <el-form-item label="附件内容:" prop="content" >
-          <el-input :disabled="ifLook" type="textarea" v-model="formState.content" :rows="6" style="flex:1;" :placeholder="'模板:\n第一章 货币资金审计\n第一条 现金的账实是否属实\n1.确定所有现金存放地点和用途\n2.现场键盘库存现金'"></el-input>
+        <el-form-item label="附件内容:"
+                      prop="content">
+          <el-input :disabled="ifLook"
+                    type="textarea"
+                    v-model="formState.content"
+                    :rows="6"
+                    style="flex:1;"
+                    :placeholder="'模板:\n第一章 货币资金审计\n第一条 现金的账实是否属实\n1.确定所有现金存放地点和用途\n2.现场键盘库存现金'"></el-input>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div slot="footer"
+           class="dialog-footer">
         <el-button @click="close">取 消</el-button>
-        <el-button v-if="!ifLook" class="subBtn"  type="primary" @click="sub">确 定</el-button>
+        <el-button v-if="!ifLook"
+                   class="subBtn"
+                   type="primary"
+                   @click="sub">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-  import {del_file_batch,down_file, del_file,auditBasy_pageList,auditBasy_save,auditBasy_delete ,auditBasy_getDetail,auditBasy_getFileList} from
-      '@SDMOBILE/api/shandong/ls'
+import { del_file_batch, down_file, del_file, auditBasy_pageList, auditBasy_save, auditBasy_delete, auditBasy_getDetail, auditBasy_getFileList } from
+  '@SDMOBILE/api/shandong/ls'
 import '@WISDOMAUDIT/styles/from.scss'
 export default {
   components: {},
-  data() {
+  data () {
     return {
-      headers:'',
-      canClick:true,
-      ifLook:false,
-      key:0,
+      headers: '',
+      canClick: true,
+      ifLook: false,
+      key: 0,
       title: "",
       formState: {
         basyName: "",
@@ -151,7 +190,7 @@ export default {
         publishDepartment: "",
         content: "",
       },
-      text:"",
+      text: "",
       isAdd: false,
       btn: false,
       activeName: 0,
@@ -160,21 +199,21 @@ export default {
       tableData: [
 
       ],
-      tableFileList:[],
-      searchForm:{
+      tableFileList: [],
+      searchForm: {
         pageNo: 1,
         pageSize: 10,
-        basyName:'',
-        issueDate:'',
-        publishDepartment:''
+        basyName: '',
+        issueDate: '',
+        publishDepartment: ''
       },
-      page:{
-        current:1,
-        size:10,
-        total:0
+      page: {
+        current: 1,
+        size: 10,
+        total: 0
       },
-      apkFiles:[],//附件上传列表
-      fileList:[],//附件上传回显列表
+      apkFiles: [],//附件上传列表
+      fileList: [],//附件上传回显列表
       // 新增的表单验证
       rules: {
         basyName: [
@@ -202,7 +241,7 @@ export default {
   watch: {},
   methods: {
     //删除
-    deletes(val){
+    deletes (val) {
       // console.log(val)
       this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, '提示', {
         confirmButtonText: '确定',
@@ -216,8 +255,8 @@ export default {
               message: "删除成功",
               type: "success",
             });
-            if(this.tableData.length==1){
-              this.searchForm.pageNo=this.searchForm.pageNo-1;
+            if (this.tableData.length == 1) {
+              this.searchForm.pageNo = this.searchForm.pageNo - 1;
             }
             this.list_data_start();
           } else {
@@ -227,49 +266,49 @@ export default {
             });
           }
         });
-      }).catch(() => {})
+      }).catch(() => { })
 
     },
-    addlist() {
+    addlist () {
       this.isAdd = true;
-      this.ifLook=false;
+      this.ifLook = false;
       this.title = "新增审计依据";
     },
-    Selects(selection, row) {
+    Selects (selection, row) {
       // console.log(selection, row);
       this.btn = !this.btn;
     },
-    deleteRow(index, rows) {
+    deleteRow (index, rows) {
       rows.splice(index, 1);
     },
     //处理附件内容
-    setContent(arr){
-      var str='';
-      arr.forEach((item)=>{
-        str+=item.attachmentContent+"\n"
+    setContent (arr) {
+      var str = '';
+      arr.forEach((item) => {
+        str += item.attachmentContent + "\n"
       })
       return str;
     },
     //编辑
-    edit(row){
+    edit (row) {
       this.clearForm();
       this.isAdd = true;
-      this.ifLook=false;
+      this.ifLook = false;
       this.title = "编辑审计依据";
       auditBasy_getDetail(row.basyUuid).then(resp => {
-        var datas=resp.data;
-        this.formState=datas;
+        var datas = resp.data;
+        this.formState = datas;
         // this.formState.basyName=datas.basyName;
         // this.formState.basySymbol=datas.basySymbol;
         // this.formState.keyClauses=datas.keyClauses;
         // this.formState.issueDate=datas.issueDate;
         // this.formState.publishDepartment=datas.publishDepartment;
-        this.formState.content=this.setContent(datas.treeData.arr);
-        datas.attachmentList.forEach((item)=>{
-          var v={
-            name:item.file_name,
-            url:item.file_path,
-            attachmentUuid:item.attachment_uuid
+        this.formState.content = this.setContent(datas.treeData.arr);
+        datas.attachmentList.forEach((item) => {
+          var v = {
+            name: item.file_name,
+            url: item.file_path,
+            attachmentUuid: item.attachment_uuid
           }
           this.fileList.push(v);
         })
@@ -277,25 +316,25 @@ export default {
 
     },
     //查看
-    getLook(row, column, event){
+    getLook (row, column, event) {
       this.clearForm();
       this.isAdd = true;
       this.title = "查看审计依据";
-      this.ifLook=true;
+      this.ifLook = true;
       auditBasy_getDetail(row.basyUuid).then(resp => {
-        var datas=resp.data;
-        this.formState=datas;
+        var datas = resp.data;
+        this.formState = datas;
         // this.formState.basyName=datas.basyName;
         // this.formState.basySymbol=datas.basySymbol;
         // this.formState.keyClauses=datas.keyClauses;
         // this.formState.issueDate=datas.issueDate;
         // this.formState.publishDepartment=datas.publishDepartment;
-        this.formState.content=this.setContent(datas.treeData.arr);
-        datas.attachmentList.forEach((item)=>{
-          var v={
-            name:item.file_name,
-            url:item.file_path,
-            attachmentUuid:item.attachment_uuid
+        this.formState.content = this.setContent(datas.treeData.arr);
+        datas.attachmentList.forEach((item) => {
+          var v = {
+            name: item.file_name,
+            url: item.file_path,
+            attachmentUuid: item.attachment_uuid
           }
           this.fileList.push(v);
         })
@@ -304,52 +343,52 @@ export default {
     //列表数据
     list_data_start () {
       // debugger
-      var issueDate='';
-      if(this.searchForm.issueDate){
+      var issueDate = '';
+      if (this.searchForm.issueDate) {
         const difference = new Date().getTimezoneOffset() * 60 * 1000;
-       issueDate= new Date(this.searchForm.issueDate).getTime()-difference;
+        issueDate = new Date(this.searchForm.issueDate).getTime() - difference;
       }
 
-      let params={
+      let params = {
         pageNo: this.searchForm.pageNo,
         pageSize: this.searchForm.pageSize,
         condition: {
           basyName: this.searchForm.basyName,
-          issueDate:this.searchForm.issueDate,
+          issueDate: this.searchForm.issueDate,
           publishDepartment: this.searchForm.publishDepartment,
         }
       };
       this.loading = true
       auditBasy_pageList(params).then(resp => {
-        var datas=resp.data;
+        var datas = resp.data;
         this.tableData = datas.records;
-        this.page={
-          current:datas.current,
-          size:datas.size,
-          total:datas.total
+        this.page = {
+          current: datas.current,
+          size: datas.size,
+          total: datas.total
         };
         this.loading = false
       })
     },
     //查询按钮点击传参
-    getSearchForm(data){
-      this.searchForm.basyName=data.basyName;
-      this.searchForm.issueDate=data.issueDate;
-      this.searchForm.publishDepartment=data.publishDepartment;
-      this.searchForm.pageNo=1;
+    getSearchForm (data) {
+      this.searchForm.basyName = data.basyName;
+      this.searchForm.issueDate = data.issueDate;
+      this.searchForm.publishDepartment = data.publishDepartment;
+      this.searchForm.pageNo = 1;
       this.list_data_start();
     },
     //分页点击
-    handleSizeChange(val) {
+    handleSizeChange (val) {
       this.searchForm.pageSize = val;
       this.list_data_start();
     },
-    handleCurrentChange(val) {
-      this.searchForm.pageNo= val;
+    handleCurrentChange (val) {
+      this.searchForm.pageNo = val;
       this.list_data_start();
     },
     //附件上传成功
-    handleChangePic(response, file, fileList) {
+    handleChangePic (response, file, fileList) {
       if (response && response.code === 0) {
         this.apkFiles.push(response.data);
         this.$message({
@@ -373,23 +412,23 @@ export default {
       }
     },
     //附件删除
-    handleRemoveApk(file, fileList) {
-      var ifDel=true,that=this;
-      var id=file.response?file.response.data.attachmentUuid:file.attachmentUuid;
-      return new Promise(function(resolve, reject){
+    handleRemoveApk (file, fileList) {
+      var ifDel = true, that = this;
+      var id = file.response ? file.response.data.attachmentUuid : file.attachmentUuid;
+      return new Promise(function (resolve, reject) {
         del_file(id).then(resp => {
           if (resp.code == 0) {
             that.$message({
               message: "删除成功",
               type: "success",
             });
-            if(file.response){
+            if (file.response) {
               that.apkFiles.remove(file.response.data);
-              that.key=Math.random();
-            }else{
+              that.key = Math.random();
+            } else {
               // console.log(file)
               that.fileList.remove(file);
-              that.formState.attachmentList=that.formState.attachmentList.filter((item)=>{item.attachment_uuid!=file.attachmentUuid})
+              that.formState.attachmentList = that.formState.attachmentList.filter((item) => { item.attachment_uuid != file.attachmentUuid })
               // console.log(that.formState.attachmentList,222)
             }
             return true;
@@ -399,18 +438,18 @@ export default {
               message: resp.data.msg,
               type: "error",
             });
-            ifDel=false;
+            ifDel = false;
             resolve(ifDel);
             return ifDel;
           }
         });
-      }).then(function(val){
+      }).then(function (val) {
         reject(val);
         return val
       })
     },
     //附件下载
-    downFile(id,fileName){
+    downFile (id, fileName) {
       let formData = new FormData()
       formData.append('fileId', id)
       down_file(formData).then(resp => {
@@ -437,38 +476,38 @@ export default {
       })
     },
     //保存数据
-    sub(){
+    sub () {
       // debugger;
-      var attachmentUuidList=[];
-      this.apkFiles.forEach((item)=>{
+      var attachmentUuidList = [];
+      this.apkFiles.forEach((item) => {
         attachmentUuidList.push(item.attachmentUuid)
       });
-      if(this.formState.attachmentList){
-        this.formState.attachmentList.forEach((item)=>{
+      if (this.formState.attachmentList) {
+        this.formState.attachmentList.forEach((item) => {
           attachmentUuidList.push(item.attachment_uuid)
         });
       }
-      this.formState.attachmentUuidList=attachmentUuidList;
+      this.formState.attachmentUuidList = attachmentUuidList;
 
       this.$refs['addForm'].validate((valid) => {
         if (valid) {
-         console.log(this.formState.attachmentUuidList)
-          if(this.formState.attachmentUuidList.length==0){
+          console.log(this.formState.attachmentUuidList)
+          if (this.formState.attachmentUuidList.length == 0) {
             this.$message.error("请上传附件");
-            this.canClick=true;
+            this.canClick = true;
             return false;
           }
-          var timer=null;
-          timer=setTimeout(auditBasy_save(this.formState).then(resp => {
+          var timer = null;
+          timer = setTimeout(auditBasy_save(this.formState).then(resp => {
             if (resp.code == 0) {
               this.$message({
                 message: "保存成功",
                 type: "success",
               });
-              this.isAdd=false;
+              this.isAdd = false;
               this.list_data_start();
               this.clearForm();
-              timer=null;
+              timer = null;
               clearTimeout(timer);
             } else {
               this.$message({
@@ -476,7 +515,7 @@ export default {
                 type: "error",
               });
             }
-          }),0)
+          }), 0)
         } else {
           this.canClick = true;
           this.$message.error("请添加必填项和正确的数据格式");
@@ -485,14 +524,14 @@ export default {
       });
     },
     //关闭弹窗
-    close(){
+    close () {
       this.isAdd = false;
-      var ids=[];
-      this.apkFiles.forEach((item)=>{
+      var ids = [];
+      this.apkFiles.forEach((item) => {
         ids.push(item.attachmentUuid)
       });
       // console.log(this.apkFiles,ids)
-      if(ids!=''){
+      if (ids != '') {
         del_file_batch(ids.join(",")).then(resp => {
           // if (resp.code == 0) {
           //   this.$message({
@@ -510,8 +549,8 @@ export default {
       this.clearForm();
     },
     //清除数据
-    clearForm(){
-      this.formState={
+    clearForm () {
+      this.formState = {
         basyName: "",
         basySymbol: "",
         keyClauses: "",
@@ -519,36 +558,36 @@ export default {
         publishDepartment: "",
         content: "",
       }
-      this.fileList=[];
-      this.apkFiles=[];
-      this.canClick=true;
+      this.fileList = [];
+      this.apkFiles = [];
+      this.canClick = true;
     },
     //点击资料名称显示附件列表
-    getFileList(id){
-      this.tableFileList=[];
+    getFileList (id) {
+      this.tableFileList = [];
       auditBasy_getFileList(id).then(resp => {
-        this.tableFileList=resp.data;
+        this.tableFileList = resp.data;
       })
     }
   },
-  created() {
-    this.headers = {'TOKEN':sessionStorage.getItem('TOKEN')}
+  created () {
+    this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
   },
-  mounted() {
+  mounted () {
     this.list_data_start()
   },
 };
 </script>
 
 <style scoped>
-  @import '../../../assets/styles/css/yw.css';
-.el-tabs{
+@import "../../../assets/styles/css/yw.css";
+.el-tabs {
   padding: 1%;
 }
 .delete {
   margin-left: 10px;
 }
-.sjzl{
+.sjzl {
   /*margin-top: 10px;*/
   padding: 10px;
 }
@@ -593,22 +632,22 @@ export default {
   display: flex;
   justify-content: flex-end;
 }
-.update_icon svg{
+.update_icon svg {
   margin-top: 5px;
 }
-  >>> .qrd-dialog .el-dialog__header,
-  >>> .qrd-dialog .el-dialog__body {
-    padding: 0 !important;
-  }
-  .formData{
-    padding-top: 20px!important;
-  }
-  >>> .qrd-dialog .el-dialog__headerbtn {
-    top: 15px !important;
-    right: 15px !important;
-  }
-  >>> .qrd-dialog .el-dialog__footer {
-    padding-left: 35px !important;
-    padding-right: 35px !important;
-  }
+>>> .qrd-dialog .el-dialog__header,
+>>> .qrd-dialog .el-dialog__body {
+  padding: 0 !important;
+}
+.formData {
+  padding-top: 20px !important;
+}
+>>> .qrd-dialog .el-dialog__headerbtn {
+  top: 15px !important;
+  right: 15px !important;
+}
+>>> .qrd-dialog .el-dialog__footer {
+  padding-left: 35px !important;
+  padding-right: 35px !important;
+}
 </style>

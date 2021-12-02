@@ -106,7 +106,7 @@
               <div class="homeemptyicon">
                 <svg-icon
                   icon-class="home-empty"
-                  style="width: 50px; height: 50px"
+                  className="homeempty"
                 />
               </div>
               <div class="homeemptytext">暂无内容，稍后再来</div>
@@ -150,7 +150,7 @@
               <div class="homeemptyicon">
                 <svg-icon
                   icon-class="home-empty"
-                  style="width: 50px; height: 50px"
+                  className="homeempty"
                 />
               </div>
               <div class="homeemptytext">暂无内容，稍后再来</div>
@@ -655,6 +655,10 @@ export default {
 </script>
 
 <style lang="scss"  scoped>
+.homeempty{
+  height: 50px !important;
+  width: 50px !important;
+}
 .homeemptyicon {
   padding: 20px 0;
   text-align: center;

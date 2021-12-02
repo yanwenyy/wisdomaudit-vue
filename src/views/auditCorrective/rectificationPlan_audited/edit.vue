@@ -179,7 +179,7 @@
                         label="整改计划：">
             <el-input type="textarea"
                       class="resizeNone"
-                      placeholder="请输入整改计划："
+                      placeholder="请输入整改计划"
                       v-model="save.planContent"></el-input>
           </el-form-item>
 

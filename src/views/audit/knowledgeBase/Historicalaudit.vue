@@ -3,48 +3,44 @@
     <div class="header">
       <div class="search_ms">
         <p>历史审计发现描述：</p>
-        <el-input
-          v-model="query.historyAuditFindDescribe"
-          placeholder="请输入描述名称"
-        ></el-input>
+        <el-input v-model="query.historyAuditFindDescribe"
+                  placeholder="请输入描述名称"></el-input>
       </div>
 
       <!--自建任务 模型任务 筛选 -->
       <div class="search">
         <p style="min-width: 130px; text-align: right">发现人：</p>
-        <el-input placeholder="请输入发现人" v-model="query.findPeople">
+        <el-input placeholder="请输入发现人"
+                  v-model="query.findPeople">
         </el-input>
       </div>
-      <el-button
-        type="primary"
-        style="margin-left: 17px"
-        @click="search_list()"
-      >
+      <el-button type="primary"
+                 style="margin-left: 17px"
+                 @click="search_list()">
         查询
       </el-button>
     </div>
-    <div class="header" style="padding: 0 20px 20px">
-      <el-button type="primary" :disabled="isDisable" @click="add_sj()"
-        >新增省内历史审计发现</el-button
-      >
+    <div class="header"
+         style="padding: 0 20px 20px">
+      <el-button type="primary"
+                 :disabled="isDisable"
+                 @click="add_sj()">新增省内历史审计发现</el-button>
     </div>
 
     <div class="conter">
       <!-- 表单 -->
-      <el-table
-        :data="tableData_list"
-        v-loading="loading"
-        :header-cell-style="{ 'background-color': '#F4FAFF' }"
-        style="width: 100%"
-      >
-        <el-table-column type="index" label="序号" width="50">
+      <el-table :data="tableData_list"
+                v-loading="loading"
+                :header-cell-style="{ 'background-color': '#F4FAFF' }"
+                style="width: 100%">
+        <el-table-column type="index"
+                         label="序号"
+                         width="50">
         </el-table-column>
         <!-- 历史审计发现 -->
-        <el-table-column
-          prop="historyAuditFindDescribe"
-          show-overflow-tooltip
-          label="历史审计发现描述"
-        >
+        <el-table-column prop="historyAuditFindDescribe"
+                         show-overflow-tooltip
+                         label="历史审计发现描述">
           <template slot-scope="scope">
             <div v-if="scope.row.historyAuditFindDescribe">
               {{ scope.row.historyAuditFindDescribe }}
@@ -53,11 +49,9 @@
           </template>
         </el-table-column>
         <!-- 被审计单位 -->
-        <el-table-column
-          prop="auditedEntityName"
-          show-overflow-tooltip
-          label="被审计单位"
-        >
+        <el-table-column prop="auditedEntityName"
+                         show-overflow-tooltip
+                         label="被审计单位">
           <template slot-scope="scope">
             <div v-if="scope.row.auditedEntityName">
               {{ scope.row.auditedEntityName }}
@@ -67,7 +61,9 @@
         </el-table-column>
 
         <!-- 发现人 -->
-        <el-table-column prop="findPeople" show-overflow-tooltip label="发现人">
+        <el-table-column prop="findPeople"
+                         show-overflow-tooltip
+                         label="发现人">
           <template slot-scope="scope">
             <div v-if="scope.row.findPeople">
               {{ scope.row.findPeople }}
@@ -84,13 +80,17 @@
 
         </el-table-column> -->
         <!-- 发现时间 -->
-        <el-table-column prop="findData" show-overflow-tooltip label="发现时间">
+        <el-table-column prop="findData"
+                         show-overflow-tooltip
+                         label="发现时间">
           <template slot-scope="scope">
             <p>{{ scope.row.findData | filtedate }}</p>
           </template>
         </el-table-column>
         <!-- 发现来源 -->
-        <el-table-column prop="source" show-overflow-tooltip label="发现来源 ">
+        <el-table-column prop="source"
+                         show-overflow-tooltip
+                         label="发现来源 ">
           <template slot-scope="scope">
             <div v-if="scope.row.source">
               {{ scope.row.source }}
@@ -100,12 +100,10 @@
         </el-table-column>
 
         <!-- 风险金额 -->
-        <el-table-column
-          prop="riskAmount"
-          align="center"
-          show-overflow-tooltip
-          label="风险金额"
-        >
+        <el-table-column prop="riskAmount"
+                         align="center"
+                         show-overflow-tooltip
+                         label="风险金额（万元  ）">
           <template slot-scope="scope">
             <div v-if="scope.row.riskAmount">
               {{ parseFloat(scope.row.riskAmount.toString()) }}
@@ -115,25 +113,23 @@
         </el-table-column>
 
         <!-- 操作 -->
-        <el-table-column prop="edit" width="180" label="操作">
+        <el-table-column prop="edit"
+                         width="180"
+                         label="操作">
           <template slot-scope="scope">
-            <el-button
-              @click="edit(scope.row.historyAuditFindUuid)"
-              type="text"
-              plain
-              :disabled="isDisable"
-              style="color: #0c87d6 !important; font-size: 14px !important"
-              size="small"
-            >
+            <el-button @click="edit(scope.row.historyAuditFindUuid)"
+                       type="text"
+                       plain
+                       :disabled="isDisable"
+                       style="color: #0c87d6 !important; font-size: 14px !important"
+                       size="small">
               编辑
             </el-button>
-            <el-button
-              @click="delete_model(scope.row.historyAuditFindUuid)"
-              plain
-              type="text"
-              style="color: #ff8a72 !important; font-size: 14px !important"
-              size="small"
-            >
+            <el-button @click="delete_model(scope.row.historyAuditFindUuid)"
+                       plain
+                       type="text"
+                       style="color: #ff8a72 !important; font-size: 14px !important"
+                       size="small">
               删除
             </el-button>
           </template>
@@ -144,89 +140,78 @@
 
     <!-- 分页 -->
     <div class="page">
-      <el-pagination
-        @size-change="handleSizeChange"
-        :current-page="this.tableData.current"
-        @current-change="handleCurrentChange"
-        :page-size="this.tableData.size"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="this.tableData.total"
-      >
+      <el-pagination @size-change="handleSizeChange"
+                     :current-page="this.tableData.current"
+                     @current-change="handleCurrentChange"
+                     :page-size="this.tableData.size"
+                     layout="total, sizes, prev, pager, next, jumper"
+                     :total="this.tableData.total">
       </el-pagination>
     </div>
     <!-- 分页 end-->
 
     <!-- 新增历史审计发现描述 -->
-    <el-dialog
-      @close="resetForm2('add')"
-      center
-      :close-on-click-modal="false"
-      :visible.sync="dialogVisible"
-      style="padding-bottom: 59px"
-    >
+    <el-dialog @close="resetForm2('add')"
+               center
+               :close-on-click-modal="false"
+               :visible.sync="dialogVisible"
+               style="padding-bottom: 59px">
       <div class="title_dlag">{{ title }}</div>
 
       <div class="dlag_conter add">
-        <el-form ref="add" :model="add" v-loading="ld" :rules="rules">
+        <el-form ref="add"
+                 :model="add"
+                 v-loading="ld"
+                 :rules="rules">
           <!-- 历史审计发现描述 -->
-          <el-form-item
-            prop="historyAuditFindDescribe"
-            style="margin-bottom: 22px !important"
-          >
+          <el-form-item prop="historyAuditFindDescribe"
+                        style="margin-bottom: 22px !important">
             <p><span style="color: red">*</span> 历史审计发现描述：</p>
-            <el-input
-              v-model="add.historyAuditFindDescribe"
-              prop="historyAuditFindDescribe"
-              placeholder="请输入历史审计发现描述"
-            ></el-input>
+            <el-input v-model="add.historyAuditFindDescribe"
+                      prop="historyAuditFindDescribe"
+                      placeholder="请输入历史审计发现描述"></el-input>
           </el-form-item>
 
           <!-- 被审计单位 -->
-          <el-form-item
-            prop="auditedEntity"
-            style="margin-bottom: 22px !important"
-          >
+          <el-form-item prop="auditedEntity"
+                        style="margin-bottom: 22px !important">
             <p style="padding-top: 10px">
               <span style="color: red">*</span> 被审计单位：
             </p>
-            <el-select
-              v-model="add.auditedEntity"
-              @change="changeHeader_danwei"
-            >
-              <el-option
-                v-for="item in audit_Company"
-                :key="item.auditOrgUuid"
-                :label="item.orgName"
-                :value="item.auditOrgUuid"
-              >
+            <el-select v-model="add.auditedEntity"
+                       @change="changeHeader_danwei">
+              <el-option v-for="item in audit_Company"
+                         :key="item.auditOrgUuid"
+                         :label="item.orgName"
+                         :value="item.auditOrgUuid">
               </el-option>
             </el-select>
           </el-form-item>
 
           <!-- 领域 -->
-          <el-form-item prop="field" style="margin-bottom: 22px !important">
+          <el-form-item prop="field"
+                        style="margin-bottom: 22px !important">
             <p><span style="color: red">*</span> 领域：</p>
-            <el-select v-model="add.field" @change="changeHeader_ly">
-              <el-option
-                v-for="item in problems_slect_ly"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
+            <el-select v-model="add.field"
+                       @change="changeHeader_ly">
+              <el-option v-for="item in problems_slect_ly"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
 
           <!-- 专题 -->
-          <el-form-item prop="special" style="margin-bottom: 22px !important">
+          <el-form-item prop="special"
+                        style="margin-bottom: 22px !important">
             <p><span style="color: red">*</span> 专题：</p>
-            <el-select v-model="add.special" @change="changeHeader_zt">
-              <el-option
-                v-for="item in problems_slect_zt"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
+            <el-select v-model="add.special"
+                       @change="changeHeader_zt">
+              <el-option v-for="item in problems_slect_zt"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
@@ -234,10 +219,8 @@
           <!-- 发现人 -->
           <el-form-item style="margin-bottom: 22px !important">
             <p>发现人：</p>
-            <el-input
-              v-model="add.findPeople"
-              placeholder="请输入发现人"
-            ></el-input>
+            <el-input v-model="add.findPeople"
+                      placeholder="请输入发现人"></el-input>
           </el-form-item>
 
           <!--审计依据 -->
@@ -252,30 +235,24 @@
               </el-option>
             </el-select> -->
             <!-- <el-select v-model="dqProblem.basis" -->
-            <el-select
-              v-model="add.auditBasis"
-              multiple
-              @visible-change="toopen"
-              no-data-text="请点击引用审计依据"
-            >
+            <el-select v-model="add.auditBasis"
+                       multiple
+                       @visible-change="toopen"
+                       no-data-text="请点击引用审计依据">
             </el-select>
-            <el-button
-              type="primary"
-              ref="basisbtn0"
-              class="citebtn"
-              @click="openbasis()"
-              >引用</el-button
-            >
+            <el-button type="primary"
+                       ref="basisbtn0"
+                       class="citebtn"
+                       @click="openbasis()">引用</el-button>
           </el-form-item>
 
           <!--发现日期 -->
-          <el-form-item prop="findData" style="margin-bottom: 22px">
+          <el-form-item prop="findData"
+                        style="margin-bottom: 22px">
             <p><span style="color: red">*</span>发现日期：</p>
-            <el-date-picker
-              v-model="add.findData"
-              type="date"
-              placeholder="选择日期"
-            >
+            <el-date-picker v-model="add.findData"
+                            type="date"
+                            placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
 
@@ -290,90 +267,72 @@
                        :value="item.value">
             </el-option>
           </el-select> -->
-            <el-date-picker
-              v-model="add.year"
-              type="year"
-              placeholder="选择年份"
-              value-format="yyyy"
-            >
+            <el-date-picker v-model="add.year"
+                            type="year"
+                            placeholder="选择年份"
+                            value-format="yyyy">
             </el-date-picker>
           </el-form-item>
 
           <!-- 发现来源 -->
           <el-form-item style="margin-bottom: 22px !important">
             <p>发现来源：</p>
-            <el-input
-              v-model="add.source"
-              placeholder="请输入发现来源"
-            ></el-input>
+            <el-input v-model="add.source"
+                      placeholder="请输入发现来源"></el-input>
           </el-form-item>
 
           <!-- 风险金额 -->
           <el-form-item style="margin-bottom: 22px !important">
             <p>风险金额（万元)：</p>
             <!--v-model.number="add.riskAmount"-->
-            <el-input
-              v-model="add.riskAmount"
-              type="number"
-              @keyup.native="add.riskAmount = oninput(add.riskAmount)"
-              placeholder="请输入风险金额"
-            ></el-input>
+            <el-input v-model="add.riskAmount"
+                      type="number"
+                      @keyup.native="add.riskAmount = oninput(add.riskAmount)"
+                      placeholder="请输入风险金额"></el-input>
           </el-form-item>
         </el-form>
 
-        <span slot="footer" class="foot">
-          <el-button
-            size="small"
-            type="primary"
-            v-if="title == '新增省内历史审计发现'"
-            :disabled="isDisable"
-            @click="save(1, 'add')"
-            >确 定</el-button
-          >
-          <el-button
-            size="small"
-            type="primary"
-            v-else
-            :disabled="isDisable"
-            @click="save(2, 'add')"
-            >确 定</el-button
-          >
-          <el-button size="small" plain @click="dialogVisible = false"
-            >取 消</el-button
-          >
+        <span slot="footer"
+              class="foot">
+          <el-button size="small"
+                     type="primary"
+                     v-if="title == '新增省内历史审计发现'"
+                     :disabled="isDisable"
+                     @click="save(1, 'add')">确 定</el-button>
+          <el-button size="small"
+                     type="primary"
+                     v-else
+                     :disabled="isDisable"
+                     @click="save(2, 'add')">确 定</el-button>
+          <el-button size="small"
+                     plain
+                     @click="dialogVisible = false">取 消</el-button>
         </span>
       </div>
     </el-dialog>
 
     <!-- 引用审计依据 -->
-    <el-dialog
-      title="引用审计依据"
-      center
-      :visible.sync="basisdialog"
-      width="60%"
-      custom-class="outmax"
-    >
+    <el-dialog title="引用审计依据"
+               center
+               :visible.sync="basisdialog"
+               width="60%"
+               custom-class="outmax">
       <div style="display: flex; height: 100%; padding: 20px">
         <div style="max-height: 60vh; width: 50%; overflow: scroll">
-          <el-form
-            ref="basisform"
-            class="problem-form"
-            :model="dqbasis"
-            label-width="120px"
-            label-position="right"
-          >
-            <el-form-item label="审计依据名称" class="long">
-              <el-select
-                v-model="dqbasis.val"
-                placeholder="请选择依据名称"
-                @change="getbasisdetail(dqbasis.val)"
-              >
-                <el-option
-                  v-for="item in basislist"
-                  :key="item.basy_uuid"
-                  :label="item.basy_name"
-                  :value="item.basy_uuid"
-                >
+          <el-form ref="basisform"
+                   class="problem-form"
+                   :model="dqbasis"
+                   label-width="120px"
+                   label-position="right">
+            <el-form-item label="审计依据名称"
+                          class="long">
+              <el-select v-model="dqbasis.val"
+                         placeholder="请选择依据名称"
+                         @change="getbasisdetail(dqbasis.val)">
+                <el-option v-for="item in basislist"
+                           :key="item.basy_uuid"
+                           :label="item.basy_name"
+                           :value="item.basy_uuid">
                 </el-option>
               </el-select>
 
@@ -388,58 +347,49 @@
             </el-select> -->
             </el-form-item>
           </el-form>
-          <el-card
-            class="box-card"
-            style="width: 70%; min-height: 300px; margin: auto"
-          >
-            <el-tree
-              :data="dqbasis.info.tree"
-              :props="defaultProps"
-              @node-click="treeNodeClick"
-              default-expand-all
-              v-loading="basisload"
-            ></el-tree>
+          <el-card class="box-card"
+                   style="width: 70%; min-height: 300px; margin: auto">
+            <el-tree :data="dqbasis.info.tree"
+                     :props="defaultProps"
+                     @node-click="treeNodeClick"
+                     default-expand-all
+                     v-loading="basisload"></el-tree>
           </el-card>
         </div>
-        <el-card
-          class="box-card basiscard"
-          style="width: 50%"
-          v-loading="basisload"
-        >
-          <div
-            v-for="(item, index) in dqbasis.info.arr"
-            :key="'dqbasisarr' + index"
-          >
-            <div slot="header" class="clearfix" style="padding: 5px 0">
-              <span
-                style="font-weight: bold"
-                :style="
+        <el-card class="box-card basiscard"
+                 style="width: 50%"
+                 v-loading="basisload">
+          <div v-for="(item, index) in dqbasis.info.arr"
+               :key="'dqbasisarr' + index">
+            <div slot="header"
+                 class="clearfix"
+                 style="padding: 5px 0">
+              <span style="font-weight: bold"
+                    :style="
                   item.contentLev == 1
                     ? 'font-size:18px;'
                     : item.contentLev == 2
                     ? 'font-size:16px;'
                     : 'font-size:14px;'
                 "
-                v-if="item.contentLev != 3"
-                >{{ item.label }}</span
-              >
+                    v-if="item.contentLev != 3">{{ item.label }}</span>
             </div>
-            <el-button
-              style="padding: 3px 0 3px 20px; color: #ffba00; float: right"
-              v-if="item.contentLev == 3"
-              @click="choosebasis(item.attachmentContent)"
-              type="text"
-              >引用</el-button
-            >
-            <p class="" v-if="item.contentLev == 3">
+            <el-button style="padding: 3px 0 3px 20px; color: #ffba00; float: right"
+                       v-if="item.contentLev == 3"
+                       @click="choosebasis(item.attachmentContent)"
+                       type="text">引用</el-button>
+            <p class=""
+               v-if="item.contentLev == 3">
               {{ item.attachmentContent }}
             </p>
           </div>
         </el-card>
       </div>
-      <span slot="footer" class="dialog-footer">
+      <span slot="footer"
+            class="dialog-footer">
         <el-button @click="basisdialog = false">取 消</el-button>
-        <el-button type="primary" @click="surebasis()">确 定</el-button>
+        <el-button type="primary"
+                   @click="surebasis()">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -462,7 +412,7 @@ import $ from "jquery";
 
 export default {
   components: {},
-  data() {
+  data () {
     return {
       dqtoken: "",
       loading: false,
@@ -551,7 +501,7 @@ export default {
   },
   computed: {},
   watch: {},
-  created() {
+  created () {
     this.dqtoken = sessionStorage.getItem("TOKEN");
     // list
     let params = {
@@ -587,7 +537,7 @@ export default {
 
     this.getbasis(); //依据
   },
-  mounted() {},
+  mounted () { },
 
   filters: {
     filtedate: function (date) {
@@ -599,7 +549,7 @@ export default {
 
   methods: {
     // 金额限制
-    oninput(number) {
+    oninput (number) {
       let str = number.toString().replace();
       let len1 = str.substr(0, 1);
       let len2 = str.substr(1, 1);
@@ -634,7 +584,7 @@ export default {
       }
       return str;
     },
-    toopen(val) {
+    toopen (val) {
       console.log(val);
       if (val) {
         let _this = this;
@@ -647,12 +597,12 @@ export default {
       }
     },
     //打开依据
-    openbasis() {
+    openbasis () {
       this.basisdialog = true;
       this.dqbasis.choose = [];
     },
     //确定选择依据
-    surebasis() {
+    surebasis () {
       this.basisdialog = false;
       // if (this.ifadd == 0) {
       // this.temp.basis = this.dqbasis.choose;
@@ -662,7 +612,7 @@ export default {
       this.dqbasis.choose = [];
     },
     //选择依据
-    choosebasis(val) {
+    choosebasis (val) {
       if (this.dqbasis.choose.indexOf(val) > -1) {
         this.$message({
           message: "您已引用这一条",
@@ -678,19 +628,19 @@ export default {
       }
     },
     //依据树
-    treeNodeClick() {},
+    treeNodeClick () { },
     //打开依据
-    openbasis() {
+    openbasis () {
       this.basisdialog = true;
       this.dqbasis.choose = [];
     },
     //获取依据
-    getbasis() {
+    getbasis () {
       axios({
         url: `/wisdomaudit/auditBasy/getAuditbasyList`,
         headers: {
-          TOKEN: this.dqtoken,
-        },
+          TOKEN: this.dqtoken,
+        },
         method: "get",
         data: {},
       }).then((res) => {
@@ -698,13 +648,13 @@ export default {
       });
     },
     //获取依据 change详情
-    getbasisdetail(bid) {
+    getbasisdetail (bid) {
       this.basisload = true;
       axios({
         url: `/wisdomaudit/auditBasy/getById/` + bid + ``,
         headers: {
-          TOKEN: this.dqtoken,
-        },
+          TOKEN: this.dqtoken,
+        },
         method: "get",
         data: {},
       }).then((res) => {
@@ -715,7 +665,7 @@ export default {
     },
 
     // 列表
-    page_list(params) {
+    page_list (params) {
       this.loading = true;
       historicalaudit_pageList(params).then((resp) => {
         this.tableData = resp.data;
@@ -723,11 +673,11 @@ export default {
         this.loading = false;
       });
     },
-    handleSizeChange(val) {
+    handleSizeChange (val) {
       this.query.pageSize = val;
     },
     // 分页
-    handleCurrentChange(val) {
+    handleCurrentChange (val) {
       let params = {
         pageNo: val,
         pageSize: this.query.pageSize,
@@ -739,7 +689,7 @@ export default {
       this.page_list(params);
     },
     // 筛选人
-    search_list() {
+    search_list () {
       let params = {
         pageNo: this.query.pageNo,
         pageSize: this.query.pageSize,
@@ -752,7 +702,7 @@ export default {
       this.page_list(params);
     },
     // 新增
-    add_sj() {
+    add_sj () {
       this.isDisable = true;
       setTimeout(() => {
         this.isDisable = false;
@@ -765,7 +715,7 @@ export default {
       });
     },
     // 新增 编辑保存
-    save(index, add) {
+    save (index, add) {
       this.isDisable = true;
       setTimeout(() => {
         this.isDisable = false;
@@ -888,7 +838,7 @@ export default {
     },
 
     // 编辑
-    edit(id) {
+    edit (id) {
       this.ld = true;
       this.isDisable = true;
       setTimeout(() => {
@@ -938,14 +888,14 @@ export default {
     },
 
     // 新增任务关闭
-    resetForm2(add) {
+    resetForm2 (add) {
       this.$refs[add].resetFields();
       this.add.auditBasis = []; //清空 依据
       this.dqbasis.info = [];
       // 关闭验证
     },
     // 删除
-    delete_model(id) {
+    delete_model (id) {
       this.$confirm(`将永久删除当前内容`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -985,36 +935,36 @@ export default {
             }
           });
         })
-        .catch(() => {});
+        .catch(() => { });
     },
 
     // 领域select
-    lingyu(params) {
+    lingyu (params) {
       task_problems_loadcascader(params).then((resp) => {
         this.problems_slect_ly = resp.data;
       });
     },
     // 专题
-    zhuanti(params) {
+    zhuanti (params) {
       task_problems_loadcascader(params).then((resp) => {
         this.problems_slect_zt = resp.data;
       });
     },
     // 审计单位
-    Company(params) {
+    Company (params) {
       historicalaudit_loaauditorg(params).then((resp) => {
         this.audit_Company = resp.data;
       });
     },
     // 依据
-    yiju(params) {
+    yiju (params) {
       historicalaudit_yj(params).then((resp) => {
         this.problems_slect_yj = resp.data.records;
         console.log(resp.data);
       });
     },
     // 单位
-    changeHeader_danwei(val) {
+    changeHeader_danwei (val) {
       // this.add.auditedEntity = val;
 
       let obj = {};
@@ -1026,16 +976,16 @@ export default {
     },
 
     // 领域change
-    changeHeader_ly(val) {
+    changeHeader_ly (val) {
       this.add.field = val;
     },
     // 专题change
-    changeHeader_zt(val) {
+    changeHeader_zt (val) {
       this.add.special = val;
     },
 
     // 依据change
-    changeHeader_yj(val) {
+    changeHeader_yj (val) {
       // this.add.auditBasis = val
       // console.log(this.add.auditBasis);
       let obj = {};
@@ -1046,7 +996,7 @@ export default {
       this.add.auditBasisName = obj.basyName; //依据 name
     },
     // 年份change
-    changeHeader_nf(val) {
+    changeHeader_nf (val) {
       this.add.year = val;
     },
   },
