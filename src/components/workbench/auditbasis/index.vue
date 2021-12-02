@@ -549,7 +549,7 @@ export default {
   margin-left: 10px;
 }
 .sjzl{
-  margin-top: 10px;
+  /*margin-top: 10px;*/
   padding: 10px;
 }
 .sjzl .conter {

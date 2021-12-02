@@ -2,8 +2,7 @@
   <div class="sjyj-body">
     <el-button @click="openVault">金库认证测试</el-button>
     <el-row type="flex" :gutter="20">
-      <div><el-button type="primary" @click="addlist">新增依据</el-button></div>
-      <div>
+      <div class="searchBbtn">
         <el-col :span="6">
           <div class="kuan">资料名称:</div>
           <el-input
@@ -34,7 +33,7 @@
         </el-col>
       </div>
     </el-row>
-
+    <div class="addbtn"><el-button type="primary" @click="addlist">新增依据</el-button></div>
     <auditbasis ref="listShow"></auditbasis>
     <Vault
       :vaultV="vaultV"
@@ -157,4 +156,8 @@ export default {
 .sjyj-body {
   background: #fff;
 }
+  .addbtn{
+    margin-top: 10px;
+    margin-left: 10px;
+  }
 </style>>
