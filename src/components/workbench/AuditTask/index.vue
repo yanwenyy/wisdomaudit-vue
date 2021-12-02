@@ -1067,6 +1067,7 @@ export default {
   },
   data () {
     return {
+      dqtoken: "",
       headers: '',
       input_select: true,
       task_type: 0, //默认显示任务/自建任务
@@ -1288,6 +1289,7 @@ export default {
   },
   props: ['active_project', 'userRole'],
   created () {
+    this.dqtoken = sessionStorage.getItem("TOKEN");
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
 
     this.managementProjectUuid = this.active_project;
@@ -1421,6 +1423,9 @@ export default {
               axios({
                 method: 'post',
                 url: '/wisdomaudit/attachment/fileUploads',
+                headers: {
+              TOKEN: this.dqtoken,
+            },
                 data: formData,
                 headers: {
                   'Content-Type': 'multipart/form-data'
@@ -1496,6 +1501,9 @@ export default {
           axios({
             method: 'post',
             url: '/wisdomaudit/attachment/fileUploads',
+            headers: {
+              TOKEN: this.dqtoken,
+            },
             data: formData,
             headers: {
               'Content-Type': 'multipart/form-data'
@@ -2017,6 +2025,9 @@ export default {
             axios({
               method: 'post',
               url: '/wisdomaudit/attachment/fileUploads',
+              headers: {
+              TOKEN: this.dqtoken,
+            },
               data: formData,
               headers: {
                 'Content-Type': 'multipart/form-data'

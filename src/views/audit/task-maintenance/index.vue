@@ -289,8 +289,10 @@
           </el-upload>
         </el-form-item>
       </el-form>
-      <div class="stepBtn" style="margin-right: 2%;margin-bottom:1.5%">
-        <el-button @click="resBtn('editTaskRef')" style="border: 1px solid #d2d2d2"
+      <div class="stepBtn" style="margin-right: 2%; margin-bottom: 1.5%">
+        <el-button
+          @click="resBtn('editTaskRef')"
+          style="border: 1px solid #d2d2d2"
           >取消</el-button
         >
         <el-button
@@ -413,7 +415,9 @@
           </el-form-item>
         </el-form>
         <div class="temBtn">
-          <el-button @click="addresBtn('selfTaskRef')" style="border: 1px solid #d2d2d2"
+          <el-button
+            @click="addresBtn('selfTaskRef')"
+            style="border: 1px solid #d2d2d2"
             >取消</el-button
           >
           <el-button
@@ -556,6 +560,7 @@ export default {
   props: ["active_project", "userRole"],
   data() {
     return {
+      dqtoken: "",
       modelInfoLoading: false, //需要引入模型列表Loading
       taskTableLoading: false, //任务列表Loading
       // userRole:"",
@@ -1198,6 +1203,9 @@ export default {
             axios({
               method: "post",
               url: "/wisdomaudit/attachment/fileUploads",
+              headers: {
+                TOKEN: this.dqtoken,
+              },
               data: formData,
               headers: {
                 "Content-Type": "multipart/form-data",
@@ -1271,6 +1279,9 @@ export default {
         axios({
           method: "post",
           url: "/wisdomaudit/attachment/fileUploads",
+          headers: {
+            TOKEN: this.dqtoken,
+          },
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
@@ -1342,7 +1353,7 @@ export default {
       this.TaskDialogVisible = false;
       this.editModelDialogVisible = false;
     },
-    addresBtn(ref){
+    addresBtn(ref) {
       this.$refs[ref].resetFields();
       this.TaskDialogVisible = false;
     },
@@ -1416,6 +1427,9 @@ export default {
       axios({
         method: "post",
         url: "/wisdomaudit/auditPreviousDemandData/downloadByFileId",
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         data: formData,
         responseType: "blob",
       })
@@ -1470,6 +1484,7 @@ export default {
     },
   },
   created() {
+    this.dqtoken = sessionStorage.getItem("TOKEN");
     this.queryInfo.condition.managementProjectUuid = this.active_project;
     this.getmodelTaskList(this.queryInfo);
     // this.getSelectData(this.select);

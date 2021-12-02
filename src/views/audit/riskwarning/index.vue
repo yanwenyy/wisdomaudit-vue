@@ -192,6 +192,7 @@ export default {
   },
   data() {
     return {
+      dqtoken: "",
       tableKey: 'riskWarningUuid',
       list: null,
       total: 0,
@@ -261,6 +262,7 @@ export default {
     }
   },
   created() {
+    this.dqtoken = sessionStorage.getItem("TOKEN");
     this.headers = { 'Content-Type': 'multipart/form-data','TOKEN':sessionStorage.getItem("TOKEN") }
     this.getList()
   },
@@ -432,6 +434,9 @@ export default {
       var num = Math.random()
       axios({
         url: `/wisdomaudit/riskWarning/importFiles?${num}`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: 'post',
         data: formData
       }).then((res) => {
@@ -468,6 +473,9 @@ export default {
       axios({
         method: 'get',
         url: `/wisdomaudit/riskWarning/downloadRiskWarningTemplate`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         responseType: 'blob'
       }).then((res) => {
         // if (res.code !== 0) this.$message.error(res.msg)

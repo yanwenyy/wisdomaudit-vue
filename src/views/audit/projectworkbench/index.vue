@@ -154,7 +154,11 @@
                 </el-menu-item-group>
               </el-submenu>
               <el-submenu
-                v-show="userInfo.userRole == '1' || userInfo.userRole == '3'||(userInfo.isLiaison=='1'&&userInfo.userRole == '2')"
+                v-show="
+                  userInfo.userRole == '1' ||
+                  userInfo.userRole == '3' ||
+                  (userInfo.isLiaison == '1' && userInfo.userRole == '2')
+                "
                 index="3"
               >
                 <template slot="title">
@@ -292,7 +296,7 @@
           filterable
           :filter-method="filterMethod"
           filter-placeholder="请输入组员名称"
-          target-order = "push"
+          target-order="push"
           @right-check-change="rightArray"
           v-model="value"
           :titles="['组员列表', '已选组员']"
@@ -408,7 +412,7 @@
                 <el-form>
                   <el-form-item>
                     <el-select
-                      style="margin-top:5px"
+                      style="margin-top: 5px"
                       v-model="scope.row.peopleTableUuid"
                       filterable
                       @change="selectChange(scope.row)"
@@ -429,7 +433,12 @@
             </el-table-column>
             <el-table-column prop="address" label="附件" width="90">
               <template slot-scope="scope">
-                <el-popover placement="bottom" width="300" trigger="click" :popper-options="{boundariesElement: 'body'}">
+                <el-popover
+                  placement="bottom"
+                  width="300"
+                  trigger="click"
+                  :popper-options="{ boundariesElement: 'body' }"
+                >
                   <el-table :data="enclosure_details_list">
                     <el-table-column prop="fileName" label="文件名称">
                       <template slot-scope="scope">
@@ -454,7 +463,7 @@
                   >
                     <i class="update_icon">
                       <svg
-                        style="margin-top: 5px;"
+                        style="margin-top: 5px"
                         t="1631877671204"
                         class="icon"
                         viewBox="0 0 1024 1024"
@@ -471,7 +480,9 @@
                         ></path>
                       </svg>
                     </i>
-                    <span style="margin-top: -5px;margin-left:4px">{{ scope.row.count }}</span>
+                    <span style="margin-top: -5px; margin-left: 4px">{{
+                      scope.row.count
+                    }}</span>
                   </div>
                 </el-popover>
               </template>
@@ -480,7 +491,12 @@
               <template slot-scope="scope">
                 <el-button
                   type="text"
-                  style="color: #0c87d6; background: none; border: 0;font-size:14px"
+                  style="
+                    color: #0c87d6;
+                    background: none;
+                    border: 0;
+                    font-size: 14px;
+                  "
                   size="small"
                   v-if="scope.row.taskType == 2"
                   @click.native.prevent="edit_data(scope.row)"
@@ -489,7 +505,12 @@
                 </el-button>
                 <el-button
                   type="text"
-                  style="color: #ff8a72; background: none; border: 0;font-size:14px"
+                  style="
+                    color: #ff8a72;
+                    background: none;
+                    border: 0;
+                    font-size: 14px;
+                  "
                   size="small"
                   @click.native.prevent="deleteModel(scope.row)"
                 >
@@ -664,7 +685,12 @@
             </el-select>
           </el-form-item>
           <el-form-item label="ㅤㅤㅤ专ㅤ题:" prop="belongSpcial">
-            <el-select placeholder="请选择" v-model="taskSelf.belongSpcial"  v-if="other_input == true" @change="changeBelongSpcial">
+            <el-select
+              placeholder="请选择"
+              v-model="taskSelf.belongSpcial"
+              v-if="other_input == true"
+              @change="changeBelongSpcial"
+            >
               <el-option
                 v-for="item in thematicOption"
                 :key="item.value"
@@ -673,7 +699,10 @@
               >
               </el-option>
             </el-select>
-            <el-input v-model="taskSelf.belongSpcial" v-if="other_input==false"></el-input>
+            <el-input
+              v-model="taskSelf.belongSpcial"
+              v-if="other_input == false"
+            ></el-input>
           </el-form-item>
           <el-form-item label="ㅤㅤㅤ领ㅤ域:" prop="belongField">
             <el-select placeholder="请选择" v-model="taskSelf.belongField">
@@ -768,7 +797,8 @@
             <el-select
               placeholder="请选择"
               v-model="edittaskSelfForm.belongSpcial"
-              v-if="other_input == true" @change="changeBelongSpcial"
+              v-if="other_input == true"
+              @change="changeBelongSpcial"
             >
               <el-option
                 v-for="item in thematicOption"
@@ -778,7 +808,10 @@
               >
               </el-option>
             </el-select>
-            <el-input v-model="edittaskSelfForm.belongSpcial" v-if="other_input==false"></el-input>
+            <el-input
+              v-model="edittaskSelfForm.belongSpcial"
+              v-if="other_input == false"
+            ></el-input>
           </el-form-item>
           <el-form-item label="ㅤㅤㅤ领ㅤ域:" prop="belongField">
             <el-select
@@ -861,7 +894,7 @@
 </template>
 
 <script>
-import axios from "axios"
+import axios from "axios";
 import Pagination from "@WISDOMAUDIT/components/Pagination";
 import TeamPersonTask from "@WISDOMAUDIT/views/audit/teamperson-task/index";
 import AuditData from "@WISDOMAUDIT/components/workbench/AuditData/index"; //审计资料
@@ -911,7 +944,8 @@ export default {
   },
   data() {
     return {
-      other_input:true, //专题下拉框显示隐藏
+      dqtoken: "",
+      other_input: true, //专题下拉框显示隐藏
       defaultActive: "1-1",
       queryInfo: {},
       isdisabled: false,
@@ -1143,7 +1177,7 @@ export default {
           { required: true, message: "请输入任务描述", trigger: "change" },
         ],
       },
-      arrRightValue:[]
+      arrRightValue: [],
     };
   },
   watch: {
@@ -1164,6 +1198,7 @@ export default {
   },
 
   created() {
+    this.dqtoken = sessionStorage.getItem("TOKEN");
     this.get_user();
     // console.log(this.active_project);
   },
@@ -1195,9 +1230,9 @@ export default {
     this.moreProject(this.queryManageAll);
   },
   methods: {
-     // 专题选择其他变成可输入
-    changeBelongSpcial(val){
-      if(val == "其他"){
+    // 专题选择其他变成可输入
+    changeBelongSpcial(val) {
+      if (val == "其他") {
         this.other_input = false;
         this.taskSelf.belongSpcial = "";
         this.edittaskSelfForm.belongSpcial = "";
@@ -1497,7 +1532,7 @@ export default {
       row.isLiaison = 1;
       row.disabled = true;
     },
-    rightArray(arr){
+    rightArray(arr) {
       // alert(23)
       console.log(arr);
       this.arrRightValue = arr;
@@ -1508,10 +1543,13 @@ export default {
 
       // console.log(this.peopleSelection);
       row.isLiaison = 0;
-      for(let k=0;k<this.peopleSelection.length;k++){
-        if (this.peopleSelection[k].peopleTableUuid == row.key && this.peopleSelection[k].peopleRole == 1) {
-          return row.disabled = true;
-        }else{
+      for (let k = 0; k < this.peopleSelection.length; k++) {
+        if (
+          this.peopleSelection[k].peopleTableUuid == row.key &&
+          this.peopleSelection[k].peopleRole == 1
+        ) {
+          return (row.disabled = true);
+        } else {
           row.disabled = false;
           // console.log(this.value);
           // for(let p=0; p<this.arrRightValue.length;p++){
@@ -1851,6 +1889,9 @@ export default {
             axios({
               method: "post",
               url: "/wisdomaudit/attachment/fileUploads",
+              headers: {
+                TOKEN: this.dqtoken,
+              },
               data: formData,
               headers: {
                 "Content-Type": "multipart/form-data",
@@ -1957,6 +1998,9 @@ export default {
         axios({
           method: "post",
           url: "/wisdomaudit/attachment/fileUploads",
+          headers: {
+            TOKEN: this.dqtoken,
+          },
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
@@ -2068,6 +2112,9 @@ export default {
       axios({
         method: "post",
         url: "/wisdomaudit/auditPreviousDemandData/downloadByFileId",
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         data: formData,
         responseType: "blob",
       })
@@ -2296,9 +2343,9 @@ export default {
       border: 2px solid #ebf0f6;
       font-size: 0.73vw;
       text-align: center;
-       &:hover {
-      box-shadow: 0 2px 10px 5px rgba(0, 0, 0, 0.05);
-    }
+      &:hover {
+        box-shadow: 0 2px 10px 5px rgba(0, 0, 0, 0.05);
+      }
     }
   }
 }
@@ -2411,7 +2458,7 @@ export default {
   font-size: 0;
   position: relative;
   float: left;
-  background:#0c87d6;
+  background: #0c87d6;
   z-index: 50;
   /* 更改此处的颜色即可完成 */
 }
@@ -2657,7 +2704,7 @@ export default {
   margin-bottom: -10px !important;
 }
 .selfTask >>> .el-form-item__label {
-   font-size: 14px !important;
+  font-size: 14px !important;
   color: #606266 !important;
 }
 
@@ -2665,7 +2712,7 @@ export default {
   margin-bottom: 0px !important;
 }
 .optionBtn >>> .el-select {
- margin-top: 0px !important;
+  margin-top: 0px !important;
 }
 >>> .el-input__inner::-webkit-input-placeholder {
   color: #c0c4cc !important;
@@ -2794,7 +2841,7 @@ export default {
 .projectWorkbench >>> .el-table__header {
   border-top: none !important;
 }
-.addPerson >>>  .el-button--primary{
-  background:#0c87d6 !important;
+.addPerson >>> .el-button--primary {
+  background: #0c87d6 !important;
 }
 </style>

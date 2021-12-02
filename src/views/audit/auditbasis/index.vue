@@ -61,6 +61,7 @@ export default {
   },
   data() {
     return {
+      dqtoken: "",
       searchForm: {
         basyName: "",
         issueDate: "",
@@ -77,6 +78,9 @@ export default {
       dqtime: "",
     };
   },
+  created(){
+    this.dqtoken = sessionStorage.getItem("TOKEN");
+  },
   methods: {
     //通过认证后的方法
     download() {},
@@ -89,6 +93,9 @@ export default {
       axios({
         method: "post",
         url: `/wisdomaudit/treasury/getTreasuryStatus`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         data: {
           sceneId: this.sceneId,
           sceneName: "导出授权场景", //场景名称

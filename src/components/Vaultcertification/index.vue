@@ -101,6 +101,7 @@ export default {
   ],
   data() {
     return {
+      dqtoken: "",
       vaultVisible: false,
       sortinfoVisible: false,
       form: {
@@ -160,6 +161,7 @@ export default {
     },
   },
   created() {
+    this.dqtoken = sessionStorage.getItem("TOKEN");
     let p = sessionStorage.getItem("store");
     this.form.people = JSON.parse(p).user.name;
   },
@@ -176,6 +178,9 @@ export default {
           axios({
             method: "post",
             url: `/wisdomaudit/treasury/remoteFirstAuth`,
+            headers: {
+              TOKEN: this.dqtoken,
+            },
             data: {
               account: this.account,
               sceneId: this.sceneId,
@@ -197,6 +202,9 @@ export default {
       axios({
         method: "post",
         url: `/wisdomaudit/treasury/remoteSecondAuth`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         data: {
           account: this.account,
           sceneId: this.sceneId,

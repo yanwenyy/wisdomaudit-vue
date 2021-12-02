@@ -155,6 +155,7 @@ export default {
   props:['active_project','userRole','isLiaison'],
   data() {
     return {
+      dqtoken: "",
       userInfo:{
         user:{}
       },//用户信息
@@ -237,6 +238,7 @@ export default {
   },
   watch: {},
   mounted() {
+    this.dqtoken = sessionStorage.getItem("TOKEN");
     this.getList();
   },
   methods: {
@@ -346,6 +348,9 @@ export default {
     importSave() {
       axios({
         url: `/wisdomaudit/`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "post",
         data: this.kutableSelection,
       }).then((res) => {
@@ -363,6 +368,9 @@ export default {
       return;
       axios({
         url: `/wisdomaudit/`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "post",
         data: this.kupageQuery,
       }).then((res) => {
@@ -373,6 +381,9 @@ export default {
     exportData() {
       axios({
         url: `/wisdomaudit/`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "post",
         data: this.temp,
       }).then((res) => {});
@@ -380,6 +391,9 @@ export default {
     createData() {
       axios({
         url: `/wisdomaudit/operatingIndicators/save`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "post",
         data: this.temp,
       }).then((res) => {
@@ -397,6 +411,9 @@ export default {
     updateData() {
       axios({
         url: `/wisdomaudit/operatingIndicators/update`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "put",
         data: this.temp,
       }).then((res) => {
@@ -421,6 +438,9 @@ export default {
       };
       axios({
         url: `/wisdomaudit/operatingIndicatorsBackTask/sendTask`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "post",
         data: params,
       }).then((res) => {
@@ -442,6 +462,9 @@ export default {
       rep = rep.join(",");
       axios({
         url: `/wisdomaudit/operatingIndicators/delete/` + rep,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "delete",
         data: {},
       }).then((res) => {

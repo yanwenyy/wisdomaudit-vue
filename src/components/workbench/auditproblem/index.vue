@@ -606,6 +606,7 @@ export default {
   filters: {},
   data() {
     return {
+      dqtoken: "",
       dqProblem: {},
       options: [
         { value: "xxx1", label: "xxx1" },
@@ -702,6 +703,7 @@ export default {
   },
   watch: {},
   created() {
+    this.dqtoken = sessionStorage.getItem("TOKEN");
     this.getloadcascader("Category");
     this.getloadcascader("SPECIAL");
     this.getSelectTask();
@@ -782,6 +784,9 @@ export default {
     getme() {
       axios({
         url: `/wisdomaudit/init/getCurrentInfo`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "get",
         data: {},
       }).then((res) => {
@@ -793,6 +798,9 @@ export default {
     getperson() {
       axios({
         url: `/wisdomaudit/user/listUserInfo?pageCurrent=1&pageSize=1000`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "get",
         data: {},
       }).then((res) => {
@@ -836,6 +844,9 @@ export default {
     getbasis() {
       axios({
         url: `/wisdomaudit/auditBasy/getAuditbasyList`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "get",
         data: {},
       }).then((res) => {
@@ -847,6 +858,9 @@ export default {
       this.basisload = true;
       axios({
         url: `/wisdomaudit/auditBasy/getById/` + bid + ``,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "get",
         data: {},
       }).then((res) => {
@@ -877,6 +891,9 @@ export default {
     getSelectTask() {
       axios({
         url: `/wisdomaudit/auditTask/selectTask`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "post",
         data: {
           managementProjectUuid: this.active_project,
@@ -888,6 +905,9 @@ export default {
     getloadcascader(str) {
       axios({
         url: `/wisdomaudit/init/loadcascader`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "post",
         data: {
           typecode: str,
@@ -905,6 +925,9 @@ export default {
       axios({
         url:
           `/wisdomaudit/problemList/getById/` + this.list[int].problemListUuid,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "get",
         data: {},
       }).then((res) => {
@@ -924,6 +947,9 @@ export default {
       this.ifadd = 2;
       axios({
         url: `/wisdomaudit/problemList/getById/` + pid,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "get",
         data: {},
       }).then((res) => {
@@ -964,6 +990,9 @@ export default {
       this.listLoading = true;
       axios({
         url: `/wisdomaudit/problemList/pageList`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "post",
         data: this.pageQuery,
       }).then((res) => {
@@ -994,6 +1023,9 @@ export default {
       }).then(() => {
         axios({
           url: `/wisdomaudit/problemList/delete/` + pid,
+          headers: {
+            TOKEN: this.dqtoken,
+          },
           method: "delete",
           data: {},
         }).then((res) => {
@@ -1020,6 +1052,9 @@ export default {
           rep.basis = rep.basis.join(",");
           axios({
             url: `/wisdomaudit/problemList/save`,
+            headers: {
+              TOKEN: this.dqtoken,
+            },
             method: "post",
             data: rep,
           }).then((res) => {
@@ -1056,6 +1091,9 @@ export default {
           this.dialogDetailVisible = false;
           axios({
             url: `/wisdomaudit/problemList/update`,
+            headers: {
+              TOKEN: this.dqtoken,
+            },
             method: "put",
             data: rep,
           }).then((res) => {

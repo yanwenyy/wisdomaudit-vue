@@ -1183,6 +1183,7 @@ export default {
   components: {},
   data () {
     return {
+      dqtoken: "",
       activeName: 0,
       title: '新增审计资料任务',
       edit_title: '添加资料',//审核title
@@ -1358,6 +1359,7 @@ export default {
   computed: {},
   watch: {},
   created () {
+    this.dqtoken = sessionStorage.getItem("TOKEN");
     this.projectNumber = this.active_project;
 
     let params = {
@@ -2069,6 +2071,9 @@ export default {
             axios({
               method: 'post',
               url: '/wisdomaudit/attachment/fileUploads',
+              headers: {
+                TOKEN: this.dqtoken,
+              },
               data: formData,
               headers: {
                 'Content-Type': 'multipart/form-data'

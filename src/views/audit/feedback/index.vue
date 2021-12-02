@@ -490,6 +490,7 @@ export default {
   },
   data () {
     return {
+      dqtoken: "",
       headers: '',
       loading: false,
       loading_list: false,
@@ -560,6 +561,7 @@ export default {
   },
   props: ['active_project'],
   created () {
+    this.dqtoken = sessionStorage.getItem("TOKEN");
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
     // this.managementProjectUuid = this.active_project;
     let params = {
@@ -709,6 +711,9 @@ export default {
       axios({
         method: 'post',
         url: '/wisdomaudit/auditPreviousDemandData/downloadByFileId',
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         data: formData,
         responseType: 'blob',
       }).then((res) => {
@@ -780,6 +785,9 @@ export default {
       axios({
         method: 'post',
         url: '/wisdomaudit/auditPreviousDemandData/uploadData',
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         data: formData,
         headers: {
           'Content-Type': 'multipart/form-data'

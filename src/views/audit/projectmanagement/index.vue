@@ -1325,6 +1325,7 @@ export default {
   components: { Pagination },
   data () {
     return {
+      dqtoken: "",
       projectTableLoading: false, //项目管理Loading
       setLeaderDisable: false, //设置组长可编辑
       total: 0,
@@ -1653,6 +1654,7 @@ export default {
   },
 
   created () {
+    this.dqtoken = sessionStorage.getItem("TOKEN");
     this.projectData(this.query);
     this.selectProjectData(this.projectTypeNum);
     // this.selectprojectPeople(this.selectprojectPeopleNum);
@@ -2569,6 +2571,9 @@ export default {
     getloadcascader (str) {
       axios({
         url: `/wisdomaudit/init/loadcascader`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
         method: "post",
         data: {
           typecode: str,
