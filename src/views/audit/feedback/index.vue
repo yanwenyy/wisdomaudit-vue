@@ -782,7 +782,8 @@ export default {
         data: formData,
         headers: {
           'Content-Type': 'multipart/form-data'
-        }
+        },
+
       }).then(resp => {
         if (resp.data.code == 0) {
           this.$message({
