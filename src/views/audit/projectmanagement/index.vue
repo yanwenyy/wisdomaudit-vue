@@ -822,13 +822,12 @@
                     "
                     :rules="addzhuanRules.projectChargemanName"
                   >
-                      <!-- :disabled="scope.row.projectChargemanName ? true : false" -->
                     <el-select
                       style="width: 120%"
                       placeholder="请选择"
                       v-model="scope.row.projectChargemanName"
                       @change="LeaderSelectEdit(scope.row)"
-                      :disabled="setLeaderDisable"
+                      :disabled="scope.row.isChargemanCanChenge == 0? true : false"
                     >
                       <el-option
                         v-for="item in projectpeopleoptions"
