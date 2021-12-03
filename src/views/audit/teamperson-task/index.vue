@@ -542,7 +542,7 @@ export default {
              this.$message.success("修改成功！");
              this.projectMember(this.query);
           }else{
-             this.$message.info("取消接口人操作失败，请直接将其他人员设置为项目负责人");
+             this.$message.info("取消接口人操作失败，项目必须拥有一个接口人");
              this.projectMember(this.query);
           }
          
