@@ -103,7 +103,7 @@
         <el-table-column prop="riskAmount"
                          align="center"
                          show-overflow-tooltip
-                         label="风险金额（万元  ）">
+                         label="风险金额（万元）">
           <template slot-scope="scope">
             <div v-if="scope.row.riskAmount">
               {{ parseFloat(scope.row.riskAmount.toString()) }}
