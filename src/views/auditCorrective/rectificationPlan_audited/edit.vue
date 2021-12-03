@@ -548,6 +548,12 @@ export default {
 .dialog >>> .el-input__inner::-webkit-input-placeholder,
 .dialog >>> textarea::-webkit-input-placeholder {
   color: #c0c4cc !important;
-  font-size: 12px;
+  font-weight: 0 !important;
+  font-size: 12px !important;
+  letter-spacing: 0px !important;
+}
+.dialog >>> textarea {
+  min-height: 37px !important;
+  padding: 0 10px !important;
 }
 </style>
