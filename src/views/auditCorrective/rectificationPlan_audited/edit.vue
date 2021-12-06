@@ -548,9 +548,12 @@ export default {
 .dialog >>> .el-input__inner::-webkit-input-placeholder,
 .dialog >>> textarea::-webkit-input-placeholder {
   color: #c0c4cc !important;
-  font-weight: 0 !important;
+  font-weight: 400 !important;
   font-size: 12px !important;
   letter-spacing: 0px !important;
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei",
+    Arial, sans-serif !important;
 }
 .dialog >>> textarea {
   min-height: 37px !important;
