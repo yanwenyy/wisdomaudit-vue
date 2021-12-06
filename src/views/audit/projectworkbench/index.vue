@@ -153,6 +153,7 @@
                   ></el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
+
               <el-submenu
                 v-show="
                   userInfo.userRole == '1' ||
@@ -162,13 +163,16 @@
                 index="3"
               >
                 <template slot="title">
-                  <span style="font-weight: 400">报告阶段</span>
+                  <span style="font-weight: 400;">报告阶段</span>
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="3-1">审计报告<span></span></el-menu-item>
-                  <el-menu-item index="3-2">经营指标<span></span></el-menu-item>
+                  <!--<el-menu-item index="3-2">经营指标<span></span></el-menu-item>-->
                 </el-menu-item-group>
               </el-submenu>
+              <el-menu-item index="3-2" class="one-menu_y-title">
+                <span class="one-menu_y" style="font-weight: 400;">经营指标</span>
+              </el-menu-item>
             </el-menu>
           </div>
         </el-col>
@@ -2229,8 +2233,12 @@ export default {
   display: none;
   padding: 0 !important;
 }
+.el-menu-item.one-menu_y{
+  font-size: 12px!important;
+}
+
 // 新增高亮样式
-::v-deep.el-menu .el-menu-item span {
+::v-deep.el-menu .el-menu-item span::not(".one-menu_y") {
   width: 5px;
   height: 20px;
   background-color: #0e87d6;
@@ -2849,5 +2857,11 @@ export default {
 }
 .addPerson >>> .el-button--primary {
   background: #0c87d6 !important;
+}
+.one-menu_y-title{
+  padding-left: 0!important;
+}
+.one-menu_y{
+  margin-left: 20px!important;
 }
 </style>
