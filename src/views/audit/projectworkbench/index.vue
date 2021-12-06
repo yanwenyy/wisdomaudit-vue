@@ -1211,14 +1211,8 @@ export default {
     this.index = "";
     this.queryInfo = this.$route.query;
     if (this.queryInfo.index && this.queryInfo.projectId) {
-      // debugger;
-      // console.log(this.queryInfo.projectId)
-      this.active_project = this.queryInfo.projectId;
-      this.defaultActive = this.queryInfo.index;
-      this.index = this.queryInfo.index;
-      // this.key=Math.random();
-      // 更新项目接口
-      setprojectInit(this.active_project).then((resp) => {});
+      this.getprojectList(this.queryManage,'home');
+
       // chrome
       document.body.scrollTop = 0;
       // firefox
@@ -1227,8 +1221,9 @@ export default {
       window.pageYOffset = 0;
     } else {
       this.get_user(true);
+      this.getprojectList(this.queryManage);
     }
-    this.getprojectList(this.queryManage);
+    // this.getprojectList(this.queryManage);
     this.thematicSelect(this.thematic);
     this.areasSelect(this.areas);
     this.moreProject(this.queryManageAll);
@@ -1265,12 +1260,19 @@ export default {
       return item.label.indexOf(query) > -1;
     },
     //查询未初始化项目
-    getprojectList(data) {
+    getprojectList(data,from) {
       projectListByuser(data).then((resp) => {
         this.projectNum = resp.data.records;
         // console.log(this.queryProject);
         this.getInitProject(this.queryProject);
         this.project_more();
+        if(from=='home'){
+          this.active_project = this.queryInfo.projectId;
+          this.defaultActive = this.queryInfo.index;
+          this.index = this.queryInfo.index;
+          // 更新项目接口
+          setprojectInit(this.active_project).then((resp) => {});
+        }
       });
     },
     // 初始化项目
