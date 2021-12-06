@@ -1109,10 +1109,10 @@ export default {
     this.index = "";
     this.queryInfo = this.$route.query;
     if (this.queryInfo.index && this.queryInfo.projectId) {
-<<<<<<< HEAD
       // debugger;
       // console.log(this.queryInfo.projectId)
-      this.active_project = this.queryInfo.projectId;
+      // this.active_project = this.queryInfo.projectId;
+      this.getprojectList(this.queryManage,'home');
       document.body.scrollTop = 0;
       // firefox
       // safari
