@@ -148,6 +148,7 @@
                   <el-menu-item index="2-4">审计确认单<span></span></el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
+
               <el-submenu v-show="
                   userInfo.userRole == '1' ||
                   userInfo.userRole == '3' ||
@@ -155,13 +156,18 @@
                 "
                           index="3">
                 <template slot="title">
-                  <span style="font-weight: 400">报告阶段</span>
+                  <span style="font-weight: 400;">报告阶段</span>
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="3-1">审计报告<span></span></el-menu-item>
-                  <el-menu-item index="3-2">经营指标<span></span></el-menu-item>
+                  <!--<el-menu-item index="3-2">经营指标<span></span></el-menu-item>-->
                 </el-menu-item-group>
               </el-submenu>
+              <el-menu-item index="3-2"
+                            class="one-menu_y-title">
+                <span class="one-menu_y"
+                      style="font-weight: 400;">经营指标</span>
+              </el-menu-item>
             </el-menu>
           </div>
         </el-col>
@@ -1103,24 +1109,19 @@ export default {
     this.index = "";
     this.queryInfo = this.$route.query;
     if (this.queryInfo.index && this.queryInfo.projectId) {
+<<<<<<< HEAD
       // debugger;
       // console.log(this.queryInfo.projectId)
       this.active_project = this.queryInfo.projectId;
-      this.defaultActive = this.queryInfo.index;
-      this.index = this.queryInfo.index;
-      // this.key=Math.random();
-      // 更新项目接口
-      setprojectInit(this.active_project).then((resp) => { });
-      // chrome
       document.body.scrollTop = 0;
       // firefox
-      document.documentElement.scrollTop = 0;
       // safari
       window.pageYOffset = 0;
     } else {
       this.get_user(true);
+      this.getprojectList(this.queryManage);
     }
-    this.getprojectList(this.queryManage);
+    // this.getprojectList(this.queryManage);
     this.thematicSelect(this.thematic);
     this.areasSelect(this.areas);
     this.moreProject(this.queryManageAll);
@@ -1157,12 +1158,20 @@ export default {
       return item.label.indexOf(query) > -1;
     },
     //查询未初始化项目
-    getprojectList (data) {
-      projectListByuser2(data).then((resp) => {
+
+    getprojectList (data, from) {
+      projectListByuser(data).then((resp) => {
         this.projectNum = resp.data.records;
         // console.log(this.queryProject);
         this.getInitProject(this.queryProject);
         this.project_more();
+        if (from == 'home') {
+          this.active_project = this.queryInfo.projectId;
+          this.defaultActive = this.queryInfo.index;
+          this.index = this.queryInfo.index;
+          // 更新项目接口
+          setprojectInit(this.active_project).then((resp) => { });
+        }
       });
     },
     // 初始化项目
@@ -2119,8 +2128,12 @@ export default {
   display: none;
   padding: 0 !important;
 }
+.el-menu-item.one-menu_y {
+  font-size: 12px !important;
+}
+
 // 新增高亮样式
-::v-deep.el-menu .el-menu-item span {
+::v-deep.el-menu .el-menu-item span::not(".one-menu_y") {
   width: 5px;
   height: 20px;
   background-color: #0e87d6;
@@ -2835,5 +2848,11 @@ export default {
 }
 .addPerson >>> .el-button--primary {
   background: #0c87d6 !important;
+}
+.one-menu_y-title {
+  padding-left: 0 !important;
+}
+.one-menu_y {
+  margin-left: 20px !important;
 }
 </style>

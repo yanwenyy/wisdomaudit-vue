@@ -16,8 +16,6 @@ export default {
     get_userInfo().then((resp) => {
       this.userInfo = resp.data;
         let time =  this.transformTimestamp(this.userInfo.user.lastLoginTime);
-     
-      console.log(this.userInfo);
        // 水印
       Watermark.set(this.userInfo.user.realName,this.userInfo.user.mobile,time)
     });
