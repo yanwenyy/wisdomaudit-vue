@@ -4,17 +4,17 @@ const baseURL = '/wisdomaudit'
 
 
 // 审计项目列表
-export function projectList(data) {
-    return request({
-      baseURL: baseURL,
-      url: `/managementProject/pageList1`,
-      method: 'post',
-      data
-    })
-  }
+export function projectList (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/managementProject/pageList1`,
+    method: 'post',
+    data
+  })
+}
 
 // 根据用户查询项目列表
-export function projectListByuser(data) {
+export function projectListByuser (data) {
   return request({
     baseURL: baseURL,
     url: `/managementProject/pageListByUser`,
@@ -25,7 +25,7 @@ export function projectListByuser(data) {
 
 
 // 项目类型下拉框数据
-export function projectType(data) {
+export function projectType (data) {
   return request({
     baseURL: baseURL,
     url: `/init/loadcascader`,
@@ -36,7 +36,7 @@ export function projectType(data) {
 
 
 // 下拉人员选择器
-export function projectPeople(data) {
+export function projectPeople (data) {
   return request({
     baseURL: baseURL,
     url: `/init/loaduser`,
@@ -47,7 +47,7 @@ export function projectPeople(data) {
 
 
 // 被审计对象选择器
-export function loadaudittorg(data) {
+export function loadaudittorg (data) {
   return request({
     baseURL: baseURL,
     url: `/init/loaauditorg`,
@@ -56,7 +56,7 @@ export function loadaudittorg(data) {
   })
 }
 
-export function getItemId(data) {
+export function getItemId (data) {
   return request({
     baseURL: baseURL,
     url: `/managementProject/getProjectCode`,
@@ -67,7 +67,7 @@ export function getItemId(data) {
 
 
 
-export function addProject(data) {
+export function addProject (data) {
   return request({
     baseURL: baseURL,
     url: `/managementProject/save`,
@@ -78,38 +78,38 @@ export function addProject(data) {
 
 
 // 编辑项目回显
-export function editProject(id){
+export function editProject (id) {
   return request({
-  baseURL: baseURL,
-  url: `/managementProject/getById/`+id+'',
-  method: 'get'
+    baseURL: baseURL,
+    url: `/managementProject/getById/` + id + '',
+    method: 'get'
   })
 }
 
 
 // 编辑项目上传
-export function editProjectUpdata(data){
+export function editProjectUpdata (data) {
   return request({
-  baseURL: baseURL,
-  url: `/managementProject/update`,
-  method: 'put',
-  data
+    baseURL: baseURL,
+    url: `/managementProject/update`,
+    method: 'put',
+    data
   })
 }
 
 
 // 删除专项
-export function deleteProject(id){
+export function deleteProject (id) {
   return request({
-  baseURL: baseURL,
-  url: `/managementProject/delete/`+id+'',
-  method: 'delete'
+    baseURL: baseURL,
+    url: `/managementProject/delete/` + id + '',
+    method: 'delete'
   })
 }
 
 
 // 专题领域下拉框
-export function thematicAreas(data) {
+export function thematicAreas (data) {
   return request({
     baseURL: baseURL,
     url: `/init/loadcascader`,
@@ -120,31 +120,31 @@ export function thematicAreas(data) {
 
 
 // 更新当前项目接口
-export function setprojectInit(id){
+export function setprojectInit (id) {
   return request({
-  baseURL: baseURL,
-  url: `/peopleTable/setCurrentProject?`+`managementProjectUuid=`+id+'',
-  method: 'put',
+    baseURL: baseURL,
+    url: `/peopleTable/setCurrentProject?` + `managementProjectUuid=` + id + '',
+    method: 'put',
   })
 }
 
 
 // 负责人，组长下拉框接口
-export function getProjectMember(num,size){
+export function getProjectMember (num, size) {
   return request({
-  baseURL: baseURL,
-  url: `/projectMembership/listUserInfo?`+`pageCurrent=`+num+`&pageSize=`+size,
-  method: 'get',
+    baseURL: baseURL,
+    url: `/projectMembership/listUserInfo?` + `pageCurrent=` + num + `&pageSize=` + size,
+    method: 'get',
   })
 }
 
 //附件回显接口
-export function attachmentEcho(data){
+export function attachmentEcho (data) {
   return request({
-  baseURL: baseURL,
-  url: `/attachment/pageList`,
-  method: 'post',
-  data
+    baseURL: baseURL,
+    url: `/attachment/pageList`,
+    method: 'post',
+    data
   })
 }
 
