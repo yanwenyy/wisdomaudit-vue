@@ -769,14 +769,11 @@ export default {
       }
     },
     toopen(val) {
-      console.log(val);
       if (val) {
         let _this = this;
         setTimeout(function () {
           _this.$refs["basisbtn0"].handleClick();
         }, 100);
-
-        console.log(_this.$refs["basisbtn0"]);
         return false;
       }
     },

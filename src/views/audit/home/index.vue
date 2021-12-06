@@ -309,7 +309,6 @@ export default {
   },
   mounted() {
     this.dqtoken = sessionStorage.getItem("TOKEN");
-    console.log("-----当前token-----" + this.dqtoken);
     if (this.dqtoken) {
       this.getmodellist();
       this.getprojectlist();
@@ -355,7 +354,6 @@ export default {
           if (rep.result == 0) {
             return;
           } else {
-            console.log(rep);
             this.approvers = rep.approvers || "";
             this.maxTime = rep.maxTime;
             this.dqtime = new Date();
@@ -388,7 +386,6 @@ export default {
             method: "post",
             data: this.dqfastlist,
           }).then((res) => {
-            console.log(res);
             if (res.data.code == 0) {
               this.fastDialogVisible = false;
               this.$refs.multipleTable.clearSelection();
@@ -522,7 +519,6 @@ export default {
       }).then((res) => {
         this.floading2 = false;
         this.modellist = res.data.data || "";
-        console.log(res);
       });
     },
     getprojectlist() {
@@ -628,9 +624,9 @@ export default {
               data: { third_token: reptoken },
               success: function (res2) {
                 if (res2.errorCode) {
-                  console.log("帆软认证接口调用失败", res2);
+                  console.log("帆软认证接口调用失败");
                 } else {
-                  console.log("帆软认证接口调用成功", res2);
+                  console.log("帆软认证接口调用成功");
                   window.open(item.url);
                   return;
                 }
