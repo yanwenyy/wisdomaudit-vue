@@ -539,8 +539,7 @@ export default {
   min-width: 120px;
 }
 
-.dialog >>> .el-input--medium .el-input__inner,
-.dialog >>> .el-textarea__inner {
+.dialog >>> .el-input--medium .el-input__inner {
   height: 36px;
   line-height: 36px;
   width: 220px !important;
@@ -558,5 +557,7 @@ export default {
 .dialog >>> textarea {
   min-height: 37px !important;
   padding: 0 10px !important;
+  line-height: 36px;
+  width: 220px !important;
 }
 </style>
