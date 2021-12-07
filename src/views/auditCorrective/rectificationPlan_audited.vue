@@ -160,6 +160,7 @@ export default {
     },
     // 筛选
     search_list_details () {
+      this.list_query.pageNo = 1;
       this.pageBsjProblemCorrectList_data();//刷新列表
     },
     // 编辑

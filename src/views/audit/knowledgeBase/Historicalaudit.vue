@@ -695,14 +695,13 @@ export default {
     // 筛选人
     search_list () {
       let params = {
-        pageNo: this.query.pageNo,
+        pageNo: 1,
         pageSize: this.query.pageSize,
         condition: {
           findPeople: this.query.findPeople,
           historyAuditFindDescribe: this.query.historyAuditFindDescribe,
         },
       };
-
       this.page_list(params);
     },
     // 新增

@@ -1435,7 +1435,7 @@ export default {
         // alert('a', this.search_title)
         // 未完成
         let params = {
-          pageNo: this.params.pageNo,
+          pageNo: 1,
           pageSize: this.params.pageSize,
           condition: {
             projectNumber: this.projectNumber,
@@ -1449,7 +1449,7 @@ export default {
         // alert('b', this.search_title2)
         // 已完成
         let params = {
-          pageNo: this.params2.pageNo,
+          pageNo: 1,
           pageSize: this.params2.pageSize,
           condition: {
             dataTaskNumber: this.projectNumber,

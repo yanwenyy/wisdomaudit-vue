@@ -261,6 +261,7 @@ export default {
 
     // 列表 筛选 
     search () {
+      this.list_query.pageNo = 1;
       this.pageProblemCorrectList_data();//列表
     },
     // 列表每条条数

@@ -310,6 +310,7 @@ export default {
     },
     // 筛选
     search_list_details () {
+      this.list_query.pageNo = 1;
       this.page_list_data();//刷新列表
     },
     // 编辑

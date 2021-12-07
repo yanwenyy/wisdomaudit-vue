@@ -194,6 +194,7 @@ export default {
     },
     //详情 查看筛选
     search_list_details () {
+      this.details_query.pageNo = 1;
       this.details_data();
     },
 

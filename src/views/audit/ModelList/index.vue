@@ -173,6 +173,7 @@ export default {
     },
     // 筛选
     search_list () {
+      this.model_liat_query.pageNo = 1;
       this.model_list_data();
     },
     // 分页

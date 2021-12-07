@@ -915,7 +915,6 @@
                         prop="belongSpcial"
                         style="margin-bottom:30px!important">
             <el-select v-model="save_zj_query.belongSpcial  "
-                       v-if="input_select==true"
                        @change="changeHeader_zj_zt">
               <el-option v-for="item in zt_slect"
                          :key="item.value"
@@ -1797,7 +1796,7 @@ export default {
     // 模型任务列表 自建任务 筛选
     search_list () {
       let params2 = {
-        pageNo: this.params.pageNo,
+        pageNo: 1,
         pageSize: this.params.pageSize,
         condition: {
           // auditModelCategory: this.params.auditModelCategory,
