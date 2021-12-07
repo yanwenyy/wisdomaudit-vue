@@ -276,7 +276,7 @@ export default {
     },
     //编辑按钮点击
     edit(row){
-      this.formState=row;
+      this.formState=JSON.parse(JSON.stringify(row));
       this.editVisible=true;
     },
     //编辑保存
