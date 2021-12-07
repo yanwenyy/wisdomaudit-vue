@@ -676,6 +676,7 @@
           </el-form-item>
           <el-form-item label="ㅤㅤ上传附件：">
             <el-upload class="upload-demo"
+                       :headers="headers"
                        drag
                        action="#"
                        v-model="taskSelf.enclosure"
@@ -846,6 +847,7 @@ export default {
   },
   data () {
     return {
+      headers: '',
       dqtoken: "",
       other_input: true, //专题下拉框显示隐藏
       defaultActive: "1-1",
@@ -1101,6 +1103,8 @@ export default {
 
   created () {
     this.dqtoken = sessionStorage.getItem("TOKEN");
+    this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
+
     this.get_user();
     // console.log(this.active_project);
   },
@@ -1796,11 +1800,10 @@ export default {
               url: "/wisdomaudit/attachment/fileUploads",
               headers: {
                 TOKEN: this.dqtoken,
+                'Content-Type': 'multipart/form-data'
               },
               data: formData,
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
+
             }).then((resp) => {
               if (resp.data.code == 0) {
                 this.$message.success("上传成功！");
@@ -1905,11 +1908,10 @@ export default {
           url: "/wisdomaudit/attachment/fileUploads",
           headers: {
             TOKEN: this.dqtoken,
+            'Content-Type': 'multipart/form-data'
           },
           data: formData,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+
         }).then((resp) => {
           if (resp.data.code == 0) {
             this.$message.success("上传成功！");
@@ -2302,7 +2304,7 @@ export default {
         transform: translate(-50%, 0%);
         -webkit-transition: opacity 0.4s;
         transition: opacity 0.4s;
-        z-index: 99;
+        z-index: 999;
         transition: all 0.3s;
       }
       .tips::before {

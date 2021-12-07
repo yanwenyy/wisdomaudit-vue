@@ -368,7 +368,8 @@
                   scope.row.isProbleam == 0
                     ? "否"
                     : scope.row.isProbleam == 1
-                    ? "是":""
+                    ? "是":'--'
+                  
                 }}
             </template>
           </el-table-column>
@@ -1277,6 +1278,8 @@ export default {
       attachmentList2: [],
       attachmentList3: [],
       isDisable: false,//防止重复提交
+
+      is_hs: true,
     };
   },
   computed: {},
@@ -1813,7 +1816,7 @@ export default {
       task_selectModel(params).then(resp => {
         if (resp.code == 0) {
           this.status_data = resp.data.reverse();
-
+          console.log(this.status_data);
           // let datas = resp.data[0]
           // 结果列表
           let params3 = {
@@ -1876,10 +1879,13 @@ export default {
         // })
       })
     },
+
     // 合并 结果列表 新旧数表单
     merge () {
       this.arr.forEach(item => {
         this.arr2.forEach(i => {
+
+          // this.$set(item, 'isProbleam', 2)//是否问题 0否 1.是
           if (item.onlyuuid == i.resultDetailId) {
             this.$set(item, 'handleIdea', i.handleIdea)//核实意见
             this.$set(item, 'handlePersonName', i.handlePersonName)//核实人
@@ -1888,8 +1894,15 @@ export default {
             this.$set(item, 'resultDetailProjectRelId', i.resultDetailProjectRelId)//核实信息表主键
           }
         })
+        // console.log(item);
+        // if (item.isProbleam !== 1) {
+        //   this.$refs.multipleTable.toggleRowSelection(
+        //     this.arr[item],
+        //     false
+        //   );
+        // }
       })
-      // 
+
     },
     // 新增核实 表头
     new_table () {
@@ -1902,11 +1915,56 @@ export default {
       };
       projectRel_pgeList(params_query).then(resp => {
         this.arr2 = resp.data.records
-        if (this.arr2) {
-          this.merge();//合并新旧
-        }
+        this.merge();//合并新旧
+
+        //          初始化禁选的复选框
+        // checkboxInit(row, index) {
+        //     var that = this;
+        //     that.$nextTick(() => {
+        //         console.log(that.$refs.multipleTableGood);
+        //         if (that.$refs.multipleTableGood) {
+        //             that.$refs.multipleTableGood.clearSelection();
+        //         }
+        //         that.tableData.forEach(row => {
+        //             for (let j in that.selectData) {
+        //                 if (row.id == that.selectData[j].id) {
+        //                     console.log("相同");
+        //                     that.$refs.multipleTableGood.toggleRowSelection(
+        //                         row,
+        //                         true
+        //                     );
+        //                 }
+        //             }
+        //         });
+        //     });
+        // },
+
+
+        var that = this;
+        that.$nextTick(() => {
+          this.status_data_list[0].result.forEach((item) => {
+            if (item.isProbleam == !undefined && item.isProbleam == 1) {
+              alert(2)
+              this.$nextTick(() => this.$refs.multipleTable.toggleRowSelection(item, true))
+            }
+          })
+        })
+
+
+        // this.arr.forEach(i => {
+        //   this.$nextTick(() => {
+        //     this.$set(row, 'isProbleam', 2)//是不是问题 0不是  1是 2 操作用的
+        //     // this.$refs.multipleTable.toggleRowSelection(this.multipleSelection_data_list[i], false);
+        //   })
+        // })
+
+
+
       })
     },
+
+
+
 
     // 结果分页
     handleSizeChange_toatl (val) {
@@ -1915,39 +1973,39 @@ export default {
     // 结果分页
     handleCurrentChange_toatl (val) {
       this.basePageParam_query.pageNo = val;
-      // alert(this.basePageParam_query.pageNo)
       // 结果列表
       let params2 = {
         runTaskRelUuid: this.paramTaskUuid,
-        // runTaskRelUuid: '8ee17c4b77c51747207aab278d804381'
       }
+      console.log(this.paramTaskUuid);
       this.data_tab(params2);//结果分类
-
-      // 结果列表
-      let params3 = {
-        basePageParam: {
-          condition: {
-            keyword: null,
-            runResultTableUuid: this.status_data[this.date_index].runResultTableUuid,
-            // runTaskRelUuid: this.status_data[this.date_index].runTaskRelUuid,
-            // runTaskRelUuid: this.status_data[this.date_index].paramTaskUuid,
-            runTaskRelUuid: this.paramTaskUuid,
-            resultTableName: this.status_data[this.date_index].resultTableName,//- 实际表名
-            resultShowName: this.status_data[this.date_index].resultShowName,
-            tableType: this.status_data[this.date_index].tableType,//  主副表标识, 主表 = 1、副表1 = 2、副表2 = 3···
-            dataCount: 1
-          },
-          pageNo: this.basePageParam_query.pageNo, //当前页数
-          pageSize: this.basePageParam_query.pageSize //分页数量
-        },
-        filterSql: "undefined",
-      }
-      this.data_tab_list(params3)// 结果列表
+      // console.log(this.status_data[this.date_index]);
+      // return false
+      // // 结果列表
+      // let params3 = {
+      //   basePageParam: {
+      //     condition: {
+      //       keyword: null,
+      //       runResultTableUuid: this.status_data[this.date_index].runResultTableUuid,
+      //       runTaskRelUuid: this.paramTaskUuid,
+      //       resultTableName: this.status_data[this.date_index].resultTableName,//- 实际表名
+      //       resultShowName: this.status_data[this.date_index].resultShowName,
+      //       tableType: this.status_data[this.date_index].tableType,//  主副表标识, 主表 = 1、副表1 = 2、副表2 = 3···
+      //       dataCount: 1
+      //     },
+      //     pageNo: this.basePageParam_query.pageNo, //当前页数
+      //     pageSize: this.basePageParam_query.pageSize //分页数量
+      //   },
+      //   filterSql: "undefined",
+      // }
+      // this.data_tab_list(params3)// 结果列表
     },
     // 结果数列表 里的全选
     handleSelectionChange_operation (val) {
       this.multipleSelection_data_list = val;
+
     },
+
     // 查看结果数
     data_num_click (data) {
       this.paramTaskUuid = data.paramTaskUuid
@@ -1970,15 +2028,19 @@ export default {
         this.$message.info("请选择一条进行数据核实");
         return false
       }
-      this.multipleSelection_data_list.forEach(item => {
-        if (item.isProbleam == 0) {
-          this.$message.info("请选择未核实的结果进行核实");
-          return false
-        } else {
-          this.dialogVisible_data_verify = true;//显示核实结果
-          // this.new_table();//新接口 table
-        }
-      })
+      var that = this
+
+      if (this.multipleSelection_data_list.findIndex(item => item.isProbleam == undefined || item.isProbleam == 0) == -1) {
+        that.dialogVisible_data_verify = true;//显示核实结果
+        return false
+
+      } else {
+        that.$message.info("请选择未核实的结果进行核实");
+        return false
+      }
+      return false
+
+
     },
     // 是否问题 change
     isProbleam_change (val) {
