@@ -207,6 +207,7 @@
                         style="margin-bottom: 22px !important">
             <p><span style="color: red">*</span> 专题：</p>
             <el-select v-model="add.special"
+                       v-if="input_select==true"
                        @change="changeHeader_zt">
               <el-option v-for="item in problems_slect_zt"
                          :key="item.value"
@@ -214,6 +215,8 @@
                          :value="item.value">
               </el-option>
             </el-select>
+            <el-input v-model="add.special"
+                      v-if="input_select==false"></el-input>
           </el-form-item>
 
           <!-- 发现人 -->
@@ -497,6 +500,7 @@ export default {
       personlist: [],
       me: "",
       userRole: 0,
+      input_select: true,
     };
   },
   computed: {},
@@ -893,6 +897,8 @@ export default {
       this.add.auditBasis = []; //清空 依据
       this.dqbasis.info = [];
       // 关闭验证
+      this.input_select = true;//专题 恢复默认
+
     },
     // 删除
     delete_model (id) {
@@ -982,6 +988,10 @@ export default {
     // 专题change
     changeHeader_zt (val) {
       this.add.special = val;
+      if (val == 'otherzt') {
+        this.input_select = false;
+        this.add.special = ''
+      }
     },
 
     // 依据change
