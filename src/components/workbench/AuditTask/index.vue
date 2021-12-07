@@ -353,7 +353,8 @@
           </el-table-column>
 
           <!-- 动态 -->
-          <el-table-column v-for="(item,key) in status_data_list[0].columns"
+          <el-table-column v-for="(item,key) in table_title"
+                           v-if="item!='onlyuuid'"
                            :key="key"
                            :prop="item"
                            :label="item"
@@ -1279,6 +1280,7 @@ export default {
       isDisable: false,//防止重复提交
 
       is_hs: true,
+      table_title: [],
     };
   },
   computed: {},
@@ -1815,7 +1817,6 @@ export default {
       task_selectModel(params).then(resp => {
         if (resp.code == 0) {
           this.status_data = resp.data.reverse();
-          console.log(this.status_data);
           // let datas = resp.data[0]
           // 结果列表
           let params3 = {
@@ -1870,12 +1871,13 @@ export default {
       task_selectTable(params).then(resp => {
         this.status_data_list_data = resp.data;
         this.status_data_list = resp.data.records
-        this.arr = resp.data.records[0].result //原列表
-        // console.log(this.status_data_list_data);
+        this.arr = resp.data.records[0].result; //原列表
+        this.table_title = resp.data.records[0].columns;//动态表头
+
+        console.log(this.status_data_list_data);
         this.new_table();//新接口 table
-        // arr.forEach(item => {
-        //   this.$set(item, 'yes_no', false)//是否问题
-        // })
+
+
       })
     },
 
@@ -1883,7 +1885,7 @@ export default {
     merge () {
       this.arr.forEach(item => {
         this.arr2.forEach(i => {
-
+          this.$set(item, 'is_show', true)//附件数
           // this.$set(item, 'isProbleam', 2)//是否问题 0否 1.是
           if (item.onlyuuid == i.resultDetailId) {
             this.$set(item, 'handleIdea', i.handleIdea)//核实意见
@@ -1894,12 +1896,8 @@ export default {
           }
         })
         // console.log(item);
-        // if (item.isProbleam !== 1) {
-        //   this.$refs.multipleTable.toggleRowSelection(
-        //     this.arr[item],
-        //     false
-        //   );
-        // }
+        // this.$set(item, 'count', i.count)//附件数
+
       })
 
     },

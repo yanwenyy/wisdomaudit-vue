@@ -129,7 +129,7 @@
                   <span style="font-weight: 400">审计准备</span>
                 </template>
                 <el-menu-item-group>
-                  <el-menu-item index="1-1">组员及任务维护 <span></span></el-menu-item>
+                  <el-menu-item index="1-1">业务说明-业务规则 <span></span></el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
               <el-submenu v-show="
@@ -177,7 +177,7 @@
       <div class="right_conter"
            v-if="active_project">
         <el-col v-if="!refreash">
-          <!-- 组员及任务维护 -->
+          <!-- 业务说明-业务规则 -->
           <div class="routerView"
                v-if="index == '1-1'">
             <TeamPersonTask ref="temPersonRef"
@@ -836,7 +836,7 @@ import {
 
 export default {
   components: {
-    TeamPersonTask, //组员及任务维护
+    TeamPersonTask, //业务说明-业务规则
     AuditData, //审计资料
     AuditTask, //审计任务
     Auditproblem, //审计问题
