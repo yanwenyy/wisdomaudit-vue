@@ -405,11 +405,11 @@
                              show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="address"
-                             label="说明"
+                             label="逻辑说明"
                              width="250">
             </el-table-column>
             <el-table-column prop="ruleDescription"
-                             label="规则"
+                             label="业务规则"
                              width="300">
             </el-table-column>
           </el-table>

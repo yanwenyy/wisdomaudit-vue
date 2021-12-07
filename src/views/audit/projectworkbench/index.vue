@@ -135,7 +135,7 @@
                   <span style="font-weight: 400">审计准备</span>
                 </template>
                 <el-menu-item-group>
-                  <el-menu-item index="1-1">业务说明-业务规则 <span></span></el-menu-item>
+                  <el-menu-item index="1-1">组员及任务维护<span></span></el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
               <el-submenu v-show="
@@ -173,7 +173,8 @@
                   userInfo.userRole == '1' ||
                   userInfo.userRole == '3' ||
                   (userInfo.isLiaison == '1' && userInfo.userRole == '2')
-                "  index="3-2"
+                "
+                            index="3-2"
                             class="one-menu_y-title">
                 <span class="one-menu_y"
                       style="font-weight: 400;">经营指标</span>
@@ -586,11 +587,11 @@
           <el-table-column prop="modelName"
                            label="模型名称"> </el-table-column>
           <el-table-column prop="address"
-                           label="说明"
+                           label="逻辑说明"
                            width="300">
           </el-table-column>
           <el-table-column prop="ruleDescription"
-                           label="规则"
+                           label="业务规则"
                            width="300">
           </el-table-column>
         </el-table>
