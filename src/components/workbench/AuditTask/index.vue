@@ -298,6 +298,7 @@
     <!-- 模型任务 结果数 -->
     <el-dialog width="90%"
                el-dialog
+               @close="handleClose"
                :close-on-click-modal="false"
                popper-class="status_data_dlag"
                :visible.sync="dialogVisible_data_num"
@@ -1249,8 +1250,7 @@ export default {
       fileList_Delet: [],//删除  储存
       success_btn2: 0,//文件上传完成
       edit_file_list2: [],
-
-
+      date_index: 0,
       // 结果数分页
       basePageParam_query: {
         pageNo: 1,
@@ -1858,7 +1858,7 @@ export default {
             tableType: this.status_data[this.date_index].tableType,//  主副表标识, 主表 = 1、副表1 = 2、副表2 = 3···
             dataCount: 1
           },
-          pageNo: this.basePageParam_query.pageNo, //当前页数
+          pageNo: 1, //当前页数
           pageSize: this.basePageParam_query.pageSize //分页数量
         },
         filterSql: "undefined",
@@ -1872,7 +1872,7 @@ export default {
         this.status_data_list_data = resp.data;
         this.status_data_list = resp.data.records
         this.arr = resp.data.records[0].result //原列表
-        console.log(this.status_data_list_data);
+        // console.log(this.status_data_list_data);
         this.new_table();//新接口 table
         // arr.forEach(item => {
         //   this.$set(item, 'yes_no', false)//是否问题
@@ -1916,56 +1916,19 @@ export default {
       projectRel_pgeList(params_query).then(resp => {
         this.arr2 = resp.data.records
         this.merge();//合并新旧
-
-        //          初始化禁选的复选框
-        // checkboxInit(row, index) {
-        //     var that = this;
-        //     that.$nextTick(() => {
-        //         console.log(that.$refs.multipleTableGood);
-        //         if (that.$refs.multipleTableGood) {
-        //             that.$refs.multipleTableGood.clearSelection();
-        //         }
-        //         that.tableData.forEach(row => {
-        //             for (let j in that.selectData) {
-        //                 if (row.id == that.selectData[j].id) {
-        //                     console.log("相同");
-        //                     that.$refs.multipleTableGood.toggleRowSelection(
-        //                         row,
-        //                         true
-        //                     );
-        //                 }
-        //             }
-        //         });
-        //     });
-        // },
-
-
         var that = this;
         that.$nextTick(() => {
           this.status_data_list[0].result.forEach((item) => {
-            if (item.isProbleam == !undefined && item.isProbleam == 1) {
-              alert(2)
-              this.$nextTick(() => this.$refs.multipleTable.toggleRowSelection(item, true))
+            // if (item.isProbleam == !undefined && item.isProbleam == 1) {
+            //   this.$nextTick(() => this.$refs.multipleTable.toggleRowSelection(item, true))
+            // }
+            if (item.isProbleam == undefined) {
+              this.$set(item, 'isProbleam', 2)//是不是问题 0不是  1是 2 操作用的
             }
           })
         })
-
-
-        // this.arr.forEach(i => {
-        //   this.$nextTick(() => {
-        //     this.$set(row, 'isProbleam', 2)//是不是问题 0不是  1是 2 操作用的
-        //     // this.$refs.multipleTable.toggleRowSelection(this.multipleSelection_data_list[i], false);
-        //   })
-        // })
-
-
-
       })
     },
-
-
-
-
     // 结果分页
     handleSizeChange_toatl (val) {
       this.basePageParam_query.pageSize = val;
@@ -1977,33 +1940,43 @@ export default {
       let params2 = {
         runTaskRelUuid: this.paramTaskUuid,
       }
-      console.log(this.paramTaskUuid);
       this.data_tab(params2);//结果分类
-      // console.log(this.status_data[this.date_index]);
-      // return false
-      // // 结果列表
-      // let params3 = {
-      //   basePageParam: {
-      //     condition: {
-      //       keyword: null,
-      //       runResultTableUuid: this.status_data[this.date_index].runResultTableUuid,
-      //       runTaskRelUuid: this.paramTaskUuid,
-      //       resultTableName: this.status_data[this.date_index].resultTableName,//- 实际表名
-      //       resultShowName: this.status_data[this.date_index].resultShowName,
-      //       tableType: this.status_data[this.date_index].tableType,//  主副表标识, 主表 = 1、副表1 = 2、副表2 = 3···
-      //       dataCount: 1
-      //     },
-      //     pageNo: this.basePageParam_query.pageNo, //当前页数
-      //     pageSize: this.basePageParam_query.pageSize //分页数量
-      //   },
-      //   filterSql: "undefined",
-      // }
-      // this.data_tab_list(params3)// 结果列表
+
+      var that = this;
+      that.$nextTick(() => {
+        this.status_data_list[0].result.forEach((item) => {
+          if (item.isProbleam == undefined) {
+            this.$set(item, 'isProbleam', 2)//是不是问题 0不是  1是 2 操作用的
+          }
+        })
+      })
+      // 结果列表
+      let params3 = {
+        basePageParam: {
+          condition: {
+            keyword: null,
+            runResultTableUuid: this.status_data[this.date_index].runResultTableUuid,
+            runTaskRelUuid: this.paramTaskUuid,
+            resultTableName: this.status_data[this.date_index].resultTableName,//- 实际表名
+            resultShowName: this.status_data[this.date_index].resultShowName,
+            tableType: this.status_data[this.date_index].tableType,//  主副表标识, 主表 = 1、副表1 = 2、副表2 = 3···
+            dataCount: 1
+          },
+          pageNo: this.basePageParam_query.pageNo, //当前页数
+          pageSize: this.basePageParam_query.pageSize //分页数量
+        },
+        filterSql: "undefined",
+      }
+      this.data_tab_list(params3)// 结果列表
     },
     // 结果数列表 里的全选
     handleSelectionChange_operation (val) {
       this.multipleSelection_data_list = val;
 
+    },
+    // 关闭
+    handleClose () {
+      // this.basePageParam_query.pageNo = 1;
     },
 
     // 查看结果数
@@ -2014,7 +1987,6 @@ export default {
         this.jg_title = data.auditModelName
         let params2 = {
           runTaskRelUuid: this.paramTaskUuid,
-          // runTaskRelUuid: '8ee17c4b77c51747207aab278d804381'
         }
         this.data_tab(params2);//结果分类
       } else {
@@ -2028,19 +2000,18 @@ export default {
         this.$message.info("请选择一条进行数据核实");
         return false
       }
+
+      console.log(this.multipleSelection_data_list);
       var that = this
 
-      if (this.multipleSelection_data_list.findIndex(item => item.isProbleam == undefined || item.isProbleam == 0) == -1) {
-        that.dialogVisible_data_verify = true;//显示核实结果
+      if (this.multipleSelection_data_list.every(item => item.isProbleam !== 0)) {
+        that.dialogVisible_data_verify = true;//显示核实弹窗
         return false
 
       } else {
         that.$message.info("请选择未核实的结果进行核实");
         return false
       }
-      return false
-
-
     },
     // 是否问题 change
     isProbleam_change (val) {
@@ -2197,8 +2168,6 @@ export default {
               condition: {
                 keyword: null,
                 runResultTableUuid: this.status_data[this.date_index].runResultTableUuid,
-                // runTaskRelUuid: this.status_data[this.date_index].runTaskRelUuid,
-                // runTaskRelUuid: this.status_data[this.date_index].paramTaskUuid,
                 runTaskRelUuid: this.paramTaskUuid,
                 resultTableName: this.status_data[this.date_index].resultTableName,//- 实际表名
                 resultShowName: this.status_data[this.date_index].resultShowName,
@@ -3114,6 +3083,12 @@ export default {
   width: 305px !important;
 } */
 
+.new >>> .el-upload-list__item {
+  width: 320px !important;
+}
+.new >>> .el-upload-list__item-name {
+  margin-right: 20px !important;
+}
 /* 新版附件详 */
 .list-folder {
   color: orange;
