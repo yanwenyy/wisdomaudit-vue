@@ -674,7 +674,7 @@
                       style="top: -35px"
                       v-model="taskSelf.taskDescription"></el-input>
           </el-form-item>
-          <el-form-item label="ㅤㅤ1上传附件：">
+          <el-form-item label="ㅤㅤ上传附件：">
             <el-upload class="upload-demo"
                        :headers="headers"
                        drag
