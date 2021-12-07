@@ -17,7 +17,7 @@ export function operatingIndicators_list (data) {
 export function task_pageList_wt (data) {
   return request({
     baseURL: baseURL,
-    url: `/problemList/pageList`,
+    url: `/problemList/pageList1`,
     method: 'post',
     isLoading: false,
     data,
