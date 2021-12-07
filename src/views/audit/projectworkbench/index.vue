@@ -169,7 +169,11 @@
                   <!--<el-menu-item index="3-2">经营指标<span></span></el-menu-item>-->
                 </el-menu-item-group>
               </el-submenu>
-              <el-menu-item index="3-2"
+              <el-menu-item v-show="
+                  userInfo.userRole == '1' ||
+                  userInfo.userRole == '3' ||
+                  (userInfo.isLiaison == '1' && userInfo.userRole == '2')
+                "  index="3-2"
                             class="one-menu_y-title">
                 <span class="one-menu_y"
                       style="font-weight: 400;">经营指标</span>
