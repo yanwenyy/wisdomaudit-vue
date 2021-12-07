@@ -1112,7 +1112,7 @@ export default {
       // debugger;
       // console.log(this.queryInfo.projectId)
       // this.active_project = this.queryInfo.projectId;
-      this.getprojectList(this.queryManage,'home');
+      this.getprojectList(this.queryManage, 'home');
       document.body.scrollTop = 0;
       // firefox
       // safari
@@ -2235,7 +2235,7 @@ export default {
         background-color: #f4faff;
         color: #a1a5b9;
         border-radius: 10px;
-        transition: height 0.3s;
+        // transition: height 0.3s;
         padding: 0 10px;
         position: absolute;
         top: 50%;
@@ -2249,7 +2249,6 @@ export default {
         .hide {
           position: relative;
           width: 100%;
-
           .hide_title {
             // opacity: 1;
             display: block;
@@ -2265,7 +2264,7 @@ export default {
             position: absolute;
             top: 16px;
             left: 0%;
-            transition: all 0.3s;
+            transition: top 0.3s;
             opacity: 0;
           }
         }

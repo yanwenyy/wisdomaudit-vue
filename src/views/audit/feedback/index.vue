@@ -596,7 +596,7 @@ export default {
     see (data) {
       this.see_data = true;
       this.dialogVisible = true;//显示反馈
-      console.log(data);
+
       this.projectNumber = data.projectNumber;// 项目名称：
       this.addPeople = data.addPeople;// 审计期间
       this.title = data.title;//标题
@@ -668,7 +668,7 @@ export default {
       }
       operation_findFile(params).then(resp => {
         this.findFile_list_moban = resp.data
-        console.log(this.findFile_list_moban);
+
       })
 
 
@@ -697,7 +697,7 @@ export default {
           navigator.msSaveBlob(blob, fileName)
         }
       }).catch((err) => {
-        console.log(err);
+
       })
     },
 
@@ -712,13 +712,13 @@ export default {
         method: 'post',
         url: '/wisdomaudit/auditPreviousDemandData/downloadByFileId',
         headers: {
-          TOKEN: this.dqtoken,
-        },
+          TOKEN: this.dqtoken,
+        },
         data: formData,
         responseType: 'blob',
       }).then((res) => {
         const content = res.data;
-        console.log(res);
+
         const blob = new Blob([content],
           { type: 'application/octet-stream,charset=UTF-8' }
         )
@@ -742,7 +742,7 @@ export default {
           navigator.msSaveBlob(blob, fileName)
         }
       }).catch((err) => {
-        console.log(err);
+
       })
     },
     // 查看附件
@@ -753,7 +753,7 @@ export default {
         id: id
       }
       operation_findFile(params).then(resp => {
-        console.log(resp.data);
+
         this.findFile_list = resp.data
       })
     },
@@ -786,13 +786,10 @@ export default {
         method: 'post',
         url: '/wisdomaudit/auditPreviousDemandData/uploadData',
         headers: {
-          TOKEN: this.dqtoken,
-        },
-        data: formData,
-        headers: {
+          TOKEN: this.dqtoken,
           'Content-Type': 'multipart/form-data'
         },
-
+        data: formData,
       }).then(resp => {
         if (resp.data.code == 0) {
           this.$message({
@@ -850,7 +847,7 @@ export default {
       this.loading_list2 = true;
       operation_record_list(query_params).then(resp => {
         this.record_log = resp.data
-        console.log(this.record_log);
+
         this.loading_list2 = false;
       })
     },
@@ -859,7 +856,7 @@ export default {
     // 资料列表 选中
     handleSelectionChange_query (val) {
       this.check_data_list = val
-      console.log(this.check_data_list);
+
     },
     // 提交
     post () {
@@ -877,7 +874,7 @@ export default {
       // this.check_data_list.forEach((item) => {
       //   array1.push(item);
       // });
-      // console.log(array1);
+      // 
       // return false
       // auditPreviousDemandDataUuid
       this.success_btn = 1;

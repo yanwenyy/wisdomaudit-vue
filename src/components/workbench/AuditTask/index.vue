@@ -1425,7 +1425,6 @@ export default {
                 headers: {
                   TOKEN: this.dqtoken,
                   'Content-Type': 'multipart/form-data'
-
                 },
                 data: formData,
 

@@ -4,37 +4,29 @@
     <div class="conter">
       <div class="two">
         <div class="projectTab">
-          <el-row :gutter="24" class="titleMes">
+          <el-row :gutter="24"
+                  class="titleMes">
             <el-col :span="3.5">
-              <el-button
-                style="background: #0c87d6; color: #fff"
-                @click="addModel()"
-                v-if="userRole != 3"
-                >新增模型任务</el-button
-              >
+              <el-button style="background: #0c87d6; color: #fff"
+                         @click="addModel()"
+                         v-if="userRole != 3">新增模型任务</el-button>
             </el-col>
             <el-col :span="5">
-              <el-button
-                style="background: #0c87d6; color: #fff"
-                @click="addTask()"
-                v-if="userRole != 3"
-                >新增自建任务</el-button
-              >
+              <el-button style="background: #0c87d6; color: #fff"
+                         @click="addTask()"
+                         v-if="userRole != 3">新增自建任务</el-button>
             </el-col>
             <!-- 条件查询模型名称 -->
             <div class="search">
-              <el-input
-                placeholder="请输入任务名称"
-                v-model="queryInfo.condition.taskName"
-                @keyup.enter.native="queryNameInput"
-              >
+              <el-input placeholder="请输入任务名称"
+                        v-model="queryInfo.condition.taskName"
+                        @keyup.enter.native="queryNameInput">
               </el-input>
-              <div
-                class="search_icon"
-                style="background: #0c87d6 !important"
-                @click="queryNameInput"
-              >
-                <i class="el-icon-search" style="color: white"></i>
+              <div class="search_icon"
+                   style="background: #0c87d6 !important"
+                   @click="queryNameInput">
+                <i class="el-icon-search"
+                   style="color: white"></i>
               </div>
             </div>
             <!-- <el-col :span="5" style="margin-left: 40%">
@@ -54,80 +46,72 @@
             </el-col> -->
           </el-row>
           <!-- 表单 -->
-          <el-table
-            v-loading="taskTableLoading"
-            :data="taskData"
-            style="width: 100%"
-            :header-cell-style="{
+          <el-table v-loading="taskTableLoading"
+                    :data="taskData"
+                    style="width: 100%"
+                    :header-cell-style="{
               'background-color': '#F4FAFF',
               'font-weight': '400',
-            }"
-          >
-            <el-table-column prop="taskName" label="任务名称">
+            }">
+            <el-table-column prop="taskName"
+                             label="任务名称">
             </el-table-column>
-            <el-table-column prop="taskType" label="任务类型">
+            <el-table-column prop="taskType"
+                             label="任务类型">
               <template slot-scope="scope">
                 <span v-if="scope.row.taskType == 1">模型任务</span>
                 <span v-else-if="scope.row.taskType == 2">自建任务</span>
               </template>
             </el-table-column>
-            <el-table-column prop="peopleName" label="责任人">
+            <el-table-column prop="peopleName"
+                             label="责任人">
               <template slot-scope="scope">
                 <el-form class="taskTable">
                   <el-form-item>
-                    <el-select
-                      style="width: 180px; margin-top: 5px"
-                      v-model="scope.row.peopleTableUuid"
-                      filterable
-                      @change="selectChange(scope.row)"
-                      :disabled="userRole == '3'"
-                    >
-                      <el-option
-                        v-for="item in tableData"
-                        :key="item.peopleTableUuid"
-                        :label="item.peopleName"
-                        :value="item.peopleTableUuid"
-                      >
+                    <el-select style="width: 180px; margin-top: 5px"
+                               v-model="scope.row.peopleTableUuid"
+                               filterable
+                               @change="selectChange(scope.row)"
+                               :disabled="userRole == '3'">
+                      <el-option v-for="item in tableData"
+                                 :key="item.peopleTableUuid"
+                                 :label="item.peopleName"
+                                 :value="item.peopleTableUuid">
                       </el-option>
                     </el-select>
                   </el-form-item>
                 </el-form>
               </template>
             </el-table-column>
-            <el-table-column prop="taskDescription" label="任务描述">
+            <el-table-column prop="taskDescription"
+                             label="任务描述">
               <template slot-scope="scope">
                 <div v-if="scope.row.taskDescription == null || scope.row.taskDescription == ''">--</div>
                 <div v-else>{{scope.row.taskDescription}}</div>
               </template>
             </el-table-column>
-            <el-table-column
-              prop="address"
-              label="附件"
-              width="90"
-              show-overflow-tooltip
-            >
+            <el-table-column prop="address"
+                             label="附件"
+                             width="90"
+                             show-overflow-tooltip>
               <template slot-scope="scope">
-                <el-popover
-                  placement="bottom"
-                  width="250"
-                  trigger="click"
-                  v-loading="nearbyLoading"
-                  :popper-options="{ boundariesElement: 'body' }"
-                >
+                <el-popover placement="bottom"
+                            width="250"
+                            trigger="click"
+                            v-loading="nearbyLoading"
+                            :popper-options="{ boundariesElement: 'body' }">
                   <div>
                     <el-table :data="enclosure_details_list">
-                      <el-table-column prop="fileName" label="文件名称">
+                      <el-table-column prop="fileName"
+                                       label="文件名称">
                         <template slot-scope="scope">
-                          <el-link
-                            type="primary"
-                            @click="
+                          <el-link type="primary"
+                                   @click="
                               enclosureDownload(
                                 scope.row.attachmentUuid,
                                 scope.row.fileName
                               )
-                            "
-                            >{{ scope.row.fileName }}</el-link
-                          >
+                            ">{{ scope.row.fileName }}</el-link>
                         </template>
                       </el-table-column>
                     </el-table>
@@ -137,28 +121,23 @@
                      style="color: #1371cc;"
                      class="pointer" @click="nearbyDetails(scope.row)"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.count}}
                    </div> -->
-                  <div
-                    class="update"
-                    style="margin-left: -40px; cursor: pointer"
-                    slot="reference"
-                    @click="nearbyDetails(scope.row)"
-                  >
-                    <i class="update_icon" style="margin-top: -3px">
-                      <svg
-                        t="1631877671204"
-                        class="icon"
-                        viewBox="0 0 1024 1024"
-                        version="1.1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        p-id="9939"
-                        width="200"
-                        height="200"
-                      >
-                        <path
-                          d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                          fill="#FD9D27"
-                          p-id="9940"
-                        ></path>
+                  <div class="update"
+                       style="margin-left: -40px; cursor: pointer"
+                       slot="reference"
+                       @click="nearbyDetails(scope.row)">
+                    <i class="update_icon"
+                       style="margin-top: -3px">
+                      <svg t="1631877671204"
+                           class="icon"
+                           viewBox="0 0 1024 1024"
+                           version="1.1"
+                           xmlns="http://www.w3.org/2000/svg"
+                           p-id="9939"
+                           width="200"
+                           height="200">
+                        <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
+                              fill="#FD9D27"
+                              p-id="9940"></path>
                       </svg>
                     </i>
                     <span>{{ scope.row.count }}</span>
@@ -166,23 +145,21 @@
                 </el-popover>
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="50" v-if="userRole != 3">
+            <el-table-column label="操作"
+                             width="150"
+                             v-if="userRole != 3">
               <template slot-scope="scope">
-                <el-button
-                  type="text"
-                  style="color: #0c87d6; font-size: 14px"
-                  size="small"
-                  v-if="scope.row.taskType == 2"
-                  @click.native.prevent="editModel(scope.row)"
-                >
+                <el-button type="text"
+                           style="color: #0c87d6; font-size: 14px"
+                           size="small"
+                           v-if="scope.row.taskType == 2"
+                           @click.native.prevent="editModel(scope.row)">
                   编辑
                 </el-button>
-                <el-button
-                  type="text"
-                  style="color: #ff8a72; font-size: 14px"
-                  size="small"
-                  @click.native.prevent="deleteModel(scope.row)"
-                >
+                <el-button type="text"
+                           style="color: #ff8a72; font-size: 14px"
+                           size="small"
+                           @click.native.prevent="deleteModel(scope.row)">
                   删除
                 </el-button>
               </template>
@@ -192,99 +169,82 @@
         </div>
 
         <!-- 分页 -->
-        <pagination
-          v-show="modelTotal > 0"
-          :total="modelTotal"
-          :page.sync="queryInfo.pageNo"
-          :limit.sync="queryInfo.pageSize"
-          @pagination="queryName"
-        />
+        <pagination v-show="modelTotal > 0"
+                    :total="modelTotal"
+                    :page.sync="queryInfo.pageNo"
+                    :limit.sync="queryInfo.pageSize"
+                    @pagination="queryName" />
         <!-- 分页 end-->
       </div>
     </div>
 
     <!-- 审计任务维护编辑弹框 -->
-    <el-dialog
-      :visible.sync="editModelDialogVisible"
-      width="50%"
-      @close="editResetForm2('editTaskRef')"
-    >
+    <el-dialog :visible.sync="editModelDialogVisible"
+               width="50%"
+               @close="editResetForm2('editTaskRef')">
       <div class="title">编辑任务</div>
-      <el-form
-        label-width="100px"
-        class="selfTask"
-        :model="editTask"
-        ref="editTaskRef"
-        hide-required-asterisk
-      >
+      <el-form label-width="100px"
+               class="selfTask"
+               :model="editTask"
+               ref="editTaskRef"
+               hide-required-asterisk>
         <el-form-item label="自建任务名称：">
-          <el-input placeholder="请输入" v-model="editTask.taskName"></el-input>
+          <el-input placeholder="请输入"
+                    v-model="editTask.taskName"></el-input>
         </el-form-item>
         <el-form-item label="ㅤㅤㅤ责任人：">
-          <el-select
-            v-model="editTask.peopleTableUuid"
-            filterable
-            @change="personLiableSelect"
-          >
-            <el-option
-              v-for="item in tableData"
-              :key="item.peopleTableUuid"
-              :label="item.peopleName"
-              :value="item.peopleTableUuid"
-            >
+          <el-select v-model="editTask.peopleTableUuid"
+                     filterable
+                     @change="personLiableSelect">
+            <el-option v-for="item in tableData"
+                       :key="item.peopleTableUuid"
+                       :label="item.peopleName"
+                       :value="item.peopleTableUuid">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="ㅤㅤㅤ专ㅤ题:" prop="belongSpcial">
-          <el-select
-            placeholder="请选择"
-            v-model="editTask.belongSpcial"
-            v-if="other_input == true"
-            @change="changeBelongSpcial"
-          >
-            <el-option
-              v-for="item in thematicOption"
-              :key="item.value"
-              :label="item.label"
-              :value="item.label"
-            >
+        <el-form-item label="ㅤㅤㅤ专ㅤ题:"
+                      prop="belongSpcial">
+          <el-select placeholder="请选择"
+                     v-model="editTask.belongSpcial"
+                     v-if="other_input == true"
+                     @change="changeBelongSpcial">
+            <el-option v-for="item in thematicOption"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.label">
             </el-option>
           </el-select>
-          <el-input
-            v-model="editTask.belongSpcial"
-            v-if="other_input == false"
-          ></el-input>
+          <el-input v-model="editTask.belongSpcial"
+                    v-if="other_input == false"></el-input>
         </el-form-item>
-        <el-form-item label="ㅤㅤㅤ领ㅤ域:" prop="belongField">
-          <el-select placeholder="请选择" v-model="editTask.belongField">
-            <el-option
-              v-for="item in areasOption"
-              :key="item.value"
-              :label="item.label"
-              :value="item.label"
-            >
+        <el-form-item label="ㅤㅤㅤ领ㅤ域:"
+                      prop="belongField">
+          <el-select placeholder="请选择"
+                     v-model="editTask.belongField">
+            <el-option v-for="item in areasOption"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.label">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="ㅤㅤ任务描述：">
-          <el-input
-            type="textarea"
-            style="top: -35px"
-            v-model="editTask.taskDescription"
-          ></el-input>
+          <el-input type="textarea"
+                    style="top: -35px"
+                    v-model="editTask.taskDescription"></el-input>
         </el-form-item>
         <el-form-item label="ㅤㅤ上传附件：">
-          <el-upload
-            class="upload-demo"
-            drag
-            action="#"
-            v-model="editTask.enclosure"
-            :on-change="handleChangePic"
-            :on-remove="handleRemove"
-            :file-list="edit_file_list"
-            :auto-upload="false"
-            multiple
-          >
+          <el-upload class="upload-demo"
+                     drag
+                     action="#"
+                     :headers="headers"
+                     v-model="editTask.enclosure"
+                     :on-change="handleChangePic"
+                     :on-remove="handleRemove"
+                     :file-list="edit_file_list"
+                     :auto-upload="false"
+                     multiple>
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">
               点击上传或将文件拖到虚线框
@@ -293,123 +253,99 @@
           </el-upload>
         </el-form-item>
       </el-form>
-      <div class="stepBtn" style="margin-right: 2%; margin-bottom: 1.5%">
-        <el-button
-          @click="resBtn('editTaskRef')"
-          style="border: 1px solid #d2d2d2"
-          >取消</el-button
-        >
-        <el-button
-          style="background: #0c87d6; color: #fff"
-          @click="editTaskSelfBtn"
-          :disabled="isdisabled"
-          >完成</el-button
-        >
+      <div class="stepBtn"
+           style="margin-right: 2%; margin-bottom: 1.5%">
+        <el-button @click="resBtn('editTaskRef')"
+                   style="border: 1px solid #d2d2d2">取消</el-button>
+        <el-button style="background: #0c87d6; color: #fff"
+                   @click="editTaskSelfBtn"
+                   :disabled="isdisabled">完成</el-button>
       </div>
     </el-dialog>
 
     <!-- 审计任务维护新增弹框 -->
-    <el-dialog
-      :visible.sync="TaskDialogVisible"
-      width="55%"
-      @close="resetForm2('selfTaskRef')"
-    >
+    <el-dialog :visible.sync="TaskDialogVisible"
+               width="55%"
+               @close="resetForm2('selfTaskRef')">
       <div class="taskTitle">新增任务</div>
-      <div class="taskAdd" v-if="task == '1'">
-        <el-form
-          label-width="100px"
-          :model="taskSelf"
-          style="margin-left: 10%; margin-top: 5%"
-          ref="selfTaskRef"
-          :rules="taskSelfRules"
-          hide-required-asterisk
-        >
-          <el-form-item label="自建任务名称：" prop="taskName">
-            <el-input
-              placeholder="请输入"
-              v-model="taskSelf.taskName"
-            ></el-input>
+      <div class="taskAdd"
+           v-if="task == '1'">
+        <el-form label-width="100px"
+                 :model="taskSelf"
+                 style="margin-left: 10%; margin-top: 5%"
+                 ref="selfTaskRef"
+                 :rules="taskSelfRules"
+                 hide-required-asterisk>
+          <el-form-item label="自建任务名称："
+                        prop="taskName">
+            <el-input placeholder="请输入"
+                      v-model="taskSelf.taskName"></el-input>
           </el-form-item>
-          <el-form-item label="ㅤㅤㅤ责任人：" prop="peopleName">
-            <el-select
-              v-model="taskSelf.peopleName"
-              filterable
-              @change="personLiableSelect"
-            >
-              <el-option
-                v-for="item in tableData"
-                :key="item.peopleTableUuid"
-                :label="item.peopleName"
-                :value="item.peopleTableUuid"
-              >
+          <el-form-item label="ㅤㅤㅤ责任人："
+                        prop="peopleName">
+            <el-select v-model="taskSelf.peopleName"
+                       filterable
+                       @change="personLiableSelect">
+              <el-option v-for="item in tableData"
+                         :key="item.peopleTableUuid"
+                         :label="item.peopleName"
+                         :value="item.peopleTableUuid">
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="ㅤㅤㅤ专ㅤ题:" prop="belongSpcial">
-            <el-select
-              placeholder="请选择"
-              v-model="taskSelf.belongSpcial"
-              v-if="other_input == true"
-              @change="changeBelongSpcial"
-            >
-              <el-option
-                v-for="item in thematicOption"
-                :key="item.value"
-                :label="item.label"
-                :value="item.label"
-              >
+          <el-form-item label="ㅤㅤㅤ专ㅤ题:"
+                        prop="belongSpcial">
+            <el-select placeholder="请选择"
+                       v-model="taskSelf.belongSpcial"
+                       v-if="other_input == true"
+                       @change="changeBelongSpcial">
+              <el-option v-for="item in thematicOption"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.label">
               </el-option>
             </el-select>
-            <el-input
-              v-model="taskSelf.belongSpcial"
-              v-if="other_input == false"
-            ></el-input>
+            <el-input v-model="taskSelf.belongSpcial"
+                      v-if="other_input == false"></el-input>
           </el-form-item>
-          <el-form-item label="ㅤㅤㅤ领ㅤ域:" prop="belongField">
-            <el-select placeholder="请选择" v-model="taskSelf.belongField">
-              <el-option
-                v-for="item in areasOption"
-                :key="item.value"
-                :label="item.label"
-                :value="item.label"
-              >
+          <el-form-item label="ㅤㅤㅤ领ㅤ域:"
+                        prop="belongField">
+            <el-select placeholder="请选择"
+                       v-model="taskSelf.belongField">
+              <el-option v-for="item in areasOption"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.label">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="ㅤㅤ任务类型:">
-            <el-select
-              v-model="taskSelf.taskType"
-              filterable
-              @change="taskTypeSelect"
-              disabled
-            >
-              <el-option
-                v-for="item in taskTypeList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
+            <el-select v-model="taskSelf.taskType"
+                       filterable
+                       @change="taskTypeSelect"
+                       disabled>
+              <el-option v-for="item in taskTypeList"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="ㅤㅤ任务描述：" prop="taskDescription">
-            <el-input
-              type="textarea"
-              style="top: -35px"
-              v-model="taskSelf.taskDescription"
-            ></el-input>
+          <el-form-item label="ㅤㅤ任务描述："
+                        prop="taskDescription">
+            <el-input type="textarea"
+                      style="top: -35px"
+                      v-model="taskSelf.taskDescription"></el-input>
           </el-form-item>
           <el-form-item label="ㅤㅤ上传附件：">
-            <el-upload
-              class="upload-demo"
-              drag
-              action="#"
-              v-model="taskSelf.enclosure"
-              :on-change="handleChangePic"
-              :file-list="fileList"
-              :auto-upload="false"
-              multiple
-            >
+            <el-upload class="upload-demo"
+                       drag
+                       action="#"
+                       v-model="taskSelf.enclosure"
+                       :on-change="handleChangePic"
+                       :file-list="fileList"
+                       :auto-upload="false"
+                       multiple>
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">
                 点击上传或将文件拖到虚线框
@@ -419,20 +355,15 @@
           </el-form-item>
         </el-form>
         <div class="temBtn">
-          <el-button
-            @click="addresBtn('selfTaskRef')"
-            style="border: 1px solid #d2d2d2"
-            >取消</el-button
-          >
-          <el-button
-            style="background: #0c87d6; color: #fff"
-            @click="saveTask('selfTaskRef')"
-            :disabled="isdisabled"
-            >完成</el-button
-          >
+          <el-button @click="addresBtn('selfTaskRef')"
+                     style="border: 1px solid #d2d2d2">取消</el-button>
+          <el-button style="background: #0c87d6; color: #fff"
+                     @click="saveTask('selfTaskRef')"
+                     :disabled="isdisabled">完成</el-button>
         </div>
       </div>
-      <div class="model_Info" v-else-if="task == '2'">
+      <div class="model_Info"
+           v-else-if="task == '2'">
         <div style="padding: 20px">
           <el-row style="margin-top: 10px">
             <el-col :span="15">
@@ -441,64 +372,60 @@
               </div>
             </el-col>
             <div class="search">
-              <el-input
-                placeholder="请输入模型名称"
-                v-model="model_QueryInfo.condition.modelName"
-                @keyup.enter.native="queryModelInput"
-              >
+              <el-input placeholder="请输入模型名称"
+                        v-model="model_QueryInfo.condition.modelName"
+                        @keyup.enter.native="queryModelInput">
               </el-input>
-              <div
-                class="search_icon"
-                style="background: #0c87d6 !important"
-                @click="queryModelInput"
-              >
-                <i class="el-icon-search" style="color: white"></i>
+              <div class="search_icon"
+                   style="background: #0c87d6 !important"
+                   @click="queryModelInput">
+                <i class="el-icon-search"
+                   style="color: white"></i>
               </div>
             </div>
           </el-row>
-          <el-table
-            v-loading="modelInfoLoading"
-            :data="modelTableData"
-            style="width: 100%"
-            @selection-change="handleSelectionChangeModel"
-            ref="multipleModelRef"
-          >
+          <el-table v-loading="modelInfoLoading"
+                    :data="modelTableData"
+                    style="width: 100%"
+                    @selection-change="handleSelectionChangeModel"
+                    ref="multipleModelRef">
             <el-table-column type="selection"> </el-table-column>
-            <el-table-column type="index" label="模型编号" width="80">
+            <el-table-column type="index"
+                             label="模型编号"
+                             width="80">
             </el-table-column>
-            <el-table-column prop="belongField" label="所属领域">
+            <el-table-column prop="belongField"
+                             label="所属领域">
             </el-table-column>
-            <el-table-column prop="belongSpcial" label="所属专题">
+            <el-table-column prop="belongSpcial"
+                             label="所属专题">
             </el-table-column>
-            <el-table-column
-              prop="modelName"
-              label="模型名称"
-              show-overflow-tooltip
-            >
+            <el-table-column prop="modelName"
+                             label="模型名称"
+                             show-overflow-tooltip>
             </el-table-column>
-            <el-table-column prop="address" label="说明" width="250">
+            <el-table-column prop="address"
+                             label="说明"
+                             width="250">
             </el-table-column>
-            <el-table-column prop="ruleDescription" label="规则" width="300">
+            <el-table-column prop="ruleDescription"
+                             label="规则"
+                             width="300">
             </el-table-column>
           </el-table>
           <!-- 分页 -->
-          <pagination
-            v-show="taskTotal > 0"
-            :total="taskTotal"
-            :page.sync="model_QueryInfo.pageNo"
-            :limit.sync="model_QueryInfo.pageSize"
-            @pagination="queryModel"
-          />
-          <div class="stepBtn" style="margin-right: 2%">
-            <el-button @click="returnStep" style="border: 1px solid #d2d2d2"
-              >取消</el-button
-            >
-            <el-button
-              style="background: #0c87d6; color: #fff"
-              @click="modelInfoBtn"
-              :disabled="isdisabled"
-              >完成</el-button
-            >
+          <pagination v-show="taskTotal > 0"
+                      :total="taskTotal"
+                      :page.sync="model_QueryInfo.pageNo"
+                      :limit.sync="model_QueryInfo.pageSize"
+                      @pagination="queryModel" />
+          <div class="stepBtn"
+               style="margin-right: 2%">
+            <el-button @click="returnStep"
+                       style="border: 1px solid #d2d2d2">取消</el-button>
+            <el-button style="background: #0c87d6; color: #fff"
+                       @click="modelInfoBtn"
+                       :disabled="isdisabled">完成</el-button>
           </div>
         </div>
       </div>
@@ -562,9 +489,10 @@ import {
 export default {
   components: { Pagination },
   props: ["active_project", "userRole"],
-  data() {
+  data () {
     return {
       dqtoken: "",
+      headers: '',
       modelInfoLoading: false, //需要引入模型列表Loading
       taskTableLoading: false, //任务列表Loading
       // userRole:"",
@@ -773,13 +701,13 @@ export default {
   //   }
   // },
   watch: {
-    userRole(newValue, oldValue) {
+    userRole (newValue, oldValue) {
       this.userRole = newValue;
     },
   },
   methods: {
     // 专题选择其他变成可输入
-    changeBelongSpcial(val) {
+    changeBelongSpcial (val) {
       if (val == "其他") {
         this.other_input = false;
         this.taskSelf.belongSpcial = "";
@@ -787,35 +715,35 @@ export default {
       }
     },
     // 专题下拉框
-    thematicSelect(data) {
+    thematicSelect (data) {
       thematicAreas(data).then((resp) => {
         this.thematicOption = resp.data;
         // console.log(this.thematicOption);
       });
     },
     //领域下拉框
-    areasSelect(data) {
+    areasSelect (data) {
       thematicAreas(data).then((resp) => {
         this.areasOption = resp.data;
         // console.log(this.areasOption);
       });
     },
-    Task() {
+    Task () {
       this.$router.go(0);
     },
-    deleteRow(index, rows) {
+    deleteRow (index, rows) {
       rows.splice(index, 1);
     },
-    nextBtn() {
+    nextBtn () {
       this.step = 2;
     },
-    prevoius() {
+    prevoius () {
       this.step = 1;
     },
-    deleteRow(index, rows) {
+    deleteRow (index, rows) {
       rows.splice(index, 1);
     },
-    addData() {
+    addData () {
       // alert(11);
       this.leaderData.push({
         projectItem: "hk123456",
@@ -827,7 +755,7 @@ export default {
       });
     },
     //编辑任务
-    editModel(row) {
+    editModel (row) {
       this.edit_file_list = [];
       this.Upload_file = [];
       this.fileList_Delet = [];
@@ -848,7 +776,7 @@ export default {
       this.file_details(params, 1);
       this.deletFileList = [];
     },
-    queryNameInput() {
+    queryNameInput () {
       let params = {
         pageNo: 1,
         pageSize: 10,
@@ -859,12 +787,12 @@ export default {
       };
       this.getmodelTaskList(params);
     },
-    queryName() {
+    queryName () {
       this.queryInfo.condition.taskName = "";
       this.getmodelTaskList(this.queryInfo);
     },
     // 列表显示
-    getmodelTaskList(data) {
+    getmodelTaskList (data) {
       this.taskTableLoading = true;
       modelTaskList(data).then((resp) => {
         this.taskData = resp.data.records;
@@ -875,7 +803,7 @@ export default {
       });
     },
 
-    deleteModel(row) {
+    deleteModel (row) {
       this.$confirm("你将删除此任务分配", "提示", {
         distinguishCancelAndClose: true,
         confirmButtonText: "确定",
@@ -908,7 +836,7 @@ export default {
         });
     },
 
-    handleCurrentChangeTask(val) {
+    handleCurrentChangeTask (val) {
       let query = {
         pageNo: val,
         pageSize: 5,
@@ -920,13 +848,13 @@ export default {
       this.loading = false;
     },
     // 组员查询
-    getSelectData(data) {
+    getSelectData (data) {
       getProjectMember(data).then((resp) => {
         this.form = resp.data.records;
       });
     },
 
-    selectChange(rows) {
+    selectChange (rows) {
       // console.log(rows);
       this.modelPerson.managementProjectUuid = rows.managementProjectUuid;
       this.modelPerson.peopleTableUuid = rows.peopleTableUuid;
@@ -942,7 +870,7 @@ export default {
       });
     },
     // 添加模型任务按钮
-    addModel() {
+    addModel () {
       this.TaskDialogVisible = true;
       this.task = 2;
       this.loading = true;
@@ -951,7 +879,7 @@ export default {
       this.queryModelSql(this.model_QueryInfo);
     },
     // 添加自建任务页面
-    addTask() {
+    addTask () {
       this.task = 1;
       this.taskSelf.taskType = 2;
       this.TaskDialogVisible = true;
@@ -965,7 +893,7 @@ export default {
       this.thematicSelect(this.thematic);
       this.areasSelect(this.areas);
     },
-    handleSelectionChange(val) {
+    handleSelectionChange (val) {
       if (val.length == this.personMes.length) {
         for (let o = 0; o < val.length; o++) {
           this.peopleSelection.push({
@@ -1013,7 +941,7 @@ export default {
       }
     },
     // 分页跳转页面的方法
-    handleCurrentChangeModel(val) {
+    handleCurrentChangeModel (val) {
       let query = {
         pageNo: val,
         pageSize: 5,
@@ -1028,7 +956,7 @@ export default {
       });
     },
     // 审计任务添加组员已选组员页面展示
-    projectMember(data) {
+    projectMember (data) {
       projectMembership(data).then((resp) => {
         this.loading = true;
         this.tableData = resp.data.records;
@@ -1039,7 +967,7 @@ export default {
       });
     },
     //模型模糊查询
-    queryModelInput() {
+    queryModelInput () {
       let query = {
         condition: {
           modelName: this.model_QueryInfo.condition.modelName,
@@ -1050,12 +978,12 @@ export default {
       };
       this.queryModelSql(query);
     },
-    queryModel() {
+    queryModel () {
       this.model_QueryInfo.condition.modelName = "";
       this.model_QueryInfo.condition.projectId = this.active_project;
       this.queryModelSql(this.model_QueryInfo);
     },
-    queryModelSql(data) {
+    queryModelSql (data) {
       this.modelInfoLoading = true;
       auditModelList(data).then((resp) => {
         this.modelTableData = resp.data.records;
@@ -1066,7 +994,7 @@ export default {
     },
 
     //引入模型选择事件
-    handleSelectionChangeModel(val) {
+    handleSelectionChangeModel (val) {
       this.selectauditModelList.auditModelList = [];
       for (var i = 0; i < val.length; i++) {
         this.selectauditModelList.auditModelList.push({
@@ -1101,7 +1029,7 @@ export default {
       // }
     },
     // 弹框页面组员删除
-    deletePerson(index, rows, obj) {
+    deletePerson (index, rows, obj) {
       if (!obj.projectMembershipUuid) {
         rows.splice(index, 1);
         for (let i = 0; i < this.personMes.length; i++) {
@@ -1119,7 +1047,7 @@ export default {
         })
           .then(() => {
             deletprojectMembership(obj.projectMembershipUuid).then(
-              (resp) => {}
+              (resp) => { }
             );
             this.projectMember(this.query);
             this.$message.success("删除成功！");
@@ -1145,7 +1073,7 @@ export default {
       }
     },
     //创建任务责任人下拉框的事件
-    personLiableSelect(val) {
+    personLiableSelect (val) {
       console.log(val);
       console.log(this.tableData);
       this.taskSelf.peopleTableUuid = val;
@@ -1158,7 +1086,7 @@ export default {
       }
     },
     // 模型任务完成按钮
-    modelInfoBtn() {
+    modelInfoBtn () {
       if (this.selectauditModelList.auditModelList.length > 0) {
         this.selectauditModelList.projectId = this.active_project;
         this.isdisabled = true;
@@ -1182,12 +1110,12 @@ export default {
       }
     },
     //新增自建任务上传附件
-    handleChangePic(file, fileList) {
+    handleChangePic (file, fileList) {
       this.fileList = fileList;
       this.file = file.raw;
     },
     //新增自建任务完成按钮
-    saveTask(selfTaskRef) {
+    saveTask (selfTaskRef) {
       this.$refs[selfTaskRef].validate((valid) => {
         if (valid) {
           // this.TaskDialogVisible = false;
@@ -1207,12 +1135,10 @@ export default {
             axios({
               method: "post",
               url: "/wisdomaudit/attachment/fileUploads",
-              headers: {
-                TOKEN: this.dqtoken,
-              },
               data: formData,
               headers: {
-                "Content-Type": "multipart/form-data",
+                TOKEN: this.dqtoken,
+                'Content-Type': 'multipart/form-data'
               },
             }).then((resp) => {
               if (resp.data.code == 0) {
@@ -1264,7 +1190,7 @@ export default {
       });
     },
     // 编辑成功按钮
-    editTaskSelfBtn() {
+    editTaskSelfBtn () {
       if (this.fileList.length > 0) {
         const loading = this.$loading({
           lock: true,
@@ -1285,11 +1211,9 @@ export default {
           url: "/wisdomaudit/attachment/fileUploads",
           headers: {
             TOKEN: this.dqtoken,
+            'Content-Type': 'multipart/form-data'
           },
           data: formData,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
         }).then((resp) => {
           if (resp.data.code == 0) {
             this.$message.success("上传成功！");
@@ -1351,18 +1275,18 @@ export default {
       }
     },
     // 自建取消按钮
-    resBtn(ref) {
+    resBtn (ref) {
       this.$refs[ref].resetFields();
       // this.taskSelf = [];
       this.TaskDialogVisible = false;
       this.editModelDialogVisible = false;
     },
-    addresBtn(ref) {
+    addresBtn (ref) {
       this.$refs[ref].resetFields();
       this.TaskDialogVisible = false;
     },
     // 模型取消按钮
-    returnStep() {
+    returnStep () {
       for (let i = 0; i < this.modelTableData.length; i++) {
         this.$refs.multipleModelRef.toggleRowSelection(
           this.modelTableData[i],
@@ -1372,13 +1296,13 @@ export default {
       this.TaskDialogVisible = false;
     },
     // 增加任务弹框关闭事件
-    TaskDialogClosed() {
+    TaskDialogClosed () {
       this.taskSelf = {};
       this.TaskDialogVisible = false;
       this.task = 1;
     },
     // 选择任务类型切换页面
-    taskTypeSelect(val) {
+    taskTypeSelect (val) {
       // console.log(val);
       if (val == 1) {
         this.task = 2;
@@ -1387,7 +1311,7 @@ export default {
       }
     },
     // 附件点击弹框事件
-    nearbyDetails(rows) {
+    nearbyDetails (rows) {
       let params = {
         pageNo: 1,
         pageSize: 1000,
@@ -1398,7 +1322,7 @@ export default {
       this.file_details(params, 2);
     },
     //附件详情
-    file_details(params, index) {
+    file_details (params, index) {
       attachmentEcho(params).then((resp) => {
         // index=1  列表查看附件详情
         if (index == 2) {
@@ -1424,7 +1348,7 @@ export default {
       });
     },
     // 附件下载
-    enclosureDownload(id, name) {
+    enclosureDownload (id, name) {
       const fileName = name.split(".")[0];
       let formData = new FormData();
       formData.append("fileId", id);
@@ -1465,18 +1389,18 @@ export default {
           console.log(err);
         });
     },
-    resetForm2(resetForm2) {
+    resetForm2 (resetForm2) {
       this.$refs[resetForm2].resetFields();
       this.fileList = [];
       this.other_input = true;
     },
-    editResetForm2(ref) {
+    editResetForm2 (ref) {
       this.$refs[ref].resetFields();
       this.fileList = [];
       this.other_input = true;
     },
     //
-    handleRemove(file, fileList) {
+    handleRemove (file, fileList) {
       if (file.response) {
         this.fileList.remove(file.response.data);
         this.key = Math.random();
@@ -1487,8 +1411,10 @@ export default {
       }
     },
   },
-  created() {
+  created () {
     this.dqtoken = sessionStorage.getItem("TOKEN");
+    this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
+
     this.queryInfo.condition.managementProjectUuid = this.active_project;
     this.getmodelTaskList(this.queryInfo);
     // this.getSelectData(this.select);
@@ -1496,7 +1422,7 @@ export default {
     this.query.condition.managementProjectUuid = this.active_project;
     this.projectMember(this.query);
   },
-  mounted() {},
+  mounted () { },
 };
 </script>
 
