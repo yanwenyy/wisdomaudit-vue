@@ -342,17 +342,24 @@
           ></el-input>
         </el-form-item>
         <el-form-item></el-form-item>
-        <el-form-item label="依据：" prop="basis" class="long">
-          <el-select
-            v-model="dqProblem.basis"
-            multiple
-            @visible-change="toopen"
-            placeholder="请选择"
-            no-data-text="请点击引用审计依据"
-            :disabled="ifadd != 2 ? false : true"
-          >
-          </el-select>
-        </el-form-item>
+        <el-popover placement="top-start" width="600" trigger="hover">
+          <div>
+            <p v-for="(e,i) in dqProblem.basis" :key="'basis'+i">
+              {{e}}
+            </p>
+          </div>
+          <el-form-item label="依据：" prop="basis" class="long" slot="reference" style="width:33vw !important;">
+            <el-select
+              v-model="dqProblem.basis"
+              multiple
+              @visible-change="toopen"
+              placeholder="请选择"
+              no-data-text="请点击引用审计依据"
+              :disabled="ifadd != 2 ? false : true"
+            >
+            </el-select>
+          </el-form-item>
+        </el-popover>
         <el-button
           v-if="ifadd != 2 ? true : false"
           type="primary"
