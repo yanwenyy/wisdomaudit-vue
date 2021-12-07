@@ -759,8 +759,10 @@
                :close-on-click-modal="false"
                :visible.sync="setParametersDialogVisible"
                width="60%">
-      <el-card class="setParameters"> 参数设置 </el-card>
-      <el-card class="parameters">
+      <el-card class="setParameters"
+               style="box-shadow: none;">参数设置</el-card>
+      <el-card class="parameters"
+               style="box-shadow: none;">
         <i class="el-icon-s-grid"></i>
         请输入参数值
       </el-card>
@@ -2940,16 +2942,17 @@ export default {
 .setParameters {
   margin: 0;
   height: 50px;
-  background: #4476a7;
+  /* background: #4476a7; */
   margin-top: -10px;
-  font-size: 15px;
-  color: #fff;
-  font-weight: 700;
+  font-size: 14px;
+  text-align: center;
+  color: #000;
+  /* font-weight: 700; */
   margin-bottom: 2%;
 }
 .parameters {
   font-size: 15px;
-  background: #ecedf2;
+  /* background: #ecedf2; */
   border: 0;
 }
 .parametersTab {

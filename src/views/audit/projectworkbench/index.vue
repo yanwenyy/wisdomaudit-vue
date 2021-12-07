@@ -1,18 +1,25 @@
 <template>
   <div class="projectWorkbench"
        style="background: #fff">
-    <!-- 初始化项目 -->
+    <!-- 未初始化项目 -->
     <div class="title1"
          v-show="projectNum.length > 0">未初始化项目</div>
     <ul class="projectInit"
+        :class="projectNum.length > 0 ?'mabtom':''"
         v-show="projectNum.length > 0">
       <li @click="projectClick(index)"
           v-for="(value, index) in projectNum"
           :key="index">
         <div class="peojectMessage">
           <p class="projectName"
+             v-if="value.projectName"
              style="margin-bottom: 2%">
             {{ value.projectName }}
+          </p>
+          <p class="projectName"
+             v-else
+             style="margin-bottom: 2%">
+            --
           </p>
           <el-row>
             <el-col :span="12">
@@ -71,8 +78,7 @@
     <!-- 初始化项目 -->
     <div class="initializeProject"
          v-if="active_project">
-      <div class="title1"
-           style="margin-top: 3%">初始化项目</div>
+      <div class="title1">初始化项目</div>
       <ul v-if="projectInit">
         <li v-for="(item, index) in projectInit"
             :key="index"
@@ -1170,6 +1176,7 @@ export default {
         this.getInitProject(this.queryProject);
         this.project_more();
         if (from == 'home') {
+          this.get_user();
           this.active_project = this.queryInfo.projectId;
           this.defaultActive = this.queryInfo.index;
           this.index = this.queryInfo.index;
@@ -2109,6 +2116,10 @@ export default {
 ::v-deep.el-menu .el-submenu__title {
   padding: 0 !important;
 }
+.mabtom {
+  margin-bottom: 3%;
+}
+
 // 二级导航 穿透样式
 // 选中高亮
 ::v-deep.el-menu .el-submenu__title span {
@@ -2183,7 +2194,6 @@ export default {
   // border: 1px solid red;
   // display: none;
   min-height: 100px;
-  margin-bottom: 3%;
   // display: flex;
   align-items: center;
   li {

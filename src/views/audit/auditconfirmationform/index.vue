@@ -65,7 +65,8 @@
                      accept=".docx,.xls,.xlsx,.txt,.zip,.doc">
             <el-button size="small"
                        type="text"
-                       style="background: transparent;"
+                       style="background: transparent;
+    font-size: 14px;"
                        class="editBtn">上传附件</el-button>
           </el-upload>
           <el-button size="small"
@@ -647,6 +648,7 @@ export default {
     background: none;
     border: 0px;
     margin: 0 3px;
+    font-size: 14px;
   }
 }
 .title {
