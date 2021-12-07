@@ -1176,6 +1176,7 @@ export default {
         this.getInitProject(this.queryProject);
         this.project_more();
         if (from == 'home') {
+          this.get_user();
           this.active_project = this.queryInfo.projectId;
           this.defaultActive = this.queryInfo.index;
           this.index = this.queryInfo.index;
