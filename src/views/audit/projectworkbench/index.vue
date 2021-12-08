@@ -1153,9 +1153,10 @@ export default {
     get_user (ifMounted) {
       get_userInfo().then((resp) => {
         this.userInfo = resp.data;
-        console.log('测试1');
+
         if (this.userInfo.people.userId) {
-          console.log('测试2');
+          console.log('00000');
+          this.project_more();
           this.queryProject.condition.peopleTableUuid = this.userInfo.people.userId;
         }
         if (ifMounted) {
@@ -1180,7 +1181,7 @@ export default {
         this.projectNum = resp.data.records;
         // console.log(this.queryProject);
         this.getInitProject(this.queryProject);
-        this.project_more();
+        // this.project_more();
         if (from == 'home') {
           this.active_project = this.queryInfo.projectId;
           this.defaultActive = this.queryInfo.index;
@@ -1212,7 +1213,6 @@ export default {
     },
     // 查看更多初始化项目
     project_more () {
-      console.log('测试03');
       if (this.userInfo.people.userId) {
         this.queryProjectAll.condition.peopleTableUuid = this.userInfo.people.userId;
         console.log('测试04');
