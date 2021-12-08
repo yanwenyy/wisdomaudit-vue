@@ -1116,7 +1116,7 @@ export default {
     this.get_user();
     this.dqtoken = sessionStorage.getItem("TOKEN");
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
-    // console.log(this.active_project);
+    // 
   },
   mounted () {
     this.defaultActive = "";
@@ -1124,7 +1124,7 @@ export default {
     this.queryInfo = this.$route.query;
     if (this.queryInfo.index && this.queryInfo.projectId) {
       // debugger;
-      // console.log(this.queryInfo.projectId)
+      // 
       // this.active_project = this.queryInfo.projectId;
       this.getprojectList(this.queryManage, 'home');
       document.body.scrollTop = 0;
@@ -1155,7 +1155,7 @@ export default {
         this.userInfo = resp.data;
 
         if (this.userInfo.people.userId) {
-          console.log('00000');
+
           this.project_more();
           this.queryProject.condition.peopleTableUuid = this.userInfo.people.userId;
         }
@@ -1179,7 +1179,7 @@ export default {
     getprojectList (data, from) {
       projectListByuser(data).then((resp) => {
         this.projectNum = resp.data.records;
-        // console.log(this.queryProject);
+        // 
         this.getInitProject(this.queryProject);
         // this.project_more();
         if (from == 'home') {
@@ -1215,7 +1215,6 @@ export default {
     project_more () {
       if (this.userInfo.people.userId) {
         this.queryProjectAll.condition.peopleTableUuid = this.userInfo.people.userId;
-        console.log('测试04');
       }
       initProject(this.queryProjectAll).then((resp) => {
         this.projectInitMore = resp.data.records;
@@ -1229,10 +1228,10 @@ export default {
     },
     // 点击初始化项目事件
     look_project (index, item) {
-      // console.log(index);
-      // console.log(item);
+      // 
+      // 
       this.active_project = item.managementProjectUuid; //点击选择添加高亮
-      // console.log(this.active_project);
+      // 
       if (index > 6) {
         this.projectInitMore.splice(index, 1);
         this.projectInitMore.unshift(item);
@@ -1245,7 +1244,7 @@ export default {
         this.projectInit.unshift(item);
       }
 
-      // console.log(this.projectInit);
+      // 
 
       if (index > 6) {
         this.projectInitUuid =
@@ -1281,7 +1280,7 @@ export default {
 
     //责任人选择事件
     selectChange (row) {
-      // console.log(row);
+      // 
       this.modelPerson.managementProjectUuid = row.managementProjectUuid;
       this.modelPerson.peopleTableUuid = row.peopleTableUuid;
       this.modelPerson.auditTaskUuid = row.auditTaskUuid;
@@ -1308,14 +1307,14 @@ export default {
         this.notInitType = this.projectNum[index].projectType;
         this.name = this.projectNum[index].projectName;
       }
-      // console.log(this.managementProjectUuid);
+      // 
       this.addDialogVisible = true;
       this.getSelectData(1, 1000);
       // auditModelList(this.modelQuery).then((resp) => {
       //   this.modelTableData = resp.data.records;
       //   this.modelSize = resp.data;
       // });
-      // console.log(this.managementProjectUuid);
+      // 
       this.getTaskSelfList.condition.managementProjectUuid =
         this.managementProjectUuid;
       this.getTaskSelf(this.getTaskSelfList);
@@ -1327,7 +1326,7 @@ export default {
     moreProject (data) {
       projectListByuser(data).then((resp) => {
         this.projectAll = resp.data.records;
-        // console.log(this.projectAll);
+        // 
       });
     },
     // 更多按钮
@@ -1337,7 +1336,7 @@ export default {
     },
     // 选择组员事件
     selectMember (val, to, list) {
-      // console.log(val, to, list);
+      // 
       // this.updataPerson.projectId = this.managementProjectUuid;
       // this.updataPerson.projectMemberships = [];
       // for (let i = 0; i < val.length; i++) {
@@ -1358,7 +1357,7 @@ export default {
       } else {
         this.data.forEach((e) => {
           if (list.indexOf(e.key) != -1) {
-            // console.log(e);
+            // 
             e.isLiaison = 0;
           }
         });
@@ -1370,9 +1369,9 @@ export default {
       this.loading = true;
       getProjectMember(num, size, id).then((resp) => {
         this.personMes = resp.data.list;
-        // console.log(this.personMes);
+        // 
 
-        // console.log(this.value+'');
+        // 
         this.data = [];
         resp.data.list.forEach((e) => {
           this.data.push({
@@ -1383,7 +1382,7 @@ export default {
             peopleTableUuid: String(e.id),
           });
         });
-        // console.log(resp.data.list);
+        // 
         this.projectMember(this.query);
         this.loading = false;
       });
@@ -1399,10 +1398,10 @@ export default {
     projectMember (data) {
       // alert(11)
       projectMembership(data).then((resp) => {
-        console.log(resp);
+
         this.peopleSelection = resp.data.records;
         this.tableData = resp.data.records;
-        // console.log(this.peopleSelection);
+        // 
         this.value = [];
         this.peopleSelection.forEach((e) => {
           if (e.isCanDelete == 0) {
@@ -1423,7 +1422,7 @@ export default {
             }
           }
           this.value.push(e.peopleTableUuid);
-          console.log(this.value);
+
         });
       });
     },
@@ -1441,7 +1440,7 @@ export default {
           leader = a;
         }
       });
-      console.log(leader);
+
       // && item.key != leader.peopleTableUuid
       this.data.forEach((item) => {
         if (list.indexOf(item.key) != -1) {
@@ -1459,14 +1458,14 @@ export default {
     },
     rightArray (arr) {
       // alert(23)
-      console.log(arr);
+
       this.arrRightValue = arr;
     },
     //取消设为接口人
     cancel_Btn (row) {
-      console.log(row);
 
-      // console.log(this.peopleSelection);
+
+      // 
       row.isLiaison = 0;
       for (let k = 0; k < this.peopleSelection.length; k++) {
         if (
@@ -1476,14 +1475,14 @@ export default {
           return (row.disabled = true);
         } else {
           row.disabled = false;
-          // console.log(this.value);
+          // 
           // for(let p=0; p<this.arrRightValue.length;p++){
           //   if(this.arrRightValue[p] == row.peopleTableUuid){
           //    return this.arrRightValue.remove('this.arrRightValue[p')
           //   }
 
           // }
-          // console.log(this.arrRightValue);
+          // 
           // this.value = [];
         }
       }
@@ -1492,9 +1491,9 @@ export default {
     // 下一步按钮事件
     nextBtn () {
       var selectedPeople = [];
-      console.log(this.data);
-      // console.log(this.value);
-      console.log(this.peopleSelection);
+
+      // 
+
       this.data.forEach((item) => {
         if (this.value.indexOf(item.key) != -1) {
           // this.peopleSelection.forEach((a)=>{
@@ -1510,7 +1509,7 @@ export default {
           selectedPeople.push(item);
         }
       });
-      console.log(selectedPeople);
+
       let next = 0;
       selectedPeople.forEach((item) => {
         if (item.isLiaison == 1) {
@@ -1522,7 +1521,7 @@ export default {
         this.updataPerson.projectId = this.managementProjectUuid;
 
         this.updataPerson.projectMemberships = selectedPeople;
-        console.log(this.updataPerson);
+
         //下一步 保存组员
         editprojectMembershipList(this.updataPerson).then((resp) => {
           this.queryleader.condition.managementProjectUuid =
@@ -1558,7 +1557,7 @@ export default {
               this.getModelList.pageNo < 1 ? 1 : this.getModelList.pageNo;
             this.getModelList.condition.managementProjectUuid =
               this.managementProjectUuid;
-            // console.log(this.getModelList);
+            // 
             this.getauditModelList(this.getModelList);
           });
         })
@@ -1608,14 +1607,14 @@ export default {
         },
       };
       auditModelList(query).then((resp) => {
-        // console.log(resp);
+        // 
         this.modelTableData = resp.data.records;
         this.modelSize = resp.data;
       });
     },
     // 模型选择事件
     handleSelectionChangeModel (val) {
-      // console.log(val);
+      // 
       this.selectauditModelList.auditModelList = [];
       for (let i = 0; i < val.length; i++) {
         this.selectauditModelList.auditModelList.push({
@@ -1629,8 +1628,8 @@ export default {
     },
     // 自建任务责任人下拉框事件
     selectChangePerson (val) {
-      console.log(val);
-      // console.log(this.tableData);
+
+      // 
       this.taskSelf.peopleTableUuid = val;
       this.edittaskSelfForm.peopleTableUuid = val;
       for (let i = 0; i < this.tableData.length; i++) {
@@ -1641,7 +1640,7 @@ export default {
       }
     },
     selectChangenumber (val) {
-      // console.log(val);
+      // 
       // this.changePerson.peopleTableUuid = val.peopleTableUuid;
       // for (let i = 0; i < this.tableData.length; i++) {
       //   if (val.peopleTableUuid == this.tableData[i].peopleTableUuid) {
@@ -1738,12 +1737,12 @@ export default {
         this.modelListTabSize = resp.data;
         this.taskTotal = resp.data.total;
 
-        // console.log(this.modelListTab);
+        // 
       });
     },
     // 模型引入
     modelInfo () {
-      // console.log(this.selectauditModelList);
+      // 
 
       if (this.selectauditModelList.auditModelList.length > 0) {
         this.isdisabled = true;
@@ -1754,7 +1753,7 @@ export default {
           this.addDialogVisible = true;
           this.getModelList.condition.managementProjectUuid =
             this.managementProjectUuid;
-          // console.log(this.getModelList);
+          // 
           this.getauditModelList(this.getModelList);
         });
         setTimeout(() => {
@@ -1784,14 +1783,14 @@ export default {
     thematicSelect (data) {
       thematicAreas(data).then((resp) => {
         this.thematicOption = resp.data;
-        // console.log(this.thematicOption);
+        // 
       });
     },
     //领域下拉框
     areasSelect (data) {
       thematicAreas(data).then((resp) => {
         this.areasOption = resp.data;
-        // console.log(this.areasOption);
+        // 
       });
     },
     // 确定自建任务
@@ -1837,7 +1836,7 @@ export default {
                   this.addDialogVisible = true;
                   this.getModelList.condition.managementProjectUuid =
                     this.managementProjectUuid;
-                  // console.log(this.getModelList);
+                  // 
                   this.getauditModelList(this.getModelList);
                 });
               } else {
@@ -1858,7 +1857,7 @@ export default {
               this.addDialogVisible = true;
               this.getModelList.condition.managementProjectUuid =
                 this.managementProjectUuid;
-              // console.log(this.getModelList);
+              // 
               this.getauditModelList(this.getModelList);
             });
 
@@ -1867,7 +1866,7 @@ export default {
             }, 3000);
           }
         } else {
-          console.log("error submit!!");
+
           return false;
         }
       });
@@ -1903,7 +1902,7 @@ export default {
     },
     // 自建任务编辑完成按钮
     edittaskSelfSave () {
-      // console.log(this.fileList);
+      // 
       if (this.fileList.length > 0) {
         const loading = this.$loading({
           lock: true,
@@ -2001,7 +2000,7 @@ export default {
     // 自建任务删除
     delete_zj (id) {
       deletmodelTask(id).then((resp) => {
-        // console.log(this.managementProjectUuid);
+        // 
         this.getTaskSelfList.condition.managementProjectUuid =
           this.managementProjectUuid;
         this.getTaskSelf(this.getTaskSelfList);
@@ -2043,7 +2042,7 @@ export default {
       })
         .then((res) => {
           const content = res.data;
-          // console.log(res);
+          // 
           const blob = new Blob([content], {
             type: "application/octet-stream,charset=UTF-8",
           });
@@ -2066,7 +2065,7 @@ export default {
           }
         })
         .catch((err) => {
-          // console.log(err);
+          // 
         });
     },
     // 附件点击弹框事件
