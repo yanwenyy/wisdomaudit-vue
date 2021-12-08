@@ -129,7 +129,7 @@
                      @select="open"
                      background-color="#F1F5FB"
                      :default-openeds="['1', '2', '3']">
-              <el-submenu v-show="userInfo.userRole == '1' || userInfo.userRole == '3'"
+              <el-submenu v-if="userInfo.userRole == '1' || userInfo.userRole == '3'"
                           index="1">
                 <template slot="title">
                   <span style="font-weight: 400">审计准备</span>
@@ -138,7 +138,7 @@
                   <el-menu-item index="1-1">组员及任务维护<span></span></el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
-              <el-submenu v-show="
+              <el-submenu v-if="
                   userInfo.userRole == '1' ||
                   userInfo.userRole == '2' ||
                   userInfo.userRole == '3'
@@ -155,7 +155,7 @@
                 </el-menu-item-group>
               </el-submenu>
 
-              <el-submenu v-show="
+              <el-submenu v-if="
                   userInfo.userRole == '1' ||
                   userInfo.userRole == '3' ||
                   (userInfo.isLiaison == '1' && userInfo.userRole == '2')
@@ -169,7 +169,7 @@
                   <!--<el-menu-item index="3-2">经营指标<span></span></el-menu-item>-->
                 </el-menu-item-group>
               </el-submenu>
-              <el-menu-item v-show="
+              <el-menu-item v-if="
                   userInfo.userRole == '1' ||
                   userInfo.userRole == '3' ||
                   (userInfo.isLiaison == '1' && userInfo.userRole == '2')
@@ -1113,10 +1113,9 @@ export default {
   },
 
   created () {
+    this.get_user();
     this.dqtoken = sessionStorage.getItem("TOKEN");
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
-
-    this.get_user();
     // console.log(this.active_project);
   },
   mounted () {
@@ -1154,8 +1153,11 @@ export default {
     get_user (ifMounted) {
       get_userInfo().then((resp) => {
         this.userInfo = resp.data;
-        this.queryProject.condition.peopleTableUuid =
-          this.userInfo.people.userId;
+        console.log('测试1');
+        if (this.userInfo.people.userId) {
+          console.log('测试2');
+          this.queryProject.condition.peopleTableUuid = this.userInfo.people.userId;
+        }
         if (ifMounted) {
           this.defaultActive =
             this.userInfo.userRole == "1" || this.userInfo.userRole == "3"
@@ -1173,7 +1175,6 @@ export default {
       return item.label.indexOf(query) > -1;
     },
     //查询未初始化项目
-
     getprojectList (data, from) {
       projectListByuser(data).then((resp) => {
         this.projectNum = resp.data.records;
@@ -1181,7 +1182,6 @@ export default {
         this.getInitProject(this.queryProject);
         this.project_more();
         if (from == 'home') {
-
           this.active_project = this.queryInfo.projectId;
           this.defaultActive = this.queryInfo.index;
           this.index = this.queryInfo.index;
@@ -1212,8 +1212,11 @@ export default {
     },
     // 查看更多初始化项目
     project_more () {
-      this.queryProjectAll.condition.peopleTableUuid =
-        this.userInfo.people.userId;
+      console.log('测试03');
+      if (this.userInfo.people.userId) {
+        this.queryProjectAll.condition.peopleTableUuid = this.userInfo.people.userId;
+        console.log('测试04');
+      }
       initProject(this.queryProjectAll).then((resp) => {
         this.projectInitMore = resp.data.records;
         if (this.projectInitMore.length > 6) {
