@@ -129,7 +129,7 @@
                      @select="open"
                      background-color="#F1F5FB"
                      :default-openeds="['1', '2', '3']">
-              <el-submenu v-if="userInfo.userRole == '1' || userInfo.userRole == '3'"
+              <el-submenu v-show="userInfo.userRole == '1' || userInfo.userRole == '3'"
                           index="1">
                 <template slot="title">
                   <span style="font-weight: 400">审计准备</span>
@@ -138,7 +138,7 @@
                   <el-menu-item index="1-1">组员及任务维护<span></span></el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
-              <el-submenu v-if="
+              <el-submenu v-show="
                   userInfo.userRole == '1' ||
                   userInfo.userRole == '2' ||
                   userInfo.userRole == '3'
@@ -155,7 +155,7 @@
                 </el-menu-item-group>
               </el-submenu>
 
-              <el-submenu v-if="
+              <el-submenu v-show="
                   userInfo.userRole == '1' ||
                   userInfo.userRole == '3' ||
                   (userInfo.isLiaison == '1' && userInfo.userRole == '2')
@@ -169,7 +169,7 @@
                   <!--<el-menu-item index="3-2">经营指标<span></span></el-menu-item>-->
                 </el-menu-item-group>
               </el-submenu>
-              <el-menu-item v-if="
+              <el-menu-item v-show="
                   userInfo.userRole == '1' ||
                   userInfo.userRole == '3' ||
                   (userInfo.isLiaison == '1' && userInfo.userRole == '2')
