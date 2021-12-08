@@ -342,13 +342,19 @@
           ></el-input>
         </el-form-item>
         <el-form-item></el-form-item>
-        <el-popover placement="top-start" width="600" trigger="hover">
+        <el-popover placement="top-start" max-width="600" trigger="hover">
           <div>
-            <p v-for="(e,i) in dqProblem.basis" :key="'basis'+i">
-              {{e}}
+            <p v-for="(e, i) in dqProblem.basis" :key="'basis' + i">
+              {{ e }}
             </p>
           </div>
-          <el-form-item label="依据：" prop="basis" class="long" slot="reference" style="width:33vw !important;">
+          <el-form-item
+            label="依据："
+            prop="basis"
+            class="long"
+            slot="reference"
+            style="width: 33vw !important"
+          >
             <el-select
               v-model="dqProblem.basis"
               multiple
@@ -509,7 +515,7 @@
     <el-dialog
       title="引用审计依据"
       :visible.sync="basisdialog"
-      width="60%"
+      width="70%"
       custom-class="outmax"
     >
       <div style="display: flex; height: 100%; padding: 20px">
@@ -547,6 +553,7 @@
               @node-click="treeNodeClick"
               default-expand-all
               v-loading="basisload"
+              class="problemtree"
             ></el-tree>
           </el-card>
           <!-- <div
@@ -567,7 +574,7 @@
             v-for="(item, index) in dqbasis.info.arr"
             :key="'dqbasisarr' + index"
           >
-            <div slot="header" class="clearfix" style="padding: 5px 0">
+            <div slot="header" class="clearfix" style="padding: 5px 0" v-if="item.contentLev != 3">
               <span
                 style="font-weight: bold"
                 :style="
@@ -577,7 +584,6 @@
                     ? 'font-size:16px;'
                     : 'font-size:14px;'
                 "
-                v-if="item.contentLev != 3"
                 >{{ item.label }}</span
               >
             </div>
@@ -1128,6 +1134,9 @@ export default {
   border-radius: 0 !important;
   border: #0c87d6 !important;
   border-color: #0c87d6 !important;
+}
+.auditproblem .problemtree .el-tree-node {
+  overflow: auto;
 }
 .auditproblem .el-form-item {
   width: 49%;
