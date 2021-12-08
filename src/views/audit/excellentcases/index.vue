@@ -866,7 +866,8 @@ export default {
                 // let lastPageSize = (this.tableData_list.total - 1) % this.tableData_list.size;
                 // this.list_query.pageNo = lastPageSize < 1 ? this.tableData_list.current - 1 : this.tableData_list.current;
                 // this.pageList_data(); // 刷新 列表
-
+                // 刷新列 
+                this.pageList_data();//外层列表
                 this.toManagementList_data();//右侧列表
 
               } else {
