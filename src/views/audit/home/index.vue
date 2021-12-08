@@ -27,10 +27,12 @@
         </div>
 
         <div class="project-wapper" style="height: 270px">
-          <el-empty
-            description="暂无数据"
-            v-if="projectlist.length == 0"
-          ></el-empty>
+          <div v-if="projectlist.length == 0" style="height: 270px">
+            <div class="homeemptyicon">
+              <svg-icon icon-class="home-empty" className="homeempty" />
+            </div>
+            <div class="homeemptytext">暂无数据</div>
+          </div>
           <div
             class="project-item"
             v-for="(item, index) in projectlist"
@@ -104,10 +106,7 @@
             </div>
             <div v-if="modellist.length == 0" style="height: 406px">
               <div class="homeemptyicon">
-                <svg-icon
-                  icon-class="home-empty"
-                  className="homeempty"
-                />
+                <svg-icon icon-class="home-empty" className="homeempty" />
               </div>
               <div class="homeemptytext">暂无内容，稍后再来</div>
             </div>
@@ -148,10 +147,7 @@
             </div>
             <div v-if="datalist.length == 0" style="height: 200px">
               <div class="homeemptyicon">
-                <svg-icon
-                  icon-class="home-empty"
-                  className="homeempty"
-                />
+                <svg-icon icon-class="home-empty" className="homeempty" />
               </div>
               <div class="homeemptytext">暂无内容，稍后再来</div>
             </div>
@@ -651,7 +647,7 @@ export default {
 </script>
 
 <style lang="scss"  scoped>
-.homeempty{
+.homeempty {
   height: 50px !important;
   width: 50px !important;
 }
