@@ -318,7 +318,7 @@
     <el-dialog title="引用审计依据"
                center
                :visible.sync="basisdialog"
-               width="60%"
+               width="70%"
                custom-class="outmax">
       <div style="display: flex; height: 100%; padding: 20px">
         <div style="max-height: 60vh; width: 50%; overflow: scroll">
@@ -351,7 +351,7 @@
             </el-form-item>
           </el-form>
           <el-card class="box-card"
-                   style="width: 70%; min-height: 300px; margin: auto">
+                   style="width: 80%; min-height: 300px; margin: auto">
             <el-tree :data="dqbasis.info.tree"
                      :props="defaultProps"
                      @node-click="treeNodeClick"
