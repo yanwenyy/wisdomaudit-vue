@@ -27,7 +27,7 @@
         </div>
 
         <div class="project-wapper" style="height: 270px">
-          <div v-if="projectlist.length == 0" style="height: 270px">
+          <div v-if="projectlist.length == 0" style="height: 270px;width:100%;">
             <div class="homeemptyicon">
               <svg-icon icon-class="home-empty" className="homeempty" />
             </div>
