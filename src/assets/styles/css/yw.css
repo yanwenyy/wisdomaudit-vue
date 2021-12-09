@@ -129,3 +129,12 @@ table tr:nth-child(odd){
   max-width: 400px;
   line-height: 180%;
 }
+.backBtn{
+  font-size: 18px;
+  font-weight: bold;
+}
+.back-group{
+  border: none!important;
+  text-align: left!important;
+  padding-left: 0!important;
+}

@@ -1,7 +1,7 @@
 <template>
   <div class="rectificationMeasures">
     <div style="width: 100%; overflow: hidden">
-      <el-button style="float: left"  @click="back">返回</el-button>
+      <el-button class="back-group" style="float: left"  @click="back"><i class="el-icon-back backBtn"></i></el-button>
       <div style="float: right;">
         <el-form class="search-form" :inline="true" :model="searchForm" @keyup.enter.native="init()">
           <!--<el-button type="success" class="addBtn">设置整改跟进人</el-button>-->

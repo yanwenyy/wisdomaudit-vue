@@ -1058,8 +1058,8 @@ export default {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           let rep = this.temp;
-          rep.auditTaskUuid = rep.auditTaskUuid.join(",");
-          rep.basis = rep.basis.join(",");
+          rep.auditTaskUuid =  rep.auditTaskUuid?rep.auditTaskUuid.join(","):'';
+          rep.basis = rep.basis?rep.basis.join(","):'';
           axios({
             url: `/wisdomaudit/problemList/save`,
             headers: {
