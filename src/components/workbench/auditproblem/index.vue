@@ -574,7 +574,12 @@
             v-for="(item, index) in dqbasis.info.arr"
             :key="'dqbasisarr' + index"
           >
-            <div slot="header" class="clearfix" style="padding: 5px 0" v-if="item.contentLev != 3">
+            <div
+              slot="header"
+              class="clearfix"
+              style="padding: 5px 0"
+              v-if="item.contentLev != 3"
+            >
               <span
                 style="font-weight: bold"
                 :style="
@@ -729,7 +734,23 @@ export default {
     // 新增问题关闭
     resetForm(str) {
       if (str == "temp") {
-        this.temp = {};
+        this.temp = {
+          managementProjectUuid: this.active_project,
+          // 业务分类
+          auditTaskUuid: [],
+          basis: "",
+          describe: "",
+          field: "",
+          special: "",
+          isDeleted: 0,
+          problem: "",
+          problemDiscoveryTime: "",
+          problemFindPeople: "",
+          managementAdvice: "",
+          problemListUuid: "",
+          riskAmount: "",
+          status: 0,
+        };
       } else if (str == "dqProblem") {
         this.dqProblem = {};
       }
