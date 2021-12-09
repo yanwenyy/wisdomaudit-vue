@@ -70,22 +70,22 @@
               </template>
             </el-table-column>
 
-            <el-table-column prop="status"
+            <!-- <el-table-column prop="status"
                              show-overflow-tooltip
                              label="操作记录">
               <template slot-scope="scope">
                 <a href="javascript:;"
                    style="color:rgb(19, 113, 204)"
                    @click="on_list(scope.row.addDataTaskUuid)">操作记录</a>
-                <!-- {{scope.row.sysLogById}} -->
 
               </template>
-            </el-table-column>
+            </el-table-column> -->
 
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <!-- isDeleted  0:不是接口人 1:s是接口人 -->
                 <div v-if="scope.row.isDeleted==1">
+
                   <div v-if=" scope.row.status == 0">
                     <el-button @click="edit_common(scope.row)"
                                type="text"
@@ -139,9 +139,26 @@
                       删除
                     </el-button>
                   </div>
+                  <el-button @click="on_list(scope.row.addDataTaskUuid)"
+                             type="text"
+                             :disabled="isDisable"
+                             style="color:#0c87d6;
+                                 font-size: 14px !important;background:none;border:none"
+                             size="small">
+                    操作记录
+                  </el-button>
                 </div>
                 <div v-else>
-                  --
+                  <!-- -- -->
+                  <el-button @click="on_list(scope.row.addDataTaskUuid)"
+                             type="text"
+                             :disabled="isDisable"
+                             style="color:#0c87d6;
+                                 font-size: 14px !important;background:none;border:none"
+                             size="small">
+                    操作记录
+                  </el-button>
+
                 </div>
               </template>
 
@@ -362,7 +379,7 @@
 
                 <!-- <template slot-scope="scope">{{ scope.row.dataCategory }}</template> -->
               </el-table-column>
-              <el-table-column prop="dataNumber"
+              <!-- <el-table-column prop="dataNumber"
                                show-overflow-tooltip
                                label="编号">
 
@@ -387,7 +404,7 @@
                   <div v-else>--</div>
                 </template>
 
-              </el-table-column>
+              </el-table-column> -->
               <el-table-column prop="dataNumber"
                                label="附件">
                 <template slot-scope="scope">
@@ -538,6 +555,7 @@
     <!-- 添加资料  审批的时候  查看详情-->
     <el-dialog @close="resetForm('add_data')"
                center
+               width="55%"
                :visible.sync="dialogVisible2"
                style="padding-bottom: 59px; ">
       <div class="title_dlag">{{edit_title}} </div>
@@ -549,7 +567,8 @@
 
           <div class="son">
             <el-form-item prop="dataCategory"
-                          label-width="120px"
+                          label-width="130px"
+                          style="padding:0 0 0 0"
                           label="类别：">
               <el-select v-model="add_data.dataCategory"
                          @change="PrjType_change"
@@ -564,7 +583,8 @@
             </el-form-item>
 
             <el-form-item label="资料名称："
-                          label-width="120px"
+                          style="padding:0 0 0 0"
+                          label-width="130px"
                           prop="dataName">
               <el-input v-model="add_data.dataName"
                         :disabled="edit_title == '详细信息'"
@@ -575,13 +595,15 @@
           <div class="son"
                v-if="user_data">
             <el-form-item label="编号："
-                          label-width="120px"
+                          style="padding:0 0 0 0"
+                          label-width="130px"
                           prop="dataNumber">
               <el-input v-model="add_data.dataNumber"
                         :disabled="disabled"></el-input>
             </el-form-item>
             <el-form-item label="二级编号："
-                          label-width="120px"
+                          style="padding:0 0 0 0"
+                          label-width="130px"
                           prop="secondLevelDataNumber">
               <el-input v-model="add_data.secondLevelDataNumber"
                         :disabled="disabled"></el-input>
@@ -590,12 +612,14 @@
           <div class="son"
                v-else>
             <el-form-item label="编号："
-                          label-width="120px"
+                          style="padding:0 0 0 0"
+                          label-width="130px"
                           prop="dataNumber">
               <el-input :disabled="disabled"></el-input>
             </el-form-item>
             <el-form-item label="二级编号："
-                          label-width="120px"
+                          style="padding:0 0 0 0"
+                          label-width="130px"
                           prop="secondLevelDataNumber">
               <el-input :disabled="disabled"></el-input>
             </el-form-item>
@@ -603,7 +627,8 @@
           <div class="son">
 
             <el-form-item label="部门："
-                          label-width="120px"
+                          style="padding:0 0 0 0"
+                          label-width="130px"
                           prop="department">
               <el-select v-model="add_data.department"
                          @change="Department_change"
@@ -616,7 +641,23 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="来源："
+
+            <el-form-item label-width="130px"
+                          label="来源："
+                          style="padding:0 0 0 0;visibility: hidden;">
+              <el-select v-model="add_data.source"
+                         @change="DataSource_change"
+                         :disabled="edit_title == '详细信息'"
+                         placeholder="请选择来源">
+                <el-option v-for="item in sensitiveDataSource"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.label">
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+            <!-- <el-form-item label="来源："
                           label-width="120px"
                           prop="source">
               <el-select v-model="add_data.source"
@@ -629,12 +670,13 @@
                            :value="item.label">
                 </el-option>
               </el-select>
-            </el-form-item>
+            </el-form-item> -->
           </div>
           <div class="son"
                v-if="user_data">
             <el-form-item label="添加人："
-                          label-width="120px"
+                          style="padding:0 0 0 0"
+                          label-width="130px"
                           prop="addPeople">
               <el-input v-model="add_data.addPeople"
                         :disabled="disabled"
@@ -643,7 +685,8 @@
             </el-form-item>
 
             <el-form-item label="添加日期："
-                          label-width="120px"
+                          style="padding:0 0 0 0"
+                          label-width="130px"
                           prop="addTime">
               <div class="block">
                 <el-date-picker v-model="add_data.addTime"
@@ -656,14 +699,16 @@
           <div class="son"
                v-else>
             <el-form-item label="添加人："
-                          label-width="120px"
+                          style="padding:0 0 0 0"
+                          label-width="130px"
                           prop="addPeople">
               <el-input class="addPeople"></el-input>
               <!-- <div class="addPeople">{{add_data.addPeople}}</div> -->
             </el-form-item>
 
             <el-form-item label="添加日期："
-                          label-width="120px"
+                          style="padding:0 0 0 0"
+                          label-width="130px"
                           prop="addTime">
               <div class="block">
                 <el-date-picker type="date">
@@ -675,7 +720,8 @@
 
           <div class="son cd">
             <el-form-item label="是否沉淀为常规需求资料："
-                          label-width="240px"
+                          style="padding:0 0 0 10px"
+                          label-width="254px"
                           prop="status">
               <el-radio-group v-model="add_data.status"
                               style="padding-top:10px;    box-sizing: border-box;"

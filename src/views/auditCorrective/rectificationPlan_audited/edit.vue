@@ -3,9 +3,12 @@
   <div>
     <div class="header_dlag">
       <div class="search">
-        <el-button type="primary"
+        <el-button plain
+                   style="border:none"
                    @click="go_back()">
-          返回上一页
+          <i class="el-icon-back
+"
+             style="font-size: 20px;"></i>
         </el-button>
         <el-input placeholder="请输入项目名称"
                   v-model="list_query.problem"> </el-input>
