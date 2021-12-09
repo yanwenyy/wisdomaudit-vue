@@ -2,9 +2,12 @@
   <div>
 
     <div class="search">
-      <el-button type="primary"
+      <el-button plain
+                 style="border:none"
                  @click="go_back()">
-        返回上一页
+        <i class="el-icon-back
+"
+           style="font-size: 20px;"></i>
       </el-button>
 
       <el-input placeholder="请输入问题"
@@ -118,7 +121,9 @@
             <p>发现日期：<span v-if="details_list.discoveryTime">{{details_list.discoveryTime}}</span>
               <span v-else>--</span>
             </p>
-            <p>风险金额（元）：<span v-if="details_list.riskAmount">{{details_list.riskAmount}}</span>
+            <p>风险金额（元）：<span v-if="details_list.riskAmount">{{
+               parseFloat(details_list.riskAmount.toString()) 
+              }}</span>
               <span v-else>--</span>
             </p>
             <p>描述：<span v-if="details_list.describe">{{details_list.describe}}</span>

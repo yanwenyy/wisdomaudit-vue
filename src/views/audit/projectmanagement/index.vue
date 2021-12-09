@@ -321,10 +321,10 @@
                     border
                     class="projectTable"
                     :header-cell-style="{ 'background-color': '#F4FAFF' }">
-            <el-table-column label="项目编号"
+            <!-- <el-table-column label="项目编号"
                              prop="projectCode"
                              width="150px">
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column prop="auditOrgName"
                              label="被审计单位">
               <template slot-scope="scope">
@@ -695,10 +695,10 @@
                       border
                       class="projectTable"
                       :header-cell-style="{ 'background-color': '#F4FAFF' }">
-              <el-table-column label="项目编号"
+              <!-- <el-table-column label="项目编号"
                                prop="projectCode"
                                width="160">
-              </el-table-column>
+              </el-table-column> -->
               <el-table-column prop="auditOrgName"
                                label="被审计单位">
                 <template slot-scope="scope">
