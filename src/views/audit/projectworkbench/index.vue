@@ -266,7 +266,7 @@
     <!-- 未初始化项目添加弹框 -->
     <el-dialog :visible.sync="addDialogVisible"
                :before-close="addClosed"
-               width="60%">
+               width="70%">
       <div class="dialogTitle">
         {{ name }}
       </div>
@@ -529,7 +529,7 @@
 
     <!-- 选择模型 -->
     <el-dialog :visible.sync="modelDialog"
-               width="60%"
+               width="70%"
                :before-close="MedolDialogClosed">
       <div class="dialogTitle">模型列表</div>
       <div style="padding: 2%">
