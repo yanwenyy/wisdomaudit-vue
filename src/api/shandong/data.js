@@ -261,3 +261,14 @@ export function operation_addExit (data) {
     data
   })
 }
+
+
+// 被审计对象选择器
+export function loadaudittorg (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/init/loaauditorg`,
+    method: 'post',
+    data
+  })
+}

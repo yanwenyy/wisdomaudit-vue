@@ -84,23 +84,26 @@
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <!-- isDeleted  0:不是接口人 1:s是接口人 -->
-                <div v-if="scope.row.isDeleted==1">
-
-                  <div v-if=" scope.row.status == 0">
+                <div v-if="scope.row.isDeleted==1"
+                     style="    display: flex;">
+                  <el-button @click="on_list(scope.row.addDataTaskUuid)"
+                             type="text"
+                             :disabled="isDisable"
+                             style="color:#0c87d6;
+                                 font-size: 14px !important;background:none;border:none"
+                             size="small">
+                    操作记录
+                  </el-button>
+                  <div v-if="scope.row.status == 0">
                     <el-button @click="edit_common(scope.row)"
                                type="text"
                                :disabled="isDisable"
                                style="color:#0c87d6;
+                               margin-left:10px;
                                  font-size: 14px !important;background:none;border:none"
                                size="small">
                       编辑
                     </el-button>
-                    <!-- <el-button @click="list_push(scope.row)"
-                             type="text"
-                             style="color:#1371CC"
-                             size="small">
-                    下发
-                  </el-button> -->
                     <el-button @click="yes_push(scope.row)"
                                type="text"
                                :disabled="isDisable"
@@ -109,7 +112,6 @@
                                size="small">
                       下发
                     </el-button>
-
                     <el-button @click="deleteRow(scope.row)"
                                type="text"
                                :disabled="isDisable"
@@ -118,6 +120,7 @@
                                size="small">
                       删除
                     </el-button>
+
                   </div>
 
                   <div v-if=" scope.row.status == 1">
@@ -126,6 +129,7 @@
                                type="text"
                                :disabled="isDisable"
                                style="color:#0c87d6;
+                               margin-left:10px;
                                  font-size: 14px !important;background:none;border:none"
                                size="small">
                       审批
@@ -139,16 +143,10 @@
                       删除
                     </el-button>
                   </div>
-                  <el-button @click="on_list(scope.row.addDataTaskUuid)"
-                             type="text"
-                             :disabled="isDisable"
-                             style="color:#0c87d6;
-                                 font-size: 14px !important;background:none;border:none"
-                             size="small">
-                    操作记录
-                  </el-button>
+
                 </div>
                 <div v-else>
+
                   <!-- -- -->
                   <el-button @click="on_list(scope.row.addDataTaskUuid)"
                              type="text"
@@ -173,7 +171,6 @@
                          layout="total, sizes, prev, pager, next, jumper"
                          :total="this.tableData.total">
           </el-pagination>
-
         </div>
         <!-- 分页 end-->
       </el-tab-pane>
@@ -220,14 +217,14 @@
                 <span>{{scope.row.createTime|filtedate}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="dataNumber"
+            <!-- <el-table-column prop="dataNumber"
                              show-overflow-tooltip
                              label="编号">
             </el-table-column>
             <el-table-column prop="secondLevelDataNumber"
                              show-overflow-tooltip
                              label="二级编号">
-            </el-table-column>
+            </el-table-column> -->
 
             <el-table-column prop="department"
                              show-overflow-tooltip
@@ -635,9 +632,9 @@
                          :disabled="edit_title == '详细信息'"
                          placeholder="请选择资料部门">
                 <el-option v-for="item in sensitiveDepartment"
-                           :key="item.value"
-                           :label="item.label"
-                           :value="item.label">
+                           :key="item.auditOrgUuid"
+                           :label="item.orgName"
+                           :value="item.orgName">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -1213,7 +1210,8 @@
 import axios from "axios";
 import {
   data_pageList, data_push, data_save, add_pageList, data_pageListDone, data_delete, data_push_ing, data_edit_details, data_update, data_add_savePush, data_edit_savePush, loadcascader, saveTemp, operation_list_data, operation_record_list, operation_audit, operation_uploadData, select_loadcascader, enclosure_details, select_user_data,
-  enclosure_sysLogById, enclosure_details_file, enclosure_downloadByFileId, operation_addExit, operation_addTitle
+  enclosure_sysLogById, enclosure_details_file, enclosure_downloadByFileId, operation_addExit, operation_addTitle,
+  loadaudittorg
 } from
   '@SDMOBILE/api/shandong/data'
 import { fmtDate } from '@SDMOBILE/model/time.js';
@@ -1400,6 +1398,7 @@ export default {
 
       success_btn1: 0,
       success_btn2: 0,
+      selectprojectPeopleNum: {}
     }
   },
   computed: {},
@@ -1423,7 +1422,7 @@ export default {
     // 新增未完成任务列表
     this.add_add_csh();
     this.post_select_loadcascader_lx();//添加资料   类型 数据
-    this.post_select_loadcascader_bm();//添加资料   部门 数据
+    this.post_select_loadcascader_bm(this.selectprojectPeopleNum);//添加资料   部门 数据
     this.post_select_loadcascader_ly();//添加资料   领域 数据
 
     // 获取请求人
@@ -2058,17 +2057,21 @@ export default {
     },
 
     // 添加资料   部门
-    post_select_loadcascader_bm () {
-      let params = {
-        typecode: 'Department',//部门
-      }
-      select_loadcascader(params).then(resp => {
+    post_select_loadcascader_bm (data) {
+      // let params = {
+      //   typecode: 'Department',//部门
+      // }
+      loadaudittorg(data).then(resp => {
         this.sensitiveDepartment = resp.data;
+        console.log(this.sensitiveDepartment);
       })
     },
     // 部门
     Department_change (val) {
       this.add_data.department = val
+      console.log(this.add_data.department);
+
+
     },
 
     // 添加资料  来源
