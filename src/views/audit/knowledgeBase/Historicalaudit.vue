@@ -645,7 +645,7 @@ export default {
         headers: {
           TOKEN: this.dqtoken,
         },
-        method: "get",
+        method: "post",
         data: {},
       }).then((res) => {
         this.basislist = res.data.data;
