@@ -1480,7 +1480,6 @@ export default {
     },
     rightArray (arr) {
       // alert(23)
-
       this.arrRightValue = arr;
     },
     //取消设为接口人
@@ -2905,8 +2904,9 @@ export default {
 .projectWorkbench >>> .el-table__header {
   border-top: none !important;
 }
-.addPerson >>> .el-button--primary {
-  background: #0c87d6 !important;
+.addPerson >>> .is-disabled {
+  /* background: #0c87d6 !important;/ */
+  opacity: 0.6 !important;
 }
 .one-menu_y-title {
   padding-left: 0 !important;
