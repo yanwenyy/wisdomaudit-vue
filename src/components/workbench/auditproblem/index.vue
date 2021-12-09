@@ -648,7 +648,7 @@ export default {
         managementProjectUuid: this.active_project,
         // 业务分类
         auditTaskUuid: [],
-        basis: "",
+        basis: [],
         describe: "",
         field: "",
         special: "",
@@ -738,7 +738,7 @@ export default {
           managementProjectUuid: this.active_project,
           // 业务分类
           auditTaskUuid: [],
-          basis: "",
+          basis: [],
           describe: "",
           field: "",
           special: "",
@@ -1096,7 +1096,7 @@ export default {
               });
               this.dialogFormVisible = false;
               this.temp.auditTaskUuid = [];
-              this.temp.basis = "";
+              this.temp.basis = [];
               this.temp.describe = "";
               this.temp.field = "";
               this.temp.problem = "";
