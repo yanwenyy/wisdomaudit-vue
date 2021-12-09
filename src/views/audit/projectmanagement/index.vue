@@ -3214,4 +3214,7 @@ export default {
   >>>.table-formItem .el-form-item__content{
     margin-left: 0!important;
   }
+>>>.el-form-item__label{
+  float: left!important;
+}
 </style>
