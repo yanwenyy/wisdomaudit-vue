@@ -196,7 +196,12 @@
           >引用审计依据</el-button
         >
         <el-form-item label="描述：" prop="describe" class="long">
-          <el-input v-model="temp.describe" placeholder="请输入描述" />
+          <!-- <el-input v-model="temp.describe" placeholder="请输入描述" /> -->
+          <el-input
+            type="textarea"
+            v-model="temp.describe"
+            placeholder="请输入描述"
+          ></el-input>
         </el-form-item>
         <el-form-item label="管理建议：" prop="managementAdvice" class="long">
           <el-input
@@ -376,6 +381,7 @@
         >
         <el-form-item label="描述：" prop="describe" class="long">
           <el-input
+            type="textarea"
             v-model="dqProblem.describe"
             placeholder="请输入描述"
             :disabled="ifadd != 2 ? false : true"
@@ -1079,8 +1085,10 @@ export default {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           let rep = this.temp;
-          rep.auditTaskUuid =  rep.auditTaskUuid?rep.auditTaskUuid.join(","):'';
-          rep.basis = rep.basis?rep.basis.join(","):'';
+          rep.auditTaskUuid = rep.auditTaskUuid
+            ? rep.auditTaskUuid.join(",")
+            : "";
+          rep.basis = rep.basis ? rep.basis.join(",") : "";
           axios({
             url: `/wisdomaudit/problemList/save`,
             headers: {
