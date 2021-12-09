@@ -71,7 +71,7 @@
         <div class="flex_end"
              v-if="file_list">
           <p style="padding-top:10px;color:#606266">附件：</p>
-          <ul v-if="file_list.attachmentList.length==0">暂无...</ul>
+          <div style="font-size: 14px;margin-top: 10px" v-if="file_list.attachmentList.length==0">暂无...</div>
           <ul v-else>
             <li v-for="(item,index) in file_list.attachmentList"
                 :key="index">

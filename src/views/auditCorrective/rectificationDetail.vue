@@ -195,7 +195,7 @@
     <div slot="footer" class="dialog-footer">
       <el-button @click="close">取 消</el-button>
       <el-button class="subBtn" v-if="!ifLook" type="primary" @click="save">保存</el-button>
-      <el-button class="subBtn" v-if="!ifLook&&(formState.correctStatus==1||formState.correctStatus==4)" type="primary" @click="sub">提交</el-button>
+      <el-button class="subBtn" v-if="!ifLook&&(formState.correctStatus==1||formState.correctStatus==5)" type="primary" @click="sub">提交</el-button>
       <el-button class="subBtn" v-if="type=='zgcs_examine'&&(formState.correctStatus==2||formState.correctStatus==3)" type="primary" @click="examine('1')">通过</el-button>
       <el-button class="subBtn" v-if="type=='zgcs_examine'&&(formState.correctStatus==2||formState.correctStatus==3)" type="primary" @click="examine('2')">驳回</el-button>
     </div>
@@ -314,9 +314,9 @@
         },
         //信息保存
         setDetail(){
-          var uploadList1=this.attachmentList1.concat(this.fileList1).concat(this.fileList1_del);
-          var uploadList2=this.attachmentList2.concat(this.fileList2).concat(this.fileList2_del);
-          var uploadList3=this.attachmentList3.concat(this.fileList3).concat(this.fileList3_del);
+          var uploadList1=this.attachmentList1.concat(this.fileList1,this.fileList1_del);
+          var uploadList2=this.attachmentList2.concat(this.fileList2,this.fileList2_del);
+          var uploadList3=this.attachmentList3.concat(this.fileList3,this.fileList3_del);
           uploadList1.forEach((item)=>{
             item.status=null;
           });
