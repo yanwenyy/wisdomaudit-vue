@@ -65,16 +65,14 @@
                        show-overflow-tooltip>
       </el-table-column>
       <el-table-column align="left"
-                       min-width="90px"
+                      width="150px"
                        prop="auditOrgName"
-                       label="被审计单位"
-                       show-overflow-tooltip>
+                       label="被审计单位">
       </el-table-column>
       <el-table-column align="left"
                        prop="projectTypeName"
                        label="项目类型"
-                       width="100"
-                       show-overflow-tooltip>
+                       width="150">
       </el-table-column>
       <!-- <el-table-column
         align="center"
@@ -87,10 +85,7 @@
                        label="领域"
                        show-overflow-tooltip>
         <template slot-scope="scope">
-          <div v-if="scope.row.fieldName == ''">--</div>
-          <div v-else>
-            {{ scope.row.fieldName }}
-          </div>
+          {{ scope.row.fieldName==''?'--':scope.row.fieldName }}
         </template>
       </el-table-column>
       <el-table-column align="left"
@@ -108,10 +103,9 @@
       <el-table-column prop="auditStartData"
                        align="left"
                        label="审计期间"
-                       show-overflow-tooltip
-                       min-width="140px">
+                      width="200">
         <template slot-scope="scope">
-          {{ scope.row.auditStartData }} 至 {{ scope.row.auditFinishData }}
+          {{ scope.row.auditStartData||'--' }} 至 {{ scope.row.auditFinishData||'--' }}
         </template>
       </el-table-column>
       <el-table-column align="left"
@@ -123,7 +117,7 @@
       <el-table-column align="left"
                        prop="createTime"
                        label="创建日期"
-                       show-overflow-tooltip>
+                        width="100">
         <template slot-scope="scope">
           {{ scope.row.createTime | filtedate }}
         </template>
@@ -148,7 +142,7 @@
       <el-table-column label="操作"
                        width="170">
         <template slot-scope="scope">
-          <el-button type="text"
+          <el-button v-if="userInfo.user.id==scope.row.projectLeaderUuid" type="text"
                      style="color: #0c87d6; background: none; border: 0; font-size: 14px"
                      size="small"
                      @click="editDialog(scope.row)">
@@ -156,7 +150,7 @@
           </el-button>
 
           <el-button type="text"
-                     v-if="scope.row.auditConf == 1"
+                     v-if="scope.row.auditConf == 1&&userInfo.user.id==scope.row.projectLeaderUuid"
                      style="color: #0c87d6; background: none; border: 0; font-size: 14px"
                      size="small"
                      @click="confirm_problem(scope.row.managementProjectUuid)">
@@ -312,10 +306,8 @@
                 </el-form-item>
               </el-col>
             </el-form-item>
-            <el-col :span="15">
-              <el-form-item label="ㅤ设置组长:">&nbsp;&nbsp;</el-form-item>
-            </el-col>
           </el-row>
+          <span class="slef-title">设置组长:</span>
           <el-table :data="addProjectManagement.auditList"
                     style="width: 100%"
                     border
@@ -328,9 +320,9 @@
             <el-table-column prop="auditOrgName"
                              label="被审计单位">
               <template slot-scope="scope">
-                <el-form-item :prop="'auditList.' + scope.$index + '.auditOrgName'"
+                <el-form-item class="table-formItem" :prop="'auditList.' + scope.$index + '.auditOrgName'"
                               :rules="addzhuanRules.auditOrgName">
-                  <el-select style="width: 120%"
+                  <el-select class="table-select"
                              placeholder="请选择"
                              v-model="scope.row.auditOrgUuid"
                              @change="orgSelect(scope.row)">
@@ -347,9 +339,9 @@
             <el-table-column prop="projectChargemanName"
                              label="分配组长">
               <template slot-scope="scope">
-                <el-form-item :prop="'auditList.' + scope.$index + '.projectChargemanName'"
+                <el-form-item class="table-formItem" :prop="'auditList.' + scope.$index + '.projectChargemanName'"
                               :rules="addzhuanRules.projectChargemanName">
-                  <el-select style="width: 120%"
+                  <el-select class="table-select"
                              placeholder="请选择"
                              v-model="scope.row.projectChargemanID"
                              @change="LeaderSelect(scope.row)">
@@ -687,9 +679,7 @@
                 </el-form-item>
               </el-col>
             </el-form-item>
-            <el-col :span="15">
-              <el-form-item label="ㅤ设置组长:">&nbsp;&nbsp;</el-form-item>
-            </el-col>
+            <span class="slef-title">设置组长:</span>
             <el-table :data="addProjectManagement.auditList"
                       style="width: 100%"
                       border
@@ -702,9 +692,9 @@
               <el-table-column prop="auditOrgName"
                                label="被审计单位">
                 <template slot-scope="scope">
-                  <el-form-item :prop="'auditList.' + scope.$index + '.auditOrgName'"
+                  <el-form-item  class="table-formItem" :prop="'auditList.' + scope.$index + '.auditOrgName'"
                                 :rules="addzhuanRules.auditOrgName">
-                    <el-select style="width: 120%"
+                    <el-select class="table-select"
                                placeholder="请选择"
                                v-model="scope.row.auditOrgUuid"
                                @change="orgSelect(scope.row)">
@@ -720,11 +710,11 @@
               <el-table-column prop="projectChargemanName"
                                label="分配组长">
                 <template slot-scope="scope">
-                  <el-form-item :prop="
+                  <el-form-item  class="table-formItem" :prop="
                       'auditList.' + scope.$index + '.projectChargemanName'
                     "
                                 :rules="addzhuanRules.projectChargemanName">
-                    <el-select style="width: 120%"
+                    <el-select class="table-select"
                                placeholder="请选择"
                                v-model="scope.row.projectChargemanName"
                                @change="LeaderSelectEdit(scope.row)"
@@ -2832,11 +2822,11 @@ export default {
   .el-select,
   .el-input {
     position: relative;
-    top: -35px;
+    /*top: -35px;*/
     width: 65%;
   }
   .el-form-item {
-    margin-bottom: -15px !important;
+    /*margin-bottom: -15px !important;*/
   }
   .addIcon {
     background-color: #fff;
@@ -2856,11 +2846,11 @@ export default {
   .el-select,
   .el-input {
     position: relative;
-    top: -35px;
+    /*top: -35px;*/
     width: 65%;
   }
   .el-form-item {
-    margin-bottom: -15px !important;
+   /* margin-bottom: -15px !important;*/
   }
   .addIcon {
     background-color: #fff;
@@ -3208,4 +3198,20 @@ export default {
   position: relative;
   top: -17px !important;
 }
+  .slef-title{
+    width: 100px;
+    display: inline-block;
+    text-align: right;
+  }
+  .table-select{
+    width: 180px!important;
+    position: static!important;
+    margin: 0!important;
+  }
+  .table-formItem{
+    margin-bottom: 0!important;
+  }
+  >>>.table-formItem .el-form-item__content{
+    margin-left: 0!important;
+  }
 </style>

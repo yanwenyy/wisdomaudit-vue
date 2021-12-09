@@ -107,7 +107,7 @@
             class="upload-demo inline-block"
             action="/wisdomaudit/auditBasy/filesUpload"
             :on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList2)}"
-            :on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList2,fileList2,fileList1_de2)}"
+            :on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList2,fileList2,fileList2_del)}"
             multiple
             :limit="3"
             :key="key"

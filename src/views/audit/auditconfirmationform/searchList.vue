@@ -150,7 +150,7 @@
         if(this.multipleSelection.length>0){
           var str='',problemListUuidList=[];
           this.multipleSelection.forEach((item,index)=>{
-            str+=index+"."+item.problem+'\n'+item.describe+'\n';
+            str+=(index+1)+"."+item.problem+'\n'+item.describe+'\n';
             problemListUuidList.push(item.problemListUuid)
           });
          var data={str:str,problemListUuidList:problemListUuidList,multipleSelection:this.multipleSelection};
