@@ -266,7 +266,7 @@
     <!-- 未初始化项目添加弹框 -->
     <el-dialog :visible.sync="addDialogVisible"
                :before-close="addClosed"
-               width="70%">
+               :width="dialogWidth">
       <div class="dialogTitle">
         {{ name }}
       </div>
@@ -858,6 +858,7 @@ export default {
   },
   data () {
     return {
+      dialogWidth: 0,
       headers: '',
       dqtoken: "",
       other_input: true, //专题下拉框显示隐藏
@@ -1113,6 +1114,7 @@ export default {
   },
 
   created () {
+    this.setDialogWidth();//dloag宽度
     this.get_user();
     this.dqtoken = sessionStorage.getItem("TOKEN");
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
@@ -1139,8 +1141,28 @@ export default {
     this.thematicSelect(this.thematic);
     this.areasSelect(this.areas);
     this.moreProject(this.queryManageAll);
+
+    //监听窗口宽度
+    window.onresize = () => {
+      return (() => {
+        this.setDialogWidth()
+      })()
+    }
   },
   methods: {
+    setDialogWidth () {
+      console.log(document.body.clientWidth)
+      var val = document.body.clientWidth
+      const def = 1400 //宽度最小为800,可修改
+      //窗口宽度小于默认宽度时，将弹框看度设置为50%,可修改
+      if (val < def) {
+        this.dialogWidth = '900px'
+      } else {
+        //窗口宽度大于默认宽度1200时，将弹框设置为400宽度,可修改
+        this.dialogWidth = '60%'
+      }
+    },
+
     // 专题选择其他变成可输入
     changeBelongSpcial (val) {
       if (val == "其他") {
@@ -2121,6 +2143,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "../../../assets/styles/css/lhg.css";
+
 ::v-deep.el-menu .el-submenu__title {
   padding: 0 !important;
 }
@@ -2475,14 +2498,14 @@ export default {
 /* 方法二 */
 .stepNew {
   /* border: 1px solid red; */
-  width: 45%;
-  height: 50px;
+  width: 55%;
+  height: 40px;
   margin: 30px auto;
 }
 
 /*  */
 .stepOneN {
-  width: 40%;
+  width: 50%;
   font-size: 0;
   position: relative;
   float: left;
@@ -2493,16 +2516,16 @@ export default {
 
 .stepOneN div {
   width: 80%;
-  height: 50px;
+  height: 40px;
   vertical-align: text-bottom;
   font-size: 0.7vw;
   color: #fff;
-  line-height: 50px;
+  line-height: 40px;
   text-align: center;
 }
 
 .stepOneN span:nth-of-type(1) {
-  border-width: 25px 0 25px 25px;
+  border-width: 20px 0 20px 15px;
   border-style: solid;
   border-color: #e0e0e0 transparent #e0e0e0 transparent;
   position: absolute;
@@ -2522,16 +2545,16 @@ export default {
 
 .auditStepOneN div {
   width: 80%;
-  height: 50px;
+  height: 40px;
   vertical-align: text-bottom;
   font-size: 0.7vw;
   color: #000;
-  line-height: 50px;
+  line-height: 40px;
   text-align: center;
 }
 
 .auditStepOneN span:nth-of-type(1) {
-  border-width: 25px 0 25px 25px;
+  border-width: 20px 0 20px 15px;
   border-style: solid;
   border-color: #0c87d6 transparent #0c87d6 transparent;
   position: absolute;
@@ -2541,7 +2564,7 @@ export default {
 
 /*  */
 .stepTwoN {
-  width: 48%;
+  width: 50%;
   font-size: 0.7vw;
   position: relative;
   left: -5%;
@@ -2551,18 +2574,18 @@ export default {
 
 .stepTwoN div {
   width: 70%;
-  height: 50px;
+  height: 40px;
   vertical-align: text-bottom;
   font-size: 0.7vw;
   color: #000;
-  line-height: 50px;
-  text-align: right;
+  line-height: 40px;
+  text-align: center;
   margin-left: 11%;
   overflow: hidden;
 }
 
 .stepTwoN span:nth-of-type(1) {
-  border-width: 25px 0 25px 25px;
+  border-width: 20px 0 20px 15px;
   border-style: solid;
   border-color: transparent transparent transparent #e0e0e0;
   position: absolute;
@@ -2571,7 +2594,7 @@ export default {
 }
 
 .stepTwoN span:nth-of-type(2) {
-  border-width: 25px 0 25px 25px;
+  border-width: 20px 0 20px 15px;
   border-style: solid;
   border-color: #fff transparent #fff transparent;
   position: absolute;
@@ -2724,6 +2747,23 @@ export default {
 }
 </style>
 <style scoped>
+.addPerson >>> .el-transfer-panel__filter .el-input__inner {
+  border-radius: 6px !important;
+  padding: 7px !important;
+  box-sizing: border-box;
+}
+.addPerson >>> .el-transfer {
+  margin-top: 1%;
+  padding: 0 5%;
+  margin-left: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.addPerson >>> .el-transfer__button:first-child {
+  margin-bottom: 0;
+}
+
 .selfTask >>> .el-form-item {
   margin-bottom: -10px !important;
 }
