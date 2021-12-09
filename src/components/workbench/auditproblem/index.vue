@@ -537,6 +537,12 @@
               <el-select
                 v-model="dqbasis.val"
                 placeholder="请选择依据名称"
+                multiple
+                filterable
+                remote
+                reserve-keyword
+                :remote-method="basisremoteMethod"
+                :loading="basisloading"
                 @change="getbasisdetail(dqbasis.val)"
               >
                 <el-option
@@ -723,6 +729,7 @@ export default {
       userRole: 0,
       input_select: true,
       input_selecte: true,
+      basisloading: false,
     };
   },
   watch: {},
@@ -884,10 +891,29 @@ export default {
         headers: {
           TOKEN: this.dqtoken,
         },
-        method: "get",
-        data: {},
+        method: "post",
+        data: {
+          basyName: "",
+        },
       }).then((res) => {
         this.basislist = res.data.data;
+      });
+    },
+    //模糊查询依据详情
+    basisremoteMethod(query) {
+      this.basisloading = true
+      axios({
+        url: `/wisdomaudit/auditBasy/getAuditbasyList`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
+        method: "post",
+        data: {
+          basyName: query,
+        },
+      }).then((res) => {
+        this.basislist = res.data.data;
+        this.basisloading = false
       });
     },
     //获取依据详情
