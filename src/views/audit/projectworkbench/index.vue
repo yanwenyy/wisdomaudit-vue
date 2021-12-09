@@ -1821,7 +1821,7 @@ export default {
 
             }).then((resp) => {
               if (resp.data.code == 0) {
-                this.$message.success("上传成功！");
+                // this.$message.success("上传成功！");
                 this.Upload_file = resp.data.data;
                 loading.close();
 
@@ -1929,7 +1929,7 @@ export default {
 
         }).then((resp) => {
           if (resp.data.code == 0) {
-            this.$message.success("上传成功！");
+            // this.$message.success("上传成功！");
             this.Upload_file = resp.data.data;
             loading.close();
 
