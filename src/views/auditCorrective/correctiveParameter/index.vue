@@ -78,7 +78,7 @@
         prop="correctState"
       >
         <template slot-scope="scope">
-          <span>{{scope.row.correctState=='0'?'未整改':scope.row.correctStatus=='1'?'整改中':scope.row.correctStatus=='2'?'已完成整改':'--'}}</span>
+          <span>{{scope.row.correctState=='0'?'未整改':scope.row.correctState=='1'?'整改中':scope.row.correctState=='2'?'已完成整改':'--'}}</span>
         </template>
       </el-table-column>
     </el-table>

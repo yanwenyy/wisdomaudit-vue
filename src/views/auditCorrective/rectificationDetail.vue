@@ -304,7 +304,7 @@
         handleRemove( file, fileList,tableList,showList,delList){
           if (file.response) {
             tableList.remove(file.response.data);
-            this.key = Math.random();
+            // this.key = Math.random();
           } else {
             showList.remove(file);
             file.isDeleted = 1;
