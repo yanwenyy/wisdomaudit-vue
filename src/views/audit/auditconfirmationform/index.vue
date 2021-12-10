@@ -17,7 +17,7 @@
                        prop="matter"></el-table-column>
       <el-table-column algin="left"
                        label="责任人"
-                       prop="liablePerson"></el-table-column>
+                       prop="auditorsName"></el-table-column>
       <el-table-column algin="left"
                        label="问题数"
                        prop="problemsNumber">

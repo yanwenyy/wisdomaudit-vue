@@ -3,7 +3,7 @@
     <div class="filter-container">
       <!--isLiaison是否接口人  1是，0否-->
       <el-button type="primary" @click="add()" v-if="isLiaison=='1'"  class="subBtn"
-        >新增指标</el-button
+        >选择指标</el-button
       >
       <!--<div class="indocator-btn-box" v-if="!ifprojectmanage">-->
         <!--<el-button class="gary-border">提交</el-button>-->
@@ -24,7 +24,7 @@
           <th><div class="td-100">单位</div></th>
           <th v-for="item in yearRange"><div class="td-150">{{item}}</div></th>
           <th><div class="td-150">资料提供部门</div></th>
-          <th><div class="td-100">联系人</div></th>
+          <!--<th><div class="td-100">联系人</div></th>-->
           <th><div class="td-100">操作</div></th>
         </tr>
       </table>
@@ -40,7 +40,7 @@
             <div class="td-150" v-if="yearRange.indexOf(y.indexDate)!=-1">{{y.indexValue}}</div>
           </td>
           <td><div class="td-150">{{vtem.dataProvideDepartmentName}}</div></td>
-          <td><div class="td-100">{{vtem.contactPerson}}</div></td>
+          <!--<td><div class="td-100">{{vtem.contactPerson}}</div></td>-->
           <td>
             <div class="td-100">
               <el-button type="text" class="blue" @click="edit(vtem)" v-if="isLiaison=='1'">编辑</el-button>
@@ -125,7 +125,13 @@
       :close-on-click-modal="false"
     >
       <el-form :model="formState" class="formData zb-edit"  label-width="150px">
-        <el-form-item v-for="(item,index) in formState.operatingIndicatorsValueList" :label="item.indexDate" :key="index">
+        <el-form-item label="指标名称:">
+          <div>{{formState.indexName}}</div>
+        </el-form-item>
+        <el-form-item label="单位:">
+          <div>{{formState.indexUnitName}}</div>
+        </el-form-item>
+        <el-form-item v-for="(item,index) in formState.operatingIndicatorsValueList" :label="item.indexDate+':'" :key="index">
           <el-input
             v-model="item.indexValue"
             @input="item.indexValue=item.indexValue.replace(/[^\d]/g,'')"

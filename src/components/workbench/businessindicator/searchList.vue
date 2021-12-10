@@ -3,7 +3,7 @@
     <el-dialog
       center
       width="80%"
-      title="添加指标"
+      title="选择指标"
       :visible.sync="visible"
       :append-to-body="true">
       <div>
@@ -47,11 +47,17 @@
             algin="left"
             label="资料提供部门">
           </el-table-column>
+          <!--<el-table-column-->
+            <!--prop="accessCaliberFormulaName"-->
+            <!--header-algin="left"-->
+            <!--align="left"-->
+            <!--label="取数口径或公式">-->
+          <!--</el-table-column>-->
           <el-table-column
-            prop="accessCaliberFormulaName"
+            prop="indexDescription"
             header-algin="left"
             align="left"
-            label="取数口径或公式">
+            label="指标说明">
           </el-table-column>
         </el-table>
         <div class="page">
@@ -147,24 +153,30 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="取数口径或公式:" prop="accessCaliberFormula">
-          <el-select v-model="temp.accessCaliberFormula" placeholder="请选择"
-                     @change="
-                      getName(
-                        temp.accessCaliberFormula	,
-                        selectList.qskjgs,
-                        'accessCaliberFormulaName',
-                      )
-                    ">
-            <el-option
-              v-for="item in selectList.qskjgs"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
+        <el-form-item label="指标说明:">
+          <el-input rows="6"
+                    :disabled="ifLook"
+                    type="textarea"
+                    v-model="temp.indexDescription"></el-input>
         </el-form-item>
+        <!--<el-form-item label="取数口径或公式:" prop="accessCaliberFormula">-->
+          <!--<el-select v-model="temp.accessCaliberFormula" placeholder="请选择"-->
+                     <!--@change="-->
+                      <!--getName(-->
+                        <!--temp.accessCaliberFormula	,-->
+                        <!--selectList.qskjgs,-->
+                        <!--'accessCaliberFormulaName',-->
+                      <!--)-->
+                    <!--">-->
+            <!--<el-option-->
+              <!--v-for="item in selectList.qskjgs"-->
+              <!--:key="item.value"-->
+              <!--:label="item.label"-->
+              <!--:value="item.value"-->
+            <!--&gt;-->
+            <!--</el-option>-->
+          <!--</el-select>-->
+        <!--</el-form-item>-->
         <el-form-item label="是否同步到指标库:" prop="isAddIndex">
           <el-radio-group v-model="temp.isAddIndex">
             <el-radio :label="true">是</el-radio>

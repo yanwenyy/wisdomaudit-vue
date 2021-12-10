@@ -93,7 +93,12 @@
             <el-button class="zl-up-btn" size="small" icon="el-icon-upload2">点击上传</el-button>
           </el-upload>
           <div class="inline-block" v-if="ifLook">
-            <div class="blue pointer" v-for="(item,index) in fileList1" :key="index"  @click="downFile(item.attachmentUuid,item.fileName)">{{item.fileName}}</div>
+            <el-tooltip class="item" effect="dark" v-for="(item,index) in fileList1" :key="index"  :content="item.fileName" placement="top">
+              <div  class="blue pointer" @click="downFile(item.attachmentUuid,item.fileName)">{{item.fileName.length>20?item.fileName.slice(0,20)+"...":item.fileName}}</div>
+            </el-tooltip>
+              <!--<div class="blue pointer" v-for="(item,index) in fileList1" :key="index"  @click="downFile(item.attachmentUuid,item.fileName)">-->
+               <!--{{item.fileName}}-->
+              <!--</div>-->
           </div>
         </el-form-item>
         <el-form-item label="其他措施:">
@@ -117,7 +122,13 @@
             <el-button class="zl-up-btn" size="small" icon="el-icon-upload2">点击上传</el-button>
           </el-upload>
           <div class="inline-block" v-if="ifLook">
-            <div class="blue pointer" v-for="(item,index) in fileList2" :key="index"  @click="downFile(item.attachmentUuid,item.fileName)">{{item.fileName}}</div>
+            <el-tooltip class="item" effect="dark" v-for="(item,index) in fileList2" :key="index"  :content="item.fileName" placement="top">
+              <div  class="blue pointer" @click="downFile(item.attachmentUuid,item.fileName)">{{item.fileName.length>20?item.fileName.slice(0,20)+"...":item.fileName}}</div>
+            </el-tooltip>
+            <!--<div class="blue pointer" v-for="(item,index) in fileList2" :key="index"  @click="downFile(item.attachmentUuid,item.fileName)">-->
+              <!--{{item.fileName}}-->
+            <!--</div>-->
+
           </div>
         </el-form-item>
         <el-form-item label="系统升级改造:">
@@ -141,7 +152,10 @@
             <el-button class="zl-up-btn" size="small" icon="el-icon-upload2">点击上传</el-button>
           </el-upload>
           <div class="inline-block" v-if="ifLook">
-            <div class="blue pointer" v-for="(item,index) in fileList3" :key="index"  @click="downFile(item.attachmentUuid,item.fileName)">{{item.fileName}}</div>
+            <el-tooltip class="item" effect="dark" v-for="(item,index) in fileList3" :key="index"  :content="item.fileName" placement="top">
+              <div  class="blue pointer" @click="downFile(item.attachmentUuid,item.fileName)">{{item.fileName.length>20?item.fileName.slice(0,20)+"...":item.fileName}}</div>
+            </el-tooltip>
+            <!--<div class="blue pointer" v-for="(item,index) in fileList3" :key="index"  @click="downFile(item.attachmentUuid,item.fileName)">{{item.fileName}}</div>-->
           </div>
         </el-form-item>
       </div>
@@ -523,8 +537,8 @@
     margin-top: 20px;
     font-weight: bold;
   }
-  .formData .el-input.is-disabled .el-input__inner {
-    color: #C0C4CC!important;
+  >>>.formData .el-input.is-disabled .el-input__inner,>>>.formData .el-textarea.is-disabled .el-textarea__inner {
+    color: #606266 !important;
     background: #F5F7FA!important;
   }
   .formData .el-input__inner::placeholder {

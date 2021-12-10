@@ -85,7 +85,7 @@ table tr:nth-child(odd){
   margin-bottom: 10px;
 }
 .formData .el-input.is-disabled .el-input__inner {
-  color: #C0C4CC!important;
+  color: #606266 !important;
   background: #F5F7FA!important;
 }
 .formData .el-input__inner::placeholder ,.search-form .el-input__inner::placeholder{
