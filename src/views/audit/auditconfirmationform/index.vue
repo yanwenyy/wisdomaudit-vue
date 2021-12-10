@@ -109,11 +109,13 @@
       </el-table-column>
     </el-table>
     <!-- 新增确认单弹出框 -->
+
     <el-form :rules="rules"
              ref="addForm"
              class="formData"
-             label-width="130px"
+             label-width="180px"
              :model="formDetail">
+      <!--label-width="130px"-->
       <el-dialog class="qrd-dialog"
                  :visible.sync="confirmationDialogVisible"
                  width="70%"
@@ -124,13 +126,13 @@
                       label="审计项目名称:">{{managementProjectName!=''?managementProjectName:'--'}}</el-form-item>
         <el-form-item class="itemTwo"
                       label="被审计单位:">{{auditOrgName!=''?auditOrgName:'--'}}</el-form-item>
-        <el-form-item prop="matter"
+        <el-form-item  class="itemOne" prop="matter"
                       label="审计（调查）事项:">
           <el-input :disabled="ifLook"
                     type="textarea"
                     v-model="formDetail.matter"></el-input>
         </el-form-item>
-        <el-form-item prop="matterDetail"
+        <el-form-item  class="itemOne" prop="matterDetail"
                       label="审计(调查)事项描述:">
           <el-button :disabled="ifLook"
                      @click="getRelationQues"
@@ -183,7 +185,33 @@
                           value-format="yyyy-MM-dd"
                           style="width: 100%"></el-date-picker>
         </el-form-item>
-
+        <el-form-item  class="itemOne" v-if="confirmationDialogTitle=='编辑确认单'||ifLook" prop="compileDate"
+                      label="被审计(调查)单位确认意见:" >
+          <el-input :disabled="ifLook"
+                    type="textarea"
+                    v-model="formDetail.auditOrgOpinion"></el-input>
+        </el-form-item>
+        <el-form-item v-if="confirmationDialogTitle=='编辑确认单'||ifLook"
+                      class="itemThree"
+                      label="相关负责人(签名):">
+          {{formDetail.principalName||'--'}}
+          <!--<el-input disabled-->
+                    <!--v-model="formDetail.principalName"></el-input>-->
+        </el-form-item>
+        <el-form-item v-if="confirmationDialogTitle=='编辑确认单'||ifLook"
+          class="itemThree"
+          label="职务:">
+          {{formDetail.principalPost||'--'}}
+          <!--<el-input disabled-->
+                    <!--v-model="formDetail.principalPost"></el-input>-->
+        </el-form-item>
+        <el-form-item v-if="confirmationDialogTitle=='编辑确认单'||ifLook"
+          class="itemThree"
+          label="日期:">
+          {{formDetail.signatureDate||'--'}}
+          <!--<el-input disabled-->
+                    <!--v-model="formDetail.signatureDate"></el-input>-->
+        </el-form-item>
         <span slot="footer"
               class="dialog-footer">
           <el-button @click="handleClose">取 消</el-button>
@@ -248,13 +276,13 @@
             <tr>
               <td>相关负责人(签名)</td>
               <!--<td><el-input  :disabled="ifLook" v-model="formDetail.principalName"></el-input></td>-->
-              <td>{{formDetail.principalPost}}</td>
+              <td>{{formDetail.principalName}}</td>
               <td>职务</td>
               <!--<td><el-input  :disabled="ifLook" v-model="formDetail.principalPost"></el-input></td>-->
               <td>{{formDetail.principalPost}}</td>
               <td>日期</td>
               <!--<td><el-input  :disabled="ifLook" v-model="formDetail.signatureDate"></el-input></td>-->
-              <td>{{formDetail.principalPost | dateformat}}</td>
+              <td>{{formDetail.signatureDate | dateformat}}</td>
             </tr>
           </table>
         </div>
@@ -480,15 +508,21 @@ export default {
       auditConfirmation_getDetail(row.auditConfirmationUuid).then(resp => {
         var datas = resp.data;
         this.formDetail = datas;
-        if (this.projectType == 'zxsj') {
-          this.confirmationDialogVisibleZx = true;
-          if (this.formDetail.auditOrgOpinion.indexOf("情况属实") == -1) {
-            this.formDetail.auditOrgOpinion = "情况属实\n" + this.formDetail.auditOrgOpinion
-          }
-          // }else if (this.projectType == 'jzsj') {
-        } else {
-          this.confirmationDialogVisible = true;
+        this.confirmationDialogVisible = true;
+        if (this.formDetail.auditOrgOpinion.indexOf("情况属实") == -1) {
+          this.formDetail.auditOrgOpinion = "情况属实\n" + this.formDetail.auditOrgOpinion
         }
+
+
+        // if (this.projectType == 'zxsj') {
+        //   this.confirmationDialogVisibleZx = true;
+        //   if (this.formDetail.auditOrgOpinion.indexOf("情况属实") == -1) {
+        //     this.formDetail.auditOrgOpinion = "情况属实\n" + this.formDetail.auditOrgOpinion
+        //   }
+        //   // }else if (this.projectType == 'jzsj') {
+        // } else {
+        //   this.confirmationDialogVisible = true;
+        // }
       })
     },
     getLook (row, column, event) {
@@ -745,4 +779,15 @@ export default {
   margin: 0 !important;
   text-align: center !important;
 }
+
+
+  >>>.itemOne .el-form-item__content{
+    width: 77%!important;
+  }
+  >>>.itemTwo .el-form-item__content{
+    width: 59%!important;
+  }
+  >>>.itemThree .el-form-item__label{
+    width:130px!important;
+  }
 </style>
