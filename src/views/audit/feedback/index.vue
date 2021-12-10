@@ -153,7 +153,7 @@
                 </template>
 
               </el-table-column>
-              <el-table-column prop="secondLevelDataNumber"
+              <!-- <el-table-column prop="secondLevelDataNumber"
                                label="二级编号">
 
                 <template slot-scope="scope">
@@ -165,7 +165,7 @@
                   </p>
                 </template>
 
-              </el-table-column>
+              </el-table-column> -->
 
               <el-table-column prop="dataName"
                                label="资料名称">
@@ -287,7 +287,7 @@
 
               <el-table-column prop="dataNumber"
                                label="操作"
-                               width="180px"
+                               width="120px"
                                v-if="see_data==false">
 
                 <template slot-scope="scope">
@@ -301,9 +301,9 @@
                   <div class="update_cell">
                     <el-upload class="upload-demo"
                                :headers="headers"
-                               style="margin:0 10px"
+                               style="margin:0 10px 0 0px"
                                :on-progress="up_ing"
-                               v-if="scope.row.status !== 3"
+                               v-if="scope.row.status !== 1 && scope.row.status !==3 "
                                action="/wisdomaudit/auditPreviousDemandData/uploadData"
                                :show-file-list="false"
                                :http-request="handleUploadForm"
@@ -865,54 +865,55 @@ export default {
       //   this.isDisable = false
       // }, 2000)
       if (this.check_data_list.length == 0) {
-        this.$message.info("请选择至少一条数据进行提交！");
+        this.$message.info({ message: "请选择至少一条数据进行提交！", type: "warning", });
         return false;
       }
+      this.success_btn = 1;//按钮状态更改
 
-
-      // let array1 = [];//数组1
-      // this.check_data_list.forEach((item) => {
-      //   array1.push(item);
-      // });
-      // 
-      // return false
-      // auditPreviousDemandDataUuid
-      this.success_btn = 1;
-      let params = {
-        dataTaskNumber: this.check_data_list[0].dataTaskNumber,//id
-        ids: this.check_data_list,//选择的数组
-        remarks: this.post_remarks,//备注
-      }
-      // 提交数据接口
-      operation_reportData(params).then(resp => {
-        this.success_btn = 0;
-        if (resp.data.result == 0) {
-          this.$message({
-            message: "提交成功",
-            type: "success",
-          });
-          this.dialogVisible = false;//关闭弹窗
-          let params2 = {
-            pageNo: this.data_query.pageNo,
-            pageSize: this.data_query.pageSize,
-            condition: {
-              dataTaskNumber: this.data_query.condition.dataTaskNumber,
-            }
-          }
-          this.feedback_post(params2)//资料列表
-        } else if (resp.data.result == 1) {
-          this.$message({
-            message: '请上传附件',
-            type: "error",
-          });
-        } else {
-          this.$message({
-            message: '提交失败',
-            type: "error",
-          });
+      // 判断是否可以提交反馈
+      if (this.check_data_list.every(item => item.status == 0 || item.status == 2)) {
+        let params = {
+          dataTaskNumber: this.check_data_list[0].dataTaskNumber,//id
+          ids: this.check_data_list,//选择的数组
+          remarks: this.post_remarks,//备注
         }
+        // 提交数据接口
+        operation_reportData(params).then(resp => {
+          this.success_btn = 0;
+          if (resp.data.result == 0) {
+            this.$message({
+              message: "提交成功",
+              type: "success",
+            });
+            this.dialogVisible = false;//关闭弹窗
+            let params2 = {
+              pageNo: this.data_query.pageNo,
+              pageSize: this.data_query.pageSize,
+              condition: {
+                dataTaskNumber: this.data_query.condition.dataTaskNumber,
+              }
+            }
+            this.feedback_post(params2)//资料列表
+          } else if (resp.data.result == 1) {
+            this.$message({
+              message: '请上传附件',
+              type: "warning",
+            });
+          } else {
+            this.$message({
+              message: '提交失败',
+              type: "error",
+            });
+          }
+        })
+      } else {
+        this.$message.info({ message: "已经提及成功的或者审核中的不可以再次提交！", type: "warning", });
+        this.success_btn = 0;
+        return false
+      }
 
-      })
+
+
 
     },
 

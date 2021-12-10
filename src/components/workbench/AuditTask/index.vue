@@ -940,7 +940,7 @@
           <el-form-item label="上传附件："
                         prop="fileList"
                         style="margin-bottom:30px!important">
-            <el-upload class="upload-demo"
+            <el-upload class="upload-fileListdemo"
                        drag
                        ref="upload"
                        :headers="headers"
@@ -2000,9 +2000,8 @@ export default {
         return false
       }
 
-      console.log(this.multipleSelection_data_list);
+      // console.log(this.multipleSelection_data_list);
       var that = this
-
       if (this.multipleSelection_data_list.every(item => item.isProbleam !== 0)) {
         that.dialogVisible_data_verify = true;//显示核实弹窗
         return false

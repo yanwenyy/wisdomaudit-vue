@@ -403,27 +403,36 @@ export default {
     },
     // 下发
     push (data) {
-      let params = {
-        managementProjectUuid: data.managementProjectUuid,//项目id
-        projectName: data.projectName,//项目名称
-        auditOrgUuid: data.auditOrgUuid,//被审计单位
-        correctSend: 1,//是否下发
-      };
-      issueProject(params).then(resp => {
 
-        if (resp.code == 0) {
-          this.$message({
-            message: '下发成功',
-            type: 'success'
-          });
-          this.pageProblemCorrectList_data();//刷新列表
-        } else {
-          this.$message({
-            message: resp.msg,
-            type: 'error'
-          });
-        }
+      this.$confirm(`确认下发吗?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
+        .then(() => {
+          let params = {
+            managementProjectUuid: data.managementProjectUuid,//项目id
+            projectName: data.projectName,//项目名称
+            auditOrgUuid: data.auditOrgUuid,//被审计单位
+            correctSend: 1,//是否下发
+          };
+          issueProject(params).then(resp => {
+
+            if (resp.code == 0) {
+              this.$message({
+                message: '下发成功',
+                type: 'success'
+              });
+              this.pageProblemCorrectList_data();//刷新列表
+            } else {
+              this.$message({
+                message: resp.msg,
+                type: 'error'
+              });
+            }
+          })
+        })
+        .catch(() => { });
     },
     // 审核
     examine (id) {

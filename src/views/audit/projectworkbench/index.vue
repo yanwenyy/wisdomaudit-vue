@@ -2609,18 +2609,18 @@ export default {
 }
 .auditStepTwoN div {
   width: 70%;
-  height: 50px;
+  height: 40px;
   vertical-align: text-bottom;
   font-size: 0.7vw;
   color: #000;
-  line-height: 50px;
-  text-align: right;
+  line-height: 40px;
+  text-align: center;
   margin-left: 11%;
   overflow: hidden;
 }
 
 .auditStepTwoN span:nth-of-type(1) {
-  border-width: 25px 0 25px 25px;
+  border-width: 20px 0 20px 15px;
   border-style: solid;
   border-color: transparent transparent transparent #0c87d6;
   position: absolute;
@@ -2629,7 +2629,7 @@ export default {
 }
 
 .auditStepTwoN span:nth-of-type(2) {
-  border-width: 25px 0 25px 25px;
+  border-width: 20px 0 20px 15px;
   border-style: solid;
   border-color: #fff transparent #fff transparent;
   position: absolute;

@@ -29,7 +29,7 @@
         <el-table-column prop="auditOrgName"
                          label="被审计单位">
         </el-table-column>
-        <el-table-column prop="projectType"
+        <el-table-column prop="projectTypeName"
                          label="项目类型">
         </el-table-column>
         <el-table-column prop="projectLeaderName"

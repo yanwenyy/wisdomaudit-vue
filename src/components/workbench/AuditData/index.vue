@@ -137,7 +137,7 @@
                     <el-button @click="deleteRow(scope.row)"
                                type="text"
                                :disabled="isDisable"
-                               style="color:#ff8a72;
+                               style="color:#ff8a72;margin-left:10px;
                                  font-size: 14px !important;background:none;border:none"
                                size="small">
                       删除
@@ -209,18 +209,16 @@
                              show-overflow-tooltip
                              label="资料名称">
             </el-table-column>
-            <el-table-column prop="createTime"
-                             show-overflow-tooltip
-                             label="反馈日期">
 
-              <template slot-scope="scope">
-                <span>{{scope.row.createTime|filtedate}}</span>
-              </template>
+            <el-table-column prop="addPeople"
+                             show-overflow-tooltip
+                             label="反馈人">
             </el-table-column>
+
             <!-- <el-table-column prop="dataNumber"
                              show-overflow-tooltip
                              label="编号">
-            </el-table-column>
+            </el-table-column> 
             <el-table-column prop="secondLevelDataNumber"
                              show-overflow-tooltip
                              label="二级编号">
@@ -240,6 +238,15 @@
                 <p v-else>
                   --
                 </p>
+              </template>
+            </el-table-column>
+
+            <el-table-column prop="createTime"
+                             show-overflow-tooltip
+                             label="反馈日期">
+
+              <template slot-scope="scope">
+                <span>{{scope.row.createTime|filtedate}}</span>
               </template>
             </el-table-column>
 
@@ -733,7 +740,6 @@
           </div>
 
           <div class="son cd">
-
             <el-form-item label="备注："
                           label-width="260px"
                           prop="remarks">
@@ -741,6 +747,39 @@
                         :disabled="edit_title == '详细信息'"
                         v-model="add_data.remarks"
                         placeholder=""></el-input>
+            </el-form-item>
+          </div>
+
+          <div class="son cd">
+            <!-- <el-form-item label-width="260px"
+                          style="margin-bottom:0!important"
+                          class="up"> -->
+            <el-form-item label="模版新增："
+                          label-width="260px"
+                          style="margin-bottom:0!important"
+                          class="up">
+
+              <!-- <p>模版新增：</p> -->
+              <!-- <el-input type="textarea"
+                        v-model="add_data.file"
+                        placeholder=""></el-input> -->
+              <el-upload class="upload-demo"
+                         :disabled="edit_title == '详细信息'?true:false"
+                         drag
+                         ref="upload"
+                         action="#"
+                         :headers="headers"
+                         :on-change="handleChangePic_verify"
+                         :on-remove="handleRemoveApk"
+                         :file-list="edit_file_list"
+                         :auto-upload="false"
+                         accept=".zip,.doc,.docx,.xls,.xlsx,.txt"
+                         multiple>
+
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">点击上传或将文件拖到虚线框<br />支持.zip,.doc,.docx,.xls,.xlsx,.txt</div>
+              </el-upload>
+
             </el-form-item>
           </div>
 
@@ -1227,7 +1266,9 @@ export default {
   components: {},
   data () {
     return {
+      edit_file_list2: [],//上传
       dqtoken: "",
+      headers: '',
       activeName: 0,
       title: '新增审计资料任务',
       edit_title: '添加资料',//审核title
@@ -1265,7 +1306,7 @@ export default {
         addPeople: '',//添加人
         status: '',  // 是否沉淀
         addTime: '',//添加日期 
-        // file: '',//文件模版
+        // fileList: [],//文件模版
         Url: '',// 上传模版url
 
       },
@@ -1285,6 +1326,7 @@ export default {
         source: [{ required: true, message: '请选择来源', trigger: 'change' }],
         // remarks: [{ required: true, message: '请输入备注', trigger: 'blur' }],
         status: [{ required: true, message: '请选择是否沉淀', trigger: 'change' }],
+        // fileList: [{ required: true, message: '请上传模板', trigger: 'change' }],
         // addTime: [{ required: true, message: '请设置添加日期', trigger: 'change' }],
       },
       operation_table: [],//操作  资料列表
@@ -1404,6 +1446,7 @@ export default {
   computed: {},
   watch: {},
   created () {
+    this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
     this.dqtoken = sessionStorage.getItem("TOKEN");
     this.projectNumber = this.active_project;
 
@@ -2990,6 +3033,12 @@ export default {
 }
 
 /* 为空提示 */
+.dlag_conter2 >>> .el-form-item__error {
+  left: 0 !important;
+}
+.cd >>> .el-form-item__error {
+  left: 0 !important;
+}
 .dlag_conter2 >>> .el-form-item__error {
   left: 120px;
 }

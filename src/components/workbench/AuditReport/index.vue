@@ -26,6 +26,11 @@
                       resize="none"
                       v-model="administrativeAdvice">
             </el-input>
+            <!-- <quill-editor ref="text"
+                          :options="editorOption"
+                          v-model="administrativeAdvice"
+                          class="myQuillEditor" /> -->
+
           </div>
 
         </el-row>
@@ -43,6 +48,10 @@
           </el-col>
 
           <div class="text">
+            <!-- <quill-editor ref="text"
+                          :options="editorOption"
+                          v-model="businessEvaluation"
+                          class="myQuillEditor" /> -->
 
             <el-input type="textarea"
                       resize="none"
@@ -71,8 +80,8 @@
         <div class="flex_end"
              v-if="file_list">
           <p style="padding-top:10px;color:#606266">附件：</p>
-          <div style="font-size: 14px;margin-top: 10px" v-if="file_list.attachmentList.length==0">暂无...</div>
-          <ul v-else>
+
+          <ul v-if="file_list.attachmentList &&file_list.attachmentList.length!==0">
             <li v-for="(item,index) in file_list.attachmentList"
                 :key="index">
               <p @click="download_click(item.attachmentUuid,item.fileName)">{{item.fileName}}</p>
@@ -86,6 +95,8 @@
                          @click="remove_list(item.attachmentUuid)">删除</el-button>
             </li>
           </ul>
+          <div style="font-size: 14px;margin-top: 10px"
+               v-else>暂无...</div>
 
         </div>
       </div>
@@ -134,7 +145,15 @@
             </template>
 
           </el-table-column>
+          <el-table-column prop="indexName"
+                           label="指标名称">
 
+            <template slot-scope="scope">
+              <p v-if="scope.row.indexName">{{scope.row.indexName}}</p>
+              <p v-else>--</p>
+            </template>
+
+          </el-table-column>
           <el-table-column prop="accessCaliberName"
                            show-overflow-tooltip
                            label="依据">
@@ -318,6 +337,12 @@
 </template>
 
 <script>
+// 富文本框
+import { quillEditor } from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+// 富文本框end
 import { down_file } from
   '@SDMOBILE/api/shandong/ls'
 import { operatingIndicators_list, task_pageList_wt, task_pageList_export, export_selectFile, file_remove_list } from '@SDMOBILE/api/shandong/AuditReport'
@@ -352,6 +377,12 @@ export default {
       tableData2_list: [],//关联问题 list
       wt_listl: [],//问题 选择
       success_btn: 0,//文件上传完成
+
+
+      // 富文本
+      editorOption: {
+        placeholder: "请在这里输入",
+      },
     }
   },
   props: ['active_project', 'userRole', 'isLiaison'],
@@ -364,6 +395,9 @@ export default {
   },
   mounted () {
 
+  },
+  components: {
+    quillEditor
   },
   filters: {
     filtedate: function (date) {
@@ -652,6 +686,10 @@ export default {
   color: #c0c4cc;
   cursor: n-resize;
   background: #fff;
+}
+.report >>> .ql-editor {
+  min-height: 200px;
+  font-size: 16px;
 }
 .text {
   width: 100%;
