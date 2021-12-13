@@ -16,7 +16,7 @@
                        label="审计(调查)事项"
                        prop="matter"></el-table-column>
       <el-table-column algin="left"
-                       label="责任人"
+                       label="审计人员"
                        prop="auditorsName"></el-table-column>
       <el-table-column algin="left"
                        label="问题数"
