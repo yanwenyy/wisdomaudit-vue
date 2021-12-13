@@ -381,6 +381,13 @@ export default {
 
       // 富文本
       editorOption: {
+        modules: {
+          clipboard: {
+            // 粘贴版，处理粘贴时候带图片
+            matchers: [[Node.ELEMENT_NODE, this.handleCustomMatcher]],
+          },
+          toolbar: 'title'
+        },
         placeholder: "请在这里输入",
       },
     }
@@ -405,7 +412,29 @@ export default {
       return fmtDate(t, 'yyyy-MM-dd ');
     }
   },
+  watch: {
+    value (n) {
+      this.content = n;
+    },
+    content (n) {
+      this.$emit("input", n);
+    },
+  },
   methods: {
+
+    handleCustomMatcher (node, Delta) {
+      let ops = []
+      Delta.ops.forEach(op => {
+        if (op.insert && typeof op.insert === 'string') {// 如果粘贴了图片，这里会是一个对象，所以可以这样处理
+          ops.push({
+            insert: op.insert,
+          })
+        }
+      })
+      Delta.ops = ops
+      return Delta
+    },
+
     // 公用筛选
     search_list (index) {
       if (index == 1) {
@@ -471,14 +500,11 @@ export default {
       }
       let array1 = [];//数组1
       this.multipleSelection.forEach((item, i) => {
-        array1.push((i + 1) + '.' + item.indexDate + ',' + item.indexTypeName + ',' + item.dataProvideDepartmentName + ',' + item.accessCaliberName + ',' + item.indexValue + ',' + item.indexUnitName + '\n');
-
-        // array1.push((i + 1) + '.' + item.indexDate + ',' + item.indexTypeName + ',' + item.dataProvideDepartmentName + ',' + item.accessCaliberName + ',' + item.indexValue + ',' + item.indexUnitName + '\n');
-
-
+        array1.push((i + 1) + '.' + item.indexDate + ',' + item.indexTypeName + ',' + item.dataProvideDepartmentName + ',' + item.accessCaliberName + ',' + item.indexValue + ',' + item.indexUnitName + '\n') + '\n';
       });
-      var array_list = array1.join('')
+      let array_list = array1.join('')
       // var array_list = array1.toString();  //把数组转换为字符串
+      console.log(array_list);
       this.administrativeAdvice = array_list;
       this.dlag_Correlation_zb = false;//关闭弹窗
     },
@@ -519,7 +545,8 @@ export default {
         array1.push((i + 1) + '.' + item.describe + ',' + '\n' + '管理建议：' + '\n' + item.managementAdvice + '\n');
 
       });
-      var array_list = array1.join('')
+      let array_list = array1.join('')
+      console.log(array_list);
       this.businessEvaluation = array_list;
       this.dlag_Correlation_wt = false;//添加关联问题
 
@@ -541,6 +568,7 @@ export default {
         businessEvaluation: this.administrativeAdvice,//指标
         administrativeAdvice: this.businessEvaluation  //问题的内容
       }
+
       this.generate(params2);//生成
     },
     // 生成
@@ -599,8 +627,6 @@ export default {
         console.log(err);
       })
     },
-
-
     // 删除
     remove_list (id) {
       this.$confirm(`将永久删除附件?`, "提示", {

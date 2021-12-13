@@ -413,25 +413,35 @@
                                label="附件">
                 <template slot-scope="scope">
 
-                  <div class="update"
+                  <!-- createUserUuid fileCount-->
+                  <el-popover placement="bottom"
+                              width="350"
+                              v-if="scope.row.attachmentList.length!==0"
+                              @show="open_file_details(scope.row.attachmentList)"
+                              :popper-class="enclosure_moban_list==''?'no-padding':''"
+                              trigger="click">
+                    <ul class="fileList-ul">
+                      <li class="tableFileList-title">模版列表 </li>
+                      <li v-for="(item,index) in enclosure_moban_list"
+                          :key="index"
+                          class="pointer blue"
+                          @click="download(item.attachmentUuid,item.fileName)">
+                        {{item.fileName}}</li>
+                    </ul>
+                    <div slot="reference"
+                         style="color: #1371cc;"
+                         class="pointer"><i
+                         class="el-icon-folder-opened list-folder"></i>{{scope.row.attachmentList.length}}
+                    </div>
+                  </el-popover>
+
+                  <!-- <div class="update"
                        @click="open_file_details(scope.row.attachmentList)">
                     <i class="update_icon">
-                      <svg t="1631877671204"
-                           class="icon"
-                           viewBox="0 0 1024 1024"
-                           version="1.1"
-                           xmlns="http://www.w3.org/2000/svg"
-                           p-id="9939"
-                           width="200"
-                           height="200">
-                        <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                              fill="#FD9D27"
-                              p-id="9940"></path>
-                      </svg>
+                      
                     </i>
                     <span>{{scope.row.attachmentList.length}}</span>
-
-                  </div>
+                  </div> -->
                 </template>
               </el-table-column>
 
@@ -1084,19 +1094,9 @@
       </el-table>
 
       <!-- 附件资料 -->
-      <el-table :data="enclosure_details_list"
+      <!-- <el-table :data="enclosure_details_list"
                 v-if="moban_list==1"
                 style="width: 100%;">
-        <!-- <el-table-column prop="dataTaskNumber"
-                             label="流水单号">
-            </el-table-column> -->
-        <!-- <el-table-column type="index"
-                         align="center"
-                         label="序号">
-        </el-table-column>
-        <el-table-column prop="fiileType"
-                         label="资料类型">
-        </el-table-column> -->
         <el-table-column prop="fileName"
                          align="center"
                          label="文件名称">
@@ -1110,7 +1110,7 @@
             </el-button>
           </template>
         </el-table-column>
-      </el-table>
+      </el-table> -->
     </el-dialog>
 
     <!-- 确认是否下发 -->
@@ -1725,16 +1725,15 @@ export default {
 
     // 新增  初始化模版 查看附件
     open_file_details (list) {
-      console.log(list);
+      // console.log(list);
       this.moban_list = 0;
       this.enclosure_moban_list = list;//模版资料
-
-      if (this.enclosure_moban_list.length == 0) {
-        this.$message('暂无上传的附件');
-        return false
-      } else {
-        // this.dialogVisibl_enclosure_details = true;
-      }
+      // if (this.enclosure_moban_list.length == 0) {
+      //   this.$message('暂无上传的附件');
+      //   return false
+      // } else {
+      // this.dialogVisibl_enclosure_details = true;
+      // }
 
     },
 
