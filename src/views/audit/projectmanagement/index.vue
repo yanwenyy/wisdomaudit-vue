@@ -1332,6 +1332,7 @@ export default {
   components: { Pagination },
   data () {
     return {
+      userInfo:{},
       dqtoken: "",
       projectTableLoading: false, //项目管理Loading
       setLeaderDisable: false, //设置组长可编辑
@@ -1662,13 +1663,13 @@ export default {
 
   created () {
     this.dqtoken = sessionStorage.getItem("TOKEN");
-    this.projectData(this.query);
+    this.projectData(this.query,'created');
     this.selectProjectData(this.projectTypeNum);
     // this.selectprojectPeople(this.selectprojectPeopleNum);
     this.selectloadaudittorg(this.selectprojectPeopleNum);
 
     this.areasSelect(this.areas);
-    this.get_user(); //获取当前登录人接口
+
 
     // 编辑  审计整改问题  引用
     this.getloadcascader("Category");
@@ -1831,13 +1832,18 @@ export default {
       };
     },
     //项目列表
-    projectData (data) {
+    projectData (data,from) {
       this.projectTableLoading = true;
       projectList(data).then((resp) => {
-        this.tableData = resp.data.records;
-        this.project = resp.data;
-        this.total = resp.data.total;
-        this.projectTableLoading = false;
+        if(from=='created'){
+          this.get_user('getProject',resp); //获取当前登录人接口
+        }else{
+          this.tableData = resp.data.records;
+          this.project = resp.data;
+          this.total = resp.data.total;
+          this.projectTableLoading = false;
+        }
+
       });
     },
     // 专题下拉框
@@ -1942,9 +1948,15 @@ export default {
       this.addprojectjing.projectChargemanName = this.userInfo.user.realName;
     },
     //获取当前登录人信息
-    get_user () {
+    get_user (from,datas) {
       get_userInfo().then((resp) => {
         this.userInfo = resp.data;
+        if(from=='getProject'){
+          this.tableData = datas.data.records;
+          this.project = datas.data;
+          this.total = datas.data.total;
+          this.projectTableLoading = false;
+        }
       });
     },
     //增加专项项目table假数据

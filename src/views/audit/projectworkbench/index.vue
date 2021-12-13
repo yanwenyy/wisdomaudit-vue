@@ -1219,7 +1219,7 @@ export default {
       this.ifshow = true;
       initProject(data).then((resp) => {
         this.projectInit = resp.data.records;
-        if (resp.data.records) {
+        if (resp.data.records&&resp.data.records!='') {
           this.active_project = resp.data.records[0].managementProjectUuid;
         }
         this.ifshow = false;
