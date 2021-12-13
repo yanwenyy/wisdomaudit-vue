@@ -22,14 +22,14 @@
           </el-col>
 
           <div class="text">
-            <el-input type="textarea"
+            <!-- <el-input type="textarea"
                       resize="none"
                       v-model="administrativeAdvice">
-            </el-input>
-            <!-- <quill-editor ref="text"
+            </el-input> -->
+            <quill-editor ref="text"
                           :options="editorOption"
                           v-model="administrativeAdvice"
-                          class="myQuillEditor" /> -->
+                          class="myQuillEditor" />
 
           </div>
 
@@ -48,15 +48,15 @@
           </el-col>
 
           <div class="text">
-            <!-- <quill-editor ref="text"
+            <quill-editor ref="text"
                           :options="editorOption"
                           v-model="businessEvaluation"
-                          class="myQuillEditor" /> -->
+                          class="myQuillEditor" />
 
-            <el-input type="textarea"
+            <!-- <el-input type="textarea"
                       resize="none"
                       v-model="businessEvaluation">
-            </el-input>
+            </el-input> -->
           </div>
 
         </el-row>
