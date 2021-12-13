@@ -207,7 +207,9 @@
   }
   .searchBtn button{
     background: #0089D6!important;
-    color:#fff;
+    color:#fff!important;
   }
-
+  >>>.searchBtn .el-input-group__append{
+    border:none!important;
+  }
 </style>
