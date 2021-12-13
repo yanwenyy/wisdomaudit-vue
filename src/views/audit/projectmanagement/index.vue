@@ -701,7 +701,7 @@
                   <el-form-item class="table-formItem"
                                 :prop="'auditList.' + scope.$index + '.auditOrgName'"
                                 :rules="addzhuanRules.auditOrgName">
-                    <el-select class="table-select"
+                    <el-select :disabled="scope.row.status=='1'" class="table-select"
                                placeholder="请选择"
                                v-model="scope.row.auditOrgUuid"
                                @change="orgSelect(scope.row)">
@@ -726,7 +726,7 @@
                                placeholder="请选择"
                                v-model="scope.row.projectChargemanName"
                                @change="LeaderSelectEdit(scope.row)"
-                               :disabled="scope.row.isChargemanCanChenge == 0? true : false">
+                               :disabled="scope.row.isChargemanCanChenge == 0||scope.row.status=='1'? true : false">
                       <el-option v-for="item in projectpeopleoptions"
                                  :key="item.id"
                                  :label="item.realName"
