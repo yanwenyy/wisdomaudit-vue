@@ -212,6 +212,28 @@
           <!--<el-input disabled-->
                     <!--v-model="formDetail.signatureDate"></el-input>-->
         </el-form-item>
+        <!--<el-form-item label="上传附件:"-->
+                      <!--class="falseRequired">-->
+          <!--<el-upload v-if="!ifLook"-->
+                     <!--class="upload-demo"-->
+                     <!--drag-->
+                     <!--action="/wisdomaudit/auditBasy/filesUpload"-->
+                     <!--:on-success="handleChangePic"-->
+                     <!--:before-remove="handleRemoveApk"-->
+                     <!--accept=".docx,.xls,.xlsx,.txt,.zip,.doc"-->
+                     <!--:file-list="fileList"-->
+                     <!--multiple-->
+                     <!--:key="key"-->
+                     <!--:headers="headers">-->
+            <!--<i class="el-icon-upload"></i>-->
+            <!--<div class="el-upload__text">-->
+              <!--点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc-->
+            <!--</div>-->
+          <!--</el-upload>-->
+          <!--<div v-if="ifLook">-->
+            <!--<div v-for="(item,index) in fileList">{{item.name}}</div>-->
+          <!--</div>-->
+        <!--</el-form-item>-->
         <span slot="footer"
               class="dialog-footer">
           <el-button @click="handleClose">取 消</el-button>
@@ -314,6 +336,8 @@ export default {
   props: ['active_project', 'userRole'],
   data () {
     return {
+      apkFiles: [],//附件上传列表
+      fileList: [],//附件上传回显列表
       headers: {},
       canClick: true,
       ifLook: false,
@@ -374,6 +398,94 @@ export default {
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
   },
   methods: {
+    //附件上传成功
+    handleChangePic (response, file, fileList) {
+      if (response && response.code === 0) {
+        this.apkFiles.push(response.data);
+        this.$message({
+          message: '上传成功',
+          type: 'success',
+          duration: 1500,
+          onClose: () => {
+            // this.apkFiles.push(response.data);
+            // console.log(this.apkFiles,3333)
+          }
+        })
+      } else {
+        this.$message({
+          message: '上传失败',
+          type: 'error',
+          duration: 1500,
+          onClose: () => {
+
+          }
+        })
+      }
+    },
+    //附件删除
+    handleRemoveApk (file, fileList) {
+      var ifDel = true, that = this;
+      var id = file.response ? file.response.data.attachmentUuid : file.attachmentUuid;
+      return new Promise(function (resolve, reject) {
+        del_file(id).then(resp => {
+          if (resp.code == 0) {
+            that.$message({
+              message: "删除成功",
+              type: "success",
+            });
+            if (file.response) {
+              that.apkFiles.remove(file.response.data);
+              that.key = Math.random();
+            } else {
+              // console.log(file)
+              that.fileList.remove(file);
+              that.formState.attachmentList = that.formState.attachmentList.filter((item) => { item.attachment_uuid != file.attachmentUuid })
+              // console.log(that.formState.attachmentList,222)
+            }
+            return true;
+
+          } else {
+            that.$message({
+              message: resp.data.msg,
+              type: "error",
+            });
+            ifDel = false;
+            resolve(ifDel);
+            return ifDel;
+          }
+        });
+      }).then(function (val) {
+        reject(val);
+        return val
+      })
+    },
+    //附件下载
+    downFile (id, fileName) {
+      let formData = new FormData()
+      formData.append('fileId', id)
+      down_file(formData).then(resp => {
+        const content = resp;
+        const blob = new Blob([content],
+          { type: 'application/octet-stream,charset=UTF-8' }
+        )
+        if ('download' in document.createElement('a')) {
+          // 非IE下载
+          const elink = document.createElement('a')
+          elink.download = fileName //下载后文件名
+          elink.style.display = 'none'
+          elink.href = window.URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象
+          document.body.removeChild(elink)
+        } else {
+          // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
+    },
     //获取用户信息
     getUser () {
       var that = this;
