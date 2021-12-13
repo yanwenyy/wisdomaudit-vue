@@ -740,7 +740,7 @@
               <el-table-column label="操作"
                                width="80">
                 <template slot-scope="scope">
-                  <el-button type="text"
+                  <el-button v-if="scope.row.status!='1'" type="text"
                              style="color: #db454b; background: none; border: 0"
                              size="small"
                              @click.native.prevent="
@@ -3128,8 +3128,8 @@ export default {
 
 .addForm /deep/ .el-form-item__error {
   position: absolute;
-  top: 0%;
-  left: 0%;
+  top: 22%!important;
+  left: 6%!important;
 }
 .addForm >>> .el-form-item__label {
   margin-left: 15px !important;
@@ -3139,8 +3139,8 @@ export default {
 }
 .addzhuanForm /deep/ .el-form-item__error {
   position: absolute;
-  top: 0%;
-  left: 0%;
+  top: 22%!important;
+  left: 6%!important;
 }
 /* .addzhuanForm >>> .el-form-item__content{
   margin-left: 83px !important;
