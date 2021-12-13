@@ -2836,7 +2836,7 @@ export default {
   background-color: rgb(12, 135, 214, 0.3) !important;
 }
 .el-transfer /deep/ .el-transfer-panel {
-  width: 35%;
+  width: 38%;
 }
 .selfTask /deep/ .el-form-item__error {
   position: absolute;
