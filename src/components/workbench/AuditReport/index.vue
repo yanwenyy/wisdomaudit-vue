@@ -84,7 +84,7 @@
           <ul v-if="file_list.attachmentList &&file_list.attachmentList.length!==0">
             <li v-for="(item,index) in file_list.attachmentList"
                 :key="index">
-              <p @click="download_click(item.attachmentUuid,item.fileName)">{{item.fileName}}</p>
+              <p class="fileName_show" @click="download_click(item.attachmentUuid,item.fileName)">{{item.fileName}}</p>
               <span style="color:#606266">版本1.0</span><span style="color:#606266">时间{{item.createTime|filtedate
 }}</span>
               <el-button type="text"
@@ -819,4 +819,7 @@ export default {
   border-radius: 0 5px 5px 0;
   /* background: #1371cc !important; */
 }
+  .fileName_show{
+    font-size: 14px!important;
+  }
 </style>
