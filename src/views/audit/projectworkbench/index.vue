@@ -198,39 +198,39 @@
           </div>
           <!-- 审计资料 -->
           <div class="routerView"
-               v-else-if="index == '2-1'">
+               v-if="index == '2-1'">
             <AuditData :active_project="active_project"
                        :userRole="userInfo.userRole"
                        :isLiaison="userInfo.isLiaison"></AuditData>
           </div>
           <!-- 审计任务 -->
           <div class="routerView"
-               v-else-if="index == '2-2'">
+               v-if="index == '2-2'">
             <AuditTask :active_project="active_project"
                        :userRole="userInfo.userRole"
                        :isLiaison="userInfo.isLiaison"></AuditTask>
           </div>
           <div class="routerView"
-               v-else-if="index == '2-3'">
+               v-if="index == '2-3'">
             <Auditproblem :active_project="active_project"
                           :userRole="userInfo.userRole"
                           :isLiaison="userInfo.isLiaison"></Auditproblem>
           </div>
           <div class="routerView"
-               v-else-if="index == '2-4'">
+               v-if="index == '2-4'">
             <AuditConfirmation :active_project="active_project"
                                :userRole="userInfo.userRole"
                                :isLiaison="userInfo.isLiaison"></AuditConfirmation>
           </div>
           <div class="routerView"
-               v-else-if="index == '3-1'">
+               v-if="index == '3-1'">
             <!-- 审计报告 -->
             <AuditReport :active_project="active_project"
                          :userRole="userInfo.userRole"
                          :isLiaison="userInfo.isLiaison"></AuditReport>
           </div>
           <div class="routerView"
-               v-else>
+               v-if="index == '3-2'">
             <Businessindicator :active_project="active_project"
                                :userRole="userInfo.userRole"
                                :isLiaison="userInfo.isLiaison"></Businessindicator>
@@ -1118,7 +1118,7 @@ export default {
     this.get_user();
     this.dqtoken = sessionStorage.getItem("TOKEN");
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
-    // 
+    //
   },
   mounted () {
     this.defaultActive = "";
@@ -1126,7 +1126,7 @@ export default {
     this.queryInfo = this.$route.query;
     if (this.queryInfo.index && this.queryInfo.projectId) {
       // debugger;
-      // 
+      //
       // this.active_project = this.queryInfo.projectId;
       this.getprojectList(this.queryManage, 'home');
       document.body.scrollTop = 0;
@@ -1201,7 +1201,7 @@ export default {
     getprojectList (data, from) {
       projectListByuser(data).then((resp) => {
         this.projectNum = resp.data.records;
-        // 
+        //
         this.getInitProject(this.queryProject);
         // this.project_more();
         if (from == 'home') {
@@ -1250,10 +1250,10 @@ export default {
     },
     // 点击初始化项目事件
     look_project (index, item) {
-      // 
-      // 
+      //
+      //
       this.active_project = item.managementProjectUuid; //点击选择添加高亮
-      // 
+      //
       if (index > 6) {
         this.projectInitMore.splice(index, 1);
         this.projectInitMore.unshift(item);
@@ -1266,7 +1266,7 @@ export default {
         this.projectInit.unshift(item);
       }
 
-      // 
+      //
 
       if (index > 6) {
         this.projectInitUuid =
@@ -1302,7 +1302,7 @@ export default {
 
     //责任人选择事件
     selectChange (row) {
-      // 
+      //
       this.modelPerson.managementProjectUuid = row.managementProjectUuid;
       this.modelPerson.peopleTableUuid = row.peopleTableUuid;
       this.modelPerson.auditTaskUuid = row.auditTaskUuid;
@@ -1329,14 +1329,14 @@ export default {
         this.notInitType = this.projectNum[index].projectType;
         this.name = this.projectNum[index].projectName;
       }
-      // 
+      //
       this.addDialogVisible = true;
       this.getSelectData(1, 1000);
       // auditModelList(this.modelQuery).then((resp) => {
       //   this.modelTableData = resp.data.records;
       //   this.modelSize = resp.data;
       // });
-      // 
+      //
       this.getTaskSelfList.condition.managementProjectUuid =
         this.managementProjectUuid;
       this.getTaskSelf(this.getTaskSelfList);
@@ -1348,7 +1348,7 @@ export default {
     moreProject (data) {
       projectListByuser(data).then((resp) => {
         this.projectAll = resp.data.records;
-        // 
+        //
       });
     },
     // 更多按钮
@@ -1358,7 +1358,7 @@ export default {
     },
     // 选择组员事件
     selectMember (val, to, list) {
-      // 
+      //
       // this.updataPerson.projectId = this.managementProjectUuid;
       // this.updataPerson.projectMemberships = [];
       // for (let i = 0; i < val.length; i++) {
@@ -1379,7 +1379,7 @@ export default {
       } else {
         this.data.forEach((e) => {
           if (list.indexOf(e.key) != -1) {
-            // 
+            //
             e.isLiaison = 0;
           }
         });
@@ -1391,9 +1391,9 @@ export default {
       this.loading = true;
       getProjectMember(num, size, id).then((resp) => {
         this.personMes = resp.data.list;
-        // 
+        //
 
-        // 
+        //
         this.data = [];
         resp.data.list.forEach((e) => {
           this.data.push({
@@ -1404,7 +1404,7 @@ export default {
             peopleTableUuid: String(e.id),
           });
         });
-        // 
+        //
         this.projectMember(this.query);
         this.loading = false;
       });
@@ -1423,7 +1423,7 @@ export default {
 
         this.peopleSelection = resp.data.records;
         this.tableData = resp.data.records;
-        // 
+        //
         this.value = [];
         this.peopleSelection.forEach((e) => {
           if (e.isCanDelete == 0) {
@@ -1486,7 +1486,7 @@ export default {
     cancel_Btn (row) {
 
 
-      // 
+      //
       row.isLiaison = 0;
       for (let k = 0; k < this.peopleSelection.length; k++) {
         if (
@@ -1496,14 +1496,14 @@ export default {
           return (row.disabled = true);
         } else {
           row.disabled = false;
-          // 
+          //
           // for(let p=0; p<this.arrRightValue.length;p++){
           //   if(this.arrRightValue[p] == row.peopleTableUuid){
           //    return this.arrRightValue.remove('this.arrRightValue[p')
           //   }
 
           // }
-          // 
+          //
           // this.value = [];
         }
       }
@@ -1513,7 +1513,7 @@ export default {
     nextBtn () {
       var selectedPeople = [];
 
-      // 
+      //
 
       this.data.forEach((item) => {
         if (this.value.indexOf(item.key) != -1) {
@@ -1578,7 +1578,7 @@ export default {
               this.getModelList.pageNo < 1 ? 1 : this.getModelList.pageNo;
             this.getModelList.condition.managementProjectUuid =
               this.managementProjectUuid;
-            // 
+            //
             this.getauditModelList(this.getModelList);
           });
         })
@@ -1628,14 +1628,14 @@ export default {
         },
       };
       auditModelList(query).then((resp) => {
-        // 
+        //
         this.modelTableData = resp.data.records;
         this.modelSize = resp.data;
       });
     },
     // 模型选择事件
     handleSelectionChangeModel (val) {
-      // 
+      //
       this.selectauditModelList.auditModelList = [];
       for (let i = 0; i < val.length; i++) {
         this.selectauditModelList.auditModelList.push({
@@ -1650,7 +1650,7 @@ export default {
     // 自建任务责任人下拉框事件
     selectChangePerson (val) {
 
-      // 
+      //
       this.taskSelf.peopleTableUuid = val;
       this.edittaskSelfForm.peopleTableUuid = val;
       for (let i = 0; i < this.tableData.length; i++) {
@@ -1661,7 +1661,7 @@ export default {
       }
     },
     selectChangenumber (val) {
-      // 
+      //
       // this.changePerson.peopleTableUuid = val.peopleTableUuid;
       // for (let i = 0; i < this.tableData.length; i++) {
       //   if (val.peopleTableUuid == this.tableData[i].peopleTableUuid) {
@@ -1758,12 +1758,12 @@ export default {
         this.modelListTabSize = resp.data;
         this.taskTotal = resp.data.total;
 
-        // 
+        //
       });
     },
     // 模型引入
     modelInfo () {
-      // 
+      //
 
       if (this.selectauditModelList.auditModelList.length > 0) {
         this.isdisabled = true;
@@ -1774,7 +1774,7 @@ export default {
           this.addDialogVisible = true;
           this.getModelList.condition.managementProjectUuid =
             this.managementProjectUuid;
-          // 
+          //
           this.getauditModelList(this.getModelList);
         });
         setTimeout(() => {
@@ -1804,14 +1804,14 @@ export default {
     thematicSelect (data) {
       thematicAreas(data).then((resp) => {
         this.thematicOption = resp.data;
-        // 
+        //
       });
     },
     //领域下拉框
     areasSelect (data) {
       thematicAreas(data).then((resp) => {
         this.areasOption = resp.data;
-        // 
+        //
       });
     },
     // 确定自建任务
@@ -1857,7 +1857,7 @@ export default {
                   this.addDialogVisible = true;
                   this.getModelList.condition.managementProjectUuid =
                     this.managementProjectUuid;
-                  // 
+                  //
                   this.getauditModelList(this.getModelList);
                 });
               } else {
@@ -1878,7 +1878,7 @@ export default {
               this.addDialogVisible = true;
               this.getModelList.condition.managementProjectUuid =
                 this.managementProjectUuid;
-              // 
+              //
               this.getauditModelList(this.getModelList);
             });
 
@@ -1923,7 +1923,7 @@ export default {
     },
     // 自建任务编辑完成按钮
     edittaskSelfSave () {
-      // 
+      //
       if (this.fileList.length > 0) {
         const loading = this.$loading({
           lock: true,
@@ -2021,7 +2021,7 @@ export default {
     // 自建任务删除
     delete_zj (id) {
       deletmodelTask(id).then((resp) => {
-        // 
+        //
         this.getTaskSelfList.condition.managementProjectUuid =
           this.managementProjectUuid;
         this.getTaskSelf(this.getTaskSelfList);
@@ -2063,7 +2063,7 @@ export default {
       })
         .then((res) => {
           const content = res.data;
-          // 
+          //
           const blob = new Blob([content], {
             type: "application/octet-stream,charset=UTF-8",
           });
@@ -2086,7 +2086,7 @@ export default {
           }
         })
         .catch((err) => {
-          // 
+          //
         });
     },
     // 附件点击弹框事件
