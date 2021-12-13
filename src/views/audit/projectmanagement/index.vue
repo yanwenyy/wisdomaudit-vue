@@ -207,7 +207,7 @@
     box-sizing: border-box;">
 
             <el-row>
-              <el-form-item label="ㅤ1项目编号:"
+              <el-form-item label="ㅤ项目编号:"
                             prop="projectCode">
                 <el-input placeholder=""
                           v-model="addProjectManagement.projectCode"
@@ -296,7 +296,7 @@
                                     placeholder="请选择"
                                     v-model="addProjectManagement.auditStartData"
                                     :picker-options="startPickerOptions"
-                                    value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
+                                    value-format="yyyy-MM-dd"></el-date-picker>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
@@ -307,7 +307,7 @@
                                     v-model="addProjectManagement.auditFinishData"
                                     style="margin-left: 5px"
                                     :picker-options="endPickerOptions"
-                                    value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
+                                    value-format="yyyy-MM-dd"></el-date-picker>
                   </el-form-item>
                 </el-col>
               </el-form-item>
@@ -534,7 +534,7 @@
                                   placeholder="请选择"
                                   v-model="addprojectjing.auditStartData"
                                   :picker-options="startPickerOptions"
-                                  value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
+                                  value-format="yyyy-MM-dd"></el-date-picker>
                 </el-form-item>
               </el-col>
               <!-- :disabled="isdisabled" -->
@@ -546,7 +546,7 @@
                                   v-model="addprojectjing.auditFinishData"
                                   style="margin-left: 3px"
                                   :picker-options="endPickerOptions"
-                                  value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
+                                  value-format="yyyy-MM-dd"></el-date-picker>
                 </el-form-item>
               </el-col>
             </el-form-item>
