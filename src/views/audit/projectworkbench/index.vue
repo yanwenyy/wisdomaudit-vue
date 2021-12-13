@@ -1448,10 +1448,17 @@ export default {
         });
       });
     },
+    //重加载接口
+    reset(){
+      this.thematicSelect(this.thematic);
+      this.areasSelect(this.areas);
+      this.moreProject(this.queryManageAll);
+    },
     //查询责任人列表
 
     addDialogClosed () {
-      this.$router.go(0);
+      this.reset()
+      // this.$router.go(0);
     },
 
     //设为接口人事件
@@ -1681,10 +1688,10 @@ export default {
       editProjectCode(this.projectCode).then((resp) => {
         this.$message.success("初始化项目完成！");
       });
-
-      setInterval(() => {
-        this.$router.go(0);
-      }, 1000);
+      this.reset()
+      // setInterval(() => {
+      //   this.$router.go(0);
+      // }, 1000);
     },
     // 增加模型任务按钮事件
     selectModel () {
