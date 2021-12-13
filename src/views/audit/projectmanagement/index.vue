@@ -203,8 +203,7 @@
                  label-position="right"
                  hide-required-asterisk>
           <div class="center"
-               style="padding-left: 25%;
-    box-sizing: border-box;">
+               style="box-sizing: border-box;">
 
             <el-row>
               <el-form-item label="ㅤ项目编号:"
@@ -2281,10 +2280,13 @@ export default {
       }
       this.addProjectManagement.auditList = result;
     },
-
     addSave () {
       this.$refs["addProjectManagement"].validate((valid) => {
         if (valid) {
+          if(this.addProjectManagement.auditList.length==0){
+            this.$message.error("请设置组长");
+            return false;
+          }
           this.isDisable = true;
           setTimeout(() => {
             this.isDisable = false;
@@ -2372,6 +2374,10 @@ export default {
     editBtn (editProjectManagement) {
       this.$refs[editProjectManagement].validate((valid) => {
         if (valid) {
+          if(this.addProjectManagement.auditList.length==0){
+            this.$message.error("请设置组长");
+            return false;
+          }
           this.isDisable = true;
           setTimeout(() => {
             this.isDisable = false;
