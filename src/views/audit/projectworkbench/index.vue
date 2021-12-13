@@ -1450,6 +1450,7 @@ export default {
     },
     //重加载接口
     reset(){
+      this.getprojectList(this.queryManage);
       this.thematicSelect(this.thematic);
       this.areasSelect(this.areas);
       this.moreProject(this.queryManageAll);
@@ -1687,8 +1688,9 @@ export default {
       // this.projectCode.projectType = this.notInitType;
       editProjectCode(this.projectCode).then((resp) => {
         this.$message.success("初始化项目完成！");
+        this.addDialogVisibleRes()
+        this.reset()
       });
-      this.reset()
       // setInterval(() => {
       //   this.$router.go(0);
       // }, 1000);
