@@ -201,12 +201,15 @@
             type="textarea"
             v-model="temp.describe"
             placeholder="请输入描述"
+            :autosize="{ minRows: 3}"
           ></el-input>
         </el-form-item>
         <el-form-item label="管理建议：" prop="managementAdvice" class="long">
           <el-input
+            type="textarea"
             v-model="temp.managementAdvice"
             placeholder="请输入管理建议"
+            :autosize="{ minRows: 3}"
           />
         </el-form-item>
         <el-form-item label="发现日期：" prop="problemDiscoveryTime">
@@ -385,13 +388,16 @@
             v-model="dqProblem.describe"
             placeholder="请输入描述"
             :disabled="ifadd != 2 ? false : true"
+            :autosize="{ minRows: 3}"
           />
         </el-form-item>
         <el-form-item label="管理建议：" prop="managementAdvice" class="long">
           <el-input
+            type="textarea"
             v-model="dqProblem.managementAdvice"
             placeholder="请输入管理建议"
             :disabled="ifadd != 2 ? false : true"
+            :autosize="{ minRows: 3}"
           />
         </el-form-item>
         <el-form-item label="发现日期：" prop="problemDiscoveryTime">
@@ -537,7 +543,6 @@
               <el-select
                 v-model="dqbasis.val"
                 placeholder="请选择依据名称"
-                multiple
                 filterable
                 remote
                 reserve-keyword

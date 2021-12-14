@@ -203,8 +203,7 @@
                  label-position="right"
                  hide-required-asterisk>
           <div class="center"
-               style="padding-left: 25%;
-    box-sizing: border-box;">
+               style="box-sizing: border-box;">
 
             <el-row>
               <el-form-item label="ㅤ项目编号:"
@@ -702,7 +701,7 @@
                   <el-form-item class="table-formItem"
                                 :prop="'auditList.' + scope.$index + '.auditOrgName'"
                                 :rules="addzhuanRules.auditOrgName">
-                    <el-select class="table-select"
+                    <el-select :disabled="scope.row.status=='1'" class="table-select"
                                placeholder="请选择"
                                v-model="scope.row.auditOrgUuid"
                                @change="orgSelect(scope.row)">
@@ -727,7 +726,7 @@
                                placeholder="请选择"
                                v-model="scope.row.projectChargemanName"
                                @change="LeaderSelectEdit(scope.row)"
-                               :disabled="scope.row.isChargemanCanChenge == 0? true : false">
+                               :disabled="scope.row.isChargemanCanChenge == 0||scope.row.status=='1'? true : false">
                       <el-option v-for="item in projectpeopleoptions"
                                  :key="item.id"
                                  :label="item.realName"
@@ -2281,10 +2280,13 @@ export default {
       }
       this.addProjectManagement.auditList = result;
     },
-
     addSave () {
       this.$refs["addProjectManagement"].validate((valid) => {
         if (valid) {
+          if(this.addProjectManagement.auditList.length==0){
+            this.$message.error("请设置组长");
+            return false;
+          }
           this.isDisable = true;
           setTimeout(() => {
             this.isDisable = false;
@@ -2372,6 +2374,10 @@ export default {
     editBtn (editProjectManagement) {
       this.$refs[editProjectManagement].validate((valid) => {
         if (valid) {
+          if(this.addProjectManagement.auditList.length==0){
+            this.$message.error("请设置组长");
+            return false;
+          }
           this.isDisable = true;
           setTimeout(() => {
             this.isDisable = false;
@@ -3129,7 +3135,7 @@ export default {
 .addForm /deep/ .el-form-item__error {
   position: absolute;
   top: 22%!important;
-  left: 6%!important;
+  left: 40%!important;
 }
 .addForm >>> .el-form-item__label {
   margin-left: 15px !important;
@@ -3140,7 +3146,7 @@ export default {
 .addzhuanForm /deep/ .el-form-item__error {
   position: absolute;
   top: 22%!important;
-  left: 6%!important;
+  left: 40%!important;
 }
 /* .addzhuanForm >>> .el-form-item__content{
   margin-left: 83px !important;
