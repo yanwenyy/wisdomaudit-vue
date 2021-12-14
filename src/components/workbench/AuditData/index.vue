@@ -164,7 +164,8 @@
           </el-table>
         </div>
         <!-- 分页 -->
-        <div class="page">
+        <div class="page"
+             v-show="this.tableData.total>0">
           <el-pagination @size-change="handleSizeChange_model"
                          @current-change="handleCurrentChange_model"
                          :page-size="this.tableData.size"
@@ -286,7 +287,8 @@
         </div>
 
         <!-- 分页 -->
-        <div class="page">
+        <div class="page"
+             v-show="this.tableData2.total>0">>
           <el-pagination @size-change="handleSizeChange_zj"
                          @current-change="handleCurrentChange_zj"
                          :page-size="this.tableData2.size"

@@ -1,10 +1,12 @@
 <template>
   <div class="page-container auditproblem">
     <div class="filter-container">
-      <el-row :gutter="24" class="titleMes">
+      <el-row :gutter="24"
+              class="titleMes">
         <!-- 自建新增   -->
         <el-col :span="1.5">
-          <el-button type="primary" @click="add()">新增审计问题</el-button>
+          <el-button type="primary"
+                     @click="add()">新增审计问题</el-button>
         </el-col>
 
         <!-- <div class="search">
@@ -22,17 +24,14 @@
           </el-input>
         </div> -->
         <div class="search">
-          <el-input
-            placeholder="请输入问题"
-            v-model="pageQuery.condition.problem"
-          >
+          <el-input placeholder="请输入问题"
+                    v-model="pageQuery.condition.problem">
           </el-input>
-          <div
-            class="search_icon"
-            style="background: rgb(12, 135, 214) !important"
-            @click="getList(1)"
-          >
-            <i class="el-icon-search" style="color: white"></i>
+          <div class="search_icon"
+               style="background: rgb(12, 135, 214) !important"
+               @click="getList(1)">
+            <i class="el-icon-search"
+               style="color: white"></i>
           </div>
           <!-- <el-button type="primary"
                       >筛选</el-button> -->
@@ -42,220 +41,202 @@
     </div>
     <!-- @sort-change="sortChange"
        -->
-    <el-table
-      ref="problemtable"
-      :key="tableKey"
-      v-loading="listLoading"
-      fit
-      style="width: 100%"
-      :data="list"
-      border
-      highlight-current-row
-      height="calc(100vh - 300px)"
-      max-height="calc(100vh - 300px)"
-      @selection-change="handleSelectionChange"
-    >
-      <el-table-column label="序号" width="70">
-        <template slot-scope="scope">
-          {{ scope.$index + 1 }}
-        </template>
-      </el-table-column>
-      <el-table-column label="问题">
-        <template slot-scope="scope">
-          <div class="canclick" @click="checkDetail(scope.row.problemListUuid)">
-            {{ scope.row.problem }}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="领域" prop="field">
-        <template slot-scope="scope">
-          <div>
-            <!-- {{ fieldFilter(scope.row.field) }} -->
-            {{ scope.row.field }}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="专题" prop="special">
-        <template slot-scope="scope">
-          <div>
-            {{ scope.row.special }}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="风险金额（万元）"
-        width="140px"
-        prop="riskAmount"
-        align="right"
-      >
-        <template slot-scope="scope">
-          {{ parseFloat(scope.row.riskAmount) }}
-        </template>
-      </el-table-column>
-      <el-table-column label="" width="40px"> </el-table-column>
-      <el-table-column label="发现日期">
-        <template slot-scope="scope">
-          {{ repDate(scope.row.problemDiscoveryTime) }}
-        </template>
-      </el-table-column>
-      <el-table-column label="发现人" prop="problemFindPeople" />
-      <el-table-column
-        label="操作"
-        width="100"
-        v-if="userRole == 1 || userRole == 2"
-      >
-        <template slot-scope="scope">
-          <el-button
-            @click="openDetail(scope.$index)"
-            type="text"
-            style="color: #0c87d6"
-            >编辑</el-button
-          >
-          <el-button
-            @click="del(scope.row.problemListUuid)"
-            type="text"
-            style="color: #ff8a72"
-            >删除</el-button
-          >
-        </template>
-      </el-table-column>
-    </el-table>
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      :page.sync="pageQuery.pageNo"
-      :limit.sync="pageQuery.pageSize"
-      @pagination="getList"
-    />
+    <div class="min_height">
+
+      <el-table ref="problemtable"
+                :key="tableKey"
+                v-loading="listLoading"
+                fit
+                style="width: 100%"
+                :data="list"
+                border
+                highlight-current-row
+                height="calc(100vh - 300px)"
+                max-height="calc(100vh - 300px)"
+                @selection-change="handleSelectionChange">
+        <el-table-column label="序号"
+                         width="70">
+          <template slot-scope="scope">
+            {{ scope.$index + 1 }}
+          </template>
+        </el-table-column>
+        <el-table-column label="问题">
+          <template slot-scope="scope">
+            <div class="canclick"
+                 @click="checkDetail(scope.row.problemListUuid)">
+              {{ scope.row.problem }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="领域"
+                         prop="field">
+          <template slot-scope="scope">
+            <div>
+              <!-- {{ fieldFilter(scope.row.field) }} -->
+              {{ scope.row.field }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="专题"
+                         prop="special">
+          <template slot-scope="scope">
+            <div>
+              {{ scope.row.special }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="风险金额（万元）"
+                         width="140px"
+                         prop="riskAmount"
+                         align="right">
+          <template slot-scope="scope">
+            {{ parseFloat(scope.row.riskAmount) }}
+          </template>
+        </el-table-column>
+        <el-table-column label=""
+                         width="40px"> </el-table-column>
+        <el-table-column label="发现日期">
+          <template slot-scope="scope">
+            {{ repDate(scope.row.problemDiscoveryTime) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="发现人"
+                         prop="problemFindPeople" />
+        <el-table-column label="操作"
+                         width="100"
+                         v-if="userRole == 1 || userRole == 2">
+          <template slot-scope="scope">
+            <el-button @click="openDetail(scope.$index)"
+                       type="text"
+                       style="color: #0c87d6">编辑</el-button>
+            <el-button @click="del(scope.row.problemListUuid)"
+                       type="text"
+                       style="color: #ff8a72">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <pagination v-show="total > 0"
+                :total="total"
+                :page.sync="pageQuery.pageNo"
+                :limit.sync="pageQuery.pageSize"
+                @pagination="getList" />
     <!-- 新增和编辑的弹框 -->
-    <el-dialog
-      title="新增审计问题"
-      :visible.sync="dialogFormVisible"
-      :close-on-click-modal="false"
-      @close="resetForm('temp')"
-      center
-    >
-      <el-form
-        ref="dataForm"
-        :rules="rules"
-        :model="temp"
-        label-position="right"
-        label-width="140px"
-        class="problem-form"
-      >
-        <el-form-item label="问题：" prop="problem">
-          <el-input v-model="temp.problem" placeholder="请输入问题" />
+    <el-dialog title="新增审计问题"
+               :visible.sync="dialogFormVisible"
+               :close-on-click-modal="false"
+               @close="resetForm('temp')"
+               center>
+      <el-form ref="dataForm"
+               :rules="rules"
+               :model="temp"
+               label-position="right"
+               label-width="140px"
+               class="problem-form">
+        <el-form-item label="问题："
+                      prop="problem">
+          <el-input v-model="temp.problem"
+                    placeholder="请输入问题" />
         </el-form-item>
-        <el-form-item label="领域：" prop="field">
-          <el-select v-model="temp.field" placeholder="请选择领域">
-            <el-option
-              v-for="item in CategoryList"
-              :key="item.label"
-              :label="item.label"
-              :value="item.label"
-            >
+        <el-form-item label="领域："
+                      prop="field">
+          <el-select v-model="temp.field"
+                     placeholder="请选择领域">
+            <el-option v-for="item in CategoryList"
+                       :key="item.label"
+                       :label="item.label"
+                       :value="item.label">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="专题：" prop="special">
-          <el-select
-            v-model="temp.special"
-            placeholder="请选择专题"
-            v-if="input_select == true"
-            @change="change_zt"
-          >
-            <el-option
-              v-for="item in SPECIALList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.label"
-            >
+        <el-form-item label="专题："
+                      prop="special">
+          <el-select v-model="temp.special"
+                     placeholder="请选择专题"
+                     v-if="input_select == true"
+                     @change="change_zt">
+            <el-option v-for="item in SPECIALList"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.label">
             </el-option>
           </el-select>
-          <el-input
-            v-model="temp.special"
-            v-if="input_select == false"
-          ></el-input>
+          <el-input v-model="temp.special"
+                    v-if="input_select == false"></el-input>
         </el-form-item>
         <el-form-item> </el-form-item>
-        <el-form-item label="依据：" prop="basis" class="long">
-          <el-select
-            v-model="temp.basis"
-            multiple
-            @visible-change="toopen"
-            placeholder="请选择"
-            no-data-text="请点击引用审计依据"
-          >
+        <el-form-item label="依据："
+                      prop="basis"
+                      class="long">
+          <el-select v-model="temp.basis"
+                     multiple
+                     @visible-change="toopen"
+                     placeholder="请选择"
+                     no-data-text="请点击引用审计依据">
           </el-select>
         </el-form-item>
-        <el-button
-          type="primary"
-          ref="basisbtn0"
-          class="citebtn"
-          @click="openbasis()"
-          >引用审计依据</el-button
-        >
-        <el-form-item label="描述：" prop="describe" class="long">
+        <el-button type="primary"
+                   ref="basisbtn0"
+                   class="citebtn"
+                   @click="openbasis()">引用审计依据</el-button>
+        <el-form-item label="描述："
+                      prop="describe"
+                      class="long">
           <!-- <el-input v-model="temp.describe" placeholder="请输入描述" /> -->
-          <el-input
-            type="textarea"
-            v-model="temp.describe"
-            placeholder="请输入描述"
-            :autosize="{ minRows: 3}"
-          ></el-input>
+          <el-input type="textarea"
+                    v-model="temp.describe"
+                    placeholder="请输入描述"
+                    :autosize="{ minRows: 3}"></el-input>
         </el-form-item>
-        <el-form-item label="管理建议：" prop="managementAdvice" class="long">
-          <el-input
-            type="textarea"
-            v-model="temp.managementAdvice"
-            placeholder="请输入管理建议"
-            :autosize="{ minRows: 3}"
-          />
+        <el-form-item label="管理建议："
+                      prop="managementAdvice"
+                      class="long">
+          <el-input type="textarea"
+                    v-model="temp.managementAdvice"
+                    placeholder="请输入管理建议"
+                    :autosize="{ minRows: 3}" />
         </el-form-item>
-        <el-form-item label="发现日期：" prop="problemDiscoveryTime">
+        <el-form-item label="发现日期："
+                      prop="problemDiscoveryTime">
           <!-- <el-input
             v-model="temp.problemDiscoveryTime"
             type="date"
             placeholder="请输入发现日期"
           /> -->
-          <el-date-picker
-            type="date"
-            placeholder="选择日期"
-            v-model="temp.problemDiscoveryTime"
-            style="width: 100%"
-          ></el-date-picker>
+          <el-date-picker type="date"
+                          placeholder="选择日期"
+                          v-model="temp.problemDiscoveryTime"
+                          style="width: 100%"></el-date-picker>
         </el-form-item>
-        <el-form-item label="发现人：" prop="problemFindPeople">
-          <el-select
-            v-model="temp.problemFindPeople"
-            placeholder="请选择发现人"
-          >
-            <el-option
-              v-for="(item, i) in personlist"
-              :key="'person' + i"
-              :label="item.realName"
-              :value="item.realName"
-            >
+        <el-form-item label="发现人："
+                      prop="problemFindPeople">
+          <el-select v-model="temp.problemFindPeople"
+                     placeholder="请选择发现人">
+            <el-option v-for="(item, i) in personlist"
+                       :key="'person' + i"
+                       :label="item.realName"
+                       :value="item.realName">
               {{ item.realName }}
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="风险金额（万元）：" prop="riskAmount">
-          <el-input
-            v-model="temp.riskAmount"
-            placeholder="请输入风险金额"
-            @keyup.native="onlyNumOnePoint('temp')"
-            @input="temp.riskAmount = temp.riskAmount.slice(0, 27)"
-          />
+        <el-form-item label="风险金额（万元）："
+                      prop="riskAmount">
+          <el-input v-model="temp.riskAmount"
+                    placeholder="请输入风险金额"
+                    @keyup.native="onlyNumOnePoint('temp')"
+                    @input="temp.riskAmount = temp.riskAmount.slice(0, 27)" />
         </el-form-item>
-        <el-form-item label="关联任务：" prop="auditTaskUuid">
-          <el-select v-model="temp.auditTaskUuid" multiple placeholder="请选择">
-            <el-option
-              v-for="item in auditTasklList"
-              :key="item.auditTaskUuid"
-              :label="item.taskName"
-              :value="item.auditTaskUuid"
-            >
+        <el-form-item label="关联任务："
+                      prop="auditTaskUuid">
+          <el-select v-model="temp.auditTaskUuid"
+                     multiple
+                     placeholder="请选择">
+            <el-option v-for="item in auditTasklList"
+                       :key="item.auditTaskUuid"
+                       :label="item.taskName"
+                       :value="item.auditTaskUuid">
             </el-option>
           </el-select>
         </el-form-item>
@@ -275,178 +256,150 @@
         </el-form-item> -->
       </el-form>
       <div slot="footer">
-        <el-button v-if="!closeStatus" @click="dialogFormVisible = false"
-          >取消</el-button
-        >
-        <el-button
-          v-if="closeStatus"
-          type="primary"
-          @click="dialogFormVisible = false"
-          >关闭</el-button
-        >
-        <el-button v-if="!closeStatus" type="primary" @click="createData()"
-          >保存</el-button
-        >
+        <el-button v-if="!closeStatus"
+                   @click="dialogFormVisible = false">取消</el-button>
+        <el-button v-if="closeStatus"
+                   type="primary"
+                   @click="dialogFormVisible = false">关闭</el-button>
+        <el-button v-if="!closeStatus"
+                   type="primary"
+                   @click="createData()">保存</el-button>
       </div>
     </el-dialog>
 
-    <el-dialog
-      :title="ifadd == 1 ? '编辑问题' : '问题详情'"
-      :visible.sync="dialogDetailVisible"
-      :close-on-click-modal="false"
-      @close="resetForm('dqProblem')"
-      center
-    >
-      <el-form
-        ref="detailForm"
-        :model="dqProblem"
-        :rules="rules"
-        label-position="right"
-        label-width="140px"
-        class="problem-form"
-      >
-        <el-form-item label="问题：" prop="problem">
-          <el-input
-            v-model="dqProblem.problem"
-            placeholder="请输入问题"
-            :disabled="ifadd != 2 ? false : true"
-          />
+    <el-dialog :title="ifadd == 1 ? '编辑问题' : '问题详情'"
+               :visible.sync="dialogDetailVisible"
+               :close-on-click-modal="false"
+               @close="resetForm('dqProblem')"
+               center>
+      <el-form ref="detailForm"
+               :model="dqProblem"
+               :rules="rules"
+               label-position="right"
+               label-width="140px"
+               class="problem-form">
+        <el-form-item label="问题："
+                      prop="problem">
+          <el-input v-model="dqProblem.problem"
+                    placeholder="请输入问题"
+                    :disabled="ifadd != 2 ? false : true" />
         </el-form-item>
-        <el-form-item label="领域：" prop="field">
-          <el-select
-            v-model="dqProblem.field"
-            placeholder="请选择领域"
-            :disabled="ifadd != 2 ? false : true"
-          >
-            <el-option
-              v-for="item in CategoryList"
-              :key="item.label"
-              :label="item.label"
-              :value="item.label"
-            >
+        <el-form-item label="领域："
+                      prop="field">
+          <el-select v-model="dqProblem.field"
+                     placeholder="请选择领域"
+                     :disabled="ifadd != 2 ? false : true">
+            <el-option v-for="item in CategoryList"
+                       :key="item.label"
+                       :label="item.label"
+                       :value="item.label">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="专题：" prop="special">
-          <el-select
-            v-model="dqProblem.special"
-            placeholder="请选择专题"
-            :disabled="ifadd != 2 ? false : true"
-            v-if="input_selecte == true"
-            @change="change_zte"
-          >
-            <el-option
-              v-for="item in SPECIALList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.label"
-            >
+        <el-form-item label="专题："
+                      prop="special">
+          <el-select v-model="dqProblem.special"
+                     placeholder="请选择专题"
+                     :disabled="ifadd != 2 ? false : true"
+                     v-if="input_selecte == true"
+                     @change="change_zte">
+            <el-option v-for="item in SPECIALList"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.label">
             </el-option>
           </el-select>
-          <el-input
-            v-model="dqProblem.special"
-            v-if="input_selecte == false"
-            :disabled="ifadd != 2 ? false : true"
-          ></el-input>
+          <el-input v-model="dqProblem.special"
+                    v-if="input_selecte == false"
+                    :disabled="ifadd != 2 ? false : true"></el-input>
         </el-form-item>
         <el-form-item></el-form-item>
-        <el-popover placement="top-start" max-width="600" trigger="hover">
+        <el-popover placement="top-start"
+                    max-width="600"
+                    trigger="hover">
           <div>
-            <p v-for="(e, i) in dqProblem.basis" :key="'basis' + i">
+            <p v-for="(e, i) in dqProblem.basis"
+               :key="'basis' + i">
               {{ e }}
             </p>
           </div>
-          <el-form-item
-            label="依据："
-            prop="basis"
-            class="long"
-            slot="reference"
-            style="width: 33vw !important"
-          >
-            <el-select
-              v-model="dqProblem.basis"
-              multiple
-              @visible-change="toopen"
-              placeholder="请选择"
-              no-data-text="请点击引用审计依据"
-              :disabled="ifadd != 2 ? false : true"
-            >
+          <el-form-item label="依据："
+                        prop="basis"
+                        class="long"
+                        slot="reference"
+                        style="width: 33vw !important">
+            <el-select v-model="dqProblem.basis"
+                       multiple
+                       @visible-change="toopen"
+                       placeholder="请选择"
+                       no-data-text="请点击引用审计依据"
+                       :disabled="ifadd != 2 ? false : true">
             </el-select>
           </el-form-item>
         </el-popover>
-        <el-button
-          v-if="ifadd != 2 ? true : false"
-          type="primary"
-          ref="basisbtn0"
-          class="citebtn"
-          @click="openbasis()"
-          >引用审计依据</el-button
-        >
-        <el-form-item label="描述：" prop="describe" class="long">
-          <el-input
-            type="textarea"
-            v-model="dqProblem.describe"
-            placeholder="请输入描述"
-            :disabled="ifadd != 2 ? false : true"
-            :autosize="{ minRows: 3}"
-          />
+        <el-button v-if="ifadd != 2 ? true : false"
+                   type="primary"
+                   ref="basisbtn0"
+                   class="citebtn"
+                   @click="openbasis()">引用审计依据</el-button>
+        <el-form-item label="描述："
+                      prop="describe"
+                      class="long">
+          <el-input type="textarea"
+                    v-model="dqProblem.describe"
+                    placeholder="请输入描述"
+                    :disabled="ifadd != 2 ? false : true"
+                    :autosize="{ minRows: 3}" />
         </el-form-item>
-        <el-form-item label="管理建议：" prop="managementAdvice" class="long">
-          <el-input
-            type="textarea"
-            v-model="dqProblem.managementAdvice"
-            placeholder="请输入管理建议"
-            :disabled="ifadd != 2 ? false : true"
-            :autosize="{ minRows: 3}"
-          />
+        <el-form-item label="管理建议："
+                      prop="managementAdvice"
+                      class="long">
+          <el-input type="textarea"
+                    v-model="dqProblem.managementAdvice"
+                    placeholder="请输入管理建议"
+                    :disabled="ifadd != 2 ? false : true"
+                    :autosize="{ minRows: 3}" />
         </el-form-item>
-        <el-form-item label="发现日期：" prop="problemDiscoveryTime">
-          <el-date-picker
-            type="date"
-            placeholder="选择日期"
-            v-model="dqProblem.problemDiscoveryTime"
-            style="width: 100%"
-            :disabled="ifadd != 2 ? false : true"
-          ></el-date-picker>
+        <el-form-item label="发现日期："
+                      prop="problemDiscoveryTime">
+          <el-date-picker type="date"
+                          placeholder="选择日期"
+                          v-model="dqProblem.problemDiscoveryTime"
+                          style="width: 100%"
+                          :disabled="ifadd != 2 ? false : true"></el-date-picker>
         </el-form-item>
-        <el-form-item label="发现人：" prop="problemFindPeople">
-          <el-select
-            v-model="dqProblem.problemFindPeople"
-            placeholder="请选择发现人"
-            :disabled="ifadd != 2 ? false : true"
-          >
-            <el-option
-              v-for="(item, i) in personlist"
-              :key="'person' + i"
-              :label="item.realName"
-              :value="item.realName"
-            >
+        <el-form-item label="发现人："
+                      prop="problemFindPeople">
+          <el-select v-model="dqProblem.problemFindPeople"
+                     placeholder="请选择发现人"
+                     :disabled="ifadd != 2 ? false : true">
+            <el-option v-for="(item, i) in personlist"
+                       :key="'person' + i"
+                       :label="item.realName"
+                       :value="item.realName">
               {{ item.realName }}
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="风险金额（万元）：" prop="riskAmount" width="180">
-          <el-input
-            v-model="dqProblem.riskAmount"
-            placeholder="请输入风险金额"
-            :disabled="ifadd != 2 ? false : true"
-            @keyup.native="onlyNumOnePoint('dqProblem')"
-            @input="temp.riskAmount = temp.riskAmount.slice(0, 27)"
-          />
+        <el-form-item label="风险金额（万元）："
+                      prop="riskAmount"
+                      width="180">
+          <el-input v-model="dqProblem.riskAmount"
+                    placeholder="请输入风险金额"
+                    :disabled="ifadd != 2 ? false : true"
+                    @keyup.native="onlyNumOnePoint('dqProblem')"
+                    @input="temp.riskAmount = temp.riskAmount.slice(0, 27)" />
         </el-form-item>
-        <el-form-item label="关联任务：" prop="auditTaskUuid">
-          <el-select
-            disabled
-            v-model="dqProblem.auditTaskUuid"
-            multiple
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in auditTasklList"
-              :key="item.auditTaskUuid"
-              :label="item.taskName"
-              :value="item.auditTaskUuid"
-            >
+        <el-form-item label="关联任务："
+                      prop="auditTaskUuid">
+          <el-select disabled
+                     v-model="dqProblem.auditTaskUuid"
+                     multiple
+                     placeholder="请选择">
+            <el-option v-for="item in auditTasklList"
+                       :key="item.auditTaskUuid"
+                       :label="item.taskName"
+                       :value="item.auditTaskUuid">
             </el-option>
           </el-select>
         </el-form-item>
@@ -515,63 +468,52 @@
           />
         </el-form-item> -->
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="updateData()" v-if="ifupdata"
-          >保存修改</el-button
-        >
-        <el-button type="primary" @click="dialogDetailVisible = false"
-          >关闭</el-button
-        >
+      <div slot="footer"
+           class="dialog-footer">
+        <el-button type="primary"
+                   @click="updateData()"
+                   v-if="ifupdata">保存修改</el-button>
+        <el-button type="primary"
+                   @click="dialogDetailVisible = false">关闭</el-button>
       </div>
     </el-dialog>
-    <el-dialog
-      title="引用审计依据"
-      :visible.sync="basisdialog"
-      width="70%"
-      custom-class="outmax"
-    >
+    <el-dialog title="引用审计依据"
+               :visible.sync="basisdialog"
+               width="70%"
+               custom-class="outmax">
       <div style="display: flex; height: 100%; padding: 20px">
         <div style="max-height: 60vh; width: 50%; overflow: scroll">
-          <el-form
-            ref="basisform"
-            class="problem-form"
-            :model="dqbasis"
-            label-width="120px"
-            label-position="right"
-          >
-            <el-form-item label="审计依据名称" class="long">
-              <el-select
-                v-model="dqbasis.val"
-                placeholder="请选择依据名称"
-                filterable
-                remote
-                reserve-keyword
-                :remote-method="basisremoteMethod"
-                :loading="basisloading"
-                @change="getbasisdetail(dqbasis.val)"
-              >
-                <el-option
-                  v-for="item in basislist"
-                  :key="item.basy_uuid"
-                  :label="item.basy_name"
-                  :value="item.basy_uuid"
-                >
+          <el-form ref="basisform"
+                   class="problem-form"
+                   :model="dqbasis"
+                   label-width="120px"
+                   label-position="right">
+            <el-form-item label="审计依据名称"
+                          class="long">
+              <el-select v-model="dqbasis.val"
+                         placeholder="请选择依据名称"
+                         filterable
+                         remote
+                         reserve-keyword
+                         :remote-method="basisremoteMethod"
+                         :loading="basisloading"
+                         @change="getbasisdetail(dqbasis.val)">
+                <el-option v-for="item in basislist"
+                           :key="item.basy_uuid"
+                           :label="item.basy_name"
+                           :value="item.basy_uuid">
                 </el-option>
               </el-select>
             </el-form-item>
           </el-form>
-          <el-card
-            class="box-card"
-            style="width: 70%; min-height: 300px; margin: auto"
-          >
-            <el-tree
-              :data="dqbasis.info.tree"
-              :props="defaultProps"
-              @node-click="treeNodeClick"
-              default-expand-all
-              v-loading="basisload"
-              class="problemtree"
-            ></el-tree>
+          <el-card class="box-card"
+                   style="width: 70%; min-height: 300px; margin: auto">
+            <el-tree :data="dqbasis.info.tree"
+                     :props="defaultProps"
+                     @node-click="treeNodeClick"
+                     default-expand-all
+                     v-loading="basisload"
+                     class="problemtree"></el-tree>
           </el-card>
           <!-- <div
             v-for="(item, index) in basislist"
@@ -582,49 +524,40 @@
             {{ item.basy_name }}
           </div> -->
         </div>
-        <el-card
-          class="box-card basiscard"
-          style="width: 50%"
-          v-loading="basisload"
-        >
-          <div
-            v-for="(item, index) in dqbasis.info.arr"
-            :key="'dqbasisarr' + index"
-          >
-            <div
-              slot="header"
-              class="clearfix"
-              style="padding: 5px 0"
-              v-if="item.contentLev != 3"
-            >
-              <span
-                style="font-weight: bold"
-                :style="
+        <el-card class="box-card basiscard"
+                 style="width: 50%"
+                 v-loading="basisload">
+          <div v-for="(item, index) in dqbasis.info.arr"
+               :key="'dqbasisarr' + index">
+            <div slot="header"
+                 class="clearfix"
+                 style="padding: 5px 0"
+                 v-if="item.contentLev != 3">
+              <span style="font-weight: bold"
+                    :style="
                   item.contentLev == 1
                     ? 'font-size:18px;'
                     : item.contentLev == 2
                     ? 'font-size:16px;'
                     : 'font-size:14px;'
-                "
-                >{{ item.label }}</span
-              >
+                ">{{ item.label }}</span>
             </div>
-            <el-button
-              style="padding: 3px 0 3px 20px; color: #ffba00; float: right"
-              v-if="item.contentLev == 3"
-              @click="choosebasis(item.attachmentContent)"
-              type="text"
-              >引用</el-button
-            >
-            <p class="" v-if="item.contentLev == 3">
+            <el-button style="padding: 3px 0 3px 20px; color: #ffba00; float: right"
+                       v-if="item.contentLev == 3"
+                       @click="choosebasis(item.attachmentContent)"
+                       type="text">引用</el-button>
+            <p class=""
+               v-if="item.contentLev == 3">
               {{ item.attachmentContent }}
             </p>
           </div>
         </el-card>
       </div>
-      <span slot="footer" class="dialog-footer">
+      <span slot="footer"
+            class="dialog-footer">
         <el-button @click="basisdialog = false">取 消</el-button>
-        <el-button type="primary" @click="surebasis()">确 定</el-button>
+        <el-button type="primary"
+                   @click="surebasis()">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -639,7 +572,7 @@ export default {
   props: ["active_project"],
   components: { Pagination },
   filters: {},
-  data() {
+  data () {
     return {
       dqtoken: "",
       dqProblem: {},
@@ -738,7 +671,7 @@ export default {
     };
   },
   watch: {},
-  created() {
+  created () {
     this.dqtoken = sessionStorage.getItem("TOKEN");
     this.getloadcascader("Category");
     this.getloadcascader("SPECIAL");
@@ -750,7 +683,7 @@ export default {
   },
   methods: {
     // 新增问题关闭
-    resetForm(str) {
+    resetForm (str) {
       if (str == "temp") {
         this.temp = {
           managementProjectUuid: this.active_project,
@@ -774,14 +707,14 @@ export default {
       }
       this.input_select = true; //专题 恢复默认
     },
-    change_zt(val) {
+    change_zt (val) {
       this.temp.special = val;
       if (val == "其他") {
         this.input_select = false;
         this.temp.special = "";
       }
     },
-    change_zte(val) {
+    change_zte (val) {
       this.dqProblem.special = val;
       if (val == "其他") {
         this.input_selecte = false;
@@ -794,7 +727,7 @@ export default {
     //   //输入框只允许输入小数点和数字，小数点后一位
     //   e.target.value = (e.target.value.match(/^\d*(\.?\d{0,1})/g)[0])
     // },
-    onlyNumOnePoint(str) {
+    onlyNumOnePoint (str) {
       let number_only = "";
       if (str == "temp") {
         number_only = this.temp.riskAmount;
@@ -820,7 +753,7 @@ export default {
         this.dqProblem.riskAmount = number_only;
       }
     },
-    toopen(val) {
+    toopen (val) {
       if (val) {
         let _this = this;
         setTimeout(function () {
@@ -830,7 +763,7 @@ export default {
       }
     },
     //获取当前人员信息
-    getme() {
+    getme () {
       axios({
         url: `/wisdomaudit/init/getCurrentInfo`,
         headers: {
@@ -844,7 +777,7 @@ export default {
       });
     },
     //获取人员
-    getperson() {
+    getperson () {
       axios({
         url: `/wisdomaudit/user/listUserInfo?pageCurrent=1&pageSize=1000`,
         headers: {
@@ -857,7 +790,7 @@ export default {
       });
     },
     //确定选择依据
-    surebasis() {
+    surebasis () {
       this.basisdialog = false;
       if (this.ifadd == 0) {
         this.temp.basis = this.dqbasis.choose;
@@ -867,7 +800,7 @@ export default {
       this.dqbasis.choose = [];
     },
     //选择依据
-    choosebasis(val) {
+    choosebasis (val) {
       if (this.dqbasis.choose.indexOf(val) > -1) {
         this.$message({
           message: "您已引用这一条",
@@ -883,14 +816,14 @@ export default {
       }
     },
     //依据树
-    treeNodeClick() {},
+    treeNodeClick () { },
     //打开依据
-    openbasis() {
+    openbasis () {
       this.basisdialog = true;
       this.dqbasis.choose = [];
     },
     //获取依据
-    getbasis() {
+    getbasis () {
       axios({
         url: `/wisdomaudit/auditBasy/getAuditbasyList`,
         headers: {
@@ -905,7 +838,7 @@ export default {
       });
     },
     //模糊查询依据详情
-    basisremoteMethod(query) {
+    basisremoteMethod (query) {
       this.basisloading = true
       axios({
         url: `/wisdomaudit/auditBasy/getAuditbasyList`,
@@ -922,7 +855,7 @@ export default {
       });
     },
     //获取依据详情
-    getbasisdetail(bid) {
+    getbasisdetail (bid) {
       this.basisload = true;
       axios({
         url: `/wisdomaudit/auditBasy/getById/` + bid + ``,
@@ -937,7 +870,7 @@ export default {
       });
     },
     //领域返显
-    fieldFilter(str) {
+    fieldFilter (str) {
       let rep = "";
       this.CategoryList.forEach((e) => {
         if (e.value == str) {
@@ -947,7 +880,7 @@ export default {
       return rep;
     },
     //专题返显
-    specialFilter(str) {
+    specialFilter (str) {
       let rep = "";
       this.SPECIALList.forEach((e) => {
         if (e.value == str) {
@@ -956,7 +889,7 @@ export default {
       });
       return rep;
     },
-    getSelectTask() {
+    getSelectTask () {
       axios({
         url: `/wisdomaudit/auditTask/selectTask`,
         headers: {
@@ -970,7 +903,7 @@ export default {
         this.auditTasklList = res.data.data;
       });
     },
-    getloadcascader(str) {
+    getloadcascader (str) {
       axios({
         url: `/wisdomaudit/init/loadcascader`,
         headers: {
@@ -988,7 +921,7 @@ export default {
         }
       });
     },
-    openDetail(int) {
+    openDetail (int) {
       this.ifadd = 1;
       axios({
         url:
@@ -1011,7 +944,7 @@ export default {
         });
       });
     },
-    checkDetail(pid) {
+    checkDetail (pid) {
       this.ifadd = 2;
       axios({
         url: `/wisdomaudit/problemList/getById/` + pid,
@@ -1033,7 +966,7 @@ export default {
         });
       });
     },
-    repDate(data) {
+    repDate (data) {
       let date = new Date(data);
       let Y = date.getFullYear() + "-";
       let M =
@@ -1051,7 +984,7 @@ export default {
         date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
       return Y + M + D;
     },
-    getList(page) {
+    getList (page) {
       if (page == 1) {
         this.pageQuery.pageNo = 1;
       }
@@ -1071,7 +1004,7 @@ export default {
         }
       });
     },
-    add() {
+    add () {
       this.dialogFormVisible = true;
       this.ifadd = 0;
       this.temp.problemFindPeople = this.me;
@@ -1080,10 +1013,10 @@ export default {
         this.$refs["dataForm"].clearValidate();
       });
     },
-    handleSelectionChange(val) {
+    handleSelectionChange (val) {
       this.problemtableSelection = val;
     },
-    del(pid) {
+    del (pid) {
       this.$confirm("确认删除该条数据吗?删除后数据不可恢复?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -1112,7 +1045,7 @@ export default {
       // }
       // rep =  rep.join(",")
     },
-    createData() {
+    createData () {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           let rep = this.temp;
@@ -1152,7 +1085,7 @@ export default {
         }
       });
     },
-    updateData() {
+    updateData () {
       this.$refs["detailForm"].validate((valid) => {
         if (valid) {
           let rep = this.dqProblem;
@@ -1182,6 +1115,9 @@ export default {
 };
 </script>
 <style scoped>
+.min_height {
+  min-height: 500px;
+}
 .auditproblem-btn-box {
   float: right;
 }

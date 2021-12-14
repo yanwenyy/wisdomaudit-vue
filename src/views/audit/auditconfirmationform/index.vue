@@ -4,110 +4,114 @@
                @click="addConfirmation()"
                class="subBtn">新增确认单</el-button>
     <!-- 审计确认单列表 -->
-    <el-table @row-dblclick="getLook"
-              :header-cell-style="{'background-color': '#F4FAFF',}"
-              :data="confirmaryData"
-              style="margin-top: 1%"
-              class="confirmaryTable">
-      <el-table-column algin="left"
-                       type="index"
-                       label="序号"></el-table-column>
-      <el-table-column algin="left"
-                       label="审计(调查)事项"
-                       prop="matter"></el-table-column>
-      <el-table-column algin="left"
-                       label="审计人员"
-                       prop="auditorsName"></el-table-column>
-      <el-table-column algin="left"
-                       label="问题数"
-                       prop="problemsNumber">
-        <template slot-scope="scope">
-          {{scope.row.problemsNumber?scope.row.problemsNumber:'--'}}
-        </template>
-      </el-table-column>
-      <el-table-column algin="left"
-                       label="确认单附件">
-        <template slot-scope="scope">
-          <el-popover :popper-class="tableFileList==''?'no-padding':''"
-                      v-if="scope.row.confirmationFileNumber"
-                      placement="bottom"
-                      width="250"
-                      @show="getFileList(scope.row.auditConfirmationUuid)"
-                      trigger="click">
-            <ul v-if="tableFileList!=''"
-                class="fileList-ul">
-              <li class="tableFileList-title">文件名称</li>
-              <li v-for="item in tableFileList"
-                  class="pointer blue"
-                  @click="downFile(item.attachment_uuid,item.file_name)">{{item.file_name}}</li>
-            </ul>
-            <div slot="reference"
-                 class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.confirmationFileNumber}}
-            </div>
-          </el-popover>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作"
-                       algin="left">
-        <template slot-scope="scope">
-          <el-button size="small"
-                     type="text"
-                     class="btnStyle editBtn"
-                     @click="edit(scope.row)"
-                     v-if="scope.row.createUserUuid==userInfo.user.id">编辑</el-button>
-          <!--<el-upload v-if="scope.row.createUserUuid==userInfo.user.id"-->
-                     <!--:show-file-list="false"-->
-                     <!--class="upload-demo inline-block btnStyle"-->
-                     <!--:action="'/wisdomaudit/auditConfirmation/fileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid+'&confirmationFileNumber='+(scope.row.confirmationFileNumber||'')"-->
-                     <!--:on-change="fileChange"-->
-                     <!--:on-success="list_data_start"-->
-                     <!--:headers="headers"-->
-                     <!--accept=".docx,.xls,.xlsx,.txt,.zip,.doc">-->
+    <div class="min_height">
+
+      <el-table @row-dblclick="getLook"
+                :header-cell-style="{'background-color': '#F4FAFF',}"
+                :data="confirmaryData"
+                style="margin-top: 1%"
+                class="confirmaryTable">
+        <el-table-column algin="left"
+                         type="index"
+                         label="序号"></el-table-column>
+        <el-table-column algin="left"
+                         label="审计(调查)事项"
+                         prop="matter"></el-table-column>
+        <el-table-column algin="left"
+                         label="审计人员"
+                         prop="auditorsName"></el-table-column>
+        <el-table-column algin="left"
+                         label="问题数"
+                         prop="problemsNumber">
+          <template slot-scope="scope">
+            {{scope.row.problemsNumber?scope.row.problemsNumber:'--'}}
+          </template>
+        </el-table-column>
+        <el-table-column algin="left"
+                         label="确认单附件">
+          <template slot-scope="scope">
+            <el-popover :popper-class="tableFileList==''?'no-padding':''"
+                        v-if="scope.row.confirmationFileNumber"
+                        placement="bottom"
+                        width="250"
+                        @show="getFileList(scope.row.auditConfirmationUuid)"
+                        trigger="click">
+              <ul v-if="tableFileList!=''"
+                  class="fileList-ul">
+                <li class="tableFileList-title">文件名称</li>
+                <li v-for="item in tableFileList"
+                    class="pointer blue"
+                    @click="downFile(item.attachment_uuid,item.file_name)">{{item.file_name}}</li>
+              </ul>
+              <div slot="reference"
+                   class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.confirmationFileNumber}}
+              </div>
+            </el-popover>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作"
+                         algin="left">
+          <template slot-scope="scope">
+            <el-button size="small"
+                       type="text"
+                       class="btnStyle editBtn"
+                       @click="edit(scope.row)"
+                       v-if="scope.row.createUserUuid==userInfo.user.id">编辑</el-button>
+            <!--<el-upload v-if="scope.row.createUserUuid==userInfo.user.id"-->
+            <!--:show-file-list="false"-->
+            <!--class="upload-demo inline-block btnStyle"-->
+            <!--:action="'/wisdomaudit/auditConfirmation/fileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid+'&confirmationFileNumber='+(scope.row.confirmationFileNumber||'')"-->
+            <!--:on-change="fileChange"-->
+            <!--:on-success="list_data_start"-->
+            <!--:headers="headers"-->
+            <!--accept=".docx,.xls,.xlsx,.txt,.zip,.doc">-->
             <!--<el-button size="small"-->
-                       <!--type="text"-->
-                       <!--style="background: transparent;-->
-    <!--font-size: 14px;"-->
-                       <!--class="editBtn">上传附件</el-button>-->
-          <!--</el-upload>-->
-          <el-button size="small"
-                     type="text"
-                     class="btnStyle red"
-                     @click="deletes(scope.row.auditConfirmationUuid)"
-                     v-if="scope.row.createUserUuid==userInfo.user.id">删除</el-button>
-        </template>
-      </el-table-column>
-      <el-table-column label="最终版扫描件"
-                       algin="left">
-        <template slot-scope="scope">
-          <el-button size="small"
-                     type="text"
-                     class="btnStyle"
-                     style="color: #1371cc">
-            <el-upload v-if="scope.row.endConfirmationFile==''||scope.row.endConfirmationFile==null&&(scope.row.createUserUuid==userInfo.user.id)"
-                       :show-file-list="false"
-                       class="upload-demo inline-block btnStyle"
-                       :on-change="fileChange"
-                       :action="'/wisdomaudit/auditConfirmation/endFileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid"
-                       :on-success="list_data_start"
-                       :headers="headers"
-                       accept=".docx,.xls,.xlsx,.txt,.zip,.doc">
-              <el-button size="small"
-                         type="text"
-                         style="background: transparent;padding:0"
-                         class="editBtn">上传</el-button>
-            </el-upload>
-            <el-tooltip placement="bottom"
-                        effect="light"
-                        v-if="scope.row.endConfirmationFile">
-              <div @click="downFile(scope.row.endConfirmationFileId,scope.row.endConfirmationFile)"
-                   class="pointer"
-                   slot="content">{{scope.row.endConfirmationFile}}</div>
-              <span class="smb-btn"><i class="el-icon-folder-opened list-folder smb-folder"></i>1</span>
-            </el-tooltip>
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+            <!--type="text"-->
+            <!--style="background: transparent;-->
+            <!--font-size: 14px;"-->
+            <!--class="editBtn">上传附件</el-button>-->
+            <!--</el-upload>-->
+            <el-button size="small"
+                       type="text"
+                       class="btnStyle red"
+                       @click="deletes(scope.row.auditConfirmationUuid)"
+                       v-if="scope.row.createUserUuid==userInfo.user.id">删除</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="最终版扫描件"
+                         algin="left">
+          <template slot-scope="scope">
+            <el-button size="small"
+                       type="text"
+                       class="btnStyle"
+                       style="color: #1371cc">
+              <el-upload v-if="scope.row.endConfirmationFile==''||scope.row.endConfirmationFile==null&&(scope.row.createUserUuid==userInfo.user.id)"
+                         :show-file-list="false"
+                         class="upload-demo inline-block btnStyle"
+                         :on-change="fileChange"
+                         :action="'/wisdomaudit/auditConfirmation/endFileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid"
+                         :on-success="list_data_start"
+                         :headers="headers"
+                         accept=".docx,.xls,.xlsx,.txt,.zip,.doc">
+                <el-button size="small"
+                           type="text"
+                           style="background: transparent;padding:0"
+                           class="editBtn">上传</el-button>
+              </el-upload>
+              <el-tooltip placement="bottom"
+                          effect="light"
+                          v-if="scope.row.endConfirmationFile">
+                <div @click="downFile(scope.row.endConfirmationFileId,scope.row.endConfirmationFile)"
+                     class="pointer"
+                     slot="content">{{scope.row.endConfirmationFile}}</div>
+                <span class="smb-btn"><i class="el-icon-folder-opened list-folder smb-folder"></i>1</span>
+              </el-tooltip>
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
     <!-- 新增确认单弹出框 -->
 
     <el-form :rules="rules"
@@ -126,13 +130,15 @@
                       label="审计项目名称:">{{managementProjectName!=''?managementProjectName:'--'}}</el-form-item>
         <el-form-item class="itemTwo"
                       label="被审计单位:">{{auditOrgName!=''?auditOrgName:'--'}}</el-form-item>
-        <el-form-item  class="itemOne" prop="matter"
+        <el-form-item class="itemOne"
+                      prop="matter"
                       label="审计（调查）事项:">
           <el-input :disabled="ifLook"
                     type="textarea"
                     v-model="formDetail.matter"></el-input>
         </el-form-item>
-        <el-form-item  class="itemOne" prop="matterDetail"
+        <el-form-item class="itemOne"
+                      prop="matterDetail"
                       label="审计(调查)事项描述:">
           <el-button :disabled="ifLook"
                      @click="getRelationQues"
@@ -185,8 +191,10 @@
                           value-format="yyyy-MM-dd"
                           style="width: 100%"></el-date-picker>
         </el-form-item>
-        <el-form-item  class="itemOne" v-if="confirmationDialogTitle=='编辑确认单'||ifLook" prop="compileDate"
-                      label="被审计(调查)单位确认意见:" >
+        <el-form-item class="itemOne"
+                      v-if="confirmationDialogTitle=='编辑确认单'||ifLook"
+                      prop="compileDate"
+                      label="被审计(调查)单位确认意见:">
           <el-input :disabled="ifLook"
                     type="textarea"
                     v-model="formDetail.auditOrgOpinion"></el-input>
@@ -196,45 +204,52 @@
                       label="相关负责人(签名):">
           {{formDetail.principalName||'--'}}
           <!--<el-input disabled-->
-                    <!--v-model="formDetail.principalName"></el-input>-->
+          <!--v-model="formDetail.principalName"></el-input>-->
         </el-form-item>
         <el-form-item v-if="confirmationDialogTitle=='编辑确认单'||ifLook"
-          class="itemThree"
-          label="职务:">
+                      class="itemThree"
+                      label="职务:">
           {{formDetail.principalPost||'--'}}
           <!--<el-input disabled-->
-                    <!--v-model="formDetail.principalPost"></el-input>-->
+          <!--v-model="formDetail.principalPost"></el-input>-->
         </el-form-item>
         <el-form-item v-if="confirmationDialogTitle=='编辑确认单'||ifLook"
-          class="itemThree"
-          label="日期:">
+                      class="itemThree"
+                      label="日期:">
           {{formDetail.signatureDate||'--'}}
           <!--<el-input disabled-->
-                    <!--v-model="formDetail.signatureDate"></el-input>-->
+          <!--v-model="formDetail.signatureDate"></el-input>-->
         </el-form-item>
         <el-form-item label="上传附件:"
                       class="upload-yw">
-          <el-upload
-            v-if="!ifLook"
-            class="upload-demo"
-            drag
-            action="/wisdomaudit/auditBasy/filesUpload"
-            :on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList1)}"
-            :on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList1,fileList1,fileList1_del)}"
-            multiple
-            :limit="3"
-            :key="key"
-            :on-exceed="handleExceed"
-            :headers="headers"
-            :file-list="fileList1">
+          <el-upload v-if="!ifLook"
+                     class="upload-demo"
+                     drag
+                     action="/wisdomaudit/auditBasy/filesUpload"
+                     :on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList1)}"
+                     :on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList1,fileList1,fileList1_del)}"
+                     multiple
+                     :limit="3"
+                     :key="key"
+                     :on-exceed="handleExceed"
+                     :headers="headers"
+                     :file-list="fileList1">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">
               点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc
             </div>
           </el-upload>
-          <div class="inline-block" v-if="ifLook">
-            <el-tooltip class="item" effect="dark" v-for="(item,index) in fileList1" :key="index"  :content="item.fileName" placement="top">
-              <div  class="blue pointer" @click="downFile(item.attachmentUuid,item.fileName)">{{item.fileName.length>20?item.fileName.slice(0,20)+"...":item.fileName}}</div>
+          <div class="inline-block"
+               v-if="ifLook">
+            <el-tooltip class="item"
+                        effect="dark"
+                        v-for="(item,index) in fileList1"
+                        :key="index"
+                        :content="item.fileName"
+                        placement="top">
+              <div class="blue pointer"
+                   @click="downFile(item.attachmentUuid,item.fileName)">
+                {{item.fileName.length>20?item.fileName.slice(0,20)+"...":item.fileName}}</div>
             </el-tooltip>
             <!--<div class="blue pointer" v-for="(item,index) in fileList1" :key="index"  @click="downFile(item.attachmentUuid,item.fileName)">-->
             <!--{{item.fileName}}-->
@@ -343,10 +358,10 @@ export default {
   props: ['active_project', 'userRole'],
   data () {
     return {
-      key:0,
+      key: 0,
       attachmentList1: [],//附件上传列表
       fileList1: [],//附件上传回显列表
-      fileList1_del:[],
+      fileList1_del: [],
       headers: {},
       canClick: true,
       ifLook: false,
@@ -355,7 +370,7 @@ export default {
       confirmationDialogVisible: false, //新增确认单弹框
       confirmationDialogVisibleZx: false,//专项确认单编辑
       formDetail: {
-        attachmentList:[],
+        attachmentList: [],
         matter: '',
         matterDetail: '',
         auditorsName: '',
@@ -408,11 +423,11 @@ export default {
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
   },
   methods: {
-    handleExceed(){},
+    handleExceed () { },
     //附件上传
-    uploadPorgress(response,file, fileList,tableList){
+    uploadPorgress (response, file, fileList, tableList) {
       if (response && response.code === 0) {
-        response.data.isDeleted=2;
+        response.data.isDeleted = 2;
         tableList.push(response.data);
         this.$message({
           message: '上传成功',
@@ -435,7 +450,7 @@ export default {
       }
     },
     //附件删除
-    handleRemove( file, fileList,tableList,showList,delList){
+    handleRemove (file, fileList, tableList, showList, delList) {
       if (file.response) {
         tableList.remove(file.response.data);
         // this.key = Math.random();
@@ -443,7 +458,7 @@ export default {
         showList.remove(file);
         file.isDeleted = 1;
         delList.push(file);
-        console.log(showList,delList)
+        console.log(showList, delList)
       }
     },
     //附件下载
@@ -490,7 +505,7 @@ export default {
     },
     //复核人列表
     getFhrList () {
-      projectMembership_listUserInfo(1,10000).then(resp => {
+      projectMembership_listUserInfo(1, 10000).then(resp => {
         this.FhrList = resp.data.list;
       })
     },
@@ -611,14 +626,14 @@ export default {
         if (this.formDetail.auditOrgOpinion.indexOf("情况属实") == -1) {
           this.formDetail.auditOrgOpinion = "情况属实\n" + this.formDetail.auditOrgOpinion
         }
-        if(datas.attachmentList){
-          datas.attachmentList.forEach((item)=>{
-            item.name=item.fileName;
-            item.url=item.filePath;
-            item.isDeleted=0;
+        if (datas.attachmentList) {
+          datas.attachmentList.forEach((item) => {
+            item.name = item.fileName;
+            item.url = item.filePath;
+            item.isDeleted = 0;
           });
         }
-        this.fileList1=datas.attachmentList||[];
+        this.fileList1 = datas.attachmentList || [];
 
 
         // if (this.projectType == 'zxsj') {
@@ -688,11 +703,11 @@ export default {
     saveForm () {
       this.$refs['addForm'].validate((valid) => {
         if (valid) {
-          var uploadList1=this.attachmentList1.concat(this.fileList1,this.fileList1_del);
-          uploadList1.forEach((item)=>{
-            item.status=null;
+          var uploadList1 = this.attachmentList1.concat(this.fileList1, this.fileList1_del);
+          uploadList1.forEach((item) => {
+            item.status = null;
           });
-          this.formDetail.attachmentList=uploadList1;
+          this.formDetail.attachmentList = uploadList1;
           if (this.confirmationDialogTitle == '新增确认单') {
             this.formDetail.managementProjectName = this.managementProjectName;
             this.formDetail.auditOrgName = this.auditOrgName;
@@ -751,7 +766,7 @@ export default {
     },
     clearForm () {
       this.formDetail = {
-        attachmentList:[],
+        attachmentList: [],
         matter: '',
         matterDetail: '',
         auditorsName: '',
@@ -762,9 +777,9 @@ export default {
         principalPost: '',
         signatureDate: '',
       };
-      this.attachmentList1=[];
-      this.fileList1=[];
-      this.fileList1_del=[];
+      this.attachmentList1 = [];
+      this.fileList1 = [];
+      this.fileList1_del = [];
       if (this.$refs['addForm']) {
         this.$refs['addForm'].resetFields();
       }
@@ -775,6 +790,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.min_height {
+  min-height: 500px;
+}
 .confirmaryTable {
   .update {
     display: flex;
@@ -896,17 +914,16 @@ export default {
   text-align: center !important;
 }
 
-
-  >>>.itemOne .el-form-item__content{
-    width: 77%!important;
-  }
-  >>>.itemTwo .el-form-item__content{
-    width: 59%!important;
-  }
-  >>>.itemThree .el-form-item__label{
-    width:130px!important;
-  }
-  >>>.upload-yw .el-form-item__content{
-    width: 60%!important;
-  }
+>>> .itemOne .el-form-item__content {
+  width: 77% !important;
+}
+>>> .itemTwo .el-form-item__content {
+  width: 59% !important;
+}
+>>> .itemThree .el-form-item__label {
+  width: 130px !important;
+}
+>>> .upload-yw .el-form-item__content {
+  width: 60% !important;
+}
 </style>

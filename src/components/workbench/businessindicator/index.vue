@@ -2,149 +2,171 @@
   <div class="indocator">
     <div class="filter-container">
       <!--isLiaison是否接口人  1是，0否-->
-      <el-button type="primary" @click="add()" v-if="isLiaison=='1'"  class="subBtn"
-        >选择指标</el-button
-      >
+      <el-button type="primary"
+                 @click="add()"
+                 v-if="isLiaison=='1'"
+                 class="subBtn">选择指标</el-button>
       <!--<div class="indocator-btn-box" v-if="!ifprojectmanage">-->
-        <!--<el-button class="gary-border">提交</el-button>-->
-        <!--<el-button class="gary-border" @click="importData()">导入</el-button>-->
-        <!--<el-button class="gary-border" @click="exportData()">导出</el-button>-->
+      <!--<el-button class="gary-border">提交</el-button>-->
+      <!--<el-button class="gary-border" @click="importData()">导入</el-button>-->
+      <!--<el-button class="gary-border" @click="exportData()">导出</el-button>-->
       <!--</div>-->
       <!--<div class="indocator-btn-box" v-else>-->
-        <!--<el-button class="gary-border" @click="openExamine()">审核</el-button>-->
-        <!--<el-button class="gary-border" @click="issued()">下发</el-button>-->
-        <!--&lt;!&ndash; <el-button class="gary-border" @click="deleteData()">删除</el-button> &ndash;&gt;-->
+      <!--<el-button class="gary-border" @click="openExamine()">审核</el-button>-->
+      <!--<el-button class="gary-border" @click="issued()">下发</el-button>-->
+      <!--&lt;!&ndash; <el-button class="gary-border" @click="deleteData()">删除</el-button> &ndash;&gt;-->
       <!--</div>-->
     </div>
     <div class="jyzb-div">
-      <table class="jyzb" style="table-layout: fixed">
+      <table class="jyzb"
+             style="table-layout: fixed">
         <tr>
-          <th><div class="td-100">指标分类</div></th>
-          <th><div class="td-150">指标名称</div></th>
-          <th><div class="td-100">单位</div></th>
-          <th v-for="item in yearRange"><div class="td-150">{{item}}</div></th>
-          <th><div class="td-150">资料提供部门</div></th>
+          <th>
+            <div class="td-100">指标分类</div>
+          </th>
+          <th>
+            <div class="td-150">指标名称</div>
+          </th>
+          <th>
+            <div class="td-100">单位</div>
+          </th>
+          <th v-for="item in yearRange">
+            <div class="td-150">{{item}}</div>
+          </th>
+          <th>
+            <div class="td-150">资料提供部门</div>
+          </th>
           <!--<th><div class="td-100">联系人</div></th>-->
-          <th><div class="td-100">操作</div></th>
+          <th>
+            <div class="td-100">操作</div>
+          </th>
         </tr>
       </table>
-      <table class="jyzb" v-for="item in dataList" style="table-layout: fixed">
+      <table class="jyzb"
+             v-for="item in dataList"
+             style="table-layout: fixed">
         <tr>
-          <td class="jyzb-tr-title" :colspan="6+(yearRange.length)">{{item.indexType}}</td>
+          <td class="jyzb-tr-title"
+              :colspan="6+(yearRange.length)">{{item.indexType}}</td>
         </tr>
         <tr v-for="vtem in item.children">
-          <td><div class="transparent td-100">指标分类</div></td>
-          <td><div class="td-150">{{vtem.indexName}}</div></td>
-          <td><div class="td-100">{{vtem.indexUnitName}}</div></td>
-          <td v-for="y in vtem.operatingIndicatorsValueList">
-            <div class="td-150" v-if="yearRange.indexOf(y.indexDate)!=-1">{{y.indexValue}}</div>
+          <td>
+            <div class="transparent td-100">指标分类</div>
           </td>
-          <td><div class="td-150">{{vtem.dataProvideDepartmentName}}</div></td>
+          <td>
+            <div class="td-150">{{vtem.indexName}}</div>
+          </td>
+          <td>
+            <div class="td-100">{{vtem.indexUnitName}}</div>
+          </td>
+          <td v-for="y in vtem.operatingIndicatorsValueList">
+            <div class="td-150"
+                 v-if="yearRange.indexOf(y.indexDate)!=-1">{{y.indexValue}}</div>
+          </td>
+          <td>
+            <div class="td-150">{{vtem.dataProvideDepartmentName}}</div>
+          </td>
           <!--<td><div class="td-100">{{vtem.contactPerson}}</div></td>-->
           <td>
             <div class="td-100">
-              <el-button type="text" class="blue" @click="edit(vtem)" v-if="isLiaison=='1'">编辑</el-button>
-              <el-button type="text" class="red" @click="del(vtem.operatingIndicatorsUuid)" v-if="isLiaison=='1'">删除</el-button>
+              <el-button type="text"
+                         class="blue"
+                         @click="edit(vtem)"
+                         v-if="isLiaison=='1'">编辑</el-button>
+              <el-button type="text"
+                         class="red"
+                         @click="del(vtem.operatingIndicatorsUuid)"
+                         v-if="isLiaison=='1'">删除</el-button>
             </div>
           </td>
         </tr>
       </table>
     </div>
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      :page.sync="pageQuery.pageNo"
-      :limit.sync="pageQuery.pageSize"
-      @pagination="getList"
-    />
+    <pagination v-show="total > 0"
+                :total="total"
+                :page.sync="pageQuery.pageNo"
+                :limit.sync="pageQuery.pageSize"
+                @pagination="getList" />
     <!-- 新增和编辑的弹框 -->
-    <el-dialog
-      title="经营指标审批"
-      :visible.sync="dialogtextVisible"
-      :close-on-click-modal="false"
-    >
+    <el-dialog title="经营指标审批"
+               :visible.sync="dialogtextVisible"
+               :close-on-click-modal="false">
       <el-form v-model="examine">
         <el-form-item label="审批意见">
-          <el-input
-            type="textarea"
-            v-model="examine.text"
-            :autosize="{ minRows: 4, maxRows: 8 }"
-          ></el-input>
+          <el-input type="textarea"
+                    v-model="examine.text"
+                    :autosize="{ minRows: 4, maxRows: 8 }"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer">
         <el-button @click="dialogtextVisible = false">取消</el-button>
-        <el-button type="primary" @click="dialogtextVisible = false"
-          >通过</el-button
-        >
-        <el-button type="danger" @click="dialogtextVisible = false"
-          >驳回</el-button
-        >
+        <el-button type="primary"
+                   @click="dialogtextVisible = false">通过</el-button>
+        <el-button type="danger"
+                   @click="dialogtextVisible = false">驳回</el-button>
       </div>
     </el-dialog>
-    <el-dialog
-      title="经营指标列表"
-      :visible.sync="dialoglistVisible"
-      :close-on-click-modal="false"
-    >
+    <el-dialog title="经营指标列表"
+               :visible.sync="dialoglistVisible"
+               :close-on-click-modal="false">
       <div style="display: flex; padding: 20px">
         指标名称：
-        <el-input
-          placeholder=""
-          v-model="kupageQuery.condition.indexName"
-          style="width: 300px"
-        >
+        <el-input placeholder=""
+                  v-model="kupageQuery.condition.indexName"
+                  style="width: 300px">
         </el-input>
-        <el-button type="primary" class="gary-border" @click="getkulist()"
-          >查询</el-button
-        >
+        <el-button type="primary"
+                   class="gary-border"
+                   @click="getkulist()">查询</el-button>
       </div>
-      <el-table
-        :data="kulistData"
-        style="width: 100%"
-        @selection-change="kulistSelectionChange"
-      >
-        <el-table-column type="selection" align="center" />
-        <el-table-column prop="indexName" label="指标名称"></el-table-column>
+      <el-table :data="kulistData"
+                style="width: 100%"
+                @selection-change="kulistSelectionChange">
+        <el-table-column type="selection"
+                         align="center" />
+        <el-table-column prop="indexName"
+                         label="指标名称"></el-table-column>
       </el-table>
-      <pagination
-        v-show="kutotal > 0"
-        :total="kutotal"
-        :page.sync="kupageQuery.pageNo"
-        :limit.sync="kupageQuery.pageSize"
-        @pagination="getList"
-      />
+      <pagination v-show="kutotal > 0"
+                  :total="kutotal"
+                  :page.sync="kupageQuery.pageNo"
+                  :limit.sync="kupageQuery.pageSize"
+                  @pagination="getList" />
       <div slot="footer">
         <el-button @click="dialoglistVisible = false">取消</el-button>
-        <el-button type="primary" @click="importSave()">确定</el-button>
+        <el-button type="primary"
+                   @click="importSave()">确定</el-button>
       </div>
     </el-dialog>
-    <el-dialog
-      title="编辑"
-      :visible.sync="editVisible"
-      :close-on-click-modal="false"
-    >
-      <el-form :model="formState" class="formData zb-edit"  label-width="150px">
+    <el-dialog title="编辑"
+               :visible.sync="editVisible"
+               :close-on-click-modal="false">
+      <el-form :model="formState"
+               class="formData zb-edit"
+               label-width="150px">
         <el-form-item label="指标名称:">
           <div>{{formState.indexName}}</div>
         </el-form-item>
         <el-form-item label="单位:">
           <div>{{formState.indexUnitName}}</div>
         </el-form-item>
-        <el-form-item v-for="(item,index) in formState.operatingIndicatorsValueList" :label="item.indexDate+':'" :key="index">
-          <el-input
-            v-model="item.indexValue"
-            @input="item.indexValue=item.indexValue.replace(/[^\d]/g,'')"
-            placeholder="请输入"
-          ></el-input>
+        <el-form-item v-for="(item,index) in formState.operatingIndicatorsValueList"
+                      :label="item.indexDate+':'"
+                      :key="index">
+          <el-input v-model="item.indexValue"
+                    @input="item.indexValue=item.indexValue.replace(/[^\d]/g,'')"
+                    placeholder="请输入"></el-input>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="zb-edit-footer">
+      <div slot="footer"
+           class="zb-edit-footer">
         <el-button @click="editVisible = false">取消</el-button>
-        <el-button type="primary" @click="editSave">确定</el-button>
+        <el-button type="primary"
+                   @click="editSave">确定</el-button>
       </div>
     </el-dialog>
-    <search-list ref="searchTabel" @refreshAdd="getAddInfo"></search-list>
+    <search-list ref="searchTabel"
+                 @refreshAdd="getAddInfo"></search-list>
   </div>
 </template>
 
@@ -153,26 +175,26 @@ import Pagination from "@WISDOMAUDIT/components/Pagination"; // secondary packag
 import SearchList from "./searchList"
 import _ from "lodash";
 import axios from "axios";
-import {get_userInfo,indexManagement_pageList,indexManagement_edit,indexManagement_delete} from
-    '@SDMOBILE/api/shandong/ls'
+import { get_userInfo, indexManagement_pageList, indexManagement_edit, indexManagement_delete } from
+  '@SDMOBILE/api/shandong/ls'
 export default {
-  components: { Pagination ,SearchList},
+  components: { Pagination, SearchList },
   filters: {},
-  props:['active_project','userRole','isLiaison'],
-  data() {
+  props: ['active_project', 'userRole', 'isLiaison'],
+  data () {
     return {
       dqtoken: "",
-      userInfo:{
-        user:{}
+      userInfo: {
+        user: {}
       },//用户信息
-      editVisible:false,//编辑经营指标
-      formState:{},//编辑的form
-      yearRange:['2018','2019','2020'],
+      editVisible: false,//编辑经营指标
+      formState: {},//编辑的form
+      yearRange: ['2018', '2019', '2020'],
       tableKey: "indicator",
       list: null,
       total: 0,
       listLoading: false,
-      dataList:[],
+      dataList: [],
       pageQuery: {
         managementProjectUuid: "", //项目管理主键
         pageNo: 1,
@@ -243,21 +265,21 @@ export default {
     };
   },
   watch: {},
-  mounted() {
+  mounted () {
     this.dqtoken = sessionStorage.getItem("TOKEN");
     this.getList();
   },
   methods: {
     //获取用户信息
-    getUser(){
-      var that=this;
+    getUser () {
+      var that = this;
       get_userInfo().then(resp => {
         that.userInfo = resp.data;
       })
     },
     //start
     //删除
-    del(val){
+    del (val) {
       this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -278,15 +300,15 @@ export default {
             });
           }
         });
-      }).catch(() => {})
+      }).catch(() => { })
     },
     //编辑按钮点击
-    edit(row){
-      this.formState=JSON.parse(JSON.stringify(row));
-      this.editVisible=true;
+    edit (row) {
+      this.formState = JSON.parse(JSON.stringify(row));
+      this.editVisible = true;
     },
     //编辑保存
-    editSave(){
+    editSave () {
       // console.log(JSON.stringify(this.formState))
       indexManagement_edit(this.formState).then(resp => {
         if (resp.code == 0) {
@@ -294,7 +316,7 @@ export default {
             message: "修改成功",
             type: "success",
           });
-          this.editVisible=false;
+          this.editVisible = false;
           this.getList();
         } else {
           this.$message({
@@ -304,14 +326,14 @@ export default {
         }
       })
     },
-    getList() {
+    getList () {
       // console.log(this.active_project)
       this.listLoading = true;
-      this.pageQuery.managementProjectUuid=this.active_project;
+      this.pageQuery.managementProjectUuid = this.active_project;
       indexManagement_pageList(this.pageQuery).then(resp => {
-        var datas=resp.data;
-        this.dataList=datas.dataList;
-        this.yearRange=datas.titleHeadList;
+        var datas = resp.data;
+        this.dataList = datas.dataList;
+        this.yearRange = datas.titleHeadList;
         this.loading = false;
         this.getUser();
         // console.log(JSON.stringify(this.dataList))
@@ -331,32 +353,32 @@ export default {
     },
     //end
 
-    openExamine() {
+    openExamine () {
       this.dialogtextVisible = true;
     },
-    kulistSelectionChange(val) {
+    kulistSelectionChange (val) {
       this.kutableSelection = val;
     },
-    add() {
+    add () {
       this.$nextTick(() => {
         this.$refs.searchTabel.init(this.active_project);
       });
     },
     //生成经营指标点击后事件
-    getAddInfo(){
+    getAddInfo () {
       console.log(111)
       this.getList();
     },
-    importData() {
+    importData () {
       this.getkulist();
       this.dialoglistVisible = true;
     },
-    importSave() {
+    importSave () {
       axios({
         url: `/wisdomaudit/`,
         headers: {
-          TOKEN: this.dqtoken,
-        },
+          TOKEN: this.dqtoken,
+        },
         method: "post",
         data: this.kutableSelection,
       }).then((res) => {
@@ -369,14 +391,14 @@ export default {
         }
       });
     },
-    getkulist() {
+    getkulist () {
       this.kulistData = [{ indexName: "11" }];
       return;
       axios({
         url: `/wisdomaudit/`,
         headers: {
-          TOKEN: this.dqtoken,
-        },
+          TOKEN: this.dqtoken,
+        },
         method: "post",
         data: this.kupageQuery,
       }).then((res) => {
@@ -384,22 +406,22 @@ export default {
         this.kutotal = res.data.total;
       });
     },
-    exportData() {
+    exportData () {
       axios({
         url: `/wisdomaudit/`,
         headers: {
-          TOKEN: this.dqtoken,
-        },
+          TOKEN: this.dqtoken,
+        },
         method: "post",
         data: this.temp,
-      }).then((res) => {});
+      }).then((res) => { });
     },
-    createData() {
+    createData () {
       axios({
         url: `/wisdomaudit/operatingIndicators/save`,
         headers: {
-          TOKEN: this.dqtoken,
-        },
+          TOKEN: this.dqtoken,
+        },
         method: "post",
         data: this.temp,
       }).then((res) => {
@@ -414,12 +436,12 @@ export default {
         }
       });
     },
-    updateData() {
+    updateData () {
       axios({
         url: `/wisdomaudit/operatingIndicators/update`,
         headers: {
-          TOKEN: this.dqtoken,
-        },
+          TOKEN: this.dqtoken,
+        },
         method: "put",
         data: this.temp,
       }).then((res) => {
@@ -433,10 +455,10 @@ export default {
         }
       });
     },
-    issued() {
+    issued () {
       let rep = []
-      for(let i =0;i<this.indicatortableSelection.length;i++){
-        rep.push({operatingIndicatorsUuid:this.indicatortableSelection[i].operatingIndicatorsUuid})
+      for (let i = 0; i < this.indicatortableSelection.length; i++) {
+        rep.push({ operatingIndicatorsUuid: this.indicatortableSelection[i].operatingIndicatorsUuid })
       }
       let params = {
         managementProjectUuid: this.pageQuery.condition.managementProjectUuid,
@@ -445,8 +467,8 @@ export default {
       axios({
         url: `/wisdomaudit/operatingIndicatorsBackTask/sendTask`,
         headers: {
-          TOKEN: this.dqtoken,
-        },
+          TOKEN: this.dqtoken,
+        },
         method: "post",
         data: params,
       }).then((res) => {
@@ -459,7 +481,7 @@ export default {
         }
       });
     },
-    deleteData() {
+    deleteData () {
       console.log(this.indicatortableSelection);
       let rep = [];
       for (let i = 0; i < this.indicatortableSelection.length; i++) {
@@ -469,8 +491,8 @@ export default {
       axios({
         url: `/wisdomaudit/operatingIndicators/delete/` + rep,
         headers: {
-          TOKEN: this.dqtoken,
-        },
+          TOKEN: this.dqtoken,
+        },
         method: "delete",
         data: {},
       }).then((res) => {
@@ -487,12 +509,15 @@ export default {
 };
 </script>
 <style scoped>
-  .jyzb-tr-title{
-    text-align: left!important;
-  }
-  .indocator{
-    height: 100%;
-  }
+.jyzb-div {
+  min-height: 500px;
+}
+.jyzb-tr-title {
+  text-align: left !important;
+}
+.indocator {
+  height: 100%;
+}
 .indocator-btn-box {
   float: right;
 }
@@ -503,68 +528,71 @@ export default {
   color: rgb(27, 168, 250);
   cursor: pointer;
 }
-  .jyzb-div{
-    width:100%;
-    overflow:scroll;
-  }
-  .jyzb{
-    border: 1px solid #ddd;
-    min-width: 100vw;
-    width: auto;
-    overflow-x: auto;
-    box-sizing: border-box;
-  }
-  .jyzb tr:not(:last-child){
-    border-bottom: 1px solid #ddd;
-  }
-  .jyzb td:not(:last-child),.jyzb th:not(:last-child){
-     border-right: 1px solid #ddd;
-   }
-  .jyzb td,.jyzb th{
-    padding: 10px;
-    background: #fff;
-    text-align: center;
-    box-sizing: border-box;
-    word-break: break-all;
-  }
-  .jyzb td div,.jyzb th div{
-    display: inline-block;
-    box-sizing: border-box;
-    word-break: break-all;
-  }
-  .blue{
-    color: blue;
-  }
-  .red{
-    color:red;
-  }
-  .jyzb button{
-    border: none!important;
-  }
-  >>>.zb-edit .el-form-item__content{
-    width: 70%!important;
-  }
-  .zb-edit-footer{
-    text-align: center;
-  }
-  .transparent{
-    visibility: hidden;
-  }
-  .td-150{
-    width: 150px!important;
-    box-sizing: border-box;
-  }
-  .td-100{
-    width: 100px!important;
-    box-sizing: border-box;
-  }
-  .td-200{
-     width: 200px!important;
-     box-sizing: border-box;
-   }
-  .td-250{
-    width: 250px!important;
-    box-sizing: border-box;
-  }
+.jyzb-div {
+  width: 100%;
+  overflow: scroll;
+}
+.jyzb {
+  border: 1px solid #ddd;
+  min-width: 100vw;
+  width: auto;
+  overflow-x: auto;
+  box-sizing: border-box;
+}
+.jyzb tr:not(:last-child) {
+  border-bottom: 1px solid #ddd;
+}
+.jyzb td:not(:last-child),
+.jyzb th:not(:last-child) {
+  border-right: 1px solid #ddd;
+}
+.jyzb td,
+.jyzb th {
+  padding: 10px;
+  background: #fff;
+  text-align: center;
+  box-sizing: border-box;
+  word-break: break-all;
+}
+.jyzb td div,
+.jyzb th div {
+  display: inline-block;
+  box-sizing: border-box;
+  word-break: break-all;
+}
+.blue {
+  color: blue;
+}
+.red {
+  color: red;
+}
+.jyzb button {
+  border: none !important;
+}
+>>> .zb-edit .el-form-item__content {
+  width: 70% !important;
+}
+.zb-edit-footer {
+  text-align: center;
+}
+.transparent {
+  visibility: hidden;
+}
+.td-150 {
+  width: 150px !important;
+  box-sizing: border-box;
+}
+.td-100 {
+  width: 100px !important;
+  box-sizing: border-box;
+}
+.td-200 {
+  width: 200px !important;
+  box-sizing: border-box;
+}
+.td-250 {
+  width: 250px !important;
+  box-sizing: border-box;
+}
 </style>
 
