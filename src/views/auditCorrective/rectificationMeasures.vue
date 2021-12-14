@@ -56,12 +56,10 @@
                        type="index" />
       <el-table-column :resizable="false"
                        label="项目名称"
-                       width="250px"
                        prop="projectName"
                        algin="left" />
       <el-table-column :resizable="false"
                        label="问题"
-                       width="150px"
                        prop="problemName"
                        algin="left">
         <template slot-scope="scope">
@@ -71,7 +69,6 @@
       </el-table-column>
       <el-table-column :resizable="false"
                        label="整改期间"
-                       width="200px"
                        prop="createTime"
                        algin="left">
         <template slot-scope="scope">
@@ -80,7 +77,7 @@
       </el-table-column>
       <el-table-column :resizable="false"
                        label="整改责任部门及联系人"
-                       width="200px"
+                       width="250px"
                        algin="left"
                        prop="name">
         <template slot-scope="scope">
@@ -99,6 +96,7 @@
       <el-table-column :resizable="false"
                        label="整改结果"
                        prop="name"
+                       width="150px"
                        algin="left">
         <template slot-scope="scope">
           <span>{{scope.row.correctState=='0'?'未整改':scope.row.correctState=='1'?'整改中':scope.row.correctState=='2'?'已完成整改':'--'}}</span>
