@@ -42,70 +42,73 @@
         </el-row>
         <!-- 组员维护列表 -->
         <el-form>
-          <el-table v-loading="tableMemberLoading"
-                    ref="singleTable"
-                    :data="tableData"
-                    style="width: 100%"
-                    border
-                    :header-cell-style="{
+          <div class="min_height">
+            <el-table v-loading="tableMemberLoading"
+                      ref="singleTable"
+                      :data="tableData"
+                      style="width: 100%"
+                      border
+                      :header-cell-style="{
               'background-color': '#F4FAFF',
               'font-weight': '400',
             }">
-            <el-table-column align="left"
-                             label="姓名"
-                             prop="peopleName"
-                             width="130">
-            </el-table-column>
-            <el-table-column align="left"
-                             label="角色"
-                             width="130">
-              <template slot-scope="scope">
-                <span v-if="scope.row.peopleRole == 2">组员</span>
-                <span v-else>组长</span>
-              </template>
-            </el-table-column>
-            <el-table-column align="left"
-                             property="userMobile"
-                             label="联系方式">
-            </el-table-column>
-            <el-table-column align="left"
-                             property="belongCompany"
-                             label="所属单位"
-                             show-overflow-tooltip
-                             min-width="100">
-            </el-table-column>
-            <el-table-column align="left"
-                             property="belongDept"
-                             label="所属部门"
-                             show-overflow-tooltip>
-            </el-table-column>
-            <el-table-column property="isLiaison"
-                             label="设置为接口人"
-                             align="left">
-              <template slot-scope="scope">
-                <el-switch v-model="scope.row.isLiaison"
-                           active-color="#13ce66"
-                           inactive-color="gray"
-                           active-value="1"
-                           inactive-value="0"
-                           @change="switchChange(scope.row)"
-                           :disabled="userRole == '3'">
-                </el-switch>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作"
-                             width="50"
-                             v-if="userRole != 3">
-              <template slot-scope="scope">
-                <el-button type="text"
-                           style="color: #ff8a72; background: none; border: 0; font-size:14px"
-                           size="small"
-                           @click.native.prevent="deleteRow(scope.row, tableData)">
-                  删除
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+              <el-table-column align="left"
+                               label="姓名"
+                               prop="peopleName"
+                               width="130">
+              </el-table-column>
+              <el-table-column align="left"
+                               label="角色"
+                               width="130">
+                <template slot-scope="scope">
+                  <span v-if="scope.row.peopleRole == 2">组员</span>
+                  <span v-else>组长</span>
+                </template>
+              </el-table-column>
+              <el-table-column align="left"
+                               property="userMobile"
+                               label="联系方式">
+              </el-table-column>
+              <el-table-column align="left"
+                               property="belongCompany"
+                               label="所属单位"
+                               show-overflow-tooltip
+                               min-width="100">
+              </el-table-column>
+              <el-table-column align="left"
+                               property="belongDept"
+                               label="所属部门"
+                               show-overflow-tooltip>
+              </el-table-column>
+              <el-table-column property="isLiaison"
+                               label="设置为接口人"
+                               align="left">
+                <template slot-scope="scope">
+                  <el-switch v-model="scope.row.isLiaison"
+                             active-color="#13ce66"
+                             inactive-color="gray"
+                             active-value="1"
+                             inactive-value="0"
+                             @change="switchChange(scope.row)"
+                             :disabled="userRole == '3'">
+                  </el-switch>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作"
+                               width="50"
+                               v-if="userRole != 3">
+                <template slot-scope="scope">
+                  <el-button type="text"
+                             style="color: #ff8a72; background: none; border: 0; font-size:14px"
+                             size="small"
+                             @click.native.prevent="deleteRow(scope.row, tableData)">
+                    删除
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+
         </el-form>
 
         <!-- 分页 -->
@@ -127,7 +130,7 @@
     <!-- 添加组员维护弹框 -->
     <el-dialog :visible.sync="addgroupDialog"
                @close="addDialogClosed"
-               width="55%">
+               width="60%">
       <div class="title">组员维护</div>
       <div class="addPerson">
         <el-row>
@@ -720,6 +723,10 @@ export default {
 // .el-button{
 //   background: #4BDCB4;
 // }
+.min_height {
+  min-height: 500px;
+}
+
 .deleteBtn {
   color: red;
 }

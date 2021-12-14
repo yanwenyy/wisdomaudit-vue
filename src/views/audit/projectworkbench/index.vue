@@ -448,21 +448,7 @@
                        style="cursor: pointer"
                        @click="nearbyDetails(scope.row)"
                        slot="reference">
-                    <i class="update_icon">
-                      <svg style="margin-top: 5px"
-                           t="1631877671204"
-                           class="icon"
-                           viewBox="0 0 1024 1024"
-                           version="1.1"
-                           xmlns="http://www.w3.org/2000/svg"
-                           p-id="9939"
-                           width="15"
-                           height="15">
-                        <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                              fill="#FD9D27"
-                              p-id="9940"></path>
-                      </svg>
-                    </i>
+                    <i class="el-icon-folder-opened list-folder"></i>
                     <span style="margin-top: -5px;    color: #1371cc;
      margin-left: 4px">{{
                       scope.row.count
@@ -628,13 +614,14 @@
                  hide-required-asterisk>
           <el-form-item label="自建任务名称："
                         prop="taskName">
-            <el-input placeholder="请输入"
+            <el-input placeholder="请输入自建任务名称"
                       v-model="taskSelf.taskName"></el-input>
           </el-form-item>
           <el-form-item label="责任人："
                         prop="peopleName">
             <el-select v-model="taskSelf.peopleName"
                        filterable
+                       placeholder="请选择责任人"
                        @change="selectChangePerson">
               <el-option v-for="item in tableData"
                          :key="item.peopleTableUuid"
@@ -645,7 +632,7 @@
           </el-form-item>
           <el-form-item label="专ㅤ题:"
                         prop="belongSpcial">
-            <el-select placeholder="请选择"
+            <el-select placeholder="请选择专题"
                        v-model="taskSelf.belongSpcial"
                        v-if="other_input == true"
                        @change="changeBelongSpcial">
@@ -660,7 +647,7 @@
           </el-form-item>
           <el-form-item label="领ㅤ域:"
                         prop="belongField">
-            <el-select placeholder="请选择"
+            <el-select placeholder="请选择领域"
                        v-model="taskSelf.belongField">
               <el-option v-for="item in areasOption"
                          :key="item.value"
@@ -672,6 +659,7 @@
           <el-form-item label="任务描述："
                         prop="taskDescription">
             <el-input type="textarea"
+                      placeholder="请输入任务描述"
                       v-model="taskSelf.taskDescription"></el-input>
           </el-form-item>
           <el-form-item label="ㅤㅤ上传附件：">
@@ -717,13 +705,14 @@
             </div>
           </el-form-item> -->
           <el-form-item label="自建任务名称：">
-            <el-input placeholder="请输入"
+            <el-input placeholder="请输入自建任务名称"
                       v-model="edittaskSelfForm.taskName"></el-input>
           </el-form-item>
           <el-form-item label="责任人："
                         prop="peopleName">
             <el-select v-model="edittaskSelfForm.peopleTableUuid"
                        filterable
+                       placeholder="请选择责任人"
                        @change="selectChangePerson">
               <el-option v-for="item in tableData"
                          :key="item.peopleTableUuid"
@@ -734,7 +723,7 @@
           </el-form-item>
           <el-form-item label="专ㅤ题:"
                         prop="belongSpcial">
-            <el-select placeholder="请选择"
+            <el-select placeholder="请选择专题"
                        v-model="edittaskSelfForm.belongSpcial"
                        v-if="other_input == true"
                        @change="changeBelongSpcial">
@@ -749,7 +738,7 @@
           </el-form-item>
           <el-form-item label="领ㅤ域:"
                         prop="belongField">
-            <el-select placeholder="请选择"
+            <el-select placeholder="请选择领域"
                        v-model="edittaskSelfForm.belongField">
               <el-option v-for="item in areasOption"
                          :key="item.value"
@@ -760,6 +749,7 @@
           </el-form-item>
           <el-form-item label="任务描述：">
             <el-input type="textarea"
+                      placeholder="请输入任务描述"
                       v-model="edittaskSelfForm.taskDescription"></el-input>
           </el-form-item>
           <el-form-item label="上传附件：">
@@ -1147,7 +1137,7 @@ export default {
         this.dialogWidth = '900px'
       } else {
         //窗口宽度大于默认宽度1200时，将弹框设置为400宽度,可修改
-        this.dialogWidth = '60%'
+        this.dialogWidth = '65%'
       }
     },
 
@@ -2702,7 +2692,6 @@ export default {
   // border: 1px solid red;
   // text-align: center;
   margin-top: 1%;
-  border: 1px solid blue;
 }
 // .el-transfer {
 //   // border: 1px solid red;
@@ -2887,8 +2876,9 @@ export default {
 .selfTask >>> .el-form-item {
   margin-bottom: 25px !important;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  -ms-flex-wrap: wrap;
+  width: 400px;
+  margin: 0 auto;
 }
 .selfTask >>> .el-form-item__content {
   margin-left: 10px !important;

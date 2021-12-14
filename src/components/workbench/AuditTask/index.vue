@@ -280,7 +280,8 @@
           </el-table>
           <!-- 表单 end-->
           <!-- 分页 -->
-          <div class="page">
+          <div class="page"
+          v-show="tableData.total>0">
             <el-pagination @size-change="handleSizeChange_zijian"
                            @current-change="handleCurrentChange_zijian"
                            :page-size="this.tableData.size"
