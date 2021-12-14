@@ -3135,7 +3135,7 @@ export default {
 .addForm /deep/ .el-form-item__error {
   position: absolute;
   top: 22%!important;
-  left: 6%!important;
+  left: 40%!important;
 }
 .addForm >>> .el-form-item__label {
   margin-left: 15px !important;
@@ -3146,7 +3146,7 @@ export default {
 .addzhuanForm /deep/ .el-form-item__error {
   position: absolute;
   top: 22%!important;
-  left: 6%!important;
+  left: 40%!important;
 }
 /* .addzhuanForm >>> .el-form-item__content{
   margin-left: 83px !important;

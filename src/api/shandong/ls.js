@@ -292,10 +292,10 @@ export function recAccountCorrect_correctStepPageList(data) {
   })
 }
 //获取审核人
-export function projectMembership_listUserInfo(data) {
+export function projectMembership_listUserInfo(num, size) {
   return request({
     baseURL: baseURL,
-    url:'projectMembership/listUserInfo',
+    url:'/projectMembership/listUserInfo?' + 'pageCurrent=' + num + '&pageSize=' + size,
     method: 'get',
   })
 }
