@@ -16,7 +16,7 @@
                        label="审计(调查)事项"
                        prop="matter"></el-table-column>
       <el-table-column algin="left"
-                       label="责任人"
+                       label="审计人员"
                        prop="auditorsName"></el-table-column>
       <el-table-column algin="left"
                        label="问题数"
@@ -55,20 +55,20 @@
                      class="btnStyle editBtn"
                      @click="edit(scope.row)"
                      v-if="scope.row.createUserUuid==userInfo.user.id">编辑</el-button>
-          <el-upload v-if="scope.row.createUserUuid==userInfo.user.id"
-                     :show-file-list="false"
-                     class="upload-demo inline-block btnStyle"
-                     :action="'/wisdomaudit/auditConfirmation/fileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid+'&confirmationFileNumber='+(scope.row.confirmationFileNumber||'')"
-                     :on-change="fileChange"
-                     :on-success="list_data_start"
-                     :headers="headers"
-                     accept=".docx,.xls,.xlsx,.txt,.zip,.doc">
-            <el-button size="small"
-                       type="text"
-                       style="background: transparent;
-    font-size: 14px;"
-                       class="editBtn">上传附件</el-button>
-          </el-upload>
+          <!--<el-upload v-if="scope.row.createUserUuid==userInfo.user.id"-->
+                     <!--:show-file-list="false"-->
+                     <!--class="upload-demo inline-block btnStyle"-->
+                     <!--:action="'/wisdomaudit/auditConfirmation/fileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid+'&confirmationFileNumber='+(scope.row.confirmationFileNumber||'')"-->
+                     <!--:on-change="fileChange"-->
+                     <!--:on-success="list_data_start"-->
+                     <!--:headers="headers"-->
+                     <!--accept=".docx,.xls,.xlsx,.txt,.zip,.doc">-->
+            <!--<el-button size="small"-->
+                       <!--type="text"-->
+                       <!--style="background: transparent;-->
+    <!--font-size: 14px;"-->
+                       <!--class="editBtn">上传附件</el-button>-->
+          <!--</el-upload>-->
           <el-button size="small"
                      type="text"
                      class="btnStyle red"
@@ -212,28 +212,35 @@
           <!--<el-input disabled-->
                     <!--v-model="formDetail.signatureDate"></el-input>-->
         </el-form-item>
-        <!--<el-form-item label="上传附件:"-->
-                      <!--class="falseRequired">-->
-          <!--<el-upload v-if="!ifLook"-->
-                     <!--class="upload-demo"-->
-                     <!--drag-->
-                     <!--action="/wisdomaudit/auditBasy/filesUpload"-->
-                     <!--:on-success="handleChangePic"-->
-                     <!--:before-remove="handleRemoveApk"-->
-                     <!--accept=".docx,.xls,.xlsx,.txt,.zip,.doc"-->
-                     <!--:file-list="fileList"-->
-                     <!--multiple-->
-                     <!--:key="key"-->
-                     <!--:headers="headers">-->
-            <!--<i class="el-icon-upload"></i>-->
-            <!--<div class="el-upload__text">-->
-              <!--点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc-->
+        <el-form-item label="上传附件:"
+                      class="upload-yw">
+          <el-upload
+            v-if="!ifLook"
+            class="upload-demo"
+            drag
+            action="/wisdomaudit/auditBasy/filesUpload"
+            :on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList1)}"
+            :on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList1,fileList1,fileList1_del)}"
+            multiple
+            :limit="3"
+            :key="key"
+            :on-exceed="handleExceed"
+            :headers="headers"
+            :file-list="fileList1">
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">
+              点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc
+            </div>
+          </el-upload>
+          <div class="inline-block" v-if="ifLook">
+            <el-tooltip class="item" effect="dark" v-for="(item,index) in fileList1" :key="index"  :content="item.fileName" placement="top">
+              <div  class="blue pointer" @click="downFile(item.attachmentUuid,item.fileName)">{{item.fileName.length>20?item.fileName.slice(0,20)+"...":item.fileName}}</div>
+            </el-tooltip>
+            <!--<div class="blue pointer" v-for="(item,index) in fileList1" :key="index"  @click="downFile(item.attachmentUuid,item.fileName)">-->
+            <!--{{item.fileName}}-->
             <!--</div>-->
-          <!--</el-upload>-->
-          <!--<div v-if="ifLook">-->
-            <!--<div v-for="(item,index) in fileList">{{item.name}}</div>-->
-          <!--</div>-->
-        <!--</el-form-item>-->
+          </div>
+        </el-form-item>
         <span slot="footer"
               class="dialog-footer">
           <el-button @click="handleClose">取 消</el-button>
@@ -336,8 +343,10 @@ export default {
   props: ['active_project', 'userRole'],
   data () {
     return {
-      apkFiles: [],//附件上传列表
-      fileList: [],//附件上传回显列表
+      key:0,
+      attachmentList1: [],//附件上传列表
+      fileList1: [],//附件上传回显列表
+      fileList1_del:[],
       headers: {},
       canClick: true,
       ifLook: false,
@@ -346,6 +355,7 @@ export default {
       confirmationDialogVisible: false, //新增确认单弹框
       confirmationDialogVisibleZx: false,//专项确认单编辑
       formDetail: {
+        attachmentList:[],
         matter: '',
         matterDetail: '',
         auditorsName: '',
@@ -398,17 +408,19 @@ export default {
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
   },
   methods: {
-    //附件上传成功
-    handleChangePic (response, file, fileList) {
+    handleExceed(){},
+    //附件上传
+    uploadPorgress(response,file, fileList,tableList){
       if (response && response.code === 0) {
-        this.apkFiles.push(response.data);
+        response.data.isDeleted=2;
+        tableList.push(response.data);
         this.$message({
           message: '上传成功',
           type: 'success',
           duration: 1500,
           onClose: () => {
-            // this.apkFiles.push(response.data);
-            // console.log(this.apkFiles,3333)
+            // response.data.isDeleted=2;
+            // tableList.push(response.data);
           }
         })
       } else {
@@ -423,41 +435,16 @@ export default {
       }
     },
     //附件删除
-    handleRemoveApk (file, fileList) {
-      var ifDel = true, that = this;
-      var id = file.response ? file.response.data.attachmentUuid : file.attachmentUuid;
-      return new Promise(function (resolve, reject) {
-        del_file(id).then(resp => {
-          if (resp.code == 0) {
-            that.$message({
-              message: "删除成功",
-              type: "success",
-            });
-            if (file.response) {
-              that.apkFiles.remove(file.response.data);
-              that.key = Math.random();
-            } else {
-              // console.log(file)
-              that.fileList.remove(file);
-              that.formState.attachmentList = that.formState.attachmentList.filter((item) => { item.attachment_uuid != file.attachmentUuid })
-              // console.log(that.formState.attachmentList,222)
-            }
-            return true;
-
-          } else {
-            that.$message({
-              message: resp.data.msg,
-              type: "error",
-            });
-            ifDel = false;
-            resolve(ifDel);
-            return ifDel;
-          }
-        });
-      }).then(function (val) {
-        reject(val);
-        return val
-      })
+    handleRemove( file, fileList,tableList,showList,delList){
+      if (file.response) {
+        tableList.remove(file.response.data);
+        // this.key = Math.random();
+      } else {
+        showList.remove(file);
+        file.isDeleted = 1;
+        delList.push(file);
+        console.log(showList,delList)
+      }
     },
     //附件下载
     downFile (id, fileName) {
@@ -503,7 +490,7 @@ export default {
     },
     //复核人列表
     getFhrList () {
-      projectMembership_listUserInfo().then(resp => {
+      projectMembership_listUserInfo(1,10000).then(resp => {
         this.FhrList = resp.data.list;
       })
     },
@@ -624,6 +611,14 @@ export default {
         if (this.formDetail.auditOrgOpinion.indexOf("情况属实") == -1) {
           this.formDetail.auditOrgOpinion = "情况属实\n" + this.formDetail.auditOrgOpinion
         }
+        if(datas.attachmentList){
+          datas.attachmentList.forEach((item)=>{
+            item.name=item.fileName;
+            item.url=item.filePath;
+            item.isDeleted=0;
+          });
+        }
+        this.fileList1=datas.attachmentList||[];
 
 
         // if (this.projectType == 'zxsj') {
@@ -693,6 +688,11 @@ export default {
     saveForm () {
       this.$refs['addForm'].validate((valid) => {
         if (valid) {
+          var uploadList1=this.attachmentList1.concat(this.fileList1,this.fileList1_del);
+          uploadList1.forEach((item)=>{
+            item.status=null;
+          });
+          this.formDetail.attachmentList=uploadList1;
           if (this.confirmationDialogTitle == '新增确认单') {
             this.formDetail.managementProjectName = this.managementProjectName;
             this.formDetail.auditOrgName = this.auditOrgName;
@@ -751,6 +751,7 @@ export default {
     },
     clearForm () {
       this.formDetail = {
+        attachmentList:[],
         matter: '',
         matterDetail: '',
         auditorsName: '',
@@ -761,6 +762,9 @@ export default {
         principalPost: '',
         signatureDate: '',
       };
+      this.attachmentList1=[];
+      this.fileList1=[];
+      this.fileList1_del=[];
       if (this.$refs['addForm']) {
         this.$refs['addForm'].resetFields();
       }
@@ -901,5 +905,8 @@ export default {
   }
   >>>.itemThree .el-form-item__label{
     width:130px!important;
+  }
+  >>>.upload-yw .el-form-item__content{
+    width: 60%!important;
   }
 </style>
