@@ -127,7 +127,7 @@
     <!-- 添加组员维护弹框 -->
     <el-dialog :visible.sync="addgroupDialog"
                @close="addDialogClosed"
-               width="60%">
+               width="55%">
       <div class="title">组员维护</div>
       <div class="addPerson">
         <el-row>
@@ -961,20 +961,22 @@ export default {
 .upload-demo {
   margin-top: -35px;
 }
-.el-transfer {
-  // border: 1px solid red;
-  // text-align: center;
-  margin-top: 1%;
-  margin-left: 5%;
-}
 </style>
 <style scoped>
 .addPerson >>> .is-disabled {
   /* background: #0c87d6 !important;/ */
   opacity: 0.6 !important;
 }
+.addPerson >>> .el-transfer {
+  margin-top: 1%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
 
-.el-transfer /deep/ .el-transfer-panel {
+.addPerson >>> .el-transfer-panel {
   width: 35%;
 }
 .search {

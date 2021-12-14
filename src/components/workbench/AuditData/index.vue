@@ -2908,8 +2908,6 @@ export default {
 }
 .dlag_conter >>> .el-form-item {
   margin-bottom: 20px !important;
-}
-.dlag_conter >>> .el-form-item {
   display: flex;
 }
 .dlag_conter >>> .el-form-item__content {

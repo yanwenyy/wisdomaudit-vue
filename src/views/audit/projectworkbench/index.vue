@@ -463,7 +463,8 @@
                               p-id="9940"></path>
                       </svg>
                     </i>
-                    <span style="margin-top: -5px; margin-left: 4px">{{
+                    <span style="margin-top: -5px;    color: #1371cc;
+     margin-left: 4px">{{
                       scope.row.count
                     }}</span>
                   </div>
@@ -570,6 +571,7 @@
                   style="width: 100%"
                   @selection-change="handleSelectionChangeModel"
                   ref="multipleModelRef"
+                  v-loading="lding_model"
                   :row-key="getRowKey">
           <el-table-column type="selection"
                            :reserve-selection="true">
@@ -601,24 +603,12 @@
                     :page.sync="modelQuery.pageNo"
                     :limit.sync="modelQuery.pageSize"
                     @pagination="queryModel" />
-        <!-- <div class="page">
-        <el-pagination
-          background
-          :hide-on-single-page="false"
-          layout="prev, pager, next"
-          :page-sizes="[2, 4, 6, 8]"
-          :current-page="modelSize.current"
-          @current-change="handleCurrentChangeModel"
-          :page-size="modelSize.size"
-          :total="modelSize.total"
-        ></el-pagination>
-      </div> -->
         <!-- 分页 end-->
         <div class="stepBtn"
              style="margin-top: 25px">
           <el-button @click="res">取消</el-button>
           <el-button style="background: #1897e4; color: #fff"
-                     @click="modelInfo"
+                     @click="modelInfo()"
                      :disabled="isdisabled">确认</el-button>
         </div>
       </div>
@@ -631,7 +621,7 @@
                width="50%">
       <div class="dialogTitle">自建任务</div>
       <div class="selfTask">
-        <el-form label-width="100px"
+        <el-form label-width="120px"
                  :model="taskSelf"
                  ref="selfTaskRef"
                  :rules="taskSelfRules"
@@ -641,7 +631,7 @@
             <el-input placeholder="请输入"
                       v-model="taskSelf.taskName"></el-input>
           </el-form-item>
-          <el-form-item label="ㅤㅤㅤ责任人："
+          <el-form-item label="责任人："
                         prop="peopleName">
             <el-select v-model="taskSelf.peopleName"
                        filterable
@@ -653,7 +643,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="ㅤㅤㅤ专ㅤ题:"
+          <el-form-item label="专ㅤ题:"
                         prop="belongSpcial">
             <el-select placeholder="请选择"
                        v-model="taskSelf.belongSpcial"
@@ -668,7 +658,7 @@
             <el-input v-model="taskSelf.belongSpcial"
                       v-if="other_input == false"></el-input>
           </el-form-item>
-          <el-form-item label="ㅤㅤㅤ领ㅤ域:"
+          <el-form-item label="领ㅤ域:"
                         prop="belongField">
             <el-select placeholder="请选择"
                        v-model="taskSelf.belongField">
@@ -679,10 +669,9 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="ㅤㅤ任务描述："
+          <el-form-item label="任务描述："
                         prop="taskDescription">
             <el-input type="textarea"
-                      style="top: -35px"
                       v-model="taskSelf.taskDescription"></el-input>
           </el-form-item>
           <el-form-item label="ㅤㅤ上传附件：">
@@ -717,7 +706,7 @@
                @close="editResetForm2('editTaskRef')">
       <div class="dialogTitle">编辑自建任务</div>
       <div class="selfTask">
-        <el-form label-width="100px"
+        <el-form label-width="120px"
                  :model="edittaskSelfForm"
                  ref="editTaskRef"
                  hide-required-asterisk>
@@ -727,12 +716,11 @@
               <el-radio v-model="radio" label="2">自建任务</el-radio>
             </div>
           </el-form-item> -->
-          <el-form-item label="自建任务名称："
-                        style="margin-top: 20px">
+          <el-form-item label="自建任务名称：">
             <el-input placeholder="请输入"
                       v-model="edittaskSelfForm.taskName"></el-input>
           </el-form-item>
-          <el-form-item label="ㅤㅤㅤ责任人："
+          <el-form-item label="责任人："
                         prop="peopleName">
             <el-select v-model="edittaskSelfForm.peopleTableUuid"
                        filterable
@@ -744,7 +732,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="ㅤㅤㅤ专ㅤ题:"
+          <el-form-item label="专ㅤ题:"
                         prop="belongSpcial">
             <el-select placeholder="请选择"
                        v-model="edittaskSelfForm.belongSpcial"
@@ -759,7 +747,7 @@
             <el-input v-model="edittaskSelfForm.belongSpcial"
                       v-if="other_input == false"></el-input>
           </el-form-item>
-          <el-form-item label="ㅤㅤㅤ领ㅤ域:"
+          <el-form-item label="领ㅤ域:"
                         prop="belongField">
             <el-select placeholder="请选择"
                        v-model="edittaskSelfForm.belongField">
@@ -770,12 +758,11 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="ㅤㅤ任务描述：">
+          <el-form-item label="任务描述：">
             <el-input type="textarea"
-                      style="top: -35px"
                       v-model="edittaskSelfForm.taskDescription"></el-input>
           </el-form-item>
-          <el-form-item label="ㅤㅤ上传附件：">
+          <el-form-item label="上传附件：">
             <el-upload class="upload-demo"
                        drag
                        action="#"
@@ -858,6 +845,7 @@ export default {
   },
   data () {
     return {
+      lding_model: false,
       dialogWidth: 0,
       headers: '',
       dqtoken: "",
@@ -1151,7 +1139,7 @@ export default {
   },
   methods: {
     setDialogWidth () {
-      console.log(document.body.clientWidth)
+
       var val = document.body.clientWidth
       const def = 1400 //宽度最小为800,可修改
       //窗口宽度小于默认宽度时，将弹框看度设置为50%,可修改
@@ -1219,7 +1207,7 @@ export default {
       this.ifshow = true;
       initProject(data).then((resp) => {
         this.projectInit = resp.data.records;
-        if (resp.data.records&&resp.data.records!='') {
+        if (resp.data.records && resp.data.records != '') {
           this.active_project = resp.data.records[0].managementProjectUuid;
         }
         this.ifshow = false;
@@ -1449,7 +1437,7 @@ export default {
       });
     },
     //重加载接口
-    reset(){
+    reset () {
       this.getprojectList(this.queryManage);
       this.thematicSelect(this.thematic);
       this.areasSelect(this.areas);
@@ -1588,6 +1576,8 @@ export default {
               this.managementProjectUuid;
             //
             this.getauditModelList(this.getModelList);
+            this.modelQuery.condition.modelName = "";
+            this.getauditModelListSql(this.modelQuery);
           });
         })
         .catch((action) => {
@@ -1620,9 +1610,12 @@ export default {
     },
     // 导入模型列表渲染
     getauditModelListSql (data) {
+      this.lding_model = true;
       auditModelList(data).then((resp) => {
+        this.lding_model = false;
         this.modelTableData = resp.data.records;
         this.modelTotal = resp.data.total;
+
       });
     },
 
@@ -1698,7 +1691,6 @@ export default {
     // 增加模型任务按钮事件
     selectModel () {
       this.addDialogVisible = false;
-      this.modelDialog = true;
       for (let i = 0; i < this.modelTableData.length; i++) {
         this.$refs.multipleModelRef.toggleRowSelection(
           this.modelTableData[i],
@@ -1707,6 +1699,8 @@ export default {
       }
       this.modelQuery.condition.projectId = this.managementProjectUuid;
       this.getauditModelListSql(this.modelQuery);
+
+      this.modelDialog = true;//显示弹窗
     },
     // 未初始化弹框关闭事件
     addClosed () {
@@ -1717,8 +1711,10 @@ export default {
     },
     // 新增模型任务弹框取消按钮
     res () {
-      this.modelDialog = false;
+      this.modelDialog = false;//模型列表 弹窗关闭
       this.addDialogVisible = true;
+
+
     },
     // 新增自建任务弹框取消按钮
     TaskSelf_res () {
@@ -1762,6 +1758,7 @@ export default {
     // },
     // 模型列表渲染
     getauditModelList (data) {
+      this.modelListTab = [];
       modelTaskList(data).then((resp) => {
         this.modelListTab = resp.data.records;
         this.modelListTabSize = resp.data;
@@ -1772,8 +1769,6 @@ export default {
     },
     // 模型引入
     modelInfo () {
-      //
-
       if (this.selectauditModelList.auditModelList.length > 0) {
         this.isdisabled = true;
         this.selectauditModelList.projectId = this.managementProjectUuid;
@@ -2703,46 +2698,20 @@ export default {
   margin-top: -2%;
   padding: 2%;
 }
-.selfTask {
-  width: 50%;
-  margin: 20px auto;
-  // border: 1px solid red;
-}
-.selfTask .el-form-item__error {
-  top: -58%;
-  left: 279px;
-}
-.selfTask .el-input {
-  position: relative;
-  top: -35px;
-  width: 100%;
-}
-.selfTask .el-select {
-  position: relative;
-  top: -35px;
-  width: 100%;
-}
-.selfTask >>> .el-textarea__inner {
-  width: 100%;
-}
-.selfTask .el-form-item {
-  margin-bottom: -10px !important;
-}
-
-// .optionBtn .el-form-item {
-//   margin-bottom: -5px !important;
-// }
-.upload-demo {
-  margin-top: -35px;
-}
-.el-transfer {
+.addPerson >>> .el-transfer {
   // border: 1px solid red;
   // text-align: center;
   margin-top: 1%;
-  margin-left: 5%;
+  border: 1px solid blue;
 }
+// .el-transfer {
+//   // border: 1px solid red;
+//   // text-align: center;
+//   margin-top: 1%;
+//   margin-left: 5%;
+// }
 .setinterPerson {
-  width: 200px;
+  width: 230px;
   // border: 1px solid red;
   position: relative;
   .setinterPersonBtn {
@@ -2770,14 +2739,6 @@ export default {
 }
 .addPerson >>> .el-transfer__button:first-child {
   margin-bottom: 0;
-}
-
-.selfTask >>> .el-form-item {
-  margin-bottom: -10px !important;
-}
-.selfTask >>> .el-form-item__label {
-  font-size: 14px !important;
-  color: #606266 !important;
 }
 
 .optionBtn >>> .el-form-item {
@@ -2847,11 +2808,7 @@ export default {
 .el-transfer /deep/ .el-transfer-panel {
   width: 38%;
 }
-.selfTask /deep/ .el-form-item__error {
-  position: absolute;
-  top: -70%;
-  left: 35%;
-}
+
 >>> .el-input.is-disabled .el-input__inner {
   background: #f5f7fa !important;
   color: #c0c4cc !important;
@@ -2922,5 +2879,42 @@ export default {
 }
 .one-menu_y {
   margin-left: 20px !important;
+}
+.selfTask {
+  padding: 10px 0 0;
+  box-sizing: border-box;
+}
+.selfTask >>> .el-form-item {
+  margin-bottom: 25px !important;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.selfTask >>> .el-form-item__content {
+  margin-left: 10px !important;
+}
+.selfTask >>> .el-input,
+.selfTask >>> .el-select,
+.selfTask >>> .el-textarea__inner {
+  width: 270px;
+}
+
+.selfTask >>> .el-upload-dragger {
+  width: 100% !important;
+}
+.selfTask >>> .el-upload {
+  width: 100% !important;
+}
+.selfTask >>> .upload-demo {
+  /* margin-top: -35px; */
+  width: 270px;
+}
+.selfTask >>> .el-form-item__label {
+  font-size: 14px !important;
+  color: #606266 !important;
+}
+.update {
+  display: flex;
+  align-items: center;
 }
 </style>

@@ -918,6 +918,7 @@
                         prop="belongSpcial"
                         style="margin-bottom:30px!important">
             <el-select v-model="save_zj_query.belongSpcial  "
+                       v-if="input_select==true"
                        @change="changeHeader_zj_zt">
               <el-option v-for="item in zt_slect"
                          :key="item.value"
@@ -2939,6 +2940,9 @@ export default {
 .dlag_conter >>> .el-upload-dragger {
   width: 300px;
 }
+.dlag_conter >>> .upload-fileListdemo {
+  width: 380px;
+}
 .setParameters {
   margin: 0;
   height: 50px;
@@ -3031,9 +3035,9 @@ export default {
 .active {
   background: #1371cc !important;
 }
-.new >>> .el-form .el-form-item__error {
+/* .new >>> .el-form .el-form-item__error {
   left: 100px;
-}
+} */
 .new >>> .el-form p span {
   color: red;
 }

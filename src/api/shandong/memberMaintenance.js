@@ -10,6 +10,7 @@ export function projectMembership (data) {
     baseURL: baseURL,
     url: `/projectMembership/pageList`,
     method: 'post',
+    isLoading: false,
     data
   })
 }
@@ -19,6 +20,8 @@ export function getProjectMember (num, size, id) {
     baseURL: baseURL,
     url: `/projectMembership/listUserInfo?` + `pageCurrent=` + num + `&pageSize=` + size + `&projectId=` + id,
     method: 'get',
+    isLoading: false,
+
   })
 }
 
@@ -28,6 +31,7 @@ export function editprojectMembership (data) {
     baseURL: baseURL,
     url: `/projectMembership/update`,
     method: 'put',
+    isLoading: false,
     data
   })
 }
@@ -39,6 +43,7 @@ export function editprojectMembershipList (data) {
     baseURL: baseURL,
     url: `/projectMembership/batchUpdate`,
     method: 'put',
+    isLoading: false,
     data
   })
 }
@@ -49,7 +54,9 @@ export function deletprojectMembership (id) {
   return request({
     baseURL: baseURL,
     url: `/projectMembership/delete/` + id + '',
-    method: 'delete'
+    method: 'delete',
+    isLoading: false,
+
   })
 }
 
@@ -59,6 +66,7 @@ export function addprojectMembership (data) {
     baseURL: baseURL,
     url: `/projectMembership/save`,
     method: 'post',
+    isLoading: false,
     data
   })
 }
@@ -70,6 +78,7 @@ export function auditModelList (data) {
     baseURL: baseURL,
     url: `/auditModel/pageList`,
     method: 'post',
+    isLoading: false,
     data
   })
 }
@@ -79,6 +88,7 @@ export function quoteModel (data) {
   return request({
     baseURL: baseURL,
     url: `/auditTask/quoteModel`,
+    isLoading: false,
     method: 'post',
     data
   })
@@ -91,6 +101,7 @@ export function modelTaskList (data) {
     baseURL: baseURL,
     url: `/auditTask/selectTask/pageList`,
     method: 'post',
+    isLoading: false,
     data
   })
 }
@@ -102,6 +113,7 @@ export function editmodelPerson (data) {
     baseURL: baseURL,
     url: `/auditTask/setChargePeople`,
     method: 'put',
+    isLoading: false,
     data
   })
 }
@@ -114,7 +126,9 @@ export function deletmodelTask (id) {
   return request({
     baseURL: baseURL,
     url: `/auditTask/delete/` + id + '',
-    method: 'delete'
+    method: 'delete',
+    isLoading: false,
+
   })
 }
 
@@ -125,6 +139,8 @@ export function selfTaskFunction (data) {
     baseURL: baseURL,
     url: `/auditTask/saveTask`,
     method: 'post',
+    isLoading: false,
+
     data
   })
 }
@@ -136,6 +152,8 @@ export function isModel (data) {
     baseURL: baseURL,
     url: `/auditTask/pageList`,
     method: 'post',
+    isLoading: false,
+
     data
   })
 }
@@ -147,6 +165,8 @@ export function editProjectCode (data) {
     baseURL: baseURL,
     url: `/managementProject/updateProjectNoRole`,
     method: 'put',
+    isLoading: false,
+
     data
   })
 }
@@ -157,6 +177,8 @@ export function initProject (data) {
     baseURL: baseURL,
     url: `/projectMembership/pageListInUse`,
     method: 'post',
+    isLoading: false,
+
     data
   })
 }
@@ -169,6 +191,8 @@ export function projectListByuser2 (data) {
     // url: `/managementProject/pageListByUser`,
     url: `/managementProject/pageList2`,
     method: 'post',
+    isLoading: false,
+
     data
   })
 }
@@ -190,6 +214,8 @@ export function editTaskSelfInfo (data) {
     baseURL: baseURL,
     url: `/auditTask/update`,
     method: 'put',
+    isLoading: false,
+
     data
   })
 }
@@ -200,6 +226,8 @@ export function setinterFaceperson (isperson, projectId, memberid) {
     baseURL: baseURL,
     url: `/projectMembership/setIsLiaison?` + `isLiaison=` + isperson + `&managmentProjectId=` + projectId + `&projectMembershipUuid=` + memberid,
     method: 'put',
+    isLoading: false,
+
   })
 }
 

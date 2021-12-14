@@ -1678,6 +1678,10 @@ export default {
   /* border: 1px solid red; */
   padding: 2%;
 }
+.taskAdd {
+  padding-top: 20px;
+  box-sizing: border-box;
+}
 
 .taskAdd >>> .el-form-item {
   margin-bottom: 25px !important;
@@ -1743,7 +1747,7 @@ export default {
   border-bottom: 1px solid #d2d2d2;
   padding: 10px;
   text-align: center;
-  margin-bottom: 3%;
+  /* margin-bottom: 3%; */
   font-weight: 700;
 }
 .taskAdd >>> .el-form-item__error {
