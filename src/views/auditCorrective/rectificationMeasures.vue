@@ -6,7 +6,7 @@
                  :inline="true"
                  :model="searchForm"
                  @keyup.enter.native="list_data_start()">
-          <el-form-item label="1状态:">
+          <el-form-item label="状态:">
             <el-select v-model="searchForm.correctStatus"
                        placeholder="请选择"
                        clearable>
@@ -112,7 +112,7 @@
                      @click="look(scope.row)">
             查看
           </el-button>
-          <el-button v-if="scope.row.correctStatus=='2'||scope.row.correctStatus=='3'"
+          <el-button v-if="scope.row.correctStatus=='3'"
                      class="blue sh-btn"
                      type="text"
                      @click="examine(scope.row)">
