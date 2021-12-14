@@ -276,6 +276,8 @@
                        class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.enclosureCount}}
                   </div>
                 </el-popover>
+                <p v-else>--</p>
+
               </template>
             </el-table-column>
             <!--附件 end  -->
@@ -434,14 +436,7 @@
                          class="el-icon-folder-opened list-folder"></i>{{scope.row.attachmentList.length}}
                     </div>
                   </el-popover>
-
-                  <!-- <div class="update"
-                       @click="open_file_details(scope.row.attachmentList)">
-                    <i class="update_icon">
-                      
-                    </i>
-                    <span>{{scope.row.attachmentList.length}}</span>
-                  </div> -->
+                  <p v-else>--</p>
                 </template>
               </el-table-column>
 
@@ -1173,46 +1168,27 @@
                            label="附件">
             <template slot-scope="scope">
 
-              <!-- 没有附件 -->
-              <div class="update"
-                   v-if="scope.row.fileCount==0">
-                <i class="update_icon">
-                  <svg t="1631877671204"
-                       class="icon"
-                       viewBox="0 0 1024 1024"
-                       version="1.1"
-                       xmlns="http://www.w3.org/2000/svg"
-                       p-id="9939"
-                       width="200"
-                       height="200">
-                    <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                          fill="#FD9D27"
-                          p-id="9940"></path>
-                  </svg>
-                </i>
-                <span>{{scope.row.fileCount}}</span>
-              </div>
-
-              <!-- 有附件 -->
-              <div class="update"
-                   v-else
-                   @click="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)">
-                <i class="update_icon">
-                  <svg t="1631877671204"
-                       class="icon"
-                       viewBox="0 0 1024 1024"
-                       version="1.1"
-                       xmlns="http://www.w3.org/2000/svg"
-                       p-id="9939"
-                       width="200"
-                       height="200">
-                    <path d="M825.6 198.4H450.1l-14.4-28.7c-18.8-37.6-56.5-60.9-98.5-60.9H174.1C113.4 108.8 64 158.2 64 218.9v561.9c0 74.1 60.3 134.4 134.4 134.4h627.2c74.1 0 134.4-60.3 134.4-134.4v-448c0-74.1-60.3-134.4-134.4-134.4z m44.8 582.4c0 24.7-20.1 44.8-44.8 44.8H198.4c-24.7 0-44.8-20.1-44.8-44.8V467.2h716.8v313.6z m0-403.2H153.6V218.9c0-11.3 9.2-20.5 20.5-20.5h163.1c7.8 0 14.9 4.4 18.4 11.4l39.1 78.2h430.9c24.7 0 44.8 20.1 44.8 44.8v44.8z"
-                          fill="#FD9D27"
-                          p-id="9940"></path>
-                  </svg>
-                </i>
-                <span>{{scope.row.fileCount}}</span>
-              </div>
+              <el-popover :popper-class="enclosure_details_list==''?'no-padding':''"
+                          v-if="scope.row.fileCount"
+                          placement="bottom"
+                          width="250"
+                          @show="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)"
+                          trigger="click">
+                <ul v-if="enclosure_details_list!=''"
+                    class="fileList-ul">
+                  <li class="tableFileList-title">文件名称</li>
+                  <li v-for="(item,index) in enclosure_details_list"
+                      :key="index"
+                      class="pointer blue"
+                      @click="download(item.attachmentUuid,item.fileName)">
+                    {{item.fileName}}</li>
+                </ul>
+                <div slot="reference"
+                     style="color: #1371cc;"
+                     class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.fileCount}}
+                </div>
+              </el-popover>
+              <p v-else>--</p>
 
             </template>
           </el-table-column>
@@ -2536,6 +2512,8 @@ export default {
     },
     // 关闭审核
     editDialogClosed () {
+      this.operation_query.dataCategory = '';//清空审核筛选
+      this.operation_query.dataName = '';//清空审核筛选
       this.dialogVisibl_operation = false;//关闭
       this.success_btn1 = 0
       this.success_btn2 = 0

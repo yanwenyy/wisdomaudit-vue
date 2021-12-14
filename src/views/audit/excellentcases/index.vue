@@ -194,6 +194,7 @@
                         prop="dataSortName">
             <el-select v-model="add_data.dataSortName"
                        @change="select_val"
+                       :disabled="edit_title=='编辑资料'?true:false"
                        filterable
                        placeholder="请选择资料分类">
               <el-option v-for="item in options_select"
@@ -203,7 +204,6 @@
               </el-option>
             </el-select>
           </el-form-item>
-
           <el-form-item label="来源项目：">
             <el-input v-model="add_data.sourceItem"
                       placeholder="请输入来源项目"></el-input>
@@ -390,6 +390,8 @@ export default {
   components: {},
   data () {
     return {
+      isDisable: false,//不可编辑
+
       dqtoken: "",
       headers: '',
       activeName: 0,//0:资料清单,1:主要发现

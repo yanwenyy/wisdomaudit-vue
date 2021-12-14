@@ -183,78 +183,79 @@
                width="50%"
                @close="editResetForm2('editTaskRef')">
       <div class="title">编辑任务</div>
-      <el-form label-width="100px"
-               class="selfTask"
-               :model="editTask"
-               ref="editTaskRef"
-               hide-required-asterisk>
-        <el-form-item label="自建任务名称：">
-          <el-input placeholder="请输入"
-                    v-model="editTask.taskName"></el-input>
-        </el-form-item>
-        <el-form-item label="ㅤㅤㅤ责任人：">
-          <el-select v-model="editTask.peopleTableUuid"
-                     filterable
-                     @change="personLiableSelect">
-            <el-option v-for="item in tableData"
-                       :key="item.peopleTableUuid"
-                       :label="item.peopleName"
-                       :value="item.peopleTableUuid">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="ㅤㅤㅤ专ㅤ题:"
-                      prop="belongSpcial">
-          <el-select placeholder="请选择"
-                     v-model="editTask.belongSpcial"
-                     v-if="other_input == true"
-                     @change="changeBelongSpcial">
-            <el-option v-for="item in thematicOption"
-                       :key="item.value"
-                       :label="item.label"
-                       :value="item.label">
-            </el-option>
-          </el-select>
-          <el-input v-model="editTask.belongSpcial"
-                    v-if="other_input == false"></el-input>
-        </el-form-item>
-        <el-form-item label="ㅤㅤㅤ领ㅤ域:"
-                      prop="belongField">
-          <el-select placeholder="请选择"
-                     v-model="editTask.belongField">
-            <el-option v-for="item in areasOption"
-                       :key="item.value"
-                       :label="item.label"
-                       :value="item.label">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="ㅤㅤ任务描述：">
-          <el-input type="textarea"
-                    style="top: -35px"
-                    v-model="editTask.taskDescription"></el-input>
-        </el-form-item>
-        <el-form-item label="ㅤㅤ上传附件：">
-          <el-upload class="upload-demo"
-                     drag
-                     action="#"
-                     :headers="headers"
-                     v-model="editTask.enclosure"
-                     :on-change="handleChangePic"
-                     :on-remove="handleRemove"
-                     :file-list="edit_file_list"
-                     :auto-upload="false"
-                     multiple>
-            <i class="el-icon-upload"></i>
-            <div class="el-upload__text">
-              点击上传或将文件拖到虚线框
-              <br />支持.zip,.doc,.docx,.xls,.xlsx,.txt
-            </div>
-          </el-upload>
-        </el-form-item>
-      </el-form>
-      <div class="stepBtn"
-           style="margin-right: 2%; margin-bottom: 1.5%">
+      <div class="taskAdd">
+        <el-form label-width="120px"
+                 class="selfTask"
+                 :model="editTask"
+                 ref="editTaskRef"
+                 hide-required-asterisk>
+          <el-form-item label="自建任务名称：">
+            <el-input placeholder="请输入"
+                      v-model="editTask.taskName"></el-input>
+          </el-form-item>
+          <el-form-item label="责任人：">
+            <el-select v-model="editTask.peopleTableUuid"
+                       filterable
+                       @change="personLiableSelect">
+              <el-option v-for="item in tableData"
+                         :key="item.peopleTableUuid"
+                         :label="item.peopleName"
+                         :value="item.peopleTableUuid">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="专ㅤ题:"
+                        prop="belongSpcial">
+            <el-select placeholder="请选择"
+                       v-model="editTask.belongSpcial"
+                       v-if="other_input == true"
+                       @change="changeBelongSpcial">
+              <el-option v-for="item in thematicOption"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.label">
+              </el-option>
+            </el-select>
+            <el-input v-model="editTask.belongSpcial"
+                      v-if="other_input == false"></el-input>
+          </el-form-item>
+          <el-form-item label="领ㅤ域:"
+                        prop="belongField">
+            <el-select placeholder="请选择"
+                       v-model="editTask.belongField">
+              <el-option v-for="item in areasOption"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.label">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="任务描述：">
+            <el-input type="textarea"
+                      v-model="editTask.taskDescription"></el-input>
+          </el-form-item>
+          <el-form-item label="上传附件：">
+            <el-upload class="upload-demo"
+                       drag
+                       action="#"
+                       :headers="headers"
+                       v-model="editTask.enclosure"
+                       :on-change="handleChangePic"
+                       :on-remove="handleRemove"
+                       :file-list="edit_file_list"
+                       :auto-upload="false"
+                       multiple>
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">
+                点击上传或将文件拖到虚线框
+                <br />支持.zip,.doc,.docx,.xls,.xlsx,.txt
+              </div>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+      </div>
+
+      <div class="stepBtn">
         <el-button @click="resBtn('editTaskRef')"
                    style="border: 1px solid #d2d2d2">取消</el-button>
         <el-button style="background: #0c87d6; color: #fff"
@@ -270,9 +271,8 @@
       <div class="taskTitle">新增任务</div>
       <div class="taskAdd"
            v-if="task == '1'">
-        <el-form label-width="100px"
+        <el-form label-width="120px"
                  :model="taskSelf"
-                 style="margin-left: 10%; margin-top: 5%"
                  ref="selfTaskRef"
                  :rules="taskSelfRules"
                  hide-required-asterisk>
@@ -281,7 +281,7 @@
             <el-input placeholder="请输入"
                       v-model="taskSelf.taskName"></el-input>
           </el-form-item>
-          <el-form-item label="ㅤㅤㅤ责任人："
+          <el-form-item label="责任人："
                         prop="peopleName">
             <el-select v-model="taskSelf.peopleName"
                        filterable
@@ -293,7 +293,8 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="ㅤㅤㅤ专ㅤ题:"
+
+          <el-form-item label="专ㅤ题："
                         prop="belongSpcial">
             <el-select placeholder="请选择"
                        v-model="taskSelf.belongSpcial"
@@ -308,7 +309,7 @@
             <el-input v-model="taskSelf.belongSpcial"
                       v-if="other_input == false"></el-input>
           </el-form-item>
-          <el-form-item label="ㅤㅤㅤ领ㅤ域:"
+          <el-form-item label="领ㅤ域："
                         prop="belongField">
             <el-select placeholder="请选择"
                        v-model="taskSelf.belongField">
@@ -319,7 +320,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="ㅤㅤ任务类型:">
+          <el-form-item label="任务类型：">
             <el-select v-model="taskSelf.taskType"
                        filterable
                        @change="taskTypeSelect"
@@ -331,13 +332,12 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="ㅤㅤ任务描述："
+          <el-form-item label="任务描述："
                         prop="taskDescription">
             <el-input type="textarea"
-                      style="top: -35px"
                       v-model="taskSelf.taskDescription"></el-input>
           </el-form-item>
-          <el-form-item label="ㅤㅤ上传附件：">
+          <el-form-item label="上传附件：">
             <el-upload class="upload-demo"
                        drag
                        action="#"
@@ -1657,14 +1657,13 @@ export default {
 
 .stepBtn {
   width: 100%;
-  /* border: 1px solid red; */
-  margin-top: 5%;
+  padding: 0 0 10px;
+  box-sizing: border-box;
   text-align: center;
 }
 .temBtn {
   width: 100%;
   /* border: 1px solid red; */
-  margin-top: 5%;
   text-align: center;
 }
 .addAudit .nextBtn {
@@ -1679,79 +1678,31 @@ export default {
   /* border: 1px solid red; */
   padding: 2%;
 }
-.selfTask {
-  width: 50%;
-  margin: 0 auto;
-  /* border: 1px solid red; */
+
+.taskAdd >>> .el-form-item {
+  margin-bottom: 25px !important;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
-.selfTask .el-input {
-  position: relative;
-  top: -35px;
-  width: 100%;
+.taskAdd >>> .el-form-item__content {
+  margin-left: 10px !important;
 }
-.selfTask .el-select {
-  position: relative;
-  top: -35px;
-  width: 100%;
+.taskAdd >>> .el-input,
+.taskAdd >>> .el-select,
+.taskAdd >>> .el-textarea__inner {
+  width: 270px;
 }
-.selfTask /deep/ .el-textarea__inner {
-  width: 100%;
-}
-/* .selfTask /deep/ .upload-demo {
-  margin-top: -35px;
-} */
-.selfTask /deep/ .el-upload-dragger {
+
+.taskAdd >>> .el-upload-dragger {
   width: 100% !important;
-}
-.selfTask >>> .el-upload {
-  width: 100% !important;
-}
-.selfTask /deep/ .upload-demo {
-  margin-top: -35px;
-}
-.selfTask >>> .el-form-item__label {
-  text-align: left !important;
-}
-.selfTask >>> .el-form-item {
-  margin-bottom: -10px !important;
-}
-.selfTask >>> .el-form-item__label {
-  font-size: 14px !important;
-  color: #606266 !important;
-}
-.taskAdd {
-  width: 70%;
-  margin: 10px auto;
-  /* border: 1px solid red; */
-  /* text-align: center; */
-}
-.taskAdd .el-input {
-  position: relative;
-  top: -35px;
-  width: 65%;
-}
-.taskAdd .el-select {
-  position: relative;
-  top: -35px;
-  width: 65%;
-}
-.taskAdd >>> .el-form-item__label {
-  text-align: left !important;
-}
-.taskAdd /deep/ .el-textarea__inner {
-  width: 65%;
-}
-.taskAdd /deep/ .el-upload-dragger {
-  width: 80% !important;
 }
 .taskAdd >>> .el-upload {
-  width: 80% !important;
+  width: 100% !important;
 }
-.taskAdd /deep/ .upload-demo {
-  margin-top: -35px;
-}
-.taskAdd >>> .el-form-item {
-  margin-bottom: -10px !important;
+.taskAdd >>> .upload-demo {
+  /* margin-top: -35px; */
+  width: 270px;
 }
 .taskAdd >>> .el-form-item__label {
   font-size: 14px !important;
@@ -1795,10 +1746,10 @@ export default {
   margin-bottom: 3%;
   font-weight: 700;
 }
-.taskAdd /deep/ .el-form-item__error {
+.taskAdd >>> .el-form-item__error {
   position: absolute;
-  top: -70%;
-  left: 35%;
+  bottom: 0%;
+  left: 0%;
 }
 >>> .el-input.is-disabled .el-input__inner {
   background: #f5f7fa !important;
@@ -1815,9 +1766,6 @@ export default {
 .search >>> .el-input__inner {
   width: 220px !important;
   border-radius: 5px 0 0 5px;
-}
-.search >>> .el-input__inner {
-  width: 250px !important;
   display: flex;
   float: right;
   border-radius: 0 !important;

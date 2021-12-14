@@ -117,11 +117,12 @@
           <el-row class="titleMes">
             审计期间：{{addPeople}}
           </el-row>
-          <el-row class="titleMes">
+          <el-row class="titleMes"
+                  style="padding-left:40px;    box-sizing: border-box;">
             标题：{{title}}
           </el-row>
-          <el-row class="titleMes">
-            发起人：{{launchPeople}}
+          <el-row class="titleMes"
+                  style="padding-left:25px;    box-sizing: border-box;">发起人：{{launchPeople}}
           </el-row>
         </div>
 
@@ -138,6 +139,7 @@
                       :header-cell-style="{'background-color': '#F4FAFF',}"
                       @selection-change="handleSelectionChange_query">
               <el-table-column type="selection"
+                               align="center"
                                width="55">
               </el-table-column>
               <el-table-column prop="dataNumber"
@@ -299,7 +301,7 @@
                     上传
                   </el-button> -->
                   <div class="update_cell">
-                    <el-upload class="upload-demo"
+                    <!-- <el-upload class="upload-demo"
                                :headers="headers"
                                style="margin:0 10px 0 0px"
                                :on-progress="up_ing"
@@ -318,7 +320,12 @@
                       <el-button v-if="success_btn2 === scope.$index"
                                  type="primary"
                                  :loading="true">上传中</el-button>
-                    </el-upload>
+                    </el-upload> -->
+
+                    <el-button size="small"
+                               type="text"
+                               style="color:#49bae8"
+                               @click="up_dlag(scope.row,scope.$index)">上传</el-button>
 
                     <el-button @click="look_record(scope.row)"
                                type="text"
@@ -414,16 +421,63 @@
       </div>
     </el-dialog>
 
+    <!-- 上传 -->
+    <el-dialog center
+               :visible.sync="add_update_dlag"
+               width="30%"
+               :close-on-click-modal="false"
+               @close="resetForm_verify()">
+      <div class="title_dlag">{{title}}</div>
+
+      <div class="dlag_conter">
+        <el-form ref="verify_model"
+                 :inline="false">
+          <!-- 上传文件 -->
+          <el-form-item label="上传文件：">
+            <el-upload class="upload-demo"
+                       drag
+                       ref="upload2"
+                       :headers="headers"
+                       action="#"
+                       :on-change="handleChangePic_verify"
+                       :before-remove="handleRemoveApk"
+                       :file-list="edit_file_list2"
+                       :auto-upload="false"
+                       accept=".zip,.doc,.docx,.xls,.xlsx,.txt"
+                       multiple>
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">
+                点击上传或将文件拖到虚线框<br />支持.zip,.doc,.docx,.xls,.xlsx,.txt
+              </div>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+
+      </div>
+      <div slot="footer">
+        <el-button @click="add_update_dlag = false">取 消</el-button>
+        <el-button size="small"
+                   type="primary"
+                   style="color:#49bae8"
+                   v-if="success_btn2 == 0"
+                   @click="up()">上传</el-button>
+        <el-button v-if="success_btn2 == 1"
+                   type="primary"
+                   :loading="true">上传中</el-button>
+
+      </div>
+    </el-dialog>
+
     <!-- 附件详情 -->
     <el-dialog width="20%"
                center
-               :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                :visible.sync="dialogVisibl_enclosure_details"
                style="padding-bottom: 59px; ">
       <div class="fileName">
 
         <!-- 模版 -->
         <el-table :data="findFile_list_moban"
+                  :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                   v-if="file_type == 0"
                   style="width: 100%;">
           <!-- <el-table-column prop="dataTaskNumber"
@@ -483,6 +537,7 @@ import { down_file } from
 
 import { data_pageList, feedback_pageList, operation_record_list, operation_download, operation_uploadData, operation_findFile, operation_reportData } from
   '@SDMOBILE/api/shandong/feedback'
+import { file_remove_list } from '@SDMOBILE/api/shandong/AuditReport'
 import { fmtDate } from '@SDMOBILE/model/time.js';
 
 export default {
@@ -543,13 +598,20 @@ export default {
       success_btn: 0,//提交按钮
 
 
-      success_btn2: -1,//文件上传
-
+      // success_btn2: -1,//文件上传
+      success_btn2: 0,//上传按钮
 
       file_type: 0,//0 模版 1.附件
       findFile_list_moban: [],//模版列表
       isDisable: false,//防止重复提交
 
+      add_update_dlag: false,
+      up_list: {
+
+      },//上传的附件
+      edit_file_list2: [],//上传的附件
+      title: '',
+      attachmentList: '',//list
     }
   },
   filters: {
@@ -571,6 +633,196 @@ export default {
     this.list_data_page(params); // 反馈列表
   },
   methods: {
+
+    // 新增上传附件
+    handleChangePic_verify (file, fileList, name) {
+      this.fileList2 = fileList;
+      this.file = file.raw;
+    },
+
+
+    // 删除
+    handleRemoveApk (file, fileList2) {
+      if (file.response) {
+        this.fileList2.remove(file.response.data);
+        this.key = Math.random();
+      }
+
+      // this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      //   confirmButtonText: '确定',
+      //   cancelButtonText: '取消',
+      //   type: 'warning'
+      // }).then(() => {
+      let params = {
+        fileId: file.attachmentUuid,
+      }
+
+      this.file_remove(params, file, fileList2);
+
+
+
+      // }).catch(() => {
+      //   this.$message({
+      //     type: 'info',
+      //     message: '已取消删除'
+      //   });
+      // });
+      // return false;
+    },
+    // 删除接口
+    file_remove (params, file, fileList2) {
+      file_remove_list(params).then(resp => {
+        // console.log(resp.data);
+        if (resp.code == 0) {
+          // 上传失败
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          });
+          let params2 = {
+            pageNo: this.data_query.pageNo,
+            pageSize: this.data_query.pageSize,
+            condition: {
+              dataTaskNumber: this.data_query.condition.dataTaskNumber,
+            }
+          }
+          this.feedback_post(params2)//资料列表
+
+
+        } else {
+          // 上传失败
+          this.$message({
+            message: resp.data.msg,
+            type: 'error'
+          });
+        }
+      })
+    },
+
+    // 上传 新增&&编辑 弹窗
+    up_dlag (data, index) {
+      this.add_update_dlag = true;
+      this.auditPreviousDemandDataUuid = data.auditPreviousDemandDataUuid
+      this.status = data.status
+      // 编辑回显
+      this.attachmentList = data.attachmentList
+      if (this.attachmentList.length > 0) {
+        this.title = '编辑附件'
+        this.edit_file_list2 = [];
+        // 回显
+        this.attachmentList.forEach(item => {
+          item.isDeleted = 0;
+          item.url = item.filePath;
+          item.name = item.fileName;
+          this.edit_file_list2.push(item);
+        })
+      } else {
+        this.title = '新增附件'
+      }
+    },
+
+    // 上传确认
+    up () {
+      this.success_btn2 = 1;//显示加载按钮  0成功  1 loaging
+
+      if (this.title == '新增附件') {
+        console.log(this.file);
+        console.log(this.fileList2);
+        let formData = new FormData()
+        formData.append('status', this.status)
+        formData.append('auditPreviousDemandDataUuid', this.auditPreviousDemandDataUuid)
+
+        this.fileList2.forEach((item) => {
+          formData.append('file', item.raw);
+        })
+
+        axios({
+          method: 'post',
+          url: '/wisdomaudit/auditPreviousDemandData/uploadDataList',
+          headers: {
+            TOKEN: this.dqtoken,
+            'Content-Type': 'multipart/form-data'
+          },
+          data: formData,
+        }).then(resp => {
+          if (resp.data.code == 0) {
+            this.$message({
+              message: '上传成功',
+              type: 'success'
+            });
+            this.success_btn2 = 0;//隐藏加载按钮
+            this.add_update_dlag = false;//关闭弹窗
+            //刷新列表
+            let params = {
+              pageNo: this.data_query.pageNo,
+              pageSize: this.data_query.pageSize,
+              condition: {
+                dataTaskNumber: this.data_query.condition.dataTaskNumber,
+              }
+            }
+            this.feedback_post(params)//资料列表
+          } else {
+            this.$message({
+              message: resp.msg,
+              type: 'error'
+            });
+          }
+        })
+      } else {
+        console.log(this.fileList2);
+        // return false
+
+        // 编辑
+        let formData = new FormData()
+        formData.append('status', this.status)
+        formData.append('auditPreviousDemandDataUuid', this.auditPreviousDemandDataUuid)
+        // formData.append('file', this.fileList2)
+        this.fileList2.forEach((item) => {
+          formData.append('file', item.raw);
+        })
+
+        axios({
+          method: 'post',
+          url: '/wisdomaudit/auditPreviousDemandData/uploadDataList',
+          headers: {
+            TOKEN: this.dqtoken,
+            'Content-Type': 'multipart/form-data'
+          },
+          data: formData,
+        }).then(resp => {
+          if (resp.data.code == 0) {
+            this.$message({
+              message: '上传成功',
+              type: 'success'
+            });
+            this.success_btn2 = 0;//隐藏加载按钮
+            this.add_update_dlag = false;//关闭弹窗
+            //刷新列表
+            let params = {
+              pageNo: this.data_query.pageNo,
+              pageSize: this.data_query.pageSize,
+              condition: {
+                dataTaskNumber: this.data_query.condition.dataTaskNumber,
+              }
+            }
+            this.feedback_post(params)//资料列表
+          } else {
+            this.$message({
+              message: resp.msg,
+              type: 'error'
+            });
+          }
+        })
+      }
+    },
+
+
+
+    // 关闭上传
+    resetForm_verify () {
+      this.$refs.upload2.clearFiles();
+      this.success_btn2 = 0;//隐藏加载按钮
+    },
     handleSizeChange (val) {
       this.params.pageSize = val
     },
@@ -766,54 +1018,7 @@ export default {
       }
       return isLt50M;
     },
-    // 获取上传的id
-    up (data, index) {
-      this.Index = index;
-      this.auditPreviousDemandDataUuid = data.auditPreviousDemandDataUuid
-      this.status = data.status
-    },
-    // 上传时
-    up_ing (file) {
-    },
-    // 上传
-    handleUploadForm (file) {
-      this.success_btn2 = this.Index;//显示加载按钮  0成功  1 loaging
-      let formData = new FormData()
-      formData.append('status', this.status)
-      formData.append('auditPreviousDemandDataUuid', this.auditPreviousDemandDataUuid)
-      formData.append('file', file.file)
-      axios({
-        method: 'post',
-        url: '/wisdomaudit/auditPreviousDemandData/uploadData',
-        headers: {
-          TOKEN: this.dqtoken,
-          'Content-Type': 'multipart/form-data'
-        },
-        data: formData,
-      }).then(resp => {
-        if (resp.data.code == 0) {
-          this.$message({
-            message: '上传成功',
-            type: 'success'
-          });
-          this.success_btn2 = false;//隐藏加载按钮
-          //刷新列表
-          let params = {
-            pageNo: this.data_query.pageNo,
-            pageSize: this.data_query.pageSize,
-            condition: {
-              dataTaskNumber: this.data_query.condition.dataTaskNumber,
-            }
-          }
-          this.feedback_post(params)//资料列表
-        } else {
-          this.$message({
-            message: resp.msg,
-            type: 'error'
-          });
-        }
-      })
-    },
+
 
     // 关闭
     resetForm2 () {
@@ -946,7 +1151,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
-  padding: 20px 20px 0;
+  padding: 20px 20px 20px;
   box-sizing: border-box;
 }
 .header >>> .titleMes {
@@ -1042,5 +1247,20 @@ export default {
 
 .blue {
   color: #49bae8 !important;
+}
+
+.dlag_conter {
+  padding: 20px 20px 0;
+  box-sizing: border-box;
+}
+.dlag_conter >>> .el-input {
+  width: 300px;
+}
+.dlag_conter >>> .el-form-item__content {
+  display: flex;
+  width: 360px;
+}
+.upload-demo {
+  width: 100%;
 }
 </style>

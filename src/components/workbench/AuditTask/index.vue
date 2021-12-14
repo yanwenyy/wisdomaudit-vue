@@ -2051,6 +2051,7 @@ export default {
             this.fileList2.forEach((item) => {
               formData.append('files', item.raw);
             })
+
             axios({
               method: 'post',
               url: '/wisdomaudit/attachment/fileUploads',
