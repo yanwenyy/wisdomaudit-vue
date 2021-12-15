@@ -183,6 +183,17 @@ export function indexManagement_delete (data) {
     data
   })
 }
+//整改措施批量导出
+export function correctStep_export(data) {
+  return request({
+    baseURL: baseURL,
+    url:'/correctStep/export',
+    ifDownFile:true,
+    responseType:'blob',
+    method: 'post',
+    data
+  })
+}
 //整改措施接口人列表
 export function correctStep_pageListJkr(data) {
   return request({

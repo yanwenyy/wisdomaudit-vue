@@ -25,6 +25,7 @@
           <el-form-item label="项目:">
             <el-select v-model="searchForm.projectName	"
                        placeholder="请选择"
+                       @change="list_data_start"
                        clearable>
               <el-option v-for="(item,index) in projectList"
                          :label="item.projectName"
@@ -43,6 +44,8 @@
           </el-form-item>
           <el-button type="primary"
                      @click="list_data_start">搜索</el-button>
+          <el-button type="primary"
+                     @click="exportList">导出</el-button>
         </el-form>
       </div>
     </div>
@@ -50,7 +53,12 @@
               :header-cell-style="{'text-align':'left','background-color': '#F4FAFF',}"
               border
               :data="tableData"
+              @selection-change="handleSelectionChange"
               highlight-current-row>
+      <el-table-column
+        type="selection"
+        width="55">
+      </el-table-column>
       <el-table-column :resizable="false"
                        label="序号"
                        type="index" />
@@ -139,13 +147,14 @@
 </template>
 
 <script>
-import { correctStep_pageList, correctStep_getProjectList } from
+import { correctStep_export,correctStep_pageList, correctStep_getProjectList } from
   '@SDMOBILE/api/shandong/ls'
 import Detail from "./rectificationDetail";
 export default {
   data () {
     return {
       projectList: [],//项目下拉列表
+      multipleSelection:[],
       searchForm: {
         pageNo: 1,
         pageSize: 10,
@@ -171,6 +180,48 @@ export default {
     })
   },
   methods: {
+    handleSelectionChange(val){
+      this.multipleSelection = val;
+    },
+    exportList(){
+      if(this.searchForm.projectName==''){
+        this.$message.error("请选择项目后导出");
+        return false;
+      }
+      if(this.multipleSelection==''){
+        this.$message.error("请选择要导出的数据");
+        return false;
+      }
+      var ids=[];
+      this.multipleSelection.forEach((item)=>{
+        ids.push(item.correctStepUuid);
+      });
+      ids=ids.join(",");
+      let formData = new FormData();
+      formData.append('ids', ids)
+      correctStep_export(formData).then(resp => {
+        const content = resp;
+        const blob = new Blob([content],
+          { type: 'application/octet-stream,charset=UTF-8' }
+        )
+        if ('download' in document.createElement('a')) {
+          // 非IE下载
+          const elink = document.createElement('a')
+          elink.download = "内部审计整改事项明细表.xlsx" //下载后文件名
+          elink.style.display = 'none'
+          elink.href = window.URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象
+          document.body.removeChild(elink)
+        } else {
+          // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
+    },
     //详情保存后刷新列表
     refreshList () {
       this.list_data_start();
