@@ -84,7 +84,8 @@
           <ul v-if="file_list.attachmentList &&file_list.attachmentList.length!==0">
             <li v-for="(item,index) in file_list.attachmentList"
                 :key="index">
-              <p class="fileName_show" @click="download_click(item.attachmentUuid,item.fileName)">{{item.fileName}}</p>
+              <p class="fileName_show"
+                 @click="download_click(item.attachmentUuid,item.fileName)">{{item.fileName}}</p>
               <span style="color:#606266">版本1.0</span><span style="color:#606266">时间{{item.createTime|filtedate
 }}</span>
               <el-button type="text"
@@ -500,7 +501,12 @@ export default {
       }
       let array1 = [];//数组1
       this.multipleSelection.forEach((item, i) => {
-        array1.push((i + 1) + '.' + item.indexDate + ',' + item.indexTypeName + ',' + item.dataProvideDepartmentName + ',' + item.accessCaliberName + ',' + item.indexValue + ',' + item.indexUnitName + '\n') + '\n';
+        array1.push((i + 1) + '.' + item.indexDate + ','
+          + item.indexTypeName + ','
+          + item.dataProvideDepartmentName + ','
+          + item.accessCaliberName + ','
+          + item.indexValue + ','
+          + item.indexUnitName + '</br>' + '</br>');
       });
       let array_list = array1.join('')
       // var array_list = array1.toString();  //把数组转换为字符串
@@ -542,7 +548,7 @@ export default {
       this.multipleSelection2.forEach((item, i) => {
         // array1.push((i + 1) + '.' + item.problemFindPeople + ',' + item.discoveryTime + ',' + item.basis + ',' + item.field + ',' + item.problem + ',' + item.describe + ',' + item.riskAmount + ',' + item.managementAdvice + '\n');
 
-        array1.push((i + 1) + '.' + item.describe + ',' + '\n' + '管理建议：' + '\n' + item.managementAdvice + '\n');
+        array1.push((i + 1) + '.' + item.describe + '</br>' + '管理建议：' + '</br > ' + item.managementAdvice + '</br>');
 
       });
       let array_list = array1.join('')
@@ -819,7 +825,7 @@ export default {
   border-radius: 0 5px 5px 0;
   /* background: #1371cc !important; */
 }
-  .fileName_show{
-    font-size: 14px!important;
-  }
+.fileName_show {
+  font-size: 14px !important;
+}
 </style>

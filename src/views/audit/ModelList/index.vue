@@ -30,6 +30,7 @@
         </el-table-column>
 
         <el-table-column prop="belongField"
+                         width="250px"
                          label="所属领域">
 
           <template slot-scope="scope">
@@ -38,6 +39,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="belongSpcial"
+                         width="250px"
                          label="所属专题">
 
           <template slot-scope="scope">
@@ -47,6 +49,7 @@
 
         </el-table-column>
         <el-table-column prop="modelName"
+                         width="250px"
                          label="模型名称">
 
           <template slot-scope="scope">
@@ -93,12 +96,12 @@
     <el-dialog title=""
                center=""
                :visible.sync="dialogVisible"
-               width="width">
+               width="60%">
       <div class="title_dlag">查看</div>
 
       <div class="dlag">
         <div class="son list_four">
-          <p>模型编号：<span>{{list_index}}</span> </p>
+          <!-- <p>模型编号：<span>{{list_index}}</span> </p> -->
           <p>所属领域：<span>{{details.belongField}}</span> </p>
           <p>所属专题：<span>{{details.belongSpcial}}</span> </p>
           <p>模型名称：<span>{{details.modelName}}</span> </p>
@@ -233,7 +236,7 @@ export default {
   display: flex;
   justify-content: flex-end;
   position: relative;
-  padding: 20px 0 10px;
+  padding: 0 0 10px;
   box-sizing: border-box;
 }
 .search_conter {
@@ -296,10 +299,15 @@ export default {
   padding: 20px 30px 10px;
   box-sizing: border-box;
 }
+.son span {
+  line-height: 25px;
+}
 .list_four p {
-  width: 25%;
+  width: 33%;
 }
 .flex p {
+  padding-top: 5px;
+  box-sizing: border-box;
   min-width: 75px;
 }
 </style>
