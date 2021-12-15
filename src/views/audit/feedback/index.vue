@@ -456,8 +456,7 @@
       </div>
       <div slot="footer">
         <el-button @click="add_update_dlag = false">取 消</el-button>
-        <el-button size="small"
-                   type="primary"
+        <el-button type="primary"
                    style="color:#49bae8"
                    v-if="success_btn2 == 0"
                    @click="up()">上传</el-button>
@@ -635,62 +634,31 @@ export default {
   methods: {
 
     // 新增上传附件
-    handleChangePic_verify (file, fileList, name) {
-      this.fileList2 = fileList;
-      this.file = file.raw;
+    handleChangePic_verify (file, fileList) {
+      this.fileList2.push(file);
     },
-
-
     // 删除
     handleRemoveApk (file, fileList2) {
-      if (file.response) {
-        this.fileList2.remove(file.response.data);
-        this.key = Math.random();
+      if (file.raw) {
+        this.fileList2.remove(file);
+      } else {
+        let params = {
+          fileId: file.attachmentUuid,
+        }
+        this.file_remove(params, file, fileList2);
       }
-
-      // this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-      //   confirmButtonText: '确定',
-      //   cancelButtonText: '取消',
-      //   type: 'warning'
-      // }).then(() => {
-      let params = {
-        fileId: file.attachmentUuid,
-      }
-
-      this.file_remove(params, file, fileList2);
-
-
-
-      // }).catch(() => {
-      //   this.$message({
-      //     type: 'info',
-      //     message: '已取消删除'
-      //   });
-      // });
-      // return false;
     },
     // 删除接口
     file_remove (params, file, fileList2) {
       file_remove_list(params).then(resp => {
-        // console.log(resp.data);
         if (resp.code == 0) {
           // 上传失败
           this.$message({
             message: '删除成功',
             type: 'success'
           });
-          let params2 = {
-            pageNo: this.data_query.pageNo,
-            pageSize: this.data_query.pageSize,
-            condition: {
-              dataTaskNumber: this.data_query.condition.dataTaskNumber,
-            }
-          }
-          this.feedback_post(params2)//资料列表
-
-
         } else {
-          // 上传失败
+          // 删除失败
           this.$message({
             message: resp.data.msg,
             type: 'error'
@@ -703,7 +671,8 @@ export default {
     up_dlag (data, index) {
       this.add_update_dlag = true;
       this.auditPreviousDemandDataUuid = data.auditPreviousDemandDataUuid
-      this.status = data.status
+      this.status = data.status;
+      this.fileList2 = [];
       // 编辑回显
       this.attachmentList = data.attachmentList
       if (this.attachmentList.length > 0) {
@@ -720,103 +689,72 @@ export default {
         this.title = '新增附件'
       }
     },
-
     // 上传确认
     up () {
       this.success_btn2 = 1;//显示加载按钮  0成功  1 loaging
-
       if (this.title == '新增附件') {
-        console.log(this.file);
-        console.log(this.fileList2);
-        let formData = new FormData()
-        formData.append('status', this.status)
-        formData.append('auditPreviousDemandDataUuid', this.auditPreviousDemandDataUuid)
-
-        this.fileList2.forEach((item) => {
-          formData.append('file', item.raw);
-        })
-
-        axios({
-          method: 'post',
-          url: '/wisdomaudit/auditPreviousDemandData/uploadDataList',
-          headers: {
-            TOKEN: this.dqtoken,
-            'Content-Type': 'multipart/form-data'
-          },
-          data: formData,
-        }).then(resp => {
-          if (resp.data.code == 0) {
-            this.$message({
-              message: '上传成功',
-              type: 'success'
-            });
-            this.success_btn2 = 0;//隐藏加载按钮
-            this.add_update_dlag = false;//关闭弹窗
-            //刷新列表
-            let params = {
-              pageNo: this.data_query.pageNo,
-              pageSize: this.data_query.pageSize,
-              condition: {
-                dataTaskNumber: this.data_query.condition.dataTaskNumber,
-              }
-            }
-            this.feedback_post(params)//资料列表
-          } else {
-            this.$message({
-              message: resp.msg,
-              type: 'error'
-            });
-          }
-        })
+        this.uoload_post();//上传事件
       } else {
-        console.log(this.fileList2);
-        // return false
-
         // 编辑
-        let formData = new FormData()
-        formData.append('status', this.status)
-        formData.append('auditPreviousDemandDataUuid', this.auditPreviousDemandDataUuid)
-        // formData.append('file', this.fileList2)
-        this.fileList2.forEach((item) => {
-          formData.append('file', item.raw);
-        })
-
-        axios({
-          method: 'post',
-          url: '/wisdomaudit/auditPreviousDemandData/uploadDataList',
-          headers: {
-            TOKEN: this.dqtoken,
-            'Content-Type': 'multipart/form-data'
-          },
-          data: formData,
-        }).then(resp => {
-          if (resp.data.code == 0) {
-            this.$message({
-              message: '上传成功',
-              type: 'success'
-            });
-            this.success_btn2 = 0;//隐藏加载按钮
-            this.add_update_dlag = false;//关闭弹窗
-            //刷新列表
-            let params = {
-              pageNo: this.data_query.pageNo,
-              pageSize: this.data_query.pageSize,
-              condition: {
-                dataTaskNumber: this.data_query.condition.dataTaskNumber,
-              }
-            }
-            this.feedback_post(params)//资料列表
-          } else {
-            this.$message({
-              message: resp.msg,
-              type: 'error'
-            });
-          }
-        })
+        if (this.fileList2) {
+          this.uoload_post();//上传事件 
+        } else {
+          // 没有新增
+          this.upload_succes();//上传成功
+        }
       }
     },
+    // 上传成功
+    upload_succes () {
+      this.success_btn2 = 0;//隐藏加载按钮
+      this.$message({
+        message: '上传成功',
+        type: 'success'
+      });
+      this.add_update_dlag = false;//关闭弹窗
+    },
+    // 上传事件
+    uoload_post () {
+      let formData = new FormData()
+      formData.append('status', this.status)
+      formData.append('auditPreviousDemandDataUuid', this.auditPreviousDemandDataUuid)
+      this.fileList2.forEach((item) => {
 
-
+        if (item.raw) {
+          formData.append('file', item.raw);
+        } else {
+          return;
+        }
+      })
+      axios({
+        method: 'post',
+        url: '/wisdomaudit/auditPreviousDemandData/uploadDataList',
+        headers: {
+          TOKEN: this.dqtoken,
+          'Content-Type': 'multipart/form-data'
+        },
+        data: formData,
+      }).then(resp => {
+        if (resp.data.code == 0) {
+          this.upload_succes();//上传成功
+          //刷新列表
+          let params = {
+            pageNo: this.data_query.pageNo,
+            pageSize: this.data_query.pageSize,
+            condition: {
+              dataTaskNumber: this.data_query.condition.dataTaskNumber,
+            }
+          }
+          this.feedback_post(params)//资料列表
+        } else {
+          this.success_btn2 = 0;//隐藏加载按钮
+          this.$message({
+            message: resp.msg,
+            type: 'error'
+          });
+        }
+      })
+    },
 
     // 关闭上传
     resetForm_verify () {
@@ -1255,6 +1193,11 @@ export default {
 }
 .dlag_conter >>> .el-input {
   width: 300px;
+}
+.dlag_conter >>> .el-form-item {
+  display: flex;
+  width: 450px;
+  margin: 0 auto;
 }
 .dlag_conter >>> .el-form-item__content {
   display: flex;

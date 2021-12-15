@@ -281,7 +281,7 @@
           <!-- 表单 end-->
           <!-- 分页 -->
           <div class="page"
-          v-show="tableData.total>0">
+               v-show="tableData.total>0">
             <el-pagination @size-change="handleSizeChange_zijian"
                            @current-change="handleCurrentChange_zijian"
                            :page-size="this.tableData.size"
@@ -1263,6 +1263,7 @@ export default {
 
       // 核实验证
       rules_verify: {
+        isProbleam: [{ required: true, message: '请选择问题', trigger: 'change' }],
         isProbleam_data: [{ required: true, message: '请选择问题', trigger: 'change' }],
         handleIdea: [{ required: true, message: '请输入核实信息', trigger: 'blur' }],
       },
