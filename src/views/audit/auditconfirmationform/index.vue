@@ -713,48 +713,54 @@ export default {
             this.formDetail.auditOrgName = this.auditOrgName;
             this.formDetail.managementProjectUuid = this.active_project;
             var timer = null;
-            timer = setTimeout(auditConfirmation_save(this.formDetail).then(resp => {
-              this.canClick = true;
-              if (resp.code == 0) {
-                this.$message({
-                  message: "保存成功",
-                  type: "success",
-                });
-                this.confirmationDialogVisible = false;
-                this.list_data_start();
-                clearTimeout(timer);
-                timer = null;
-              } else {
-                this.$message({
-                  message: resp.data.msg,
-                  type: "error",
-                });
-              }
+            if(!timer){
+              timer = setTimeout(auditConfirmation_save(this.formDetail).then(resp => {
+                this.canClick = true;
+                if (resp.code == 0) {
+                  this.$message({
+                    message: "保存成功",
+                    type: "success",
+                  });
+                  this.confirmationDialogVisible = false;
+                  this.list_data_start();
+                  clearTimeout(timer);
+                  timer = null;
+                } else {
+                  this.$message({
+                    message: resp.data.msg,
+                    type: "error",
+                  });
+                }
 
-            }), 0);
+              }), 1);
+            }
+
 
           } else {
             var timer = null;
-            timer = setTimeout(auditConfirmation_update(this.formDetail).then(resp => {
-              this.canClick = true;
-              if (resp.code == 0) {
-                this.$message({
-                  message: "修改成功",
-                  type: "success",
-                });
-                this.confirmationDialogVisible = false;
-                this.confirmationDialogVisibleZx = false;
-                this.list_data_start();
-                clearTimeout(timer);
-                timer = null;
-              } else {
-                this.$message({
-                  message: resp.data.msg,
-                  type: "error",
-                });
-              }
+            if(!timer){
+              timer = setTimeout(auditConfirmation_update(this.formDetail).then(resp => {
+                this.canClick = true;
+                if (resp.code == 0) {
+                  this.$message({
+                    message: "修改成功",
+                    type: "success",
+                  });
+                  this.confirmationDialogVisible = false;
+                  this.confirmationDialogVisibleZx = false;
+                  this.list_data_start();
+                  clearTimeout(timer);
+                  timer = null;
+                } else {
+                  this.$message({
+                    message: resp.data.msg,
+                    type: "error",
+                  });
+                }
 
-            }), 0);
+              }), 1);
+            }
+
 
           }
         } else {

@@ -81,7 +81,7 @@
               </template>
             </el-table-column> -->
 
-            <el-table-column label="操作">
+            <el-table-column label="操作" width="200">
               <template slot-scope="scope">
                 <!-- isDeleted  0:不是接口人 1:s是接口人 -->
                 <div v-if="scope.row.isDeleted==1"
@@ -94,7 +94,16 @@
                              size="small">
                     操作记录
                   </el-button>
+                  <el-button @click="exportList(scope.row)"
+                             type="text"
+                             style="color:#0c87d6;
+                               margin-left:10px;
+                                 font-size: 14px !important;background:none;border:none"
+                             size="small">
+                    导出
+                  </el-button>
                   <div v-if="scope.row.status == 0">
+
                     <el-button @click="edit_common(scope.row)"
                                type="text"
                                :disabled="isDisable"
@@ -219,7 +228,7 @@
             <!-- <el-table-column prop="dataNumber"
                              show-overflow-tooltip
                              label="编号">
-            </el-table-column> 
+            </el-table-column>
             <el-table-column prop="secondLevelDataNumber"
                              show-overflow-tooltip
                              label="二级编号">
@@ -1237,7 +1246,7 @@ import {
 } from
   '@SDMOBILE/api/shandong/task'
 
-import { down_file } from
+import { down_file ,addDataTask_export} from
   '@SDMOBILE/api/shandong/ls'
 import { Input } from 'element-ui';
 export default {
@@ -1273,7 +1282,7 @@ export default {
       // 添加资料
       add_data: {
         value_select: '',//select
-        // typecode: 'PrjType',// PrjType 类型  Department 部门  DataSource 来源    
+        // typecode: 'PrjType',// PrjType 类型  Department 部门  DataSource 来源
         dataCategory: '',//类别
         dataName: '',// 资料名称
         dataNumber: '',//编号
@@ -1283,7 +1292,7 @@ export default {
         remarks: '',//备注
         addPeople: '',//添加人
         status: '',  // 是否沉淀
-        addTime: '',//添加日期 
+        addTime: '',//添加日期
         // fileList: [],//文件模版
         Url: '',// 上传模版url
 
@@ -1374,7 +1383,7 @@ export default {
         pageNo: 1,
         pageSize: 10,
       },
-      // 编辑资料模版 
+      // 编辑资料模版
       edit_details_query: {
         pageNo: 1,
         pageSize: 10,
@@ -1437,7 +1446,7 @@ export default {
       }
     }
 
-    // 资料 未完成列表 
+    // 资料 未完成列表
     this.list_data_start(params);//未完成
 
     // 新增未完成任务列表
@@ -1465,6 +1474,32 @@ export default {
   },
 
   methods: {
+    exportList(row){
+      // let formData = new FormData();
+      // formData.append('addDataTaskUuid', row.addDataTaskUuid)
+      addDataTask_export(row.addDataTaskUuid).then(resp => {
+        const content = resp;
+        const blob = new Blob([content],
+          { type: 'application/octet-stream,charset=UTF-8' }
+        )
+        if ('download' in document.createElement('a')) {
+          // 非IE下载
+          const elink = document.createElement('a')
+          elink.download = row.title+".zip"; //下载后文件名
+          elink.style.display = 'none'
+          elink.href = window.URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象
+          document.body.removeChild(elink)
+        } else {
+          // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
+    },
     // 获取标题
     query_title () {
       let params_title = {
@@ -2113,7 +2148,7 @@ export default {
       this.add_data.status = val;
       // 1:沉淀 2：不沉淀
     },
-    //添加资料 关闭清空 
+    //添加资料 关闭清空
     resetForm (formName) {
       this.$refs[formName].resetFields();//清空添加的值
       this.$refs.upload.clearFiles();
@@ -2161,7 +2196,7 @@ export default {
                   department: this.add_data.department,//部门
                   source: this.add_data.source,//来源
                   remarks: this.add_data.remarks,//备注
-                  addPeople: this.addPeople,//添加人 
+                  addPeople: this.addPeople,//添加人
                   addTime: this.add_data.addTime,//添加时间
                   status: this.add_data.status,//是否沉淀
                   attachmentList: this.Upload_file,//回调上传的文件路径
@@ -2189,7 +2224,7 @@ export default {
               department: this.add_data.department,//部门
               source: this.add_data.source,//来源
               remarks: this.add_data.remarks,//备注
-              addPeople: this.addPeople,//添加人 
+              addPeople: this.addPeople,//添加人
               addTime: this.add_data.addTime,//添加时间
               status: this.add_data.status,//是否沉淀
               attachmentList: this.edit_file_list,//回调上传的文件路径
@@ -2417,9 +2452,9 @@ export default {
       this.change_people(params);//审核回显 添加人
       this.add_data.dataCategory = data.dataCategory;//基本类型
       this.add_data.dataName = data.dataName;//资料名称
-      this.add_data.dataNumber = data.dataNumber;//编号 
-      this.add_data.secondLevelDataNumber = data.secondLevelDataNumber;//二级编号 
-      this.add_data.source = data.source;//来源 
+      this.add_data.dataNumber = data.dataNumber;//编号
+      this.add_data.secondLevelDataNumber = data.secondLevelDataNumber;//二级编号
+      this.add_data.source = data.source;//来源
       this.add_data.department = data.department;//部门
       this.add_data.remarks = data.remarks;//备注
       this.add_data.status = data.isDeleted;//是否沉淀 0.否 1.是
@@ -2455,7 +2490,7 @@ export default {
     },
 
 
-    // 操作记录 
+    // 操作记录
     post_operation_record (query_params) {
       operation_record_list(query_params).then(resp => {
         this.record_list = resp.data
@@ -2647,7 +2682,7 @@ export default {
       this.title = '编辑审计资料任务';
       this.dialogVisible = true;//显示编辑
 
-      // 资料任务id 
+      // 资料任务id
       this.addDataTaskUuid = data.addDataTaskUuid
       let params_query = {
         condition: {

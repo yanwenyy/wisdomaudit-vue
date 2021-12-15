@@ -183,6 +183,17 @@ export function indexManagement_delete (data) {
     data
   })
 }
+//审计资料导出
+export function addDataTask_export(data) {
+  return request({
+    baseURL: baseURL,
+    url:'/addDataTask/batchDown/'+data,
+    ifDownFile:true,
+    responseType:'blob',
+    method: 'post',
+
+  })
+}
 //整改措施批量导出
 export function correctStep_export(data) {
   return request({
