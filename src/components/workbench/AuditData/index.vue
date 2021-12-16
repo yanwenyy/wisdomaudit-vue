@@ -65,7 +65,7 @@
                   scope.row.status == 0
                     ? "待开始"
                     : scope.row.status == 1
-                    ? "进行中":"已完成"
+                    ? "资料待反馈":"已完成"
                 }}
               </template>
             </el-table-column>
@@ -1532,35 +1532,31 @@ export default {
     },
     // 资料筛选
     search_list (index) {
-      if (index == 1) {
-        // alert('a', this.search_title)
-        // 未完成
-        let params = {
-          pageNo: 1,
-          pageSize: this.params.pageSize,
-          condition: {
-            projectNumber: this.projectNumber,
-            title: this.search_title,
+      switch (index) {
+        case 1:
+          // 未完成
+          let params = {
+            pageNo: 1,
+            pageSize: this.params.pageSize,
+            condition: {
+              projectNumber: this.projectNumber,
+              title: this.search_title,
+            }
           }
-        }
-
-
-        this.list_data_start(params)
-      } else {
-        // alert('b', this.search_title2)
-        // 已完成
-        let params = {
-          pageNo: 1,
-          pageSize: this.params2.pageSize,
-          condition: {
-            dataTaskNumber: this.projectNumber,
-            dataName: this.search_title2,
+          break;
+        default:
+          // 已完成
+          let param = {
+            pageNo: 1,
+            pageSize: this.params2.pageSize,
+            condition: {
+              dataTaskNumber: this.projectNumber,
+              dataName: this.search_title2,
+            }
           }
-        }
-
-        this.list_data_end(params)//刷新已完成列表
+          this.list_data_end(param)//刷新已完成列表
+          break;
       }
-
     },
     // 列表查看记录
     on_list (id) {
@@ -1614,11 +1610,8 @@ export default {
     },
     // 结果数 核实上传  删除
     handleRemoveApk (file, fileList) {
-      if (file.response) {
-        this.fileList.remove(file.response.data);
-        this.key = Math.random();
-
-      }
+      file.response && this.fileList.remove(file.response.data);
+      file.response && (this.key = Math.random())
     },
 
     // 上传成功回调
@@ -1645,30 +1638,32 @@ export default {
     handleClick (val, event) {
       this.search_title = '';//清空筛选
       this.search_title2 = '';//清空筛选
-      if (val.index == 0) {
-        // 未完成
-        let params = {
-          pageNo: this.params.pageNo,
-          pageSize: this.params.pageSize,
-          condition: {
-            projectNumber: this.projectNumber,
-            title: this.search_title,
-          }
-        }
 
-        this.list_data_start(params)//未完成列表
-      } else {
-        // 已完成
-        let params = {
-          pageNo: this.params2.pageNo,
-          pageSize: this.params2.pageSize,
-          condition: {
-            dataTaskNumber: this.projectNumber,
-            dataName: this.search_title2,
-
+      switch (val.index) {
+        case 0:
+          // 未完成
+          let params = {
+            pageNo: this.params.pageNo,
+            pageSize: this.params.pageSize,
+            condition: {
+              projectNumber: this.projectNumber,
+              title: this.search_title,
+            }
           }
-        }
-        this.list_data_end(params)//已完成列表
+          this.list_data_start(params)//未完成列表
+          break;
+        default:
+          // 已完成
+          let param = {
+            pageNo: this.params2.pageNo,
+            pageSize: this.params2.pageSize,
+            condition: {
+              dataTaskNumber: this.projectNumber,
+              dataName: this.search_title2,
+            }
+          }
+          this.list_data_end(param)//已完成列表
+          break;
       }
     },
     // 关闭

@@ -650,29 +650,30 @@ export default {
     // 删除接口
     file_remove (params, file, fileList2) {
       file_remove_list(params).then(resp => {
-        if (resp.code == 0) {
-          // 上传失败
-          this.$message({
-            message: '删除成功',
-            type: 'success'
-          });
 
-
-          let params2 = {
-            pageNo: this.data_query.pageNo,
-            pageSize: this.data_query.pageSize,
-            condition: {
-              dataTaskNumber: this.data_query.condition.dataTaskNumber,
+        switch (resp.code) {
+          case 0:
+            // 删除成功
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            });
+            let params2 = {
+              pageNo: this.data_query.pageNo,
+              pageSize: this.data_query.pageSize,
+              condition: {
+                dataTaskNumber: this.data_query.condition.dataTaskNumber,
+              }
             }
-          }
-          this.feedback_post(params2)//资料列表
-
-        } else {
-          // 删除失败
-          this.$message({
-            message: resp.data.msg,
-            type: 'error'
-          });
+            this.feedback_post(params2)//资料列表
+            break;
+          default:
+            // 删除失败
+            this.$message({
+              message: resp.data.msg,
+              type: 'error'
+            });
+            break;
         }
       })
     },
@@ -1033,31 +1034,37 @@ export default {
         // 提交数据接口
         operation_reportData(params).then(resp => {
           this.success_btn = 0;
-          if (resp.data.result == 0) {
-            this.$message({
-              message: "提交成功",
-              type: "success",
-            });
-            this.dialogVisible = false;//关闭弹窗
-            let params2 = {
-              pageNo: this.data_query.pageNo,
-              pageSize: this.data_query.pageSize,
-              condition: {
-                dataTaskNumber: this.data_query.condition.dataTaskNumber,
+
+          switch (resp.data.result) {
+            case 0:
+              this.$message({
+                message: "提交成功",
+                type: "success",
+              });
+              this.dialogVisible = false;//关闭弹窗
+              let params2 = {
+                pageNo: this.data_query.pageNo,
+                pageSize: this.data_query.pageSize,
+                condition: {
+                  dataTaskNumber: this.data_query.condition.dataTaskNumber,
+                }
               }
-            }
-            this.feedback_post(params2)//资料列表
-          } else if (resp.data.result == 1) {
-            this.$message({
-              message: '请上传附件',
-              type: "warning",
-            });
-          } else {
-            this.$message({
-              message: '提交失败',
-              type: "error",
-            });
+              break;
+            case 1:
+              this.$message({
+                message: '请上传附件',
+                type: "warning",
+              });
+              break;
+            default:
+              this.$message({
+                message: '提交失败',
+                type: "error",
+              });
+              break;
           }
+
+
         })
       } else {
         this.$message.info({ message: "已经提及成功的或者审核中的不可以再次提交！", type: "warning", });
