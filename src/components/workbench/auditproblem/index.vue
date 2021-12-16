@@ -933,6 +933,7 @@ export default {
         data: {},
       }).then((res) => {
         this.dqProblem = res.data.data;
+        this.dqProblem.riskAmount = parseFloat(this.dqProblem.riskAmount)
         this.dqProblem.auditTaskUuid = this.dqProblem.auditTaskUuid.split(",");
         this.dqProblem.basis = this.dqProblem.basis
           ? this.dqProblem.basis.split(",")
@@ -955,6 +956,7 @@ export default {
         data: {},
       }).then((res) => {
         this.dqProblem = res.data.data;
+        this.dqProblem.riskAmount = parseFloat(this.dqProblem.riskAmount)
         this.dqProblem.auditTaskUuid = this.dqProblem.auditTaskUuid.split(",");
         this.dqProblem.basis = this.dqProblem.basis
           ? this.dqProblem.basis.split(",")
