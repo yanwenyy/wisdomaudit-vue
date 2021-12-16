@@ -334,6 +334,7 @@
                     </el-upload> -->
 
                     <el-button size="small"
+                               v-if="scope.row.status !== 1 && scope.row.status !==3 "
                                type="text"
                                style="color:#49bae8"
                                @click="up_dlag(scope.row,scope.$index)">上传</el-button>
