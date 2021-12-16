@@ -178,7 +178,7 @@ export default {
   data () {
     return {
       headers: '',
-      canClick: true,
+      canClick: false,
       ifLook: false,
       key: 0,
       title: "",
@@ -491,14 +491,15 @@ export default {
 
       this.$refs['addForm'].validate((valid) => {
         if (valid) {
-          console.log(this.formState.attachmentUuidList)
+          this.canClick = true;
+          setTimeout(() => {
+            this.canClick = false;
+          }, 2000)
           if (this.formState.attachmentUuidList.length == 0) {
             this.$message.error("请上传附件");
-            this.canClick = true;
             return false;
           }
-          var timer = null;
-          timer = setTimeout(auditBasy_save(this.formState).then(resp => {
+          auditBasy_save(this.formState).then(resp => {
             if (resp.code == 0) {
               this.$message({
                 message: "保存成功",
@@ -507,17 +508,14 @@ export default {
               this.isAdd = false;
               this.list_data_start();
               this.clearForm();
-              timer = null;
-              clearTimeout(timer);
             } else {
               this.$message({
                 message: resp.data.msg,
                 type: "error",
               });
             }
-          }), 0)
+          })
         } else {
-          this.canClick = true;
           this.$message.error("请添加必填项和正确的数据格式");
           return false;
         }
@@ -560,7 +558,7 @@ export default {
       }
       this.fileList = [];
       this.apkFiles = [];
-      this.canClick = true;
+      this.canClick = false;
     },
     //点击资料名称显示附件列表
     getFileList (id) {

@@ -186,6 +186,7 @@
       <div slot="footer">
         <el-button @click="dialogFormVisible = false,clearTemp()">取消</el-button>
         <el-button
+          :disabled="canClick"
           type="primary"
           @click="addSave"
           class="subBtn"
@@ -207,6 +208,7 @@
     name: "search-list",
     data() {
       return {
+        canClick:false,
         selListShow:[],
         managementProjectUuid:'',
         visible: false,
@@ -309,7 +311,11 @@
             }else{
               this.temp.indexProjectId=this.managementProjectUuid;
             }
-            setTimeout(indexManagement_addSave(this.temp).then(resp => {
+            this.canClick = true;
+            setTimeout(() => {
+              this.canClick = false;
+            }, 2000)
+            indexManagement_addSave(this.temp).then(resp => {
               if (resp.code == 0) {
                 this.$message({
                   message: "保存成功",
@@ -324,7 +330,7 @@
                   type: "error",
                 });
               }
-            }),1)
+            })
           } else {
             this.$message({
               message: '请完善信息',

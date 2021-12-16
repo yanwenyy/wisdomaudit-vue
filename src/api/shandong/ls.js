@@ -36,6 +36,7 @@ export function down_file(data) {
     ifDownFile:true,
     responseType:'blob',
     method: 'post',
+    timeout:-1,
     data
   })
 }

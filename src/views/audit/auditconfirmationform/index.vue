@@ -260,6 +260,7 @@
               class="dialog-footer">
           <el-button @click="handleClose">取 消</el-button>
           <el-button v-if="!ifLook"
+                     :disabled="canClick"
                      type="primary"
                      @click="saveForm"
                      class="subBtn">确 定</el-button>
@@ -334,6 +335,7 @@
               class="dialog-footer">
           <el-button @click="handleClose">取 消</el-button>
           <el-button v-if="!ifLook"
+                     :disabled="canClick"
                      type="primary"
                      @click="saveForm"
                      class="subBtn">确 定</el-button>
@@ -363,7 +365,7 @@ export default {
       fileList1: [],//附件上传回显列表
       fileList1_del: [],
       headers: {},
-      canClick: true,
+      canClick: false,
       ifLook: false,
       confirmationDialogTitle: '新增确认单',
       confirmaryData: [],
@@ -698,7 +700,18 @@ export default {
       this.formDetail.problemListUuidList = data.problemListUuidList;
       this.formDetail.problemsNumber = data.multipleSelection.length;
     },
-
+    debounce (fn, delay = 300) {   //默认300毫秒
+      var timer;
+      return function() {
+        var args = arguments;
+        if(timer) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(() => {
+          fn.apply(this, args);   // this 指向vue
+        }, delay);
+      };
+    },
     //保存审计确认单
     saveForm () {
       this.$refs['addForm'].validate((valid) => {
@@ -708,63 +721,52 @@ export default {
             item.status = null;
           });
           this.formDetail.attachmentList = uploadList1;
+          this.canClick = true;
+          setTimeout(() => {
+            this.canClick = false;
+          }, 2000)
           if (this.confirmationDialogTitle == '新增确认单') {
             this.formDetail.managementProjectName = this.managementProjectName;
             this.formDetail.auditOrgName = this.auditOrgName;
             this.formDetail.managementProjectUuid = this.active_project;
-            var timer = null;
-            if(!timer){
-              timer = setTimeout(auditConfirmation_save(this.formDetail).then(resp => {
-                this.canClick = true;
-                if (resp.code == 0) {
-                  this.$message({
-                    message: "保存成功",
-                    type: "success",
-                  });
-                  this.confirmationDialogVisible = false;
-                  this.list_data_start();
-                  clearTimeout(timer);
-                  timer = null;
-                } else {
-                  this.$message({
-                    message: resp.data.msg,
-                    type: "error",
-                  });
-                }
+            auditConfirmation_save(this.formDetail).then(resp => {
+              if (resp.code == 0) {
+                this.$message({
+                  message: "保存成功",
+                  type: "success",
+                });
+                this.confirmationDialogVisible = false;
+                this.list_data_start();
+                timer = null;
+              } else {
+                this.$message({
+                  message: resp.data.msg,
+                  type: "error",
+                });
+              }
 
-              }), 1);
-            }
-
-
+            })
           } else {
-            var timer = null;
-            if(!timer){
-              timer = setTimeout(auditConfirmation_update(this.formDetail).then(resp => {
-                this.canClick = true;
-                if (resp.code == 0) {
-                  this.$message({
-                    message: "修改成功",
-                    type: "success",
-                  });
-                  this.confirmationDialogVisible = false;
-                  this.confirmationDialogVisibleZx = false;
-                  this.list_data_start();
-                  clearTimeout(timer);
-                  timer = null;
-                } else {
-                  this.$message({
-                    message: resp.data.msg,
-                    type: "error",
-                  });
-                }
+            auditConfirmation_update(this.formDetail).then(resp => {
+              if (resp.code == 0) {
+                this.$message({
+                  message: "修改成功",
+                  type: "success",
+                });
+                this.confirmationDialogVisible = false;
+                this.confirmationDialogVisibleZx = false;
+                this.list_data_start();
+                timer = null;
+              } else {
+                this.$message({
+                  message: resp.data.msg,
+                  type: "error",
+                });
+              }
 
-              }), 1);
-            }
-
-
+            })
           }
         } else {
-          this.canClick = true;
           this.$message.error("请添加必填项和正确的数据格式");
           return false;
         }

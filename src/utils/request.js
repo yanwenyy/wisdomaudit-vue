@@ -54,6 +54,9 @@ service.interceptors.request.use(
       if(config.ifDownFile){
         ifDown=true;
       }
+    if(config.timeout){
+      config.headers.timeout=config.timeout;
+    }
     if (config.isLoading !== false) {
       // 如果配置了isLoading: false，则不显示loading
       showFullScreenLoading();
