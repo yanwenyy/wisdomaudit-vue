@@ -81,7 +81,8 @@
               </template>
             </el-table-column> -->
 
-            <el-table-column label="操作" width="200">
+            <el-table-column label="操作"
+                             width="200">
               <template slot-scope="scope">
                 <!-- isDeleted  0:不是接口人 1:s是接口人 -->
                 <div v-if="scope.row.isDeleted==1"
@@ -868,14 +869,14 @@
                            width="120">
             <!-- <template slot-scope="scope">{{ scope.row.date }}</template> -->
           </el-table-column>
-          <el-table-column prop="dataNumber"
+          <!-- <el-table-column prop="dataNumber"
                            label="编号"
                            width="120">
           </el-table-column>
           <el-table-column prop="secondLevelDataNumber"
                            label="二级编号"
                            show-overflow-tooltip>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column prop="dataName"
                            label="资料名称"
                            show-overflow-tooltip>
@@ -1151,13 +1152,7 @@
                   v-loading="loading_history"
                   :header-cell-style="{'background-color': '#F4FAFF',}"
                   style="width: 100%;">
-          <!-- <el-table-column type="selection"
-                             width="55">
-            </el-table-column> -->
-          <!-- <el-table-column type="index"
-                           label="序号"
-                           width="50">
-          </el-table-column> -->
+
           <el-table-column prop="opOperate"
                            show-overflow-tooltip
                            label="操作类型">
@@ -1179,16 +1174,16 @@
                            label="附件">
             <template slot-scope="scope">
 
-              <el-popover :popper-class="enclosure_details_list==''?'no-padding':''"
-                          v-if="scope.row.fileCount"
+              <el-popover :popper-class="details_list==''?'no-padding':''"
+                          v-if="scope.row.attachmentList"
                           placement="bottom"
                           width="250"
-                          @show="open_enclosure_details(scope.row.auditPreviousDemandDataUuid)"
+                          @show="open_enclosure_details_file(scope.row)"
                           trigger="click">
-                <ul v-if="enclosure_details_list!=''"
+                <ul v-if="details_list!=''"
                     class="fileList-ul">
                   <li class="tableFileList-title">文件名称</li>
-                  <li v-for="(item,index) in enclosure_details_list"
+                  <li v-for="(item,index) in details_list"
                       :key="index"
                       class="pointer blue"
                       @click="download(item.attachmentUuid,item.fileName)">
@@ -1196,7 +1191,8 @@
                 </ul>
                 <div slot="reference"
                      style="color: #1371cc;"
-                     class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.fileCount}}
+                     class="pointer"><i
+                     class="el-icon-folder-opened list-folder"></i>{{scope.row.attachmentList.length}}
                 </div>
               </el-popover>
               <p v-else>--</p>
@@ -1246,7 +1242,7 @@ import {
 } from
   '@SDMOBILE/api/shandong/task'
 
-import { down_file ,addDataTask_export} from
+import { down_file, addDataTask_export } from
   '@SDMOBILE/api/shandong/ls'
 import { Input } from 'element-ui';
 export default {
@@ -1427,7 +1423,11 @@ export default {
 
       success_btn1: 0,
       success_btn2: 0,
-      selectprojectPeopleNum: {}
+      selectprojectPeopleNum: {},
+
+
+
+      details_list: [],//操作记录附件
     }
   },
   computed: {},
@@ -1474,7 +1474,7 @@ export default {
   },
 
   methods: {
-    exportList(row){
+    exportList (row) {
       // let formData = new FormData();
       // formData.append('addDataTaskUuid', row.addDataTaskUuid)
       addDataTask_export(row.addDataTaskUuid).then(resp => {
@@ -1485,7 +1485,7 @@ export default {
         if ('download' in document.createElement('a')) {
           // 非IE下载
           const elink = document.createElement('a')
-          elink.download = row.title+".zip"; //下载后文件名
+          elink.download = row.title + ".zip"; //下载后文件名
           elink.style.display = 'none'
           elink.href = window.URL.createObjectURL(blob)
           document.body.appendChild(elink)
@@ -1555,7 +1555,6 @@ export default {
           condition: {
             dataTaskNumber: this.projectNumber,
             dataName: this.search_title2,
-
           }
         }
 
@@ -1575,7 +1574,7 @@ export default {
     operation_data () {
       let params = {
         condition: {
-          logSysActiUuid: this.operation_query.id,
+          auditDataTaskUuid: this.operation_query.id,
         },
         pageNo: this.operation_query.pageNo,
         pageSize: this.operation_query.pageSize,
@@ -1748,6 +1747,11 @@ export default {
       // this.dialogVisibl_enclosure_details = true;
       // }
 
+    },
+    // 操作记录查看附件
+    open_enclosure_details_file (data) {
+      this.details_list = data.attachmentList;
+      console.log(this.details_list);
     },
 
 

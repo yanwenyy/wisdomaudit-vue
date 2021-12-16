@@ -534,9 +534,8 @@ import axios from "axios";
 import { down_file } from
   '@SDMOBILE/api/shandong/ls'
 
-import { data_pageList, feedback_pageList, operation_record_list, operation_download, operation_uploadData, operation_findFile, operation_reportData } from
+import { data_pageList, feedback_pageList, operation_record_list, operation_download, operation_uploadData, operation_findFile, operation_reportData, file_remove_list } from
   '@SDMOBILE/api/shandong/feedback'
-import { file_remove_list } from '@SDMOBILE/api/shandong/AuditReport'
 import { fmtDate } from '@SDMOBILE/model/time.js';
 
 export default {
@@ -657,6 +656,17 @@ export default {
             message: '删除成功',
             type: 'success'
           });
+
+
+          let params2 = {
+            pageNo: this.data_query.pageNo,
+            pageSize: this.data_query.pageSize,
+            condition: {
+              dataTaskNumber: this.data_query.condition.dataTaskNumber,
+            }
+          }
+          this.feedback_post(params2)//资料列表
+
         } else {
           // 删除失败
           this.$message({
@@ -984,7 +994,7 @@ export default {
         pageNo: this.log.pageNo,
         pageSize: this.log.pageSize,
         condition: {
-          logSysActiUuid: this.log.auditPreviousDemandDataUuid
+          auditPreviousDemandDataUuid: this.log.auditPreviousDemandDataUuid
         },
       }
       this.loading_list2 = true;

@@ -933,6 +933,7 @@ export default {
         data: {},
       }).then((res) => {
         this.dqProblem = res.data.data;
+        this.dqProblem.riskAmount = parseFloat(this.dqProblem.riskAmount)
         this.dqProblem.auditTaskUuid = this.dqProblem.auditTaskUuid.split(",");
         this.dqProblem.basis = this.dqProblem.basis
           ? this.dqProblem.basis.split(",")
@@ -955,6 +956,7 @@ export default {
         data: {},
       }).then((res) => {
         this.dqProblem = res.data.data;
+        this.dqProblem.riskAmount = parseFloat(this.dqProblem.riskAmount)
         this.dqProblem.auditTaskUuid = this.dqProblem.auditTaskUuid.split(",");
         this.dqProblem.basis = this.dqProblem.basis
           ? this.dqProblem.basis.split(",")
@@ -1049,6 +1051,7 @@ export default {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           let rep = this.temp;
+          rep.riskAmount = parseFloat(rep.riskAmount)
           rep.auditTaskUuid = rep.auditTaskUuid
             ? rep.auditTaskUuid.join(",")
             : "";
@@ -1089,6 +1092,7 @@ export default {
       this.$refs["detailForm"].validate((valid) => {
         if (valid) {
           let rep = this.dqProblem;
+          rep.riskAmount = parseFloat(rep.riskAmount)
           rep.auditTaskUuid = rep.auditTaskUuid.join(",");
           rep.basis = rep.basis.join(",");
           this.dialogDetailVisible = false;

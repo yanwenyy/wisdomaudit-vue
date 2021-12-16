@@ -197,7 +197,7 @@
               <el-option v-for="item in problems_slect_ly"
                          :key="item.value"
                          :label="item.label"
-                         :value="item.value">
+                         :value="item.label">
               </el-option>
             </el-select>
           </el-form-item>
@@ -212,7 +212,7 @@
               <el-option v-for="item in problems_slect_zt"
                          :key="item.value"
                          :label="item.label"
-                         :value="item.value">
+                         :value="item.label">
               </el-option>
             </el-select>
             <el-input v-model="add.special"
@@ -994,7 +994,7 @@ export default {
     // 专题change
     changeHeader_zt (val) {
       this.add.special = val;
-      if (val == 'otherzt') {
+      if (val == '其他') {
         this.input_select = false;
         this.add.special = ''
       }
@@ -1125,7 +1125,7 @@ export default {
   justify-content: center;
 }
 .dlag_conter >>> p {
-  min-width: 130px;
+  min-width: 135px;
   text-align: right;
 }
 .dlag_conter >>> .foot {
