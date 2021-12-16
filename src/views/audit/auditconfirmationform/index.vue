@@ -698,7 +698,18 @@ export default {
       this.formDetail.problemListUuidList = data.problemListUuidList;
       this.formDetail.problemsNumber = data.multipleSelection.length;
     },
-
+    debounce (fn, delay = 300) {   //默认300毫秒
+      var timer;
+      return function() {
+        var args = arguments;
+        if(timer) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(() => {
+          fn.apply(this, args);   // this 指向vue
+        }, delay);
+      };
+    },
     //保存审计确认单
     saveForm () {
       this.$refs['addForm'].validate((valid) => {
@@ -712,60 +723,46 @@ export default {
             this.formDetail.managementProjectName = this.managementProjectName;
             this.formDetail.auditOrgName = this.auditOrgName;
             this.formDetail.managementProjectUuid = this.active_project;
-            var timer = null;
-            if(!timer){
-              timer = setTimeout(auditConfirmation_save(this.formDetail).then(resp => {
-                this.canClick = true;
-                if (resp.code == 0) {
-                  this.$message({
-                    message: "保存成功",
-                    type: "success",
-                  });
-                  this.confirmationDialogVisible = false;
-                  this.list_data_start();
-                  clearTimeout(timer);
-                  timer = null;
-                } else {
-                  this.$message({
-                    message: resp.data.msg,
-                    type: "error",
-                  });
-                }
+            this.debounce(auditConfirmation_save(this.formDetail).then(resp => {
+              this.canClick = true;
+              if (resp.code == 0) {
+                this.$message({
+                  message: "保存成功",
+                  type: "success",
+                });
+                this.confirmationDialogVisible = false;
+                this.list_data_start();
+                timer = null;
+              } else {
+                this.$message({
+                  message: resp.data.msg,
+                  type: "error",
+                });
+              }
 
-              }), 1);
-            }else{
-              return;
-            }
+            }));
 
 
           } else {
-            var timer = null;
-            if(!timer){
-              timer = setTimeout(auditConfirmation_update(this.formDetail).then(resp => {
-                this.canClick = true;
-                if (resp.code == 0) {
-                  this.$message({
-                    message: "修改成功",
-                    type: "success",
-                  });
-                  this.confirmationDialogVisible = false;
-                  this.confirmationDialogVisibleZx = false;
-                  this.list_data_start();
-                  clearTimeout(timer);
-                  timer = null;
-                } else {
-                  this.$message({
-                    message: resp.data.msg,
-                    type: "error",
-                  });
-                }
+            this.debounce(auditConfirmation_update(this.formDetail).then(resp => {
+              this.canClick = true;
+              if (resp.code == 0) {
+                this.$message({
+                  message: "修改成功",
+                  type: "success",
+                });
+                this.confirmationDialogVisible = false;
+                this.confirmationDialogVisibleZx = false;
+                this.list_data_start();
+                timer = null;
+              } else {
+                this.$message({
+                  message: resp.data.msg,
+                  type: "error",
+                });
+              }
 
-              }), 1);
-            }else{
-              return;
-            }
-
-
+            }));
           }
         } else {
           this.canClick = true;
