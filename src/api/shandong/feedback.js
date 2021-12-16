@@ -85,3 +85,24 @@ export function operation_reportData (data) {
     data
   })
 }
+
+// 删除附件 删除数据库的真删除
+// export function file_remove_list (data) {
+//   return request({
+//     baseURL: baseURL,
+//     url: `/attachment/fileRemove`,
+//     method: 'post',
+//     isLoading: false,
+//     data: qs.stringify(data),
+//   })
+// }
+// 删除附件  假删除
+export function file_remove_list (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/attachment/fileRemove1`,
+    method: 'post',
+    isLoading: false,
+    data: qs.stringify(data),
+  })
+}
