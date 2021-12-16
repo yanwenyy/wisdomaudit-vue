@@ -199,27 +199,27 @@
                     type="textarea"
                     v-model="formDetail.auditOrgOpinion"></el-input>
         </el-form-item>
-        <el-form-item v-if="confirmationDialogTitle=='编辑确认单'||ifLook"
-                      class="itemThree"
-                      label="相关负责人(签名):">
-          {{formDetail.principalName||'--'}}
-          <!--<el-input disabled-->
-          <!--v-model="formDetail.principalName"></el-input>-->
-        </el-form-item>
-        <el-form-item v-if="confirmationDialogTitle=='编辑确认单'||ifLook"
-                      class="itemThree"
-                      label="职务:">
-          {{formDetail.principalPost||'--'}}
-          <!--<el-input disabled-->
-          <!--v-model="formDetail.principalPost"></el-input>-->
-        </el-form-item>
-        <el-form-item v-if="confirmationDialogTitle=='编辑确认单'||ifLook"
-                      class="itemThree"
-                      label="日期:">
-          {{formDetail.signatureDate||'--'}}
-          <!--<el-input disabled-->
-          <!--v-model="formDetail.signatureDate"></el-input>-->
-        </el-form-item>
+        <!--<el-form-item v-if="confirmationDialogTitle=='编辑确认单'||ifLook"-->
+                      <!--class="itemThree"-->
+                      <!--label="相关负责人(签名):">-->
+          <!--{{formDetail.principalName||'&#45;&#45;'}}-->
+          <!--&lt;!&ndash;<el-input disabled&ndash;&gt;-->
+          <!--&lt;!&ndash;v-model="formDetail.principalName"></el-input>&ndash;&gt;-->
+        <!--</el-form-item>-->
+        <!--<el-form-item v-if="confirmationDialogTitle=='编辑确认单'||ifLook"-->
+                      <!--class="itemThree"-->
+                      <!--label="职务:">-->
+          <!--{{formDetail.principalPost||'&#45;&#45;'}}-->
+          <!--&lt;!&ndash;<el-input disabled&ndash;&gt;-->
+          <!--&lt;!&ndash;v-model="formDetail.principalPost"></el-input>&ndash;&gt;-->
+        <!--</el-form-item>-->
+        <!--<el-form-item v-if="confirmationDialogTitle=='编辑确认单'||ifLook"-->
+                      <!--class="itemThree"-->
+                      <!--label="日期:">-->
+          <!--{{formDetail.signatureDate||'&#45;&#45;'}}-->
+          <!--&lt;!&ndash;<el-input disabled&ndash;&gt;-->
+          <!--&lt;!&ndash;v-model="formDetail.signatureDate"></el-input>&ndash;&gt;-->
+        <!--</el-form-item>-->
         <el-form-item label="上传附件:"
                       class="upload-yw">
           <el-upload v-if="!ifLook"
