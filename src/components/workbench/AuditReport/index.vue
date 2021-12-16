@@ -505,8 +505,7 @@ export default {
           + item.indexTypeName + ','
           + item.dataProvideDepartmentName + ','
           + item.accessCaliberName + ','
-          + item.indexValue + ','
-          + item.indexUnitName + '</br>' + '</br>');
+          + item.indexValue + item.indexUnitName + '</br>' + '</br>');
       });
       let array_list = array1.join('')
       // var array_list = array1.toString();  //把数组转换为字符串
