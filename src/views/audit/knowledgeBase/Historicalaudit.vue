@@ -245,13 +245,14 @@
             </el-select>
             <el-button type="primary"
                        ref="basisbtn0"
+                       style="height:36px;"
                        class="citebtn"
                        @click="openbasis()">引用</el-button>
           </el-form-item>
 
           <!--发现日期 -->
           <el-form-item prop="findData"
-                        style="margin-bottom: 22px">
+                        style="margin-bottom: 22px!important">
             <p><span style="color: red">*</span>发现日期：</p>
             <el-date-picker v-model="add.findData"
                             type="date"
@@ -317,6 +318,7 @@
     <!-- 引用审计依据 -->
     <el-dialog title="引用审计依据"
                center
+               @close="resetForm()"
                :visible.sync="basisdialog"
                width="70%"
                custom-class="outmax">
@@ -552,6 +554,11 @@ export default {
   },
 
   methods: {
+    // 关闭 清空引用依据
+    resetForm () {
+      this.dqbasis.val = '';
+      this.basisdialog = false;
+    },
     // 金额限制
     oninput (number) {
       let str = number.toString().replace();

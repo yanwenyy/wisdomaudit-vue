@@ -436,14 +436,6 @@
         </div>
         <!-- 分页 end-->
       </div>
-      <!-- <span slot="footer">
-        <el-button size="small"
-                   plain
-                   @click="dialogVisible_data_num = false">上一步</el-button>
-        <el-button size="small"
-                   type="primary"
-                   @click="query()">完成</el-button>
-      </span> -->
     </el-dialog>
 
     <!-- 结果数 核实明细结果  -->
@@ -462,7 +454,7 @@
                  :model="verify_model"
                  :inline="false">
           <!-- 是否问题-->
-          <el-form-item prop="isProbleam"
+          <el-form-item prop="isProbleam_data"
                         label="是否问题：">
             <el-select v-model="verify_model.isProbleam_data"
                        @change="isProbleam_change">
@@ -1263,8 +1255,7 @@ export default {
 
       // 核实验证
       rules_verify: {
-        isProbleam: [{ required: true, message: '请选择问题', trigger: 'change' }],
-        isProbleam_data: [{ required: true, message: '请选择问题', trigger: 'change' }],
+        isProbleam_data: [{ required: true, message: '请选择是否问题', trigger: 'change' }],
         handleIdea: [{ required: true, message: '请输入核实信息', trigger: 'blur' }],
       },
       // 新增核实 表头
@@ -2002,8 +1993,7 @@ export default {
         this.$message.info("请选择一条进行数据核实");
         return false
       }
-
-      // console.log(this.multipleSelection_data_list);
+      console.log(this.multipleSelection_data_list);
       var that = this
       if (this.multipleSelection_data_list.every(item => item.isProbleam !== 0)) {
         that.dialogVisible_data_verify = true;//显示核实弹窗
@@ -2061,22 +2051,17 @@ export default {
               headers: {
                 TOKEN: this.dqtoken,
                 'Content-Type': 'multipart/form-data'
-
               },
               data: formData,
-
             }).then(resp => {
               // 上传成功
               if (resp.data.code == 0) {
                 this.success_btn2 = 0;//显示加载按钮  0成功  1 loaging
-                // 
                 this.Upload_file2 = resp.data.data;//上传成功大的文件
-
                 // var arr = this.multipleSelection_data_list.map(function (item, index) {
                 //   return item.resultDetailId;
                 // }).join(",");
                 // 
-
                 var arr = this.multipleSelection_data_list.map(function (item, index) {
                   return item.onlyuuid;
                 }).join(",");
@@ -2089,7 +2074,6 @@ export default {
                   attachmentList: this.Upload_file2,//上传成功de 的文件
                   projectId: this.managementProjectUuid,
                   runTaskRelUuid: this.paramTaskUuid,//结果id
-
                 };
                 this.verify_preservation(resultDetailProjectRelDto)//保存
 
@@ -2103,7 +2087,8 @@ export default {
               }
             })//上传 end
           } else {
-            // 直接保存
+
+            //没有上传 直接保存
             var arr = this.multipleSelection_data_list.map(function (item, index) {
               return item.onlyuuid;
             }).join(",");
@@ -2111,7 +2096,7 @@ export default {
               handleIdea: this.verify_model.handleIdea,//核实信息
               isProbleam: this.verify_model.isProbleam_data, //是否问题（0：否 1：是 ）
               resultDetailIds: arr,//核实明细结果id （多个）
-              attachmentList: this.edit_file_list2,//上传成功的 的文件
+              attachmentList: [],//上传成功的 的文件// 清空附件数量
               projectId: this.managementProjectUuid,
               runTaskRelUuid: this.paramTaskUuid,//结果id
 
@@ -2136,14 +2121,12 @@ export default {
     // 核实保存
     verify_preservation (resultDetailProjectRelDto) {
       task_data_verify(resultDetailProjectRelDto).then(resp => {
-
         if (resp.code == 0) {
           this.$message({
             message: "核实成功",
             type: "success",
           });
           this.dialogVisible_data_verify = false;//关闭核实  弹窗
-
           // 新表单
           // this.new_table();//新接口 table
           // 刷新任务列表
@@ -2192,38 +2175,13 @@ export default {
         }
       })
     },
-
-
-
-    // // 核实 确认
-    // query () {
-    //   if (this.multipleSelection_data_list.length == 0) {
-    //     this.$message.info("请选择一条结果数进行确认");
-    //     return
-    //   }
-    // },
-
-
-
-    //核实下载
-    // download () {
-    // if (this.multipleSelection_data_list.length == 0) {
-    //   this.$message.info("请选择一条进行数据核实");
-    //   return false
-    // }
-    // },
-
-
-
     // 问题数==============================================
     // 查看问题
     probleNum_click (id, name) {
-
       this.problemsDialogVisible = true;//显示问题数弹窗
       this.auditTaskUuid = id
       this.wt_title = name
       let params = {
-
         condition: {
           auditTaskUuid: this.auditTaskUuid,
           managementProjectUuid: this.managementProjectUuid,
@@ -3119,6 +3077,10 @@ export default {
 .dlag_conter2 {
   padding: 0 20px 20px;
   box-sizing: border-box;
+}
+
+.verify >>> .el-form-item__error {
+  left: 0;
 }
 </style>
  
