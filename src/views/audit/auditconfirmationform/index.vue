@@ -260,6 +260,7 @@
               class="dialog-footer">
           <el-button @click="handleClose">取 消</el-button>
           <el-button v-if="!ifLook"
+                     :disabled="canClick"
                      type="primary"
                      @click="saveForm"
                      class="subBtn">确 定</el-button>
@@ -334,6 +335,7 @@
               class="dialog-footer">
           <el-button @click="handleClose">取 消</el-button>
           <el-button v-if="!ifLook"
+                     :disabled="canClick"
                      type="primary"
                      @click="saveForm"
                      class="subBtn">确 定</el-button>
@@ -363,7 +365,7 @@ export default {
       fileList1: [],//附件上传回显列表
       fileList1_del: [],
       headers: {},
-      canClick: true,
+      canClick: false,
       ifLook: false,
       confirmationDialogTitle: '新增确认单',
       confirmaryData: [],
@@ -719,12 +721,15 @@ export default {
             item.status = null;
           });
           this.formDetail.attachmentList = uploadList1;
+          this.canClick = true;
+          setTimeout(() => {
+            this.canClick = false;
+          }, 2000)
           if (this.confirmationDialogTitle == '新增确认单') {
             this.formDetail.managementProjectName = this.managementProjectName;
             this.formDetail.auditOrgName = this.auditOrgName;
             this.formDetail.managementProjectUuid = this.active_project;
-            this.debounce(auditConfirmation_save(this.formDetail).then(resp => {
-              this.canClick = true;
+            auditConfirmation_save(this.formDetail).then(resp => {
               if (resp.code == 0) {
                 this.$message({
                   message: "保存成功",
@@ -740,12 +745,9 @@ export default {
                 });
               }
 
-            }));
-
-
+            })
           } else {
-            this.debounce(auditConfirmation_update(this.formDetail).then(resp => {
-              this.canClick = true;
+            auditConfirmation_update(this.formDetail).then(resp => {
               if (resp.code == 0) {
                 this.$message({
                   message: "修改成功",
@@ -762,10 +764,9 @@ export default {
                 });
               }
 
-            }));
+            })
           }
         } else {
-          this.canClick = true;
           this.$message.error("请添加必填项和正确的数据格式");
           return false;
         }

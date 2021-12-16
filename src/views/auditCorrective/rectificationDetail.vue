@@ -222,6 +222,7 @@
     export default {
        data(){
          return{
+           canClick:false,
            headers:'',
            people:'',
            key:0,
@@ -328,6 +329,7 @@
         },
         //信息保存
         setDetail(){
+
           var uploadList1=this.attachmentList1.concat(this.fileList1,this.fileList1_del);
           var uploadList2=this.attachmentList2.concat(this.fileList2,this.fileList2_del);
           var uploadList3=this.attachmentList3.concat(this.fileList3,this.fileList3_del);
@@ -340,6 +342,10 @@
           uploadList3.forEach((item)=>{
             item.status=null;
           });
+          this.canClick = true;
+          setTimeout(() => {
+            this.canClick = false;
+          }, 2000);
           var params={
             attachmentList1:uploadList1,
             attachmentList2:uploadList2,
@@ -351,7 +357,7 @@
         //保存按钮点击
         save(){
           var params=this.setDetail();
-          var timer=setTimeout(correctStep_inputAlter(params).then(resp => {
+          correctStep_inputAlter(params).then(resp => {
             if (resp.code == 0) {
               this.$message({
                 message: "保存成功",
@@ -361,8 +367,6 @@
               this.$nextTick(() => {
                 this.$parent.list_data_start();
               })
-              clearTimeout(timer);
-              timer=null;
             } else {
               this.$message({
                 message: resp.data.msg,
@@ -370,12 +374,12 @@
               });
             }
 
-          }),1)
+          })
         },
         //提交按钮点击
         sub(){
           var params=this.setDetail();
-          var timer=setTimeout(correctStep_submitAlter(params).then(resp => {
+          correctStep_submitAlter(params).then(resp => {
             if (resp.code == 0) {
               this.$message({
                 message: "提交成功",
@@ -385,8 +389,6 @@
               this.$nextTick(() => {
                 this.$parent.list_data_start();
               })
-              clearTimeout(timer);
-              timer=null;
             } else {
               this.$message({
                 message: resp.data.msg,
@@ -394,14 +396,14 @@
               });
             }
 
-          }),1)
+          })
         },
         //审核和驳回按钮点击
         examine(type){
           var params=this.setDetail();
           params.type=type;
           if(this.people=='leader'){
-            var timer=setTimeout(correctStep_verifyLd(params).then(resp => {
+            correctStep_verifyLd(params).then(resp => {
               if (resp.code == 0) {
                 this.$message({
                   message: "审核成功",
@@ -411,8 +413,6 @@
                 this.$nextTick(() => {
                   this.$parent.list_data_start();
                 })
-                clearTimeout(timer);
-                timer=null;
               } else {
                 this.$message({
                   message: resp.data.msg,
@@ -420,9 +420,9 @@
                 });
               }
 
-            }),1)
+            })
           }else if(this.people=='gjr'){
-            var timer=setTimeout(correctStep_verifyZgr(params).then(resp => {
+            correctStep_verifyZgr(params).then(resp => {
               if (resp.code == 0) {
                 this.$message({
                   message: "审核成功",
@@ -432,8 +432,6 @@
                 this.$nextTick(() => {
                   this.$parent.list_data_start();
                 })
-                clearTimeout(timer);
-                timer=null;
               } else {
                 this.$message({
                   message: resp.data.msg,
@@ -441,7 +439,7 @@
                 });
               }
 
-            }),1)
+            })
           }
         },
         close(){

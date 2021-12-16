@@ -62,7 +62,6 @@ service.interceptors.request.use(
       showFullScreenLoading();
     }
       config.headers.TOKEN  = sessionStorage.getItem('TOKEN');
-      console.log(config.headers)
     // }
     return config
   },
