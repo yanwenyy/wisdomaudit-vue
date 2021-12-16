@@ -65,7 +65,13 @@
                   scope.row.status == 0
                     ? "待开始"
                     : scope.row.status == 1
-                    ? "资料待反馈":"已完成"
+                    ? "资料待反馈"
+                    : scope.row.status == 2
+                    ? "已完成"
+                    : scope.row.status == 3
+                    ? "部分已反馈"
+                    : scope.row.status == 4
+                    ? "待审核":'--'
                 }}
               </template>
             </el-table-column>
@@ -82,57 +88,62 @@
             </el-table-column> -->
 
             <el-table-column label="操作"
-                             width="200">
+                             width="250">
               <template slot-scope="scope">
                 <!-- isDeleted  0:不是接口人 1:s是接口人 -->
                 <div v-if="scope.row.isDeleted==1"
-                     style="    display: flex;">
+                     style="display: flex;">
+                  <!-- 操作记录 -->
                   <el-button @click="on_list(scope.row.addDataTaskUuid)"
                              type="text"
+                             class="status_btn"
                              :disabled="isDisable"
-                             style="color:#0c87d6;
-                                 font-size: 14px !important;background:none;border:none"
+                             style="color:#0c87d6;"
                              size="small">
                     操作记录
                   </el-button>
-                  <el-button  v-if="scope.row.status == 3" @click="exportList(scope.row)"
+                  <!-- 导出 -->
+                  <el-button @click="exportList(scope.row)"
+                             v-if="scope.row.status == 2"
                              type="text"
+                             class="status_btn"
                              style="color:#0c87d6;
                                margin-left:10px;
-                                 font-size: 14px !important;background:none;border:none"
+                                 "
                              size="small">
                     导出
                   </el-button>
+                  <!-- 编辑 下发 删除-->
                   <div v-if="scope.row.status == 0">
-
                     <el-button @click="edit_common(scope.row)"
                                type="text"
+                               class="status_btn"
                                :disabled="isDisable"
                                style="color:#0c87d6;
                                margin-left:10px;
-                                 font-size: 14px !important;background:none;border:none"
+                                 "
                                size="small">
                       编辑
                     </el-button>
                     <el-button @click="yes_push(scope.row)"
                                type="text"
                                :disabled="isDisable"
-                               style="color:#0c87d6;
-                                 font-size: 14px !important;background:none;border:none"
+                               class="status_btn"
+                               style="color:#0c87d6;"
                                size="small">
                       下发
                     </el-button>
                     <el-button @click="deleteRow(scope.row)"
                                type="text"
                                :disabled="isDisable"
-                               style="color:#ff8a72;
-                                 font-size: 14px !important;background:none;border:none"
+                               class="status_btn"
+                               style="color:#ff8a72;"
                                size="small">
                       删除
                     </el-button>
 
                   </div>
-
+                  <!-- 审批 删除 -->
                   <div v-if=" scope.row.status == 1">
                     <el-button @click="operation(scope.row)"
                                v-if="scope.row.doingCount>=1"
@@ -140,36 +151,28 @@
                                :disabled="isDisable"
                                style="color:#0c87d6;
                                margin-left:10px;
-                                 font-size: 14px !important;background:none;border:none"
+                                "
+                               class="status_btn"
                                size="small">
                       审批
-                    </el-button>
-                    <el-button @click="deleteRow(scope.row)"
-                               type="text"
-                               :disabled="isDisable"
-                               style="color:#ff8a72;margin-left:10px;
-                                 font-size: 14px !important;background:none;border:none"
-                               size="small">
-                      删除
                     </el-button>
                   </div>
 
                 </div>
                 <div v-else>
-
-                  <!-- -- -->
+                  <!-- 操作记录 -->
                   <el-button @click="on_list(scope.row.addDataTaskUuid)"
                              type="text"
                              :disabled="isDisable"
+                             class="status_btn"
                              style="color:#0c87d6;
-                                 font-size: 14px !important;background:none;border:none"
+                               "
                              size="small">
                     操作记录
                   </el-button>
 
                 </div>
               </template>
-
             </el-table-column>
           </el-table>
         </div>
@@ -1532,6 +1535,7 @@ export default {
     },
     // 资料筛选
     search_list (index) {
+
       switch (index) {
         case 1:
           // 未完成
@@ -1543,6 +1547,8 @@ export default {
               title: this.search_title,
             }
           }
+          this.list_data_start(params)//刷新已完成列表
+
           break;
         default:
           // 已完成
@@ -2772,7 +2778,11 @@ export default {
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
 /* @import "../../../assets/styles/css/yw.css"; */
-
+.status_btn {
+  font-size: 14px !important;
+  background: none;
+  border: none;
+}
 >>> .foot .el-button {
   font-weight: normal;
 }

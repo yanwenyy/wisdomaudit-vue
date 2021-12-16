@@ -222,6 +222,7 @@ export function enclosure_downloadByFileId (data) {
     url: `/auditPreviousDemandData/downloadByFileId`,
     method: 'post',
     isLoading: false,
+    timeout: -1,
     data: qs.stringify(data),
   })
 }

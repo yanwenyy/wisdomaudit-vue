@@ -51,13 +51,25 @@
                          show-overflow-tooltip
                          label="状态">
           <template slot-scope="scope">
-            {{
+            <!-- {{
                   scope.row.status == 0
                     ? "待下发"
                     : scope.row.status == 1
                     ? "进行中"
                     : scope.row.status ==2
                     ?'已完成 ':''
+                }} -->
+            {{
+                  scope.row.status == 0
+                    ? "待开始"
+                    : scope.row.status == 1
+                    ? "资料待反馈"
+                    : scope.row.status == 2
+                    ? "已完成"
+                    : scope.row.status == 3
+                    ? "部分已反馈"
+                    : scope.row.status == 4
+                    ? "待审核":'--'
                 }}
           </template>
         </el-table-column>
@@ -97,7 +109,6 @@
 
       </div>
       <!-- 分页 end-->
-
     </div>
 
     <!-- 反馈 -->

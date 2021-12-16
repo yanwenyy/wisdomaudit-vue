@@ -3,30 +3,30 @@ import Vue from "vue";
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
-var ifDown=false;
+var ifDown = false;
 
 let loading;
 let needLoadingRequestCount = 0; // 声明一个对象用于存储请求个数
-function startLoading() {
+function startLoading () {
   loading = Vue.prototype.$loading({
     lock: true,
     // text: "努力加载中...",
     // background: 'rgba(0,0,0,0.3)',
-    background:'transparent',
+    background: 'transparent',
     customClass: 'loadingIcon',
     target: document.querySelector(".loading-area") // 设置加载动画区域
   });
 }
-function endLoading() {
+function endLoading () {
   loading.close();
 }
-function showFullScreenLoading() {
+function showFullScreenLoading () {
   if (needLoadingRequestCount === 0) {
     startLoading();
   }
   needLoadingRequestCount++;
 }
-function hideFullScreenLoading() {
+function hideFullScreenLoading () {
   if (needLoadingRequestCount <= 0) return;
   needLoadingRequestCount--;
   if (needLoadingRequestCount === 0) {
@@ -46,22 +46,22 @@ service.interceptors.request.use(
     // do something before request is sent
 
     // if (store.getters.token) {
-      // let each request carry token
-      // ['X-Token'] is a custom headers key
-      // please modify it according to the actual situation
+    // let each request carry token
+    // ['X-Token'] is a custom headers key
+    // please modify it according to the actual situation
 
-      // config.headers['X-Token'] = getToken()
-      if(config.ifDownFile){
-        ifDown=true;
-      }
-    if(config.timeout){
-      config.headers.timeout=config.timeout;
+    // config.headers['X-Token'] = getToken()
+    if (config.ifDownFile) {
+      ifDown = true;
     }
+    // if(config.timeout){
+    //   config.headers.timeout=config.timeout;
+    // }
     if (config.isLoading !== false) {
       // 如果配置了isLoading: false，则不显示loading
       showFullScreenLoading();
     }
-      config.headers.TOKEN  = sessionStorage.getItem('TOKEN');
+    config.headers.TOKEN = sessionStorage.getItem('TOKEN');
     // }
     return config
   },
@@ -90,7 +90,7 @@ service.interceptors.response.use(
     const res = response.data
 
     // if the custom code is not 20000, it is judged as an error.
-    if (res.code !== 0 && res.status !== 0&&!ifDown) {
+    if (res.code !== 0 && res.status !== 0 && !ifDown) {
       Message({
         message: res.msg || 'Error',
         type: 'error',

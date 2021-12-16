@@ -881,6 +881,7 @@
 
           <!-- 任务名称 -->
           <el-form-item label="任务名称："
+                        prop="taskName"
                         style="margin-bottom:30px!important">
             <el-input v-model="save_zj_query.taskName"
                       placeholder="请输入任务新增"></el-input>
@@ -1152,7 +1153,7 @@ export default {
 
       // 新增任务验证
       rules_task: {
-        // taskName: [{ required: true, message: '请输入任务名称', trigger: 'blur' }],
+        taskName: [{ required: true, message: '请输入任务名称', trigger: 'blur' }],
         // peopleTableUuid: [{ required: true, message: '请选择责任人', trigger: 'change' }],
         belongSpcial: [{ required: true, message: '请选择专题', trigger: 'change' }],
         belongField: [{ required: true, message: '请选择领域', trigger: 'change' }],

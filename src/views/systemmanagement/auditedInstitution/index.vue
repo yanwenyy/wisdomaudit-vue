@@ -1,110 +1,93 @@
 <template>
   <div class="auditedInstitution">
     <el-row :gutter="24">
-      <el-col :span="6" class="filterTree" >
-        <el-input placeholder="输入关键字进行过滤" v-model="filterText">
+      <el-col :span="6"
+              class="filterTree">
+        <el-input placeholder="输入关键字进行过滤"
+                  v-model="filterText">
         </el-input>
 
-        <el-tree
-          class="filter-tree"
-          :data="data"
-          :props="defaultProps"
-          default-expand-all
-          :filter-node-method="filterNode"
-          ref="tree"
-          @node-click="getCheckedNodes"
-        >
+        <el-tree class="filter-tree"
+                 :data="data"
+                 :props="defaultProps"
+                 default-expand-all
+                 :filter-node-method="filterNode"
+                 ref="tree"
+                 @node-click="getCheckedNodes">
         </el-tree>
       </el-col>
       <el-col :span="18">
         <el-row>
           <el-col :span="2">
             <!-- 导入按钮 -->
-            <el-upload
-              ref="upload"
-              class="upload-demo"
-              action="#"
-              :on-progress="handleChange"
-              :file-list="fileList"
-            >
-              <el-button size="small" style="background: #0c87d6; color: #fff">文件导入</el-button>
+            <el-upload ref="upload"
+                       class="upload-demo"
+                       action="#"
+                       :on-progress="handleChange"
+                       :file-list="fileList">
+              <el-button size="small"
+                         style="background: #0c87d6; color: #fff">文件导入</el-button>
             </el-upload>
           </el-col>
           <el-col :span="2">
-            <el-button
-              type="text"
-              style="color: #44a3df; background: none; border: 0"
-              size="small"
-              @click="orgDownload()"
-              >下载模板</el-button
-            >
+            <el-button type="text"
+                       style="color: #44a3df; background: none; border: 0"
+                       size="small"
+                       @click="orgDownload()">下载模板</el-button>
           </el-col>
           <div class="search">
-            <el-input
-              placeholder="请输入机构名称"
-              v-model="queryInfo.condition.orgName"
-              @keyup.enter.native="queryNameInput"
-            >
+            <el-input placeholder="请输入机构名称"
+                      v-model="queryInfo.condition.orgName"
+                      @keyup.enter.native="queryNameInput">
             </el-input>
-            <div
-              class="search_icon"
-              style="background: rgb(12, 135, 214) !important"
-              @click="queryNameInput"
-            >
-              <i class="el-icon-search" style="color: white"></i>
+            <div class="search_icon"
+                 style="background: rgb(12, 135, 214) !important"
+                 @click="queryNameInput">
+              <i class="el-icon-search"
+                 style="color: white"></i>
             </div>
           </div>
         </el-row>
 
         <!-- 项目管理列表 -->
-        <el-table
-          class="table"
-          :data="orgTableData"
-          style="margin-top: 1%; width: 100%"
-          border
-          stripe
-          fit
-          :header-cell-style="{ 'background-color': '#F4FAFF' }"
-        >
-          <el-table-column type="selection" width="40"> </el-table-column>
-          <el-table-column
-            align="center"
-            prop="orgCode"
-            width="105"
-            label="机构编码"
-            show-overflow-tooltip
-          >
+        <el-table class="table"
+                  :data="orgTableData"
+                  style="margin-top: 1%; width: 100%"
+                  border
+                  stripe
+                  fit
+                  :header-cell-style="{ 'background-color': '#F4FAFF' }">
+          <el-table-column type="selection"
+                           width="40"> </el-table-column>
+          <el-table-column align="center"
+                           prop="orgCode"
+                           width="105"
+                           label="机构编码"
+                           show-overflow-tooltip>
           </el-table-column>
-          <el-table-column
-            min-width="120px"
-            align="center"
-            prop="orgName"
-            label="机构名称"
-            show-overflow-tooltip
-          >
+          <el-table-column min-width="120px"
+                           align="center"
+                           prop="orgName"
+                           label="机构名称"
+                           show-overflow-tooltip>
           </el-table-column>
-          <el-table-column
-            align="center"
-            prop="leaderName"
-            label="被审计单位领导"
-            show-overflow-tooltip
-          >
+          <el-table-column align="center"
+                           prop="leaderName"
+                           label="被审计单位领导"
+                           show-overflow-tooltip>
           </el-table-column>
-          <el-table-column
-            align="center"
-            prop="userName"
-            label="被审计单位接口人"
-            show-overflow-tooltip
-          >
+          <el-table-column align="center"
+                           prop="userName"
+                           label="被审计单位接口人"
+                           show-overflow-tooltip>
           </el-table-column>
-          <el-table-column label="操作" width="180px">
+          <el-table-column label="操作"
+                           width="180px">
             <template slot-scope="scope">
-              <el-button
-                type="text"
-                style="color: #44a3df; background: none; border: 0"
-                size="small"
-                @click="auditOrgLook(scope.row)"
-              >
+              <el-button type="text"
+                         style="color: #44a3df; background: none; border: 0"
+                         size="small"
+                         @click="auditOrgLook(scope.row)">
                 查看
               </el-button>
             </template>
@@ -112,37 +95,38 @@
         </el-table>
 
         <!-- 分页 -->
-        <pagination
-          v-show="total > 0"
-          :total="total"
-          :page.sync="queryInfo.pageNo"
-          :limit.sync="queryInfo.pageSize"
-          @pagination="queryName"
-        />
+        <pagination v-show="total > 0"
+                    :total="total"
+                    :page.sync="queryInfo.pageNo"
+                    :limit.sync="queryInfo.pageSize"
+                    @pagination="queryName" />
         <!-- 分页end -->
       </el-col>
     </el-row>
 
     <!-- 查看弹框 -->
-    <el-dialog :visible.sync="look_auditOrg" width="30%">
+    <el-dialog :visible.sync="look_auditOrg"
+               width="30%">
       <div class="mainTitle">被审计机构</div>
       <div class="formStyle">
-        <el-form
-          label-width="110px"
-          ref="dictionaryRef"
-          :model="auditOrgForm"
-          disabled
-        >
-          <el-form-item prop="orgCode" label="ㅤ机ㅤ构ㅤ编ㅤ码:">
+        <el-form label-width="110px"
+                 ref="dictionaryRef"
+                 :model="auditOrgForm"
+                 disabled>
+          <el-form-item prop="orgCode"
+                        label="ㅤ机ㅤ构ㅤ编ㅤ码:">
             <el-input v-model="auditOrgForm.orgCode"> </el-input>
           </el-form-item>
-          <el-form-item prop="orgName" label="ㅤ机ㅤ构ㅤ名ㅤ称:">
+          <el-form-item prop="orgName"
+                        label="ㅤ机ㅤ构ㅤ名ㅤ称:">
             <el-input v-model="auditOrgForm.orgName"> </el-input>
           </el-form-item>
-          <el-form-item prop="leaderName" label="ㅤ被审计单位领导:">
+          <el-form-item prop="leaderName"
+                        label="ㅤ被审计单位领导:">
             <el-input v-model="auditOrgForm.leaderName"> </el-input>
           </el-form-item>
-          <el-form-item prop="userName" label="被审计单位接口人:">
+          <el-form-item prop="userName"
+                        label="被审计单位接口人:">
             <el-input v-model="auditOrgForm.userName"> </el-input>
           </el-form-item>
         </el-form>
@@ -161,7 +145,7 @@ import {
 import Pagination from "@WISDOMAUDIT/components/Pagination";
 export default {
   components: { Pagination },
-  data() {
+  data () {
     return {
       dqtoken: "",
       orgTableData: [], //被审计机构table
@@ -188,18 +172,18 @@ export default {
     };
   },
   watch: {
-    filterText(val) {
+    filterText (val) {
       this.$refs.tree.filter(val);
     },
   },
-  created() {
+  created () {
     this.dqtoken = sessionStorage.getItem("TOKEN");
     // 获取左侧树形List
     this.getauditOrgTree(this.queryTree);
   },
   methods: {
     //对树节点进行筛选时执行的方法
-    filterNode(value, data) {
+    filterNode (value, data) {
       console.log(value);
       console.log(data);
       if (!value) return true;
@@ -207,7 +191,7 @@ export default {
     },
 
     //被审计机构管理树形列表
-    getauditOrgTree(data) {
+    getauditOrgTree (data) {
       auditOrgTree(data).then((resp) => {
         this.data = resp.data;
         // 获取右侧列表数据
@@ -216,7 +200,7 @@ export default {
     },
 
     //点击树形查看事件
-    getCheckedNodes(data) {
+    getCheckedNodes (data) {
       if (data.auditOrgs.length > 0) {
         this.queryInfo.condition.parentOrgCode = data.orgCode;
         // 获取右侧列表数据
@@ -231,14 +215,14 @@ export default {
     },
 
     // 被审计机构列表查询
-    getauditOrgList(data) {
+    getauditOrgList (data) {
       auditOrgList(data).then((resp) => {
         this.orgTableData = resp.data.records;
         this.total = resp.data.total;
       });
     },
     //模糊查询被审计机构
-    queryNameInput() {
+    queryNameInput () {
       let query = {
         condition: {
           orgName: this.queryInfo.condition.orgName,
@@ -249,18 +233,18 @@ export default {
       };
       this.getauditOrgList(query);
     },
-    queryName() {
+    queryName () {
       this.queryInfo.condition.orgName = "";
       this.getauditOrgList(this.queryInfo);
     },
     //点击上传文件
-    handleChange(event, file, fileList) {
+    handleChange (event, file, fileList) {
       // console.log(file);
       // console.log(fileList);
       // this.$refs.upload.clearFiles();
 
       let formData = new FormData();
-    
+
       fileList.forEach((item) => {
         if (item.raw) {
           formData.append("orgFile", item.raw);
@@ -277,23 +261,24 @@ export default {
         },
       }).then((resp) => {
         console.log(resp);
-        if(resp.data.data == 'SUCCESS'){
+        if (resp.data.data == 'SUCCESS') {
           this.$message.success("文件导入成功！")
           this.getauditOrgList(this.queryInfo);
-        }else{
+        } else {
           this.$message.info("请检查文件格式以及导入数据是否重复！")
         }
       });
     },
 
     //下载模板
-    orgDownload() {
+    orgDownload () {
       axios({
         method: "get",
+        timeout: -1,
         url: "/wisdomaudit/auditOrg/downloadAuditOrgModel",
         headers: {
-          TOKEN: this.dqtoken,
-        },
+          TOKEN: this.dqtoken,
+        },
         responseType: "blob",
       })
         .then((res) => {
@@ -327,7 +312,7 @@ export default {
     },
 
     //查看按钮事件
-    auditOrgLook(row) {
+    auditOrgLook (row) {
       console.log(row);
       this.look_auditOrg = true;
       auditDetail(row.auditOrgUuid).then((resp) => {

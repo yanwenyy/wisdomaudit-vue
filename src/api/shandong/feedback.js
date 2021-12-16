@@ -43,7 +43,7 @@ export function operation_download (data) {
     method: 'post',
     responseType: 'blob',
     isLoading: false,
-
+    timeout: -1,
     data: qs.stringify(data),
   })
 }
