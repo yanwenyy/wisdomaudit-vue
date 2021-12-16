@@ -304,6 +304,11 @@
       addSave(){
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
+            if(this.temp.isAddIndex===true){
+              this.temp.indexProjectId='';
+            }else{
+              this.temp.indexProjectId=this.managementProjectUuid;
+            }
             setTimeout(indexManagement_addSave(this.temp).then(resp => {
               if (resp.code == 0) {
                 this.$message({

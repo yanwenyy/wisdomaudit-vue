@@ -95,7 +95,7 @@
                              size="small">
                     操作记录
                   </el-button>
-                  <el-button @click="exportList(scope.row)"
+                  <el-button  v-if="scope.row.status == 3" @click="exportList(scope.row)"
                              type="text"
                              style="color:#0c87d6;
                                margin-left:10px;
