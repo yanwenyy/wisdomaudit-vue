@@ -155,7 +155,6 @@
         </el-form-item>
         <el-form-item label="指标说明:">
           <el-input rows="6"
-                    :disabled="ifLook"
                     type="textarea"
                     v-model="temp.indexDescription"></el-input>
         </el-form-item>
@@ -412,11 +411,11 @@
       //分页点击
       handleSizeChange(val) {
         this.searchForm.pageSize = val;
-        this.getData();
+        this.init(this.managementProjectUuid);
       },
       handleCurrentChange(val) {
         this.searchForm.pageNo = val;
-        this.getData();
+        this.init(this.managementProjectUuid);
       },
       //获取下拉列表
       getSelList(type,list){
