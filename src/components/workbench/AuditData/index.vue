@@ -224,7 +224,7 @@
                              label="资料名称">
             </el-table-column>
 
-            <el-table-column prop="addPeople"
+            <el-table-column prop="feedbackPeople"
                              show-overflow-tooltip
                              label="反馈人">
             </el-table-column>

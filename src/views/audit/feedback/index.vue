@@ -85,7 +85,7 @@
               查看
             </el-button>
             <el-button @click="feedback_tag(scope.row)"
-                       v-if="scope.row.status ==1"
+                       v-if="scope.row.status ==1 || scope.row.status ==3"
                        type="text"
                        plain
                        style="color:rgb(19, 113, 204);  font-size: 14px !important;"
