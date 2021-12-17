@@ -208,10 +208,10 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button  v-if="!ifLook" @click="close">取 消</el-button>
-      <el-button class="subBtn" v-if="!ifLook" type="primary" @click="save">保存</el-button>
-      <el-button class="subBtn" v-if="!ifLook&&(formState.correctStatus==1||formState.correctStatus==5)" type="primary" @click="sub">提交</el-button>
-      <el-button class="subBtn" v-if="type=='zgcs_examine'&&(formState.correctStatus==2||formState.correctStatus==3)" type="primary" @click="examine('1')">通过</el-button>
-      <el-button class="subBtn" v-if="type=='zgcs_examine'&&(formState.correctStatus==2||formState.correctStatus==3)" type="primary" @click="examine('2')">驳回</el-button>
+      <el-button class="subBtn" :disabled="isDisable" v-if="!ifLook" type="primary" @click="save">保存</el-button>
+      <el-button class="subBtn" :disabled="isDisable" v-if="!ifLook&&(formState.correctStatus==1||formState.correctStatus==5)" type="primary" @click="sub">提交</el-button>
+      <el-button class="subBtn" :disabled="isDisable" v-if="type=='zgcs_examine'&&(formState.correctStatus==2||formState.correctStatus==3)" type="primary" @click="examine('1')">通过</el-button>
+      <el-button class="subBtn" :disabled="isDisable" v-if="type=='zgcs_examine'&&(formState.correctStatus==2||formState.correctStatus==3)" type="primary" @click="examine('2')">驳回</el-button>
     </div>
   </el-dialog>
 </template>
@@ -222,7 +222,7 @@
     export default {
        data(){
          return{
-           canClick:false,
+           isDisable:false,
            headers:'',
            people:'',
            key:0,
@@ -329,7 +329,10 @@
         },
         //信息保存
         setDetail(){
-
+          this.isDisable = true;
+          setTimeout(() => {
+            this.isDisable = false;
+          }, 3000);
           var uploadList1=this.attachmentList1.concat(this.fileList1,this.fileList1_del);
           var uploadList2=this.attachmentList2.concat(this.fileList2,this.fileList2_del);
           var uploadList3=this.attachmentList3.concat(this.fileList3,this.fileList3_del);
@@ -342,10 +345,7 @@
           uploadList3.forEach((item)=>{
             item.status=null;
           });
-          this.canClick = true;
-          setTimeout(() => {
-            this.canClick = false;
-          }, 2000);
+
           var params={
             attachmentList1:uploadList1,
             attachmentList2:uploadList2,

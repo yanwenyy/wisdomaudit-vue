@@ -161,6 +161,7 @@
            class="dialog-footer">
         <el-button @click="close">取 消</el-button>
         <el-button v-if="!ifLook"
+                   :disabled="isDisable"
                    class="subBtn"
                    type="primary"
                    @click="sub">确 定</el-button>
@@ -178,7 +179,7 @@ export default {
   data () {
     return {
       headers: '',
-      canClick: false,
+      isDisable: false,
       ifLook: false,
       key: 0,
       title: "",
@@ -477,6 +478,10 @@ export default {
     },
     //保存数据
     sub () {
+      this.isDisable = true;
+      setTimeout(() => {
+        this.isDisable = false;
+      }, 3000)
       // debugger;
       var attachmentUuidList = [];
       this.apkFiles.forEach((item) => {
@@ -491,10 +496,7 @@ export default {
 
       this.$refs['addForm'].validate((valid) => {
         if (valid) {
-          this.canClick = true;
-          setTimeout(() => {
-            this.canClick = false;
-          }, 2000)
+
           if (this.formState.attachmentUuidList.length == 0) {
             this.$message.error("请上传附件");
             return false;
@@ -558,7 +560,7 @@ export default {
       }
       this.fileList = [];
       this.apkFiles = [];
-      this.canClick = false;
+      this.isDisable = false;
     },
     //点击资料名称显示附件列表
     getFileList (id) {

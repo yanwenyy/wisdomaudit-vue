@@ -186,7 +186,7 @@
       <div slot="footer">
         <el-button @click="dialogFormVisible = false,clearTemp()">取消</el-button>
         <el-button
-          :disabled="canClick"
+          :disabled="isDisable"
           type="primary"
           @click="addSave"
           class="subBtn"
@@ -208,7 +208,7 @@
     name: "search-list",
     data() {
       return {
-        canClick:false,
+        isDisable:false,
         selListShow:[],
         managementProjectUuid:'',
         visible: false,
@@ -304,6 +304,10 @@
       },
       //指标新增确定按钮点击
       addSave(){
+        this.isDisable = true;
+        setTimeout(() => {
+          this.isDisable = false;
+        }, 3000)
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             if(this.temp.isAddIndex===true){
@@ -311,10 +315,7 @@
             }else{
               this.temp.indexProjectId=this.managementProjectUuid;
             }
-            this.canClick = true;
-            setTimeout(() => {
-              this.canClick = false;
-            }, 2000)
+
             indexManagement_addSave(this.temp).then(resp => {
               if (resp.code == 0) {
                 this.$message({
