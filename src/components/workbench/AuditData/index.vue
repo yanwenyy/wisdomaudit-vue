@@ -143,8 +143,8 @@
                     </el-button>
 
                   </div>
-                  <!-- 审批 删除 -->
-                  <div v-if=" scope.row.status == 1">
+                  <!-- 审批 -->
+                  <div v-if=" scope.row.status == 3|| scope.row.status == 4">
                     <el-button @click="operation(scope.row)"
                                v-if="scope.row.doingCount>=1"
                                type="text"
@@ -648,6 +648,53 @@
               <el-input :disabled="disabled"></el-input>
             </el-form-item>
           </div>
+
+          <div class="son"
+               v-if="user_data">
+            <el-form-item label="添加人："
+                          style="padding:0 0 0 0"
+                          label-width="130px"
+                          prop="addPeople">
+              <el-input v-model="add_data.addPeople"
+                        :disabled="disabled"
+                        class="addPeople"></el-input>
+              <!-- <div class="addPeople">{{add_data.addPeople}}</div> -->
+            </el-form-item>
+
+            <el-form-item label="添加日期："
+                          style="padding:0 0 0 0"
+                          label-width="130px"
+                          prop="addTime">
+              <div class="block">
+                <el-date-picker v-model="add_data.addTime"
+                                :disabled="disabled"
+                                type="date">
+                </el-date-picker>
+              </div>
+            </el-form-item>
+          </div>
+          <div class="son"
+               v-else>
+            <el-form-item label="添加人："
+                          style="padding:0 0 0 0"
+                          label-width="130px"
+                          prop="addPeople">
+              <el-input class="addPeople"></el-input>
+              <!-- <div class="addPeople">{{add_data.addPeople}}</div> -->
+            </el-form-item>
+
+            <el-form-item label="添加日期："
+                          style="padding:0 0 0 0"
+                          label-width="130px"
+                          prop="addTime">
+              <div class="block">
+                <el-date-picker type="date">
+                </el-date-picker>
+              </div>
+            </el-form-item>
+
+          </div>
+
           <div class="son">
 
             <el-form-item label="部门："
@@ -695,51 +742,6 @@
                 </el-option>
               </el-select>
             </el-form-item> -->
-          </div>
-          <div class="son"
-               v-if="user_data">
-            <el-form-item label="添加人："
-                          style="padding:0 0 0 0"
-                          label-width="130px"
-                          prop="addPeople">
-              <el-input v-model="add_data.addPeople"
-                        :disabled="disabled"
-                        class="addPeople"></el-input>
-              <!-- <div class="addPeople">{{add_data.addPeople}}</div> -->
-            </el-form-item>
-
-            <el-form-item label="添加日期："
-                          style="padding:0 0 0 0"
-                          label-width="130px"
-                          prop="addTime">
-              <div class="block">
-                <el-date-picker v-model="add_data.addTime"
-                                :disabled="disabled"
-                                type="date">
-                </el-date-picker>
-              </div>
-            </el-form-item>
-          </div>
-          <div class="son"
-               v-else>
-            <el-form-item label="添加人："
-                          style="padding:0 0 0 0"
-                          label-width="130px"
-                          prop="addPeople">
-              <el-input class="addPeople"></el-input>
-              <!-- <div class="addPeople">{{add_data.addPeople}}</div> -->
-            </el-form-item>
-
-            <el-form-item label="添加日期："
-                          style="padding:0 0 0 0"
-                          label-width="130px"
-                          prop="addTime">
-              <div class="block">
-                <el-date-picker type="date">
-                </el-date-picker>
-              </div>
-            </el-form-item>
-
           </div>
 
           <div class="son cd">
@@ -1500,7 +1502,7 @@ export default {
           navigator.msSaveBlob(blob, fileName)
         }
       }).catch((err) => {
-        console.log(err);
+
       })
     },
     // 获取标题
@@ -1511,7 +1513,7 @@ export default {
       operation_addTitle(params_title).then(resp => {
         this.add_form.title = resp.data.title//标题
         this.is_add = resp.data.isDelete//是否新增
-        console.log(resp.data.isDelete);
+
       })
     },
     // 获取责任人
@@ -1530,7 +1532,7 @@ export default {
     // 新增资料任务时退出
     get_out () {
       operation_addExit().then(resp => {
-        console.log(resp);
+
       })
     },
     // 资料筛选
@@ -1582,7 +1584,7 @@ export default {
         pageSize: this.operation_query.pageSize,
       }
       enclosure_sysLogById(params).then(resp => {
-        console.log(resp.data);
+
         this.history_log = resp.data
         this.loading_history = false;
       })
@@ -1623,7 +1625,7 @@ export default {
     // 上传成功回调
     // handleChangePic_verify (resp, file) {
     //   this.update_path = resp.data.filePath
-    //   console.log(this.update_path);
+    //   
     //   if (resp.code == 0) {
     //     this.add_data.Url = URL.createObjectURL(file.raw);
 
@@ -1738,7 +1740,7 @@ export default {
 
     // 新增  初始化模版 查看附件
     open_file_details (list) {
-      // console.log(list);
+      // 
       this.moban_list = 0;
       this.enclosure_moban_list = list;//模版资料
       // if (this.enclosure_moban_list.length == 0) {
@@ -1752,7 +1754,7 @@ export default {
     // 操作记录查看附件
     open_enclosure_details_file (data) {
       this.details_list = data.attachmentList;
-      console.log(this.details_list);
+
     },
 
 
@@ -1802,7 +1804,7 @@ export default {
           navigator.msSaveBlob(blob, fileName)
         }
       }).catch((err) => {
-        console.log(err);
+
       })
     },
 
@@ -1930,7 +1932,7 @@ export default {
         // 新增 直接下发
         data_add_savePush(params_push).then(resp => {
           this.success_btn_push = 0;
-          console.log(resp);
+
           if (resp.code == 0) {
             this.$message({
               message: "下发成功",
@@ -1970,7 +1972,7 @@ export default {
 
         // 编辑下发
         data_edit_savePush(params_push).then(resp => {
-          console.log(resp);
+
           if (resp.code == 0) {
             this.$message({
               message: "下发成功",
@@ -2006,7 +2008,7 @@ export default {
     // 新增确认
     query_save (params) {
       data_save(params).then(resp => {
-        console.log(resp);
+
         if (resp.code == 0) {
           this.$message({
             message: "新增成功",
@@ -2039,7 +2041,7 @@ export default {
     // 编辑确认
     query_update (params2) {
       data_update(params2).then(resp => {
-        // console.log(resp);
+        // 
         if (resp.code == 0) {
           this.$message({
             message: "编辑成功",
@@ -2095,18 +2097,10 @@ export default {
     },
 
     change_people (params) {
-      //  if (this.edit_title = '详细信息') {
 
-      //   alert(1)
-      // } else {
-      //   let params = {
-      //     dataCategory: this.add_data.dataCategory,
-      //   };
-      //   alert(2)
-      // }
       //根据类型查看新增的 资料信息
       select_user_data(params).then(resp => {
-        console.log(resp.data);
+
         this.user_data = resp.data
         this.add_data.dataNumber = this.user_data.dataNumber;//编号
         this.add_data.secondLevelDataNumber = this.user_data.secondLevelDataNumber;//二级编号
@@ -2123,13 +2117,13 @@ export default {
       // }
       loadaudittorg(data).then(resp => {
         this.sensitiveDepartment = resp.data;
-        console.log(this.sensitiveDepartment);
+
       })
     },
     // 部门
     Department_change (val) {
       this.add_data.department = val
-      console.log(this.add_data.department);
+
 
 
     },
@@ -2190,7 +2184,7 @@ export default {
               // 上传成功
               if (resp.data.code == 0) {
                 this.success_btn = 0;//显示加载按钮  0成功  1 loaging
-                // console.log(resp.data.data);
+                // 
                 this.Upload_file = resp.data.data;//上传成功大的文件
 
                 let params = {
@@ -2247,7 +2241,7 @@ export default {
     // 提交
     save_data_up (params) {
       saveTemp(params).then(resp => {
-        console.log(resp.data);
+
         if (resp.code == 0) {
           this.$message({
             message: '添加资料成功',
@@ -2290,7 +2284,7 @@ export default {
         taskId: this.push_id,
       }
       data_push_ing(params).then(resp => {
-        // console.log(resp.data);
+        // 
         if (resp.code == 0) {
           this.$message({
             message: "下发成功",
@@ -2327,14 +2321,14 @@ export default {
       setTimeout(() => {
         this.isDisable = false
       }, 2000)
-      // console.log(data);
+      // 
       this.$confirm(`将永久删除资料和关联的附件?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
-          console.log(data);
+
           let params = {
             ids: data.addDataTaskUuid,
           };
@@ -2345,7 +2339,7 @@ export default {
     // 删除接口
     remove (params) {
       data_delete(params).then(resp => {
-        console.log(resp.data);
+
         if (resp.code == 0) {
           this.$message({
             message: "删除成功",
@@ -2379,7 +2373,7 @@ export default {
         this.isDisable = false
       }, 2000)
       this.dialogVisibl_operation = true;
-      // console.log(data);
+      // 
       this.addDataTaskUuid = data.addDataTaskUuid;
       let params = {
         pageNo: this.operation_query.pageNo,
@@ -2446,7 +2440,7 @@ export default {
       setTimeout(() => {
         this.isDisable = false
       }, 2000)
-      // console.log(index);
+      // 
       // this.record_status = true;
       this.record_query.id = data.auditPreviousDemandDataUuid;
       this.dialogVisible2 = true//显示编辑
@@ -2504,31 +2498,41 @@ export default {
     },
     // 通过
     adopt () {
-
       this.isDisable = true
       setTimeout(() => {
         this.isDisable = false
       }, 2000)
+
       if (this.multipleSelection_operation.length == 0) {
         this.$message.info("请选择一条数据进行操作");
         return
       }
-      this.success_btn2 = 1;//显示加载按钮  0成功  1 loaging
 
-      let array1 = [];//数组1
+      this.success_btn2 = 1;//显示加载按钮  0成功  1 loaging
+      let array1 = [], cansub = true;//数组1
       this.multipleSelection_operation.forEach((item) => {
         array1.push(item);
+        if (item.status === 0) {
+          cansub = false;
+          return false;
+        }
       });
       let params2 = {
         status: 3,
         note: this.audit_query.posy_remarks,
         auditPreviousDemandData: array1,
       }
-      this.audit(3, params2);//通过
+      if (cansub) {
+        this.audit(3, params2);//通过
+
+      } else {
+        this.$message.info("请先进行反馈后提交");
+        this.success_btn1 = 0
+        this.success_btn2 = 0
+      }
     },
     // 驳回
     reject () {
-
       this.isDisable = true
       setTimeout(() => {
         this.isDisable = false
@@ -2540,9 +2544,13 @@ export default {
       }
       this.success_btn1 = 1;//显示加载按钮  0成功  1 loaging
       // this.dialogVisible2 = false
-      let array1 = [];//数组1
+      let array1 = [], cansub = true;//数组1
       this.multipleSelection_operation.forEach((item) => {
         array1.push(item);
+        if (item.status === 0) {
+          cansub = false;
+          return false;
+        }
       });
 
       let params2 = {
@@ -2550,7 +2558,14 @@ export default {
         note: this.audit_query.posy_remarks,
         auditPreviousDemandData: array1,
       }
-      this.audit(2, params2)//2:驳回  3:通过
+
+      if (cansub) {
+        this.audit(2, params2)//2:驳回  3:通过
+      } else {
+        this.$message.info("请先进行反馈后提交");
+        this.success_btn1 = 0
+        this.success_btn2 = 0
+      }
     },
     // 关闭审核
     editDialogClosed () {
@@ -2567,7 +2582,7 @@ export default {
       if (index == 2) {
         operation_audit(params).then(resp => {
           this.success_btn1 = 0
-          console.log(resp.data);
+
           if (resp.code == 0) {
             if (resp.data.result == 1) {
               this.$message({
@@ -2595,6 +2610,8 @@ export default {
               }
               this.list_data_start(params)
               this.dialogVisibl_operation = false;//关闭
+              this.success_btn1 = 0
+              this.success_btn2 = 0
             }
             if (resp.data.result == 3) {
               this.$message({
@@ -2603,6 +2620,8 @@ export default {
               });
             }
           } else {
+            this.success_btn1 = 0
+            this.success_btn2 = 0
             this.$message({
               message: resp.data.msg,
               type: "error",
@@ -2613,7 +2632,7 @@ export default {
       // 通过
       if (index == 3) {
         operation_audit(params).then(resp => {
-          console.log(resp.data);
+
           this.success_btn2 = 0
           if (resp.code == 0) {
             if (resp.data.result == 1) {
@@ -2633,7 +2652,8 @@ export default {
               };
               this.operation_list(params2); // 操作 资料列表
               this.audit_query.posy_remarks = ''//清空备注
-
+              this.success_btn1 = 0
+              this.success_btn2 = 0
               let params = {
                 pageNo: this.params.pageNo,
                 pageSize: this.params.pageSize,
@@ -2650,8 +2670,12 @@ export default {
                 message: "已通过的数据不可再次通过！",
                 type: "success",
               });
+              this.success_btn1 = 0
+              this.success_btn2 = 0
             }
           } else {
+            this.success_btn1 = 0
+            this.success_btn2 = 0
             this.$message({
               message: resp.data.msg,
               type: "error",
