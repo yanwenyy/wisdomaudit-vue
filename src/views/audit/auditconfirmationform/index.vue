@@ -260,9 +260,9 @@
               class="dialog-footer">
           <el-button @click="handleClose">取 消</el-button>
           <el-button v-if="!ifLook"
-                     :disabled="canClick"
                      type="primary"
-                     @click="saveForm"
+                     :disabled="isDisable"
+                     @click="saveForm()"
                      class="subBtn">确 定</el-button>
         </span>
       </el-dialog>
@@ -335,7 +335,7 @@
               class="dialog-footer">
           <el-button @click="handleClose">取 消</el-button>
           <el-button v-if="!ifLook"
-                     :disabled="canClick"
+                     :disabled="isDisable"
                      type="primary"
                      @click="saveForm"
                      class="subBtn">确 定</el-button>
@@ -365,7 +365,7 @@ export default {
       fileList1: [],//附件上传回显列表
       fileList1_del: [],
       headers: {},
-      canClick: false,
+      isDisable: false,
       ifLook: false,
       confirmationDialogTitle: '新增确认单',
       confirmaryData: [],
@@ -714,6 +714,10 @@ export default {
     },
     //保存审计确认单
     saveForm () {
+      this.isDisable = true;
+      setTimeout(() => {
+        this.isDisable = false;
+      }, 3000);
       this.$refs['addForm'].validate((valid) => {
         if (valid) {
           var uploadList1 = this.attachmentList1.concat(this.fileList1, this.fileList1_del);
@@ -721,10 +725,7 @@ export default {
             item.status = null;
           });
           this.formDetail.attachmentList = uploadList1;
-          this.canClick = true;
-          setTimeout(() => {
-            this.canClick = false;
-          }, 2000)
+
           if (this.confirmationDialogTitle == '新增确认单') {
             this.formDetail.managementProjectName = this.managementProjectName;
             this.formDetail.auditOrgName = this.auditOrgName;
