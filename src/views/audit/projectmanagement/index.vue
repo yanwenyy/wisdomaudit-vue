@@ -423,7 +423,7 @@
                              width="80">
               <template slot-scope="scope">
                 <el-button type="text"
-                           style="color: #db454b; background: none; border: 0"
+                           style="color: #db454b; background: none; border: 0;margin-bottom: 15px"
                            size="small"
                            @click.native.prevent="
                     deleteRow(scope.$index, addProjectManagement.auditList)
@@ -804,7 +804,7 @@
                 <template slot-scope="scope">
                   <el-button v-if="scope.row.status!='1'"
                              type="text"
-                             style="color: #db454b; background: none; border: 0"
+                             style="color: #db454b; background: none; border: 0;margin-bottom: 15px"
                              size="small"
                              @click.native.prevent="
                       deleteProjectrow(
@@ -3279,8 +3279,8 @@
 
   .addForm /deep/ .el-form-item__error {
     position: absolute;
-    top: 22% !important;
-    left: 40% !important;
+    bottom: 5% !important;
+    left: 5% !important;
   }
 
   .addForm >>> .el-form-item__label {
@@ -3293,8 +3293,8 @@
 
   .addzhuanForm /deep/ .el-form-item__error {
     position: absolute;
-    top: 22% !important;
-    left: 40% !important;
+    bottom: 5% !important;
+    left: 5% !important;
   }
 
   /* .addzhuanForm >>> .el-form-item__content{
@@ -3302,8 +3302,8 @@
   } */
   .projectTable /deep/ .el-form-item__error {
     position: absolute;
-    top: 20%;
-    left: 0%;
+    bottom:3%!important;
+    left: 3%!important;
   }
 
   .page {
@@ -3409,6 +3409,7 @@
 
   >>> .table-formItem .el-form-item__content {
     margin-left: 0 !important;
+    margin-bottom: 15px;
   }
 
   >>> .el-form-item__label {
