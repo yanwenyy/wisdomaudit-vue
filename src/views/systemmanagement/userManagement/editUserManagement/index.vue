@@ -119,8 +119,6 @@
             <el-cascader
               ref="user"
               :options="areaList"
-              v-model="form.areaCode"
-
               :props="props"
               @change="getUserId"
             ></el-cascader>
@@ -159,9 +157,9 @@ import { obtainUser, searchRole, getUserTree ,modifyUser} from "../../../../api/
 // 混入引入
 
 // 接口引入
-
 export default {
   name: "newUserManagement",
+
   data() {
     // 用户名校验
     const validChineseName = (rule, value, callback) => {
@@ -254,12 +252,7 @@ export default {
       },
     };
   },
-  created() {
-    // this.getRoleListInfo()
-    this.getOrgTree();
-    this.getRoleList();
-    this.getUserinfo();
-  },
+
   methods: {
     async getUserinfo() {
       let userId = this.$route.query.id;
@@ -428,8 +421,15 @@ console.log(res,'修改');
        this.$router.go(-1)
     },
   },
+
+  created() {
+    // this.getRoleListInfo()
+    this.getOrgTree();
+    this.getRoleList();
+    this.getUserinfo();
+  }
 };
-</script>
+</script> 
 
 <style scoped lang='scss'>
 .edit-user-management-g-wrapper .g-form {

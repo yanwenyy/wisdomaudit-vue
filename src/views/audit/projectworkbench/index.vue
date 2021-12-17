@@ -7,7 +7,7 @@
     <ul class="projectInit"
         :class="projectNum.length > 0 ?'mabtom':''"
         v-show="projectNum.length > 0">
-      <li @click="projectClick(index)"
+      <li @click="projectClick(index,value)"
           v-for="(value, index) in projectNum"
           :key="index">
         <div class="peojectMessage">
@@ -49,7 +49,7 @@
                :direction="direction"
                :size="size">
       <ul class="projectAll">
-        <li @click="projectClick(index)"
+        <li @click="projectClick(index,value)"
             v-for="(value, index) in projectAll"
             :key="index">
           <p class="companyName"
@@ -1295,17 +1295,24 @@ export default {
     },
 
     //调用组员维护组件的第一步第二步弹框事件
-    projectClick (index) {
+    projectClick (index, data) {
+      // console.log(index);
+      // console.log(data);
+      // return false
       if (index > 4) {
-        this.managementProjectUuid =
-          this.projectAll[index].managementProjectUuid;
-        this.notInitType = this.projectAll[index].projectType;
-        this.name = this.projectAll[index].projectName;
+        // this.managementProjectUuid = this.projectAll[index].managementProjectUuid;
+        this.managementProjectUuid = data.managementProjectUuid
+        // this.notInitType = this.projectAll[index].projectType;
+        this.notInitType = data.projectType;
+        // this.name = this.projectAll[index].projectName;
+        this.name = data.projectName;
       } else {
-        this.managementProjectUuid =
-          this.projectNum[index].managementProjectUuid;
-        this.notInitType = this.projectNum[index].projectType;
-        this.name = this.projectNum[index].projectName;
+        // this.managementProjectUuid = this.projectNum[index].managementProjectUuid;
+        this.managementProjectUuid = data.managementProjectUuid;
+        // this.notInitType = this.projectNum[index].projectType;
+        this.notInitType = data.projectType;
+        // this.name = this.projectNum[index].projectName;
+        this.name = data.projectName;
       }
       //
       this.addDialogVisible = true;

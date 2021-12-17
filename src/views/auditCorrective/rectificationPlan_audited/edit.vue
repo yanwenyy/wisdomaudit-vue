@@ -3,13 +3,17 @@
   <div>
     <div class="header_dlag">
       <div class="search">
-        <el-button plain
-                   style="border:none"
-                   @click="go_back()">
-          <i class="el-icon-back
-"
-             style="font-size: 20px;"></i>
-        </el-button>
+        <el-button class="back-group"
+                   style="float: left"
+                   @click="go_back()"><i class="el-icon-arrow-left backBtn"></i>返回</el-button>
+
+        <!-- <el-button plain
+                   @click="go_back()"
+                   style="border:none">
+          <i class="el-icon-arrow-left"
+             style="font-size: 20px;margin-top:3px"></i>
+          返回
+        </el-button> -->
         <el-input placeholder="请输入项目名称"
                   v-model="list_query.problem"> </el-input>
         <div class="search_icon"
@@ -433,6 +437,10 @@ export default {
 </script>
 
 <style scoped>
+.back-group >>> span {
+  display: flex;
+  align-items: center;
+}
 >>> .foot .el-button {
   font-weight: normal;
 }

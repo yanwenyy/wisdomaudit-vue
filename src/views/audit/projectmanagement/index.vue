@@ -2615,7 +2615,7 @@
               // this.project_list.forEach((r, i) => {
               //   ids.push(r.managementProjectUuid);
               // });
-              this.projectid = ids[row.managementProjectUuid];
+              this.projectid = row.managementProjectUuid;
               this.setting_follow_prople(); //整改人 数据
             } else {
               this.$message({
@@ -2962,7 +2962,7 @@
       width: 65%;
     }
     .el-form-item {
-      /*margin-bottom: -15px !important;*/
+      margin-bottom: 22px !important;
     }
     .addIcon {
       background-color: #fff;
@@ -2987,7 +2987,7 @@
       width: 65%;
     }
     .el-form-item {
-      /* margin-bottom: -15px !important;*/
+       margin-bottom: 22px !important;
     }
     .addIcon {
       background-color: #fff;
@@ -3403,13 +3403,12 @@
     margin: 0 !important;
   }
 
-  .table-formItem {
+  .projectTable .table-formItem {
     margin-bottom: 0 !important;
   }
-
   >>> .table-formItem .el-form-item__content {
     margin-left: 0 !important;
-    margin-bottom: 15px;
+    margin-bottom: 15px!important;
   }
 
   >>> .el-form-item__label {
