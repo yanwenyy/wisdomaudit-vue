@@ -2962,7 +2962,7 @@
       width: 65%;
     }
     .el-form-item {
-      /*margin-bottom: -15px !important;*/
+      margin-bottom: 22px !important;
     }
     .addIcon {
       background-color: #fff;
@@ -2987,7 +2987,7 @@
       width: 65%;
     }
     .el-form-item {
-      /* margin-bottom: -15px !important;*/
+       margin-bottom: 22px !important;
     }
     .addIcon {
       background-color: #fff;
