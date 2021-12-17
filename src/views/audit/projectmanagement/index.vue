@@ -2615,7 +2615,7 @@
               // this.project_list.forEach((r, i) => {
               //   ids.push(r.managementProjectUuid);
               // });
-              this.projectid = ids[row.managementProjectUuid];
+              this.projectid = row.managementProjectUuid;
               this.setting_follow_prople(); //整改人 数据
             } else {
               this.$message({
