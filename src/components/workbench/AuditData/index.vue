@@ -224,7 +224,7 @@
                              label="资料名称">
             </el-table-column>
 
-            <el-table-column prop="addPeople"
+            <el-table-column prop="feedbackPeople"
                              show-overflow-tooltip
                              label="反馈人">
             </el-table-column>
@@ -301,7 +301,7 @@
 
         <!-- 分页 -->
         <div class="page"
-             v-show="this.tableData2.total>0">>
+             v-show="this.tableData2.total>0">
           <el-pagination @size-change="handleSizeChange_zj"
                          @current-change="handleCurrentChange_zj"
                          :page-size="this.tableData2.size"
@@ -1169,6 +1169,10 @@
           <el-table-column prop="opTime"
                            show-overflow-tooltip
                            label="操作时间">
+            <template slot-scope="scope">
+              {{scope.row.opTime |filtedate }}
+            </template>
+
           </el-table-column>
           <el-table-column prop="opInfo"
                            show-overflow-tooltip
@@ -2509,27 +2513,54 @@ export default {
       }
 
       this.success_btn2 = 1;//显示加载按钮  0成功  1 loaging
-      let array1 = [], cansub = true;//数组1
+      let array1 = [], cansub = true, is_ok = true, is_succes = true;//数组1
       this.multipleSelection_operation.forEach((item) => {
         array1.push(item);
+        // 待提交
         if (item.status === 0) {
           cansub = false;
           return false;
         }
+        // 未通过
+        if (item.status === 2) {
+          is_ok = false;
+          return false;
+        }
+
+        // 审核通过
+        if (item.status === 3) {
+          is_succes = false;
+          return false;
+        }
+
       });
       let params2 = {
         status: 3,
         note: this.audit_query.posy_remarks,
         auditPreviousDemandData: array1,
       }
-      if (cansub) {
-        this.audit(3, params2);//通过
-
-      } else {
-        this.$message.info("请先进行反馈后提交");
+      if (cansub == false) {
+        this.$message.info("待提交的不可以进行通过！");
         this.success_btn1 = 0
         this.success_btn2 = 0
+        return false
       }
+      if (is_ok == false) {
+        this.$message.info("已拒绝的不可以再次通过！");
+        this.success_btn1 = 0
+        this.success_btn2 = 0
+        return false
+      }
+
+      if (is_succes == false) {
+        this.$message.info("审核通过的不可以通过！");
+        this.success_btn1 = 0
+        this.success_btn2 = 0
+        return false
+
+      }
+      this.audit(3, params2);//通过
+
     },
     // 驳回
     reject () {
@@ -2544,11 +2575,22 @@ export default {
       }
       this.success_btn1 = 1;//显示加载按钮  0成功  1 loaging
       // this.dialogVisible2 = false
-      let array1 = [], cansub = true;//数组1
+      let array1 = [], cansub = true, is_ok = true, is_succes = true;//数组1
       this.multipleSelection_operation.forEach((item) => {
         array1.push(item);
+        // 待提交
         if (item.status === 0) {
           cansub = false;
+          return false;
+        }
+        // 未通过
+        if (item.status === 2) {
+          is_ok = false;
+          return false;
+        }
+        // 审核通过
+        if (item.status === 3) {
+          is_succes = false;
           return false;
         }
       });
@@ -2559,13 +2601,27 @@ export default {
         auditPreviousDemandData: array1,
       }
 
-      if (cansub) {
-        this.audit(2, params2)//2:驳回  3:通过
-      } else {
-        this.$message.info("请先进行反馈后提交");
+      if (cansub == false) {
+        this.$message.info("待提交的不可以进行驳回");
         this.success_btn1 = 0
         this.success_btn2 = 0
       }
+
+      if (is_ok == false) {
+        this.$message.info("已拒绝的不可以驳回！");
+        this.success_btn1 = 0
+        this.success_btn2 = 0
+        return false
+      }
+
+      if (is_succes == false) {
+        this.$message.info("审核通过的不可以驳回！");
+        this.success_btn1 = 0
+        this.success_btn2 = 0
+        return false
+      }
+      this.audit(2, params2);//驳回
+
     },
     // 关闭审核
     editDialogClosed () {
@@ -2582,9 +2638,10 @@ export default {
       if (index == 2) {
         operation_audit(params).then(resp => {
           this.success_btn1 = 0
+          this.success_btn2 = 0
 
           if (resp.code == 0) {
-            if (resp.data.result == 1) {
+            if (resp.data.result === 1) {
               this.$message({
                 message: "驳回成功",
                 type: "success",
@@ -2600,7 +2657,7 @@ export default {
               };
               this.audit_query.posy_remarks = ''//清空备注
               this.operation_list(params2); // 操作 资料列表
-              let params = {
+              let params3 = {
                 pageNo: this.params.pageNo,
                 pageSize: this.params.pageSize,
                 condition: {
@@ -2608,20 +2665,11 @@ export default {
                   title: this.search_title,
                 }
               }
-              this.list_data_start(params)
+              this.list_data_start(params3)
               this.dialogVisibl_operation = false;//关闭
-              this.success_btn1 = 0
-              this.success_btn2 = 0
-            }
-            if (resp.data.result == 3) {
-              this.$message({
-                message: "已审核通过的数据不可再次驳回！",
-                type: "success",
-              });
             }
           } else {
-            this.success_btn1 = 0
-            this.success_btn2 = 0
+
             this.$message({
               message: resp.data.msg,
               type: "error",
@@ -2632,10 +2680,10 @@ export default {
       // 通过
       if (index == 3) {
         operation_audit(params).then(resp => {
-
+          this.success_btn1 = 0
           this.success_btn2 = 0
           if (resp.code == 0) {
-            if (resp.data.result == 1) {
+            if (resp.data.result === 1) {
               this.$message({
                 message: "通过成功",
                 type: "success",
@@ -2652,9 +2700,8 @@ export default {
               };
               this.operation_list(params2); // 操作 资料列表
               this.audit_query.posy_remarks = ''//清空备注
-              this.success_btn1 = 0
-              this.success_btn2 = 0
-              let params = {
+
+              let params3 = {
                 pageNo: this.params.pageNo,
                 pageSize: this.params.pageSize,
                 condition: {
@@ -2662,20 +2709,10 @@ export default {
                   title: this.search_title,
                 }
               }
-              this.list_data_start(params)
+              this.list_data_start(params3)
               this.dialogVisibl_operation = false;//关闭
             }
-            if (resp.data.result == 3) {
-              this.$message({
-                message: "已通过的数据不可再次通过！",
-                type: "success",
-              });
-              this.success_btn1 = 0
-              this.success_btn2 = 0
-            }
           } else {
-            this.success_btn1 = 0
-            this.success_btn2 = 0
             this.$message({
               message: resp.data.msg,
               type: "error",
