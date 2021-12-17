@@ -5,15 +5,15 @@
         <div class="projectTab">
           <el-row class="titleMes" type="flex" justify="space-between">
             <el-col :span="2">
+                <el-button  type="primary" @click="new_add()" >新增</el-button>
               <div class="search">
-                <el-button type="primary" @click="new_add()">新增</el-button>
               </div>
             </el-col>
             <el-col :span="6">
               <div class="search">
                 <el-input
-                    placeholder="用户账号"
-                    v-model="queryInfo.userName"userManagement
+                    placeholder="请输入用户账号"
+                    v-model="queryInfo.userName"
                 >
                 </el-input>
                 <el-button class="search_icon" @click="searchUser">
@@ -81,7 +81,6 @@
 <script>
 import {getUserList, removeUser} from '../../../api/user'
 import Pagination from '@/components/Pagination'
-
 export default {
   components: {Pagination},
   data() {
@@ -234,7 +233,7 @@ export default {
   mounted() {
   },
 }
-</script>
+</script> 
 
 <style lang="scss" scoped>
 .el-divider {
