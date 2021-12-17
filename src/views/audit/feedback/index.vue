@@ -1061,6 +1061,8 @@ export default {
                   dataTaskNumber: this.data_query.condition.dataTaskNumber,
                 }
               }
+              this.feedback_post(params2)//资料列表
+
               break;
             case 1:
               this.$message({
