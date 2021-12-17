@@ -3,7 +3,7 @@
     <div style="width: 100%; overflow: hidden">
       <el-button class="back-group"
                  style="float: left"
-                 @click="back"><i class="el-icon-back backBtn"></i></el-button>
+                 @click="back"><i class="el-icon-arrow-left backBtn"></i>返回</el-button>
       <div style="float: right;">
         <el-form class="search-form"
                  :inline="true"
