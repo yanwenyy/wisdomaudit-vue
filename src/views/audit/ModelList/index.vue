@@ -30,7 +30,7 @@
         </el-table-column>
 
         <el-table-column prop="belongField"
-                         width="250px"
+                         width="160px"
                          label="所属领域">
 
           <template slot-scope="scope">
@@ -39,7 +39,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="belongSpcial"
-                         width="250px"
+                         width="160px"
                          label="所属专题">
 
           <template slot-scope="scope">
@@ -49,7 +49,7 @@
 
         </el-table-column>
         <el-table-column prop="modelName"
-                         width="250px"
+                         width="160px"
                          label="模型名称">
 
           <template slot-scope="scope">
@@ -100,13 +100,18 @@
       <div class="title_dlag">查看</div>
 
       <div class="dlag">
-        <div class="son list_four">
+        <div class="son list_four"
+             style="padding-top:20px">
           <!-- <p>模型编号：<span>{{list_index}}</span> </p> -->
+          <p>模型名称：<span>{{details.modelName}}</span> </p>
+
+        </div>
+        <div class="son list_four three">
           <p>所属领域：<span>{{details.belongField}}</span> </p>
           <p>所属专题：<span>{{details.belongSpcial}}</span> </p>
-          <p>模型名称：<span>{{details.modelName}}</span> </p>
         </div>
-        <div class="son flex">
+        <div class="son flex"
+             style="margin-bottom:20px">
           <p>业务规则：</p><span>{{details.ruleDescription}}</span>
         </div>
         <div class="son flex">
@@ -296,15 +301,29 @@ export default {
 }
 .son {
   display: flex;
-  padding: 20px 30px 10px;
+  padding: 0px 50px 10px;
   box-sizing: border-box;
 }
 .son span {
   line-height: 25px;
 }
-.list_four p {
-  width: 33%;
+.list_four {
+  display: flex;
+  flex-wrap: wrap;
 }
+.list_four p {
+  width: 100%;
+  margin-bottom: 20px;
+}
+.three p {
+  width: 50%;
+}
+.three {
+  padding: 0px 50px 30px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
 .flex p {
   padding-top: 5px;
   box-sizing: border-box;

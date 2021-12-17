@@ -547,7 +547,7 @@ export default {
       this.multipleSelection2.forEach((item, i) => {
         // array1.push((i + 1) + '.' + item.problemFindPeople + ',' + item.discoveryTime + ',' + item.basis + ',' + item.field + ',' + item.problem + ',' + item.describe + ',' + item.riskAmount + ',' + item.managementAdvice + '\n');
 
-        array1.push((i + 1) + '.' + item.describe + '</br>' + '管理建议：' + '</br > ' + item.managementAdvice + '</br>' + '</br>');
+        array1.push((i + 1) + '.' + item.describe + '</br>' + '</br>' + '管理建议：' + '</br > ' + '</br>' + item.managementAdvice + '</br>' + '</br>');
 
       });
       let array_list = array1.join('')
