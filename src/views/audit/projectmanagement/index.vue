@@ -3403,13 +3403,12 @@
     margin: 0 !important;
   }
 
-  .table-formItem {
+  .projectTable .table-formItem {
     margin-bottom: 0 !important;
   }
-
   >>> .table-formItem .el-form-item__content {
     margin-left: 0 !important;
-    margin-bottom: 15px;
+    margin-bottom: 15px!important;
   }
 
   >>> .el-form-item__label {
