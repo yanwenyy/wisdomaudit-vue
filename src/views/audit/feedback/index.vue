@@ -1053,7 +1053,6 @@ export default {
                 message: "提交成功",
                 type: "success",
               });
-              this.dialogVisible = false;//关闭弹窗
               let params2 = {
                 pageNo: this.data_query.pageNo,
                 pageSize: this.data_query.pageSize,
@@ -1062,6 +1061,15 @@ export default {
                 }
               }
               this.feedback_post(params2)//资料列表
+
+              this.dialogVisible = false;//关闭弹窗
+
+              let params = {
+                pageNo: this.params.pageNo,
+                pageSize: this.params.pageSize,
+              }
+              this.list_data_page(params); // 反馈列表
+
 
               break;
             case 1:

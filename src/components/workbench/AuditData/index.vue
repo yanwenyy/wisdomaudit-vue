@@ -301,7 +301,7 @@
 
         <!-- 分页 -->
         <div class="page"
-             v-show="this.tableData2.total>0">>
+             v-show="this.tableData2.total>0">
           <el-pagination @size-change="handleSizeChange_zj"
                          @current-change="handleCurrentChange_zj"
                          :page-size="this.tableData2.size"
