@@ -1169,6 +1169,10 @@
           <el-table-column prop="opTime"
                            show-overflow-tooltip
                            label="操作时间">
+            <template slot-scope="scope">
+              {{scope.row.opTime |filtedate }}
+            </template>
+
           </el-table-column>
           <el-table-column prop="opInfo"
                            show-overflow-tooltip
