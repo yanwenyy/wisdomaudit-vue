@@ -2,13 +2,9 @@
   <div>
 
     <div class="search">
-      <el-button plain
-                 style="border:none"
-                 @click="go_back()">
-        <i class="el-icon-back
-"
-           style="font-size: 20px;"></i>
-      </el-button>
+      <el-button class="back-group"
+                 style="float: left"
+                 @click="go_back()"><i class="el-icon-arrow-left backBtn"></i>返回</el-button>
 
       <el-input placeholder="请输入问题"
                 v-model="details_query.problem"> </el-input>
@@ -232,6 +228,10 @@ export default {
 }
 </script>
 <style scoped>
+.back-group >>> span {
+  display: flex;
+  align-items: center;
+}
 >>> .foot .el-button {
   font-weight: normal;
 }
