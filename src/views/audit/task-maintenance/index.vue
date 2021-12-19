@@ -183,6 +183,7 @@
     <!-- 审计任务维护编辑弹框 -->
     <el-dialog :visible.sync="editModelDialogVisible"
                width="50%"
+               :append-to-body='true'
                @close="editResetForm2('editTaskRef')">
       <div class="title">编辑任务</div>
       <div class="taskAdd">
@@ -271,6 +272,7 @@
     <!-- 审计任务维护新增弹框 -->
     <el-dialog :visible.sync="TaskDialogVisible"
                width="55%"
+               :append-to-body='true'
                @close="resetForm2('selfTaskRef')">
       <div class="taskTitle">新增任务</div>
       <div class="taskAdd"

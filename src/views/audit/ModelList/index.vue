@@ -95,13 +95,14 @@
     <!-- 查看 -->
     <el-dialog title=""
                center=""
+               :append-to-body='true'
                :visible.sync="dialogVisible"
                width="60%">
       <div class="title_dlag">查看</div>
 
       <div class="dlag">
         <div class="son list_four"
-             style="padding-top:20px">
+             style="padding-top:20px;text-align:left;">
           <!-- <p>模型编号：<span>{{list_index}}</span> </p> -->
           <p>模型名称：<span>{{details.modelName}}</span> </p>
 
@@ -306,6 +307,7 @@ export default {
 }
 .son span {
   line-height: 25px;
+  text-align: left;
 }
 .list_four {
   display: flex;
@@ -317,6 +319,7 @@ export default {
 }
 .three p {
   width: 50%;
+  text-align: left;
 }
 .three {
   padding: 0px 50px 30px;

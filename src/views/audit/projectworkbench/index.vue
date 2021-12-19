@@ -266,6 +266,7 @@
     <!-- 未初始化项目添加弹框 -->
     <el-dialog :visible.sync="addDialogVisible"
                :before-close="addClosed"
+               :append-to-body='true'
                :width="dialogWidth">
       <div class="dialogTitle">
         {{ name }}
@@ -517,6 +518,7 @@
     <!-- 选择模型 -->
     <el-dialog :visible.sync="modelDialog"
                width="70%"
+               :append-to-body='true'
                :before-close="MedolDialogClosed">
       <div class="dialogTitle">模型列表</div>
       <div style="padding: 2%">
@@ -603,6 +605,7 @@
     <!-- 自建任务弹出框 -->
     <el-dialog :visible.sync="taskSelfDialogVisible"
                :before-close="TaskDialogClosed"
+               :append-to-body='true'
                @close="resetForm2('selfTaskRef')"
                width="50%">
       <div class="dialogTitle">自建任务</div>
@@ -691,6 +694,7 @@
 
     <el-dialog :visible.sync="editTaskSelfDialogVisible"
                width="50%"
+               :append-to-body='true'
                @close="editResetForm2('editTaskRef')">
       <div class="dialogTitle">编辑自建任务</div>
       <div class="selfTask">

@@ -1,106 +1,140 @@
 <template>
   <div class="page-container">
     <div class="filter-container">
-      <QueryField
-        ref="queryfield"
-        :form-data="queryFields"
-        @submit="getList"
-      />
+      <QueryField ref="queryfield"
+                  :form-data="queryFields"
+                  @submit="getList" />
     </div>
     <el-row>
       <el-col align="right">
         <!-- 新增 -->
-        <el-button type="primary" class="oper-btn add" @click="handleProblemCreate()" />
+        <el-button type="primary"
+                   class="oper-btn add"
+                   @click="handleProblemCreate()" />
         <!-- 修改 -->
-        <el-button type="primary" class="oper-btn edit" :disabled="selections.length !== 1" @click="handleProblemUpdate()" />
+        <el-button type="primary"
+                   class="oper-btn edit"
+                   :disabled="selections.length !== 1"
+                   @click="handleProblemUpdate()" />
         <!-- 删除 -->
-        <el-button type="primary" class="oper-btn delete" :disabled="selections.length === 0" @click="handleDelete()" />
+        <el-button type="primary"
+                   class="oper-btn delete"
+                   :disabled="selections.length === 0"
+                   @click="handleDelete()" />
         <!-- 下载模板 -->
-        <el-button type="primary" class="oper-btn download-template btn-width-md" @click="handleDownloadProblem()" />
+        <el-button type="primary"
+                   class="oper-btn download-template btn-width-md"
+                   @click="handleDownloadProblem()" />
         <!-- 导入 -->
-        <el-upload
-          multiple class = "upload-demo" action="" :on-remove="handleRemove" :headers="headers"
-          :http-request="uploadFile"
-          :limit="3"
-          :auto-upload="true"
-          :on-change="handleFileChange"
-          :show-file-list="false"
-          style="display: inline-block; padding-left: 10px"
-        >
-          <el-button type="primary" class="oper-btn export" />
+        <el-upload multiple
+                   class="upload-demo"
+                   action=""
+                   :on-remove="handleRemove"
+                   :headers="headers"
+                   :http-request="uploadFile"
+                   :limit="3"
+                   :auto-upload="true"
+                   :on-change="handleFileChange"
+                   :show-file-list="false"
+                   style="display: inline-block; padding-left: 10px">
+          <el-button type="primary"
+                     class="oper-btn export" />
         </el-upload>
       </el-col>
     </el-row>
-    <el-table
-      :key="tableKey"
-      v-loading="listLoading"
-      fit
-      style="width: 100%;"
-      :data="list"
-      border
-      highlight-current-row
-      height="calc(100vh - 300px)"
-      max-height="calc(100vh - 300px)"
-      @sort-change="sortChange"
-      @selection-change="handleSelectionChange"
-    >
-      <el-table-column type="selection" align="center" />
-      <el-table-column label="问题名称" width="200px" align="center" prop="problemName">
+    <el-table :key="tableKey"
+              v-loading="listLoading"
+              fit
+              style="width: 100%;"
+              :data="list"
+              border
+              highlight-current-row
+              height="calc(100vh - 300px)"
+              max-height="calc(100vh - 300px)"
+              @sort-change="sortChange"
+              @selection-change="handleSelectionChange">
+      <el-table-column type="selection"
+                       align="center" />
+      <el-table-column label="问题名称"
+                       width="200px"
+                       align="center"
+                       prop="problemName">
         <template slot-scope="scope">
-          <el-link
-            :underline="false"
-            type="primary"
-            @click="showProblemDeatil(scope.row)"
-          >{{ scope.row.problemName }}</el-link>
+          <el-link :underline="false"
+                   type="primary"
+                   @click="showProblemDeatil(scope.row)">{{ scope.row.problemName }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="项目名称" width="200px" align="center" prop="projectName" />
-      <el-table-column label="问题分类" width="200px" align="center" prop="problemType" />
-      <el-table-column label="审计人员" width="200px" align="center" prop="auditPersonName" />
-      <el-table-column label="复核人员" width="200px" align="center" prop="recheckPersonName" />
-      <el-table-column label="问题发现时间" width="200px" align="center" prop="discoveryTime" />
-      <el-table-column label="问题最晚整改时间" width="200px" align="center" prop="rectifyTime" />
-      <el-table-column label="整改状态" width="200px" align="center" prop="rectifyStatus" :formatter="formatStatus" />
-      <el-table-column label="整改率" width="200px" align="center" prop="" />
-      <el-table-column label="线索核实结果" width="200px" align="center" prop="" />
+      <el-table-column label="项目名称"
+                       width="200px"
+                       align="center"
+                       prop="projectName" />
+      <el-table-column label="问题分类"
+                       width="200px"
+                       align="center"
+                       prop="problemType" />
+      <el-table-column label="审计人员"
+                       width="200px"
+                       align="center"
+                       prop="auditPersonName" />
+      <el-table-column label="复核人员"
+                       width="200px"
+                       align="center"
+                       prop="recheckPersonName" />
+      <el-table-column label="问题发现时间"
+                       width="200px"
+                       align="center"
+                       prop="discoveryTime" />
+      <el-table-column label="问题最晚整改时间"
+                       width="200px"
+                       align="center"
+                       prop="rectifyTime" />
+      <el-table-column label="整改状态"
+                       width="200px"
+                       align="center"
+                       prop="rectifyStatus"
+                       :formatter="formatStatus" />
+      <el-table-column label="整改率"
+                       width="200px"
+                       align="center"
+                       prop="" />
+      <el-table-column label="线索核实结果"
+                       width="200px"
+                       align="center"
+                       prop="" />
     </el-table>
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="pageQuery.pageNo"
-      :limit.sync="pageQuery.pageSize"
-      @pagination="getList"
-    />
+    <pagination v-show="total>0"
+                :total="total"
+                :page.sync="pageQuery.pageNo"
+                :limit.sync="pageQuery.pageSize"
+                @pagination="getList" />
     <!-- ProblemPopover组件  temp实例对象 dialogStatus功能参数（）-->
     <!-- :dialogFormVisible="dialogFormVisiblenew" -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisiblenew" :close-on-click-modal="false">
-      <ProblemPopover
-        ref="problempopover"
-        :temp="temp"
-        :dialogStatus="dialogStatus"
-        :closeStatus="closeStatus"
-        :disableUpdate="disableUpdate"
-        @changedialogFormVisible="changedialogFormVisible"
-        @refreshesParent="refreshesParent"
-      />
+    <el-dialog :title="textMap[dialogStatus]"
+               :append-to-body='true'
+               :visible.sync="dialogFormVisiblenew"
+               :close-on-click-modal="false">
+      <ProblemPopover ref="problempopover"
+                      :temp="temp"
+                      :dialogStatus="dialogStatus"
+                      :closeStatus="closeStatus"
+                      :disableUpdate="disableUpdate"
+                      @changedialogFormVisible="changedialogFormVisible"
+                      @refreshesParent="refreshesParent" />
       <div slot="footer">
-        <el-button v-if="!closeStatus" @click="changedialogFormVisible(false)"
-          >取消</el-button
-        >
-        <el-button
-          v-if="closeStatus"
-          type="primary"
-          @click="changedialogFormVisible(false)"
-          >关闭
+        <el-button v-if="!closeStatus"
+                   @click="changedialogFormVisible(false)">取消</el-button>
+        <el-button v-if="closeStatus"
+                   type="primary"
+                   @click="changedialogFormVisible(false)">关闭
         </el-button>
-        <el-button v-if="!closeStatus" type="primary" @click="handleAudit()"
-          >提交审核
+        <el-button v-if="!closeStatus"
+                   type="primary"
+                   @click="handleAudit()">提交审核
         </el-button>
-        <el-button
-          v-if="!closeStatus"
-          type="primary"
-          @click="dialogStatus === 'create' ? createProblemData() : updateProbleData()"
-          >保存
+        <el-button v-if="!closeStatus"
+                   type="primary"
+                   @click="dialogStatus === 'create' ? createProblemData() : updateProbleData()">保存
         </el-button>
       </div>
     </el-dialog>
@@ -116,7 +150,7 @@ import axios from 'axios'
 import ProblemPopover from '@WISDOMAUDIT/components/ProblemPopover'
 export default {
   components: { Pagination, QueryField, ProblemPopover },
-  data() {
+  data () {
     return {
       dqtoken: "",
       dialogFormVisiblenew: false,
@@ -125,7 +159,7 @@ export default {
       // 问题记录数
       total: 0,
       listLoading: false,
-      headers: { 'Content-Type': 'multipart/form-data','TOKEN':sessionStorage.getItem("TOKEN") }, // 导入属性
+      headers: { 'Content-Type': 'multipart/form-data', 'TOKEN': sessionStorage.getItem("TOKEN") }, // 导入属性
       file: '', // 初始化导入文件
       // text 精确查询   fuzzyText 模糊查询  select下拉框  timePeriod时间区间
       queryFields: [
@@ -135,7 +169,7 @@ export default {
         {
           label: '整改状态', name: 'rectifyStatus', type: 'select',
           data: [{ name: '未整改', value: '1' }, { name: '整改中', value: '2' },
-            { name: '已整改', value: '3' }, { name: '无法整改', value: '4' }
+          { name: '已整改', value: '3' }, { name: '无法整改', value: '4' }
           ],
           default: ''
         },
@@ -206,33 +240,33 @@ export default {
       detailDownloadLoading: false,
     }
   },
-  created() {
+  created () {
     this.dqtoken = sessionStorage.getItem("TOKEN");
     this.getList()
   },
   methods: {
     //父组件刷新
-    refreshesParent(){
+    refreshesParent () {
       this.getList()
     },
     // 提交审核
-    handleAudit(){
+    handleAudit () {
       this.$refs.problempopover.todoaudit()
     },
     // 问题添加
-    createProblemData(){
+    createProblemData () {
       this.$refs.problempopover.createData()
     },
     // 问题修改
-    updateProbleData(){
+    updateProbleData () {
       this.$refs.problempopover.updateData()
     },
     // 更改弹窗状态
-    changedialogFormVisible(val){
+    changedialogFormVisible (val) {
       this.dialogFormVisiblenew = val
     },
     // 问题添加前打开弹窗
-    handleProblemCreate(){
+    handleProblemCreate () {
       this.closeStatus = false
       this.disableUpdate = false
       this.resetTemp()
@@ -241,7 +275,7 @@ export default {
       this.$refs.problempopover.getPreLoadProjectList()
     },
     // 问题修改前打开弹窗
-    handleProblemUpdate() {
+    handleProblemUpdate () {
       this.resetTemp()
       this.closeStatus = false
       this.disableUpdate = false
@@ -251,7 +285,7 @@ export default {
       this.$refs.problempopover.getPreLoadProjectList()
     },
     // 查看问题详情
-    showProblemDeatil(data) {
+    showProblemDeatil (data) {
       this.resetTemp()
       this.closeStatus = true
       this.disableUpdate = true
@@ -261,7 +295,7 @@ export default {
       this.$refs.problempopover.getPreLoadProjectList()
     },
     // 查询list
-    getList(query) {
+    getList (query) {
       this.listLoading = true
       if (query) {
         this.pageQuery.condition = query
@@ -273,18 +307,18 @@ export default {
         this.listLoading = false
       })
     },
-    handleFilter() {
+    handleFilter () {
       this.pageQuery.pageNo = 1
       this.getList()
     },
-    sortChange(data) {
+    sortChange (data) {
       const { prop, order } = data
       this.pageQuery.sortBy = order
       this.pageQuery.sortName = prop
       this.handleFilter()
     },
     // 问题表单初始化
-    resetTemp() {
+    resetTemp () {
       this.temp = {
         problemUuid: null, // 问题UUID
         problemName: null, // 问题name
@@ -300,7 +334,7 @@ export default {
       }
     },
     // 删除
-    handleDelete() {
+    handleDelete () {
       this.$confirm(this.$t('confirm.delete'), this.$t('confirm.title'), {
         confirmButtonText: this.$t('confirm.okBtn'),
         cancelButtonText: this.$t('confirm.cancelBtn'),
@@ -329,25 +363,25 @@ export default {
         // })
       })
     },
-    handleSelectionChange(val) {
+    handleSelectionChange (val) {
       this.selections = val
     },
-    getSortClass: function(key) {
+    getSortClass: function (key) {
       const sort = this.pageQuery.sort
       return sort === `+${key}` ? 'asc' : 'desc'
     },
     // 格式化整改状态
-    formatStatus(data) {
+    formatStatus (data) {
       return this.formatMap.rectifyStatus[data.rectifyStatus]
     },
-    handleDownloadProblem() {
+    handleDownloadProblem () {
       // 下载问题模板excel
       axios({
         method: 'get',
         url: `/wisdomaudit/problem/downloadProblemTemplate`,
         headers: {
-          TOKEN: this.dqtoken,
-        },
+          TOKEN: this.dqtoken,
+        },
         responseType: 'blob'
       }).then((res) => {
         // if (res.code !== 0) this.$message.error(res.msg)
@@ -367,14 +401,14 @@ export default {
       })
     },
     // 上传文件，获取文件流
-    handleFileChange(file) {
+    handleFileChange (file) {
       this.file = file.raw
     },
-    handleRemove(file, fileList) {
+    handleRemove (file, fileList) {
       this.file = ''
     },
     // 自定义上传
-    uploadFile() {
+    uploadFile () {
       const loading = this.$loading({
         lock: true,
         // spinner: 'el-icon-loading',
@@ -392,8 +426,8 @@ export default {
       axios({
         url: `/wisdomaudit/problem/importFiles?${num}`,
         headers: {
-          TOKEN: this.dqtoken,
-        },
+          TOKEN: this.dqtoken,
+        },
         method: 'post',
         data: formData
       }).then((res) => {

@@ -121,6 +121,7 @@
              :model="formDetail">
       <!--label-width="130px"-->
       <el-dialog class="qrd-dialog"
+                 :append-to-body='true'
                  :visible.sync="confirmationDialogVisible"
                  width="70%"
                  @close="handleClose">
@@ -200,25 +201,25 @@
                     v-model="formDetail.auditOrgOpinion"></el-input>
         </el-form-item>
         <!--<el-form-item v-if="confirmationDialogTitle=='编辑确认单'||ifLook"-->
-                      <!--class="itemThree"-->
-                      <!--label="相关负责人(签名):">-->
-          <!--{{formDetail.principalName||'&#45;&#45;'}}-->
-          <!--&lt;!&ndash;<el-input disabled&ndash;&gt;-->
-          <!--&lt;!&ndash;v-model="formDetail.principalName"></el-input>&ndash;&gt;-->
+        <!--class="itemThree"-->
+        <!--label="相关负责人(签名):">-->
+        <!--{{formDetail.principalName||'&#45;&#45;'}}-->
+        <!--&lt;!&ndash;<el-input disabled&ndash;&gt;-->
+        <!--&lt;!&ndash;v-model="formDetail.principalName"></el-input>&ndash;&gt;-->
         <!--</el-form-item>-->
         <!--<el-form-item v-if="confirmationDialogTitle=='编辑确认单'||ifLook"-->
-                      <!--class="itemThree"-->
-                      <!--label="职务:">-->
-          <!--{{formDetail.principalPost||'&#45;&#45;'}}-->
-          <!--&lt;!&ndash;<el-input disabled&ndash;&gt;-->
-          <!--&lt;!&ndash;v-model="formDetail.principalPost"></el-input>&ndash;&gt;-->
+        <!--class="itemThree"-->
+        <!--label="职务:">-->
+        <!--{{formDetail.principalPost||'&#45;&#45;'}}-->
+        <!--&lt;!&ndash;<el-input disabled&ndash;&gt;-->
+        <!--&lt;!&ndash;v-model="formDetail.principalPost"></el-input>&ndash;&gt;-->
         <!--</el-form-item>-->
         <!--<el-form-item v-if="confirmationDialogTitle=='编辑确认单'||ifLook"-->
-                      <!--class="itemThree"-->
-                      <!--label="日期:">-->
-          <!--{{formDetail.signatureDate||'&#45;&#45;'}}-->
-          <!--&lt;!&ndash;<el-input disabled&ndash;&gt;-->
-          <!--&lt;!&ndash;v-model="formDetail.signatureDate"></el-input>&ndash;&gt;-->
+        <!--class="itemThree"-->
+        <!--label="日期:">-->
+        <!--{{formDetail.signatureDate||'&#45;&#45;'}}-->
+        <!--&lt;!&ndash;<el-input disabled&ndash;&gt;-->
+        <!--&lt;!&ndash;v-model="formDetail.signatureDate"></el-input>&ndash;&gt;-->
         <!--</el-form-item>-->
         <el-form-item label="上传附件:"
                       class="upload-yw">
@@ -267,6 +268,7 @@
         </span>
       </el-dialog>
       <el-dialog class="qrd-dialog"
+                 :append-to-body='true'
                  :visible.sync="confirmationDialogVisibleZx"
                  width="70%"
                  @close="handleClose">
@@ -702,9 +704,9 @@ export default {
     },
     debounce (fn, delay = 300) {   //默认300毫秒
       var timer;
-      return function() {
+      return function () {
         var args = arguments;
-        if(timer) {
+        if (timer) {
           clearTimeout(timer);
         }
         timer = setTimeout(() => {

@@ -298,7 +298,7 @@
 
     <!-- 模型任务 结果数 -->
     <el-dialog width="90%"
-               el-dialog
+               :append-to-body='true'
                @close="handleClose"
                :close-on-click-modal="false"
                popper-class="status_data_dlag"
@@ -440,7 +440,7 @@
 
     <!-- 结果数 核实明细结果  -->
     <el-dialog width="40%"
-               el-dialog
+               :append-to-body='true'
                :close-on-click-modal="false"
                @close="resetForm_verify('verify_model')"
                popper-class="status_data_dlag_verify"
@@ -517,6 +517,7 @@
     <!-- 模型任务 问题数 -->
     <el-dialog :visible.sync="problemsDialogVisible"
                el-dialog
+               :append-to-body='true'
                :close-on-click-modal="false"
                width="70%">
       <div class="title_dlag">问题数</div>
@@ -749,6 +750,7 @@
 
     <!-- 模型任务设置参数 -->
     <el-dialog center
+               :append-to-body='true'
                :close-on-click-modal="false"
                :visible.sync="setParametersDialogVisible"
                width="60%">
@@ -867,6 +869,7 @@
     <!-- 自建任务新增 编辑-->
     <el-dialog :visible.sync="dialogVisible_zj"
                center
+               :append-to-body='true'
                :close-on-click-modal="false"
                @close="resetForm2('save_zj_query')"
                style="padding-bottom: 59px">
@@ -985,6 +988,7 @@
 
     <!-- 附件详情 -->
     <el-dialog width="40%"
+               :append-to-body='true'
                :visible.sync="dialogVisibl_enclosure_details"
                style="padding-bottom: 59px; ">
       <div class="file_details">
@@ -2708,6 +2712,9 @@ export default {
   width: 100px;
 }
 
+.parameters >>> .el-card__body {
+  text-align: left;
+}
 .task_type >>> .el-button:hover,
 .task_type >>> .el-button,
 .task_type >>> .el-button:focus {
@@ -3001,6 +3008,12 @@ export default {
 } */
 .new >>> .el-form p span {
   color: red;
+}
+.new >>> .upload-fileListdemo {
+  float: left;
+}
+.new >>> .el-upload {
+  float: left;
 }
 .file_name:hover {
   color: #1371cc;

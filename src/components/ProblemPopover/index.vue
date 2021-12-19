@@ -1,19 +1,27 @@
 <template>
   <div class="problempopover">
     <!-- 选择复核人 -->
-    <el-dialog title="提交审核" :visible.sync="todo" append-to-body :close-on-click-modal="false">
+    <el-dialog title="提交审核"
+               :append-to-body='true'
+               :visible.sync="todo"
+               append-to-body
+               :close-on-click-modal="false">
       <div style="padding: 20px">
-        <el-form :model="todolist" label-width="80px">
+        <el-form :model="todolist"
+                 label-width="80px">
           <el-form-item label="选择复核人">
-            <el-select style="width: 70%" v-model="todolist.person">
-              <el-option label="测试" value="12345" />
+            <el-select style="width: 70%"
+                       v-model="todolist.person">
+              <el-option label="测试"
+                         value="12345" />
             </el-select>
           </el-form-item>
         </el-form>
         <el-row>
           <el-col align="right">
             <el-button @click="todo = false">取消 </el-button>
-            <el-button type="primary" @click="pushtodo()">确定 </el-button>
+            <el-button type="primary"
+                       @click="pushtodo()">确定 </el-button>
           </el-col>
         </el-row>
       </div>
@@ -26,121 +34,107 @@
     > -->
     <div>
       <!-- label-width="140px" -->
-      <el-form
-        ref="dataFormcomp"
-        :rules="rules"
-        :model="temp"
-        label-position="right"
-        class="detail-form"
-        style="height: 62vh; overflow: auto"
-      >
+      <el-form ref="dataFormcomp"
+               :rules="rules"
+               :model="temp"
+               label-position="right"
+               class="detail-form"
+               style="height: 62vh; overflow: auto">
         <el-row>
           <el-col :span="11">
-            <el-form-item label="问题名称" prop="problemName">
-              <el-input
-                v-model="temp.problemName"
-                :placeholder="disableUpdate === true ? '' : '请输入问题名称'"
-                :disabled="disableUpdate"
-              />
+            <el-form-item label="问题名称"
+                          prop="problemName">
+              <el-input v-model="temp.problemName"
+                        :placeholder="disableUpdate === true ? '' : '请输入问题名称'"
+                        :disabled="disableUpdate" />
             </el-form-item>
           </el-col>
-          <el-col :span="11" :offset="2">
-            <el-form-item label="问题来源" prop="problemSource">
-              <el-select
-                v-model="temp.problemSource"
-                :placeholder="disableUpdate === true ? '' : '问题来源'"
-                style="width: 100%"
-                disabled="disabled"
-              >
-                <el-option
-                  v-for="item in problemSourceList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
+          <el-col :span="11"
+                  :offset="2">
+            <el-form-item label="问题来源"
+                          prop="problemSource">
+              <el-select v-model="temp.problemSource"
+                         :placeholder="disableUpdate === true ? '' : '问题来源'"
+                         style="width: 100%"
+                         disabled="disabled">
+                <el-option v-for="item in problemSourceList"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value" />
               </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="项目名称" prop="projectUuid">
-              <el-select
-                v-model="temp.projectUuid"
-                :placeholder="disableUpdate === true ? '' : '请选择项目名称'"
-                :disabled="disableUpdate"
-                style="width: 100%"
-                @change="resetAudit"
-              >
-                <el-option
-                  v-for="item in projectQueryList"
-                  :key="item.projectUuid"
-                  :label="item.projectName"
-                  :value="item.projectUuid"
-                />
+            <el-form-item label="项目名称"
+                          prop="projectUuid">
+              <el-select v-model="temp.projectUuid"
+                         :placeholder="disableUpdate === true ? '' : '请选择项目名称'"
+                         :disabled="disableUpdate"
+                         style="width: 100%"
+                         @change="resetAudit">
+                <el-option v-for="item in projectQueryList"
+                           :key="item.projectUuid"
+                           :label="item.projectName"
+                           :value="item.projectUuid" />
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="11" :offset="2">
-            <el-form-item label="是否重要" prop="isImportant">
-              <el-select
-                v-model="temp.isImportant"
-                :placeholder="disableUpdate === true ? '' : '请选择'"
-                :disabled="disableUpdate"
-                style="width: 100%"
-              >
-                <el-option
-                  v-for="item in isImportantList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
+          <el-col :span="11"
+                  :offset="2">
+            <el-form-item label="是否重要"
+                          prop="isImportant">
+              <el-select v-model="temp.isImportant"
+                         :placeholder="disableUpdate === true ? '' : '请选择'"
+                         :disabled="disableUpdate"
+                         style="width: 100%">
+                <el-option v-for="item in isImportantList"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value" />
               </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="审计人员" prop="auditPersonUuid">
-              <el-select
-                v-model="temp.auditPersonUuid"
-                :placeholder="disableUpdate === true ? '' : '请选择'"
-                :disabled="disableUpdate"
-                style="width: 100%"
-              >
-                <el-option
-                  v-for="item in personQueryList"
-                  :key="item.auditPersonUuid"
-                  :label="item.auditPersonName"
-                  :value="item.auditPersonUuid"
-                />
+            <el-form-item label="审计人员"
+                          prop="auditPersonUuid">
+              <el-select v-model="temp.auditPersonUuid"
+                         :placeholder="disableUpdate === true ? '' : '请选择'"
+                         :disabled="disableUpdate"
+                         style="width: 100%">
+                <el-option v-for="item in personQueryList"
+                           :key="item.auditPersonUuid"
+                           :label="item.auditPersonName"
+                           :value="item.auditPersonUuid" />
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="11" :offset="2">
-            <el-form-item label="问题发现时间" prop="discoveryTime">
-              <el-date-picker
-                v-model="temp.discoveryTime"
-                type="datetime"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                :placeholder="
+          <el-col :span="11"
+                  :offset="2">
+            <el-form-item label="问题发现时间"
+                          prop="discoveryTime">
+              <el-date-picker v-model="temp.discoveryTime"
+                              type="datetime"
+                              value-format="yyyy-MM-dd HH:mm:ss"
+                              :placeholder="
                   disableUpdate === true ? '' : '请选择问题发现时间'
                 "
-                style="width: 100%"
-                :disabled="disableUpdate"
-              />
+                              style="width: 100%"
+                              :disabled="disableUpdate" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="问题分类" prop="problemType">
-              <el-input
-                v-model="temp.problemType"
-                :placeholder="disableUpdate === true ? '' : '请选择问题分类'"
-                :disabled="disableUpdate"
-                @focus="handleTreeView()"
-              />
+            <el-form-item label="问题分类"
+                          prop="problemType">
+              <el-input v-model="temp.problemType"
+                        :placeholder="disableUpdate === true ? '' : '请选择问题分类'"
+                        :disabled="disableUpdate"
+                        @focus="handleTreeView()" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -150,12 +144,10 @@
           </el-col>
           <el-col align="right">
             <!-- 新增 -->
-            <el-button
-              type="primary"
-              class="oper-btn add"
-              :disabled="disableUpdate"
-              @click="detailHandleCreate()"
-            />
+            <el-button type="primary"
+                       class="oper-btn add"
+                       :disabled="disableUpdate"
+                       @click="detailHandleCreate()" />
             <!-- 修改 -->
             <!--<el-button type="primary" class="oper-btn edit"-->
             <!--:disabled="detailSelections.length !== 1 && disableUpdate"-->
@@ -168,98 +160,71 @@
         <el-row>
           <el-col>
             <template>
-              <el-table
-                :key="detailTableKey"
-                v-loading="detailListLoading"
-                fit
-                style="width: 100%"
-                border
-                :data="temp.problemDetailsList"
-                highlight-current-row
-                @selection-change="handleDetailSelectionChange"
-              >
+              <el-table :key="detailTableKey"
+                        v-loading="detailListLoading"
+                        fit
+                        style="width: 100%"
+                        border
+                        :data="temp.problemDetailsList"
+                        highlight-current-row
+                        @selection-change="handleDetailSelectionChange">
                 <!--<el-table-column  label="序号"  align="center"  type="index" />-->
                 <!--<el-table-column type="selection" align="center" v-if="!disableUpdate"/>-->
-                <el-table-column
-                  label="问题明细"
-                  width="200px"
-                  align="center"
-                  prop="problemDetailDesc"
-                >
+                <el-table-column label="问题明细"
+                                 width="200px"
+                                 align="center"
+                                 prop="problemDetailDesc">
                   <template slot-scope="scope">
-                    <el-link
-                      :underline="false"
-                      type="primary"
-                      @click="showProblemDetail(scope.row)"
-                      >{{ scope.row.problemDetailDesc }}</el-link
-                    >
+                    <el-link :underline="false"
+                             type="primary"
+                             @click="showProblemDetail(scope.row)">{{ scope.row.problemDetailDesc }}</el-link>
                   </template>
                 </el-table-column>
-                <el-table-column
-                  label="整改措施"
-                  width="200px"
-                  align="center"
-                  prop="rectifyMeasure"
-                />
-                <el-table-column
-                  label="最晚整改时间"
-                  width="200px"
-                  align="center"
-                  prop="rectifyTime"
-                />
-                <el-table-column
-                  label="责任人"
-                  width="200px"
-                  align="center"
-                  prop="dutyPerson"
-                />
-                <el-table-column
-                  label="违规积分"
-                  width="200px"
-                  align="center"
-                  prop="violationPoints"
-                />
-                <el-table-column
-                  label="处罚金额"
-                  width="200px"
-                  align="center"
-                  prop="penalty"
-                />
-                <el-table-column
-                  label="是否入账"
-                  width="200px"
-                  align="center"
-                  prop="isEnterAccount"
-                  :formatter="formatIsImportant"
-                />
-                <el-table-column
-                  label="整改状态"
-                  width="200px"
-                  align="center"
-                  prop="rectifyStatus"
-                  :formatter="formatStatus"
-                />
-                <el-table-column
-                  label="操作"
-                  width="200px"
-                  align="center"
-                  fixed="right"
-                >
+                <el-table-column label="整改措施"
+                                 width="200px"
+                                 align="center"
+                                 prop="rectifyMeasure" />
+                <el-table-column label="最晚整改时间"
+                                 width="200px"
+                                 align="center"
+                                 prop="rectifyTime" />
+                <el-table-column label="责任人"
+                                 width="200px"
+                                 align="center"
+                                 prop="dutyPerson" />
+                <el-table-column label="违规积分"
+                                 width="200px"
+                                 align="center"
+                                 prop="violationPoints" />
+                <el-table-column label="处罚金额"
+                                 width="200px"
+                                 align="center"
+                                 prop="penalty" />
+                <el-table-column label="是否入账"
+                                 width="200px"
+                                 align="center"
+                                 prop="isEnterAccount"
+                                 :formatter="formatIsImportant" />
+                <el-table-column label="整改状态"
+                                 width="200px"
+                                 align="center"
+                                 prop="rectifyStatus"
+                                 :formatter="formatStatus" />
+                <el-table-column label="操作"
+                                 width="200px"
+                                 align="center"
+                                 fixed="right">
                   <template slot-scope="scope">
                     <!--修改-->
-                    <el-button
-                      type="primary"
-                      class="oper-btn edit"
-                      @click="detailHandleUpdate(scope.$index)"
-                      :disabled="disableUpdate"
-                    />
+                    <el-button type="primary"
+                               class="oper-btn edit"
+                               @click="detailHandleUpdate(scope.$index)"
+                               :disabled="disableUpdate" />
                     <!--删除-->
-                    <el-button
-                      type="primary"
-                      class="oper-btn delete"
-                      @click="detailHandleDelete(scope.$index)"
-                      :disabled="disableUpdate"
-                    />
+                    <el-button type="primary"
+                               class="oper-btn delete"
+                               @click="detailHandleDelete(scope.$index)"
+                               :disabled="disableUpdate" />
                   </template>
                 </el-table-column>
               </el-table>
@@ -270,200 +235,175 @@
     </div>
     <!-- </el-dialog> -->
     <!--问题明细新增+编辑框-->
-    <el-dialog
-      :title="detailTextMap[detailDialogStatus]"
-      :visible.sync="detailDialogFormVisible"
-      :close-on-click-modal="false"
-      append-to-body
-    >
+    <el-dialog :title="detailTextMap[detailDialogStatus]"
+               :visible.sync="detailDialogFormVisible"
+               :append-to-body='true'
+               :close-on-click-modal="false"
+               append-to-body>
       <!-- label-width="140px" -->
-      <el-form
-        ref="detailDataFormcomp"
-        :rules="detailRules"
-        :model="detailTemp"
-        label-position="right"
-        class="detail-form"
-        style="height: 62vh; overflow: auto"
-      >
+      <el-form ref="detailDataFormcomp"
+               :rules="detailRules"
+               :model="detailTemp"
+               label-position="right"
+               class="detail-form"
+               style="height: 62vh; overflow: auto">
         <el-row>
           <el-col :span="11">
-            <el-form-item label="责任人" prop="dutyPerson">
-              <el-input
-                v-model="detailTemp.dutyPerson"
-                :placeholder="
+            <el-form-item label="责任人"
+                          prop="dutyPerson">
+              <el-input v-model="detailTemp.dutyPerson"
+                        :placeholder="
                   detailDisableUpdate === true ? '' : '请输入责任人'
                 "
-                :disabled="detailDisableUpdate"
-              />
+                        :disabled="detailDisableUpdate" />
             </el-form-item>
           </el-col>
-          <el-col :span="11" :offset="2">
-            <el-form-item label="整改状态" prop="rectifyStatus">
-              <el-select
-                v-model="detailTemp.rectifyStatus"
-                :placeholder="detailDisableUpdate === true ? '' : '整改状态'"
-                :disabled="detailDisableUpdate"
-                style="width: 100%"
-              >
-                <el-option
-                  v-for="item in rectifyStatusList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
+          <el-col :span="11"
+                  :offset="2">
+            <el-form-item label="整改状态"
+                          prop="rectifyStatus">
+              <el-select v-model="detailTemp.rectifyStatus"
+                         :placeholder="detailDisableUpdate === true ? '' : '整改状态'"
+                         :disabled="detailDisableUpdate"
+                         style="width: 100%">
+                <el-option v-for="item in rectifyStatusList"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value" />
               </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="违规积分" prop="violationPoints">
-              <el-input
-                v-model="detailTemp.violationPoints"
-                :placeholder="
+            <el-form-item label="违规积分"
+                          prop="violationPoints">
+              <el-input v-model="detailTemp.violationPoints"
+                        :placeholder="
                   detailDisableUpdate === true ? '' : '请输入违规积分'
                 "
-                :disabled="detailDisableUpdate"
-              />
+                        :disabled="detailDisableUpdate" />
             </el-form-item>
           </el-col>
-          <el-col :span="11" :offset="2">
-            <el-form-item label="整改时间" prop="rectifyTime">
-              <el-date-picker
-                v-model="detailTemp.rectifyTime"
-                type="datetime"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                :placeholder="
+          <el-col :span="11"
+                  :offset="2">
+            <el-form-item label="整改时间"
+                          prop="rectifyTime">
+              <el-date-picker v-model="detailTemp.rectifyTime"
+                              type="datetime"
+                              value-format="yyyy-MM-dd HH:mm:ss"
+                              :placeholder="
                   detailDisableUpdate === true ? '' : '请选择整改时间'
                 "
-                style="width: 100%"
-                :disabled="detailDisableUpdate"
-              />
+                              style="width: 100%"
+                              :disabled="detailDisableUpdate" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="处罚金额" prop="penalty">
-              <el-input
-                v-model="detailTemp.penalty"
-                :placeholder="
+            <el-form-item label="处罚金额"
+                          prop="penalty">
+              <el-input v-model="detailTemp.penalty"
+                        :placeholder="
                   detailDisableUpdate === true ? '' : '请输入处罚金额'
                 "
-                :disabled="detailDisableUpdate"
-              />
+                        :disabled="detailDisableUpdate" />
             </el-form-item>
           </el-col>
-          <el-col :span="11" :offset="2">
-            <el-form-item label="是否入账" prop="isEnterAccount">
-              <el-select
-                v-model="detailTemp.isEnterAccount"
-                :placeholder="
+          <el-col :span="11"
+                  :offset="2">
+            <el-form-item label="是否入账"
+                          prop="isEnterAccount">
+              <el-select v-model="detailTemp.isEnterAccount"
+                         :placeholder="
                   detailDisableUpdate === true ? '' : '请选择是否入账'
                 "
-                :disabled="detailDisableUpdate"
-                style="width: 100%"
-              >
-                <el-option
-                  v-for="item in isEnterAccountList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
+                         :disabled="detailDisableUpdate"
+                         style="width: 100%">
+                <el-option v-for="item in isEnterAccountList"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value" />
               </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="问题明细" prop="problemDetailDesc">
-              <el-input
-                v-model="detailTemp.problemDetailDesc"
-                :placeholder="
+            <el-form-item label="问题明细"
+                          prop="problemDetailDesc">
+              <el-input v-model="detailTemp.problemDetailDesc"
+                        :placeholder="
                   detailDisableUpdate === true ? '' : '请输入问题明细'
                 "
-                :disabled="detailDisableUpdate"
-                type="textarea"
-              />
+                        :disabled="detailDisableUpdate"
+                        type="textarea" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="整改措施" prop="rectifyMeasure">
-              <el-input
-                v-model="detailTemp.rectifyMeasure"
-                :placeholder="
+            <el-form-item label="整改措施"
+                          prop="rectifyMeasure">
+              <el-input v-model="detailTemp.rectifyMeasure"
+                        :placeholder="
                   detailDisableUpdate === true ? '' : '请输入整改措施'
                 "
-                :disabled="detailDisableUpdate"
-                type="textarea"
-              />
+                        :disabled="detailDisableUpdate"
+                        type="textarea" />
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
       <div slot="footer">
-        <el-button
-          v-if="!detailCloseStatus"
-          @click="detailDialogFormVisible = false"
-          >取消</el-button
-        >
-        <el-button
-          v-if="detailCloseStatus"
-          type="primary"
-          @click="detailDialogFormVisible = false"
-          >关闭
+        <el-button v-if="!detailCloseStatus"
+                   @click="detailDialogFormVisible = false">取消</el-button>
+        <el-button v-if="detailCloseStatus"
+                   type="primary"
+                   @click="detailDialogFormVisible = false">关闭
         </el-button>
-        <el-button
-          v-if="!detailCloseStatus"
-          type="primary"
-          @click="
+        <el-button v-if="!detailCloseStatus"
+                   type="primary"
+                   @click="
             detailDialogStatus === 'detailCreate'
               ? detailCreateData()
               : detailUpdateData()
-          "
-          >保存
+          ">保存
         </el-button>
       </div>
     </el-dialog>
     <!--树弹框-->
-    <el-dialog
-      title="请选择问题分类"
-      :visible.sync="dialogTreeFormVisible"
-      :close-on-click-modal="false"
-      append-to-body
-    >
+    <el-dialog title="请选择问题分类"
+               :append-to-body='true'
+               :visible.sync="dialogTreeFormVisible"
+               :close-on-click-modal="false"
+               append-to-body>
       <div style="height: 62vh; overflow: auto">
-        <el-input v-model="filterText" placeholder="输入关键字进行过滤" />
+        <el-input v-model="filterText"
+                  placeholder="输入关键字进行过滤" />
         <!-- :check-strictly="true" 父子节点不关联 -->
-        <el-tree
-          ref="tree"
-          :data="ptFatherTreeData"
-          :props="defaultProps"
-          :check-strictly="true"
-          show-checkbox
-          default-expand-all
-          :filter-node-method="filterNode"
-          node-key="id"
-          style="margin-top: 10px"
-          @node-click="handleNodeClick"
-          @check-change="checkChange"
-        />
+        <el-tree ref="tree"
+                 :data="ptFatherTreeData"
+                 :props="defaultProps"
+                 :check-strictly="true"
+                 show-checkbox
+                 default-expand-all
+                 :filter-node-method="filterNode"
+                 node-key="id"
+                 style="margin-top: 10px"
+                 @node-click="handleNodeClick"
+                 @check-change="checkChange" />
       </div>
       <div slot="footer">
-        <el-button v-if="!closeStatus" @click="dialogTreeFormVisible = false"
-          >取消</el-button
-        >
-        <el-button
-          v-if="closeStatus"
-          type="primary"
-          @click="dialogTreeFormVisible = false"
-          >确定</el-button
-        >
-        <el-button v-if="!closeStatus" type="primary" @click="insertOrg()"
-          >保存</el-button
-        >
+        <el-button v-if="!closeStatus"
+                   @click="dialogTreeFormVisible = false">取消</el-button>
+        <el-button v-if="closeStatus"
+                   type="primary"
+                   @click="dialogTreeFormVisible = false">确定</el-button>
+        <el-button v-if="!closeStatus"
+                   type="primary"
+                   @click="insertOrg()">保存</el-button>
       </div>
     </el-dialog>
   </div>
@@ -491,7 +431,7 @@ export default {
     },
     dialogStatus: 'create',
   },
-  data() {
+  data () {
     // 数字校验
     const isNum = (rule, value, callback) => {
       const price = /^[0-9]*$/;
@@ -647,7 +587,7 @@ export default {
       todolist: { preson: "12345" },
     };
   },
-  created() {
+  created () {
     // 项目列表初始化
     this.getPreLoadProjectList()
   },
@@ -672,7 +612,7 @@ export default {
         // this.getProjectPerson(this.temp.projectUuid);
       },
     },
-    filterText(val) {
+    filterText (val) {
       this.$refs.tree.filter(val)
     },
     // 监听项目UUID
@@ -697,37 +637,37 @@ export default {
     /**
    * 自动生成8位Uuid
    */
-  randomString4Len() {
-    //var len = 64 * 1
-    var len = 8;
-    var $chars =
-      "ABCDEFGHILJKMNOPQRSTUVWXYZabcdefghijklmnoprstuvwxyz1234567890";
-    var maxLen = $chars.length;
-    var str = "";
-    for (var i = 0; i < len; i++) {
-      str += $chars.charAt(Math.floor(Math.random() * maxLen));
-    }
-    return str;
+    randomString4Len () {
+      //var len = 64 * 1
+      var len = 8;
+      var $chars =
+        "ABCDEFGHILJKMNOPQRSTUVWXYZabcdefghijklmnoprstuvwxyz1234567890";
+      var maxLen = $chars.length;
+      var str = "";
+      for (var i = 0; i < len; i++) {
+        str += $chars.charAt(Math.floor(Math.random() * maxLen));
+      }
+      return str;
     },
-    getNowFormatDay(){
-    var date = new Date();
-          return date.getFullYear() + "-" + (date.getMonth() + 1) + "-"+date.getDay();
+    getNowFormatDay () {
+      var date = new Date();
+      return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDay();
     },
-    pushtodo(){
+    pushtodo () {
       this.todo = false
       console.log(this.randomString4Len())
       console.log(this.getNowFormatDay())
 
     },
-    todoaudit() {
+    todoaudit () {
       this.todo = true;
     },
-    changeparent(val) {
+    changeparent (val) {
       this.$emit("changedialogFormVisible", val);
       return;
     },
     // 问题明细表单初始化
-    detailResetTemp() {
+    detailResetTemp () {
       this.detailTemp = {
         dutyPerson: null, // 责任人
         problemUuid: null, // 问题Uuid
@@ -741,16 +681,16 @@ export default {
       };
     },
     // 加载项目列表
-    getPreLoadProjectList(){
-       getProjectList().then((resp) => {
+    getPreLoadProjectList () {
+      getProjectList().then((resp) => {
         this.projectQueryList = resp.data;
-          if(this.dialogStatus == 'create'){
-          if (resp.data !== null && resp.data.length  && this.temp.projectUuid === null) {
+        if (this.dialogStatus == 'create') {
+          if (resp.data !== null && resp.data.length && this.temp.projectUuid === null) {
             this.temp.projectUuid = resp.data[0].projectUuid;
             this.temp.projectName = resp.data[0].projectName;
             this.getProjectPerson(resp.data[0].projectUuid);
           }
-          if (this.temp.projectUuid !== null){
+          if (this.temp.projectUuid !== null) {
             this.getProjectPerson(this.temp.projectUuid);
           }
         }
@@ -764,14 +704,14 @@ export default {
           this.getProjectPerson(this.temp.projectUuid)
           break
         case 'show':
-        // 编辑明细禁用
+          // 编辑明细禁用
           this.detailDisableUpdate = true
           break
 
       }
     },
     // 问题明细添加按钮触发函数
-    detailHandleCreate() {
+    detailHandleCreate () {
       this.detailCloseStatus = false;
       this.detailDisableUpdate = false;
       this.detailResetTemp();
@@ -782,7 +722,7 @@ export default {
       });
     },
     // 新增问题
-    createData() {
+    createData () {
       this.$refs["dataFormcomp"].validate((valid) => {
         if (valid) {
           // 界面无输入域，自动赋值项目Uuid和审计人员Name
@@ -824,7 +764,7 @@ export default {
       });
     },
     // 新增问题明细
-    detailCreateData() {
+    detailCreateData () {
       this.$refs["detailDataFormcomp"].validate((valid) => {
         // 判断问题明细List是否为空，为空则将其转为数组防止无法push
         if (valid) {
@@ -835,7 +775,7 @@ export default {
         }
       });
     },
-    updateData() {
+    updateData () {
       this.$refs["dataFormcomp"].validate((valid) => {
         if (valid) {
           // 界面无输入域，自动赋值项目name和审计人员name
@@ -882,7 +822,7 @@ export default {
       });
     },
     // 点击问题明细修改按钮事件
-    detailHandleUpdate(str) {
+    detailHandleUpdate (str) {
       // this.detailIndex = str //将取得的下标做临时存储
       this.detailCloseStatus = false;
       this.detailDisableUpdate = false;
@@ -893,7 +833,7 @@ export default {
         this.$refs["detailDataFormcomp"].clearValidate();
       });
     },
-    detailUpdateData() {
+    detailUpdateData () {
       this.$refs["detailDataFormcomp"].validate((valid) => {
         if (valid) {
           // this.temp.problemDetailsList.splice(this.detailIndex,1,this.detailTemp)
@@ -902,7 +842,7 @@ export default {
       });
     },
     // 显示问题明细详情
-    showProblemDetail(data) {
+    showProblemDetail (data) {
       this.detailCloseStatus = true;
       this.detailDisableUpdate = true;
       this.detailTemp = Object.assign({}, data); // copy obj
@@ -913,7 +853,7 @@ export default {
       });
     },
     // 删除问题明细
-    detailHandleDelete(str) {
+    detailHandleDelete (str) {
       this.$confirm(this.$t("confirm.delete"), this.$t("confirm.title"), {
         confirmButtonText: this.$t("confirm.okBtn"),
         cancelButtonText: this.$t("confirm.cancelBtn"),
@@ -923,16 +863,16 @@ export default {
       });
     },
     // 树节点过滤
-    filterNode(value, data) {
+    filterNode (value, data) {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
     },
-    handleNodeClick(item, node, self) {
+    handleNodeClick (item, node, self) {
       // 自己定义的editCheckId，防止单选出现混乱
       this.checkedId = item.id;
       this.$refs.tree.setCheckedKeys([item.id]);
     },
-    checkChange(item, node, self) {
+    checkChange (item, node, self) {
       if (node === true) {
         this.checkedId = item.id;
         this.$refs.tree.setCheckedKeys([item.id]);
@@ -943,7 +883,7 @@ export default {
       }
     },
     // 控制树是否显示
-    handleTreeView() {
+    handleTreeView () {
       // this.ptSonTreeData = getDictSonList("002004")
       this.ptFatherTreeData = getDictList("002004");
       this.ptFatherTreeData = toTreeData(
@@ -955,7 +895,7 @@ export default {
       );
       this.dialogTreeFormVisible = true;
     },
-    insertOrg() {
+    insertOrg () {
       if (
         typeof this.$refs.tree.getCheckedNodes()[0] !== "undefined" &&
         this.$refs.tree.getCheckedNodes()[0] != null
@@ -967,11 +907,11 @@ export default {
       }
       this.checkedId = null;
     },
-    handleSelectionChange(val) {
+    handleSelectionChange (val) {
       this.selections = val;
     },
 
-    handleDetailSelectionChange(val) {
+    handleDetailSelectionChange (val) {
       this.detailSelections = val;
     },
 
@@ -980,21 +920,21 @@ export default {
       return sort === `+${key}` ? "asc" : "desc";
     },
     // 格式化整改状态
-    formatStatus(data) {
+    formatStatus (data) {
       return this.formatMap.rectifyStatus[data.rectifyStatus];
     },
     // 格式化是否入账
-    formatIsImportant(data) {
+    formatIsImportant (data) {
       return this.formatMap.isImportant[data.isImportant];
     },
     // 获取当前项目的参与审计人员
-    getProjectPerson(id) {
+    getProjectPerson (id) {
       personList(id).then((resp) => {
         this.personQueryList = resp.data;
       });
     },
     // 初始化审计人员
-    resetAudit() {
+    resetAudit () {
       this.temp.auditPersonUuid = null;
     },
   },

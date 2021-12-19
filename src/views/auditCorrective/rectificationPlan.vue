@@ -130,6 +130,7 @@
     <!-- 启动整改 -->
     <el-dialog :visible.sync="dialogVisible_rectification"
                center
+               :append-to-body='true'
                @close="resetForm2('save_project_prople')"
                width="30%">
       <div class="title">启动整改</div>

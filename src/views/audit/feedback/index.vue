@@ -115,6 +115,7 @@
     <el-dialog :visible.sync="dialogVisible"
                center
                width="60%"
+               :append-to-body='true'
                @close="resetForm2()"
                :close-on-click-modal="false"
                :before-close="dialogBeforeClose">
@@ -435,6 +436,7 @@
 
     <!-- 上传 -->
     <el-dialog center
+               :append-to-body='true'
                :visible.sync="add_update_dlag"
                width="30%"
                :close-on-click-modal="false"
@@ -482,6 +484,7 @@
     <!-- 附件详情 -->
     <el-dialog width="20%"
                center
+               :append-to-body='true'
                :visible.sync="dialogVisibl_enclosure_details"
                style="padding-bottom: 59px; ">
       <div class="fileName">

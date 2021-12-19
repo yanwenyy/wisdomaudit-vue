@@ -109,6 +109,7 @@
     />
     <!-- 新增和编辑的弹框 -->
     <el-dialog
+    :append-to-body='true'
       :title="textMap[dialogStatus]"
       :visible.sync="dialogFormVisible"
       :close-on-click-modal="false"

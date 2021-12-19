@@ -317,6 +317,7 @@
 
     <!-- 新增资料 编辑资料-->
     <el-dialog width="60%"
+               :append-to-body='true'
                center
                @close="close_model"
                :visible.sync="dialogVisible"
@@ -580,6 +581,7 @@
     <el-dialog @close="resetForm('add_data')"
                center
                width="55%"
+               :append-to-body='true'
                :visible.sync="dialogVisible2"
                style="padding-bottom: 59px; ">
       <div class="title_dlag">{{edit_title}} </div>
@@ -827,6 +829,7 @@
     <!-- 操作 审批-->
     <el-dialog width="90%"
                center
+               :append-to-body='true'
                @close="editDialogClosed()"
                :visible.sync="dialogVisibl_operation"
                style="padding-bottom: 59px; ">
@@ -1083,6 +1086,7 @@
     <!-- 附件详情 -->
     <el-dialog width="20%"
                center
+               :append-to-body='true'
                :header-cell-style="{'background-color': '#F4FAFF',}"
                :visible.sync="dialogVisibl_enclosure_details"
                style="padding-bottom: 59px; ">
@@ -1149,6 +1153,7 @@
     <!-- 操作记录 -->
     <el-dialog :visible.sync="history"
                center
+               :append-to-body='true'
                width="width">
       <div class="title_dlag">操作记录</div>
 

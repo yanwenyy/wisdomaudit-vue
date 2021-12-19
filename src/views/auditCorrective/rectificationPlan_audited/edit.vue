@@ -158,6 +158,7 @@
 
     <!-- 编辑 -->
     <el-dialog title=""
+               :append-to-body='true'
                center
                @close="resetForm_verify('save')"
                :visible.sync="dialogVisible_edit"

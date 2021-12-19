@@ -124,6 +124,7 @@
                 @pagination="getList" />
     <!-- 新增和编辑的弹框 -->
     <el-dialog title="新增审计问题"
+               :append-to-body='true'
                :visible.sync="dialogFormVisible"
                :close-on-click-modal="false"
                @close="resetForm('temp')"
@@ -270,6 +271,7 @@
     <el-dialog :title="ifadd == 1 ? '编辑问题' : '问题详情'"
                :visible.sync="dialogDetailVisible"
                :close-on-click-modal="false"
+               :append-to-body='true'
                @close="resetForm('dqProblem')"
                center>
       <el-form ref="detailForm"
@@ -478,6 +480,7 @@
       </div>
     </el-dialog>
     <el-dialog title="引用审计依据"
+               :append-to-body='true'
                :visible.sync="basisdialog"
                width="70%"
                custom-class="outmax">

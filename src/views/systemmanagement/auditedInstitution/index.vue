@@ -106,6 +106,7 @@
 
     <!-- 查看弹框 -->
     <el-dialog :visible.sync="look_auditOrg"
+               :append-to-body='true'
                width="30%">
       <div class="mainTitle">被审计机构</div>
       <div class="formStyle">

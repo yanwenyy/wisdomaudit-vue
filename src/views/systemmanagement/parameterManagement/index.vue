@@ -1,191 +1,175 @@
 <template>
   <div class="parameterManagement">
     <!-- 模糊查询分类名称 -->
-    <el-row :gutter="24" style="padding: 5px">
+    <el-row :gutter="24"
+            style="padding: 5px">
       <el-col :span="20">
-        <el-button
-          style="background: #0c87d6; color: #fff"
-          @click="addDictionary"
-          >新增</el-button
-        >
+        <el-button style="background: #0c87d6; color: #fff"
+                   @click="addDictionary">新增</el-button>
       </el-col>
       <el-col :span="4">
         <div class="search">
-          <el-input
-            placeholder="请输入分类名称"
-            v-model="maintainDictionaryList.condition.typename"
-            @keyup.enter.native="queryNameInput"
-          >
+          <el-input placeholder="请输入分类名称"
+                    v-model="maintainDictionaryList.condition.typename"
+                    @keyup.enter.native="queryNameInput">
           </el-input>
-          <div
-            class="search_icon"
-            style="background: rgb(12, 135, 214) !important"
-            @click="queryNameInput"
-          >
-            <i class="el-icon-search" style="color: white"></i>
+          <div class="search_icon"
+               style="background: rgb(12, 135, 214) !important"
+               @click="queryNameInput">
+            <i class="el-icon-search"
+               style="color: white"></i>
           </div>
         </div>
       </el-col>
     </el-row>
 
     <!-- 分类表格 -->
-    <el-table
-      ref="singleTable"
-      highlight-current-row
-      :data="maintableData"
-      style="width: 100%"
-      :header-cell-style="{ 'background-color': '#F4FAFF' }"
-    >
-      <el-table-column type="selection" width="100"></el-table-column>
-      <el-table-column type="index" width="150" label="序号"> </el-table-column>
+    <el-table ref="singleTable"
+              highlight-current-row
+              :data="maintableData"
+              style="width: 100%"
+              :header-cell-style="{ 'background-color': '#F4FAFF' }">
+      <el-table-column type="selection"
+                       width="100"></el-table-column>
+      <el-table-column type="index"
+                       width="150"
+                       label="序号"> </el-table-column>
 
-      <el-table-column align="center" property="typename" label="分类名称">
+      <el-table-column align="center"
+                       property="typename"
+                       label="分类名称">
       </el-table-column>
-      <el-table-column align="center" property="typecode" label="分类编码">
+      <el-table-column align="center"
+                       property="typecode"
+                       label="分类编码">
       </el-table-column>
-      <el-table-column align="center" label="操作" width="200px">
+      <el-table-column align="center"
+                       label="操作"
+                       width="200px">
         <template slot-scope="scope">
-          <el-button
-            type="text"
-            style="color: #1371cc"
-            size="small"
-            @click="maintainDictionary(scope.row)"
-            >维护字典</el-button
-          >
-          <el-button
-            type="text"
-            style="color: #1371cc"
-            size="small"
-            @click="editDictionary(scope.row.uuid)"
-            >编辑</el-button
-          >
+          <el-button type="text"
+                     style="color: #1371cc"
+                     size="small"
+                     @click="maintainDictionary(scope.row)">维护字典</el-button>
+          <el-button type="text"
+                     style="color: #1371cc"
+                     size="small"
+                     @click="editDictionary(scope.row.uuid)">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 分页 -->
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      :page.sync="maintainDictionaryList.pageNo"
-      :limit.sync="maintainDictionaryList.pageSize"
-      @pagination="queryName"
-    />
+    <pagination v-show="total > 0"
+                :total="total"
+                :page.sync="maintainDictionaryList.pageNo"
+                :limit.sync="maintainDictionaryList.pageSize"
+                @pagination="queryName" />
     <!-- 分页end -->
 
     <!-- 维护字典弹框 -->
-    <el-dialog
-      :visible.sync="mainDialogVisible"
-      width="50%"
-      @open="openDialog"
-      @close="handleClose"
-    >
+    <el-dialog :append-to-body='true'
+               :visible.sync="mainDialogVisible"
+               width="50%"
+               @open="openDialog"
+               @close="handleClose">
       <div class="mainTitle">维护字典</div>
 
-      <el-row :gutter="40" style="padding: 30px">
-        <el-col :span="8" class="lefttree">
-          <el-input placeholder="输入关键字进行过滤" v-model="filterText">
+      <el-row :gutter="40"
+              style="padding: 30px">
+        <el-col :span="8"
+                class="lefttree">
+          <el-input placeholder="输入关键字进行过滤"
+                    v-model="filterText">
           </el-input>
 
-          <el-tree
-            :data="orgTree"
-            :expand-on-click-node="false"
-            :filter-node-method="filterNode"
-            :props="defaultProps"
-            @node-click="getCheckedNodes"
-            class="filter-tree"
-            default-expand-all
-            highlight-current
-            node-key="value"
-            ref="tree"
-          >
-            <span
-              class="custom-tree-node content-style"
-              slot-scope="{ node, data }"
-            >
+          <el-tree :data="orgTree"
+                   :expand-on-click-node="false"
+                   :filter-node-method="filterNode"
+                   :props="defaultProps"
+                   @node-click="getCheckedNodes"
+                   class="filter-tree"
+                   default-expand-all
+                   highlight-current
+                   node-key="value"
+                   ref="tree">
+            <span class="custom-tree-node content-style"
+                  slot-scope="{ node, data }">
               <span>
                 <i :class="['el-icon-lollipop']"></i>
                 {{ node.label }}
               </span>
               <span>
-                <i
-                  @click.stop="append(data)"
-                  class="el-icon-plus icon-cursor content-style-i"
-                  style="font-size: 18px"
-                  title="增加"
-                ></i>
+                <i @click.stop="append(data)"
+                   class="el-icon-plus icon-cursor content-style-i"
+                   style="font-size: 18px"
+                   title="增加"></i>
               </span>
             </span>
           </el-tree>
         </el-col>
 
-        <el-col :span="16" class="righttable">
+        <el-col :span="16"
+                class="righttable">
           <div class="probleminfo">
-            <div
-              style="
+            <div style="
                 border-radius: 10px;
                 margin: 0 auto;
                 height: 40px;
                 line-height: 40px;
-              "
-            >
-              <span
-                style="
+              ">
+              <span style="
                   font-family: Microsoft YaHei;
                   font-weight: bold;
                   margin-left: 20px;
                   float: left;
-                "
-                >字典基本信息</span
-              >
+                ">字典基本信息</span>
               <div style="float: right; margin-right: 40px">
-                <el-button
-                  @click="edit"
-                  class="el-icon-edit icon-cursor"
-                  size="mini"
-                  title="编辑"
-                  type="primary"
-                  v-show="editicon"
-                  >编辑</el-button
-                >
+                <el-button @click="edit"
+                           class="el-icon-edit icon-cursor"
+                           size="mini"
+                           title="编辑"
+                           type="primary"
+                           v-show="editicon">编辑</el-button>
               </div>
             </div>
             <!-- 信息编辑 -->
             <template v-if="editpanel">
               <div class="edit">
-                <el-form
-                  :model="form"
-                  :rules="rules"
-                  label-width="80px"
-                  ref="formRef"
-                  hide-required-asterisk
-                >
+                <el-form :model="form"
+                         :rules="rules"
+                         label-width="80px"
+                         ref="formRef"
+                         hide-required-asterisk>
                   <el-row>
-                    <el-col :offset="2" :span="20">
-                      <el-form-item label="字典名称" prop="dictname">
+                    <el-col :offset="2"
+                            :span="20">
+                      <el-form-item label="字典名称"
+                                    prop="dictname">
                         <el-input v-model="form.dictname"></el-input>
                       </el-form-item>
                     </el-col>
                   </el-row>
                   <el-row>
-                    <el-col :offset="2" :span="20">
-                      <el-form-item label="字典编码" prop="dictcode" >
+                    <el-col :offset="2"
+                            :span="20">
+                      <el-form-item label="字典编码"
+                                    prop="dictcode">
                         <!-- <span v-if="this.form.uuid">{{
                           this.form.dictcode
                         }}</span> -->
-                        <el-input v-model="form.dictcode" :disabled="isInput"></el-input>
+                        <el-input v-model="form.dictcode"
+                                  :disabled="isInput"></el-input>
                       </el-form-item>
                     </el-col>
                   </el-row>
                   <el-row>
-                    <el-col :offset="1" :span="21">
+                    <el-col :offset="1"
+                            :span="21">
                       <el-form-item align="center">
-                        <el-button
-                          @click="formOnSubmit()"
-                          style="background: #0c87d6; color: #fff"
-                          :disabled="isdisabled"
-                          >保存并关闭</el-button
-                        >
+                        <el-button @click="formOnSubmit()"
+                                   style="background: #0c87d6; color: #fff"
+                                   :disabled="isdisabled">保存并关闭</el-button>
                         <el-button @click="formOnCancle()">取消</el-button>
                       </el-form-item>
                     </el-col>
@@ -197,13 +181,17 @@
             <template v-else>
               <div class="content-style">
                 <el-row>
-                  <el-col :offset="1" :span="20" style="margin-top: 20px">
+                  <el-col :offset="1"
+                          :span="20"
+                          style="margin-top: 20px">
                     <label class="label-style">字典名称</label>:
                     <span>{{ treeData.dictname }}</span>
                   </el-col>
                 </el-row>
                 <el-row>
-                  <el-col :offset="1" :span="20" style="margin-top: 20px">
+                  <el-col :offset="1"
+                          :span="20"
+                          style="margin-top: 20px">
                     <label class="label-style">字典编码</label>:
                     <span>{{ treeData.dictcode }}</span>
                   </el-col>
@@ -216,36 +204,35 @@
     </el-dialog>
 
     <!-- 新增编辑字典弹框 -->
-    <el-dialog
-      :visible.sync="add_dictionary"
-      width="30%"
-      @close="closeDialog('dictionaryRef')"
-    >
-      <div class="mainTitle" v-if="isAdd == 1">新增</div>
-      <div class="mainTitle" v-else-if="isAdd == 2">编辑</div>
+    <el-dialog :append-to-body='true'
+               :visible.sync="add_dictionary"
+               width="30%"
+               @close="closeDialog('dictionaryRef')">
+      <div class="mainTitle"
+           v-if="isAdd == 1">新增</div>
+      <div class="mainTitle"
+           v-else-if="isAdd == 2">编辑</div>
       <div class="formStyle">
-        <el-form
-          :model="dictionaryForm"
-          label-width="70px"
-          :rules="dictionaryRules"
-          ref="dictionaryRef"
-        >
-          <el-form-item prop="typename" label="分类名称:">
+        <el-form :model="dictionaryForm"
+                 label-width="70px"
+                 :rules="dictionaryRules"
+                 ref="dictionaryRef">
+          <el-form-item prop="typename"
+                        label="分类名称:">
             <el-input v-model="dictionaryForm.typename"> </el-input>
           </el-form-item>
-          <el-form-item prop="typecode" label="分类编码:">
-            <el-input v-model="dictionaryForm.typecode" :disabled="editTypeDis"> </el-input>
+          <el-form-item prop="typecode"
+                        label="分类编码:">
+            <el-input v-model="dictionaryForm.typecode"
+                      :disabled="editTypeDis"> </el-input>
           </el-form-item>
         </el-form>
       </div>
       <div class="footerBtn">
         <el-button @click="add_dictionary = false">取消</el-button>
-        <el-button
-          @click="editSave"
-          style="background: #0c87d6; color: #fff"
-          :disabled="isdisabled"
-          >确认</el-button
-        >
+        <el-button @click="editSave"
+                   style="background: #0c87d6; color: #fff"
+                   :disabled="isdisabled">确认</el-button>
       </div>
     </el-dialog>
   </div>
@@ -263,7 +250,7 @@ import {
 import Pagination from "@WISDOMAUDIT/components/Pagination";
 export default {
   components: { Pagination },
-  data() {
+  data () {
     return {
       // 维护字典列表数据
       maintableData: [],
@@ -271,7 +258,7 @@ export default {
       mainDialogVisible: false, //维护字典弹框
       add_dictionary: false, //增加编辑字典弹框
       isAdd: 0, //判断是增加还是编辑
-      editTypeDis:false, //编辑分类编码禁用
+      editTypeDis: false, //编辑分类编码禁用
       dictionaryForm: {
         //增加编辑字典弹框表单数据
         typename: "",
@@ -324,21 +311,21 @@ export default {
         pageSize: 10,
       },
       isdisabled: false,
-      isInput:false, //编辑字典编码
+      isInput: false, //编辑字典编码
     };
   },
-  created() {
+  created () {
     //获取维护字典列表接口
     this.getDictionary(this.maintainDictionaryList);
   },
   watch: {
-    filterText(val) {
+    filterText (val) {
       this.$refs.tree.filter(val);
     },
   },
   methods: {
     // 模糊查询
-    queryNameInput() {
+    queryNameInput () {
       let query = {
         condition: {
           typename: this.maintainDictionaryList.condition.typename,
@@ -348,24 +335,24 @@ export default {
       };
       this.getDictionary(query);
     },
-    queryName() {
+    queryName () {
       this.maintainDictionaryList.condition.typename = "";
       this.getDictionary(this.maintainDictionaryList);
     },
     //参数管理table获取
-    getDictionary(data) {
+    getDictionary (data) {
       get_dictionary(data).then((resp) => {
         this.maintableData = resp.data.records;
         this.total = resp.data.total;
       });
     },
     //新增字典按钮事件
-    addDictionary() {
+    addDictionary () {
       this.isAdd = 1;
       this.add_dictionary = true;
     },
     //编辑字典按钮事件
-    editDictionary(id) {
+    editDictionary (id) {
       this.editTypeDis = true;
       this.isAdd = 2;
       this.add_dictionary = true;
@@ -376,7 +363,7 @@ export default {
       });
     },
     //增加编辑字典完成按钮
-    editSave() {
+    editSave () {
       this.$refs["dictionaryRef"].validate((valid) => {
         if (valid) {
           this.isdisabled = true;
@@ -402,12 +389,12 @@ export default {
       });
     },
     // 增加编辑字典弹框关闭事件
-    closeDialog(dictionaryRef) {
+    closeDialog (dictionaryRef) {
       this.editTypeDis = false;
       this.$refs[dictionaryRef].resetFields();
     },
     //维护字典按钮事件
-    maintainDictionary(rows) {
+    maintainDictionary (rows) {
       this.mainDialogVisible = true;
       this.form.typecode = rows.typecode;
       dictionaryList_Code(rows.typecode).then((resp) => {
@@ -415,9 +402,9 @@ export default {
       });
     },
     //维护字典弹框弹开事件
-    openDialog() {},
+    openDialog () { },
     // 弹框关闭事件
-    handleClose() {
+    handleClose () {
       this.treeData.typecode = "";
       this.treeData.pdictid = "";
       this.treeData.uuid = "";
@@ -430,13 +417,13 @@ export default {
     },
 
     //节点显示与隐藏
-    filterNode(value, data) {
+    filterNode (value, data) {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
     },
 
     // 点击查看树信息
-    getCheckedNodes(data) {
+    getCheckedNodes (data) {
       if (this.editpanel) {
         return this.$message({
           showClose: true,
@@ -462,7 +449,7 @@ export default {
     },
 
     // 增加
-    append(data) {
+    append (data) {
       if (this.editpanel) {
         return this.$message({
           showClose: true,
@@ -478,7 +465,7 @@ export default {
     },
 
     // 编辑
-    edit() {
+    edit () {
       if (this.treeData.dictname !== "" && this.treeData.dictcode !== "") {
         this.editpanel = true;
         this.editicon = false;
@@ -490,7 +477,7 @@ export default {
     },
 
     //新增编辑树形字典确认事件
-    formOnSubmit() {
+    formOnSubmit () {
       this.$refs["formRef"].validate((valid) => {
         if (valid) {
           this.isdisabled = true;
@@ -503,7 +490,7 @@ export default {
                 this.form.uuid =
                 this.form.dictname =
                 this.form.dictcode =
-                  "";
+                "";
               this.editpanel = false;
               this.editicon = true;
               this.maintainDictionary(this.form);
@@ -517,7 +504,7 @@ export default {
     },
 
     //取消编辑事件
-    formOnCancle() {
+    formOnCancle () {
       this.form.dictname = "";
       this.form.dictcode = "";
       // let that = this;
@@ -529,7 +516,7 @@ export default {
     },
   },
   watch: {
-    filterText(val) {
+    filterText (val) {
       this.$refs.tree.filter(val);
     },
   },

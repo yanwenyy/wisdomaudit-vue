@@ -1,45 +1,45 @@
 <template>
   <div class="Vaultcertification">
-    <el-dialog
-      title="金库认证请求"
-      :visible.sync="vaultVisible"
-      width="50%"
-      center
-    >
+    <el-dialog title="金库认证请求"
+               :append-to-body='true'
+               :visible.sync="vaultVisible"
+               width="50%"
+               center>
       <span class="VaultTitle">远程授权</span>
       <div>
-        <el-form
-          ref="vaultform"
-          class="vault-form"
-          :model="form"
-          :rules="rules"
-          label-position="right"
-          label-width="120px"
-        >
-          <el-form-item label="访问方式" prop="region">
+        <el-form ref="vaultform"
+                 class="vault-form"
+                 :model="form"
+                 :rules="rules"
+                 label-position="right"
+                 label-width="120px">
+          <el-form-item label="访问方式"
+                        prop="region">
             <!-- <el-select v-model="form.region" placeholder="请选择访问方式">
               <el-option label="区域一" value="shanghai"></el-option>
               <el-option label="区域二" value="beijing"></el-option>
             </el-select> -->
-            <el-input v-model="form.region" disabled></el-input>
+            <el-input v-model="form.region"
+                      disabled></el-input>
           </el-form-item>
-          <el-form-item label="申请人" prop="people">
-            <el-input v-model="form.people" disabled></el-input>
+          <el-form-item label="申请人"
+                        prop="people">
+            <el-input v-model="form.people"
+                      disabled></el-input>
           </el-form-item>
-          <el-form-item label="截止时间" prop="endTime">
-            <el-input v-model="form.endTime" disabled></el-input>
+          <el-form-item label="截止时间"
+                        prop="endTime">
+            <el-input v-model="form.endTime"
+                      disabled></el-input>
           </el-form-item>
-          <el-form-item label="审批人" prop="approverAccount">
-            <el-select
-              v-model="form.approverAccount"
-              placeholder="请选择审批人"
-            >
-              <el-option
-                v-for="(item, index) in approvers"
-                :key="'appa' + index"
-                :label="item.name"
-                :value="item.name"
-              ></el-option>
+          <el-form-item label="审批人"
+                        prop="approverAccount">
+            <el-select v-model="form.approverAccount"
+                       placeholder="请选择审批人">
+              <el-option v-for="(item, index) in approvers"
+                         :key="'appa' + index"
+                         :label="item.name"
+                         :value="item.name"></el-option>
             </el-select>
           </el-form-item>
           <!-- <el-form-item label="常用申请原因">
@@ -48,41 +48,41 @@
               <el-option label="区域二" value="beijing"></el-option>
             </el-select>
           </el-form-item> -->
-          <el-form-item label="申请原因" prop="cerReason">
-            <el-input
-              type="textarea"
-              v-model="form.cerReason"
-              placeholder="此内容会被审计请慎重填写"
-            ></el-input>
+          <el-form-item label="申请原因"
+                        prop="cerReason">
+            <el-input type="textarea"
+                      v-model="form.cerReason"
+                      placeholder="此内容会被审计请慎重填写"></el-input>
           </el-form-item>
         </el-form>
       </div>
-      <span slot="footer" class="dialog-footer">
+      <span slot="footer"
+            class="dialog-footer">
         <el-button @click="vaultVisible = false">取 消</el-button>
-        <el-button type="primary" @click="opensort()">下一步</el-button>
+        <el-button type="primary"
+                   @click="opensort()">下一步</el-button>
       </span>
     </el-dialog>
-    <el-dialog
-      title="金库认证请求"
-      :visible.sync="sortinfoVisible"
-      width="50%"
-      center
-      ><span class="VaultTitle">远程授权</span>
+    <el-dialog title="金库认证请求"
+               :append-to-body='true'
+               :visible.sync="sortinfoVisible"
+               width="50%"
+               center><span class="VaultTitle">远程授权</span>
       <div>
-        <el-form
-          ref="sortform"
-          :model="sortform"
-          label-width="180px"
-          class="vault-form"
-        >
+        <el-form ref="sortform"
+                 :model="sortform"
+                 label-width="180px"
+                 class="vault-form">
           <el-form-item label="请输入动态验证码">
             <el-input v-model="sortform.info"></el-input>
           </el-form-item>
         </el-form>
       </div>
-      <span slot="footer" class="dialog-footer">
+      <span slot="footer"
+            class="dialog-footer">
         <el-button @click="sortinfoVisible = false">取 消</el-button>
-        <el-button type="primary" @click="secondauth()">确定</el-button>
+        <el-button type="primary"
+                   @click="secondauth()">确定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -99,7 +99,7 @@ export default {
     "appSessionId",
     "dqtime",
   ],
-  data() {
+  data () {
     return {
       dqtoken: "",
       vaultVisible: false,
@@ -123,16 +123,16 @@ export default {
     };
   },
   watch: {
-    vaultV(val, oldVal) {
+    vaultV (val, oldVal) {
       this.vaultVisible = val;
       if (!val) {
         this.resetForm();
       }
     },
-    vaultVisible(val, oldVal) {
+    vaultVisible (val, oldVal) {
       this.changevault(val);
     },
-    dqtime(val, oldVal) {
+    dqtime (val, oldVal) {
       //获取当前时间并打印
       let beginhh = this.dqtime.getHours();
       let targetday = this.dqtime.getTime() + 1000 * 60 * 60 * this.maxTime;
@@ -160,19 +160,19 @@ export default {
       this.form.endTime = getendtime;
     },
   },
-  created() {
+  created () {
     this.dqtoken = sessionStorage.getItem("TOKEN");
     let p = sessionStorage.getItem("store");
     this.form.people = JSON.parse(p).user.name;
   },
   methods: {
-    changevault(val) {
+    changevault (val) {
       this.$emit("changevault", val);
     },
-    resetForm() {
+    resetForm () {
       this.$refs["vaultform"].resetFields();
     },
-    opensort() {
+    opensort () {
       this.$refs["vaultform"].validate((valid) => {
         if (valid) {
           axios({
@@ -198,13 +198,13 @@ export default {
         }
       });
     },
-    secondauth() {
+    secondauth () {
       axios({
         method: "post",
         url: `/wisdomaudit/treasury/remoteSecondAuth`,
         headers: {
-          TOKEN: this.dqtoken,
-        },
+          TOKEN: this.dqtoken,
+        },
         data: {
           account: this.account,
           sceneId: this.sceneId,

@@ -3,22 +3,30 @@
     <div class="conter">
       <div class="two">
         <div class="projectTab">
-          <el-row :gutter="24" class="titleMes">
+          <el-row :gutter="24"
+                  class="titleMes">
             <el-col :span="1.5">
-              <el-button type="primary" @click="addRow">新增确认单</el-button>
+              <el-button type="primary"
+                         @click="addRow">新增确认单</el-button>
             </el-col>
           </el-row>
           <!-- 表单 -->
-          <el-table :data="tableData" style="width: 100%;">
-            <el-table-column prop="number" label="编号">
+          <el-table :data="tableData"
+                    style="width: 100%;">
+            <el-table-column prop="number"
+                             label="编号">
             </el-table-column>
-            <el-table-column prop="item" label="审计（调查）事项">
+            <el-table-column prop="item"
+                             label="审计（调查）事项">
             </el-table-column>
-            <el-table-column prop="responsible" label="责任人">
+            <el-table-column prop="responsible"
+                             label="责任人">
             </el-table-column>
-            <el-table-column prop="problemNum" label="问题数">
+            <el-table-column prop="problemNum"
+                             label="问题数">
             </el-table-column>
-            <el-table-column prop="accessory" label="确认单附件">
+            <el-table-column prop="accessory"
+                             label="确认单附件">
               <template slot-scope="scope">
 
                 <el-dropdown>
@@ -38,20 +46,26 @@
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <div class="handle-list">
-                  <div class="blue pointer" @click="editRow(scope.row)">编辑</div>
+                  <div class="blue pointer"
+                       @click="editRow(scope.row)">编辑</div>
                   <el-upload :show-file-list="false">
-                    <div class="blue pointer" @click="uploadFile">上传附件</div>
+                    <div class="blue pointer"
+                         @click="uploadFile">上传附件</div>
                   </el-upload>
-                  <div class="red pointer" @click="deteleRow(scope.$index)">删除</div>
+                  <div class="red pointer"
+                       @click="deteleRow(scope.$index)">删除</div>
                 </div>
               </template>
             </el-table-column>
             <el-table-column label="最终版扫描件">
               <template slot-scope="scope">
-                <el-upload :show-file-list="false" v-if="!scope.row.scan">
-                  <div class="blue pointer" @click="uploadScan">上传</div>
+                <el-upload :show-file-list="false"
+                           v-if="!scope.row.scan">
+                  <div class="blue pointer"
+                       @click="uploadScan">上传</div>
                 </el-upload>
-                <div class="blue pointer" v-else>{{scope.row.scan}}</div>
+                <div class="blue pointer"
+                     v-else>{{scope.row.scan}}</div>
               </template>
             </el-table-column>
           </el-table>
@@ -60,26 +74,40 @@
 
         <!-- 分页 -->
         <div class="page">
-          <el-pagination background layout="prev, pager, next" :total="1000">
+          <el-pagination background
+                         layout="prev, pager, next"
+                         :total="1000">
           </el-pagination>
         </div>
         <!-- 分页 end-->
       </div>
     </div>
     <!-- 新增确认单 -->
-    <el-dialog title="新增确认单" :visible.sync="addVisible" :destroy-on-close="true" width="70%">
+    <el-dialog title="新增确认单"
+               :append-to-body='true'
+               :visible.sync="addVisible"
+               :destroy-on-close="true"
+               width="70%">
       <AuditConfirmationAdd></AuditConfirmationAdd>
-      <div slot="footer" class="dialog-footer">
+      <div slot="footer"
+           class="dialog-footer">
         <el-button @click="addVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addSubmit">确 定</el-button>
+        <el-button type="primary"
+                   @click="addSubmit">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 编辑确认单 -->
-    <el-dialog title="编辑确认单" :visible.sync="editVisible" :destroy-on-close="true" width="70%">
+    <el-dialog title="编辑确认单"
+               :append-to-body='true'
+               :visible.sync="editVisible"
+               :destroy-on-close="true"
+               width="70%">
       <AuditConfirmationEdit></AuditConfirmationEdit>
-      <div slot="footer" class="dialog-footer">
+      <div slot="footer"
+           class="dialog-footer">
         <el-button @click="editVisible = false">取 消</el-button>
-        <el-button type="primary" @click="editSubmit">确 定</el-button>
+        <el-button type="primary"
+                   @click="editSubmit">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -93,7 +121,7 @@ export default {
     AuditConfirmationAdd,
     AuditConfirmationEdit,
   },
-  data() {
+  data () {
     return {
       tableData: [
         {
@@ -146,14 +174,14 @@ export default {
   },
   computed: {},
   watch: {},
-  created() {},
-  mounted() {},
+  created () { },
+  mounted () { },
   methods: {
     // 新增
-    addRow() {
+    addRow () {
       this.addVisible = true;
     },
-    addSubmit() {
+    addSubmit () {
       this.addVisible = false;
       this.$message({
         message: "新增成功！",
@@ -161,25 +189,25 @@ export default {
       });
     },
     // 编辑
-    editRow() {
+    editRow () {
       this.editVisible = true;
     },
-    editSubmit() {
+    editSubmit () {
       this.editVisible = false;
       this.$message({
         message: "编辑成功！",
         type: "success",
       });
     },
-    getFile() {},
+    getFile () { },
     // 上传附件
-    uploadFile() {},
+    uploadFile () { },
     // 删除
-    deteleRow(index) {
+    deteleRow (index) {
       this.tableData.splice(index, 1);
     },
     // 上传扫描件
-    uploadScan() {},
+    uploadScan () { },
   },
 };
 </script>

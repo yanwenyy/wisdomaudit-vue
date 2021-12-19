@@ -172,6 +172,7 @@
     <!-- 资料清单 新增 -->
     <el-dialog title=""
                center
+               :append-to-body='true'
                :close-on-click-modal="false"
                @close="resetForm('add_data')"
                :visible.sync="dialogVisible"
@@ -236,6 +237,7 @@
     <!-- 文件管理 -->
     <el-dialog title=""
                center
+               :append-to-body='true'
                :close-on-click-modal="false"
                :visible.sync="dialogVisible_file"
                width="60%">

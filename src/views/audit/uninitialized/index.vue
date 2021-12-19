@@ -159,6 +159,7 @@
 
     <!-- 添加模型任务 -->
     <el-dialog title="模型列表"
+               :append-to-body='true'
                :visible.sync="addModelDialogVisible"
                width="30%">
       <el-card class="modelName">
@@ -203,6 +204,7 @@
 
     <!-- 添加自建任务 -->
     <el-dialog :visible.sync="addselfDialogVisible"
+               :append-to-body='true'
                width="30%">
       <el-card>
         <el-button type="primary"
@@ -239,6 +241,7 @@
 
     <!-- 分配责任人 -->
     <el-dialog :visible.sync="assignPersonDialogVisible"
+               :append-to-body='true'
                width="60%">
       <el-card style="height:40px; line-height:5px">经营指标列表</el-card>
       <el-card class="queryInput"
@@ -330,6 +333,7 @@
 
     <!-- 设置参数 -->
     <el-dialog :visible.sync="setParametersDialogVisible"
+               :append-to-body='true'
                width="60%">
       <el-card class="setParameters"
                style="box-shadow: none;">

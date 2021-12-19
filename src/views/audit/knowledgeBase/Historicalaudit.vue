@@ -153,6 +153,7 @@
     <!-- 新增历史审计发现描述 -->
     <el-dialog @close="resetForm2('add')"
                center
+               :append-to-body='true'
                :close-on-click-modal="false"
                :visible.sync="dialogVisible"
                style="padding-bottom: 59px">
@@ -323,7 +324,8 @@
                width="70%"
                custom-class="outmax">
       <div style="display: flex; height: 100%; padding: 20px">
-        <div style="max-height: 60vh; width: 50%; overflow: scroll">
+        <div style="max-height: 60vh; width: 50%; overflow: scroll"
+             class="dlag">
           <el-form ref="basisform"
                    class="problem-form"
                    :model="dqbasis"
@@ -365,11 +367,13 @@
                  style="width: 50%"
                  v-loading="basisload">
           <div v-for="(item, index) in dqbasis.info.arr"
-               :key="'dqbasisarr' + index">
+               :key="'dqbasisarr' + index"
+               class="card_son">
             <div slot="header"
                  class="clearfix"
-                 style="padding: 5px 0">
-              <span style="font-weight: bold"
+                 style="padding: 5px 0;  text-align: left !important;">
+              <span style="font-weight: bold; padding-left: 20px;
+  box-sizing: border-box;"
                     :style="
                   item.contentLev == 1
                     ? 'font-size:18px;'
@@ -384,6 +388,8 @@
                        @click="choosebasis(item.attachmentContent)"
                        type="text">引用</el-button>
             <p class=""
+               style="padding-left: 60px;
+  box-sizing: border-box;line-height:24px; text-align: left !important;"
                v-if="item.contentLev == 3">
               {{ item.attachmentContent }}
             </p>
@@ -1021,6 +1027,16 @@ export default {
 
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
+.dlag >>> .el-form-item__content,
+.dlag >>> .el-card__body .clearfix {
+  text-align: left !important;
+  box-sizing: border-box;
+}
+
+.dlag >>> .el-card__body .clearfix span {
+  text-align: left !important;
+}
+
 >>> .el-dialog--center .el-dialog__body {
   padding: 0 !important;
 }

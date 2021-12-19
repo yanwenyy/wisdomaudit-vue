@@ -89,6 +89,7 @@
                 @pagination="getList" />
     <!-- 新增和编辑的弹框 -->
     <el-dialog title="经营指标审批"
+               :append-to-body='true'
                :visible.sync="dialogtextVisible"
                :close-on-click-modal="false">
       <el-form v-model="examine">
@@ -107,6 +108,7 @@
       </div>
     </el-dialog>
     <el-dialog title="经营指标列表"
+               :append-to-body='true'
                :visible.sync="dialoglistVisible"
                :close-on-click-modal="false">
       <div style="display: flex; padding: 20px">
@@ -139,6 +141,7 @@
       </div>
     </el-dialog>
     <el-dialog title="编辑"
+               :append-to-body='true'
                :visible.sync="editVisible"
                :close-on-click-modal="false">
       <el-form :model="formState"

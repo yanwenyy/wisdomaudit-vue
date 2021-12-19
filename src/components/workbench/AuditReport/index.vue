@@ -108,6 +108,7 @@
     <el-dialog width="60%"
                center
                @close='closeDialog'
+               :append-to-body='true'
                popper-class="status_data_dlag_verify"
                :visible.sync="dlag_Correlation_zb"
                style="padding-bottom: 59px">
@@ -295,7 +296,7 @@
           <el-table-column prop="riskAmount"
                            show-overflow-tooltip
                            align="center"
-                           label="风险金额（元）">
+                           label="风险金额（万元）">
 
             <template slot-scope="scope">
               <p v-if="scope.row.riskAmount">{{scope.row.riskAmount}}</p>

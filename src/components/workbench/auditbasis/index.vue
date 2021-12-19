@@ -75,6 +75,7 @@
       <!-- 分页 end-->
     </div>
     <el-dialog @close="close"
+               :append-to-body='true'
                :visible.sync="isAdd"
                v-if="isAdd"
                :destroy-on-close="true"
@@ -118,6 +119,7 @@
                           format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
+
         <el-form-item class="itemTwo"
                       prop="publishDepartment"
                       label="发文部门:">
@@ -125,6 +127,18 @@
                     v-model="formState.publishDepartment"
                     placeholder="请输入"></el-input>
         </el-form-item>
+        <el-form-item class="itemTwo"
+                      style="visibility: hidden;"
+                      prop="issueDate"
+                      label="发文日期:">
+          <el-date-picker :disabled="ifLook"
+                          v-model="formState.issueDate"
+                          type="date"
+                          placeholder="请选择"
+                          format="yyyy-MM-dd">
+          </el-date-picker>
+        </el-form-item>
+
         <el-form-item label="上传附件:"
                       class="falseRequired">
           <el-upload v-if="!ifLook"
@@ -581,6 +595,22 @@ export default {
 
 <style scoped>
 @import "../../../assets/styles/css/yw.css";
+.bumen {
+  text-align: left;
+}
+
+/* 附件 */
+.formData >>> .upload-demo {
+  width: 340px;
+}
+.formData >>> .el-uoload {
+  width: 100%;
+}
+.formData >>> .el-upload-dragger {
+  width: 340px !important;
+}
+/* 附件 end*/
+
 .el-tabs {
   padding: 1%;
 }

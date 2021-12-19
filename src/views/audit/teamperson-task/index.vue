@@ -130,6 +130,7 @@
     <!-- 添加组员维护弹框 -->
     <el-dialog :visible.sync="addgroupDialog"
                @close="addDialogClosed"
+               :append-to-body='true'
                width="60%">
       <div class="title">组员维护</div>
       <div class="addPerson">
