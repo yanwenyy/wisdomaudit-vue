@@ -42,6 +42,7 @@
                  class="sef-collapse-body">
       <el-collapse-item class="sef-collapse"
                         v-for="(item,index) in tableData"
+                        :key="index"
                         :name="index+1">
         <template slot="title">
           <span class="sef-collapse-title">{{item.projectName}}</span>
