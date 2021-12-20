@@ -659,8 +659,8 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="任务描述："
-                        prop="taskDescription">
+          <!-- prop="taskDescription" -->
+          <el-form-item label="任务描述：">
             <el-input type="textarea"
                       placeholder="请输入任务描述"
                       v-model="taskSelf.taskDescription"></el-input>

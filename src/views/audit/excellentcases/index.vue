@@ -913,6 +913,13 @@ export default {
   padding: 20px;
   box-sizing: border-box;
 }
+.dlag_conter {
+  text-align: center;
+}
+.dlag_conter >>> .el-form-item--medium,
+.dlag_conter >>> .el-form-item__content {
+  flex: inherit !important;
+}
 .dlag_conter >>> .el-input__inner::placeholder {
   color: #c1c1c1 !important;
 }

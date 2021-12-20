@@ -45,6 +45,7 @@
 
       <el-table ref="problemtable"
                 :key="tableKey"
+                :header-cell-style="{'text-align':'left','background-color': '#F4FAFF',}"
                 v-loading="listLoading"
                 fit
                 style="width: 100%"
