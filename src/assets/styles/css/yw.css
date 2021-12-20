@@ -150,4 +150,7 @@ table tr:nth-child(odd){
   .problem-form-new .el-form-item__label,.problem-form-new .el-form-item__content{
     float: left!important;
   }
+  .formData .el-form-item{
+    text-align: left;
+  }
 }
