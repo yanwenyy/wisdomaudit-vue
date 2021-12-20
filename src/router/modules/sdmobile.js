@@ -1,12 +1,9 @@
 /** When your routing table is too long, you can split it into small modules **/
 
-import { AppMain } from '@WISDOMAUDIT/layout/components'
-import Layout from '@WISDOMAUDIT/layout/index'
-
 const sdmobileRouter =
 {
   path: '/audit',
-  component: Layout,
+  component:  () => import('@WISDOMAUDIT/layout/index'),
   redirect: '/audit/project',
   name: 'Audit',
   children: [

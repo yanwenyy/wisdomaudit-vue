@@ -1,9 +1,7 @@
-import Layout from '@WISDOMAUDIT/layout/index'
-
 
 const Systemmanagement = {
   path: '/systemmanagement',
-  component: Layout,
+  component:  () => import('@WISDOMAUDIT/layout/index'),
   redirect: '/systemmanagement',
   name: 'modelManagement',
   meta: {

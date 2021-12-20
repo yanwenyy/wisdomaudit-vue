@@ -1,11 +1,9 @@
 /** When your routing table is too long, you can split it into small modules **/
 
-import { AppMain } from "@WISDOMAUDIT/layout/components";
-import Layout from "@WISDOMAUDIT/layout/index";
 
 const wisdomauditRouter = {
   path: "/audit",
-  component: Layout,
+  component:  () => import('@WISDOMAUDIT/layout/index'),
   redirect: "/audit/home",
   name: "Audit",
   meta: {
@@ -34,7 +32,7 @@ const wisdomauditRouter = {
       path: "riskMonitoring",
       name: "riskMonitoring",
       redirect: "/riskMonitoring/riskScan/personal",
-      component: AppMain,
+      component:  () => import('@WISDOMAUDIT/layout/components'),
       meta: {
         title: "风险监控"
       },
@@ -143,7 +141,7 @@ const wisdomauditRouter = {
     {
       path: "auditItems",
       name: "auditItems",
-      component: AppMain,
+      component:  () => import('@WISDOMAUDIT/layout/components'),
       meta: {
         title: "审计项目"
       },
@@ -177,7 +175,7 @@ const wisdomauditRouter = {
     {
       path: "personalManage",
       name: "personalManage",
-      component: AppMain,
+      component:  () => import('@WISDOMAUDIT/layout/components'),
       // component: () => import('@WISDOMAUDIT/views/audit/personalManage'),
       meta: {
         title: "知识库"

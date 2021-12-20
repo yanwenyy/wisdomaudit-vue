@@ -1,11 +1,8 @@
-import { AppMain } from '@WISDOMAUDIT/layout/components'
-import Layout from '@WISDOMAUDIT/layout/index'
-
 
 const riskmonitoringRouter =
 {
     path: '/rectification',
-    component: Layout,
+    component: () => import('@WISDOMAUDIT/layout/index'),
     // redirect: '/audit/project',
     name: 'rectification',
     meta: {

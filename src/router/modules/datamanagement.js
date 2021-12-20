@@ -1,9 +1,7 @@
-import Layout from '@WISDOMAUDIT/layout/index'
-
 
 const datamanagement= {
   path: '/datamanagement',
-  component: Layout,
+  component: () => import('@WISDOMAUDIT/layout/index'),
   redirect: '/datamanagement/datadictionary',
   name: 'datamanagement',
   meta: {
