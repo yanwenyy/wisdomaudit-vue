@@ -153,4 +153,10 @@ table tr:nth-child(odd){
   .formData{
     text-align: left!important;
   }
+  .el-pagination__editor.el-input{
+    vertical-align: middle!important;
+  }
+  .el-pagination__editor.el-input .el-input__inner{
+    line-height: 28px!important;
+  }
 }
