@@ -327,7 +327,7 @@
         <div style="max-height: 60vh; width: 50%; overflow: scroll"
              class="dlag">
           <el-form ref="basisform"
-                   class="problem-form"
+                   class="problem-form problem-form-new"
                    :model="dqbasis"
                    label-width="120px"
                    label-position="right">

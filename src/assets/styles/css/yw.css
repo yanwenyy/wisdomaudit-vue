@@ -147,4 +147,7 @@ table tr:nth-child(odd){
   .el-tag.el-tag--info{
     width: 64%;
   }
+  .problem-form-new .el-form-item__label,.problem-form-new .el-form-item__content{
+    float: left!important;
+  }
 }
