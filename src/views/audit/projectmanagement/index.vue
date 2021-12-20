@@ -1241,13 +1241,13 @@
                      class="citebtn"
                      @click="openbasis()">引用审计依据</el-button> -->
           <el-form-item label="描述"
-                        prop="describe"
+
                         class="long">
             <el-input v-model="dqProblem.describe"
                       placeholder="请输入描述" />
           </el-form-item>
           <el-form-item label="管理建议"
-                        prop="managementAdvice"
+
                         class="long">
             <el-input v-model="dqProblem.managementAdvice"
                       placeholder="请输入管理建议" />
@@ -1341,7 +1341,7 @@
                              align="center"></el-table-column>
             <el-table-column prop="problem"
                              label="问题"
-                             show-overflow-tooltip>
+                             width="200">
               <template slot-scope="scope">
                 <p class="problem_name">{{ scope.row.problem }}</p>
               </template>
@@ -1819,7 +1819,9 @@ export default {
       }
       //正则替换
       str = str.replace(/[^\d^\.]+/g, ""); // 保留数字和小数点
-      str = str.replace(/^\D*([0-9]\d*\.?\d{0,6})?.*$/, "$1"); // 小数点后只能输 2 位
+      if(str.toString().split('.')[1].length>5){
+        str = str.replace(/^\D*([0-9]\d*\.?\d{0,6})?.*$/, "$1"); // 小数点后只能输 6 位
+      }
       str = str.slice(0, 27);
       return str;
     },
@@ -2775,7 +2777,7 @@ export default {
         this.dqProblem.managementAdvice = entity.managementAdvice; //建议
         this.dqProblem.problemDiscoveryTime = entity.problemDiscoveryTime; //发现日期
         this.dqProblem.problemFindPeople = entity.problemFindPeople; //发现人
-        this.dqProblem.riskAmount = entity.riskAmount; //风险金额
+        this.dqProblem.riskAmount =parseFloat(entity.riskAmount.toString()); //风险金额
         // 依据
         if (entity.basis) {
           this.dqProblem.basis = entity.basis;
@@ -2974,7 +2976,7 @@ export default {
     /*top: -35px;*/
     width: 65%;
   }
-  .el-form-item {
+  .el-form-item:not(:last-child) {
     margin-bottom: 22px !important;
   }
   .addIcon {
@@ -2999,7 +3001,7 @@ export default {
     /*top: -35px;*/
     width: 65%;
   }
-  .el-form-item {
+  .el-form-item:not(:last-child) {
     margin-bottom: 22px !important;
   }
   .addIcon {
@@ -3464,6 +3466,7 @@ export default {
 .sef-collapse-btn {
   position: absolute;
   right: 5%;
+  top:0;
 }
 
 >>> .sef-collapse .el-collapse-item__header {
