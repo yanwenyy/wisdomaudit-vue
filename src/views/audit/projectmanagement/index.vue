@@ -354,6 +354,7 @@
             </el-row>
             <el-row>
               <el-form-item label="审计期间:"
+                            style="margin-bottom: 0!important;"
                             class="zhuandataTime">
                 <el-col :span="8">
                   <el-form-item prop="auditStartData">
@@ -593,6 +594,7 @@
           <el-row>
             <el-form-item label="审计期间:"
                           class="dataTime"
+                          style="margin-bottom: 0!important;"
                           required>
               <el-col :span="8">
                 <!-- @change="changStartTime" -->
@@ -735,6 +737,7 @@
           </el-row>
           <el-row>
             <el-form-item label="ㅤ审计期间:"
+                          style="margin-bottom: 0!important;"
                           class="zhuandataTime">
               <el-col :span="8">
                 <el-form-item prop="auditStartData">
@@ -971,6 +974,7 @@
           </el-row>
           <el-row>
             <el-form-item label="ㅤ审计期间:"
+                          style="margin-bottom: 0!important;"
                           class="editdataTime">
               <el-col :span="8">
                 <el-form-item>
@@ -2976,7 +2980,7 @@ export default {
     /*top: -35px;*/
     width: 65%;
   }
-  .el-form-item:not(:last-child) {
+  .el-form-item{
     margin-bottom: 22px !important;
   }
   .addIcon {
@@ -3001,7 +3005,7 @@ export default {
     /*top: -35px;*/
     width: 65%;
   }
-  .el-form-item:not(:last-child) {
+  .el-form-item{
     margin-bottom: 22px !important;
   }
   .addIcon {
