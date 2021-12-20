@@ -290,6 +290,8 @@ export default {
 .page {
   display: flex;
   justify-content: flex-end;
+  padding: 10px 0;
+  box-sizing: border-box;
 }
 .details {
   color: rgb(19, 113, 204) !important;

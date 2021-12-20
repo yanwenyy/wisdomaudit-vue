@@ -117,7 +117,7 @@
             <p>发现日期：<span v-if="details_list.discoveryTime">{{details_list.discoveryTime}}</span>
               <span v-else>--</span>
             </p>
-            <p>风险金额（元）：<span v-if="details_list.riskAmount">{{
+            <p>风险金额（万元）：<span v-if="details_list.riskAmount">{{
                parseFloat(details_list.riskAmount.toString()) 
               }}</span>
               <span v-else>--</span>
