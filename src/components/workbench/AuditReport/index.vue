@@ -299,7 +299,8 @@
                            label="风险金额（万元）">
 
             <template slot-scope="scope">
-              <p v-if="scope.row.riskAmount">{{scope.row.riskAmount}}</p>
+              <p v-if="scope.row.riskAmount">
+                {{ parseFloat(scope.row.riskAmount.toString()) }}</p>
               <p v-else>--</p>
             </template>
           </el-table-column>

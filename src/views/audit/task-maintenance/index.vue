@@ -260,7 +260,8 @@
         </el-form>
       </div>
 
-      <div class="stepBtn">
+      <div class="stepBtn"
+           style="padding-bottom:10px;">
         <el-button @click="resBtn('editTaskRef')"
                    style="border: 1px solid #d2d2d2">取消</el-button>
         <el-button style="background: #0c87d6; color: #fff"
@@ -340,8 +341,9 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="任务描述："
-                        prop="taskDescription">
+
+          <!-- prop="taskDescription" -->
+          <el-form-item label="任务描述：">
             <el-input type="textarea"
                       placeholder="请输入任务描述"
                       v-model="taskSelf.taskDescription"></el-input>
@@ -363,7 +365,8 @@
             </el-upload>
           </el-form-item>
         </el-form>
-        <div class="temBtn">
+        <div class="temBtn"
+             style="padding-bottom:20px;">
           <el-button @click="addresBtn('selfTaskRef')"
                      style="border: 1px solid #d2d2d2">取消</el-button>
           <el-button style="background: #0c87d6; color: #fff"

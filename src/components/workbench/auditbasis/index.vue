@@ -79,7 +79,7 @@
                :visible.sync="isAdd"
                v-if="isAdd"
                :destroy-on-close="true"
-               width="70%"
+               width="6 0%"
                center
                class="qrd-dialog">
       <div class="title">{{title}}</div>
@@ -139,8 +139,9 @@
           </el-date-picker>
         </el-form-item>
 
-        <el-form-item label="上传附件:"
-                      class="falseRequired">
+        <el-form-item class="itemTwo"
+                      style="display:flex"
+                      label="上传附件:">
           <el-upload v-if="!ifLook"
                      class="upload-demo"
                      drag
@@ -598,6 +599,12 @@ export default {
 .bumen {
   text-align: left;
 }
+/* .qrd-dialog >>> .el-form-item__label {
+  padding-right: 10px !important;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 120px !important;
+} */
 
 /* 附件 */
 .formData >>> .upload-demo {

@@ -1,51 +1,46 @@
 <template>
   <div class="sjyj-body">
-    <el-button @click="openVault">金库认证测试</el-button>
-    <el-row type="flex" :gutter="20">
+    <el-button @click="openVault"
+               style="margin-left:15px;">金库认证测试</el-button>
+    <el-row type="flex"
+            :gutter="20">
       <div class="searchBbtn">
         <el-col :span="6">
           <div class="kuan">资料名称:</div>
-          <el-input
-            v-model="searchForm.basyName"
-            placeholder="请输入资料名称"
-          ></el-input>
+          <el-input v-model="searchForm.basyName"
+                    placeholder="请输入资料名称"></el-input>
         </el-col>
         <el-col :span="6">
           <div class="kuan">发文时间:</div>
-          <el-date-picker
-            v-model="searchForm.issueDate"
-            format="yyyy-MM-dd"
-            type="date"
-            placeholder="选择日期"
-          >
+          <el-date-picker v-model="searchForm.issueDate"
+                          format="yyyy-MM-dd"
+                          type="date"
+                          placeholder="选择日期">
           </el-date-picker>
         </el-col>
         <el-col :span="6">
           <div class="kuan">发文部门:</div>
-          <el-input
-            v-model="searchForm.publishDepartment"
-            placeholder="请输入发文部门"
-          ></el-input>
+          <el-input v-model="searchForm.publishDepartment"
+                    placeholder="请输入发文部门"></el-input>
         </el-col>
         <el-col :span="3">
-          <el-button type="primary" @click="getData">查询</el-button>
+          <el-button type="primary"
+                     @click="getData">查询</el-button>
 
         </el-col>
       </div>
     </el-row>
     <div class="addbtn"><el-button type="primary" @click="addlist">新增依据</el-button></div>
     <auditbasis ref="listShow"></auditbasis>
-    <Vault
-      :vaultV="vaultV"
-      :sceneId="sceneId"
-      :approvers="approvers"
-      :maxTime="maxTime"
-      :dqtime="dqtime"
-      :account="account"
-      :appSessionId="appSessionId"
-      @changevault="changevault"
-      @download="download"
-    ></Vault>
+    <Vault :vaultV="vaultV"
+           :sceneId="sceneId"
+           :approvers="approvers"
+           :maxTime="maxTime"
+           :dqtime="dqtime"
+           :account="account"
+           :appSessionId="appSessionId"
+           @changevault="changevault"
+           @download="download"></Vault>
   </div>
 </template>
 
@@ -59,7 +54,7 @@ export default {
     auditbasis,
     Vault,
   },
-  data() {
+  data () {
     return {
       dqtoken: "",
       searchForm: {
@@ -78,24 +73,24 @@ export default {
       dqtime: "",
     };
   },
-  created(){
+  created () {
     this.dqtoken = sessionStorage.getItem("TOKEN");
   },
   methods: {
     //通过认证后的方法
-    download() {},
+    download () { },
     //控制认证弹窗
-    changevault(val) {
+    changevault (val) {
       this.vaultV = val;
     },
     //打开金库
-    openVault() {
+    openVault () {
       axios({
         method: "post",
         url: `/wisdomaudit/treasury/getTreasuryStatus`,
         headers: {
-          TOKEN: this.dqtoken,
-        },
+          TOKEN: this.dqtoken,
+        },
         data: {
           sceneId: this.sceneId,
           sceneName: "导出授权场景", //场景名称
@@ -132,13 +127,13 @@ export default {
       });
     },
     //查询按钮点击
-    getData() {
+    getData () {
       this.$nextTick(() => {
         this.$refs.listShow.getSearchForm(this.searchForm);
       });
     },
     //新增依据
-    addlist() {
+    addlist () {
       this.$nextTick(() => {
         this.$refs.listShow.addlist();
       });
@@ -163,8 +158,8 @@ export default {
 .sjyj-body {
   background: #fff;
 }
-  .addbtn{
-    margin-top: 10px;
-    margin-left: 10px;
-  }
+.addbtn {
+  margin-top: 10px;
+  margin-left: 10px;
+}
 </style>>

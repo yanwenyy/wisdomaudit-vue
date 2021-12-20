@@ -110,20 +110,20 @@
                width="30%">
       <div class="mainTitle">被审计机构</div>
       <div class="formStyle">
-        <el-form label-width="110px"
+        <el-form label-width="130px"
                  ref="dictionaryRef"
                  :model="auditOrgForm"
                  disabled>
           <el-form-item prop="orgCode"
-                        label="ㅤ机ㅤ构ㅤ编ㅤ码:">
+                        label="机构编码:">
             <el-input v-model="auditOrgForm.orgCode"> </el-input>
           </el-form-item>
           <el-form-item prop="orgName"
-                        label="ㅤ机ㅤ构ㅤ名ㅤ称:">
+                        label="机构名称:">
             <el-input v-model="auditOrgForm.orgName"> </el-input>
           </el-form-item>
           <el-form-item prop="leaderName"
-                        label="ㅤ被审计单位领导:">
+                        label="被审计单位领导:">
             <el-input v-model="auditOrgForm.leaderName"> </el-input>
           </el-form-item>
           <el-form-item prop="userName"
@@ -337,23 +337,32 @@ export default {
   padding: 10px;
   border-bottom: 1px solid #d2d2d2;
 }
+
 .formStyle {
-  margin-left: 15%;
   // border: 1px solid red;
-  margin-top: 3%;
+  text-align: center;
   padding: 5%;
-  .el-input {
-    position: relative;
-    top: -35px;
-    width: 70%;
-  }
+
   .el-form-item {
-    margin-top: -4%;
+    // margin-top: -4%;
   }
 }
 </style>
 <style scoped>
 @import "../../../assets/styles/css/yw.css";
+
+.formStyle >>> .el-form {
+  width: 400px;
+  margin: 0 auto;
+}
+.formStyle >>> .el-input__inner {
+  width: 100%;
+  /* padding-bottom: 15px; */
+  box-sizing: border-box;
+}
+.formStyle >>> .el-form-item__label {
+  text-align: right;
+}
 .search {
   display: flex;
   justify-content: flex-end;
