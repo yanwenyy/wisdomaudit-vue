@@ -1026,6 +1026,7 @@ export default {
 </script>
 
 <style scoped>
+  @import "../../../assets/styles/css/yw.css";
 @import "../../../assets/styles/css/lhg.css";
 .dlag >>> .el-form-item__content,
 .dlag >>> .el-card__body .clearfix {
