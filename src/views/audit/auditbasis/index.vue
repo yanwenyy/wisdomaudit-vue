@@ -30,7 +30,7 @@
         </el-col>
       </div>
     </el-row>
-    <!--<div class="addbtn"><el-button type="primary" @click="addlist">新增依据</el-button></div>-->
+    <div class="addbtn"><el-button type="primary" @click="addlist">新增依据</el-button></div>
     <auditbasis ref="listShow"></auditbasis>
     <Vault :vaultV="vaultV"
            :sceneId="sceneId"

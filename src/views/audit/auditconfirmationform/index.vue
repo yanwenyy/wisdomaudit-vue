@@ -12,6 +12,7 @@
                 style="margin-top: 1%"
                 class="confirmaryTable">
         <el-table-column algin="left"
+                         width="50"
                          type="index"
                          label="序号"></el-table-column>
         <el-table-column algin="left"

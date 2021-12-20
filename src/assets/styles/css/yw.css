@@ -145,6 +145,12 @@ table tr:nth-child(odd){
 @media screen and(-ms-high-contrast:active),(-ms-high-contrast:none){
   /*兼容IE11*/
   .el-tag.el-tag--info{
-    width: 64%;
+    width: 64%!important;
+  }
+  .problem-form-new .el-form-item__label,.problem-form-new .el-form-item__content{
+    float: left!important;
+  }
+  .formData{
+    text-align: left!important;
   }
 }
