@@ -140,7 +140,7 @@
 
         <!-- 资料列表 -->
         <div>
-          <p>资料列表</p>
+          <p style="text-align: left">资料列表</p>
           <el-form label-width="80px">
             <el-table ref="multipleTable"
                       row-key="id"
@@ -723,7 +723,7 @@ export default {
       } else {
         // 编辑
         if (this.fileList2) {
-          this.uoload_post();//上传事件 
+          this.uoload_post();//上传事件
         } else {
           // 没有新增
           this.upload_succes();//上传成功
