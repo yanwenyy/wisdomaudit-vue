@@ -161,6 +161,7 @@
 
       <div class="dlag_conter add">
         <el-form ref="add"
+                 class="sjyjForm"
                  :model="add"
                  v-loading="ld"
                  :rules="rules">
