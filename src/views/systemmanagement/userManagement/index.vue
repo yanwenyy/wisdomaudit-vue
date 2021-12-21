@@ -32,14 +32,10 @@
           <el-table :data="tableData" style="width: 100%">
             <el-table-column prop="userName" label="用户账户">
             </el-table-column>
-            <el-table-column prop="mobile" label="手机号"></el-table-column>
             <el-table-column prop="orgId" label="所属组织"></el-table-column>
             <el-table-column prop="realName" label="真实姓名">
             </el-table-column>
-            <el-table-column prop="email" label="邮箱"></el-table-column>
             <el-table-column prop="roleName" label="角色名称">
-            </el-table-column>
-            <el-table-column prop="createTime" label="创建时间">
             </el-table-column>
             <el-table-column prop="address" label="操作">
               <template slot-scope="scope">
@@ -264,7 +260,7 @@ export default {
   margin: 20px 0;
 }
 
-.sjzl > > > .el-table__header {
+.sjzl >>> .el-table__header {
   border-top: none !important;
 }
 
@@ -295,7 +291,7 @@ export default {
   position: relative;
 }
 
-.search > > > .el-input__inner {
+.search >>> .el-input__inner {
   width: 180px;
   display: flex;
   float: right;
@@ -318,7 +314,7 @@ export default {
   align-items: center;
 }
 
-.search > > > .el-button {
+.search >>> .el-button {
   background: #1371cc !important;
 }
 

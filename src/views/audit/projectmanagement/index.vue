@@ -3427,7 +3427,7 @@ export default {
 }
 >>> .table-formItem .el-form-item__content {
   margin-left: 0 !important;
-  margin-bottom: 15px !important;
+  margin-bottom: 18px !important;
 }
 
 >>> .el-form-item__label {
@@ -3508,5 +3508,10 @@ export default {
   font-weight: 500;
   margin-right: 10px;
   color: #000;
+}
+@media screen and(-ms-high-contrast:active),(-ms-high-contrast:none){
+  >>>.el-tag.el-tag--info{
+    display: inline-block;
+  }
 }
 </style>

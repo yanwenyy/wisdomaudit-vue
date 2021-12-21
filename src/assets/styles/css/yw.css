@@ -139,12 +139,12 @@ table tr:nth-child(odd){
   padding-left: 0!important;
 }
 /*兼容IE10*/
-.el-tag.el-tag--info{
-  width: 64%\9;
-}
+/*.el-tag.el-tag--info{*/
+  /*width: 64%\9;*/
+/*}*/
 @media screen and(-ms-high-contrast:active),(-ms-high-contrast:none){
   /*兼容IE11*/
-  .el-tag.el-tag--info{
+  .sjyjForm .el-tag.el-tag--info{
     width: 64%!important;
   }
   .problem-form-new .el-form-item__label,.problem-form-new .el-form-item__content{
@@ -158,5 +158,12 @@ table tr:nth-child(odd){
   }
   .el-pagination__editor.el-input .el-input__inner{
     line-height: 28px!important;
+    margin-top: -2px;
+  }
+  .formData .el-form-item__label{
+    float: left!important;
+  }
+  .qrdForm .itemThree .el-form-item__content{
+    margin-left: 140px!important;
   }
 }
