@@ -208,13 +208,15 @@
                :visible.sync="add_dictionary"
                width="30%"
                @close="closeDialog('dictionaryRef')">
+
       <div class="mainTitle"
            v-if="isAdd == 1">新增</div>
       <div class="mainTitle"
-           v-else-if="isAdd == 2">编辑</div>
+           v-if="isAdd == 2">编辑</div>
+
       <div class="formStyle">
         <el-form :model="dictionaryForm"
-                 label-width="70px"
+                 label-width="90px"
                  :rules="dictionaryRules"
                  ref="dictionaryRef">
           <el-form-item prop="typename"
@@ -527,11 +529,6 @@ export default {
 .parameterManagement {
   padding: 1%;
   // border: 1px solid red;
-  .mainTitle {
-    text-align: center;
-    padding: 10px;
-    border-bottom: 1px solid #d2d2d2;
-  }
 }
 .lefttree {
   height: 500px;
@@ -565,22 +562,10 @@ export default {
 }
 .edit {
   width: 75%;
-  .el-input {
-    position: relative;
-    top: -35px;
-    width: 100%;
-  }
 }
 .formStyle {
-  margin-left: 20%;
   // border: 1px solid red;
-  margin-top: 3%;
   padding: 5%;
-  .el-input {
-    position: relative;
-    top: -35px;
-    width: 70%;
-  }
 }
 .footerBtn {
   width: 100%;
@@ -591,6 +576,23 @@ export default {
 </style>
 <style scoped>
 @import "../../../assets/styles/css/yw.css";
+.formStyle >>> .el-form {
+  width: 400px;
+  margin: 0 auto;
+}
+.mainTitle {
+  text-align: center;
+  padding: 10px;
+  border-bottom: 1px solid #d2d2d2;
+}
+.formStyle >>> .el-input__inner {
+  width: 100%;
+  /* padding-bottom: 15px; */
+  box-sizing: border-box;
+}
+.formStyle >>> .el-form-item__label {
+  text-align: right;
+}
 .search {
   display: flex;
   justify-content: flex-end;
