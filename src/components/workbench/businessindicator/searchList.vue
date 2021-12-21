@@ -448,6 +448,7 @@ export default {
 >>> .zb-form .el-form-item__content {
   width: 60%;
   display: inline-block;
+  float: left!important;
 }
 >>> .zb-form .el-form-item__content .el-input,
 >>> .zb-form .el-form-item__content .el-select {
