@@ -895,6 +895,12 @@ export default {
 </script>
 <style  scoped>
 @import "../../../assets/styles/css/lhg.css";
+.dlag_conter >>> .el-input.is-disabled .el-input__inner {
+  color: #606266 !important;
+  background: #f5f7fa !important;
+  opacity: 0.8;
+}
+
 >>> .el-dialog--center .el-dialog__body {
   padding: 0 !important;
 }

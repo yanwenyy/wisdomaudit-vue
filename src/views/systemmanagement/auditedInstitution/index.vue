@@ -342,15 +342,14 @@ export default {
   // border: 1px solid red;
   text-align: center;
   padding: 5%;
-
-  .el-form-item {
-    // margin-top: -4%;
-  }
 }
 </style>
 <style scoped>
 @import "../../../assets/styles/css/yw.css";
-
+.formStyle >>> .el-form-item {
+  width: 100%;
+  margin-bottom: 20px !important;
+}
 .formStyle >>> .el-form {
   width: 400px;
   margin: 0 auto;
@@ -361,8 +360,18 @@ export default {
   box-sizing: border-box;
 }
 .formStyle >>> .el-form-item__label {
+  width: 90px;
+  height: 100%;
+  display: block;
   text-align: right;
+  float: left !important;
 }
+.formStyle >>> .el-input.is-disabled .el-input__inner {
+  color: #606266 !important;
+  background: #f5f7fa !important;
+  opacity: 0.8;
+}
+
 .search {
   display: flex;
   justify-content: flex-end;
