@@ -138,7 +138,9 @@ table tr:nth-child(odd){
   text-align: left!important;
   padding-left: 0!important;
 }
-
+.el-form-item__label{
+  float: left!important;
+}
 @media screen and(-ms-high-contrast:active),(-ms-high-contrast:none){
   /*兼容IE11*/
   .sjyjForm .el-tag.el-tag--info{
