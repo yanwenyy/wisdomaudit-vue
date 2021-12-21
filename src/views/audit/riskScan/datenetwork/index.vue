@@ -89,7 +89,7 @@
       </el-row>
 
       <el-row>
-        <!-- <el-col :span="24">
+        <el-col :span="24">
           <frameset
             frameborder="NO"
             border="0"
@@ -98,7 +98,7 @@
           >
             <frame id="linkHtml" :src="formdates" />
           </frameset>
-        </el-col> -->
+        </el-col>
       </el-row>
     </div>
   </div>
@@ -202,7 +202,7 @@ export default {
   },
 
   created() {
-    // this.gettapylist();
+    this.gettapylist();
   },
 
   mounted() {},
