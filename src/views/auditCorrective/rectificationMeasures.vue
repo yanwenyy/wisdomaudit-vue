@@ -28,8 +28,8 @@
                        @change="list_data_start"
                        clearable>
               <el-option v-for="(item,index) in projectList"
-                         :label="item.projectName"
-                         :value="item.projectName"
+                         :label="item"
+                         :value="item"
                          :key="index">
               </el-option>
             </el-select>
@@ -175,9 +175,10 @@ export default {
   },
   mounted () {
     this.list_data_start();
-    correctStep_getProjectList().then(resp => {
-      this.projectList = resp.data;
-    })
+    this.list_data_start("getProjectList");
+    // correctStep_getProjectList().then(resp => {
+    //   this.projectList = resp.data;
+    // })
   },
   methods: {
     handleSelectionChange(val){
@@ -227,14 +228,14 @@ export default {
       this.list_data_start();
     },
     //列表数据
-    list_data_start () {
+    list_data_start (ifsel) {
       let params = {
         pageNo: this.searchForm.pageNo,
-        pageSize: this.searchForm.pageSize,
+        pageSize: ifsel=='getProjectList'?1000000:this.searchForm.pageSize,
         condition: {
-          correctStatus: this.searchForm.correctStatus,
-          projectName: this.searchForm.projectName,
-          problemName: this.searchForm.problemName,
+          correctStatus:  ifsel=='getProjectList'?'':this.searchForm.correctStatus,
+          projectName:  ifsel=='getProjectList'?'':this.searchForm.projectName,
+          problemName:  ifsel=='getProjectList'?'':this.searchForm.problemName,
         }
       };
       this.loading = true;
@@ -247,6 +248,13 @@ export default {
           total: datas.total
         };
         this.loading = false;
+        var projectList=[];
+        if(ifsel=="getProjectList"){
+          datas.records.forEach((item)=>{
+            projectList.push(item.projectName)
+          });
+          this.projectList=new Set(projectList);
+        }
       })
     },
     //分页点击
