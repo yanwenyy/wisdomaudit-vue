@@ -178,7 +178,7 @@
           <!-- 被审计单位 -->
           <el-form-item prop="auditedEntity"
                         style="margin-bottom: 22px !important">
-            <p style="padding-top: 10px">
+            <p >
               <span style="color: red">*</span> 被审计单位：
             </p>
             <el-select v-model="add.auditedEntity"
