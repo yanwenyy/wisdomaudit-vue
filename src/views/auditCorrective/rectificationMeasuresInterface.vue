@@ -27,8 +27,8 @@
                        placeholder="请选择"
                        clearable>
               <el-option v-for="(item,index) in projectList"
-                         :label="item.projectName"
-                         :value="item.projectName"
+                         :label="item"
+                         :value="item"
                          :key="index">
               </el-option>
             </el-select>
@@ -171,16 +171,17 @@ export default {
     Detail
   },
   mounted () {
-    window.onresize = () => {
-      return (() => {
-        window.screenWidth = document.body.clientWidth
-        console.log(window.screenWidth)
-      })()
-    };
+    // window.onresize = () => {
+    //   return (() => {
+    //     window.screenWidth = document.body.clientWidth
+    //     console.log(window.screenWidth)
+    //   })()
+    // };
     this.list_data_start();
-    correctStep_getProjectList().then(resp => {
-      this.projectList = resp.data;
-    })
+    this.list_data_start("getProjectList");
+    // correctStep_getProjectList().then(resp => {
+    //   this.projectList = resp.data;
+    // })
   },
   methods: {
     //详情保存后刷新列表
@@ -188,18 +189,18 @@ export default {
       this.list_data_start();
     },
     //列表数据
-    list_data_start () {
+    list_data_start (ifsel) {
       let params = {
         pageNo: this.searchForm.pageNo,
-        pageSize: this.searchForm.pageSize,
+        pageSize: ifsel=='getProjectList'?1000000:this.searchForm.pageSize,
         condition: {
-          correctStatus: this.searchForm.correctStatus,
-          projectName: this.searchForm.projectName,
-          problemName: this.searchForm.problemName,
+          correctStatus:  ifsel=='getProjectList'?'':this.searchForm.correctStatus,
+          projectName:  ifsel=='getProjectList'?'':this.searchForm.projectName,
+          problemName:  ifsel=='getProjectList'?'':this.searchForm.problemName,
         }
       };
       this.loading = true;
-      correctStep_pageListJkr(params).then(resp => {
+      correctStep_pageList(params).then(resp => {
         var datas = resp.data;
         this.tableData = datas.records;
         this.page = {
@@ -208,6 +209,13 @@ export default {
           total: datas.total
         };
         this.loading = false;
+        var projectList=[];
+        if(ifsel=="getProjectList"){
+          datas.records.forEach((item)=>{
+            projectList.push(item.projectName)
+          });
+          this.projectList=new Set(projectList);
+        }
       })
     },
     //分页点击
