@@ -146,7 +146,33 @@ export const constantRoutes = [{
       meta: {
         title: "政企业务"
       }
-    }
+    },
+    {
+        path: "/dateenterprise",
+        name: "dateenterprise",
+        component: () =>
+          import("@WISDOMAUDIT/views/audit/riskScan/dateenterprise"),
+        meta: {
+          title: "采购"
+        }
+      },
+      {
+        path: "/dateFinance",
+        name: "dateFinance",
+        component: () =>
+          import("@WISDOMAUDIT/views/audit/riskScan/dateFinance"),
+        meta: {
+          title: "网络业务"
+        }
+      }, {
+        path: "/datenetwork",
+        name: "datenetwork",
+        component: () =>
+          import("@WISDOMAUDIT/views/audit/riskScan/datenetwork"),
+        meta: {
+          title: "财务业务"
+        }
+      }
     ]
   },
     // {
