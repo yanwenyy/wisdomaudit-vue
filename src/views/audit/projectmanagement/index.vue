@@ -96,7 +96,7 @@
             </div>
             <div class="sef-collapse-content-list">
               <span class="sef-collapse-content-name">创建时间:</span>
-              <span>{{ item.createTime | filtedate }}</span>
+              <span>{{ item.createTime | dateformat }}</span>
             </div>
           </div>
         </div>
