@@ -128,6 +128,7 @@
                :append-to-body='true'
                :visible.sync="dialogFormVisible"
                :close-on-click-modal="false"
+               width="70%"
                @close="resetForm('temp')"
                center>
       <el-form ref="dataForm"
@@ -135,13 +136,13 @@
                :model="temp"
                label-position="right"
                label-width="140px"
-               class="problem-form">
-        <el-form-item label="问题："
+               class="problem-form formData">
+        <el-form-item class="itemTwo" label="问题："
                       prop="problem">
           <el-input v-model="temp.problem"
                     placeholder="请输入问题" />
         </el-form-item>
-        <el-form-item label="领域："
+        <el-form-item  class="itemTwo" label="领域："
                       prop="field">
           <el-select v-model="temp.field"
                      placeholder="请选择领域">
@@ -152,7 +153,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="专题："
+        <el-form-item  class="itemTwo" label="专题："
                       prop="special">
           <el-select v-model="temp.special"
                      placeholder="请选择专题"
@@ -170,8 +171,9 @@
         <!-- <el-form-item> </el-form-item> -->
         <el-form-item label="依据："
                       prop="basis"
-                      class="long">
+                      class="itemOne">
           <el-select v-model="temp.basis"
+                     class="inline-block yj-sel"
                      multiple
                      @visible-change="toopen"
                      placeholder="请选择"
@@ -179,13 +181,13 @@
           </el-select>
           <el-button type="primary"
                      ref="basisbtn0"
-                     class="citebtn"
+                     class="citebtn inline-block"
                      @click="openbasis()">引用审计依据</el-button>
         </el-form-item>
 
-        <el-form-item label="描述："
+        <el-form-item  label="描述："
                       prop="describe"
-                      class="long">
+                      class="itemOne">
           <!-- <el-input v-model="temp.describe" placeholder="请输入描述" /> -->
           <el-input type="textarea"
                     v-model="temp.describe"
@@ -194,13 +196,13 @@
         </el-form-item>
         <el-form-item label="管理建议："
                       prop="managementAdvice"
-                      class="long">
+                      class="itemOne">
           <el-input type="textarea"
                     v-model="temp.managementAdvice"
                     placeholder="请输入管理建议"
                     :autosize="{ minRows: 3}" />
         </el-form-item>
-        <el-form-item label="发现日期："
+        <el-form-item class="itemTwo" label="发现日期："
                       prop="problemDiscoveryTime">
           <!-- <el-input
             v-model="temp.problemDiscoveryTime"
@@ -212,7 +214,7 @@
                           v-model="temp.problemDiscoveryTime"
                           style="width: 100%"></el-date-picker>
         </el-form-item>
-        <el-form-item label="发现人："
+        <el-form-item  class="itemTwo" label="发现人："
                       prop="problemFindPeople">
           <el-select v-model="temp.problemFindPeople"
                      placeholder="请选择发现人">
@@ -224,14 +226,14 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="风险金额（万元）："
+        <el-form-item  class="itemTwo" label="风险金额（万元）："
                       prop="riskAmount">
           <el-input v-model="temp.riskAmount"
                     placeholder="请输入风险金额"
                     @keyup.native="onlyNumOnePoint('temp')"
                     @input="temp.riskAmount = temp.riskAmount.slice(0, 27)" />
         </el-form-item>
-        <el-form-item label="关联任务："
+        <el-form-item class="itemTwo" label="关联任务："
                       prop="auditTaskUuid">
           <el-select v-model="temp.auditTaskUuid"
                      multiple
@@ -270,7 +272,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog :title="ifadd == 1 ? '编辑问题' : '问题详情'"
+    <el-dialog width="70%" :title="ifadd == 1 ? '编辑问题' : '问题详情'"
                :visible.sync="dialogDetailVisible"
                :close-on-click-modal="false"
                :append-to-body='true'
@@ -281,14 +283,14 @@
                :rules="rules"
                label-position="right"
                label-width="140px"
-               class="problem-form">
-        <el-form-item label="问题："
+               class="problem-form formData">
+        <el-form-item  class="itemTwo" label="问题："
                       prop="problem">
           <el-input v-model="dqProblem.problem"
                     placeholder="请输入问题"
                     :disabled="ifadd != 2 ? false : true" />
         </el-form-item>
-        <el-form-item label="领域："
+        <el-form-item class="itemTwo" label="领域："
                       prop="field">
           <el-select v-model="dqProblem.field"
                      placeholder="请选择领域"
@@ -300,7 +302,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="专题："
+        <el-form-item class="itemTwo" label="专题："
                       prop="special">
           <el-select v-model="dqProblem.special"
                      placeholder="请选择专题"
@@ -317,7 +319,7 @@
                     v-if="input_selecte == false"
                     :disabled="ifadd != 2 ? false : true"></el-input>
         </el-form-item>
-        <el-form-item></el-form-item>
+        <!--<el-form-item></el-form-item>-->
         <el-popover placement="top-start"
                     max-width="600"
                     trigger="hover">
@@ -329,10 +331,11 @@
           </div>
           <el-form-item label="依据："
                         prop="basis"
-                        class="long"
+                        class="itemOne"
                         slot="reference"
-                        style="width: 33vw !important">
+                        >
             <el-select v-model="dqProblem.basis"
+                       class="inline-block yj-sel"
                        multiple
                        @visible-change="toopen"
                        placeholder="请选择"
@@ -342,7 +345,7 @@
             <el-button v-if="ifadd != 2 ? true : false"
                        type="primary"
                        ref="basisbtn0"
-                       class="citebtn"
+                       class="citebtn inline-block"
                        @click="openbasis()">引用审计依据</el-button>
           </el-form-item>
 
@@ -350,7 +353,7 @@
 
         <el-form-item label="描述："
                       prop="describe"
-                      class="long">
+                      class="itemOne">
           <el-input type="textarea"
                     v-model="dqProblem.describe"
                     placeholder="请输入描述"
@@ -359,14 +362,14 @@
         </el-form-item>
         <el-form-item label="管理建议："
                       prop="managementAdvice"
-                      class="long">
+                      class="itemOne">
           <el-input type="textarea"
                     v-model="dqProblem.managementAdvice"
                     placeholder="请输入管理建议"
                     :disabled="ifadd != 2 ? false : true"
                     :autosize="{ minRows: 3}" />
         </el-form-item>
-        <el-form-item label="发现日期："
+        <el-form-item class="itemTwo" label="发现日期："
                       prop="problemDiscoveryTime">
           <el-date-picker type="date"
                           placeholder="选择日期"
@@ -374,7 +377,7 @@
                           style="width: 100%"
                           :disabled="ifadd != 2 ? false : true"></el-date-picker>
         </el-form-item>
-        <el-form-item label="发现人："
+        <el-form-item class="itemTwo" label="发现人："
                       prop="problemFindPeople">
           <el-select v-model="dqProblem.problemFindPeople"
                      placeholder="请选择发现人"
@@ -387,7 +390,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="风险金额（万元）："
+        <el-form-item class="itemTwo" label="风险金额（万元）："
                       prop="riskAmount"
                       width="180">
           <el-input v-model="dqProblem.riskAmount"
@@ -396,7 +399,7 @@
                     @keyup.native="onlyNumOnePoint('dqProblem')"
                     @input="temp.riskAmount = temp.riskAmount.slice(0, 27)" />
         </el-form-item>
-        <el-form-item label="关联任务："
+        <el-form-item class="itemTwo" label="关联任务："
                       prop="auditTaskUuid">
           <el-select disabled
                      v-model="dqProblem.auditTaskUuid"
@@ -1137,6 +1140,7 @@ export default {
 }
 </style>
 <style>
+  @import "../../../assets/styles/css/yw.css";
 .auditproblem .titleMes .el-button--primary {
   border-radius: 0 !important;
   border: #0c87d6 !important;
@@ -1222,5 +1226,23 @@ export default {
   display: flex;
   justify-content: flex-end;
 }
+  .el-select{
+    width: 100%!important;
+  }
+  .itemOne .el-select,.itemOne .el-textarea{
+    width: 70%!important;
+  }
+  >>> .itemOne .el-form-item__content {
+    width: 77% !important;
+  }
+  >>> .itemTwo .el-form-item__content {
+    width: 59% !important;
+  }
+  >>> .itemThree .el-form-item__label {
+    width: 130px !important;
+  }
+  >>> .upload-yw .el-form-item__content {
+    width: 60% !important;
+  }
 </style>
 
