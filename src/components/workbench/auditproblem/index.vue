@@ -1138,8 +1138,6 @@ export default {
 .gary-border {
   border: 1px solid #ccc;
 }
-</style>
-<style>
   @import "../../../assets/styles/css/yw.css";
 .auditproblem .titleMes .el-button--primary {
   border-radius: 0 !important;
