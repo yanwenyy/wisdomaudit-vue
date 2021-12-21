@@ -166,4 +166,7 @@ table tr:nth-child(odd){
   .qrdForm .itemThree .el-form-item__content{
     margin-left: 140px!important;
   }
+  .problem-form{
+    text-align: left!important;
+  }
 }
