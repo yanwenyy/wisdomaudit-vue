@@ -137,12 +137,14 @@
                label-position="right"
                label-width="140px"
                class="problem-form formData">
-        <el-form-item class="itemTwo" label="问题："
+        <el-form-item class="itemTwo"
+                      label="问题："
                       prop="problem">
           <el-input v-model="temp.problem"
                     placeholder="请输入问题" />
         </el-form-item>
-        <el-form-item  class="itemTwo" label="领域："
+        <el-form-item class="itemTwo"
+                      label="领域："
                       prop="field">
           <el-select v-model="temp.field"
                      placeholder="请选择领域">
@@ -153,7 +155,8 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item  class="itemTwo" label="专题："
+        <el-form-item class="itemTwo"
+                      label="专题："
                       prop="special">
           <el-select v-model="temp.special"
                      placeholder="请选择专题"
@@ -170,6 +173,7 @@
         </el-form-item>
         <!-- <el-form-item> </el-form-item> -->
         <el-form-item label="依据："
+                      style="margin-bottom:20px!important;"
                       prop="basis"
                       class="itemOne">
           <el-select v-model="temp.basis"
@@ -185,7 +189,8 @@
                      @click="openbasis()">引用审计依据</el-button>
         </el-form-item>
 
-        <el-form-item  label="描述："
+        <el-form-item label="描述："
+                      style="margin-bottom:20px!important;"
                       prop="describe"
                       class="itemOne">
           <!-- <el-input v-model="temp.describe" placeholder="请输入描述" /> -->
@@ -195,6 +200,7 @@
                     :autosize="{ minRows: 3}"></el-input>
         </el-form-item>
         <el-form-item label="管理建议："
+                      style="margin-bottom:20px!important;"
                       prop="managementAdvice"
                       class="itemOne">
           <el-input type="textarea"
@@ -202,7 +208,8 @@
                     placeholder="请输入管理建议"
                     :autosize="{ minRows: 3}" />
         </el-form-item>
-        <el-form-item class="itemTwo" label="发现日期："
+        <el-form-item class="itemTwo"
+                      label="发现日期："
                       prop="problemDiscoveryTime">
           <!-- <el-input
             v-model="temp.problemDiscoveryTime"
@@ -214,7 +221,8 @@
                           v-model="temp.problemDiscoveryTime"
                           style="width: 100%"></el-date-picker>
         </el-form-item>
-        <el-form-item  class="itemTwo" label="发现人："
+        <el-form-item class="itemTwo"
+                      label="发现人："
                       prop="problemFindPeople">
           <el-select v-model="temp.problemFindPeople"
                      placeholder="请选择发现人">
@@ -226,14 +234,16 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item  class="itemTwo" label="风险金额（万元）："
+        <el-form-item class="itemTwo"
+                      label="风险金额（万元）："
                       prop="riskAmount">
           <el-input v-model="temp.riskAmount"
                     placeholder="请输入风险金额"
                     @keyup.native="onlyNumOnePoint('temp')"
                     @input="temp.riskAmount = temp.riskAmount.slice(0, 27)" />
         </el-form-item>
-        <el-form-item class="itemTwo" label="关联任务："
+        <el-form-item class="itemTwo"
+                      label="关联任务："
                       prop="auditTaskUuid">
           <el-select v-model="temp.auditTaskUuid"
                      multiple
@@ -272,7 +282,8 @@
       </div>
     </el-dialog>
 
-    <el-dialog width="70%" :title="ifadd == 1 ? '编辑问题' : '问题详情'"
+    <el-dialog width="70%"
+               :title="ifadd == 1 ? '编辑问题' : '问题详情'"
                :visible.sync="dialogDetailVisible"
                :close-on-click-modal="false"
                :append-to-body='true'
@@ -284,13 +295,15 @@
                label-position="right"
                label-width="140px"
                class="problem-form formData">
-        <el-form-item  class="itemTwo" label="问题："
+        <el-form-item class="itemTwo"
+                      label="问题："
                       prop="problem">
           <el-input v-model="dqProblem.problem"
                     placeholder="请输入问题"
                     :disabled="ifadd != 2 ? false : true" />
         </el-form-item>
-        <el-form-item class="itemTwo" label="领域："
+        <el-form-item class="itemTwo"
+                      label="领域："
                       prop="field">
           <el-select v-model="dqProblem.field"
                      placeholder="请选择领域"
@@ -302,7 +315,8 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item class="itemTwo" label="专题："
+        <el-form-item class="itemTwo"
+                      label="专题："
                       prop="special">
           <el-select v-model="dqProblem.special"
                      placeholder="请选择专题"
@@ -332,8 +346,7 @@
           <el-form-item label="依据："
                         prop="basis"
                         class="itemOne"
-                        slot="reference"
-                        >
+                        slot="reference">
             <el-select v-model="dqProblem.basis"
                        class="inline-block yj-sel"
                        multiple
@@ -352,6 +365,7 @@
         </el-popover>
 
         <el-form-item label="描述："
+                      style="margin-bottom:20px!important;"
                       prop="describe"
                       class="itemOne">
           <el-input type="textarea"
@@ -361,6 +375,7 @@
                     :autosize="{ minRows: 3}" />
         </el-form-item>
         <el-form-item label="管理建议："
+                      style="margin-bottom:20px!important;"
                       prop="managementAdvice"
                       class="itemOne">
           <el-input type="textarea"
@@ -369,7 +384,8 @@
                     :disabled="ifadd != 2 ? false : true"
                     :autosize="{ minRows: 3}" />
         </el-form-item>
-        <el-form-item class="itemTwo" label="发现日期："
+        <el-form-item class="itemTwo"
+                      label="发现日期："
                       prop="problemDiscoveryTime">
           <el-date-picker type="date"
                           placeholder="选择日期"
@@ -377,7 +393,8 @@
                           style="width: 100%"
                           :disabled="ifadd != 2 ? false : true"></el-date-picker>
         </el-form-item>
-        <el-form-item class="itemTwo" label="发现人："
+        <el-form-item class="itemTwo"
+                      label="发现人："
                       prop="problemFindPeople">
           <el-select v-model="dqProblem.problemFindPeople"
                      placeholder="请选择发现人"
@@ -390,7 +407,8 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item class="itemTwo" label="风险金额（万元）："
+        <el-form-item class="itemTwo"
+                      label="风险金额（万元）："
                       prop="riskAmount"
                       width="180">
           <el-input v-model="dqProblem.riskAmount"
@@ -399,7 +417,8 @@
                     @keyup.native="onlyNumOnePoint('dqProblem')"
                     @input="temp.riskAmount = temp.riskAmount.slice(0, 27)" />
         </el-form-item>
-        <el-form-item class="itemTwo" label="关联任务："
+        <el-form-item class="itemTwo"
+                      label="关联任务："
                       prop="auditTaskUuid">
           <el-select disabled
                      v-model="dqProblem.auditTaskUuid"
@@ -1138,7 +1157,7 @@ export default {
 .gary-border {
   border: 1px solid #ccc;
 }
-  @import "../../../assets/styles/css/yw.css";
+@import "../../../assets/styles/css/yw.css";
 .auditproblem .titleMes .el-button--primary {
   border-radius: 0 !important;
   border: #0c87d6 !important;
@@ -1149,6 +1168,7 @@ export default {
 }
 .auditproblem .el-form-item {
   width: 49%;
+  border: 1px solid red;
   margin: 10px 1% 10px 0 !important;
 }
 .auditproblem .problem-form {
@@ -1179,20 +1199,20 @@ export default {
   justify-content: flex-end;
   position: relative;
 }
-.auditproblem .search .el-input__inner {
-  width: 220px !important;
+.search >>> .el-input {
+  width: 250px !important;
   border-radius: 5px 0 0 5px;
 }
-.auditproblem .search .el-input__inner {
+.search .el-input__inner {
   width: 250px !important;
   display: flex;
   float: right;
   border-radius: 0 !important;
 }
-.auditproblem .titleMes .el-button {
+.titleMes .el-button {
   border-radius: 0 !important;
 }
-.auditproblem .search .search_icon {
+.search .search_icon {
   position: absolute;
   top: 0;
   right: 0;
@@ -1208,7 +1228,7 @@ export default {
   -ms-flex-align: center;
   align-items: center;
 }
-.auditproblem .search .el-button {
+.search .el-button {
   border-radius: 0 5px 5px 0;
   /* background: #1371cc !important; */
 }
@@ -1224,23 +1244,24 @@ export default {
   display: flex;
   justify-content: flex-end;
 }
-  .el-select{
-    width: 100%!important;
-  }
-  .itemOne .el-select,.itemOne .el-textarea{
-    width: 70%!important;
-  }
-  >>> .itemOne .el-form-item__content {
-    width: 77% !important;
-  }
-  >>> .itemTwo .el-form-item__content {
-    width: 59% !important;
-  }
-  >>> .itemThree .el-form-item__label {
-    width: 130px !important;
-  }
-  >>> .upload-yw .el-form-item__content {
-    width: 60% !important;
-  }
+.el-select {
+  width: 100% !important;
+}
+.itemOne .el-select,
+.itemOne .el-textarea {
+  width: 70% !important;
+}
+>>> .itemOne .el-form-item__content {
+  width: 77% !important;
+}
+>>> .itemTwo .el-form-item__content {
+  width: 59% !important;
+}
+>>> .itemThree .el-form-item__label {
+  width: 130px !important;
+}
+>>> .upload-yw .el-form-item__content {
+  width: 60% !important;
+}
 </style>
 
