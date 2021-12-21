@@ -157,7 +157,7 @@ table tr:nth-child(odd){
     line-height: 28px!important;
     margin-top: -2px;
   }
-  .formData .el-form-item__label{
+  .el-form-item__label{
     float: left!important;
   }
   .qrdForm .itemThree .el-form-item__content{
