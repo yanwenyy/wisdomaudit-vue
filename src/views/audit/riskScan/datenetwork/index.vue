@@ -2,7 +2,37 @@
   <div class="page-container">
     <div class="filter-container">
       <el-row>
-        <el-col :span="3">
+<el-form :inline="true" :model="formInline" class="demo-form-inline">
+  <el-form-item label="专题:">
+   <el-select
+            v-model="value"
+            placeholder="请选择"
+            @change="ChooseThetype"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.index"
+              :label="item.typename"
+              :value="item.type"
+            >
+            </el-option>
+          </el-select>
+  </el-form-item>
+  <el-form-item label="审计月份:">
+     <el-date-picker
+            v-model="value2"
+            type="month"
+            value-format="yyyyMM"
+            placeholder="选择月"
+            @change="changesj"
+          >
+          </el-date-picker>
+  </el-form-item>
+
+</el-form>
+
+        <!-- <el-col :span="4">
+          <p>专题</p>
           <el-select
             v-model="value"
             placeholder="请选择"
@@ -26,7 +56,7 @@
             @change="changesj"
           >
           </el-date-picker>
-        </el-col>
+        </el-col> -->
       </el-row>
 
       <el-row>
@@ -59,10 +89,8 @@
       </el-row>
 
       <el-row>
-        <el-col :span="20">
+        <!-- <el-col :span="24">
           <frameset
-            cols="87%,*"
-            rows="*"
             frameborder="NO"
             border="0"
             framespacing="0"
@@ -70,7 +98,7 @@
           >
             <frame id="linkHtml" :src="formdates" />
           </frameset>
-        </el-col>
+        </el-col> -->
       </el-row>
     </div>
   </div>
@@ -88,6 +116,7 @@ export default {
 
   data() {
     return {
+      formInline:{},
       options: [],
       value2: "",
       radio2: {},
@@ -118,7 +147,7 @@ export default {
       getSignature(p).then((result) => {
         if (result.code== 0 && result.data.url !== null) {
           getdataAuditApi(result.data.token).then((res)=>{
-           
+
            if (res.status== 'success') {
              getTypes("area=4").then((rem) => {
               this.options = rem.data;
@@ -126,11 +155,11 @@ export default {
               this.gettablelist(this.value);
               console.log("获取外面之前的接口", rem);
             });
-             
+
            }
           });
-    
-        
+
+
         } else {
           let rem = getTypes("area=4");
           this.options = rem.data;
@@ -173,7 +202,7 @@ export default {
   },
 
   created() {
-    this.gettapylist();
+    // this.gettapylist();
   },
 
   mounted() {},
