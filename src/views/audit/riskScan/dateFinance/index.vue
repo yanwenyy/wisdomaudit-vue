@@ -120,7 +120,7 @@ export default {
           getdataAuditApi(result.data.token).then((res)=>{
            
            if (res.status== 'success') {
-             getTypes("area=4").then((rem) => {
+             getTypes("area=5").then((rem) => {
               this.options = rem.data;
               this.value = rem.data[0].type;
               this.gettablelist(this.value);
@@ -132,13 +132,13 @@ export default {
     
         
         } else {
-          let rem = getTypes("area=4");
+          let rem = getTypes("area=5");
           this.options = rem.data;
           this.value = rem.data[0].type;
           this.gettablelist(this.value);
         }
       }).catch(err => {
-          let rem = getTypes("area=4");
+          let rem = getTypes("area=5");
           this.options = rem.data;
           this.value = rem.data[0].type;
           this.gettablelist(this.value);

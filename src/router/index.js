@@ -160,7 +160,7 @@ export const constantRoutes = [{
         path: "/dateFinance",
         name: "dateFinance",
         component: () =>
-          import("@WISDOMAUDIT/views/audit/riskScan/dateFinance"),
+          import("@WISDOMAUDIT/views/audit/riskScan/datenetwork"),
         meta: {
           title: "网络业务"
         }
@@ -168,7 +168,7 @@ export const constantRoutes = [{
         path: "/datenetwork",
         name: "datenetwork",
         component: () =>
-          import("@WISDOMAUDIT/views/audit/riskScan/datenetwork"),
+          import("@WISDOMAUDIT/views/audit/riskScan/dateFinance"),
         meta: {
           title: "财务业务"
         }
@@ -206,7 +206,7 @@ export const constantRoutes = [{
     //     path: "/dateFinance",
     //     name: "dateFinance",
     //     component: () =>
-    //       import("@WISDOMAUDIT/views/audit/riskScan/dateFinance"),
+    //       import("@WISDOMAUDIT/views/audit/riskScan/"),
     //     meta: {
     //       title: "财务"
     //     }
