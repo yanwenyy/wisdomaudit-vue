@@ -60,7 +60,7 @@
       </el-row>
 
       <el-row>
-        <el-col :span="20">
+        <el-col :span="24">
           <div style="margin-top: 20px">
             <el-radio-group v-model="radio2" size="medium" @change="changemx">
               <el-radio-button
@@ -71,19 +71,6 @@
                 >{{ item.tabName }}</el-radio-button
               >
             </el-radio-group>
-          </div>
-        </el-col>
-        <el-col :span="4" style="text-align: right">
-          <div style="margin-top: 20px">
-            <span
-              style="
-                display: inline-block;
-                height: 36px;
-                vertical-align: middle;
-                line-height: 36px;
-              "
-              >更多</span
-            >
           </div>
         </el-col>
       </el-row>
