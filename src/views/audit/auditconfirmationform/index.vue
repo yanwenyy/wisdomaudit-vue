@@ -117,7 +117,7 @@
 
     <el-form :rules="rules"
              ref="addForm"
-             class="formData"
+             class="formData qrdForm"
              label-width="180px"
              :model="formDetail">
       <!--label-width="130px"-->

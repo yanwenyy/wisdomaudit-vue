@@ -158,5 +158,12 @@ table tr:nth-child(odd){
   }
   .el-pagination__editor.el-input .el-input__inner{
     line-height: 28px!important;
+    margin-top: -2px;
+  }
+  .formData .el-form-item__label{
+    float: left!important;
+  }
+  .qrdForm .itemThree .el-form-item__content{
+    margin-left: 140px!important;
   }
 }
