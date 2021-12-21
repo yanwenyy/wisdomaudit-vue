@@ -1026,7 +1026,7 @@ export default {
 </script>
 
 <style scoped>
-  @import "../../../assets/styles/css/yw.css";
+@import "../../../assets/styles/css/yw.css";
 @import "../../../assets/styles/css/lhg.css";
 .dlag >>> .el-form-item__content,
 .dlag >>> .el-card__body .clearfix {
@@ -1180,5 +1180,14 @@ export default {
   padding: 20px 10px;
   display: flex;
   justify-content: flex-end;
+}
+
+.dlag >>> .el-form-item__label {
+  width: 120px;
+  float: left !important;
+}
+.dlag >>> .el-form-item__content {
+  float: left !important;
+  margin-left: 0 !important;
 }
 </style>
