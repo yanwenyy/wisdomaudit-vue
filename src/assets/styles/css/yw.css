@@ -138,10 +138,7 @@ table tr:nth-child(odd){
   text-align: left!important;
   padding-left: 0!important;
 }
-/*兼容IE10*/
-/*.el-tag.el-tag--info{*/
-  /*width: 64%\9;*/
-/*}*/
+
 @media screen and(-ms-high-contrast:active),(-ms-high-contrast:none){
   /*兼容IE11*/
   .sjyjForm .el-tag.el-tag--info{

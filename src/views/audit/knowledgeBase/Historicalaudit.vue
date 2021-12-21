@@ -101,7 +101,7 @@
 
         <!-- 风险金额 -->
         <el-table-column prop="riskAmount"
-                         align="center"
+                         align="right"
                          show-overflow-tooltip
                          label="风险金额（万元）">
           <template slot-scope="scope">
@@ -111,7 +111,8 @@
             <div v-else>--</div>
           </template>
         </el-table-column>
-
+        <el-table-column width="80">
+        </el-table-column>
         <!-- 操作 -->
         <el-table-column prop="edit"
                          width="180"
@@ -1191,5 +1192,11 @@ export default {
 .dlag >>> .el-form-item__content {
   float: left !important;
   margin-left: 0 !important;
+}
+  .sjyjForm{
+    text-align: left!important;
+  }
+>>>.sjyjForm .el-form-item__label{
+  float: left!important;
 }
 </style>

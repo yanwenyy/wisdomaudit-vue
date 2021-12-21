@@ -862,6 +862,7 @@ export default {
 .relationBtn {
   margin-bottom: 10px;
   border-color: #dcdfe6 !important;
+  display: block;
 }
 .list-folder {
   color: orange;
@@ -926,6 +927,9 @@ export default {
 
 >>> .itemOne .el-form-item__content {
   width: 77% !important;
+}
+>>> .itemThree .el-form-item__content {
+  margin-left: 140px!important;
 }
 >>> .itemTwo .el-form-item__content {
   width: 59% !important;
