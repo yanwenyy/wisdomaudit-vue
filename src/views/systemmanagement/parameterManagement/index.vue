@@ -580,6 +580,12 @@ export default {
   width: 400px;
   margin: 0 auto;
 }
+.formStyle {
+  padding: 5%;
+  float: left;
+  width: 100%;
+  text-align: center;
+}
 .mainTitle {
   text-align: center;
   padding: 10px;
@@ -593,6 +599,22 @@ export default {
 .formStyle >>> .el-form-item__label {
   text-align: right;
 }
+.formStyle >>> .el-form-item {
+  float: left;
+  width: 100%;
+  margin-bottom: 20px !important;
+}
+.formStyle >>> .el-form-item__label {
+  width: 90px;
+  height: 100%;
+  display: block;
+  float: left !important;
+}
+.el-form-item__content {
+  width: 290px;
+  float: left;
+}
+
 .search {
   display: flex;
   justify-content: flex-end;
@@ -632,12 +654,7 @@ export default {
 .parameterManagement >>> .el-dialog__body {
   padding: 5px 0 !important;
 }
-.edit >>> .el-form-item__error {
-  top: 0;
-}
-.formStyle >>> .el-form-item__error {
-  top: 0;
-}
+
 .formStyle >>> .el-input.is-disabled .el-input__inner {
   background-color: #f5f7fa !important;
   color: #c0c4cc !important;
