@@ -320,6 +320,7 @@
     <!-- 引用审计依据 -->
     <el-dialog title="引用审计依据"
                center
+               :append-to-body='true'
                @close="resetForm()"
                :visible.sync="basisdialog"
                width="70%"

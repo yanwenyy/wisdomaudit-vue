@@ -576,6 +576,17 @@ export default {
 </style>
 <style scoped>
 @import "../../../assets/styles/css/yw.css";
+.edit >>> .el-form-item__label {
+  width: 90px;
+  height: 100%;
+  display: block;
+  text-align: right;
+  float: left !important;
+}
+.edit >>> .el-form-item {
+  width: 100%;
+  margin-bottom: 20px !important;
+}
 .formStyle >>> .el-form {
   width: 400px;
   margin: 0 auto;
@@ -596,9 +607,6 @@ export default {
   /* padding-bottom: 15px; */
   box-sizing: border-box;
 }
-.formStyle >>> .el-form-item__label {
-  text-align: right;
-}
 .formStyle >>> .el-form-item {
   float: left;
   width: 100%;
@@ -608,6 +616,8 @@ export default {
   width: 90px;
   height: 100%;
   display: block;
+  text-align: right;
+
   float: left !important;
 }
 .el-form-item__content {

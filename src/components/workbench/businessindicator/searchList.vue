@@ -443,7 +443,7 @@ export default {
   margin-top: 20px;
 }
 >>> .zb-form .el-form-item {
-  margin-bottom: 15px !important;
+  margin-bottom: 20px !important;
 }
 >>> .zb-form .el-form-item__content {
   width: 60%;

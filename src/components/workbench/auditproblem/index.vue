@@ -167,7 +167,7 @@
           <el-input v-model="temp.special"
                     v-if="input_select == false"></el-input>
         </el-form-item>
-        <el-form-item> </el-form-item>
+        <!-- <el-form-item> </el-form-item> -->
         <el-form-item label="依据："
                       prop="basis"
                       class="long">
@@ -177,11 +177,12 @@
                      placeholder="请选择"
                      no-data-text="请点击引用审计依据">
           </el-select>
+          <el-button type="primary"
+                     ref="basisbtn0"
+                     class="citebtn"
+                     @click="openbasis()">引用审计依据</el-button>
         </el-form-item>
-        <el-button type="primary"
-                   ref="basisbtn0"
-                   class="citebtn"
-                   @click="openbasis()">引用审计依据</el-button>
+
         <el-form-item label="描述："
                       prop="describe"
                       class="long">
@@ -338,13 +339,15 @@
                        no-data-text="请点击引用审计依据"
                        :disabled="ifadd != 2 ? false : true">
             </el-select>
+            <el-button v-if="ifadd != 2 ? true : false"
+                       type="primary"
+                       ref="basisbtn0"
+                       class="citebtn"
+                       @click="openbasis()">引用审计依据</el-button>
           </el-form-item>
+
         </el-popover>
-        <el-button v-if="ifadd != 2 ? true : false"
-                   type="primary"
-                   ref="basisbtn0"
-                   class="citebtn"
-                   @click="openbasis()">引用审计依据</el-button>
+
         <el-form-item label="描述："
                       prop="describe"
                       class="long">
@@ -1159,9 +1162,11 @@ export default {
 .auditproblem .el-select {
   width: 100%;
 }
-.auditproblem .citebtn {
+.auditproblem >>> .citebtn {
   height: 40px;
+  margin-left: 10px;
   margin-bottom: 1%;
+  border: 1px solid red;
 }
 .canclick {
   color: #0c87d6;
