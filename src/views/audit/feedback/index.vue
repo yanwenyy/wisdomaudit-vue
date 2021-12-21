@@ -369,7 +369,7 @@
 
         <!-- 操作记录 -->
         <div v-if="record_status==true">
-          <p>操作记录</p>
+          <p style="text-align:left">操作记录</p>
           <el-form label-width="80px">
             <el-table :data="record_log.records"
                       v-loading="loading_list2"
@@ -1247,5 +1247,8 @@ export default {
 }
 .upload-demo {
   width: 100%;
+}
+.dlag_conter >>> .el-upload-list__item-name {
+  text-align: left;
 }
 </style>

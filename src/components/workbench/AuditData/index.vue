@@ -2844,6 +2844,12 @@ export default {
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
 /* @import "../../../assets/styles/css/yw.css"; */
+.dlag_conter >>> .el-input.is-disabled .el-input__inner {
+  color: #606266 !important;
+  background: #f5f7fa !important;
+  opacity: 0.8;
+}
+
 .status_btn {
   font-size: 14px !important;
   background: none;
