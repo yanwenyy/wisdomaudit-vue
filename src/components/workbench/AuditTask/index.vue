@@ -271,7 +271,6 @@
                   </div>
 
                   <el-button type="text"
-                             v-if=" scope.row.taskType == 1"
                              style="color: #0c87d6!important;
                                font-size: 14px !important;
 "
@@ -284,7 +283,6 @@
                 <div v-else>
 
                   <el-button type="text"
-                             v-if=" scope.row.taskType == 1"
                              style="color: #0c87d6!important;
                                font-size: 14px !important;
 "
@@ -349,7 +347,7 @@
         <!-- 结果操作 -->
         <div class="cxjg"
              style="margin: 20px 0; display: flex">
-          <el-col> 模型线索结果（{{jg_title}}模型） </el-col>
+          <el-col> 模型线 索结果（{{jg_title}}模型） </el-col>
           <el-col style="display: contents">
             <el-button plain
                        v-if="userRole==1 || userRole==2 "
