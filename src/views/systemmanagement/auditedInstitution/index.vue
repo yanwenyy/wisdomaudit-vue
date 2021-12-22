@@ -275,7 +275,7 @@ export default {
     orgDownload () {
       axios({
         method: "get",
-        timeout: -1,
+        // timeout: -1,
         url: "/wisdomaudit/auditOrg/downloadAuditOrgModel",
         headers: {
           TOKEN: this.dqtoken,
