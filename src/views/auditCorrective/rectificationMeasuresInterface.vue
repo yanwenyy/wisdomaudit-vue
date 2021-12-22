@@ -51,7 +51,7 @@
               border
               :data="tableData"
               highlight-current-row>
-      <el-table-column :resizable="false"
+      <el-table-column width="50" :resizable="false"
                        label="序号"
                        type="index" />
       <el-table-column :resizable="false"
