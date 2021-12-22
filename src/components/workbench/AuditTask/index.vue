@@ -990,6 +990,9 @@
         <div class=""
              v-if="success_btn==0">
           <el-button size="small"
+                     @click="dialogVisible_zj = false">取 消</el-button>
+
+          <el-button size="small"
                      type="primary"
                      v-if="title=='新增任务'"
                      :disabled="isDisable"
@@ -1000,8 +1003,6 @@
                      :disabled="isDisable"
                      @click="save_zj(2)">确 定</el-button>
 
-          <el-button size="small"
-                     @click="dialogVisible_zj = false">取 消</el-button>
         </div>
       </span>
     </el-dialog>

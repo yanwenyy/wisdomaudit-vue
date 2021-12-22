@@ -301,6 +301,11 @@
 
         <span slot="footer"
               class="foot">
+
+          <el-button size="small"
+                     plain
+                     @click="dialogVisible = false">取 消</el-button>
+
           <el-button size="small"
                      type="primary"
                      v-if="title == '新增省内历史审计发现'"
@@ -311,9 +316,7 @@
                      v-else
                      :disabled="isDisable"
                      @click="save(2, 'add')">确 定</el-button>
-          <el-button size="small"
-                     plain
-                     @click="dialogVisible = false">取 消</el-button>
+
         </span>
       </div>
     </el-dialog>
