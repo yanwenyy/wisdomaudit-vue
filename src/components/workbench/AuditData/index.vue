@@ -1134,28 +1134,6 @@
       </el-table> -->
     </el-dialog>
 
-    <!-- 确认是否下发 -->
-    <!-- <div class="mose"
-         v-if="whether==true"></div>
-    <div class="whether"
-         v-if="whether==true"
-         style="padding-bottom: 10px; ">
-      <div>
-        <span class="close"
-              @click="whether = false">×</span>
-        <p>是否确认下发</p>
-        <span slot="footer">
-          <el-button size="small"
-                     type="primary"
-                     :disabled="isDisable"
-                     @click="list_push()">确认</el-button>
-
-          <el-button size="small"
-                     @click="whether = false">取 消</el-button>
-        </span>
-      </div>
-    </div> -->
-
     <el-dialog center
                :visible.sync="whether"
                :append-to-body='true'
@@ -1389,21 +1367,16 @@ export default {
 
       // 下发
       push_id: '',
-
-
       multipleSelection_list: [], // 新增 任务弹窗里的全选
       task_list: [],// 新增任务初始化 数据
-
       task_list_records: [],//新增任务初始化 列表
       task_list_records_details: [],//编辑任务初始化 列表
-
       // 新增任务初始化  传递参数
       params_add: {
         pageNo: 1,
         pageSize: 10,
       },
       edit_details: [],//编辑 回显详情数据
-
       // 已完成
       tableData2: [],//已完成数据
       multipleSelection2: [],//新增列表选中的数据
@@ -1433,7 +1406,6 @@ export default {
         pageNo: 1,
         pageSize: 10,
       },
-
       // 审核 操作日志
       record_query: {
         id: '',
@@ -1442,24 +1414,16 @@ export default {
       },
 
       fileList: [],//上传的文件
-
       edit_file_list: [],
-
       moban_list: 0,//模版附件
       enclosure_moban_list: [],//模版资料
-
       user_data: {},//添加资料回显
       is_add: '',//是否接口人
       // 是否显示新增
       isDisable: false,//防止重复提交
-
-
       success_btn1: 0,
       success_btn2: 0,
       selectprojectPeopleNum: {},
-
-
-
       details_list: [],//操作记录附件
     }
   },
@@ -1481,6 +1445,7 @@ export default {
 
     // 资料 未完成列表
     this.list_data_start(params);//未完成
+    this.query_title()
 
     // 新增未完成任务列表
     this.add_add_csh();
@@ -1494,7 +1459,6 @@ export default {
 
     // 标题 是否显示 新增
 
-    this.query_title()
   },
   mounted () { },
   props: ['active_project', 'userRole'],
@@ -1541,7 +1505,9 @@ export default {
       operation_addTitle(params_title).then(resp => {
         this.add_form.title = resp.data.title//标题
         this.is_add = resp.data.isDelete//是否新增
-
+        this.add_data.department = resp.data.auditOrgName;//部门
+        this.$forceUpdate();
+        this.$set(this.add_data, this.add_data)
       })
     },
     // 获取责任人
@@ -1649,27 +1615,6 @@ export default {
       file.response && this.fileList.remove(file.response.data);
       file.response && (this.key = Math.random())
     },
-
-    // 上传成功回调
-    // handleChangePic_verify (resp, file) {
-    //   this.update_path = resp.data.filePath
-    //   
-    //   if (resp.code == 0) {
-    //     this.add_data.Url = URL.createObjectURL(file.raw);
-
-    //     this.$message({
-    //       message: '上传成功',
-    //       type: 'success'
-    //     });
-    //     this.success_btn = 0;//隐藏加载按钮
-    //     return false
-    //   } else {
-    //     this.$message({
-    //       message: resp.msg,
-    //       type: 'error'
-    //     });
-    //   }
-    // },
     // 顶部tab 切换事件
     handleClick (val, event) {
       this.search_title = '';//清空筛选
@@ -1798,13 +1743,7 @@ export default {
         this.loading = true;
         this.enclosure_details_list = resp.data
         this.loading = false;
-        // if (this.enclosure_details_list.length == 0) {
-        //   this.$message('暂无上传的附件');
-        //   return false
-        // } else {
-        //   this.dialogVisibl_enclosure_details = true;
 
-        // }
       })
 
     },
@@ -1842,6 +1781,7 @@ export default {
       this.add_data = {}; //清空
       this.dialogVisible2 = true;
       this.edit_title = '添加资料'
+      this.query_title();
     },
     // 新增任务初始化 列表
     add_add_csh () {
@@ -2139,7 +2079,7 @@ export default {
     },
 
     // 添加资料   部门
-    post_select_loadcascader_bm (data) {
+    post_select_loadcascader_bm (data, selName) {
       // let params = {
       //   typecode: 'Department',//部门
       // }
@@ -2150,14 +2090,14 @@ export default {
     },
     // 部门
     Department_change (val) {
-      console.log(val)
-      console.log(val.indexOf("分公司") != -1);
-
-      if (val.indexOf("分公司") != -1) {
+      console.log(val);
+      if (this.add_data.department.indexOf("分公司") != -1) {
         this.add_data.department = '地市分公司';
+      } else {
+        this.add_data.department = val;
       }
-      // this.add_data.department = '地市分公司';
-
+      this.$forceUpdate();
+      this.$set(this.add_data, this.add_data)
     },
 
     // 添加资料  来源

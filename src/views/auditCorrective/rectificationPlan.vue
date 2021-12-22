@@ -131,12 +131,13 @@
     <el-dialog :visible.sync="dialogVisible_rectification"
                center
                :append-to-body='true'
+               class="up_person"
                @close="resetForm2('save_project_prople')"
                width="35%">
       <div class="title">启动整改</div>
 
       <div class="dialog">
-        <div class="dialog follow_up_person">
+        <div class="dialog ">
           <el-form ref="save_project_prople"
                    :model="save_project_prople"
                    :inline="false"
@@ -509,6 +510,9 @@ export default {
 }
 
 /* 整改跟进人 */
+.up_person {
+  min-width: 650px;
+}
 .follow_up_person {
   display: flex;
   flex-wrap: wrap;
@@ -519,18 +523,29 @@ export default {
   text-align: right;
 }
 
+.follow_up_person >>> .el-form {
+  margin: 0 auto;
+  width: 520px;
+}
+.up_person >>> .el-form-item {
+  margin-bottom: 0 !important;
+}
 .people {
   width: 100%;
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 20px !important;
+}
+.people p {
+  width: 100px;
+  text-align: right;
 }
 .people >>> .el-form-item__content {
   margin-left: 0 !important;
 }
 .people >>> .el-date-editor.el-input,
 .el-date-editor.el-input__inner {
-  width: 200px;
+  width: 100%;
 }
 .people >>> .el-form-item__content {
   display: flex;
