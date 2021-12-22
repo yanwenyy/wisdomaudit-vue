@@ -103,7 +103,7 @@
                           effect="light"
                           v-if="scope.row.endConfirmationFile">
                 <div @click="downFile(scope.row.endConfirmationFileId,scope.row.endConfirmationFile)"
-                     class="pointer"
+                     class="pointer blue"
                      slot="content">{{scope.row.endConfirmationFile}}</div>
                 <span class="smb-btn"><i class="el-icon-folder-opened list-folder smb-folder"></i>1</span>
               </el-tooltip>
@@ -152,7 +152,7 @@
                     v-model="formDetail.matterDetail"></el-input>
         </el-form-item>
         <el-form-item prop="auditorsName"
-                      class="itemThree"
+                      class="itemTwo"
                       label="审计人员:">
           <el-select :disabled="ifLook"
                      v-model="formDetail.auditorsName"
@@ -169,7 +169,7 @@
           <!--v-model="formDetail.auditorsName"></el-input>-->
         </el-form-item>
         <el-form-item prop="reviewerName"
-                      class="itemThree"
+                      class="itemTwo"
                       label="复核人:">
           <el-select :disabled="ifLook"
                      v-model="formDetail.reviewerName	"
@@ -183,7 +183,7 @@
           </el-select>
         </el-form-item>
         <el-form-item prop="compileDate"
-                      class="itemThree"
+                      class="itemTwo"
                       label="编制日期:">
           <el-date-picker :disabled="ifLook"
                           v-model="formDetail.compileDate"
@@ -930,6 +930,12 @@ export default {
 }
 >>> .itemThree .el-form-item__content {
   margin-left: 140px!important;
+}
+.itemTwo{
+  width: 48.5%;
+}
+.itemTwo .el-select{
+  width: 100%!important;
 }
 >>> .itemTwo .el-form-item__content {
   width: 59% !important;

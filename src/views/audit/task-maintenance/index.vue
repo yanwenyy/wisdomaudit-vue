@@ -1366,7 +1366,7 @@ export default {
       formData.append("fileId", id);
       axios({
         method: "post",
-        timeout: -1,
+        // timeout: -1,
 
         url: "/wisdomaudit/auditPreviousDemandData/downloadByFileId",
         headers: {

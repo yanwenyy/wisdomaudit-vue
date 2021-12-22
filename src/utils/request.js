@@ -61,6 +61,11 @@ service.interceptors.request.use(
       // 如果配置了isLoading: false，则不显示loading
       showFullScreenLoading();
     }
+    if (config.method == "get") {
+      if (!!window.ActiveXObject || "ActiveXObject" in window) {
+        config.url=config.url+(config.url.indexOf("?")!=-1?'&&':'?')+"ywtime="+new Date().getTime();
+      }
+    }
     config.headers.TOKEN = sessionStorage.getItem('TOKEN');
     // }
     return config

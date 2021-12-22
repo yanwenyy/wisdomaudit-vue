@@ -97,6 +97,40 @@
             <!--</div>-->
           </div>
         </el-form-item>
+        <el-form-item label="系统升级改造:">
+          <el-input :disabled="ifLook"
+                    v-model="formState.ext3"
+                    placeholder="请输入"></el-input>
+          <el-upload v-if="type!='zgtz_look'&&type!='zgcs_examine'"
+                     class="upload-demo inline-block"
+                     action="/wisdomaudit/auditBasy/filesUpload"
+                     :on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList3)}"
+                     :on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList3,fileList3,fileList3_del)}"
+                     multiple
+                     :limit="3"
+                     :key="key"
+                     :on-exceed="handleExceed"
+                     :headers="headers"
+                     :file-list="fileList3">
+            <el-button class="zl-up-btn"
+                       size="small"
+                       icon="el-icon-upload2">点击上传</el-button>
+          </el-upload>
+          <div class="inline-block"
+               v-if="ifLook">
+            <el-tooltip class="item"
+                        effect="dark"
+                        v-for="(item,index) in fileList3"
+                        :key="index"
+                        :content="item.fileName"
+                        placement="top">
+              <div class="blue pointer"
+                   @click="downFile(item.attachmentUuid,item.fileName)">
+                {{item.fileName.length>20?item.fileName.slice(0,20)+"...":item.fileName}}</div>
+            </el-tooltip>
+            <!--<div class="blue pointer" v-for="(item,index) in fileList3" :key="index"  @click="downFile(item.attachmentUuid,item.fileName)">{{item.fileName}}</div>-->
+          </div>
+        </el-form-item>
         <el-form-item label="其他措施:">
           <el-input :disabled="ifLook"
                     v-model="formState.ext2"
@@ -132,40 +166,6 @@
             <!--{{item.fileName}}-->
             <!--</div>-->
 
-          </div>
-        </el-form-item>
-        <el-form-item label="系统升级改造:">
-          <el-input :disabled="ifLook"
-                    v-model="formState.ext3"
-                    placeholder="请输入"></el-input>
-          <el-upload v-if="type!='zgtz_look'&&type!='zgcs_examine'"
-                     class="upload-demo inline-block"
-                     action="/wisdomaudit/auditBasy/filesUpload"
-                     :on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList3)}"
-                     :on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList3,fileList3,fileList3_del)}"
-                     multiple
-                     :limit="3"
-                     :key="key"
-                     :on-exceed="handleExceed"
-                     :headers="headers"
-                     :file-list="fileList3">
-            <el-button class="zl-up-btn"
-                       size="small"
-                       icon="el-icon-upload2">点击上传</el-button>
-          </el-upload>
-          <div class="inline-block"
-               v-if="ifLook">
-            <el-tooltip class="item"
-                        effect="dark"
-                        v-for="(item,index) in fileList3"
-                        :key="index"
-                        :content="item.fileName"
-                        placement="top">
-              <div class="blue pointer"
-                   @click="downFile(item.attachmentUuid,item.fileName)">
-                {{item.fileName.length>20?item.fileName.slice(0,20)+"...":item.fileName}}</div>
-            </el-tooltip>
-            <!--<div class="blue pointer" v-for="(item,index) in fileList3" :key="index"  @click="downFile(item.attachmentUuid,item.fileName)">{{item.fileName}}</div>-->
           </div>
         </el-form-item>
       </div>

@@ -38,8 +38,8 @@
                        placeholder="请选择审批人">
               <el-option v-for="(item, index) in approvers"
                          :key="'appa' + index"
-                         :label="item.name"
-                         :value="item.name"></el-option>
+                         :label="item"
+                         :value="item"></el-option>
             </el-select>
           </el-form-item>
           <!-- <el-form-item label="常用申请原因">

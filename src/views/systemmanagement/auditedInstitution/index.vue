@@ -107,7 +107,7 @@
     <!-- 查看弹框 -->
     <el-dialog :visible.sync="look_auditOrg"
                :append-to-body='true'
-               width="30%">
+               width="40%">
       <div class="mainTitle">被审计机构</div>
       <div class="formStyle">
         <el-form label-width="130px"
@@ -135,7 +135,7 @@
     </el-dialog>
   </div>
 </template>
- 
+
 <script>
 import axios from "axios";
 import {
@@ -275,7 +275,7 @@ export default {
     orgDownload () {
       axios({
         method: "get",
-        timeout: -1,
+        // timeout: -1,
         url: "/wisdomaudit/auditOrg/downloadAuditOrgModel",
         headers: {
           TOKEN: this.dqtoken,
@@ -342,6 +342,7 @@ export default {
   // border: 1px solid red;
   text-align: center;
   padding: 5%;
+  overflow: auto;
 }
 </style>
 <style scoped>
