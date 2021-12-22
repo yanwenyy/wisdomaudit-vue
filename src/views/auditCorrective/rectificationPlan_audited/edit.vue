@@ -120,19 +120,19 @@
             <el-button type="text"
                        v-if="!type"
                        @click="edit(scope.row)"
-                       style="color: #0c87d6!important;
-                               font-size: 14px !important;
-">
+                       class="look">
               编辑
             </el-button>
 
             <p v-else>
               <el-button type="text"
                          :disabled="isDisable"
+                         class="edit"
                          style="color: #0c87d6!important;
                              opacity: 0.5;
                              cursor: not-allowed;
                                font-size: 14px !important;
+                               border:none;
 ">
                 编辑
               </el-button>
@@ -448,6 +448,16 @@ export default {
 </script>
 
 <style scoped>
+.look {
+  color: #0c87d6 !important;
+  border: none !important;
+  background: none !important;
+  font-size: 14px !important;
+}
+.look:hover,
+.edit:hover {
+  background: none !important;
+}
 .back-group >>> span {
   display: flex;
   align-items: center;
