@@ -1445,7 +1445,7 @@ export default {
 
     // 资料 未完成列表
     this.list_data_start(params);//未完成
-    this.query_title()
+    this.query_title();
 
     // 新增未完成任务列表
     this.add_add_csh();
@@ -1506,6 +1506,9 @@ export default {
         this.add_form.title = resp.data.title//标题
         this.is_add = resp.data.isDelete//是否新增
         this.add_data.department = resp.data.auditOrgName;//部门
+        if (this.add_data.department.indexOf("分公司") != -1) {
+          this.add_data.department = '地市分公司';
+        }
         this.$forceUpdate();
         this.$set(this.add_data, this.add_data)
       })
@@ -1727,7 +1730,6 @@ export default {
     // 操作记录查看附件
     open_enclosure_details_file (data) {
       this.details_list = data.attachmentList;
-
     },
 
 
@@ -1780,8 +1782,8 @@ export default {
     add_data_click () {
       this.add_data = {}; //清空
       this.dialogVisible2 = true;
-      this.edit_title = '添加资料'
-      this.query_title();
+      this.edit_title = '添加资料';
+      this.query_title()
     },
     // 新增任务初始化 列表
     add_add_csh () {
@@ -3178,3 +3180,4 @@ export default {
   padding: 17px 20px;
 }
 </style>
+ 

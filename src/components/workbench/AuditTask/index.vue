@@ -275,7 +275,6 @@
                              style="color: #0c87d6!important;
                                font-size: 14px !important;
 "
-                             、
                              @click="probleNum_click(scope.row.auditTaskUuid,scope.row.auditModelName)"
                              size="small">
                     查看问题
