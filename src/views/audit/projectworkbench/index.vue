@@ -2060,7 +2060,7 @@ export default {
       axios({
         method: "post",
         // timeout: -1,
-        url: "/auditPreviousDemandData/downloadByFileId",
+        url: "/wisdomaudit/auditPreviousDemandData/downloadByFileId",
         headers: {
           TOKEN: this.dqtoken,
         },
