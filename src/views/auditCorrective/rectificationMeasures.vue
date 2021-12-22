@@ -251,9 +251,12 @@ export default {
         var projectList=[];
         if(ifsel=="getProjectList"){
           datas.records.forEach((item)=>{
-            projectList.push(item.projectName)
+            if(projectList.indexOf(item.projectName)==-1){
+              projectList.push(item.projectName);
+            }
           });
-          this.projectList=new Set(projectList);
+          this.projectList=projectList;
+          // this.projectList=new Set(projectList);
         }
       })
     },

@@ -2054,18 +2054,16 @@ export default {
     },
     // 附件下载
     enclosureDownload (id, name) {
-      const fileName = name.split(".")[0];
+      // const fileName = name.split(".")[0];
       let formData = new FormData();
       formData.append("fileId", id);
       axios({
         method: "post",
-        timeout: -1,
-        url: "/wisdomaudit/auditPreviousDemandData/downloadByFileId",
+        // timeout: -1,
+        url: "/auditPreviousDemandData/downloadByFileId",
         headers: {
           TOKEN: this.dqtoken,
-
         },
-
         data: formData,
         responseType: "blob",
       })
@@ -2075,9 +2073,9 @@ export default {
           const blob = new Blob([content], {
             type: "application/octet-stream,charset=UTF-8",
           });
-          const fileName =
-            res.headers["content-disposition"].split("fileName*=utf-8''")[1];
-          const filteType = res.headers["content-disposition"].split(".")[1];
+          // const fileName =
+          //   res.headers["content-disposition"].split("fileName*=utf-8''")[1];
+          // const filteType = res.headers["content-disposition"].split(".")[1];
           if ("download" in document.createElement("a")) {
             // 非IE下载
             const elink = document.createElement("a");

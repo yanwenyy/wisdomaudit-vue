@@ -200,7 +200,7 @@ export default {
         }
       };
       this.loading = true;
-      correctStep_pageList(params).then(resp => {
+      correctStep_pageListJkr(params).then(resp => {
         var datas = resp.data;
         this.tableData = datas.records;
         this.page = {
