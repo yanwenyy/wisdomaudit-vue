@@ -178,7 +178,7 @@
           <!-- 被审计单位 -->
           <el-form-item prop="auditedEntity"
                         style="margin-bottom: 22px !important">
-            <p >
+            <p>
               <span style="color: red">*</span> 被审计单位：
             </p>
             <el-select v-model="add.auditedEntity"
@@ -325,6 +325,7 @@
                @close="resetForm()"
                :visible.sync="basisdialog"
                width="70%"
+               class="post"
                custom-class="outmax">
       <div style="display: flex; height: 100%; padding: 20px">
         <div style="max-height: 60vh; width: 50%; overflow: scroll"
@@ -1037,6 +1038,22 @@ export default {
   box-sizing: border-box;
 }
 
+/* 引用依据 */
+.post >>> .el-tree-node {
+  white-space: break-spaces !important;
+}
+.post >>> .el-tree-node__content {
+  cursor: pointer;
+  padding-right: 10px;
+  box-sizing: border-box;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  word-break: break-all;
+}
 .dlag >>> .el-card__body .clearfix span {
   text-align: left !important;
 }
@@ -1193,10 +1210,10 @@ export default {
   float: left !important;
   margin-left: 0 !important;
 }
-  .sjyjForm{
-    text-align: left!important;
-  }
->>>.sjyjForm .el-form-item__label{
-  float: left!important;
+.sjyjForm {
+  text-align: left !important;
+}
+>>> .sjyjForm .el-form-item__label {
+  float: left !important;
 }
 </style>

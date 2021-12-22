@@ -509,6 +509,7 @@
                :append-to-body='true'
                :visible.sync="basisdialog"
                width="70%"
+               class="post"
                custom-class="outmax">
       <div style="display: flex; height: 100%; padding: 20px">
         <div style="max-height: 60vh; width: 50%; overflow: scroll">
@@ -571,7 +572,8 @@
                     : 'font-size:14px;'
                 ">{{ item.label }}</span>
             </div>
-            <el-button style="padding: 3px 0 3px 20px; color: #ffba00; float: right"
+
+            <el-button style="padding: 10px 0 3px 20px; color: #ffba00; float: right"
                        v-if="item.contentLev == 3"
                        @click="choosebasis(item.attachmentContent)"
                        type="text">引用</el-button>
@@ -1158,6 +1160,24 @@ export default {
   border: 1px solid #ccc;
 }
 @import "../../../assets/styles/css/yw.css";
+
+/* 引用依据 */
+.post >>> .el-tree-node {
+  white-space: break-spaces !important;
+}
+.post >>> .el-tree-node__content {
+  cursor: pointer;
+  padding-right: 10px;
+  box-sizing: border-box;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  word-break: break-all;
+}
+
 .auditproblem .titleMes .el-button--primary {
   border-radius: 0 !important;
   border: #0c87d6 !important;

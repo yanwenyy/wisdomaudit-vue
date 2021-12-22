@@ -2352,7 +2352,7 @@ export default {
         transform: translate(-50%, 0%);
         -webkit-transition: opacity 0.4s;
         transition: opacity 0.4s;
-        z-index: 999;
+        z-index: 2000;
         transition: all 0.3s;
       }
       .tips::before {

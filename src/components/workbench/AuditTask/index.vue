@@ -270,9 +270,30 @@
                     </el-button>
                   </div>
 
+                  <el-button type="text"
+                             v-if=" scope.row.taskType == 1"
+                             style="color: #0c87d6!important;
+                               font-size: 14px !important;
+"
+                             、
+                             @click="probleNum_click(scope.row.auditTaskUuid,scope.row.auditModelName)"
+                             size="small">
+                    查看问题
+                  </el-button>
+
                 </div>
                 <div v-else>
-                  --
+
+                  <el-button type="text"
+                             v-if=" scope.row.taskType == 1"
+                             style="color: #0c87d6!important;
+                               font-size: 14px !important;
+"
+                             @click="probleNum_click(scope.row.auditTaskUuid,scope.row.auditModelName)"
+                             size="small">
+                    查看问题
+                  </el-button>
+
                 </div>
 
               </template>
@@ -2890,7 +2911,7 @@ export default {
   box-sizing: border-box;
 }
 .dlag_conter >>> .el-input {
-  width: 300px;
+  width: 320px;
 }
 
 .dlag_conter >>> .el-form-item__content {
@@ -2906,7 +2927,7 @@ export default {
   text-align: center !important;
 } */
 .dlag_conter >>> .el-upload-dragger {
-  width: 300px;
+  width: 320px;
 }
 .dlag_conter >>> .upload-fileListdemo {
   width: 380px;
@@ -3052,6 +3073,10 @@ export default {
   margin-bottom: 20px !important;
 }
 
+.dlag_conter >>> .el-upload-list {
+  float: left;
+  text-align: left !important;
+}
 /* .dlag_conter >>> .el-upload-list__item-name {
   max-width: 285px;
   margin-right: 0;

@@ -127,7 +127,16 @@
             </el-button>
 
             <p v-else>
-              --
+              <el-button type="text"
+                         :disabled="isDisable"
+                         style="color: #0c87d6!important;
+                             opacity: 0.5;
+                             cursor: not-allowed;
+                               font-size: 14px !important;
+">
+                编辑
+              </el-button>
+
             </p>
 
           </template>
@@ -228,6 +237,7 @@ export default {
   components: {},
   data () {
     return {
+      isDisable: false,
       loading: false,
       type: '',//查看
       list_query: {

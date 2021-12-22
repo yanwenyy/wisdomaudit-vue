@@ -103,17 +103,24 @@
            v-if="details == true">
         <ul class="list">
           <li>
-            <p>序号：<span v-if="Index">{{Index}}</span>
+            <!-- <p>序号：<span v-if="Index">{{Index}}</span>
               <span v-else>--</span>
             </p>
             <p>领域：<span v-if="details_list.field">{{details_list.field}}</span>
               <span v-else>--</span>
-            </p>
+            </p> -->
+
             <p>问题：<span v-if="details_list.problem">{{details_list.problem}}</span>
               <span v-else>--</span>
             </p>
+            <p>描述：<span v-if="details_list.describe">{{details_list.describe}}</span>
+              <span v-else>--</span>
+            </p>
+            <p>管理建议：<span v-if="details_list.managementAdvice">{{details_list.managementAdvice}}</span>
+              <span v-else>--</span>
+            </p>
           </li>
-          <li>
+          <!-- <li>
             <p>发现日期：<span v-if="details_list.discoveryTime">{{details_list.discoveryTime}}</span>
               <span v-else>--</span>
             </p>
@@ -133,7 +140,7 @@
             <p>管理建议：<span v-if="details_list.managementAdvice">{{details_list.managementAdvice}}</span>
               <span v-else>--</span>
             </p>
-          </li>
+          </li> -->
         </ul>
       </div>
       <!-- 详情 end-->

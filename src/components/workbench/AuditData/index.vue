@@ -37,6 +37,7 @@
                     :header-cell-style="{'background-color': '#F4FAFF',}">
 
             <el-table-column type="index"
+                             width="100"
                              align="center"
                              label="序号">
             </el-table-column>
@@ -93,15 +94,7 @@
                 <!-- isDeleted  0:不是接口人 1:s是接口人 -->
                 <div v-if="scope.row.isDeleted==1"
                      style="display: flex;">
-                  <!-- 操作记录 -->
-                  <el-button @click="on_list(scope.row.addDataTaskUuid)"
-                             type="text"
-                             class="status_btn"
-                             :disabled="isDisable"
-                             style="color:#0c87d6;"
-                             size="small">
-                    操作记录
-                  </el-button>
+
                   <!-- 导出 -->
                   <el-button @click="exportList(scope.row)"
                              v-if="scope.row.status == 2"
@@ -143,6 +136,7 @@
                     </el-button>
 
                   </div>
+
                   <!-- 审批 -->
                   <div v-if=" scope.row.status == 3|| scope.row.status == 4">
                     <el-button @click="operation(scope.row)"
@@ -158,6 +152,15 @@
                     </el-button>
                   </div>
 
+                  <!-- 操作记录 -->
+                  <el-button @click="on_list(scope.row.addDataTaskUuid)"
+                             type="text"
+                             class="status_btn"
+                             :disabled="isDisable"
+                             style="color:#0c87d6;margin-left:10px"
+                             size="small">
+                    操作记录
+                  </el-button>
                 </div>
                 <div v-else>
                   <!-- 操作记录 -->
@@ -217,6 +220,8 @@
                              label="流水单号">
             </el-table-column> -->
             <el-table-column type="index"
+                             width="100"
+                             align="center"
                              label="序号">
             </el-table-column>
             <el-table-column prop="dataName"
@@ -1130,6 +1135,8 @@
     </el-dialog>
 
     <!-- 确认是否下发 -->
+    <!-- <div class="mose"
+         v-if="whether==true"></div>
     <div class="whether"
          v-if="whether==true"
          style="padding-bottom: 10px; ">
@@ -1147,8 +1154,20 @@
                      @click="whether = false">取 消</el-button>
         </span>
       </div>
+    </div> -->
 
-    </div>
+    <el-dialog center
+               :visible.sync="whether"
+               :append-to-body='true'
+               width="15%">
+      <div class="title_is">是否确认下发</div>
+
+      <div slot="footer">
+        <el-button @click="whether = false">取 消</el-button>
+        <el-button type="primary"
+                   @click="list_push()">确 定</el-button>
+      </div>
+    </el-dialog>
 
     <!-- 操作记录 -->
     <el-dialog :visible.sync="history"
@@ -2131,9 +2150,13 @@ export default {
     },
     // 部门
     Department_change (val) {
-      this.add_data.department = val
+      console.log(val)
+      console.log(val.indexOf("分公司") != -1);
 
-
+      if (val.indexOf("分公司") != -1) {
+        this.add_data.department = '地市分公司';
+      }
+      // this.add_data.department = '地市分公司';
 
     },
 
@@ -2844,6 +2867,19 @@ export default {
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
 /* @import "../../../assets/styles/css/yw.css"; */
+.title_is {
+  padding: 30px 15px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+  float: left;
+  width: 100%;
+}
+.mose {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+}
 .dlag_conter >>> .el-input.is-disabled .el-input__inner {
   color: #606266 !important;
   background: #f5f7fa !important;
@@ -2920,7 +2956,7 @@ export default {
   transform: translate(-50%, -50%);
   padding: 20px;
   margin-top: 15vh;
-  width: 170px;
+  width: 180px;
   min-width: auto;
   background: #ffffff;
   border-radius: 8px !important;
