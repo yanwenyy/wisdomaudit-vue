@@ -304,7 +304,8 @@ export default {
             document.body.removeChild(elink);
           } else {
             // IE10+下载
-            navigator.msSaveBlob(blob, fileName);
+            // navigator.msSaveBlob(blob, fileName);
+            navigator.msSaveBlob(blob, "模板.xlsx");
           }
         })
         .catch((err) => {
