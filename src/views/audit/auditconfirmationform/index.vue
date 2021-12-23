@@ -95,20 +95,19 @@
                          style="background: transparent;padding:0"
                          class="editBtn">上传</el-button>
             </el-upload>
-            <el-popover
-              v-if="scope.row.endConfirmationFile"
-              placement="bottom"
-              width="250"
-              trigger="click">
-              <ul
-                class="fileList-ul">
+            <el-popover v-if="scope.row.endConfirmationFile"
+                        placement="bottom"
+                        width="250"
+                        trigger="click">
+              <ul class="fileList-ul">
                 <li class="tableFileList-title">文件名称</li>
-                <li
-                  class="pointer blue"
-                  @click="downFile(scope.row.endConfirmationFileId,scope.row.endConfirmationFile)">{{scope.row.endConfirmationFile}}</li>
+                <li class="pointer blue"
+                    @click="downFile(scope.row.endConfirmationFileId,scope.row.endConfirmationFile)">
+                  {{scope.row.endConfirmationFile}}</li>
               </ul>
               <div slot="reference"
-                   class="pointer"><span class="smb-btn"><i class="el-icon-folder-opened list-folder smb-folder"></i>2</span>
+                   class="pointer"><span class="smb-btn"><i
+                     class="el-icon-folder-opened list-folder smb-folder"></i>1</span>
               </div>
             </el-popover>
           </template>
@@ -932,13 +931,13 @@ export default {
   width: 77% !important;
 }
 >>> .itemThree .el-form-item__content {
-  margin-left: 140px!important;
+  margin-left: 140px !important;
 }
-.itemTwo{
+.itemTwo {
   width: 48.5%;
 }
-.itemTwo .el-select{
-  width: 100%!important;
+.itemTwo .el-select {
+  width: 100% !important;
 }
 >>> .itemTwo .el-form-item__content {
   width: 59% !important;

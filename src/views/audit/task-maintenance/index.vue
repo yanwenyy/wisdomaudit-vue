@@ -354,6 +354,7 @@
                        action="#"
                        v-model="taskSelf.enclosure"
                        :on-change="handleChangePic"
+                       :on-remove="handleRemove"
                        :file-list="fileList"
                        :auto-upload="false"
                        multiple>
@@ -1130,6 +1131,7 @@ export default {
     },
     //新增自建任务完成按钮
     saveTask (selfTaskRef) {
+      // console.log( this.fileList)
       this.$refs[selfTaskRef].validate((valid) => {
         if (valid) {
           // this.TaskDialogVisible = false;
@@ -1141,7 +1143,7 @@ export default {
               background: "transparent",
             });
             let formData = new FormData();
-            formData.append("file", this.file.raw);
+            // formData.append("file", this.file.raw);
             this.fileList.forEach((item) => {
               formData.append("files", item.raw);
             });
@@ -1159,7 +1161,6 @@ export default {
                 this.$message.success("上传成功！");
                 loading.close();
                 this.Upload_file = resp.data.data;
-
                 //新增自建任务接口
                 this.taskSelf.attachmentList = this.Upload_file;
                 this.taskSelf.managementProjectUuid = this.active_project;
@@ -1400,8 +1401,14 @@ export default {
     },
     //
     handleRemove (file, fileList) {
-      if (file.response) {
-        this.fileList.remove(file.response.data);
+      console.log(file)
+      if (file.response||file.raw) {
+        if(file.raw){
+          this.fileList.remove(file);
+        }else{
+          this.fileList.remove(file.response.data);
+        }
+
         this.key = Math.random();
       } else {
         this.edit_file_list.remove(file);
