@@ -31,8 +31,8 @@
           </el-col>
           <el-col :span="2">
             <el-button type="text"
-                       style="color: #44a3df; background: none; border: 0;margin-left;20px;"
-                       size="small"
+                       style="color: #44a3df; background: none; border: 0;"
+                       size="small xz"
                        @click="orgDownload()">下载模板</el-button>
           </el-col>
           <div class="search">
@@ -415,5 +415,13 @@ export default {
 }
 .filterTree >>> .el-input__inner::-webkit-input-placeholder {
   color: #c0c4cc !important;
+}
+.xz{
+  margin-left: 15px;
+}
+@media (min-width: 1000px) and (max-width: 1400px) {
+  .xz{
+    margin-left: 30px;
+  }
 }
 </style>
