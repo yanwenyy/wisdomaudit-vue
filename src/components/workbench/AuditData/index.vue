@@ -1505,12 +1505,14 @@ export default {
       })
     },
     // 获取标题
-    query_title () {
+    query_title (from) {
       let params_title = {
         id: this.projectNumber
       }
       operation_addTitle(params_title).then(resp => {
-        this.add_form.title = resp.data.title//标题
+        if(from!="getFgs"){
+          this.add_form.title = resp.data.title//标题
+        }
         this.is_add = resp.data.isDelete//是否新增
         this.add_data.department = resp.data.auditOrgName;//部门
         if (this.add_data.department.indexOf("分公司") != -1) {
@@ -1518,6 +1520,7 @@ export default {
         }
         this.$forceUpdate();
         this.$set(this.add_data, this.add_data)
+        this.$set(this.add_form, this.add_form)
       })
     },
     // 获取责任人
@@ -1701,7 +1704,7 @@ export default {
       let params_title = {
         id: this.projectNumber
       }
-      this.query_title(params_title)
+      this.query_title()
 
       this.dialogVisible = true
       this.title = '新增审计资料任务';
@@ -1724,7 +1727,7 @@ export default {
 
     // 新增  初始化模版 查看附件
     open_file_details (list) {
-      // 
+      //
       this.moban_list = 0;
       this.enclosure_moban_list = list;//模版资料
       // if (this.enclosure_moban_list.length == 0) {
@@ -1791,7 +1794,7 @@ export default {
       this.add_data = {}; //清空
       this.dialogVisible2 = true;
       this.edit_title = '添加资料';
-      this.query_title()
+      this.query_title("getFgs")
     },
     // 新增任务初始化 列表
 
@@ -1804,6 +1807,7 @@ export default {
         this.task_list_records = resp.data.records;
         this.loading = false;
         console.log(this.task_list_records);
+        console.log( this.add_form.title,"3333")
       })
 
     },
@@ -2046,7 +2050,7 @@ export default {
     // 编辑确认
     query_update (params2) {
       data_update(params2).then(resp => {
-        // 
+        //
         if (resp.code == 0) {
           this.$message({
             message: "编辑成功",
@@ -2195,7 +2199,7 @@ export default {
               // 上传成功
               if (resp.data.code == 0) {
                 this.success_btn = 0;//显示加载按钮  0成功  1 loaging
-                // 
+                //
                 this.Upload_file = resp.data.data;//上传成功大的文件
 
                 let params = {
@@ -2213,7 +2217,8 @@ export default {
                   // enclosure: '111',//回调上传的文件路径
                   projectType: this.projectNumber,//项目id
                 }
-                this.save_data_up(params)//保存
+                console.log( this.add_form.title,"11111")
+                this.save_data_up(params,"add")//保存
               } else {
                 // 上传失败
                 this.$message({
@@ -2258,6 +2263,7 @@ export default {
             message: '添加资料成功',
             type: 'success'
           });
+          console.log( this.add_form.title,"222")
           this.success_btn = 0;
           this.dialogVisible2 = false;
           // 新增未完成任务列表
@@ -2267,7 +2273,7 @@ export default {
             condition: {
               projectType: this.projectNumber,//项目id
             }
-          }
+          };
           this.add_add_csh(params2)//初始化列表
         } else {
           this.$message({
@@ -2302,7 +2308,7 @@ export default {
         taskId: this.push_id,
       }
       data_push_ing(params).then(resp => {
-        // 
+        //
         if (resp.code == 0) {
           this.$message({
             message: "下发成功",
@@ -2339,7 +2345,7 @@ export default {
       setTimeout(() => {
         this.isDisable = false
       }, 2000)
-      // 
+      //
       this.$confirm(`将永久删除资料和关联的附件?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -2391,7 +2397,7 @@ export default {
         this.isDisable = false
       }, 2000)
       this.dialogVisibl_operation = true;
-      // 
+      //
       this.addDataTaskUuid = data.addDataTaskUuid;
       let params = {
         pageNo: this.operation_query.pageNo,
@@ -2458,7 +2464,7 @@ export default {
       setTimeout(() => {
         this.isDisable = false
       }, 2000)
-      // 
+      //
       // this.record_status = true;
       this.record_query.id = data.auditPreviousDemandDataUuid;
       this.dialogVisible2 = true//显示编辑
@@ -2740,7 +2746,8 @@ export default {
 
     // 任务列表 显示编辑
     edit_common (data) {
-      this.isDisable = true
+      this.isDisable = true;
+      this.add_form={};
       setTimeout(() => {
         this.isDisable = false
       }, 2000)
@@ -2779,7 +2786,8 @@ export default {
         this.add_form.title = this.edit_details.title;
         this.add_form.name = this.edit_details.launchPeople;
         this.task_list_records_details = resp.data.demandDataList
-
+        this.$forceUpdate();
+        this.$set(this.add_form, this.add_form)
         // 显示模版列表数据
         let params2 = {
           pageNo: this.params_add.pageNo,
@@ -3220,4 +3228,3 @@ export default {
   padding: 17px 20px;
 }
 </style>
- 
