@@ -1510,7 +1510,7 @@ export default {
         id: this.projectNumber
       }
       operation_addTitle(params_title).then(resp => {
-        if(from!="getFgs"){
+        if (from != "getFgs") {
           this.add_form.title = resp.data.title//标题
         }
         this.is_add = resp.data.isDelete//是否新增
@@ -1801,13 +1801,13 @@ export default {
     add_add_csh (params) {
       this.loading = true;
 
-      console.log(params);
+
       add_pageList(params).then(resp => {
         this.task_list = resp.data;
         this.task_list_records = resp.data.records;
         this.loading = false;
-        console.log(this.task_list_records);
-        console.log( this.add_form.title,"3333")
+
+
       })
 
     },
@@ -2219,14 +2219,8 @@ export default {
                   // enclosure: '111',//回调上传的文件路径
                   projectType: this.projectNumber,//项目id
                 }
-<<<<<<< HEAD
-                this.save_data_up(params)//保存
 
-
-=======
-                console.log( this.add_form.title,"11111")
-                this.save_data_up(params,"add")//保存
->>>>>>> 85be48b441558437fa203c5ae4dbdcae3167a2a2
+                this.save_data_up(params, "add")//保存
               } else {
                 // 上传失败
                 this.$message({
@@ -2300,11 +2294,9 @@ export default {
             message: '添加资料成功',
             type: 'success'
           });
-          console.log( this.add_form.title,"222")
+
           this.success_btn = 0;
           this.dialogVisible2 = false;
-<<<<<<< HEAD
-=======
           // 新增未完成任务列表
           let params2 = {
             pageNo: 1,
@@ -2314,7 +2306,6 @@ export default {
             }
           };
           this.add_add_csh(params2)//初始化列表
->>>>>>> 85be48b441558437fa203c5ae4dbdcae3167a2a2
         } else {
           this.$message({
             message: reesp.msg,
@@ -2787,7 +2778,7 @@ export default {
     // 任务列表 显示编辑
     edit_common (data) {
       this.isDisable = true;
-      this.add_form={};
+      this.add_form = {};
       setTimeout(() => {
         this.isDisable = false
       }, 2000)
