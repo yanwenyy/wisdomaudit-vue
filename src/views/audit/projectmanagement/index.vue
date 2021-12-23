@@ -1026,7 +1026,8 @@
                :width="dialogWidth">
       <div class="title">启动整改</div>
 
-      <div class="dialog">
+      <div class="dialog"
+           style="padding:0 20px 0">
         <div class="dialog follow_up_person">
           <el-form ref="save_project_prople"
                    :model="save_project_prople"
@@ -1245,13 +1246,11 @@
                      class="citebtn"
                      @click="openbasis()">引用审计依据</el-button> -->
           <el-form-item label="描述"
-
                         class="long">
             <el-input v-model="dqProblem.describe"
                       placeholder="请输入描述" />
           </el-form-item>
           <el-form-item label="管理建议"
-
                         class="long">
             <el-input v-model="dqProblem.managementAdvice"
                       placeholder="请输入管理建议" />
@@ -1823,7 +1822,7 @@ export default {
       }
       //正则替换
       str = str.replace(/[^\d^\.]+/g, ""); // 保留数字和小数点
-      if(str.toString().split('.')[1].length>5){
+      if (str.toString().split('.')[1].length > 5) {
         str = str.replace(/^\D*([0-9]\d*\.?\d{0,6})?.*$/, "$1"); // 小数点后只能输 6 位
       }
       str = str.slice(0, 27);
@@ -2781,7 +2780,7 @@ export default {
         this.dqProblem.managementAdvice = entity.managementAdvice; //建议
         this.dqProblem.problemDiscoveryTime = entity.problemDiscoveryTime; //发现日期
         this.dqProblem.problemFindPeople = entity.problemFindPeople; //发现人
-        this.dqProblem.riskAmount =parseFloat(entity.riskAmount.toString()); //风险金额
+        this.dqProblem.riskAmount = parseFloat(entity.riskAmount.toString()); //风险金额
         // 依据
         if (entity.basis) {
           this.dqProblem.basis = entity.basis;
@@ -2980,7 +2979,7 @@ export default {
     /*top: -35px;*/
     width: 65%;
   }
-  .el-form-item{
+  .el-form-item {
     margin-bottom: 22px !important;
   }
   .addIcon {
@@ -3005,7 +3004,7 @@ export default {
     /*top: -35px;*/
     width: 65%;
   }
-  .el-form-item{
+  .el-form-item {
     margin-bottom: 22px !important;
   }
   .addIcon {
@@ -3276,7 +3275,9 @@ export default {
   align-items: center;
   margin-bottom: 20px;
 }
-
+.people >>> .el-form-item {
+  margin-bottom: 0px !important;
+}
 .people >>> .el-form-item__content {
   margin-left: 0 !important;
 }
@@ -3470,7 +3471,7 @@ export default {
 .sef-collapse-btn {
   position: absolute;
   right: 5%;
-  top:0;
+  top: 0;
 }
 
 >>> .sef-collapse .el-collapse-item__header {
@@ -3509,8 +3510,8 @@ export default {
   margin-right: 10px;
   color: #000;
 }
-@media screen and(-ms-high-contrast:active),(-ms-high-contrast:none){
-  >>>.el-tag.el-tag--info{
+@media screen and(-ms-high-contrast:active), (-ms-high-contrast: none) {
+  >>> .el-tag.el-tag--info {
     display: inline-block;
   }
 }
