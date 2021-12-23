@@ -23,7 +23,7 @@
             <el-upload ref="upload"
                        class="upload-demo"
                        action="#"
-                       :on-progress="handleChange"
+                       :on-change="handleChange"
                        :file-list="fileList">
               <el-button size="small"
                          style="background: #0c87d6; color: #fff">文件导入</el-button>
@@ -239,36 +239,38 @@ export default {
       this.getauditOrgList(this.queryInfo);
     },
     //点击上传文件
-    handleChange (event, file, fileList) {
+    handleChange (file, fileList) {
       // console.log(file);
       // console.log(fileList);
       // this.$refs.upload.clearFiles();
+      if(file.status=="ready"){
+        let formData = new FormData();
 
-      let formData = new FormData();
+        fileList.forEach((item) => {
+          if (item.raw) {
+            formData.append("orgFile", item.raw);
+          }
+        });
 
-      fileList.forEach((item) => {
-        if (item.raw) {
-          formData.append("orgFile", item.raw);
-        }
-      });
+        axios({
+          method: "post",
+          url: "/wisdomaudit/auditOrg/importFiles",
+          data: formData,
+          headers: {
+            "Content-Type": "multipart/form-data",
+            TOKEN: this.dqtoken,
+          },
+        }).then((resp) => {
+          console.log(resp);
+          if (resp.data.data == 'SUCCESS') {
+            this.$message.success("文件导入成功！")
+            this.getauditOrgList(this.queryInfo);
+          } else {
+            this.$message.info("请检查文件格式以及导入数据是否重复！")
+          }
+        });
+      }
 
-      axios({
-        method: "post",
-        url: "/wisdomaudit/auditOrg/importFiles",
-        data: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-          TOKEN: this.dqtoken,
-        },
-      }).then((resp) => {
-        console.log(resp);
-        if (resp.data.data == 'SUCCESS') {
-          this.$message.success("文件导入成功！")
-          this.getauditOrgList(this.queryInfo);
-        } else {
-          this.$message.info("请检查文件格式以及导入数据是否重复！")
-        }
-      });
     },
 
     //下载模板
