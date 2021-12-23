@@ -124,8 +124,6 @@ export const constantRoutes = [{
     path: "riskScan",
     name: "riskScan",
     component: () => import("@WISDOMAUDIT/layout/blank"),
-    // component: () => import('@WISDOMAUDIT/views/audit/accountableAdd'),
-    // wisdomaudit-vue\src\views\audit\riskScan\personal
     meta: {
       title: "风险扫描"
     },
@@ -175,60 +173,50 @@ export const constantRoutes = [{
       }
     ]
   },
-    // {
-    //   path: "Riskmonitoringnotification",
-    //   name: "Riskmonitoringnotification",
-    //   component: () => import("@WISDOMAUDIT/views/audit/riskScan/Riskmonitoring"),
-    //   // component: () => import('@WISDOMAUDIT/views/audit/accountableAdd'),
-    //   // wisdomaudit-vue\src\views\audit\riskScan\personal
-    //   meta: {
-    //     title: "数据审计风险监控"
-    //   },
-    //   children: [{
-    //     path: "/datepersonal",
-    //     name: "datepersonal",
-    //     component: () =>
-    //       import("@WISDOMAUDIT/views/audit/riskScan/datepersonal"),
-    //     meta: {
-    //       title: "个人"
-    //     }
-    //   },
-    //   {
-    //     path: "/dateenterprise",
-    //     name: "dateenterprise",
-    //     component: () =>
-    //       import("@WISDOMAUDIT/views/audit/riskScan/dateenterprise"),
-    //     meta: {
-    //       title: "政企"
-    //     }
-    //   },
-    //   {
-    //     path: "/dateFinance",
-    //     name: "dateFinance",
-    //     component: () =>
-    //       import("@WISDOMAUDIT/views/audit/riskScan/"),
-    //     meta: {
-    //       title: "财务"
-    //     }
-    //   }, {
-    //     path: "/datenetwork",
-    //     name: "datenetwork",
-    //     component: () =>
-    //       import("@WISDOMAUDIT/views/audit/riskScan/datenetwork"),
-    //     meta: {
-    //       title: "网络"
-    //     }
-    //   }, {
-    //     path: "/dateNotification",
-    //     name: "dateNotification",
-    //     component: () =>
-    //       import("@WISDOMAUDIT/views/audit/riskScan/dateNotification"),
-    //     meta: {
-    //       title: "数据审计风险监控通报"
-    //     }
-    //   }
-    //   ]
-    // }
+    {
+      path: "Riskmonitoringnotification",
+      name: "Riskmonitoringnotification",
+      component: () => import("@WISDOMAUDIT/views/audit/riskScan/dateNotification"),
+      meta: {
+        title: "持续审计"
+      },
+      children: [{
+        path: "/dataindividual",
+        name: "dataindividual",
+        component: () =>
+          import("@WISDOMAUDIT/views/audit/riskScan/dateNotification"),
+        meta: {
+          title: "个人"
+        }
+      },
+      {
+        path: "/datagovernment",
+        name: "datagovernment",
+        component: () =>
+          import("@WISDOMAUDIT/views/audit/riskScan/dateNotification"),
+        meta: {
+          title: "政企"
+        }
+      },
+      {
+        path: "/dateenterprisefinance",
+        name: "dateenterprisefinance",
+        component: () =>
+          import("@WISDOMAUDIT/views/audit/riskScan/dateNotification"),
+        meta: {
+          title: "财务"
+        }
+      }, {
+        path: "/dataauditnetwork",
+        name: "dataauditnetwork",
+        component: () =>
+          import("@WISDOMAUDIT/views/audit/riskScan/dateNotification"),
+        meta: {
+          title: "网络"
+        }
+      }
+      ]
+    }
   ]
 },
 

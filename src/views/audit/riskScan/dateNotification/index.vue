@@ -1,6 +1,6 @@
 <template>
   <div>
-      数据审计风险监控通报
+      <span class="date">暂无数据</span>
   </div>
 </template>
 
@@ -8,8 +8,15 @@
 export default {
 
 }
-</script>
+</script> 
 
-<style>
+<style scoped>
+.date{
+  /* text-indent:2em; */
+  margin-left: 20px;
+  color:rgb(77, 75, 75);
+
+  
+}
 
 </style>
