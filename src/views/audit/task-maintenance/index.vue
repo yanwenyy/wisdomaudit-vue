@@ -65,6 +65,7 @@
                 </template>
               </el-table-column>
               <el-table-column prop="peopleName"
+                               width="200px"
                                label="责任人">
                 <template slot-scope="scope">
                   <el-form class="taskTable">
@@ -500,7 +501,7 @@ import {
   attachmentEcho,
 } from "@WISDOMAUDIT/api/shandong/projectmanagement.js";
 import { down_file } from
-    '@SDMOBILE/api/shandong/ls'
+  '@SDMOBILE/api/shandong/ls'
 export default {
   components: { Pagination },
   props: ["active_project", "userRole"],
@@ -1402,10 +1403,10 @@ export default {
     //
     handleRemove (file, fileList) {
       console.log(file)
-      if (file.response||file.raw) {
-        if(file.raw){
+      if (file.response || file.raw) {
+        if (file.raw) {
           this.fileList.remove(file);
-        }else{
+        } else {
           this.fileList.remove(file.response.data);
         }
 

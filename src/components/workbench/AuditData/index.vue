@@ -754,7 +754,7 @@
           <div class="son cd">
             <el-form-item label="是否沉淀为常规需求资料："
                           style="padding:0 0 0 10px"
-                          label-width="254px"
+                          label-width="270px"
                           prop="status">
               <el-radio-group v-model="add_data.status"
                               style="padding-top:10px;    box-sizing: border-box;"

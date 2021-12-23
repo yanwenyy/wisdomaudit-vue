@@ -55,12 +55,13 @@
               :data="tableData"
               @selection-change="handleSelectionChange"
               highlight-current-row>
-      <el-table-column
-        type="selection"
-        width="55">
+      <el-table-column type="selection"
+                       width="55">
       </el-table-column>
       <el-table-column :resizable="false"
                        label="序号"
+                       algin="center"
+                       width="100px"
                        type="index" />
       <el-table-column :resizable="false"
                        label="项目名称"
@@ -147,14 +148,14 @@
 </template>
 
 <script>
-import { correctStep_export,correctStep_pageList, correctStep_getProjectList } from
+import { correctStep_export, correctStep_pageList, correctStep_getProjectList } from
   '@SDMOBILE/api/shandong/ls'
 import Detail from "./rectificationDetail";
 export default {
   data () {
     return {
       projectList: [],//项目下拉列表
-      multipleSelection:[],
+      multipleSelection: [],
       searchForm: {
         pageNo: 1,
         pageSize: 10,
@@ -181,23 +182,23 @@ export default {
     // })
   },
   methods: {
-    handleSelectionChange(val){
+    handleSelectionChange (val) {
       this.multipleSelection = val;
     },
-    exportList(){
-      if(this.searchForm.projectName==''){
+    exportList () {
+      if (this.searchForm.projectName == '') {
         this.$message.error("请选择项目后导出");
         return false;
       }
-      if(this.multipleSelection==''){
+      if (this.multipleSelection == '') {
         this.$message.error("请选择要导出的数据");
         return false;
       }
-      var ids=[];
-      this.multipleSelection.forEach((item)=>{
+      var ids = [];
+      this.multipleSelection.forEach((item) => {
         ids.push(item.correctStepUuid);
       });
-      ids=ids.join(",");
+      ids = ids.join(",");
       let formData = new FormData();
       formData.append('ids', ids)
       correctStep_export(formData).then(resp => {
@@ -231,11 +232,11 @@ export default {
     list_data_start (ifsel) {
       let params = {
         pageNo: this.searchForm.pageNo,
-        pageSize: ifsel=='getProjectList'?1000000:this.searchForm.pageSize,
+        pageSize: ifsel == 'getProjectList' ? 1000000 : this.searchForm.pageSize,
         condition: {
-          correctStatus:  ifsel=='getProjectList'?'':this.searchForm.correctStatus,
-          projectName:  ifsel=='getProjectList'?'':this.searchForm.projectName,
-          problemName:  ifsel=='getProjectList'?'':this.searchForm.problemName,
+          correctStatus: ifsel == 'getProjectList' ? '' : this.searchForm.correctStatus,
+          projectName: ifsel == 'getProjectList' ? '' : this.searchForm.projectName,
+          problemName: ifsel == 'getProjectList' ? '' : this.searchForm.problemName,
         }
       };
       this.loading = true;
@@ -248,14 +249,14 @@ export default {
           total: datas.total
         };
         this.loading = false;
-        var projectList=[];
-        if(ifsel=="getProjectList"){
-          datas.records.forEach((item)=>{
-            if(projectList.indexOf(item.projectName)==-1){
+        var projectList = [];
+        if (ifsel == "getProjectList") {
+          datas.records.forEach((item) => {
+            if (projectList.indexOf(item.projectName) == -1) {
               projectList.push(item.projectName);
             }
           });
-          this.projectList=projectList;
+          this.projectList = projectList;
           // this.projectList=new Set(projectList);
         }
       })
