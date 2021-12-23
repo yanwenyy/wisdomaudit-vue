@@ -502,12 +502,21 @@ export default {
         that.userInfo = resp.data;
         that.formDetail.reviewerName = that.userInfo.managementProject.projectChargemanName;
         that.formDetail.auditorsName = this.userInfo.user.realName;
-        var sj = new Date().toLocaleDateString().split('/');
+
         // sj[1]=sj[1]<10?'0'+sj[1]:sj[1];
-        sj[1] = sj[1].padStart(2, '0');
-        sj[2] = sj[2].padStart(2, '0');
+
+        if (!!window.ActiveXObject || "ActiveXObject" in window) {
+          var sj = new Date().toLocaleDateString()
+          sj = sj.replace(/(年|月)/g, '/').replace('日', '').replace(/[^\d-/]/g,'').split('/');
+          sj[1]=sj[1]<10?'0'+sj[1]:sj[1];
+          sj[2]=sj[2]<10?'0'+sj[2]:sj[2];
+        }else{
+          var sj = new Date().toLocaleDateString().split('/');
+          sj[1] = sj[1].padStart(2, '0');
+          sj[2] = sj[2].padStart(2, '0');
+        }
         that.formDetail.compileDate = sj[0] + "-" + sj[1] + "-" + sj[2];
-        console.log(that.formDetail.compileDate)
+        // console.log(that.formDetail.compileDate)
       })
     },
     //复核人列表

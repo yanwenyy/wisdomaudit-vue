@@ -390,7 +390,7 @@
                     ? "否"
                     : scope.row.isProbleam == 1
                     ? "是":'--'
-                  
+
                 }}
             </template>
           </el-table-column>
@@ -592,7 +592,11 @@
                            align="center"
                            width="180"
                            show-overflow-tooltip
-                           label="风险金额（万元）"> </el-table-column>
+                           label="风险金额（万元）">
+            <template slot-scope="scope">
+              {{ parseFloat(scope.row.riskAmount.toString()) }}
+            </template>
+          </el-table-column>
           <el-table-column prop="problemFindPeople"
                            align="center"
                            label="发现人"> </el-table-column>
@@ -679,7 +683,7 @@
           <div class="son">
             <el-form-item prop="problemDiscoveryTime">
               <p>发现时间：</p>
-             
+
               <el-date-picker v-model="problems_form.problemDiscoveryTime"
                               type="date"
                               placeholder="发现时间">
@@ -1354,7 +1358,7 @@ export default {
 
   },
   methods: {
-    // 模型/自建任务列表  
+    // 模型/自建任务列表
     list_data (params) {
       this.loading = true;
       task_pageList(params).then(resp => {
@@ -1456,7 +1460,7 @@ export default {
                 // 上传成功
                 if (resp.data.code == 0) {
                   this.success_btn = 0;//显示加载按钮  0成功  1 loaging
-                  // 
+                  //
                   this.Upload_file = resp.data.data;//上传成功大的文件
                   // 提交步骤
                   let params1 = {
@@ -1534,7 +1538,7 @@ export default {
             // 上传成功
             if (resp.data.code == 0) {
               this.success_btn = 0;//显示加载按钮  0成功  1 loaging
-              // 
+              //
               this.Upload_file = resp.data.data;//上传成功大的文件
               // var upList = this.edit_file_list.concat(this.Upload_file);
               var upList = [...this.edit_file_list, ...this.Upload_file];
@@ -1615,7 +1619,7 @@ export default {
     new_add (params) {
       // 新增
       task_add(params).then(resp => {
-        // 
+        //
         if (resp.code == 0) {
           this.$message({
             message: '新增成功',
@@ -1713,7 +1717,7 @@ export default {
       task_details(params).then(resp => {
         this.edit_details = resp.data
         this.save_zj_query = this.edit_details
-        // 
+        //
         let params2 = {
           pageNo: 1,
           pageSize: 10,
@@ -2085,11 +2089,11 @@ export default {
                 // var arr = this.multipleSelection_data_list.map(function (item, index) {
                 //   return item.resultDetailId;
                 // }).join(",");
-                // 
+                //
                 var arr = this.multipleSelection_data_list.map(function (item, index) {
                   return item.onlyuuid;
                 }).join(",");
-                // 
+                //
                 // 提交
                 let resultDetailProjectRelDto = {
                   handleIdea: this.verify_model.handleIdea,//核实信息
@@ -2453,7 +2457,7 @@ export default {
     },
     // 引用知识库
     // quote_knowledge () {
-    //   
+    //
     // },
     // 设置参数
     setParameters (data) {
@@ -2605,7 +2609,7 @@ export default {
       })
     },
 
-    // 模型列表 获取责任人 
+    // 模型列表 获取责任人
     changeHeader (val) {
       this.select_list.find((item) => {
         if (item.peopleTable.peopleName === val.peopleName) {//筛选出匹配数据
@@ -2657,7 +2661,7 @@ export default {
       //   if (item.peopleTable.peopleName === val) {//筛选出匹配数据
       //     let peopleTableUuid = item.peopleTable.peopleTableUuid.replace('{', '').replace('}', '').trim();
       //     this.save_zj_query.peopleTableUuid = peopleTableUuid;
-      //     
+      //
       //   }
       // })
       for (let i = 0; i < this.select_list.length; i++) {
@@ -2719,7 +2723,7 @@ export default {
   }
 };
 </script>
-  
+
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
 >>> .el-dialog--center .el-dialog__body {
@@ -3120,4 +3124,3 @@ export default {
   left: 0;
 }
 </style>
- 
