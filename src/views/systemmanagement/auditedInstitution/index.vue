@@ -31,8 +31,8 @@
           </el-col>
           <el-col :span="2">
             <el-button type="text"
-                       style="color: #44a3df; background: none; border: 0"
-                       size="small"
+                       style="color: #44a3df; background: none; border: 0;"
+                       size="small xz"
                        @click="orgDownload()">下载模板</el-button>
           </el-col>
           <div class="search">
@@ -107,7 +107,7 @@
     <!-- 查看弹框 -->
     <el-dialog :visible.sync="look_auditOrg"
                :append-to-body='true'
-               width="40%">
+               width="30%">
       <div class="mainTitle">被审计机构</div>
       <div class="formStyle">
         <el-form label-width="130px"
@@ -342,7 +342,6 @@ export default {
   // border: 1px solid red;
   text-align: center;
   padding: 5%;
-  overflow: auto;
 }
 </style>
 <style scoped>
@@ -416,5 +415,13 @@ export default {
 }
 .filterTree >>> .el-input__inner::-webkit-input-placeholder {
   color: #c0c4cc !important;
+}
+.xz{
+  margin-left: 15px;
+}
+@media (min-width: 1000px) and (max-width: 1400px) {
+  .xz{
+    margin-left: 30px;
+  }
 }
 </style>

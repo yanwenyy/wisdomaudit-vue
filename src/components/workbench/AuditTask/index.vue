@@ -271,11 +271,9 @@
                   </div>
 
                   <el-button type="text"
-                             v-if=" scope.row.taskType == 1"
                              style="color: #0c87d6!important;
                                font-size: 14px !important;
 "
-                             、
                              @click="probleNum_click(scope.row.auditTaskUuid,scope.row.auditModelName)"
                              size="small">
                     查看问题
@@ -285,7 +283,6 @@
                 <div v-else>
 
                   <el-button type="text"
-                             v-if=" scope.row.taskType == 1"
                              style="color: #0c87d6!important;
                                font-size: 14px !important;
 "
@@ -350,7 +347,7 @@
         <!-- 结果操作 -->
         <div class="cxjg"
              style="margin: 20px 0; display: flex">
-          <el-col> 模型线索结果（{{jg_title}}模型） </el-col>
+          <el-col> 模型线 索结果（{{jg_title}}模型） </el-col>
           <el-col style="display: contents">
             <el-button plain
                        v-if="userRole==1 || userRole==2 "
@@ -991,6 +988,9 @@
         <div class=""
              v-if="success_btn==0">
           <el-button size="small"
+                     @click="dialogVisible_zj = false">取 消</el-button>
+
+          <el-button size="small"
                      type="primary"
                      v-if="title=='新增任务'"
                      :disabled="isDisable"
@@ -1001,8 +1001,6 @@
                      :disabled="isDisable"
                      @click="save_zj(2)">确 定</el-button>
 
-          <el-button size="small"
-                     @click="dialogVisible_zj = false">取 消</el-button>
         </div>
       </span>
     </el-dialog>

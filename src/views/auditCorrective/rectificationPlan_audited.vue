@@ -62,9 +62,7 @@
 
             <el-button type="text"
                        @click="look(scope.row)"
-                       style="color: #0c87d6!important;
-                               font-size: 14px !important;
-">
+                       class="look">
               查看
             </el-button>
           </template>
@@ -222,6 +220,15 @@ export default {
 </script>
 
 <style scoped>
+.look {
+  color: #0c87d6 !important;
+  border: none !important;
+  background: none !important;
+  font-size: 14px !important;
+}
+.look:hover {
+  background: none !important;
+}
 >>> .foot .el-button {
   font-weight: normal;
 }

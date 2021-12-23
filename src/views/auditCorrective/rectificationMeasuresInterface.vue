@@ -51,7 +51,7 @@
               border
               :data="tableData"
               highlight-current-row>
-      <el-table-column :resizable="false"
+      <el-table-column width="50" :resizable="false"
                        label="序号"
                        type="index" />
       <el-table-column :resizable="false"
@@ -192,11 +192,11 @@ export default {
     list_data_start (ifsel) {
       let params = {
         pageNo: this.searchForm.pageNo,
-        pageSize: ifsel=='getProjectList'?1000000:this.searchForm.pageSize,
+        pageSize: ifsel == 'getProjectList' ? 1000000 : this.searchForm.pageSize,
         condition: {
-          correctStatus:  ifsel=='getProjectList'?'':this.searchForm.correctStatus,
-          projectName:  ifsel=='getProjectList'?'':this.searchForm.projectName,
-          problemName:  ifsel=='getProjectList'?'':this.searchForm.problemName,
+          correctStatus: ifsel == 'getProjectList' ? '' : this.searchForm.correctStatus,
+          projectName: ifsel == 'getProjectList' ? '' : this.searchForm.projectName,
+          problemName: ifsel == 'getProjectList' ? '' : this.searchForm.problemName,
         }
       };
       this.loading = true;
@@ -209,12 +209,12 @@ export default {
           total: datas.total
         };
         this.loading = false;
-        var projectList=[];
-        if(ifsel=="getProjectList"){
-          datas.records.forEach((item)=>{
+        var projectList = [];
+        if (ifsel == "getProjectList") {
+          datas.records.forEach((item) => {
             projectList.push(item.projectName)
           });
-          this.projectList=new Set(projectList);
+          this.projectList = new Set(projectList);
         }
       })
     },
@@ -289,5 +289,12 @@ export default {
 @import "../../assets/styles/css/yw.css";
 .sh-btn {
   background: transparent !important;
+  color: #0c87d6 !important;
+  border: none !important;
+  background: none !important;
+  font-size: 14px !important;
+}
+.sh-btn:hover {
+  background: none !important;
 }
 </style>

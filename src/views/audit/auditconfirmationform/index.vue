@@ -82,32 +82,34 @@
         <el-table-column label="最终版扫描件"
                          algin="left">
           <template slot-scope="scope">
-            <el-button size="small"
-                       type="text"
-                       class="btnStyle"
-                       style="color: #1371cc">
-              <el-upload v-if="scope.row.endConfirmationFile==''||scope.row.endConfirmationFile==null&&(scope.row.createUserUuid==userInfo.user.id)"
-                         :show-file-list="false"
-                         class="upload-demo inline-block btnStyle"
-                         :on-change="fileChange"
-                         :action="'/wisdomaudit/auditConfirmation/endFileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid"
-                         :on-success="list_data_start"
-                         :headers="headers"
-                         accept=".docx,.xls,.xlsx,.txt,.zip,.doc">
-                <el-button size="small"
-                           type="text"
-                           style="background: transparent;padding:0"
-                           class="editBtn">上传</el-button>
-              </el-upload>
-              <el-tooltip placement="bottom"
-                          effect="light"
-                          v-if="scope.row.endConfirmationFile">
-                <div @click="downFile(scope.row.endConfirmationFileId,scope.row.endConfirmationFile)"
-                     class="pointer blue"
-                     slot="content">{{scope.row.endConfirmationFile}}</div>
-                <span class="smb-btn"><i class="el-icon-folder-opened list-folder smb-folder"></i>1</span>
-              </el-tooltip>
-            </el-button>
+            <el-upload v-if="scope.row.endConfirmationFile==''||scope.row.endConfirmationFile==null&&(scope.row.createUserUuid==userInfo.user.id)"
+                       :show-file-list="false"
+                       class="upload-demo inline-block btnStyle"
+                       :on-change="fileChange"
+                       :action="'/wisdomaudit/auditConfirmation/endFileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid"
+                       :on-success="list_data_start"
+                       :headers="headers"
+                       accept=".docx,.xls,.xlsx,.txt,.zip,.doc">
+              <el-button size="small"
+                         type="text"
+                         style="background: transparent;padding:0"
+                         class="editBtn">上传</el-button>
+            </el-upload>
+            <el-popover v-if="scope.row.endConfirmationFile"
+                        placement="bottom"
+                        width="250"
+                        trigger="click">
+              <ul class="fileList-ul">
+                <li class="tableFileList-title">文件名称</li>
+                <li class="pointer blue"
+                    @click="downFile(scope.row.endConfirmationFileId,scope.row.endConfirmationFile)">
+                  {{scope.row.endConfirmationFile}}</li>
+              </ul>
+              <div slot="reference"
+                   class="pointer"><span class="smb-btn"><i
+                     class="el-icon-folder-opened list-folder smb-folder"></i>1</span>
+              </div>
+            </el-popover>
           </template>
         </el-table-column>
       </el-table>
@@ -929,13 +931,13 @@ export default {
   width: 77% !important;
 }
 >>> .itemThree .el-form-item__content {
-  margin-left: 140px!important;
+  margin-left: 140px !important;
 }
-.itemTwo{
+.itemTwo {
   width: 48.5%;
 }
-.itemTwo .el-select{
-  width: 100%!important;
+.itemTwo .el-select {
+  width: 100% !important;
 }
 >>> .itemTwo .el-form-item__content {
   width: 59% !important;

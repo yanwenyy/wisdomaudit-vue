@@ -354,6 +354,7 @@
                        action="#"
                        v-model="taskSelf.enclosure"
                        :on-change="handleChangePic"
+                       :on-remove="handleRemove"
                        :file-list="fileList"
                        :auto-upload="false"
                        multiple>
@@ -498,6 +499,8 @@ import {
   thematicAreas,
   attachmentEcho,
 } from "@WISDOMAUDIT/api/shandong/projectmanagement.js";
+import { down_file } from
+    '@SDMOBILE/api/shandong/ls'
 export default {
   components: { Pagination },
   props: ["active_project", "userRole"],
@@ -1128,6 +1131,7 @@ export default {
     },
     //新增自建任务完成按钮
     saveTask (selfTaskRef) {
+      // console.log( this.fileList)
       this.$refs[selfTaskRef].validate((valid) => {
         if (valid) {
           // this.TaskDialogVisible = false;
@@ -1139,7 +1143,7 @@ export default {
               background: "transparent",
             });
             let formData = new FormData();
-            formData.append("file", this.file.raw);
+            // formData.append("file", this.file.raw);
             this.fileList.forEach((item) => {
               formData.append("files", item.raw);
             });
@@ -1157,7 +1161,6 @@ export default {
                 this.$message.success("上传成功！");
                 loading.close();
                 this.Upload_file = resp.data.data;
-
                 //新增自建任务接口
                 this.taskSelf.attachmentList = this.Upload_file;
                 this.taskSelf.managementProjectUuid = this.active_project;
@@ -1360,48 +1363,31 @@ export default {
       });
     },
     // 附件下载
-    enclosureDownload (id, name) {
-      const fileName = name.split(".")[0];
-      let formData = new FormData();
-      formData.append("fileId", id);
-      axios({
-        method: "post",
-        // timeout: -1,
-
-        url: "/wisdomaudit/auditPreviousDemandData/downloadByFileId",
-        headers: {
-          TOKEN: this.dqtoken,
-        },
-        data: formData,
-        responseType: "blob",
+    enclosureDownload (id, fileName) {
+      let formData = new FormData()
+      formData.append('fileId', id)
+      down_file(formData).then(resp => {
+        const content = resp;
+        const blob = new Blob([content],
+          { type: 'application/octet-stream,charset=UTF-8' }
+        )
+        if ('download' in document.createElement('a')) {
+          // 非IE下载
+          const elink = document.createElement('a')
+          elink.download = fileName //下载后文件名
+          elink.style.display = 'none'
+          elink.href = window.URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象
+          document.body.removeChild(elink)
+        } else {
+          // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
+      }).catch((err) => {
+        console.log(err);
       })
-        .then((res) => {
-          const content = res.data;
-          console.log(res);
-          const blob = new Blob([content], {
-            type: "application/octet-stream,charset=UTF-8",
-          });
-          const fileName =
-            res.headers["content-disposition"].split("fileName*=utf-8''")[1];
-          const filteType = res.headers["content-disposition"].split(".")[1];
-          if ("download" in document.createElement("a")) {
-            // 非IE下载
-            const elink = document.createElement("a");
-            elink.download = name; //下载后文件名
-            elink.style.display = "none";
-            elink.href = window.URL.createObjectURL(blob);
-            document.body.appendChild(elink);
-            elink.click();
-            window.URL.revokeObjectURL(elink.href); // 释放URL 对象
-            document.body.removeChild(elink);
-          } else {
-            // IE10+下载
-            navigator.msSaveBlob(blob, fileName);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
     },
     resetForm2 (resetForm2) {
       this.$refs[resetForm2].resetFields();
@@ -1415,8 +1401,14 @@ export default {
     },
     //
     handleRemove (file, fileList) {
-      if (file.response) {
-        this.fileList.remove(file.response.data);
+      console.log(file)
+      if (file.response||file.raw) {
+        if(file.raw){
+          this.fileList.remove(file);
+        }else{
+          this.fileList.remove(file.response.data);
+        }
+
         this.key = Math.random();
       } else {
         this.edit_file_list.remove(file);

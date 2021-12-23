@@ -51,7 +51,6 @@ export function operation_addTitle (data) {
 
 // 新增 弹窗 初始化模型列表
 export function add_pageList (data) {
-  console.log(data);
   return request({
     baseURL: baseURL,
     url: `/auditPreviousData/pageList`,

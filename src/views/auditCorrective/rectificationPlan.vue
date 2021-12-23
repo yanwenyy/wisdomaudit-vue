@@ -133,7 +133,7 @@
                :append-to-body='true'
                class="up_person"
                @close="resetForm2('save_project_prople')"
-               width="35%">
+               width="45%">
       <div class="title">启动整改</div>
 
       <div class="dialog">
@@ -217,7 +217,7 @@ export default {
 
 
 
-      // 设置整改跟进人 
+      // 设置整改跟进人
       project_list: [],//项目列表 多选
       setting_people: [],//跟进人
 
@@ -261,7 +261,7 @@ export default {
       })
     },
 
-    // 列表 筛选 
+    // 列表 筛选
     search () {
       this.list_query.pageNo = 1;
       this.pageProblemCorrectList_data();//列表
