@@ -101,7 +101,7 @@
                 <svg-icon
                   icon-class="task"
                   class="homepage-icon"
-                />我的模型任务</span
+                />我的任务</span
               >
             </div>
             <div v-if="modellist.length == 0" style="height: 406px">
