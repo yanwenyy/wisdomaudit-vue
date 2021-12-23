@@ -75,18 +75,13 @@
         </el-col>
       </el-row>
 
-      <el-row>
-        <el-col :span="24">
-          <frameset
-            frameborder="NO"
-            border="0"
-            framespacing="0"
-            onload="load()"
-          >
-            <frame id="linkHtml" :src="formdates" />
-          </frameset>
-        </el-col>
-      </el-row>
+
+    <div width="100%"  height="800px">
+     <iframe :src="formdates" frameborder="0" width="100%"  height="800px" ></iframe>
+    </div>
+
+     
+
     </div>
   </div>
 </template>
@@ -116,6 +111,13 @@ export default {
     };
   },
 
+  created() {
+
+  },
+
+  mounted() {
+        // this.gettapylist();
+  },
 
   methods: {
     changemx(val) {
@@ -186,13 +188,7 @@ export default {
     ChooseThetype() {
       this.gettablelist();
     },
-  },
-
-  created() {
-    this.gettapylist();
-  },
-
-  mounted() {},
+  }
 };
 </script> 
 
