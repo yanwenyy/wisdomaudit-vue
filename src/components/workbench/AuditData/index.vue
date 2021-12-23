@@ -1132,7 +1132,7 @@
         </el-table-column>
       </el-table> -->
     </el-dialog>
-
+    <!-- 是否确认下发 -->
     <el-dialog center
                :visible.sync="whether"
                :append-to-body='true'
@@ -1447,7 +1447,14 @@ export default {
     this.query_title();
 
     // 新增未完成任务列表
-    this.add_add_csh();
+    let params2 = {
+      pageNo: this.params_add.pageNo,
+      pageSize: this.params_add.pageSize,
+      condition: {
+        projectType: this.projectNumber,//项目id
+      }
+    }
+    this.add_add_csh(params2)//初始化列表
     this.post_select_loadcascader_lx();//添加资料   类型 数据
     this.post_select_loadcascader_bm(this.selectprojectPeopleNum);//添加资料   部门 数据
     this.post_select_loadcascader_ly();//添加资料   领域 数据
@@ -1470,6 +1477,7 @@ export default {
   },
 
   methods: {
+    // 导出
     exportList (row) {
       // let formData = new FormData();
       // formData.append('addDataTaskUuid', row.addDataTaskUuid)
@@ -1521,15 +1529,7 @@ export default {
     },
     // 关闭新增
     close_model () {
-      this.get_out();
       this.success_btn_push = 0;
-
-    },
-    // 新增资料任务时退出
-    get_out () {
-      operation_addExit().then(resp => {
-
-      })
     },
     // 资料筛选
     search_list (index) {
@@ -1652,7 +1652,6 @@ export default {
     // 关闭
     close () {
       this.dialogVisible = false;
-      this.get_out();//关闭请求的接口
       // this.add_form.name = '';//清空name
       // this.add_form.title = '';//清空title
 
@@ -1706,6 +1705,16 @@ export default {
 
       this.dialogVisible = true
       this.title = '新增审计资料任务';
+      let params2 = {
+        pageNo: 1,
+        pageSize: this.params_add.pageSize,
+        condition: {
+          projectType: this.projectNumber,//项目id
+        }
+      }
+      this.add_add_csh(params2)//初始化列表
+
+
       this.$nextTick(() => {
         this.$refs.multipleTable.clearSelection();//清空
       })
@@ -1785,22 +1794,18 @@ export default {
       this.query_title()
     },
     // 新增任务初始化 列表
-    add_add_csh () {
+
+    add_add_csh (params) {
       this.loading = true;
-      let params = {
-        pageNo: this.params_add.pageNo,
-        pageSize: this.params_add.pageSize,
-        condition: {
-          projectType: this.projectNumber,//项目id
-        }
 
-      }
-
+      console.log(params);
       add_pageList(params).then(resp => {
         this.task_list = resp.data;
         this.task_list_records = resp.data.records;
         this.loading = false;
+        console.log(this.task_list_records);
       })
+
     },
 
     // 新增任务初始化 列表 分页每页条数
@@ -1810,7 +1815,14 @@ export default {
     // 新增任务初始化 列表 分页
     handleCurrentChange_csh (val) {
       this.params_add.pageNo = val;
-      this.add_add_csh()
+      let params = {
+        pageNo: this.params_add.pageNo,
+        pageSize: this.params_add.pageSize,
+        condition: {
+          projectType: this.projectNumber,//项目id
+        }
+      }
+      this.add_add_csh(params)//初始化列表
     },
 
 
@@ -1917,6 +1929,15 @@ export default {
               }
             }
             this.list_data_start(params)//未完成列表
+            let params2 = {
+              pageNo: 1,
+              pageSize: this.params_add.pageSize,
+              condition: {
+                projectType: this.projectNumber,//项目id
+              }
+            }
+            this.add_add_csh(params2)//初始化列表
+
             this.dialogVisible = false;//关闭新增弹窗
 
             // this.add_form.name = '';//清空name
@@ -1957,6 +1978,15 @@ export default {
               }
             }
             this.list_data_start(params)//未完成列表
+            let params2 = {
+              pageNo: 1,
+              pageSize: this.params_add.pageSize,
+              condition: {
+                projectType: this.projectNumber,//项目id
+              }
+            }
+            this.add_add_csh(params2)//初始化列表
+
             this.dialogVisible = false;//关闭新增弹窗
 
             // // this.add_form.name = '';//清空name
@@ -1977,7 +2007,6 @@ export default {
     // 新增确认
     query_save (params) {
       data_save(params).then(resp => {
-
         if (resp.code == 0) {
           this.$message({
             message: "新增成功",
@@ -1994,7 +2023,14 @@ export default {
             }
           }
           this.list_data_start(params)//未完成列表
-
+          let params2 = {
+            pageNo: 1,
+            pageSize: this.params_add.pageSize,
+            condition: {
+              projectType: this.projectNumber,//项目id
+            }
+          }
+          this.add_add_csh(params2)//初始化列表
           this.dialogVisible = false;//关闭新增弹窗
           // this.add_form.name = '';//清空name
           // this.add_form.title = '';//清空tltle
@@ -2026,13 +2062,15 @@ export default {
             }
           }
           this.list_data_start(params)//未完成列表
-
-
-
+          let params2 = {
+            pageNo: 1,
+            pageSize: this.params_add.pageSize,
+            condition: {
+              projectType: this.projectNumber,//项目id
+            }
+          }
+          this.add_add_csh(params2)//初始化列表
           this.dialogVisible = false;//关闭新增 编辑弹窗
-
-
-
         } else {
           this.$message({
             message: resp.data.msg,
@@ -2091,7 +2129,7 @@ export default {
     },
     // 部门
     Department_change (val) {
-      console.log(val);
+
       if (this.add_data.department.indexOf("分公司") != -1) {
         this.add_data.department = '地市分公司';
       } else {
@@ -2223,7 +2261,14 @@ export default {
           this.success_btn = 0;
           this.dialogVisible2 = false;
           // 新增未完成任务列表
-          this.add_add_csh();
+          let params2 = {
+            pageNo: 1,
+            pageSize: this.params_add.pageSize,
+            condition: {
+              projectType: this.projectNumber,//项目id
+            }
+          }
+          this.add_add_csh(params2)//初始化列表
         } else {
           this.$message({
             message: reesp.msg,
@@ -2693,18 +2738,6 @@ export default {
     },
 
 
-    // 操作记录分页
-    // 操作 资料列表 分页
-    // handleCurrentChange_record (val) {
-    //   let params = {
-    //     pageNo: this.record_params.pageNo,
-    //     pageSize: this.record_params.pageSize,
-    //   }
-    //   this.operation_list(params); // 操作 资料列表
-    // },
-
-
-
     // 任务列表 显示编辑
     edit_common (data) {
       this.isDisable = true
@@ -2716,6 +2749,14 @@ export default {
       // this.$refs.multipleTable.clearSelection();//清空
       this.title = '编辑审计资料任务';
       this.dialogVisible = true;//显示编辑
+      let params2 = {
+        pageNo: 1,
+        pageSize: this.params_add.pageSize,
+        condition: {
+          projectType: this.projectNumber,//项目id
+        }
+      }
+      this.add_add_csh(params2)//初始化列表
 
       // 资料任务id
       this.addDataTaskUuid = data.addDataTaskUuid
