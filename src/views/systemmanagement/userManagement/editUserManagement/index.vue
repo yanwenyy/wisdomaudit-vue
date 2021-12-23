@@ -117,6 +117,7 @@
             </el-select> -->
 
             <el-cascader
+            v-model="form.areaCode"
               ref="user"
               :options="areaList"
               :props="props"
@@ -198,7 +199,7 @@ export default {
         roleName: [],
         userId: "",
         oaId: "",
-        areaCode: null,
+        areaCode: [],
         countyCode: "",
       },
       roleNameList: [],
@@ -257,11 +258,7 @@ export default {
     async getUserinfo() {
       let userId = this.$route.query.id;
       let res = await obtainUser({ userId: userId });
-
       let arr = res.data.roleId==''?  null : res.data.roleId.split(",").map(Number);
-
-
-
       console.log(res, "userinfo");
 
       this.form.userAccout = res.data.userName;
@@ -297,59 +294,7 @@ export default {
       this.roleNameList = res.data.list;
     },
 
-    // /**
-    //  * 地市下拉框change事件
-    //  */
-    // areaCodeChange(val) {
-    //   this.areaCode = val
-    //   this.form.countyCode = ''
-    //   this.countyList = this.areaList.filter(item => {
-    //     return item.id === this.areaCode
-    //   })[0].childList
-    // },
-    // /**
-    //  * 获取下拉框信息
-    //  */
-    // async getRoleListInfo() {
-    //   // 获取审计组织下拉选项
-    //   let res = await this.$http.get(OrgTree)
-    //   this.areaList = res.data[0].childList
-
-    //   // 获取角色下拉选项
-    //   let res1 = await this.$http.get(GetRoleListInfo, {
-    //     pageSize: 100
-    //   })
-    //   this.roleNameList = res1.data.list
-
-    //   // 根据id获取角色信息以及默认选项
-    //   let res2 = await this.$http.get(GetUserInfoById, {
-    //     userId: this.$route.params.id
-    //   })
-    //   this.form.userAccout = res2.data.userName
-    //   this.form.email = res2.data.email
-    //   this.form.mobile = res2.data.mobile
-    //   this.form.realName = res2.data.realName
-    //   this.form.userId = res2.data.id
-    //   this.form.oaId = res2.data.oaId
-    //   this.form.roleId = res2.data.roleId.split(',').map(item => Number(item))
-    //   if (
-    //     Number(res2.data.parentId) === 0 ||
-    //     Number(res2.data.parentId) === 1
-    //   ) {
-    //     this.form.areaCode = Number(res2.data.orgId)
-    //     if (this.form.areaCode == 0 || this.form.areaCode == 1) {
-    //       this.form.areaCode = ''
-    //     }
-    //     this.form.countyCode = ''
-    //   } else {
-    //     this.form.areaCode = Number(res2.data.parentId)
-    //     this.countyList = this.areaList.filter(item => {
-    //       return item.id === this.form.areaCode
-    //     })[0].childList
-    //     this.form.countyCode = Number(res2.data.orgId)
-    //   }
-    //   console.log(this.form.areaCode)
-    // },
+  
     /**
      * 确定按钮点击事件
      * @param { Object } e 提交点击事件对象
@@ -362,7 +307,7 @@ export default {
         }
 
          let data={
-           userId:this.$route.query.id,
+          userId:this.$route.query.id,
         userName:this.form.userAccout,  //用户账号：
         realName:this.form.realName, //真实姓名
         mobile:this.form.mobile, //手机号：

@@ -298,8 +298,7 @@ export default {
 }
 
 .search_icon {
-  position: absolute;
-  top: 0;
+
   background: #1371cc;
   width: 37px;
   height: 37px;
