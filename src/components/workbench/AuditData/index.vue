@@ -861,10 +861,9 @@
                          :value="item.label">
               </el-option>
             </el-select>
-
+            <el-button type="primary"
+                       @click="search_operation_list()">查询</el-button>
           </div>
-          <el-button type="primary"
-                     @click="search_operation_list()">查询</el-button>
         </div>
 
         <el-table ref="multipleTable"

@@ -31,7 +31,7 @@
           </el-col>
           <el-col :span="2">
             <el-button type="text"
-                       style="color: #44a3df; background: none; border: 0"
+                       style="color: #44a3df; background: none; border: 0;margin-left;20px;"
                        size="small"
                        @click="orgDownload()">下载模板</el-button>
           </el-col>

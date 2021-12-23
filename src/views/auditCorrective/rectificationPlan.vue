@@ -133,7 +133,7 @@
                :append-to-body='true'
                class="up_person"
                @close="resetForm2('save_project_prople')"
-               width="40%">
+               width="45%">
       <div class="title">启动整改</div>
 
       <div class="dialog">
