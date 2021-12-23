@@ -75,8 +75,8 @@
         </el-col>
       </el-row>
 
-       <div width="100%"  height="800px">
-     <iframe :src="formdates" frameborder="0" width="100%"  height="800px" ></iframe>
+       <div width="100%"  height="1000px">
+     <iframe :src="formdates" frameborder="0" width="100%"  height="1000px" ></iframe>
     </div>
     </div>
   </div>
