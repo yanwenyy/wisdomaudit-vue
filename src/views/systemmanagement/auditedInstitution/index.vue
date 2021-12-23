@@ -107,7 +107,7 @@
     <!-- 查看弹框 -->
     <el-dialog :visible.sync="look_auditOrg"
                :append-to-body='true'
-               width="40%">
+               width="30%">
       <div class="mainTitle">被审计机构</div>
       <div class="formStyle">
         <el-form label-width="130px"
@@ -342,7 +342,6 @@ export default {
   // border: 1px solid red;
   text-align: center;
   padding: 5%;
-  overflow: auto;
 }
 </style>
 <style scoped>
