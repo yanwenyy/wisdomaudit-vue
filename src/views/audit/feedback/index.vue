@@ -439,6 +439,7 @@
                :append-to-body='true'
                :visible.sync="add_update_dlag"
                width="30%"
+               class="dlag_up"
                :close-on-click-modal="false"
                @close="resetForm_verify()">
       <div class="title_dlag">{{title}}</div>
@@ -1108,6 +1109,9 @@ export default {
 
 <style  scoped>
 @import "../../../assets/styles/css/lhg.css";
+.dlag_up >>> .el-dialog {
+  min-width: 500px;
+}
 >>> .foot .el-button {
   font-weight: normal;
 }

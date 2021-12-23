@@ -2062,6 +2062,7 @@ export default {
             }
           }
           this.list_data_start(params)//未完成列表
+
           let params2 = {
             pageNo: 1,
             pageSize: this.params_add.pageSize,
@@ -2070,6 +2071,7 @@ export default {
             }
           }
           this.add_add_csh(params2)//初始化列表
+
           this.dialogVisible = false;//关闭新增 编辑弹窗
         } else {
           this.$message({
@@ -2214,6 +2216,8 @@ export default {
                   projectType: this.projectNumber,//项目id
                 }
                 this.save_data_up(params)//保存
+
+
               } else {
                 // 上传失败
                 this.$message({
@@ -2254,21 +2258,41 @@ export default {
       saveTemp(params).then(resp => {
 
         if (resp.code == 0) {
+
+
+
+          if (this.addDataTaskUuid) {
+            // 编辑列表
+            let params3 = {
+              condition: {
+                addDataTaskUuid: this.addDataTaskUuid,
+                projectType: this.active_project,
+              },
+              pageNo: 1,
+              pageSize: this.edit_details_query.pageSize,
+            };
+            this.edut_details(params3);
+
+          } else {
+            // 新增未完成任务列表
+            let params2 = {
+              pageNo: 1,
+              pageSize: this.params_add.pageSize,
+              condition: {
+                projectType: this.projectNumber,//项目id
+              }
+            }
+            this.add_add_csh(params2)//初始化列表
+          }
+
+
+
           this.$message({
             message: '添加资料成功',
             type: 'success'
           });
           this.success_btn = 0;
           this.dialogVisible2 = false;
-          // 新增未完成任务列表
-          let params2 = {
-            pageNo: 1,
-            pageSize: this.params_add.pageSize,
-            condition: {
-              projectType: this.projectNumber,//项目id
-            }
-          }
-          this.add_add_csh(params2)//初始化列表
         } else {
           this.$message({
             message: reesp.msg,
@@ -2856,6 +2880,9 @@ export default {
   font-size: 14px;
   float: left;
   width: 100%;
+}
+.cd >>> .el-upload-list__item-name {
+  text-align: left !important;
 }
 .mose {
   width: 100%;
