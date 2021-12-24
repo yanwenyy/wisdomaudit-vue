@@ -155,16 +155,16 @@ export const constantRoutes = [{
         }
       },
       {
-        path: "/dateFinance",
-        name: "dateFinance",
+        path: "/datenetwork",
+        name: "datenetwork",
         component: () =>
           import("@WISDOMAUDIT/views/audit/riskScan/datenetwork"),
         meta: {
           title: "网络业务"
         }
       }, {
-        path: "/datenetwork",
-        name: "datenetwork",
+        path: "/dateFinance",
+        name: "dateFinance",
         component: () =>
           import("@WISDOMAUDIT/views/audit/riskScan/dateFinance"),
         meta: {
