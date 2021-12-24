@@ -45,7 +45,7 @@
                              label="流水单号"> -->
             <!-- </el-table-column> -->
             <el-table-column prop="title"
-                             show-overflow-tooltip
+                           width="200"
                              label="标题">
             </el-table-column>
             <el-table-column prop="launchPeople"

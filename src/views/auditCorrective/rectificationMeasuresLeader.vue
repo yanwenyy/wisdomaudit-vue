@@ -12,7 +12,7 @@
                        clearable>
               <el-option label="待提交"
                          value="1"></el-option>
-              <el-option label="待审核"
+              <el-option label="待审批"
                          value="2"></el-option>
               <el-option label="领导审核通过"
                          value="3"></el-option>
@@ -116,7 +116,7 @@
                      class="blue sh-btn"
                      type="text"
                      @click="examine(scope.row)">
-            审核
+            审批
           </el-button>
         </template>
       </el-table-column>

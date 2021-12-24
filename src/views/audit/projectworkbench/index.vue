@@ -1202,7 +1202,19 @@ export default {
       initProject(data).then((resp) => {
         this.projectInit = resp.data.records;
         if (resp.data.records && resp.data.records != '') {
-          this.active_project = resp.data.records[0].managementProjectUuid;
+          var datas=resp.data.records[0];
+          this.active_project = datas.managementProjectUuid;
+          // 更新项目接口
+          setprojectInit(this.active_project).then((resp) => {
+            var that=this;
+            if (resp.code == 0) {
+              that.$forceUpdate();
+              that.userInfo.userRole = resp.data.peopleRole;
+              that.userInfo.isLiaison = resp.data.isLiaison;
+              that.$set(that.userInfo, "userRole", resp.data.peopleRole);
+              that.$set(that.userInfo, "isLiaison", resp.data.isLiaison);
+            }
+          });
         }
         this.ifshow = false;
       });
@@ -1682,7 +1694,7 @@ export default {
       // this.projectCode.projectType = this.notInitType;
       editProjectCode(this.projectCode).then((resp) => {
         this.$message.success("初始化项目完成！");
-        this.addDialogVisibleRes()
+        this.addDialogVisibleRes();
         this.reset()
       });
       // setInterval(() => {

@@ -170,6 +170,10 @@
           </el-select>
           <el-input v-model="temp.special"
                     v-if="input_select == false"></el-input>
+          <el-button  v-if="input_select == false" type="primary"
+                     class="inline-block"
+                      style="position: absolute;top:0;right: -70px"
+                     @click="input_select=!input_select">重选</el-button>
         </el-form-item>
         <!-- <el-form-item> </el-form-item> -->
         <el-form-item label="依据："
