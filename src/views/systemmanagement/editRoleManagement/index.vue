@@ -47,14 +47,15 @@
       <el-form-item>
         <el-row class="g-footer">
           <div class="g-footer-btn">
-            <el-button class="m-button-normal" @click="submit($event)"
-              >确定</el-button
-            >
-            <el-button
+                        <el-button
               class="m-button-normal u-margin-left-20"
               @click="cancle()"
               >取消</el-button
             >
+            <el-button class="m-button-normal" @click="submit($event)"
+              >确定</el-button
+            >
+
           </div>
         </el-row>
       </el-form-item>
@@ -407,7 +408,7 @@ export default {
   width: 88px;
 }
 
-.g-footer button:first-child {
+.g-footer button:last-child {
   color: #fff;
   background: #3f6acb;
 }
