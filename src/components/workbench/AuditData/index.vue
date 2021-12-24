@@ -1515,9 +1515,9 @@ export default {
         }
         this.is_add = resp.data.isDelete//是否新增
         this.add_data.department = resp.data.auditOrgName;//部门
-        if (this.add_data.department.indexOf("分公司") != -1) {
-          this.add_data.department = '地市分公司';
-        }
+        // if (this.add_data.department.indexOf("分公司") != -1) {
+        //   this.add_data.department = '地市分公司';
+        // }
         this.$forceUpdate();
         this.$set(this.add_data, this.add_data)
         this.$set(this.add_form, this.add_form)
@@ -2136,11 +2136,12 @@ export default {
     // 部门
     Department_change (val) {
 
-      if (this.add_data.department.indexOf("分公司") != -1) {
-        this.add_data.department = '地市分公司';
-      } else {
-        this.add_data.department = val;
-      }
+      // if (this.add_data.department.indexOf("分公司") != -1) {
+      //   this.add_data.department = '地市分公司';
+      // } else {
+      //   this.add_data.department = val;
+      // }
+      this.add_data.department = val;
       this.$forceUpdate();
       this.$set(this.add_data, this.add_data)
     },

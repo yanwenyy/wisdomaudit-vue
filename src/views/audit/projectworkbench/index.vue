@@ -1693,7 +1693,11 @@ export default {
       this.projectCode.managementProjectUuid = this.managementProjectUuid;
       // this.projectCode.projectType = this.notInitType;
       editProjectCode(this.projectCode).then((resp) => {
-        this.$message.success("初始化项目完成！");
+        this.$message({
+          message: '初始化项目完成',
+          type: 'success',
+          duration:1500
+        });
         this.addDialogVisibleRes();
         this.reset()
       });
