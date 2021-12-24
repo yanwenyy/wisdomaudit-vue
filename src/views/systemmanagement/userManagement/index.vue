@@ -300,11 +300,8 @@ export default {
 .search_icon {
 
   background: #1371cc;
-  width: 37px;
   height: 37px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
+
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;

@@ -85,8 +85,8 @@
       </el-form-item>
       <el-form-item label-width="108px">
         <el-row class="g-footer">
-          <el-button class="m-button-normal" @click="submit">确定</el-button>
           <el-button class="m-button-normal u-margin-left-20" @click="cancle()">取消</el-button>
+          <el-button class="m-button-normal" @click="submit">确定</el-button>
         </el-row>
       </el-form-item>
     </el-form>
@@ -463,7 +463,7 @@ export default {
   width: 88px;
 }
 
-.g-footer button:first-child {
+.g-footer button:last-child {
   color: #fff;
   background: #3f6acb;
 }
