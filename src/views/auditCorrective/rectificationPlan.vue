@@ -141,6 +141,7 @@
           <el-form ref="save_project_prople"
                    :model="save_project_prople"
                    :inline="false"
+                   v-loading="edit_people_loading"
                    :rules='rules_people'>
             <div class="people">
               <p><span style="color:red">*</span> 整改期限：</p>
@@ -203,8 +204,8 @@ import { pageProblemCorrectList, details_pageList, isProjectLeader, issueProject
 export default {
   data () {
     return {
-      pickeroptions:{
-        disabledDate:(time) => {
+      pickeroptions: {
+        disabledDate: (time) => {
           if (this.save_project_prople.beginTime) {
             return time.getTime() < new Date(this.save_project_prople.beginTime).getTime();
           }
@@ -228,7 +229,7 @@ export default {
       // 设置整改跟进人
       project_list: [],//项目列表 多选
       setting_people: [],//跟进人
-
+      edit_people_loading: false,
       save_project_prople: {
         setting_people_name: '',//选择的整改跟进人
         setting_people_key: '',
@@ -290,19 +291,7 @@ export default {
       this.project_list = val;
     },
 
-    // 设置跟进人 data
-    setting_follow_prople () {
-      let params = {
-        projectid: this.projectid,
-        pageSize: '1000',
-        pageCurrent: '1',
-      }
-      // 获取跟进人
-      follow_up_person(params).then(resp => {
 
-        this.setting_people = resp.data.list
-      })
-    },
 
     // 整改人  change
     change_peoplr (val) {
@@ -329,8 +318,10 @@ export default {
       let params = {
         managementProjectUuid: this.project_list[0].managementProjectUuid,
         managementAdvice: this.project_list[0].managementAdvice,//
-        projectLeaderUuid: this.project_list[0].projectLeaderUuid
+        projectLeaderUuid: this.project_list[0].projectLeaderUuid,
+        correctSend: this.project_list[0].correctSend
       }
+
       // 是否启动整改
       isProjectLeader(params).then(resp => {
         if (resp.code == 0) {
@@ -345,11 +336,16 @@ export default {
             this.projectid = ids[0]
             this.setting_follow_prople()//整改人 数据
 
+            // 启动过整改  回显
+            if (_data.managementAdvice == 1) {
+              this.edit_people_loading = true;
+              // 整改期限
+              this.save_project_prople.beginTime = this.project_list[0].beginTime;
+              this.save_project_prople.endTime = this.project_list[0].endTime;
+
+            }
           } else {
-            this.$message({
-              message: '请选择可以启动整改的项目进行整改',
-              type: "error"
-            });
+            this.$message({ message: "请选择可以启动整改的项目进行整改" });
           }
         } else {
           this.$message({
@@ -359,6 +355,29 @@ export default {
         }
       })
     },
+
+    // 设置跟进人 data
+    setting_follow_prople () {
+      let params = {
+        projectid: this.projectid,
+        pageSize: '1000',
+        pageCurrent: '1',
+      }
+      // 获取跟进人
+      follow_up_person(params).then(resp => {
+        this.setting_people = resp.data.list;
+        this.setting_people.forEach(item => {
+          // console.log(item);
+          if (item.id == this.project_list[0].correctUser) {
+            this.save_project_prople.setting_people_key = item.id;
+          }
+        })
+        this.edit_people_loading = false;
+
+      })
+    },
+
+
     // 设置整改跟进人 参数
     save_people (save_project_prople) {
       this.isDisable = true
