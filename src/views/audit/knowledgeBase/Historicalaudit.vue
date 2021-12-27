@@ -24,7 +24,7 @@
          style="padding: 0 20px 20px">
       <el-button type="primary"
                  :disabled="isDisable"
-                 @click="add_sj()">新增省内历史审计发现</el-button>
+                 @click="add_sj()">新增省内审计发现</el-button>
     </div>
 
     <div class="conter">
@@ -308,7 +308,7 @@
 
           <el-button size="small"
                      type="primary"
-                     v-if="title == '新增省内历史审计发现'"
+                     v-if="title == '新增省内审计发现'"
                      :disabled="isDisable"
                      @click="save(1, 'add')">确 定</el-button>
           <el-button size="small"
@@ -731,7 +731,7 @@ export default {
         this.isDisable = false;
       }, 2000);
       this.add = {};
-      this.title = "新增省内历史审计发现";
+      this.title = "新增省内审计发现";
       this.dialogVisible = true;
       this.$nextTick(() => {
         this.$refs["add"].clearValidate();
@@ -868,7 +868,7 @@ export default {
         this.isDisable = false;
       }, 2000);
       this.historyAuditFindUuid = id;
-      this.title = "编辑省内历史审计发现";
+      this.title = "编辑省内审计发现";
       this.dialogVisible = true;
       let params = {
         id: this.historyAuditFindUuid,

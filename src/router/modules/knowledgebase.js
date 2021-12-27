@@ -32,7 +32,7 @@ const riskmonitoringRouter =
       name: 'findings ',
       component: () => import('@WISDOMAUDIT/views/audit/knowledgeBase/Historicalaudit'),
       meta: {
-        title: '省内历史审计发现'
+        title: '省内审计发现'
       }
     },
     {

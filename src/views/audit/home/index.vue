@@ -463,7 +463,12 @@ export default {
             });
           }
           this.dqfastlist = rep;
-          this.outfastlist = rep;
+          if(rep=[]){
+            this.outfastlist = this.fastlist.slice(0,3);
+          }else{
+            this.outfastlist = rep;
+          }
+          
           let _this = this;
           for (let i = 0; i < res.data.data.records.length; i++) {
             this.fastlist.forEach((row) => {
