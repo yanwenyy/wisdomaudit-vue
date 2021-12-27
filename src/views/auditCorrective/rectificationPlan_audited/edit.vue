@@ -39,7 +39,7 @@
                          label="问题">
 
           <template slot-scope="scope">
-            <p v-if="scope.row.problem">
+            <p @click="look(scope.row)" class="look cursor" v-if="scope.row.problem">
               {{scope.row.problem}}
             </p>
             <p v-else>
@@ -195,19 +195,19 @@
                  :model="save">
           <el-form-item label="主要负责部门："
                         prop="dutyDeptName">
-            <el-input placeholder="请输入主要负责部门"
+            <el-input :disabled="looktype=='look'" placeholder="请输入主要负责部门"
                       v-model="save.dutyDeptName">
             </el-input>
           </el-form-item>
 
           <el-form-item prop="dutyPersonName"
                         label="整改责任人：">
-            <el-input placeholder="请输入整改责任人"
+            <el-input :disabled="looktype=='look'" placeholder="请输入整改责任人"
                       v-model="save.dutyPersonName"></el-input>
           </el-form-item>
           <el-form-item
                         label="整改配合部门：">
-            <el-select placeholder="请选择"
+            <el-select :disabled="looktype=='look'" placeholder="请选择"
                        multiple
                        v-model="department"
                       >
@@ -220,7 +220,7 @@
           </el-form-item>
           <el-form-item prop="planContent"
                         label="整改计划：">
-            <el-input type="textarea"
+            <el-input :disabled="looktype=='look'" type="textarea"
                       class="resizeNone"
                       placeholder="请输入整改计划"
                       v-model="save.planContent"></el-input>
@@ -228,21 +228,21 @@
 
           <el-form-item prop="limitEndTime"
                         label="预计整改完成时限：">
-            <el-date-picker type="date"
+            <el-date-picker :disabled="looktype=='look'" type="date"
                             value-format="yyyy-MM-dd"
                             v-model="save.limitEndTime"
                             placeholder="请选择预计整改完成时限">
             </el-date-picker>
           </el-form-item>
           <el-form-item label="备注：">
-            <el-input type="textarea"
+            <el-input :disabled="looktype=='look'" type="textarea"
                       placeholder="请输入备注"
                       v-model="save.remark"
                       class="resizeNone"></el-input>
           </el-form-item>
         </el-form>
       </div>
-      <div slot="footer">
+      <div slot="footer" v-if="looktype!='look'">
 
         <el-button @click="dialogVisible_edit = false"
                    plain
@@ -266,6 +266,7 @@ export default {
   components: {},
   data () {
     return {
+      looktype:'',
       department:[],
       loadaudittorgoptions:[],
       loading: false,
@@ -367,6 +368,7 @@ export default {
     },
     // 编辑
     edit (data) {
+      this.looktype='';
       console.log(data);
       this.dialogVisible_edit = true;
       this.tableData2 = data;
@@ -383,6 +385,20 @@ export default {
       this.$nextTick(() => {
         this.$refs["save"].clearValidate();
       });
+    },
+    look (data) {
+      this.looktype='look';
+      this.dialogVisible_edit = true;
+      this.tableData2 = data;
+      this.save.dutyDeptName = data.dutyDeptName;//主要负责部门
+      this.save.dutyPersonName = data.dutyPersonName;//整改责任人
+      this.save.planContent = data.planContent;//整改计划
+      this.save.limitEndTime = data.limitEndTime;//预计整改完成时限
+      this.save.remark = data.remark;//备注
+      this.save.rectDeparId =data.rectDeparId.split(",")||[];//配合本门id
+      this.save.rectDeparName ==data.rectDeparName.split(",")||[];//配合本门name
+      this.department=data.rectDeparId.split(",")||[];
+      this.save = JSON.parse(JSON.stringify(this.save));
     },
 
 
@@ -638,4 +654,7 @@ export default {
   line-height: 36px;
   width: 220px !important;
 }
+  .cursor{
+    cursor: pointer;
+  }
 </style>
