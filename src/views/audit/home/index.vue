@@ -1,5 +1,5 @@
 <template>
-  <div class="page-container">
+  <div class="audithome">
     <!-- <el-button @click="openVault">金库认证测试</el-button> -->
     <Vault
       :vaultV="vaultV"
@@ -26,8 +26,8 @@
           >
         </div>
 
-        <div class="project-wapper" style="height: 270px">
-          <div v-if="projectlist.length == 0" style="height: 270px;width:100%;">
+        <div class="project-wapper homeheight1" style="height: 178px">
+          <div v-if="projectlist.length == 0" class="homeheight1">
             <div class="homeemptyicon">
               <svg-icon icon-class="home-empty" className="homeempty" />
             </div>
@@ -35,8 +35,10 @@
           </div>
           <div
             class="project-item"
+            
             v-for="(item, index) in projectlist"
             :key="'project' + index"
+            :style="index==0?'':'border-left:1px solid #ccc;'"
             v-else
           >
             <el-tooltip
@@ -50,7 +52,7 @@
               </div>
             </el-tooltip>
 
-            <ul :style="index == 0 ? '' : 'border-left:1px solid #ccc;'">
+            <ul>
               <li>
                 <div
                   class="icon-wapper pointer"
@@ -104,17 +106,17 @@
                 />我的任务</span
               >
             </div>
-            <div v-if="modellist.length == 0" style="height: 406px">
+            <div v-if="modellist.length == 0" class="homeheight3">
               <div class="homeemptyicon">
                 <svg-icon icon-class="home-empty" className="homeempty" />
               </div>
               <div class="homeemptytext">暂无内容，稍后再来</div>
             </div>
-            <ul style="height: 406px; overflow: scroll" class="odd-even" v-else>
+            <ul class="homeheight3 odd-even" v-else>
               <li v-for="(item, index) in modellist" :key="'model' + index">
                 <div class="li-item">
                   <h5
-                    @click="taskModelEvent('2-2', item.managementProjectUuid)"
+                    @click="taskModelEvent('2-2', item.projectId)"
                     class="pointer"
                   >
                     {{ item.projectName || "--" }}
@@ -123,11 +125,11 @@
                 </div>
                 <el-divider></el-divider>
                 <div class="li-item">
-                  <p>{{ item.taskName || "--" }}</p>
+                  <p>【{{ item.toTaskType || ""}}】{{ item.toTaskName || "--" }}</p>
                   <el-button
                     type="primary"
                     size="mini"
-                    @click="taskModelEvent('2-2', item.managementProjectUuid)"
+                    @click="taskModelEvent('2-2', item.projectId)"
                     >前去处理<i class="el-icon-d-arrow-right el-icon--right"></i
                   ></el-button>
                 </div>
@@ -145,13 +147,14 @@
                 />审计资料</span
               >
             </div>
-            <div v-if="datalist.length == 0" style="height: 200px">
+            <div v-if="datalist.length == 0" class="homeheight2">
               <div class="homeemptyicon">
                 <svg-icon icon-class="home-empty" className="homeempty" />
               </div>
               <div class="homeemptytext">暂无内容，稍后再来</div>
             </div>
-            <ul style="height: 200px; overflow: scroll" class="odd-even" v-else>
+
+            <ul class="homeheight2 odd-even" v-else>
               <li v-for="(item, index) in datalist" :key="'data' + index">
                 <div class="li-item">
                   <h5
@@ -186,7 +189,7 @@
               ></el-button>
             </div>
 
-            <div v-if="outfastlist.length == 0" style="height: 98px">
+            <div v-if="outfastlist.length == 0" style="height: 70px">
               <div class="homeemptyicon"></div>
               <div class="homeemptytext">设置您的常用功能</div>
             </div>
@@ -463,12 +466,12 @@ export default {
             });
           }
           this.dqfastlist = rep;
-          if(rep=[]){
-            this.outfastlist = this.fastlist.slice(0,3);
-          }else{
+          if ((rep = [])) {
+            this.outfastlist = this.fastlist.slice(0, 3);
+          } else {
             this.outfastlist = rep;
           }
-          
+
           let _this = this;
           for (let i = 0; i < res.data.data.records.length; i++) {
             this.fastlist.forEach((row) => {
@@ -511,15 +514,15 @@ export default {
     getmodellist() {
       this.floading2 = true;
       axios({
-        url: `/wisdomaudit/homePage/homeMxList`,
+        url: `/wisdomaudit/homePage/homeToList`,
         headers: {
           TOKEN: this.dqtoken,
         },
         method: "post",
-        data: {},
       }).then((res) => {
         this.floading2 = false;
         this.modellist = res.data.data || "";
+        console.log(this.modellist);
       });
     },
     getprojectlist() {
@@ -696,19 +699,18 @@ export default {
   display: flex;
 
   .el-divider {
-    height: 270px;
+    height: 178px;
   }
 
   .project-item {
     width: 33%;
     min-width: 350px;
     font-size: 0;
-    height: 270px;
+    height: 178px;
     // display: flex;
     .homepagetitle {
       font-size: 16px;
       height: 20px;
-      margin-bottom: 10px;
       padding: 0 10px;
       text-align: center;
       overflow: hidden;
@@ -716,7 +718,8 @@ export default {
       white-space: nowrap;
     }
     ul {
-      padding: 0 60px;
+      width:240px;
+      margin:0 auto;
     }
 
     li {
@@ -728,25 +731,23 @@ export default {
       margin: 0 auto;
 
       .icon-wapper {
-        height: 100px;
+        height: 70px;
         width: 110px;
-        margin: 10px auto;
-
-        padding: 10px 2px;
-
+        margin: 3px auto;
+        padding: 5px;
         border: 1px solid #ccc;
         border-radius: 10px;
 
         text-align: center;
 
         .svg-icon {
-          width: 40px;
-          height: 40px;
+          width: 30px;
+          height: 30px;
         }
 
         span {
           display: inline-block;
-          margin-top: 15px;
+          margin-top: 5px;
           font-size: 16px;
 
           width: 106px;
@@ -805,18 +806,14 @@ export default {
   }
 }
 
-.el-card.body-padding ::v-deep .el-card__body {
-  padding-left: 0px;
-}
-
 .shortcut-wapper {
-  height: 100px;
+  height: 70px;
   width: 100%;
   display: flex;
   flex-wrap: wrap;
   .fastli {
     width: 33%;
-    height: 50px;
+    height: 35px;
     display: flex;
     align-items: center;
     span {
@@ -849,8 +846,6 @@ export default {
     }
   }
 }
-</style>
-<style lang="scss">
 .el-card .el-card__header {
   font-size: 15px;
   font-weight: bold;
@@ -867,6 +862,26 @@ export default {
 }
 .fastoutbox .el-table__header {
   border: none !important;
+}
+</style>
+<style scoped>
+.audithome .el-card >>> .el-card__body {
+  padding: 5px !important;
+}
+.audithome >>> .el-card__header {
+  padding: 5px !important;
+}
+.homeheight1 {
+  height: 178px;
+  width: 100%;
+}
+.homeheight2 {
+  height: calc(100vh - 485px);
+  overflow: scroll;
+}
+.homeheight3 {
+  height: calc(100vh - 348px);
+  overflow: scroll;
 }
 </style>
 
