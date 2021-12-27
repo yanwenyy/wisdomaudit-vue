@@ -158,6 +158,7 @@
                 <el-date-picker type="date"
                                 value-format="yyyy-MM-dd"
                                 v-model="save_project_prople.endTime"
+                                :picker-options="pickeroptions"
                                 placeholder="选择日期">
                 </el-date-picker>
               </el-form-item>
@@ -202,6 +203,13 @@ import { pageProblemCorrectList, details_pageList, isProjectLeader, issueProject
 export default {
   data () {
     return {
+      pickeroptions:{
+        disabledDate:(time) => {
+          if (this.save_project_prople.beginTime) {
+            return time.getTime() < new Date(this.save_project_prople.beginTime).getTime();
+          }
+        }
+      },
       // 列表参数
       list_query: {
         pageNo: 1,
