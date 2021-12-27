@@ -39,7 +39,7 @@
                          label="问题">
 
           <template slot-scope="scope">
-            <p v-if="scope.row.problem">
+            <p @click="look(scope.row)" class="look cursor" v-if="scope.row.problem">
               {{scope.row.problem}}
             </p>
             <p v-else>
@@ -67,6 +67,20 @@
           <template slot-scope="scope">
             <p v-if="scope.row.dutyPersonName">
               {{scope.row.dutyPersonName}}
+            </p>
+            <p v-else>
+              --
+            </p>
+          </template>
+
+        </el-table-column>
+        <el-table-column prop="rectDeparName"
+                        width="150"
+                         label="整改配合部门">
+
+          <template slot-scope="scope">
+            <p v-if="scope.row.rectDeparName">
+              {{scope.row.rectDeparName}}
             </p>
             <p v-else>
               --
@@ -181,20 +195,32 @@
                  :model="save">
           <el-form-item label="主要负责部门："
                         prop="dutyDeptName">
-            <el-input placeholder="请输入主要负责部门"
+            <el-input :disabled="looktype=='look'" placeholder="请输入主要负责部门"
                       v-model="save.dutyDeptName">
             </el-input>
           </el-form-item>
 
           <el-form-item prop="dutyPersonName"
                         label="整改责任人：">
-            <el-input placeholder="请输入整改责任人"
+            <el-input :disabled="looktype=='look'" placeholder="请输入整改责任人"
                       v-model="save.dutyPersonName"></el-input>
           </el-form-item>
-
+          <el-form-item
+                        label="整改配合部门：">
+            <el-select :disabled="looktype=='look'" placeholder="请选择"
+                       multiple
+                       v-model="department"
+                      >
+              <el-option v-for="item in loadaudittorgoptions"
+                         :key="item.auditOrgUuid"
+                         :label="item.orgName"
+                         :value="item.auditOrgUuid">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item prop="planContent"
                         label="整改计划：">
-            <el-input type="textarea"
+            <el-input :disabled="looktype=='look'" type="textarea"
                       class="resizeNone"
                       placeholder="请输入整改计划"
                       v-model="save.planContent"></el-input>
@@ -202,21 +228,21 @@
 
           <el-form-item prop="limitEndTime"
                         label="预计整改完成时限：">
-            <el-date-picker type="date"
+            <el-date-picker :disabled="looktype=='look'" type="date"
                             value-format="yyyy-MM-dd"
                             v-model="save.limitEndTime"
                             placeholder="请选择预计整改完成时限">
             </el-date-picker>
           </el-form-item>
           <el-form-item label="备注：">
-            <el-input type="textarea"
+            <el-input :disabled="looktype=='look'" type="textarea"
                       placeholder="请输入备注"
                       v-model="save.remark"
                       class="resizeNone"></el-input>
           </el-form-item>
         </el-form>
       </div>
-      <div slot="footer">
+      <div slot="footer" v-if="looktype!='look'">
 
         <el-button @click="dialogVisible_edit = false"
                    plain
@@ -233,11 +259,16 @@
 
 <script>
 import { pageList, editProblemCorrect, submitReview, post_rules } from "@SDMOBILE/api/shandong/rectificationPlan_audited_edit";//lhg
+import {
+  loadaudittorg,
+ } from "@WISDOMAUDIT/api/shandong/projectmanagement.js";
 export default {
   components: {},
   data () {
     return {
-      isDisable: false,
+      looktype:'',
+      department:[],
+      loadaudittorgoptions:[],
       loading: false,
       type: '',//查看
       list_query: {
@@ -255,6 +286,8 @@ export default {
         planContent: '',//整改计划
         limitEndTime: '',//选择日期
         remark: '',//备注
+        rectDeparId:[],//整改配合部门id
+        rectDeparName:[],//整改配合部门name
       },
       isDisable: false,//防止重复提交
       // 添加经责表单校验
@@ -286,7 +319,9 @@ export default {
     this.page_list_data()
   },
   mounted () {
-
+    loadaudittorg({}).then((resp) => {
+      this.loadaudittorgoptions = resp.data;
+    });
   },
   filters: {
     filtedate: function (date) {
@@ -333,20 +368,37 @@ export default {
     },
     // 编辑
     edit (data) {
+      this.looktype='';
       console.log(data);
       this.dialogVisible_edit = true;
-      this.tableData2 = data
+      this.tableData2 = data;
       this.save.dutyDeptName = data.dutyDeptName;//主要负责部门
       this.save.dutyPersonName = data.dutyPersonName;//整改责任人
       this.save.planContent = data.planContent;//整改计划
       this.save.limitEndTime = data.limitEndTime;//预计整改完成时限
       this.save.remark = data.remark;//备注
-
+      this.save.rectDeparId =data.rectDeparId.split(",")||[];//配合本门id
+      this.save.rectDeparName ==data.rectDeparName.split(",")||[];//配合本门name
+      this.department=data.rectDeparId.split(",")||[];
       this.save = JSON.parse(JSON.stringify(this.save));
 
       this.$nextTick(() => {
         this.$refs["save"].clearValidate();
       });
+    },
+    look (data) {
+      this.looktype='look';
+      this.dialogVisible_edit = true;
+      this.tableData2 = data;
+      this.save.dutyDeptName = data.dutyDeptName;//主要负责部门
+      this.save.dutyPersonName = data.dutyPersonName;//整改责任人
+      this.save.planContent = data.planContent;//整改计划
+      this.save.limitEndTime = data.limitEndTime;//预计整改完成时限
+      this.save.remark = data.remark;//备注
+      this.save.rectDeparId =data.rectDeparId.split(",")||[];//配合本门id
+      this.save.rectDeparName ==data.rectDeparName.split(",")||[];//配合本门name
+      this.department=data.rectDeparId.split(",")||[];
+      this.save = JSON.parse(JSON.stringify(this.save));
     },
 
 
@@ -399,6 +451,7 @@ export default {
       this.save.limitTime = '';//清空时间
       this.save = {};
       this.$refs[save].resetFields();
+      this.department=[];
     },
     // 保存
     save_btn (save) {
@@ -407,6 +460,12 @@ export default {
         this.isDisable = false;
       }, 2000);
 
+      this.save.rectDeparId=this.department;
+      this.loadaudittorgoptions.forEach((item)=>{
+        if((this.department.indexOf(item.auditOrgUuid)!=-1)){
+          this.save.rectDeparName.push(item.orgName)
+        }
+      });
       this.$refs[save].validate((valid) => {
         if (valid) {
           let params = {
@@ -414,6 +473,8 @@ export default {
             dutyPersonName: this.save.dutyPersonName,//整改责任人
             planContent: this.save.planContent,//整改计划
             limitEndTime: this.save.limitEndTime,//选择日期
+            rectDeparId: this.save.rectDeparId.join(","),
+            rectDeparName: this.save.rectDeparName.join(","),
             remark: this.save.remark,//备注
             problemCorrectUuid: this.tableData2.problemCorrectUuid,//  problemCorrectUuid
           };
@@ -593,4 +654,7 @@ export default {
   line-height: 36px;
   width: 220px !important;
 }
+  .cursor{
+    cursor: pointer;
+  }
 </style>

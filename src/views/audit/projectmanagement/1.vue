@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-12-27 10:27:09
+ * @LastEditTime: 2021-12-27 10:27:45
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: /wisdomaudit-vue/src/views/audit/projectmanagement/1.vue
+-->
 <template>
   <!-- 项目管理列表 -->
   <div class="projectmanagement">
@@ -102,12 +110,157 @@
         </div>
       </el-collapse-item>
     </el-collapse>
+    <!-- 项目管理列表 -->
+    <!--<el-table v-loading="projectTableLoading"-->
+    <!--class="table"-->
+    <!--:data="tableData"-->
+    <!--style="margin-top: 1%; width: 100%; min-height: 400px"-->
+    <!--border-->
+    <!--stripe-->
+    <!--fit-->
+    <!--@selection-change="handleSelectionChange_list"-->
+    <!--:header-cell-style="{ 'background-color': '#F4FAFF' }">-->
+    <!--<el-table-column type="selection"-->
+    <!--width="40"></el-table-column>-->
+    <!--&lt;!&ndash; <el-table-column-->
+    <!--align="center"-->
+    <!--prop="projectCode"-->
+    <!--width="105"-->
+    <!--label="项目编号"-->
+    <!--show-overflow-tooltip-->
+    <!--&gt;-->
+    <!--</el-table-column> &ndash;&gt;-->
+    <!--<el-table-column min-width="130px"-->
+    <!--align="left"-->
+    <!--prop="projectName"-->
+    <!--label="审计项目名称"-->
+    <!--show-overflow-tooltip>-->
+    <!--</el-table-column>-->
+    <!--<el-table-column align="left"-->
+    <!--width="150px"-->
+    <!--prop="auditOrgName"-->
+    <!--label="被审计单位">-->
+    <!--</el-table-column>-->
+    <!--<el-table-column align="left"-->
+    <!--prop="projectTypeName"-->
+    <!--label="项目类型"-->
+    <!--width="150">-->
+    <!--</el-table-column>-->
+    <!--&lt;!&ndash; <el-table-column-->
+    <!--align="center"-->
+    <!--prop="specialName"-->
+    <!--label="专题"-->
+    <!--show-overflow-tooltip-->
+    <!--&gt;</el-table-column> &ndash;&gt;-->
+    <!--<el-table-column align="left"-->
+    <!--prop="fieldName"-->
+    <!--label="领域"-->
+    <!--show-overflow-tooltip>-->
+    <!--<template slot-scope="scope">-->
+    <!--{{ scope.row.fieldName==''?'&#45;&#45;':scope.row.fieldName }}-->
+    <!--</template>-->
+    <!--</el-table-column>-->
+    <!--<el-table-column align="left"-->
+    <!--width="100px"-->
+    <!--prop="projectLeaderName"-->
+    <!--label="项目负责人"-->
+    <!--show-overflow-tooltip>-->
+    <!--</el-table-column>-->
+    <!--<el-table-column align="left"-->
+    <!--prop="projectChargemanName"-->
+    <!--label="项目组长"-->
+    <!--show-overflow-tooltip-->
+    <!--width="100px">-->
+    <!--</el-table-column>-->
+    <!--<el-table-column prop="auditStartData"-->
+    <!--align="left"-->
+    <!--label="审计期间"-->
+    <!--width="200">-->
+    <!--<template slot-scope="scope">-->
+    <!--{{ scope.row.auditStartData||'&#45;&#45;' }} 至 {{ scope.row.auditFinishData||'&#45;&#45;' }}-->
+    <!--</template>-->
+    <!--</el-table-column>-->
+    <!--<el-table-column align="left"-->
+    <!--prop="createUserName"-->
+    <!--label="创建人"-->
+    <!--show-overflow-tooltip-->
+    <!--width="80px">-->
+    <!--</el-table-column>-->
+    <!--<el-table-column align="left"-->
+    <!--prop="createTime"-->
+    <!--label="创建日期"-->
+    <!--width="100">-->
+    <!--<template slot-scope="scope">-->
+    <!--{{ scope.row.createTime | filtedate }}-->
+    <!--</template>-->
+    <!--</el-table-column>-->
+
+    <!--<el-table-column align="left"-->
+    <!--prop="managementAdvice"-->
+    <!--label="是否启动整改"-->
+    <!--show-overflow-tooltip-->
+    <!--width="110px">-->
+    <!--<template slot-scope="scope">-->
+    <!--{{-->
+    <!--scope.row.managementAdvice == 0-->
+    <!--? "否"-->
+    <!--: scope.row.managementAdvice == 1-->
+    <!--? "是"-->
+    <!--: ""-->
+    <!--}}-->
+    <!--</template>-->
+    <!--</el-table-column>-->
+
+    <!--<el-table-column label="操作"-->
+    <!--width="170">-->
+    <!--<template slot-scope="scope">-->
+    <!--<el-button v-if="userInfo.user.id==scope.row.projectLeaderUuid"-->
+    <!--type="text"-->
+    <!--style="color: #0c87d6; background: none; border: 0; font-size: 14px"-->
+    <!--size="small"-->
+    <!--@click="editDialog(scope.row)">-->
+    <!--编辑-->
+    <!--</el-button>-->
+
+    <!--<el-button type="text"-->
+    <!--v-if="scope.row.auditConf == 1&&userInfo.user.id==scope.row.projectLeaderUuid"-->
+    <!--style="color: #0c87d6; background: none; border: 0; font-size: 14px"-->
+    <!--size="small"-->
+    <!--@click="confirm_problem(scope.row.managementProjectUuid)">-->
+    <!--确认整改问题清单-->
+    <!--</el-button>-->
+    <!--</template>-->
+    <!--</el-table-column>-->
+    <!--</el-table>-->
+
+    <!--  启动整改 -->
+    <!--<div class="setting_people">-->
+    <!--<el-button style="color: #fff; background: #0c87d6; border: 0"-->
+    <!--@click="run_rectification()">启动整改-->
+    <!--</el-button>-->
+    <!--</div>-->
+
     <!-- 分页 -->
     <pagination v-show="total > 0"
                 :total="total"
                 :page.sync="query.pageNo"
                 :limit.sync="query.pageSize"
                 @pagination="queryName" />
+    <!-- 分页 -->
+    <!-- <div class="page">
+      <el-pagination
+        background
+        :hide-on-single-page="false"
+        layout="prev, pager, next"
+        :page-sizes="[2, 4, 6, 8]"
+        :current-page="project.current"
+        @current-change="handleCurrentChangeProject"
+        :page-size="project.size"
+        :total="project.total"
+      ></el-pagination>
+    </div> -->
+    <!-- 分页 end-->
+
     <!-- 新增页面 -->
     <el-dialog :visible.sync="addDialogVisible"
                width="47%"
@@ -942,6 +1095,104 @@
     </el-dialog>
     <!-- 启动整改 end-->
 
+    <!-- 确认整改清单 -->
+    <el-dialog title=""
+               :append-to-body='true'
+               center
+               :visible.sync="confirm_problem_dlag"
+               width="width">
+      <div class="title">确认问题整改清单</div>
+
+      <div class="dialog">
+        <div class="header_dlag">
+          <!-- search -->
+          <div class="search">
+            <el-input placeholder="请输入问题"
+                      v-model="problem_list_query.search_issues_list">
+            </el-input>
+            <div class="search_icon"
+                 style="background: rgb(12, 135, 214) !important"
+                 @click="search_list_issues()">
+              <i class="el-icon-search"
+                 style="color: white"></i>
+            </div>
+          </div>
+          <!-- search end -->
+          <el-button type="primary"
+                     style="margin: 0 10px;background: rgb(12, 135, 214) !important;"
+                     size="small"
+                     @click="select_problem()">选择问题
+          </el-button>
+        </div>
+        <!-- 选择后的的问题清单 -->
+        <div class="table_list">
+          <el-table :data="issues_list.records"
+                    :header-cell-style="{
+              'background-color': '#F4FAFF',
+            }"
+                    v-loading="issues_list_loading"
+                    style="width: 100%"
+                    @selection-change="handleSelectionChange_problem">
+            <!-- <el-table-column type="selection"
+                             align="center"> </el-table-column> -->
+            <el-table-column type="index"
+                             label="序号"
+                             width="50">
+            </el-table-column>
+            <el-table-column prop="problem"
+                             label="问题"
+                             show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="discoveryTime"
+                             label="发现日期"
+                             show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="riskAmount"
+                             label="风险金额(万元)"
+                             show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{ parseFloat(scope.row.riskAmount.toString()) }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="problemFindPeople"
+                             label="发现人"
+                             show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column align="center"
+                             label="操作"
+                             show-overflow-tooltip>
+              <template slot-scope="scope">
+                <el-button type="text"
+                           size="small"
+                           plain
+                           :disabled="isDisable"
+                           style="color: rgb(19, 113, 204); font-size: 14px !important"
+                           @click="edit(1, scope.row)">编辑
+                </el-button>
+                <el-button type="text"
+                           size="small"
+                           plain
+                           style="color: #ff8a72; font-size: 14px !important"
+                           :disabled="isDisable"
+                           @click="edit(2, scope.row)">删除
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <!-- <div class="page">
+          <el-pagination @size-change="handleSizeChange"
+                         @current-change="handleCurrentChange"
+                         :current-page="this.issues_list.current"
+                         :page-size="this.issues_list.size"
+                         layout="total, sizes, prev, pager, next, jumper"
+                         :total="this.issues_list.total">
+          </el-pagination>
+        </div> -->
+      </div>
+    </el-dialog>
+    <!-- 确认整改清单 end-->
+
     <!-- 确认整改清单 编辑 -->
     <el-dialog center
                :append-to-body='true'
@@ -1067,111 +1318,47 @@
     </el-dialog>
     <!-- 确认整改清单 编辑 end-->
 
-    <!-- 新 问题清单-->
+    <!-- 选择问题 -->
     <el-dialog title=""
                center
-               :visible.sync="problem_dialog"
                :append-to-body='true'
-               width="width"
-               :before-close="close_problem_dlag">
-      <div class="title">问题清单</div>
-
-      <div class="table_list over_auto">
-        <el-table :data="problem_list"
-                  :header-cell-style="{
-              'background-color': '#F4FAFF',
-            }"
-                  v-loading="problem_loading"
-                  style="width: 100%"
-                  @selection-change="handleSelectionChange_issues">
-          <el-table-column type="selection"
-                           align="center"></el-table-column>
-          <el-table-column prop="problem"
-                           label="问题"
-                           width="200">
-            <template slot-scope="scope">
-              <p class="problem_name">{{ scope.row.problem }}</p>
-            </template>
-          </el-table-column>
-          <el-table-column prop="field"
-                           label="领域"
-                           show-overflow-tooltip>
-          </el-table-column>
-          <el-table-column prop="discoveryTime"
-                           label="发现日期"
-                           show-overflow-tooltip>
-          </el-table-column>
-          <el-table-column prop="riskAmount"
-                           label="风险金额(万元)"
-                           show-overflow-tooltip>
-            <template slot-scope="scope">
-              <p>
-                {{ parseFloat(scope.row.riskAmount.toString()) }}
-              </p>
-            </template>
-          </el-table-column>
-          <el-table-column prop="problemFindPeople"
-                           label="发现人"
-                           show-overflow-tooltip>
-          </el-table-column>
-        </el-table>
-      </div>
-
-      <div slot="footer">
-        <el-button :disabled="isDisable"
-                   @click="problem_dialog = false">取消
-        </el-button>
-        <el-button type="primary"
-                   :disabled="isDisable"
-                   @click="save_problem_select()">确 定
-        </el-button>
-      </div>
-    </el-dialog>
-
-    <!-- 确认整改清单 -->
-    <el-dialog title=""
-               :append-to-body='true'
-               center
-               :visible.sync="confirm_problem_dlag"
+               :visible.sync="dialogVisible_select_dialog"
                width="width">
-      <div class="title">确认问题整改清单</div>
+      <div class="title">选择问题</div>
 
       <div class="dialog">
         <div class="header_dlag">
           <div class="search">
             <el-input placeholder="请输入问题"
-                      v-model="problem_list_query.search_issues_list">
+                      v-model="queryProblemList_query.search_problem">
             </el-input>
             <div class="search_icon"
                  style="background: rgb(12, 135, 214) !important"
-                 @click="search_list_issues()">
+                 @click="search_list_problem()">
               <i class="el-icon-search"
                  style="color: white"></i>
             </div>
           </div>
-          <el-button type="primary"
-                     style="margin: 0 10px;background: rgb(12, 135, 214) !important;"
-                     size="small"
-                     @click="select_problem()">选择问题
-          </el-button>
         </div>
-        <!-- 选择后的的问题清单 -->
-        <div class="table_list">
-          <el-table :data="issues_list.records"
+        <div class="table_list over_auto">
+          <el-table :data="problem_list"
                     :header-cell-style="{
               'background-color': '#F4FAFF',
             }"
-                    v-loading="issues_list_loading"
+                    v-loading="problem_loading"
                     style="width: 100%"
-                    @selection-change="handleSelectionChange_problem">
-            <!-- <el-table-column type="selection"
-                             align="center"> </el-table-column> -->
-            <el-table-column type="index"
-                             label="序号"
-                             width="50">
-            </el-table-column>
+                    @selection-change="handleSelectionChange_issues">
+            <el-table-column type="selection"
+                             align="center"></el-table-column>
             <el-table-column prop="problem"
                              label="问题"
+                             width="200">
+              <template slot-scope="scope">
+                <p class="problem_name">{{ scope.row.problem }}</p>
+              </template>
+            </el-table-column>
+            <el-table-column prop="field"
+                             label="领域"
                              show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="discoveryTime"
@@ -1182,39 +1369,28 @@
                              label="风险金额(万元)"
                              show-overflow-tooltip>
               <template slot-scope="scope">
-                {{ parseFloat(scope.row.riskAmount.toString()) }}
+                <p>
+                  {{ parseFloat(scope.row.riskAmount.toString()) }}
+                </p>
               </template>
             </el-table-column>
             <el-table-column prop="problemFindPeople"
                              label="发现人"
                              show-overflow-tooltip>
             </el-table-column>
-            <el-table-column align="center"
-                             label="操作"
-                             show-overflow-tooltip>
-              <template slot-scope="scope">
-                <el-button type="text"
-                           size="small"
-                           plain
-                           :disabled="isDisable"
-                           style="color: rgb(19, 113, 204); font-size: 14px !important"
-                           @click="edit(1, scope.row)">编辑
-                </el-button>
-                <el-button type="text"
-                           size="small"
-                           plain
-                           style="color: #ff8a72; font-size: 14px !important"
-                           :disabled="isDisable"
-                           @click="edit(2, scope.row)">删除
-                </el-button>
-              </template>
-            </el-table-column>
           </el-table>
         </div>
       </div>
+      <div slot="footer">
+        <el-button plain
+                   @click="dialogVisible_select_dialog = false">取 消
+        </el-button>
+        <el-button type="primary"
+                   :disabled="isDisable"
+                   @click="save_problem()">确 定
+        </el-button>
+      </div>
     </el-dialog>
-    <!-- 确认整改清单 end-->
-
   </div>
 </template>
 
@@ -1230,7 +1406,6 @@ import {
   isStartProject,
   startProject,
   selectTask_s,
-  selection_queryProblemSize,
 } from "@SDMOBILE/api/shandong/adminProject"; //lhg
 import axios from "axios";
 import Pagination from "@WISDOMAUDIT/components/Pagination";
@@ -1456,7 +1631,6 @@ export default {
         pageNo: 1,
         pageSize: 10,
       },
-      problem_dialog: false, // 问题确认清单
       confirm_problem_dlag: false, //问题确认清单
       issues_list_loading: false, //清单loading
       issues_list: [], //问题清单
@@ -1559,6 +1733,13 @@ export default {
         beginTime: "", //开始时间
         endTime: "", //结束时间
       },
+      // 设置时间范围
+      // pickerOptionscreate: {
+      //   disabledDate (time) {
+      //     return time.getTime() > this.save_project_prople.beginTime;
+      //   },
+      // },
+
       startDatePicker: this.beginDate(),
       endDatePicker: this.processDate(),
 
@@ -2523,56 +2704,11 @@ export default {
     resetForm2 (save_project_prople) {
       this.$refs[save_project_prople].resetFields();
     },
-
-
-
-    // 选择问题==============
-    select_problem () {
-      this.problem_dialog = true;//关闭 选择问题
-      this.confirm_problem_dlag = false;//整改清单
-      this.selection_questions_list_data();//整改问题清单
-    },
-    // 选择问题列表
-    selection_questions_list_data () {
-      this.problem_loading = true;
-      let params = {
-        managementProjectUuid: this.problem_list_query.managementProjectUuid, //当前项目的id
-        // problem: this.queryProblemList_query.search_problem, //
-      };
-      selection_questions_list(params).then((resp) => {
-        this.problem_list = resp.data;
-        this.problem_loading = false;
-      });
-    },
-    // 问题清单确认
-    save_problem_select () {
-      if (this.check_problem.length == 0) {
-        this.$message({ message: "请选择一条问题进行确认" });
-        return false
-      } else {
-        this.problem_dialog = false;
-        this.confirm_problem_dlag = true; //整改清单
-        let problemList = this.check_problem; //传参
-        this.save_ProblemCorrect_data(problemList); //确认整改问题清单列表
-        // 问题 保存
-      }
-    },
-    // 问题 确认接口
-    save_ProblemCorrect_data (problemList) {
-      saveProblemCorrect(problemList).then((resp) => {
-        if (resp.code == 0) {
-          // this.$message({
-          //   message: "保存成功",
-          //   type: "success",
-          // });
-          this.confirm_problem_data(); // 刷新 确认整改问题清单列表
-        } else {
-          this.$message({
-            message: resp.data.msg,
-            type: "error",
-          });
-        }
-      });
+    // 确认问题整改清单=============
+    confirm_problem (id) {
+      this.confirm_problem_dlag = true; //显示确认清单
+      this.problem_list_query.managementProjectUuid = id;
+      this.confirm_problem_data(); //确认整改问题清单列表
     },
     // 确认整改问题清单列表
     confirm_problem_data () {
@@ -2590,84 +2726,15 @@ export default {
         this.issues_list_loading = false;
       });
     },
-
-
-
-    // 选择问题
-    handleSelectionChange_issues (val) {
-      this.check_problem = val;
-      // 数组 添加id
-      // this.check_problem.forEach(item => {
-      //   this.$set(item, 'managementProjectUuid', this.problem_list_query.managementProjectUuid)//核实意见
-      // })
-    },
-    // 问题筛选
-    // search_list_problem () {
-    //   this.selection_questions_list_data(); //选择问题列表
-    // },
-
-    // 保存问题
-    // save_problem () {
-    //   this.isDisable = true;
-    //   setTimeout(() => {
-    //     this.isDisable = false;
-    //   }, 2000);
-    //   this.issues_list = this.check_problem;
-    //   console.log(this.issues_list);
-    //   if (this.check_problem.length == 0) {
-    //     this.$message({ message: "请选择一条问题进行保存" });
-    //   } else {
-    //     this.save_ProblemCorrect_data();
-    //   }
-    // },
-
-
-
-
-    // 确认问题整改清单=============
-    confirm_problem (id) {
-      this.problem_list_query.managementProjectUuid = id;
-      // 问题数量
-      let params = {
-        managementProjectUuid: this.problem_list_query.managementProjectUuid,
-      }
-      selection_queryProblemSize(params).then(resp => {
-        if (resp.data.size > 0) {
-          this.confirm_problem_dlag = true; //整改清单
-          this.confirm_problem_data(); //确认整改问题清单列表
-        } else {
-          this.problem_dialog = true;//问题清单
-          this.selection_questions_list_data();//问题清单
-        }
-      })
-    },
-    // 关闭问题清单
-    close_problem_dlag () {
-      this.problem_dialog = false;
-    },
-    // 新版 问题清单列表
-    selection_questions_list_data () {
-      this.problem_loading = true;
-      let params = {
-        managementProjectUuid: this.problem_list_query.managementProjectUuid, //当前项目的id
-        // problem: this.queryProblemList_query.search_problem, //
-      };
-      selection_questions_list(params).then((resp) => {
-        this.problem_list = resp.data;
-        this.problem_loading = false;
-      });
-    },
-
-
     // 问题整改清单  每页条数
-    // handleSizeChange (val) {
-    //   this.problem_list_query.pageSize = val;
-    // },
+    handleSizeChange (val) {
+      this.problem_list_query.pageSize = val;
+    },
     // 问题整改清单  分页
-    // handleCurrentChange (val) {
-    //   this.problem_list_query.pageNo = val;
-    //   this.confirm_problem_data(); //确认整改问题清单列表
-    // },
+    handleCurrentChange (val) {
+      this.problem_list_query.pageNo = val;
+      this.confirm_problem_data(); //确认整改问题清单列表
+    },
     // 筛选问题整改清单
     search_list_issues () {
       this.confirm_problem_data(); //确认整改问题清单列表
@@ -2676,9 +2743,6 @@ export default {
     handleSelectionChange_problem (val) {
       this.check_detailed = val;
     },
-
-
-
     // 专题 领域
     getloadcascader (str) {
       axios({
@@ -2708,7 +2772,6 @@ export default {
         // console.log(this.auditTasklList);
       });
     },
-
     // 编辑删除
     edit (index, data) {
       this.getSelectTask(); //关联任务
@@ -2840,7 +2903,69 @@ export default {
       });
       return rep;
     },
+    // 选择问题==============
+    select_problem () {
+      this.dialogVisible_select_dialog = true; //显示选择问题列表
+      this.selection_questions_list_data(); //选择问题列表
+    },
+    // 选择问题列表
+    selection_questions_list_data () {
+      this.problem_loading = true;
+      let params = {
+        managementProjectUuid: this.problem_list_query.managementProjectUuid, //当前项目的id
+        problem: this.queryProblemList_query.search_problem, ///
+      };
+      selection_questions_list(params).then((resp) => {
+        this.problem_list = resp.data;
+        this.problem_loading = false;
+      });
+    },
 
+    // 问题筛选
+    search_list_problem () {
+      this.selection_questions_list_data(); //选择问题列表
+    },
+    // 选择问题
+    handleSelectionChange_issues (val) {
+      this.check_problem = val;
+      // 数组 添加id
+      // this.check_problem.forEach(item => {
+      //   this.$set(item, 'managementProjectUuid', this.problem_list_query.managementProjectUuid)//核实意见
+      // })
+    },
+    // 保存问题
+    save_problem () {
+      this.isDisable = true;
+      setTimeout(() => {
+        this.isDisable = false;
+      }, 2000);
+      this.issues_list = this.check_problem;
+      console.log(this.issues_list);
+      if (this.check_problem.length == 0) {
+        this.$message({ message: "请选择一条问题进行保存" });
+      } else {
+        this.save_ProblemCorrect_data();
+      }
+    },
+    // 问题 保存
+    save_ProblemCorrect_data () {
+      let problemList = this.check_problem; //传参
+      saveProblemCorrect(problemList).then((resp) => {
+        if (resp.code == 0) {
+          this.$message({
+            message: "保存成功",
+            type: "success",
+          });
+          this.dialogVisible_select_dialog = false; //显示选择问题列表
+          this.confirm_problem_data(); // 刷新 确认整改问题清单列表
+        } else {
+          this.$message({
+            message: resp.data.msg,
+            type: "error",
+          });
+        }
+      });
+    },
   },
 };
 </script>
