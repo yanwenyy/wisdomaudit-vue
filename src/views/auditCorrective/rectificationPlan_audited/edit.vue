@@ -74,6 +74,20 @@
           </template>
 
         </el-table-column>
+        <el-table-column prop="rectDeparName"
+                        width="150"
+                         label="整改配合部门">
+
+          <template slot-scope="scope">
+            <p v-if="scope.row.rectDeparName">
+              {{scope.row.rectDeparName}}
+            </p>
+            <p v-else>
+              --
+            </p>
+          </template>
+
+        </el-table-column>
         <el-table-column prop="planContent"
                          show-overflow-tooltip
                          label="整改计划">
@@ -191,7 +205,19 @@
             <el-input placeholder="请输入整改责任人"
                       v-model="save.dutyPersonName"></el-input>
           </el-form-item>
-
+          <el-form-item
+                        label="整改配合部门：">
+            <el-select placeholder="请选择"
+                       multiple
+                       v-model="department"
+                      >
+              <el-option v-for="item in loadaudittorgoptions"
+                         :key="item.auditOrgUuid"
+                         :label="item.orgName"
+                         :value="item.auditOrgUuid">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item prop="planContent"
                         label="整改计划：">
             <el-input type="textarea"
@@ -233,11 +259,15 @@
 
 <script>
 import { pageList, editProblemCorrect, submitReview, post_rules } from "@SDMOBILE/api/shandong/rectificationPlan_audited_edit";//lhg
+import {
+  loadaudittorg,
+ } from "@WISDOMAUDIT/api/shandong/projectmanagement.js";
 export default {
   components: {},
   data () {
     return {
-      isDisable: false,
+      department:[],
+      loadaudittorgoptions:[],
       loading: false,
       type: '',//查看
       list_query: {
@@ -255,6 +285,8 @@ export default {
         planContent: '',//整改计划
         limitEndTime: '',//选择日期
         remark: '',//备注
+        rectDeparId:[],//整改配合部门id
+        rectDeparName:[],//整改配合部门name
       },
       isDisable: false,//防止重复提交
       // 添加经责表单校验
@@ -286,7 +318,9 @@ export default {
     this.page_list_data()
   },
   mounted () {
-
+    loadaudittorg({}).then((resp) => {
+      this.loadaudittorgoptions = resp.data;
+    });
   },
   filters: {
     filtedate: function (date) {
@@ -335,13 +369,15 @@ export default {
     edit (data) {
       console.log(data);
       this.dialogVisible_edit = true;
-      this.tableData2 = data
+      this.tableData2 = data;
       this.save.dutyDeptName = data.dutyDeptName;//主要负责部门
       this.save.dutyPersonName = data.dutyPersonName;//整改责任人
       this.save.planContent = data.planContent;//整改计划
       this.save.limitEndTime = data.limitEndTime;//预计整改完成时限
       this.save.remark = data.remark;//备注
-
+      this.save.rectDeparId =data.rectDeparId.split(",")||[];//配合本门id
+      this.save.rectDeparName ==data.rectDeparName.split(",")||[];//配合本门name
+      this.department=data.rectDeparId.split(",")||[];
       this.save = JSON.parse(JSON.stringify(this.save));
 
       this.$nextTick(() => {
@@ -399,6 +435,7 @@ export default {
       this.save.limitTime = '';//清空时间
       this.save = {};
       this.$refs[save].resetFields();
+      this.department=[];
     },
     // 保存
     save_btn (save) {
@@ -407,6 +444,12 @@ export default {
         this.isDisable = false;
       }, 2000);
 
+      this.save.rectDeparId=this.department;
+      this.loadaudittorgoptions.forEach((item)=>{
+        if((this.department.indexOf(item.auditOrgUuid)!=-1)){
+          this.save.rectDeparName.push(item.orgName)
+        }
+      });
       this.$refs[save].validate((valid) => {
         if (valid) {
           let params = {
@@ -414,6 +457,8 @@ export default {
             dutyPersonName: this.save.dutyPersonName,//整改责任人
             planContent: this.save.planContent,//整改计划
             limitEndTime: this.save.limitEndTime,//选择日期
+            rectDeparId: this.save.rectDeparId.join(","),
+            rectDeparName: this.save.rectDeparName.join(","),
             remark: this.save.remark,//备注
             problemCorrectUuid: this.tableData2.problemCorrectUuid,//  problemCorrectUuid
           };
