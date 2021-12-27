@@ -51,7 +51,7 @@
                        @click.stop="editDialog(item)">编辑</el-button>
             <el-button v-if="item.auditConf == 1&&userInfo.user.id==item.projectLeaderUuid"
                        @click.stop="confirm_problem(item.managementProjectUuid)">确认整改问题清单</el-button>
-            <el-button :disabled="item.auditConf!='1'"
+            <el-button :disabled="item.auditConf!='1' && item.correct_send ==0"
                        @click.stop="run_startProject2(item)">启动整改</el-button>
           </div>
         </template>
