@@ -68,7 +68,11 @@
                 size="medium"
                 v-for="item in tablelist"
                 :key="item.tab"
-                >{{ item.tabName }}</el-radio-button
+                >
+                 <el-tooltip class="item" effect="dark" :content="item.tabName" placement="top-start">
+                <span>{{ item.tabName }}</span>
+                </el-tooltip>
+                </el-radio-button
               >
             </el-radio-group>
           </div>
@@ -209,4 +213,17 @@ export default {
     z-index: 9;
   }
 }
+.el-radio-button{
+  width: 100px;
+  margin-top: 10px;
+}
+.el-radio-button::v-deep    .el-radio-button__inner{
+  width: 100px;
+  white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+}
+
 </style>
