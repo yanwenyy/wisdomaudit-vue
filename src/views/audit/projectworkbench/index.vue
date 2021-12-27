@@ -1109,7 +1109,8 @@ export default {
     if (this.queryInfo.index && this.queryInfo.projectId) {
       // debugger;
       //
-      // this.active_project = this.queryInfo.projectId;
+      this.active_project = this.queryInfo.projectId;
+      console.log(this.active_project)
       this.getprojectList(this.queryManage, 'home');
       document.body.scrollTop = 0;
       // firefox

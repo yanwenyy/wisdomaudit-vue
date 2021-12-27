@@ -35,10 +35,9 @@
           </div>
           <div
             class="project-item"
-            
             v-for="(item, index) in projectlist"
             :key="'project' + index"
-            :style="index==0?'':'border-left:1px solid #ccc;'"
+            :style="index == 0 ? '' : 'border-left:1px solid #ccc;'"
             v-else
           >
             <el-tooltip
@@ -116,7 +115,7 @@
               <li v-for="(item, index) in modellist" :key="'model' + index">
                 <div class="li-item">
                   <h5
-                    @click="taskModelEvent('2-2', item.projectId)"
+                    @click="taskModelEvent('2-2', item.projectId, item.ext1)"
                     class="pointer"
                   >
                     {{ item.projectName || "--" }}
@@ -125,11 +124,13 @@
                 </div>
                 <el-divider></el-divider>
                 <div class="li-item">
-                  <p>【{{ item.toTaskType || ""}}】{{ item.toTaskName || "--" }}</p>
+                  <p>
+                    【{{ item.toTaskType || "" }}】{{ item.toTaskName || "--" }}
+                  </p>
                   <el-button
                     type="primary"
                     size="mini"
-                    @click="taskModelEvent('2-2', item.projectId)"
+                    @click="taskModelEvent('2-2', item.projectId, item.ext1)"
                     >前去处理<i class="el-icon-d-arrow-right el-icon--right"></i
                   ></el-button>
                 </div>
@@ -592,16 +593,37 @@ export default {
       }
     },
 
-    taskModelEvent(data, projectId) {
-      this.$router.push({
-        path: "/audit/auditItems/projectWorkbench",
-        query: { index: "2-2", projectId: projectId },
-      });
+    taskModelEvent(data, projectId, type) {
+      if (type == "审计任务") {
+        this.$router.push({
+          path: "/audit/auditItems/projectWorkbench",
+          query: { index: "2-2", projectId: projectId },
+        });
+      } else if (type == "审计项目") {
+        this.$router.push({
+          path: "/audit/auditItems/application",
+          query: { projectId: projectId },
+        });
+      } else if (type == "审计资料任务") {
+        this.$router.push({
+          path: "/audit/auditItems/feedback",
+          query: { projectId: projectId },
+        });
+      } else if (type == "整改计划") {
+        this.$router.push({
+          path: "/auditCorrective/rectificationPlan",
+          query: { projectId: projectId },
+        });
+      } else if (type == "整改措施") {
+        this.$router.push({
+          path: "/audit/auditItems/feedback",
+          query: { projectId: projectId },
+        });
+      }
     },
-
     auditInfoEvent(data, projectId) {
       this.$router.push({
-        path: "/audit/auditItems/projectWorkbench",
+        path: "/auditCorrective/rectificationMeasures",
         query: { index: "2-1", projectId: projectId },
       });
     },
@@ -718,8 +740,8 @@ export default {
       white-space: nowrap;
     }
     ul {
-      width:240px;
-      margin:0 auto;
+      width: 240px;
+      margin: 0 auto;
     }
 
     li {
