@@ -23,6 +23,19 @@ export function edit_remove (data) {
   })
 }
 
+// 问题数量
+export function selection_queryProblemSize (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/problemCorrect/queryProblemSize`,
+    method: 'post',
+    isLoading: false,
+    data,
+  })
+}
+
+
+
 //选择问题列表
 export function selection_questions_list (data) {
   return request({
