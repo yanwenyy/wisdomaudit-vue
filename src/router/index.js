@@ -186,7 +186,9 @@ export const constantRoutes = [{
         component: () =>
           import("@WISDOMAUDIT/views/audit/riskScan/dateNotification"),
         meta: {
-          title: "个人"
+          title: "个人",
+          id:'21'
+          
         }
       },
       {
@@ -196,8 +198,22 @@ export const constantRoutes = [{
           import("@WISDOMAUDIT/views/audit/riskScan/dateNotification"),
         meta: {
           title: "政企"
+          ,
+          id:'22'
         }
       },
+      {
+        path: "/continuousprocurement",
+        name: "continuousprocurement",
+        component: () =>
+          import("@WISDOMAUDIT/views/audit/riskScan/dateNotification"),
+        meta: {
+          title: "采购"
+          ,
+          id:'23'
+        }
+      },
+
       {
         path: "/dateenterprisefinance",
         name: "dateenterprisefinance",
@@ -205,6 +221,8 @@ export const constantRoutes = [{
           import("@WISDOMAUDIT/views/audit/riskScan/dateNotification"),
         meta: {
           title: "财务"
+          ,
+          id:'25'
         }
       }, {
         path: "/dataauditnetwork",
@@ -213,6 +231,8 @@ export const constantRoutes = [{
           import("@WISDOMAUDIT/views/audit/riskScan/dateNotification"),
         meta: {
           title: "网络"
+          ,
+          id:'24'
         }
       }
       ]

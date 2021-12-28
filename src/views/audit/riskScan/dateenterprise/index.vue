@@ -31,32 +31,6 @@
 
 </el-form>
 
-        <!-- <el-col :span="4">
-          <p>专题</p>
-          <el-select
-            v-model="value"
-            placeholder="请选择"
-            @change="ChooseThetype"
-          >
-            <el-option
-              v-for="item in options"
-              :key="item.index"
-              :label="item.typename"
-              :value="item.type"
-            >
-            </el-option>
-          </el-select>
-        </el-col>
-        <el-col :span="3">
-          <el-date-picker
-            v-model="value2"
-            type="month"
-            value-format="yyyyMM"
-            placeholder="选择月"
-            @change="changesj"
-          >
-          </el-date-picker>
-        </el-col> -->
       </el-row>
 
       <el-row>
