@@ -2855,7 +2855,7 @@ export default {
 
 .addForm {
   margin-top: 2%;
-  margin-left: 25%;
+  /*margin-left: 25%;*/
   .el-select,
   .el-input {
     position: relative;
@@ -2916,9 +2916,9 @@ export default {
 }
 
 .stepBtn {
-  width: 125%;
+  width:100%;
   padding: 2%;
-  margin-left: -25%;
+  //margin-left: -25%;
   // border: 1px solid red;
   margin-top: 3%;
   text-align: center;
