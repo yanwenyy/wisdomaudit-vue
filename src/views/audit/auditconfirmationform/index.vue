@@ -29,10 +29,9 @@
           </template>
         </el-table-column>
         <el-table-column algin="left"
-                         label="确认单附件">
+                         label="确认单">
           <template slot-scope="scope">
             <el-popover :popper-class="tableFileList==''?'no-padding':''"
-                        v-if="scope.row.confirmationFileNumber"
                         placement="bottom"
                         width="250"
                         @show="getFileList(scope.row.auditConfirmationUuid)"
@@ -45,33 +44,32 @@
                     @click="downFile(item.attachment_uuid,item.file_name)">{{item.file_name}}</li>
               </ul>
               <div slot="reference"
-                   class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.confirmationFileNumber}}
+                   class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.attachmentFileCounts}}
               </div>
             </el-popover>
           </template>
         </el-table-column>
-        <!--<el-table-column algin="left"-->
-                         <!--label="附件">-->
-          <!--<template slot-scope="scope">-->
-            <!--<el-popover :popper-class="tableFileList==''?'no-padding':''"-->
-                        <!--v-if="scope.row.confirmationFileNumber"-->
-                        <!--placement="bottom"-->
-                        <!--width="250"-->
-                        <!--@show="getFileList(scope.row.auditConfirmationUuid)"-->
-                        <!--trigger="click">-->
-              <!--<ul v-if="tableFileList!=''"-->
-                  <!--class="fileList-ul">-->
-                <!--<li class="tableFileList-title">文件名称</li>-->
-                <!--<li v-for="item in tableFileList"-->
-                    <!--class="pointer blue tableFileList-li"-->
-                    <!--@click="downFile(item.attachment_uuid,item.file_name)"><div class="inline-block">{{item.file_name}}</div><span class="delFile inline-block" @click.stop="delListFile(item.attachment_uuid)">X</span></li>-->
-              <!--</ul>-->
-              <!--<div slot="reference"-->
-                   <!--class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.confirmationFileNumber}}-->
-              <!--</div>-->
-            <!--</el-popover>-->
-          <!--</template>-->
-        <!--</el-table-column>-->
+        <el-table-column algin="left"
+                         label="附件">
+          <template slot-scope="scope">
+            <el-popover :popper-class="tableFileList==''?'no-padding':''"
+                        placement="bottom"
+                        width="250"
+                        @show="getFileList('f'+scope.row.auditConfirmationUuid)"
+                        trigger="click">
+              <ul v-if="tableFileList!=''"
+                  class="fileList-ul">
+                <li class="tableFileList-title">文件名称</li>
+                <li v-for="item in tableFileList"
+                    class="pointer blue tableFileList-li"
+                    @click="downFile(item.attachment_uuid,item.file_name)"><div class="inline-block">{{item.file_name}}</div><span class="delFile inline-block" @click.stop="delListFile(item.attachment_uuid)">X</span></li>
+              </ul>
+              <div slot="reference"
+                   class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.fileCounts}}
+              </div>
+            </el-popover>
+          </template>
+        </el-table-column>
         <el-table-column label="操作"
                          algin="left">
           <template slot-scope="scope">
@@ -104,34 +102,40 @@
         <el-table-column label="最终版扫描件"
                          algin="left">
           <template slot-scope="scope">
-            <el-upload v-if="scope.row.endConfirmationFile==''||scope.row.endConfirmationFile==null&&(scope.row.createUserUuid==userInfo.user.id)"
-                       :show-file-list="false"
-                       class="upload-demo inline-block btnStyle"
-                       :on-change="fileChange"
-                       :action="'/wisdomaudit/auditConfirmation/endFileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid"
-                       :on-success="list_data_start"
-                       :headers="headers"
-                       accept=".docx,.xls,.xlsx,.txt,.zip,.doc">
+
+
+            <el-popover
+                        style="margin-right: 20px"
+                        class="inline-block"
+                        placement="bottom"
+                        width="250"
+                        @show="getFileList('z'+scope.row.auditConfirmationUuid)"
+                        trigger="click">
+              <ul v-if="tableFileList!=''"
+                  class="fileList-ul">
+                <li class="tableFileList-title">文件名称</li>
+                <li v-for="item in tableFileList"
+                    class="pointer blue tableFileList-li"
+                    @click="downFile(item.attachment_uuid,item.file_name)"><div class="inline-block">{{item.file_name}}</div><span class="delFile inline-block" @click.stop="delListFile(item.attachment_uuid)">X</span></li>
+              </ul>
+              <div slot="reference"
+                   class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.endFileCounts}}
+              </div>
+            </el-popover>
+            <!--<el-upload v-if="scope.row.endConfirmationFile==''||scope.row.endConfirmationFile==null&&(scope.row.createUserUuid==userInfo.user.id)"-->
+            <el-upload
+              :show-file-list="false"
+              class="upload-demo inline-block btnStyle"
+              :on-change="fileChange"
+              :action="'/wisdomaudit/auditConfirmation/endFileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid"
+              :on-success="list_data_start"
+              :headers="headers"
+              accept=".docx,.xls,.xlsx,.txt,.zip,.doc">
               <el-button size="small"
                          type="text"
                          style="background: transparent;padding:0"
                          class="editBtn">上传</el-button>
             </el-upload>
-            <el-popover v-if="scope.row.endConfirmationFile"
-                        placement="bottom"
-                        width="250"
-                        trigger="click">
-              <ul class="fileList-ul">
-                <li class="tableFileList-title">文件名称</li>
-                <li class="pointer blue"
-                    @click="downFile(scope.row.endConfirmationFileId,scope.row.endConfirmationFile)">
-                  {{scope.row.endConfirmationFile}}</li>
-              </ul>
-              <div slot="reference"
-                   class="pointer"><span class="smb-btn"><i
-                     class="el-icon-folder-opened list-folder smb-folder"></i>1</span>
-              </div>
-            </el-popover>
           </template>
         </el-table-column>
       </el-table>
