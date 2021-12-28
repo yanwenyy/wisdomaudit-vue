@@ -115,7 +115,7 @@
               <li v-for="(item, index) in modellist" :key="'model' + index">
                 <div class="li-item">
                   <h5
-                    @click="taskModelEvent('2-2', item.projectId, item.ext1)"
+                    @click="taskModelEvent('2-2', item.projectId, item)"
                     class="pointer"
                   >
                     {{ item.projectName || "--" }}
@@ -130,7 +130,7 @@
                   <el-button
                     type="primary"
                     size="mini"
-                    @click="taskModelEvent('2-2', item.projectId, item.ext1)"
+                    @click="taskModelEvent('2-2', item.projectId, item)"
                     >前去处理<i class="el-icon-d-arrow-right el-icon--right"></i
                   ></el-button>
                 </div>
@@ -593,32 +593,72 @@ export default {
       }
     },
 
-    taskModelEvent(data, projectId, type) {
-      if (type == "审计任务") {
+    taskModelEvent(data, projectId, obj) {
+      if (obj.ext1 == "审计任务") {
         this.$router.push({
           path: "/audit/auditItems/projectWorkbench",
           query: { index: "2-2", projectId: projectId },
         });
-      } else if (type == "审计项目") {
-        this.$router.push({
-          path: "/audit/auditItems/application",
-          query: { projectId: projectId },
-        });
-      } else if (type == "审计资料任务") {
-        this.$router.push({
-          path: "/audit/auditItems/feedback",
-          query: { projectId: projectId },
-        });
-      } else if (type == "整改计划") {
-        this.$router.push({
-          path: "/auditCorrective/rectificationPlan",
-          query: { projectId: projectId },
-        });
-      } else if (type == "整改措施") {
+      } else if (obj.ext1 == "审计项目") {
+        if (obj.toTaskType == "新的整改任务") {
+          this.$router.push({
+            path: "/audit/auditItems/application",
+            query: { projectId: projectId },
+          });
+        } else if (obj.toTaskType == "项目待初始化") {
+          this.$router.push({
+            path: "/audit/auditItems/projectWorkbench",
+          });
+        }
+      } else if (obj.ext1 == "审计资料任务") {
         this.$router.push({
           path: "/audit/auditItems/feedback",
           query: { projectId: projectId },
         });
+      } else if (obj.ext1 == "整改计划") {
+        if (obj.toTaskType == "整改计划待下发") {
+          this.$router.push({
+            path: "/auditCorrective/rectificationPlan",
+            query: { projectId: projectId },
+          });
+        } else if (obj.toTaskType == "整改计划待提交") {
+          this.$router.push({
+            path: "/auditCorrective/rectificationPlan_audited",
+            query: { projectId: projectId },
+          });
+        } else if (obj.toTaskType == "整改计划待审核") {
+          this.$router.push({
+            path: "/auditCorrective/rectificationPlan",
+            query: { projectId: projectId },
+          });
+        } else if (obj.toTaskType == "整改计划待修改") {
+          this.$router.push({
+            path: "/auditCorrective/rectificationPlan_audited",
+            query: { projectId: projectId },
+          });
+        }
+      } else if (obj.ext1 == "整改措施") {
+        if (obj.toTaskType == "整改措施待提交") {
+          this.$router.push({
+            path: "/auditCorrective/rectificationMeasuresInterface",
+            query: { projectId: projectId },
+          });
+        } else if (obj.toTaskType == "整改措施待审批") {
+          this.$router.push({
+            path: "/auditCorrective/rectificationMeasuresLeader",
+            query: { projectId: projectId },
+          });
+        } else if (obj.toTaskType == "整改措施待修改") {
+          this.$router.push({
+            path: "/auditCorrective/rectificationMeasuresInterface",
+            query: { projectId: projectId },
+          });
+        } else if (obj.toTaskType == "整改措施待审核") {
+          this.$router.push({
+            path: "/auditCorrective/rectificationMeasures",
+            query: { projectId: projectId },
+          });
+        }
       }
     },
     auditInfoEvent(data, projectId) {
