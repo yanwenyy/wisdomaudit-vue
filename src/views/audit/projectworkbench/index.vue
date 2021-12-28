@@ -132,7 +132,7 @@
               <el-submenu v-show="userInfo.userRole == '1' || userInfo.userRole == '3'"
                           index="1">
                 <template slot="title">
-                  <span style="font-weight: 400">审计准备</span>
+                  <span style="font-weight: bold">审计准备</span>
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="1-1">组员及任务维护<span></span></el-menu-item>
@@ -145,7 +145,7 @@
                 "
                           index="2">
                 <template slot="title">
-                  <span style="font-weight: 400">审计实施</span>
+                  <span style="font-weight: bold">审计实施</span>
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="2-1">审计资料<span></span></el-menu-item>
@@ -162,23 +162,23 @@
                 "
                           index="3">
                 <template slot="title">
-                  <span style="font-weight: 400;">报告阶段</span>
+                  <span style="font-weight: bold;">报告阶段</span>
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="3-1">审计报告<span></span></el-menu-item>
-                  <!--<el-menu-item index="3-2">经营指标<span></span></el-menu-item>-->
+                  <el-menu-item index="3-2">经营指标<span></span></el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
-              <el-menu-item v-show="
-                  userInfo.userRole == '1' ||
-                  userInfo.userRole == '3' ||
-                  (userInfo.isLiaison == '1' && userInfo.userRole == '2')
-                "
-                            index="3-2"
-                            class="one-menu_y-title">
-                <span class="one-menu_y"
-                      style="font-weight: 400;">经营指标</span>
-              </el-menu-item>
+              <!--<el-menu-item v-show="-->
+                  <!--userInfo.userRole == '1' ||-->
+                  <!--userInfo.userRole == '3' ||-->
+                  <!--(userInfo.isLiaison == '1' && userInfo.userRole == '2')-->
+                <!--"-->
+                            <!--index="3-2"-->
+                            <!--class="one-menu_y-title">-->
+                <!--<span class="one-menu_y"-->
+                      <!--style="font-weight: bold;">经营指标</span>-->
+              <!--</el-menu-item>-->
             </el-menu>
           </div>
         </el-col>
@@ -2201,7 +2201,7 @@ export default {
 }
 
 .el-menu-item {
-  padding: 0 0 0 30px !important;
+  padding: 0 0 0 45px !important;
   min-width: 160px;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -2726,6 +2726,7 @@ export default {
 }
 </style>
 <style scoped>
+
 .addPerson >>> .el-transfer-panel__filter .el-input__inner {
   border-radius: 6px !important;
   padding: 7px !important;
