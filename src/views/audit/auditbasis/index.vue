@@ -40,7 +40,7 @@
            :account="account"
            :appSessionId="appSessionId"
            @changevault="changevault"
-           @download="download"></Vault>
+           @vdownload="vdownload"></Vault>
   </div>
 </template>
 
@@ -78,7 +78,9 @@ export default {
   },
   methods: {
     //通过认证后的方法
-    download () { },
+    vdownload () {
+      alert('金库调用成功开始下载')
+     },
     //控制认证弹窗
     changevault (val) {
       this.vaultV = val;

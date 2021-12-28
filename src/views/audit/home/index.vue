@@ -10,7 +10,7 @@
       :account="account"
       :appSessionId="appSessionId"
       @changevault="changevault"
-      @download="download"
+      @vdownload="vdownload"
     ></Vault>
     <div class="filter-container">
       <el-card class="box-card" v-loading="floading1">
@@ -320,7 +320,7 @@ export default {
   },
   methods: {
     //通过认证后的方法
-    download() {},
+    vdownload() {},
     //控制认证弹窗
     changevault(val) {
       this.vaultV = val;
@@ -610,11 +610,28 @@ export default {
             path: "/audit/auditItems/projectWorkbench",
           });
         }
-      } else if (obj.ext1 == "审计资料任务") {
-        this.$router.push({
-          path: "/audit/auditItems/feedback",
-          query: { projectId: projectId },
-        });
+      } else if (obj.ext1 == "审计资料") {
+        if (obj.toTaskType == "资料任务待发起") {
+          this.$router.push({
+            path: "/audit/auditItems/projectWorkbench",
+            query: { index: "2-1", projectId: projectId },
+          });
+        } else if (obj.toTaskType == "资料待提交") {
+          this.$router.push({
+            path: "/audit/auditItems/feedback",
+            query: { projectId: projectId },
+          });
+        } else if (obj.toTaskType == "资料待审核") {
+          this.$router.push({
+            path: "/audit/auditItems/projectWorkbench",
+            query: { index: "2-1", projectId: projectId },
+          });
+        } else if (obj.toTaskType == "资料待修改") {
+          this.$router.push({
+            path: "/audit/auditItems/feedback",
+            query: { projectId: projectId },
+          });
+        }
       } else if (obj.ext1 == "整改计划") {
         if (obj.toTaskType == "整改计划待下发") {
           this.$router.push({
