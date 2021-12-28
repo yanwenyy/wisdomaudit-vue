@@ -2524,7 +2524,7 @@ export default {
   width: 80%;
   height: 40px;
   vertical-align: text-bottom;
-  font-size: 0.7vw;
+  font-size: 14px;
   color: #fff;
   line-height: 40px;
   text-align: center;
@@ -2582,7 +2582,7 @@ export default {
   width: 70%;
   height: 40px;
   vertical-align: text-bottom;
-  font-size: 0.7vw;
+  font-size: 14px;
   color: #000;
   line-height: 40px;
   text-align: center;

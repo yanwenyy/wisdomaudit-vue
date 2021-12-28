@@ -50,6 +50,28 @@
             </el-popover>
           </template>
         </el-table-column>
+        <!--<el-table-column algin="left"-->
+                         <!--label="附件">-->
+          <!--<template slot-scope="scope">-->
+            <!--<el-popover :popper-class="tableFileList==''?'no-padding':''"-->
+                        <!--v-if="scope.row.confirmationFileNumber"-->
+                        <!--placement="bottom"-->
+                        <!--width="250"-->
+                        <!--@show="getFileList(scope.row.auditConfirmationUuid)"-->
+                        <!--trigger="click">-->
+              <!--<ul v-if="tableFileList!=''"-->
+                  <!--class="fileList-ul">-->
+                <!--<li class="tableFileList-title">文件名称</li>-->
+                <!--<li v-for="item in tableFileList"-->
+                    <!--class="pointer blue tableFileList-li"-->
+                    <!--@click="downFile(item.attachment_uuid,item.file_name)"><div class="inline-block">{{item.file_name}}</div><span class="delFile inline-block" @click.stop="delListFile(item.attachment_uuid)">X</span></li>-->
+              <!--</ul>-->
+              <!--<div slot="reference"-->
+                   <!--class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.confirmationFileNumber}}-->
+              <!--</div>-->
+            <!--</el-popover>-->
+          <!--</template>-->
+        <!--</el-table-column>-->
         <el-table-column label="操作"
                          algin="left">
           <template slot-scope="scope">
@@ -353,7 +375,7 @@
 </template>
 
 <script>
-import { get_userInfo, projectMembership_listUserInfo, down_file, auditBasy_getFileList, auditConfirmation_pageList, auditConfirmation_save, auditConfirmation_delete, auditConfirmation_getDetail, auditConfirmation_update } from
+import {del_file, get_userInfo, projectMembership_listUserInfo, down_file, auditBasy_getFileList, auditConfirmation_pageList, auditConfirmation_save, auditConfirmation_delete, auditConfirmation_getDetail, auditConfirmation_update } from
   '@SDMOBILE/api/shandong/ls'
 import { task_pageList_wt } from
   '@SDMOBILE/api/shandong/AuditReport'
@@ -430,6 +452,37 @@ export default {
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
   },
   methods: {
+    //列表附件删除
+    delListFile(id){
+      var that=this;
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        del_file(id).then(resp => {
+          if (resp.code == 0) {
+            that.$message({
+              message: "删除成功",
+              type: "success",
+            });
+            this.list_data_start();
+          } else {
+            that.$message({
+              message: resp.data.msg,
+              type: "error",
+            });
+          }
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+
+
+    },
     handleExceed () { },
     //附件上传
     uploadPorgress (response, file, fileList, tableList) {
@@ -849,24 +902,25 @@ export default {
 }
 .formData {
   // border: 1px solid red;
-  padding: 2%;
+  /*padding: 2%;*/
   .el-button {
     border-color: #ececec;
     color: #9e9e9f;
   }
 }
+
 </style>
 <style scoped>
 @import "../../../assets/styles/css/yw.css";
->>> .qrd-dialog .el-dialog__header,
->>> .qrd-dialog .el-dialog__body {
+.qrd-dialog >>>.el-dialog__header,
+.qrd-dialog >>> .el-dialog__body {
   padding: 0 !important;
 }
->>> .qrd-dialog .el-dialog__headerbtn {
+.qrd-dialog >>>.el-dialog__headerbtn {
   top: 15px !important;
   right: 15px !important;
 }
->>> .qrd-dialog .el-dialog__footer {
+ .qrd-dialog >>>.el-dialog__footer {
   padding-left: 35px !important;
   padding-right: 35px !important;
 }
@@ -957,4 +1011,14 @@ export default {
 >>> .upload-yw .el-form-item__content {
   width: 60% !important;
 }
+  .tableFileList-li>div{
+    width: 85%;
+    vertical-align: middle;
+  }
+  .delFile{
+    width: 15%;
+    text-align: right;
+    vertical-align: middle;
+    font-weight: bold;
+  }
 </style>
