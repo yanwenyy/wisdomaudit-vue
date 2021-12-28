@@ -909,7 +909,7 @@
                         prop="taskName"
                         style="margin-bottom:30px!important">
             <el-input v-model="save_zj_query.taskName"
-                      placeholder="请输入任务新增"></el-input>
+                      placeholder="请输入任务名称"></el-input>
           </el-form-item>
           <!-- 责任人 -->
           <el-form-item label="责任人："

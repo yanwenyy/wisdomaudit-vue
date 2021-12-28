@@ -45,7 +45,7 @@
                              label="流水单号"> -->
             <!-- </el-table-column> -->
             <el-table-column prop="title"
-                           width="200"
+                             width="200"
                              label="标题">
             </el-table-column>
             <el-table-column prop="launchPeople"
@@ -137,7 +137,7 @@
 
                   </div>
 
-                  <!-- 审批 -->
+                  <!-- 审核 -->
                   <div v-if=" scope.row.status == 3|| scope.row.status == 4">
                     <el-button @click="operation(scope.row)"
                                v-if="scope.row.doingCount>=1"
@@ -148,7 +148,7 @@
                                 "
                                class="status_btn"
                                size="small">
-                      审批
+                      审核
                     </el-button>
                   </div>
 

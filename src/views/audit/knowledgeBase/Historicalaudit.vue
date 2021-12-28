@@ -40,10 +40,12 @@
         <!-- 历史审计发现 -->
         <el-table-column prop="historyAuditFindDescribe"
                          show-overflow-tooltip
+                         width="200px"
                          label="历史审计发现描述">
           <template slot-scope="scope">
-            <div v-if="scope.row.historyAuditFindDescribe">
-              {{ scope.row.historyAuditFindDescribe }}
+            <div v-if="scope.row.historyAuditFindDescribe"
+                 class="over">
+              {{ scope.row.historyAuditFindDescribe | ellipsis(18) }}
             </div>
             <div v-else>--</div>
           </template>
@@ -564,6 +566,26 @@ export default {
       // return fmtDate(t, 'yyyy-MM-dd hh:mm:ss');
       return fmtDate(t, "yyyy-MM-dd");
     },
+
+    formatLongText (value) {
+      if (value === undefined || value === null || value === '') {
+        return '暂无';
+      } else if (value.length > 8) {
+        return value.substr(0, 8) + '...';
+      } else {
+        return value;
+      }
+    },
+
+    ellipsis (value, limit) {
+      if (!value) return ''
+      if (value.length > limit) {
+        return value.slice(0, limit) + '...'
+      }
+      return value
+    },
+
+
   },
 
   methods: {
