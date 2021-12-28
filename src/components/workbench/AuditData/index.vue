@@ -703,11 +703,10 @@
           </div>
 
           <div class="son">
-
+            <!-- prop="department" -->
             <el-form-item label="部门："
                           style="padding:0 0 0 0"
-                          label-width="130px"
-                          prop="department">
+                          label-width="130px">
               <el-select v-model="add_data.department"
                          @change="Department_change"
                          :disabled="edit_title == '详细信息'"
