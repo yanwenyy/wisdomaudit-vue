@@ -657,13 +657,7 @@ export default {
           { required: true, message: "请选择关联任务", trigger: "change" },
         ],
         // basis: [{ required: true, message: "请选择依据", trigger: "change" }],
-        describe: [
-          { required: true, message: "请填写描述", trigger: "change" },
-        ],
         field: [{ required: true, message: "请选择领域", trigger: "change" }],
-        managementAdvice: [
-          { required: true, message: "请填写意见", trigger: "change" },
-        ],
         problem: [{ required: true, message: "请填写问题", trigger: "change" }],
         problemDiscoveryTime: [
           { required: true, message: "请填写发现时间", trigger: "change" },
@@ -1286,6 +1280,11 @@ export default {
 }
 >>> .upload-yw .el-form-item__content {
   width: 60% !important;
+}
+>>> .el-select__tags-text{
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
 }
 </style>
 
