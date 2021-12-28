@@ -783,7 +783,7 @@
             <!-- <el-form-item label-width="260px"
                           style="margin-bottom:0!important"
                           class="up"> -->
-            <el-form-item label="模版新增："
+            <el-form-item label="模版上传："
                           label-width="260px"
                           style="margin-bottom:0!important"
                           class="up">
@@ -1498,7 +1498,7 @@ export default {
           document.body.removeChild(elink)
         } else {
           // IE10+下载
-          navigator.msSaveBlob(blob, fileName)
+          navigator.msSaveBlob(blob, row.title + ".zip")
         }
       }).catch((err) => {
 
