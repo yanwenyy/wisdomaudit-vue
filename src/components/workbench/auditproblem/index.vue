@@ -1282,6 +1282,7 @@ export default {
   width: 60% !important;
 }
 >>> .el-select__tags-text{
+  max-width: 400px;
   overflow: hidden;
   text-overflow:ellipsis;
   white-space: nowrap;
