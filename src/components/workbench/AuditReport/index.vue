@@ -219,6 +219,7 @@
     <!-- 关联问题 -->
     <el-dialog width="60%"
                center
+               class="dlag"
                @close='closeDialog'
                popper-class="status_data_dlag_verify"
                :visible.sync="dlag_Correlation_wt"
@@ -262,11 +263,13 @@
                            show-overflow-tooltip
                            label="问题">
             <template slot-scope="scope">
-              <p v-if="scope.row.problem">{{scope.row.problem}}</p>
+              <p v-if="scope.row.problem"
+                 @click="details_show(scope.row,scope.$index+1)"
+                 style="cursor: pointer;color:rgb(68, 163, 223);">{{scope.row.problem| ellipsis(10) }}</p>
               <p v-else>--</p>
             </template>
           </el-table-column>
-
+          <!-- 
           <el-table-column prop="basis"
                            show-overflow-tooltip
                            label="依据">
@@ -274,16 +277,16 @@
               <p v-if="scope.row.basis">{{scope.row.basis}}</p>
               <p v-else>--</p>
             </template>
-          </el-table-column>
+          </el-table-column> -->
 
-          <el-table-column prop="describe"
+          <!-- <el-table-column prop="describe"
                            show-overflow-tooltip
                            label="描述">
             <template slot-scope="scope">
               <p v-if="scope.row.describe">{{scope.row.describe}}</p>
               <p v-else>--</p>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column prop="discoveryTime"
                            show-overflow-tooltip
                            label="发现日期">
@@ -304,7 +307,7 @@
               <p v-else>--</p>
             </template>
           </el-table-column>
-          <el-table-column prop="managementAdvice"
+          <!-- <el-table-column prop="managementAdvice"
                            show-overflow-tooltip
                            label="管理建议">
 
@@ -312,7 +315,7 @@
               <p v-if="scope.row.managementAdvice">{{scope.row.managementAdvice}}</p>
               <p v-else>--</p>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column prop="problemFindPeople"
                            show-overflow-tooltip
                            label="发现人">
@@ -322,7 +325,9 @@
             </template>
           </el-table-column>
         </el-table>
-
+        <div class="mose"
+             @click="close_mose"
+             v-if="details == true"></div>
         <span slot="footer"
               class="foot">
 
@@ -334,6 +339,29 @@
                      @click="query_save_wt()">确定</el-button>
         </span>
       </div>
+
+      <!-- 详情 -->
+      <div class="problem_details_conter"
+           :style="{'top':details_list.style_top}"
+           v-if="details == true">
+        <ul class="list">
+          <li>
+            问题：{{details_list.problem}}
+          </li>
+          <li>
+            依据：{{details_list.basis}}
+          </li>
+          <li>
+            描述：{{details_list.describe}}
+          </li>
+          <li>
+            管理建议：{{details_list.managementAdvice}}
+          </li>
+
+        </ul>
+      </div>
+      <!-- 详情 end-->
+
     </el-dialog>
 
   </div>
@@ -393,6 +421,10 @@ export default {
         },
         placeholder: "请在这里输入",
       },
+      details: false,//悬浮问题 背景
+      Index: '',
+      style_px: 40,//悬浮定位
+      details_list: [],//悬浮数据
     }
   },
   props: ['active_project', 'userRole', 'isLiaison'],
@@ -413,8 +445,17 @@ export default {
     filtedate: function (date) {
       let t = new Date(date);
       return fmtDate(t, 'yyyy-MM-dd ');
-    }
+    },
+
+    ellipsis (value, limit) {
+      if (!value) return ''
+      if (value.length > limit) {
+        return value.slice(0, limit) + '...'
+      }
+      return value
+    },
   },
+
   watch: {
     value (n) {
       this.content = n;
@@ -425,6 +466,22 @@ export default {
   },
   methods: {
 
+    // 显示详情
+    details_show (data, index) {
+      this.Index = index
+      this.details = true
+      this.details_list = data;
+      if (index == 0) {
+        this.$set(this.details_list, 'style_top', '243px')//问题
+      } else {
+        let top_px = (this.style_px * index + 210) + 'px'
+        this.$set(this.details_list, 'style_top', top_px)//问题
+      }
+    },
+    // 关闭
+    close_mose () {
+      this.details = false
+    },
     handleCustomMatcher (node, Delta) {
       let ops = []
       Delta.ops.forEach(op => {
@@ -828,5 +885,47 @@ export default {
 }
 .fileName_show {
   font-size: 14px !important;
+}
+
+/* 问题详情框 */
+.mose {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 9998;
+}
+.dlag >>> .el-dialog {
+  position: relative;
+}
+.problem_details_conter {
+  width: 100%;
+  position: absolute;
+  /* top: 90px; */
+  left: 0;
+  padding: 0 20px;
+  box-sizing: border-box;
+  z-index: 9999;
+}
+.problem_details_conter .list {
+  margin: 0 auto;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  background: #f5f5f9;
+  display: flex;
+  flex-wrap: wrap;
+  box-shadow: 0px 2px 6px rgba(0, 0, 5, 0.2);
+}
+.list li {
+  width: 100%;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.8);
+}
+.list li:last-child {
+  margin-bottom: 0;
 }
 </style>
