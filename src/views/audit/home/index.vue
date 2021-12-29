@@ -610,7 +610,7 @@ export default {
             path: "/audit/auditItems/projectWorkbench",
           });
         }
-      } else if (obj.ext1 == "审计资料") {
+      } else if (obj.ext1 == "审计资料任务") {
         if (obj.toTaskType == "资料任务待发起") {
           this.$router.push({
             path: "/audit/auditItems/projectWorkbench",
