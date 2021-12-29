@@ -25,7 +25,8 @@
                          label="问题数"
                          prop="problemsNumber">
           <template slot-scope="scope">
-            {{scope.row.problemsNumber?scope.row.problemsNumber:'--'}}
+            <p style="color:#4084F2">{{scope.row.problemsNumber?scope.row.problemsNumber:'--'}}</p>
+
           </template>
         </el-table-column>
         <el-table-column algin="left"
@@ -34,6 +35,7 @@
             <el-popover :popper-class="tableFileList==''?'no-padding':''"
                         placement="bottom"
                         width="250"
+                        v-if="scope.row.attachmentFileCounts"
                         @show="getFileList(scope.row.auditConfirmationUuid)"
                         trigger="click">
               <ul v-if="tableFileList!=''"
@@ -44,9 +46,12 @@
                     @click="downFile(item.attachment_uuid,item.file_name)">{{item.file_name}}</li>
               </ul>
               <div slot="reference"
-                   class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.attachmentFileCounts}}
+                   class="pointer"
+                   style="color:#4084F2"><i
+                   class="el-icon-folder-opened list-folder"></i>{{scope.row.attachmentFileCounts}}
               </div>
             </el-popover>
+            <p v-else>--</p>
           </template>
         </el-table-column>
         <el-table-column algin="left"
@@ -56,18 +61,24 @@
                         placement="bottom"
                         width="250"
                         @show="getFileList('f'+scope.row.auditConfirmationUuid)"
+                        v-if="scope.row.fileCounts"
                         trigger="click">
               <ul v-if="tableFileList!=''"
                   class="fileList-ul">
                 <li class="tableFileList-title">文件名称</li>
                 <li v-for="item in tableFileList"
                     class="pointer blue tableFileList-li"
-                    @click="downFile(item.attachment_uuid,item.file_name)"><div class="inline-block">{{item.file_name}}</div><span class="delFile inline-block" @click.stop="delListFile(item.attachment_uuid)">X</span></li>
+                    @click="downFile(item.attachment_uuid,item.file_name)">
+                  <div class="inline-block">{{item.file_name}}</div><span class="delFile inline-block"
+                        @click.stop="delListFile(item.attachment_uuid)">X</span>
+                </li>
               </ul>
               <div slot="reference"
-                   class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.fileCounts}}
+                   class="pointer"
+                   style="color:#4084F2"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.fileCounts}}
               </div>
             </el-popover>
+            <p v-else>--</p>
           </template>
         </el-table-column>
         <el-table-column label="操作"
@@ -103,34 +114,36 @@
                          algin="left">
           <template slot-scope="scope">
 
-
-            <el-popover
-                        style="margin-right: 20px"
+            <el-popover style="margin-right: 20px"
                         class="inline-block"
                         placement="bottom"
                         width="250"
                         @show="getFileList('z'+scope.row.auditConfirmationUuid)"
-                        trigger="click">
+                        trigger="click"
+                        v-if="scope.row.endFileCounts!==0">
               <ul v-if="tableFileList!=''"
                   class="fileList-ul">
                 <li class="tableFileList-title">文件名称</li>
                 <li v-for="item in tableFileList"
                     class="pointer blue tableFileList-li"
-                    @click="downFile(item.attachment_uuid,item.file_name)"><div class="inline-block">{{item.file_name}}</div><span class="delFile inline-block" @click.stop="delListFile(item.attachment_uuid)">X</span></li>
+                    @click="downFile(item.attachment_uuid,item.file_name)">
+                  <div class="inline-block">{{item.file_name}}</div><span class="delFile inline-block"
+                        @click.stop="delListFile(item.attachment_uuid)">X</span>
+                </li>
               </ul>
               <div slot="reference"
-                   class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.endFileCounts}}
+                   class="pointer"
+                   style="color:#4084F2"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.endFileCounts}}
               </div>
             </el-popover>
             <!--<el-upload v-if="scope.row.endConfirmationFile==''||scope.row.endConfirmationFile==null&&(scope.row.createUserUuid==userInfo.user.id)"-->
-            <el-upload
-              :show-file-list="false"
-              class="upload-demo inline-block btnStyle"
-              :on-change="fileChange"
-              :action="'/wisdomaudit/auditConfirmation/endFileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid"
-              :on-success="list_data_start"
-              :headers="headers"
-              accept=".docx,.xls,.xlsx,.txt,.zip,.doc">
+            <el-upload :show-file-list="false"
+                       class="upload-demo inline-block btnStyle"
+                       :on-change="fileChange"
+                       :action="'/wisdomaudit/auditConfirmation/endFileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid"
+                       :on-success="list_data_start"
+                       :headers="headers"
+                       accept=".docx,.xls,.xlsx,.txt,.zip,.doc">
               <el-button size="small"
                          type="text"
                          style="background: transparent;padding:0"
@@ -379,7 +392,7 @@
 </template>
 
 <script>
-import {del_file, get_userInfo, projectMembership_listUserInfo, down_file, auditBasy_getFileList, auditConfirmation_pageList, auditConfirmation_save, auditConfirmation_delete, auditConfirmation_getDetail, auditConfirmation_update } from
+import { del_file, get_userInfo, projectMembership_listUserInfo, down_file, auditBasy_getFileList, auditConfirmation_pageList, auditConfirmation_save, auditConfirmation_delete, auditConfirmation_getDetail, auditConfirmation_update } from
   '@SDMOBILE/api/shandong/ls'
 import { task_pageList_wt } from
   '@SDMOBILE/api/shandong/AuditReport'
@@ -457,8 +470,8 @@ export default {
   },
   methods: {
     //列表附件删除
-    delListFile(id){
-      var that=this;
+    delListFile (id) {
+      var that = this;
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -564,10 +577,10 @@ export default {
 
         if (!!window.ActiveXObject || "ActiveXObject" in window) {
           var sj = new Date().toLocaleDateString()
-          sj = sj.replace(/(年|月)/g, '/').replace('日', '').replace(/[^\d-/]/g,'').split('/');
-          sj[1]=sj[1]<10?'0'+sj[1]:sj[1];
-          sj[2]=sj[2]<10?'0'+sj[2]:sj[2];
-        }else{
+          sj = sj.replace(/(年|月)/g, '/').replace('日', '').replace(/[^\d-/]/g, '').split('/');
+          sj[1] = sj[1] < 10 ? '0' + sj[1] : sj[1];
+          sj[2] = sj[2] < 10 ? '0' + sj[2] : sj[2];
+        } else {
           var sj = new Date().toLocaleDateString().split('/');
           sj[1] = sj[1].padStart(2, '0');
           sj[2] = sj[2].padStart(2, '0');
@@ -912,19 +925,18 @@ export default {
     color: #9e9e9f;
   }
 }
-
 </style>
 <style scoped>
 @import "../../../assets/styles/css/yw.css";
-.qrd-dialog >>>.el-dialog__header,
+.qrd-dialog >>> .el-dialog__header,
 .qrd-dialog >>> .el-dialog__body {
   padding: 0 !important;
 }
-.qrd-dialog >>>.el-dialog__headerbtn {
+.qrd-dialog >>> .el-dialog__headerbtn {
   top: 15px !important;
   right: 15px !important;
 }
- .qrd-dialog >>>.el-dialog__footer {
+.qrd-dialog >>> .el-dialog__footer {
   padding-left: 35px !important;
   padding-right: 35px !important;
 }
@@ -1015,14 +1027,14 @@ export default {
 >>> .upload-yw .el-form-item__content {
   width: 60% !important;
 }
-  .tableFileList-li>div{
-    width: 85%;
-    vertical-align: middle;
-  }
-  .delFile{
-    width: 15%;
-    text-align: right;
-    vertical-align: middle;
-    font-weight: bold;
-  }
+.tableFileList-li > div {
+  width: 85%;
+  vertical-align: middle;
+}
+.delFile {
+  width: 15%;
+  text-align: right;
+  vertical-align: middle;
+  font-weight: bold;
+}
 </style>
