@@ -733,7 +733,7 @@ export default {
 };
 </script>
 
-<style lang="scss"  scoped>
+<style lang="scss" scoped>
 .homeempty {
   height: 50px !important;
   width: 50px !important;

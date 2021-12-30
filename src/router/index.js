@@ -80,7 +80,14 @@ export const constantRoutes = [{
     meta: {
       title: "首页"
     }
-  }]
+  },{
+    path: "/auditeehome",
+    name: "auditeehome",
+    component: () => import("@WISDOMAUDIT/views/audit/auditeehome"),
+    meta: {
+      title: "被审计单位首页"
+    },
+  },]
 
 },
 
