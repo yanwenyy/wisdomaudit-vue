@@ -17,11 +17,9 @@
           </template>
         </el-table-column>
         <el-table-column prop="projectNumber"
-                         show-overflow-tooltip
                          label="项目名称">
         </el-table-column>
         <el-table-column prop="title"
-                         show-overflow-tooltip
                          label="标题">
 
           <template slot-scope="scope">
@@ -131,7 +129,7 @@
           </el-row>
           <el-row class="titleMes"
                   style="padding-left:40px;    box-sizing: border-box;">
-            标题：{{title}}
+            标题：{{title_details}}
           </el-row>
           <el-row class="titleMes"
                   style="padding-left:25px;    box-sizing: border-box;">发起人：{{launchPeople}}
@@ -150,10 +148,10 @@
                       style="width: 100%"
                       :header-cell-style="{'background-color': '#F4FAFF',}"
                       @selection-change="handleSelectionChange_query">
-              <el-table-column type="selection"
+              <!-- <el-table-column type="selection"
                                align="center"
                                width="55">
-              </el-table-column>
+              </el-table-column> -->
               <el-table-column prop="dataNumber"
                                label="编号">
 
@@ -238,11 +236,13 @@
 
               </el-table-column>
               <el-table-column prop="remarks"
+                               width="130px"
+                               show-overflow-tooltip
                                label="备注">
 
                 <template slot-scope="scope">
                   <p v-if="scope.row.remarks">
-                    {{scope.row.remarks}}
+                    {{scope.row.remarks | ellipsis}}
                   </p>
                   <p v-else>
                     --
@@ -593,7 +593,7 @@ export default {
 
       projectNumber: '',// 项目名称：
       addPeople: '',// 审计期间
-      title: '',//标题
+      title_details: '',//标题
       launchPeople: '',// 发起人
       down_url: '',//下载的url
       post_remarks: '',//反馈备注
@@ -633,6 +633,13 @@ export default {
       let t = new Date(date);
       // return fmtDate(t, 'yyyy-MM-dd hh:mm:ss');
       return fmtDate(t, 'yyyy-MM-dd ');
+    },
+    ellipsis (value) {
+      if (!value) return "";
+      if (value.length > 8) {
+        return value.slice(0, 8) + "...";
+      }
+      return value;
     }
   },
   props: ['active_project'],
@@ -816,7 +823,7 @@ export default {
 
       this.projectNumber = data.projectNumber;// 项目名称：
       this.addPeople = data.addPeople;// 审计期间
-      this.title = data.title;//标题
+      this.title_details = data.title;//标题
       this.launchPeople = data.launchPeople;// 发起人
       this.dialogVisible = true;//显示反馈
       this.data_query.condition.dataTaskNumber = data.addDataTaskUuid

@@ -329,7 +329,7 @@
                style="padding-bottom: 59px; ">
       <div class="title_dlag">{{title}}</div>
 
-      <div class="dlag_conter">
+      <div class="dlag_conter new_add">
         <el-form ref="add_form"
                  :inline="false"
                  :model="add_form"
@@ -1176,6 +1176,7 @@
           </el-table-column>
           <el-table-column prop="opInfo"
                            show-overflow-tooltip
+                           width="140px"
                            label="备注">
           </el-table-column>
           <el-table-column prop="fileCount"
@@ -2888,6 +2889,13 @@ export default {
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
 /* @import "../../../assets/styles/css/yw.css"; */
+
+.shenhe >>> .el-form-item--medium .el-form-item__content {
+  flex: inherit !important;
+}
+.new_add >>> .el-form-item__content {
+  text-align: left !important;
+}
 .title_is {
   padding: 30px 15px;
   text-align: center;

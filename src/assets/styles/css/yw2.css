@@ -1,0 +1,222 @@
+.el-table__header {
+  border-top: none !important;
+}
+
+table tr:nth-child(odd) {
+  background: #fff;
+}
+
+.el-table__row {
+  border-bottom: 1px solid #eee !important;
+}
+
+.el-table__body {
+  border-collapse: collapse !important;
+}
+
+.blue {
+  color: #0c87d6 !important;
+}
+
+.red {
+  color: #ff8a72 !important
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.subBtn {
+  background: #0c87d6 !important;
+  color: #fff;
+}
+
+.orange {
+  color: orange;
+}
+
+.editBtn {
+  color: #0c87d6 !important;
+  border: none !important;
+}
+
+.el-button {
+  border: 1px solid #DCDFE6;
+}
+
+.formData .el-form-item {
+  margin: 10px 0;
+}
+
+.formData .el-form-item__label {
+  display: inline-block;
+  text-align: right;
+  width: 20%;
+  vertical-align: top;
+}
+
+.formData .el-form-item__content {
+  display: inline-block;
+  margin-left: 10px !important;
+  width: 82%;
+}
+
+.formData .el-form-item__content .el-input {
+  width: 100%;
+}
+
+.itemTwo {
+  width: 50%;
+  display: inline-block;
+}
+
+.itemThree {
+  width: 33%;
+  display: inline-block;
+}
+
+.itemTwo .el-form-item__content {
+  width: 60%;
+}
+
+.itemThree .el-form-item__content {
+  width: 50%;
+}
+
+.search-form>.el-form-item {
+  margin-right: 20px;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.no-padding {
+  padding: 0 !important;
+  border: none !important;
+}
+
+.tableFileList-title {
+  padding: 5px 0;
+  border-top: 1px solid #ddd;
+  background: #F4FAFF;
+}
+
+.fileList-ul>li {
+  padding-left: 10px;
+  margin-bottom: 10px;
+}
+
+.formData .el-input.is-disabled .el-input__inner {
+  color: #606266 !important;
+  background: #F5F7FA !important;
+}
+
+.formData .el-input__inner::placeholder,
+.search-form .el-input__inner::placeholder {
+  color: #C1C1C1 !important;
+}
+
+/* 谷歌 */
+.formData .el-input__inner::-webkit-input-placeholder,
+.search-form .el-input__inner::-webkit-input-placeholder {
+  color: #C1C1C1 !important;
+}
+
+/* 火狐 */
+.formData .el-input__inner:-moz-placeholder,
+.search-form .el-input__inner:-moz-placeholder {
+  color: #C1C1C1 !important;
+}
+
+/*ie*/
+.formData .el-input__inner:-ms-input-placeholder,
+.search-form .el-input__inner:-ms-input-placeholder {
+  color: #C1C1C1 !important;
+}
+
+.formData ::-webkit-input-placeholder,
+.search ::-webkit-input-placeholder {
+  color: #C1C1C1 !important;
+}
+
+.falseRequired .el-form-item__label:before {
+  content: "*";
+  color: #ff4949;
+  margin-right: 4px;
+}
+
+.formData .el-form-item__label {
+  padding: 0 !important;
+}
+
+.title {
+  border-bottom: 1px solid #d2d2d2;
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.el-input-group__append button {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+.el-tooltip__popper {
+  max-width: 400px;
+  line-height: 180%;
+}
+
+.backBtn {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.back-group {
+  border: none !important;
+  text-align: left !important;
+  padding-left: 0 !important;
+}
+
+.el-form-item__label {
+  float: left !important;
+}
+
+@media screen and(-ms-high-contrast:active),
+(-ms-high-contrast:none) {
+
+  /*兼容IE11*/
+  /* .sjyjForm .el-tag.el-tag--info{
+    width: 64%!important;
+  } */
+  .problem-form-new .el-form-item__label,
+  .problem-form-new .el-form-item__content {
+    float: left !important;
+  }
+
+  .formData {
+    text-align: left !important;
+  }
+
+  .el-pagination__editor.el-input {
+    vertical-align: middle !important;
+  }
+
+  .el-pagination__editor.el-input .el-input__inner {
+    line-height: 28px !important;
+    margin-top: -2px;
+  }
+
+  .el-form-item__label {
+    float: left !important;
+  }
+
+  .qrdForm .itemThree .el-form-item__content {
+    margin-left: 140px !important;
+  }
+
+  .problem-form {
+    text-align: left !important;
+  }
+}

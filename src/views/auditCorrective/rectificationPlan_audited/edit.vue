@@ -403,6 +403,8 @@ export default {
     // 编辑
     edit (data) {
       this.looktype = '';
+      this.department = [];
+      this.save.rectDeparName = '';
 
       this.dialogVisible_edit = true;
       this.tableData2 = data;
@@ -413,14 +415,18 @@ export default {
       this.save.remark = data.remark;//备注
       // this.save.rectDeparId = data.rectDeparId.split(",") || [];//配合本门id
       // this.save.rectDeparName == data.rectDeparName.split(",") || [];//配合本门name
-      if (data.rectDeparId !== null) {
+      if (data.rectDeparId !== null && data.rectDeparId.length !== 0) {
         this.department = (data.rectDeparId || '').split(",");
-      } else {
-        this.department = [];
       }
 
-      this.save.rectDeparId = (data.rectDeparId || '').split(",");//配合本门id
-      this.save.rectDeparName = (data.rectDeparName || '').split(",")
+      // if (data.rectDeparId) {
+      //   this.save.rectDeparId = (data.rectDeparId || '').split(",");//配合本门id
+      // }
+      if (data.rectDeparName) {
+        this.save.rectDeparName = (data.rectDeparName || '').split(",")
+
+      }
+
 
 
 

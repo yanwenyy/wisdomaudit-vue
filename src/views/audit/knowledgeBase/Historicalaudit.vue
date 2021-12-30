@@ -1084,8 +1084,18 @@ export default {
 </script>
 
 <style scoped>
-@import "../../../assets/styles/css/yw.css";
+@import "../../../assets/styles/css/yw2.css";
 @import "../../../assets/styles/css/lhg.css";
+.sjyjForm .el-tag.el-tag--info {
+  width: 250px !important;
+}
+>>> .el-select__tags-text {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .dlag >>> .el-form-item__content,
 .dlag >>> .el-card__body .clearfix {
   text-align: left !important;
@@ -1269,11 +1279,5 @@ export default {
 }
 >>> .sjyjForm .el-form-item__label {
   float: left !important;
-}
->>> .el-select__tags-text {
-  max-width: 400px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 </style>
