@@ -35,8 +35,6 @@
 </template>
 
 <script>
-
-import axios from "axios";
 import auditbasis from "@WISDOMAUDIT/components/workbench/auditbasis/index";
 
 export default {

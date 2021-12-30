@@ -195,6 +195,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import Vault from "@WISDOMAUDIT/components/Vaultcertification";
 import { del_file_batch, down_file, del_file, auditBasy_pageList, auditBasy_save, auditBasy_delete, auditBasy_getDetail, auditBasy_getFileList } from
   '@SDMOBILE/api/shandong/ls'
