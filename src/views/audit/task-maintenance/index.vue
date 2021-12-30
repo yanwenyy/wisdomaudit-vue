@@ -418,7 +418,7 @@
                              label="模型名称"
                              show-overflow-tooltip>
             </el-table-column>
-            <el-table-column prop="address"
+            <el-table-column prop="logicalDescription"
                              label="逻辑说明"
                              width="250">
             </el-table-column>

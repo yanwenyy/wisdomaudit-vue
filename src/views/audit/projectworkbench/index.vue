@@ -576,7 +576,7 @@
           </el-table-column>
           <el-table-column prop="modelName"
                            label="模型名称"> </el-table-column>
-          <el-table-column prop="address"
+          <el-table-column prop="logicalDescription"
                            label="逻辑说明"
                            width="300">
           </el-table-column>
@@ -1466,6 +1466,7 @@ export default {
 
     //设为接口人事件
     isLiaison_Btn (row, list) {
+      this. arrRightValue.splice(this. arrRightValue.indexOf(row),1);
       let leader = {};
       this.peopleSelection.forEach((a) => {
         if (a.peopleRole == 1) {
