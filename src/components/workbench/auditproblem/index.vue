@@ -344,7 +344,7 @@
                     ref="popoverSH"
                     trigger="click">
           <div v-if="dqProblem.basis"
-               style="border:1px solid red">
+              >
             <p v-for="(e, i) in dqProblem.basis"
                :key="'basis' + i">
               {{ e }}
