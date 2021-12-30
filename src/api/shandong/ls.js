@@ -3,45 +3,45 @@ import qs from 'qs'
 
 const baseURL = '/wisdomaudit';
 //获取用户信息
-export function get_userInfo() {
+export function get_userInfo () {
   return request({
     baseURL: baseURL,
-    url:'/init/getCurrentInfo',
+    url: '/init/getCurrentInfo',
     method: 'get',
   })
 }
 //附件删除
-export function del_file(data) {
+export function del_file (data) {
   return request({
     baseURL: baseURL,
-    url:'/attachment/fileRemove?fileId=' + data + '',
+    url: '/attachment/fileRemove?fileId=' + data + '',
     method: 'post',
     data
   })
 }
 //附件批量删除
-export function del_file_batch(data) {
+export function del_file_batch (data) {
   return request({
     baseURL: baseURL,
-    url:'/auditBasy/deleteFilesByAttachmentUuid/' + data + '',
+    url: '/auditBasy/deleteFilesByAttachmentUuid/' + data + '',
     method: 'post',
     data
   })
 }
 //附件下载
-export function down_file(data) {
+export function down_file (data) {
   return request({
     baseURL: baseURL,
     url: `/auditPreviousDemandData/downloadByFileId`,
-    ifDownFile:true,
-    responseType:'blob',
+    ifDownFile: true,
+    responseType: 'blob',
     method: 'post',
     // timeout:-1,
     data
   })
 }
 //审计依据列表
-export function auditBasy_pageList(data) {
+export function auditBasy_pageList (data) {
   return request({
     baseURL: baseURL,
     url: `/auditBasy/pageList`,
@@ -50,7 +50,7 @@ export function auditBasy_pageList(data) {
   })
 }
 //审计依据新增或修改保存
-export function auditBasy_save(data) {
+export function auditBasy_save (data) {
   return request({
     baseURL: baseURL,
     url: `/auditBasy/saveOrUpdate`,
@@ -86,7 +86,7 @@ export function auditBasy_getFileList (data) {
   })
 }
 //审计确认单列表
-export function auditConfirmation_pageList(data) {
+export function auditConfirmation_pageList (data) {
   return request({
     baseURL: baseURL,
     url: '/auditConfirmation/queryList',
@@ -95,7 +95,7 @@ export function auditConfirmation_pageList(data) {
   })
 }
 //审计确认单新增
-export function auditConfirmation_save(data) {
+export function auditConfirmation_save (data) {
   return request({
     baseURL: baseURL,
     url: '/auditConfirmation/save',
@@ -104,7 +104,7 @@ export function auditConfirmation_save(data) {
   })
 }
 //审计确认单编辑
-export function auditConfirmation_update(data) {
+export function auditConfirmation_update (data) {
   return request({
     baseURL: baseURL,
     url: '/auditConfirmation/update',
@@ -131,46 +131,46 @@ export function auditConfirmation_getDetail (data) {
   })
 }
 //经营指标列表
-export function indexManagement_pageList(data) {
+export function indexManagement_pageList (data) {
   return request({
     baseURL: baseURL,
-    url:'/operatingIndicators/list',
+    url: '/operatingIndicators/list',
     method: 'post',
     data
   })
 }
 //经营指标编辑
-export function indexManagement_edit(data) {
+export function indexManagement_edit (data) {
   return request({
     baseURL: baseURL,
-    url:'/operatingIndicators/updateValue',
+    url: '/operatingIndicators/updateValue',
     method: 'put',
     data
   })
 }
 //新增指标分页查询
-export function indexManagement_addList(data) {
+export function indexManagement_addList (data) {
   return request({
     baseURL: baseURL,
-    url:'/indexManagement/pageList',
+    url: '/indexManagement/pageList',
     method: 'post',
     data
   })
 }
 //新增指标新增
-export function indexManagement_addSave(data) {
+export function indexManagement_addSave (data) {
   return request({
     baseURL: baseURL,
-    url:'/indexManagement/save',
+    url: '/indexManagement/save',
     method: 'post',
     data
   })
 }
 //生成经营指标
-export function indexManagement_save(data) {
+export function indexManagement_save (data) {
   return request({
     baseURL: baseURL,
-    url:'/operatingIndicators/cite',
+    url: '/operatingIndicators/cite',
     method: 'post',
     data
   })
@@ -185,140 +185,150 @@ export function indexManagement_delete (data) {
   })
 }
 //审计资料导出
-export function addDataTask_export(data) {
+export function addDataTask_export (data) {
   return request({
     baseURL: baseURL,
-    url:'/addDataTask/batchDown/'+data,
-    ifDownFile:true,
-    responseType:'blob',
+    url: '/addDataTask/batchDown/' + data,
+    ifDownFile: true,
+    responseType: 'blob',
     method: 'post',
 
   })
 }
 //整改措施批量导出
-export function correctStep_export(data) {
+export function correctStep_export (data) {
   return request({
     baseURL: baseURL,
-    url:'/correctStep/export',
-    ifDownFile:true,
-    responseType:'blob',
+    url: '/correctStep/export',
+    ifDownFile: true,
+    responseType: 'blob',
     method: 'post',
     data
   })
 }
 //整改措施接口人列表
-export function correctStep_pageListJkr(data) {
+export function correctStep_pageListJkr (data) {
   return request({
     baseURL: baseURL,
-    url:'/correctStep/pageListJkr',
+    url: '/correctStep/pageListJkr',
     method: 'post',
     data
   })
 }
 //整改措施领导列表
-export function correctStep_pageListLd(data) {
+export function correctStep_pageListLd (data) {
   return request({
     baseURL: baseURL,
-    url:'/correctStep/pageListLd',
+    url: '/correctStep/pageListLd',
     method: 'post',
     data
   })
 }
 //整改措施跟进人列表
-export function correctStep_pageList(data) {
+export function correctStep_pageList (data) {
   return request({
     baseURL: baseURL,
-    url:'/correctStep/pageList',
+    url: '/correctStep/pageList',
     method: 'post',
     data
   })
 }
 //整改措施项目下拉列表
-export function correctStep_getProjectList(data) {
+export function correctStep_getProjectList (data) {
   return request({
     baseURL: baseURL,
-    url:'/correctStep/getProjectList',
+    url: '/correctStep/getProjectList',
     method: 'post',
     data
   })
 }
 //整改措施详情
-export function correctStep_getById(data) {
+export function correctStep_getById (data) {
   return request({
     baseURL: baseURL,
-    url:'/correctStep/getById/' + data + '',
+    url: '/correctStep/getById/' + data + '',
     method: 'get',
     data
   })
 }
 //整改措施录入整改
-export function correctStep_inputAlter(data) {
+export function correctStep_inputAlter (data) {
   return request({
     baseURL: baseURL,
-    url:'/correctStep/inputAlter',
+    url: '/correctStep/inputAlter',
     method: 'post',
     data
   })
 }
 //整改措施详情提交
-export function correctStep_submitAlter(data) {
+export function correctStep_submitAlter (data) {
   return request({
     baseURL: baseURL,
-    url:'/correctStep/submitAlter',
+    url: '/correctStep/submitAlter',
     method: 'post',
     data
   })
 }
 //整改措施列表提交
-export function correctStep_submitAlterLb(data) {
+export function correctStep_submitAlterLb (data) {
   return request({
     baseURL: baseURL,
-    url:'/correctStep/submitAlterLb',
+    url: '/correctStep/submitAlterLb',
     method: 'post',
     data
   })
 }
 //整改措施领导审核
-export function correctStep_verifyLd(data) {
+export function correctStep_verifyLd (data) {
   return request({
     baseURL: baseURL,
-    url:'/correctStep/verifyLd',
+    url: '/correctStep/verifyLd',
     method: 'post',
     data
   })
 }
 //整改措施跟进人审核
-export function correctStep_verifyZgr(data) {
+export function correctStep_verifyZgr (data) {
   return request({
     baseURL: baseURL,
-    url:'/correctStep/verifyZgr',
+    url: '/correctStep/verifyZgr',
     method: 'post',
     data
   })
 }
 //整改台账列表
-export function recAccountCorrect_pageList(data) {
+export function recAccountCorrect_pageList (data) {
   return request({
     baseURL: baseURL,
-    url:'/recAccountCorrect/pageList',
+    url: '/recAccountCorrect/pageList',
     method: 'post',
     data
   })
 }
 //整改台账明细列表
-export function recAccountCorrect_correctStepPageList(data) {
+export function recAccountCorrect_correctStepPageList (data) {
   return request({
     baseURL: baseURL,
-    url:'/recAccountCorrect/correctStepPageList',
+    url: '/recAccountCorrect/correctStepPageList',
     method: 'post',
     data
   })
 }
 //获取审核人
-export function projectMembership_listUserInfo(num, size) {
+export function projectMembership_listUserInfo (num, size) {
   return request({
     baseURL: baseURL,
-    url:'/projectMembership/listUserInfo?' + 'pageCurrent=' + num + '&pageSize=' + size,
+    url: '/projectMembership/listUserInfo?' + 'pageCurrent=' + num + '&pageSize=' + size,
     method: 'get',
+  })
+}
+//获取审核人
+export function Company (data) {
+  return request({
+    baseURL: baseURL,
+    url: '/init/loaauditorg',
+    method: 'post',
+    isLoading: false,
+    data
   })
 }

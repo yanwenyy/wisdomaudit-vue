@@ -38,6 +38,23 @@
         <el-table-column prop="projectChargemanName"
                          label="项目组长">
         </el-table-column>
+
+        <el-table-column prop="correctStatus"
+                         label="状态">
+          <template slot-scope="scope">
+            {{
+                  scope.row.correctStatus == 0
+                    ? "未开始"
+                    : scope.row.correctStatus == 1
+                    ? "待提交"
+                    : scope.row.correctStatus == 2
+                    ? "待审核"
+                    : scope.row.correctStatus == 3
+                    ?'审核通过':'驳回不通过'
+                }}
+          </template>
+        </el-table-column>
+
         <el-table-column prop="problem"
                          label="操作">
           <template slot-scope="scope">

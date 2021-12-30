@@ -37,6 +37,20 @@
                          label="序号"
                          width="50">
         </el-table-column>
+        <!-- 历史审计标题 -->
+        <el-table-column prop="historyAuditFindDescribe"
+                         show-overflow-tooltip
+                         width="200px"
+                         label="标题">
+          <template slot-scope="scope">
+            <div v-if="scope.row.historyAuditFindDescribe"
+                 class="over">
+              {{ scope.row.title | ellipsis(18) }}
+            </div>
+            <div v-else>--</div>
+          </template>
+        </el-table-column>
+
         <!-- 历史审计发现 -->
         <el-table-column prop="historyAuditFindDescribe"
                          show-overflow-tooltip
@@ -169,11 +183,18 @@
                  v-loading="ld"
                  :rules="rules">
           <!-- 历史审计发现描述 -->
+          <el-form-item prop="title"
+                        style="margin-bottom: 22px !important">
+            <p><span style="color: red">*</span> 标题：</p>
+            <el-input v-model="add.title"
+                      placeholder="请输入标题"></el-input>
+          </el-form-item>
+
+          <!-- 历史审计发现描述 -->
           <el-form-item prop="historyAuditFindDescribe"
                         style="margin-bottom: 22px !important">
             <p><span style="color: red">*</span> 历史审计发现描述：</p>
             <el-input v-model="add.historyAuditFindDescribe"
-                      prop="historyAuditFindDescribe"
                       placeholder="请输入历史审计发现描述"></el-input>
           </el-form-item>
 
@@ -451,6 +472,7 @@ export default {
 
       // 新增
       add: {
+        title: '',//标题
         historyAuditFindDescribe: "", //发现描述
         auditedEntity: "", //被审计单位
         auditedEntityName: "", //单位name
@@ -470,6 +492,11 @@ export default {
       audit_Company: [], //审计单位
       problems_slect_yj: [], //评审依据
       rules: {
+        title: {
+          required: true,
+          message: "请填写标题",
+          trigger: "blue",
+        },
         historyAuditFindDescribe: {
           required: true,
           message: "请填写描述",
@@ -776,6 +803,7 @@ export default {
             }
 
             let params = {
+              title: this.add.title,
               historyAuditFindDescribe: this.add.historyAuditFindDescribe, //发现描述
               auditedEntity: this.add.auditedEntity, //被审计单位
               auditedEntityName: this.add.auditedEntityName, //被审计单位 name
@@ -831,6 +859,7 @@ export default {
             }
             // 编辑保存
             let params = {
+              title: this.add.title,
               historyAuditFindDescribe: this.add.historyAuditFindDescribe, //发现描述
               auditedEntity: this.add.auditedEntity, //被审计单位
               auditedEntityName: this.add.auditedEntityName, //被审计单位 name
@@ -896,6 +925,7 @@ export default {
         id: this.historyAuditFindUuid,
       };
       (this.add = {
+        title: "",
         historyAuditFindDescribe: "", //发现描述
         auditedEntity: "", //被审计单位
         field: "", //领域
@@ -919,6 +949,7 @@ export default {
         let data = resp.data;
         (this.add.historyAuditFindDescribe = data.historyAuditFindDescribe), //发现描述
           (this.add.auditedEntity = data.auditedEntity); //被审计单位
+        this.add.title = data.title;//标题
         this.add.field = data.field; //领域
         this.add.special = data.special; //专题
         this.add.findPeople = data.findPeople; //发现人

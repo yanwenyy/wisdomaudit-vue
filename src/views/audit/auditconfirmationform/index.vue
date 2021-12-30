@@ -155,7 +155,6 @@
     </div>
 
     <!-- 新增确认单弹出框 -->
-
     <el-form :rules="rules"
              ref="addForm"
              class="formData qrdForm"
@@ -173,6 +172,23 @@
                       label="审计项目名称:">{{managementProjectName!=''?managementProjectName:'--'}}</el-form-item>
         <el-form-item class="itemTwo"
                       label="被审计单位:">{{auditOrgName!=''?auditOrgName:'--'}}</el-form-item>
+        <!-- 二级部门 -->
+        <el-form-item class="itemTwo"
+                      v-if="compileDate ==true"
+                      label="二级部门:">
+          <el-select :disabled="ifLook"
+                     @change="select_Company"
+                     v-model="formDetail.auditDepart"
+                     placeholder="请选择"
+                     clearable>
+            <el-option v-for="(item,index) in Company_data_list"
+                       :label="item.orgName"
+                       :value="item.auditOrgUuid"
+                       :key="index">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
         <el-form-item class="itemOne"
                       prop="matter"
                       label="审计（调查）事项:">
@@ -186,6 +202,9 @@
           <el-button :disabled="ifLook"
                      @click="getRelationQues"
                      class="relationBtn">关联问题</el-button>
+          <!-- <el-button :disabled="ifLook"
+                     @click="getRelationQues"
+                     class="relationBtn">编辑问题</el-button> -->
 
           <el-input rows="6"
                     :disabled="ifLook"
@@ -234,6 +253,7 @@
                           value-format="yyyy-MM-dd"
                           style="width: 100%"></el-date-picker>
         </el-form-item>
+
         <el-form-item class="itemOne"
                       v-if="confirmationDialogTitle=='编辑确认单'||ifLook"
                       prop="compileDate"
@@ -392,7 +412,7 @@
 </template>
 
 <script>
-import { del_file, get_userInfo, projectMembership_listUserInfo, down_file, auditBasy_getFileList, auditConfirmation_pageList, auditConfirmation_save, auditConfirmation_delete, auditConfirmation_getDetail, auditConfirmation_update } from
+import { del_file, get_userInfo, projectMembership_listUserInfo, down_file, auditBasy_getFileList, auditConfirmation_pageList, auditConfirmation_save, auditConfirmation_delete, auditConfirmation_getDetail, auditConfirmation_update, Company } from
   '@SDMOBILE/api/shandong/ls'
 import { task_pageList_wt } from
   '@SDMOBILE/api/shandong/AuditReport'
@@ -404,6 +424,7 @@ export default {
   props: ['active_project', 'userRole'],
   data () {
     return {
+      compileDate: false,
       key: 0,
       attachmentList1: [],//附件上传列表
       fileList1: [],//附件上传回显列表
@@ -416,6 +437,7 @@ export default {
       confirmationDialogVisible: false, //新增确认单弹框
       confirmationDialogVisibleZx: false,//专项确认单编辑
       formDetail: {
+        auditDepart: '',//被审计部门
         attachmentList: [],
         matter: '',
         matterDetail: '',
@@ -458,17 +480,36 @@ export default {
           { required: true, message: "请填写编制日期", trigger: "blur" },
         ],
       },
+      // 被审计机构
+      Company_data_list: [],
+
     };
   },
   created () {
     this.list_data_start();
     this.getFhrList();
     this.getSjryList();
+
+    let params = {
+      entity: {},
+    }
+    this.Company_data(params); // 被审计单位
   },
   mounted () {
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
   },
   methods: {
+    // 被审计单位
+    Company_data (params) {
+      console.log(params);
+      Company(params).then(resp => {
+        console.log(resp.data);
+        this.Company_data_list = resp.data
+      })
+    },
+    select_Company (val) {
+      this.formDetail.auditDepart = val;
+    },
     //列表附件删除
     delListFile (id) {
       var that = this;
@@ -703,6 +744,13 @@ export default {
       this.confirmationDialogTitle = "编辑确认单";
       this.ifLook = false;
       this.getDetail(row);
+
+      // 显示二级部门
+      if (this.auditOrgName == '省本部') {
+        this.compileDate = true;
+      }
+
+
     },
     getDetail (row) {
       auditConfirmation_getDetail(row.auditConfirmationUuid).then(resp => {
@@ -765,9 +813,17 @@ export default {
       this.confirmationDialogVisible = true;
       this.getUser();
       this.ifLook = false;
+
+      // 显示二级部门
+      if (this.auditOrgName == '省本部') {
+        this.compileDate = true;
+      }
+
+
     },
     // 增加弹出框关闭事件
     handleClose () {
+      this.compileDate = false;//隐藏二级部门
       this.confirmationDialogVisible = false
       this.confirmationDialogVisibleZx = false
     },
@@ -814,6 +870,9 @@ export default {
             this.formDetail.managementProjectName = this.managementProjectName;
             this.formDetail.auditOrgName = this.auditOrgName;
             this.formDetail.managementProjectUuid = this.active_project;
+            console.log(this.formDetail);
+            console.log(this.formDetail.auditDepart);
+
             auditConfirmation_save(this.formDetail).then(resp => {
               if (resp.code == 0) {
                 this.$message({

@@ -25,7 +25,7 @@
       </div>
     </div>
 
-    <div class="padding">
+    <div class="padding table">
       <el-table :data="tableData.records"
                 :header-cell-style="{'background-color': '#F4FAFF',}"
                 v-loading="loading"
@@ -39,7 +39,10 @@
                          label="问题">
 
           <template slot-scope="scope">
-            <p @click="look(scope.row)" class="look cursor" v-if="scope.row.problem">
+            <!-- @click="look(scope.row)" -->
+            <p @click="details_show(scope.row,scope.$index+1)"
+               class="look cursor"
+               v-if="scope.row.problem">
               {{scope.row.problem}}
             </p>
             <p v-else>
@@ -75,7 +78,7 @@
 
         </el-table-column>
         <el-table-column prop="rectDeparName"
-                        width="150"
+                         width="150"
                          label="整改配合部门">
 
           <template slot-scope="scope">
@@ -157,7 +160,9 @@
         </el-table-column>
 
       </el-table>
-
+      <div class="mose"
+           @click="close_mose"
+           v-if="details == true"></div>
       <!-- 分页 -->
       <div class="page">
         <el-button type="primary"
@@ -176,7 +181,27 @@
         </el-pagination>
       </div>
       <!-- 分页 end-->
+      <!-- 详情 -->
+      <div class="problem_details_conter"
+           :style="{'top':details_list.style_top}"
+           v-if="details == true">
+        <ul class="list">
+          <li>
+            问题：{{details_list.problem}}
+          </li>
+          <li>
+            依据：{{details_list.basis}}
+          </li>
+          <li>
+            描述：{{details_list.describe}}
+          </li>
+          <li>
+            管理建议：{{details_list.managementAdvice}}
+          </li>
 
+        </ul>
+      </div>
+      <!-- 详情 end-->
     </div>
 
     <!-- 编辑 -->
@@ -195,22 +220,23 @@
                  :model="save">
           <el-form-item label="主要负责部门："
                         prop="dutyDeptName">
-            <el-input :disabled="looktype=='look'" placeholder="请输入主要负责部门"
+            <el-input :disabled="looktype=='look'"
+                      placeholder="请输入主要负责部门"
                       v-model="save.dutyDeptName">
             </el-input>
           </el-form-item>
 
           <el-form-item prop="dutyPersonName"
                         label="整改责任人：">
-            <el-input :disabled="looktype=='look'" placeholder="请输入整改责任人"
+            <el-input :disabled="looktype=='look'"
+                      placeholder="请输入整改责任人"
                       v-model="save.dutyPersonName"></el-input>
           </el-form-item>
-          <el-form-item
-                        label="整改配合部门：">
-            <el-select :disabled="looktype=='look'" placeholder="请选择"
+          <el-form-item label="整改配合部门：">
+            <el-select :disabled="looktype=='look'"
+                       placeholder="请选择"
                        multiple
-                       v-model="department"
-                      >
+                       v-model="department">
               <el-option v-for="item in loadaudittorgoptions"
                          :key="item.auditOrgUuid"
                          :label="item.orgName"
@@ -220,7 +246,8 @@
           </el-form-item>
           <el-form-item prop="planContent"
                         label="整改计划：">
-            <el-input :disabled="looktype=='look'" type="textarea"
+            <el-input :disabled="looktype=='look'"
+                      type="textarea"
                       class="resizeNone"
                       placeholder="请输入整改计划"
                       v-model="save.planContent"></el-input>
@@ -228,21 +255,24 @@
 
           <el-form-item prop="limitEndTime"
                         label="预计整改完成时限：">
-            <el-date-picker :disabled="looktype=='look'" type="date"
+            <el-date-picker :disabled="looktype=='look'"
+                            type="date"
                             value-format="yyyy-MM-dd"
                             v-model="save.limitEndTime"
                             placeholder="请选择预计整改完成时限">
             </el-date-picker>
           </el-form-item>
           <el-form-item label="备注：">
-            <el-input :disabled="looktype=='look'" type="textarea"
+            <el-input :disabled="looktype=='look'"
+                      type="textarea"
                       placeholder="请输入备注"
                       v-model="save.remark"
                       class="resizeNone"></el-input>
           </el-form-item>
         </el-form>
       </div>
-      <div slot="footer" v-if="looktype!='look'">
+      <div slot="footer"
+           v-if="looktype!='look'">
 
         <el-button @click="dialogVisible_edit = false"
                    plain
@@ -261,14 +291,14 @@
 import { pageList, editProblemCorrect, submitReview, post_rules } from "@SDMOBILE/api/shandong/rectificationPlan_audited_edit";//lhg
 import {
   loadaudittorg,
- } from "@WISDOMAUDIT/api/shandong/projectmanagement.js";
+} from "@WISDOMAUDIT/api/shandong/projectmanagement.js";
 export default {
   components: {},
   data () {
     return {
-      looktype:'',
-      department:[],
-      loadaudittorgoptions:[],
+      looktype: '',
+      department: [],
+      loadaudittorgoptions: [],
       loading: false,
       type: '',//查看
       list_query: {
@@ -286,8 +316,8 @@ export default {
         planContent: '',//整改计划
         limitEndTime: '',//选择日期
         remark: '',//备注
-        rectDeparId:[],//整改配合部门id
-        rectDeparName:[],//整改配合部门name
+        rectDeparId: [],//整改配合部门id
+        rectDeparName: [],//整改配合部门name
       },
       isDisable: false,//防止重复提交
       // 添加经责表单校验
@@ -308,6 +338,11 @@ export default {
           { required: true, message: "请填写备注", trigger: "blur" },
         ],
       },
+
+      details: false,//悬浮问题 背景
+      style_px: 40,//悬浮定位
+      details_list: [],//悬浮数据
+      Index: '',
 
     }
   },
@@ -334,8 +369,6 @@ export default {
     go_back () {
       this.$router.push({ path: '/auditCorrective/rectificationPlan_audited' })
     },
-
-
     // 列表
     page_list_data () {
       this.loading = true;
@@ -368,7 +401,7 @@ export default {
     },
     // 编辑
     edit (data) {
-      this.looktype='';
+      this.looktype = '';
       console.log(data);
       this.dialogVisible_edit = true;
       this.tableData2 = data;
@@ -377,30 +410,46 @@ export default {
       this.save.planContent = data.planContent;//整改计划
       this.save.limitEndTime = data.limitEndTime;//预计整改完成时限
       this.save.remark = data.remark;//备注
-      this.save.rectDeparId =data.rectDeparId.split(",")||[];//配合本门id
-      this.save.rectDeparName ==data.rectDeparName.split(",")||[];//配合本门name
-      this.department=data.rectDeparId.split(",")||[];
+      this.save.rectDeparId = data.rectDeparId.split(",") || [];//配合本门id
+      this.save.rectDeparName == data.rectDeparName.split(",") || [];//配合本门name
+      this.department = data.rectDeparId.split(",") || [];
+
       this.save = JSON.parse(JSON.stringify(this.save));
 
       this.$nextTick(() => {
         this.$refs["save"].clearValidate();
       });
     },
-    look (data) {
-      this.looktype='look';
-      this.dialogVisible_edit = true;
-      this.tableData2 = data;
-      this.save.dutyDeptName = data.dutyDeptName;//主要负责部门
-      this.save.dutyPersonName = data.dutyPersonName;//整改责任人
-      this.save.planContent = data.planContent;//整改计划
-      this.save.limitEndTime = data.limitEndTime;//预计整改完成时限
-      this.save.remark = data.remark;//备注
-      this.save.rectDeparId =data.rectDeparId.split(",")||[];//配合本门id
-      this.save.rectDeparName ==data.rectDeparName.split(",")||[];//配合本门name
-      this.department=data.rectDeparId.split(",")||[];
-      this.save = JSON.parse(JSON.stringify(this.save));
-    },
+    // look (data) {
+    //   this.looktype = 'look';
+    //   this.dialogVisible_edit = true;
+    //   this.tableData2 = data;
+    //   this.save.dutyDeptName = data.dutyDeptName;//主要负责部门
+    //   this.save.dutyPersonName = data.dutyPersonName;//整改责任人
+    //   this.save.planContent = data.planContent;//整改计划
+    //   this.save.limitEndTime = data.limitEndTime;//预计整改完成时限
+    //   this.save.remark = data.remark;//备注
+    //   this.save.rectDeparId = data.rectDeparId.split(",") || [];//配合本门id
+    //   this.save.rectDeparName == data.rectDeparName.split(",") || [];//配合本门name
+    //   this.department = data.rectDeparId.split(",") || [];
+    //   this.save = JSON.parse(JSON.stringify(this.save));
+    // },
 
+
+    details_show (data, index) {
+      this.Index = index
+      this.details = true
+      this.details_list = data;
+      if (index == 0) {
+        this.$set(this.details_list, 'style_top', '90px')//核实意见
+      } else {
+        let top_px = (this.style_px * index + 80) + 'px'
+        this.$set(this.details_list, 'style_top', top_px)//核实意见
+      }
+    },
+    close_mose () {
+      this.details = false
+    },
 
     // 提交
     post () {
@@ -451,7 +500,7 @@ export default {
       this.save.limitTime = '';//清空时间
       this.save = {};
       this.$refs[save].resetFields();
-      this.department=[];
+      this.department = [];
     },
     // 保存
     save_btn (save) {
@@ -460,12 +509,15 @@ export default {
         this.isDisable = false;
       }, 2000);
 
-      this.save.rectDeparId=this.department;
-      this.loadaudittorgoptions.forEach((item)=>{
-        if((this.department.indexOf(item.auditOrgUuid)!=-1)){
+      this.save.rectDeparId = this.department;
+      this.save.rectDeparName = [];
+      this.loadaudittorgoptions.forEach((item) => {
+        if ((this.department.indexOf(item.auditOrgUuid) != -1)) {
           this.save.rectDeparName.push(item.orgName)
         }
       });
+
+
       this.$refs[save].validate((valid) => {
         if (valid) {
           let params = {
@@ -509,6 +561,48 @@ export default {
 </script>
 
 <style scoped>
+.mose {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 99;
+}
+.table {
+  position: relative;
+}
+
+.problem_details_conter {
+  width: 100%;
+  position: absolute;
+  /* top: 90px; */
+  left: 0;
+  padding: 0 20px;
+  box-sizing: border-box;
+  z-index: 100;
+}
+.problem_details_conter .list {
+  margin: 0 auto;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  background: #f5f5f9;
+  display: flex;
+  flex-wrap: wrap;
+  box-shadow: 0px 2px 6px rgba(0, 0, 5, 0.2);
+}
+.list li {
+  width: 100%;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.8);
+}
+.list li:last-child {
+  margin-bottom: 0;
+}
+
 .look {
   color: #0c87d6 !important;
   border: none !important;
@@ -654,7 +748,7 @@ export default {
   line-height: 36px;
   width: 220px !important;
 }
-  .cursor{
-    cursor: pointer;
-  }
+.cursor {
+  cursor: pointer;
+}
 </style>

@@ -342,7 +342,6 @@ export default {
               // 整改期限
               this.save_project_prople.beginTime = this.project_list[0].beginTime;
               this.save_project_prople.endTime = this.project_list[0].endTime;
-
             }
           } else {
             this.$message({ message: "请选择可以启动整改的项目进行整改" });

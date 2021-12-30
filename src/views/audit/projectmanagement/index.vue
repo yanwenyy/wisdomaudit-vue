@@ -51,8 +51,14 @@
                        @click.stop="editDialog(item)">编辑</el-button>
             <el-button v-if="item.auditConf == 1&&userInfo.user.id==item.projectLeaderUuid"
                        @click.stop="confirm_problem(item.managementProjectUuid)">确认整改问题清单</el-button>
-            <el-button :disabled="item.auditConf!='1' && item.correct_send ==0"
+
+            <!-- :disabled="item.auditConf!='1' " -->
+            <el-button v-if="item.auditConf == 1&&userInfo.user.id==item.projectLeaderUuid"
                        @click.stop="run_startProject2(item)">启动整改</el-button>
+
+            <el-button v-if="item.auditConf == 5"
+                       @click.stop="run_startProject3(item)">整改跟进</el-button>
+
           </div>
         </template>
         <div class="sef-collapse-content">
@@ -1254,6 +1260,7 @@ export default {
   components: { Pagination },
   data () {
     return {
+      project_list: {},
       activeNames: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
       userInfo: {},
       dqtoken: "",
@@ -1551,7 +1558,6 @@ export default {
       dialogVisible_rectification: false, //启动整改
       dialogWidth: 0, //启动整改宽度
       // 设置整改跟进人
-      project_list: [], //项目列表 多选
       setting_people: [],
       save_project_prople: {
         setting_people_name: "", //选择的整改跟进人
@@ -2372,10 +2378,6 @@ export default {
           });
       }
     },
-    //项目列表 多选
-    handleSelectionChange_list (val) {
-      this.project_list = val;
-    },
 
     // 设置跟进人 data
     setting_follow_prople () {
@@ -2386,12 +2388,18 @@ export default {
       };
       // 获取跟进人
       follow_up_person(params).then((resp) => {
-        console.log(resp.data);
         this.setting_people = resp.data.list;
+        console.log(this.project_lis);
+        this.setting_people.forEach(item => {
+          if (item.id == this.project_list.correctUser) {
+            this.save_project_prople.setting_people_key = item.id;
+          }
+        })
+
       });
     },
 
-    // 整改人  change
+    // 整改人  change 
     change_peoplr (val) {
       let obj = {};
       obj = this.setting_people.find((item) => {
@@ -2402,48 +2410,49 @@ export default {
     },
 
     // 启动整改显示弹窗
-    run_rectification () {
-      if (this.project_list.length !== 1) {
-        this.$message({ message: "只能选择一条项目进行启动整改" });
-        return;
-      } else {
-        this.run_startProject(); //是否启动整改
-      }
-    },
+    // run_rectification () {
+    //   if (this.project_list.length !== 1) {
+    //     this.$message({ message: "只能选择一条项目进行启动整改" });
+    //     return;
+    //   } else {
+    //     this.run_startProject(); //是否启动整改
+    //   }
+    // },
 
     // 启动整改
-    run_startProject () {
-      let params = {
-        managementProjectUuid: this.project_list[0].managementProjectUuid,
-        managementAdvice: this.project_list[0].managementAdvice, //
-      };
-      // 是否启动整改
-      isStartProject(params).then((resp) => {
-        if (resp.code == 0) {
-          let _data = resp.data;
-          if (_data.isStartProject == 0) {
-            this.dialogVisible_rectification = true; //启动整改 弹窗
-            // 获取整改人
-            var ids = [];
-            this.project_list.forEach((r, i) => {
-              ids.push(r.managementProjectUuid);
-            });
-            this.projectid = ids[0];
-            this.setting_follow_prople(); //整改人 数据
-          } else {
-            this.$message({
-              message: "请确认整改问题清单",
-              type: "error",
-            });
-          }
-        } else {
-          this.$message({
-            message: resp.msg,
-            type: "error",
-          });
-        }
-      });
-    },
+    // run_startProject () {
+    //   let params = {
+    //     managementProjectUuid: this.project_list.managementProjectUuid,
+    //     managementAdvice: this.project_list.managementAdvice, //
+    //   };
+    //   // 是否启动整改
+    //   isStartProject(params).then((resp) => {
+    //     if (resp.code == 0) {
+    //       let _data = resp.data;
+    //       if (_data.isStartProject == 0) {
+    //         this.dialogVisible_rectification = true; //启动整改 弹窗
+    //         // 获取整改人
+    //         var ids = [];
+    //         this.project_list.forEach((r, i) => {
+    //           ids.push(r.managementProjectUuid);
+    //         });
+    //         this.projectid = ids[0];
+    //         this.setting_follow_prople(); //整改人 数据
+    //       } else {
+    //         this.$message({
+    //           message: "请确认整改问题清单",
+    //           type: "error",
+    //         });
+    //       }
+    //     } else {
+    //       this.$message({
+    //         message: resp.msg,
+    //         type: "error",
+    //       });
+    //     }
+    //   });
+    // },
+
     run_startProject2 (row) {
       let params = {
         managementProjectUuid: row.managementProjectUuid,
@@ -2468,6 +2477,35 @@ export default {
               type: "error",
             });
           }
+        } else {
+          this.$message({
+            message: resp.msg,
+            type: "error",
+          });
+        }
+      });
+    },
+    run_startProject3 (row) {
+      this.project_list = row;
+      let params = {
+        managementProjectUuid: row.managementProjectUuid,
+        managementAdvice: row.managementAdvice, //
+      };
+
+      // 是否启动整改
+      isStartProject(params).then((resp) => {
+        if (resp.code == 0) {
+          let _data = resp.data;
+          this.dialogVisible_rectification = true; //启动整改 弹窗
+          // 获取整改人
+          var ids = [];
+          this.projectid = row.managementProjectUuid;
+          this.setting_follow_prople(); //整改人 数据
+          // 启动过整改  回显
+          // 整改期限
+          this.save_project_prople.beginTime = this.project_list.beginTime;
+          this.save_project_prople.endTime = this.project_list.endTime;
+
         } else {
           this.$message({
             message: resp.msg,
@@ -2916,7 +2954,7 @@ export default {
 }
 
 .stepBtn {
-  width:100%;
+  width: 100%;
   padding: 2%;
   //margin-left: -25%;
   // border: 1px solid red;
