@@ -200,6 +200,7 @@
 
     <!-- 编辑 -->
     <el-dialog title=""
+               :close-on-click-modal='false'
                :append-to-body='true'
                center
                @close="resetForm_verify('save')"

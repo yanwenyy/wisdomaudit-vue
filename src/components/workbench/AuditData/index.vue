@@ -625,7 +625,7 @@
 
           <div class="son"
                v-if="user_data">
-            <el-form-item label="编号："
+            <el-form-item label="1编号："
                           style="padding:0 0 0 0"
                           label-width="130px"
                           prop="dataNumber">
@@ -813,21 +813,24 @@
 
         </el-form>
       </div>
-
       <span slot="footer">
-        <el-button plain
-                   @click="dialogVisible2 = false">取 消</el-button>
+        <div v-if="user_data">
 
-        <el-button type="primary"
-                   v-if="success_btn==0"
-                   @click="save_data_btn('add_data')">确定</el-button>
-        <el-button v-if="success_btn==1"
-                   type="primary"
-                   :loading="true">上传中</el-button>
-        <el-button v-if="success_btn==2"
-                   type="primary"
-                   :loading="true">添加中</el-button>
+          <el-button plain
+                     @click="dialogVisible2 = false">取 消</el-button>
+          <el-button type="primary"
+                     v-if="success_btn==0"
+                     @click="save_data_btn('add_data')">确定</el-button>
+          <el-button v-if="success_btn==1"
+                     type="primary"
+                     :loading="true">上传中</el-button>
+          <el-button v-if="success_btn==2"
+                     type="primary"
+                     :loading="true">添加中</el-button>
+        </div>
+
       </span>
+
     </el-dialog>
 
     <!-- 操作 审批-->

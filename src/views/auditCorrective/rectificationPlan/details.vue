@@ -113,9 +113,15 @@
             <p>问题：<span v-if="details_list.problem">{{details_list.problem}}</span>
               <span v-else>--</span>
             </p>
+
+          </li>
+          <li>
             <p>描述：<span v-if="details_list.describe">{{details_list.describe}}</span>
               <span v-else>--</span>
             </p>
+
+          </li>
+          <li>
             <p>管理建议：<span v-if="details_list.managementAdvice">{{details_list.managementAdvice}}</span>
               <span v-else>--</span>
             </p>

@@ -54,6 +54,7 @@
         <!-- 历史审计发现描述 -->
         <el-table-column prop="historyAuditFindDescribe"
                          width="200px"
+                         :show-overflow-tooltip="true"
                          label="历史审计发现描述">
           <template slot-scope="scope">
             <div v-if="scope.row.historyAuditFindDescribe"
@@ -1089,6 +1090,14 @@ export default {
 .sjyjForm .el-tag.el-tag--info {
   width: 250px !important;
 }
+.conter >>> .el-tooltip div {
+  display: block;
+  width: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 >>> .el-select__tags-text {
   max-width: 250px;
   overflow: hidden;

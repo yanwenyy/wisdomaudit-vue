@@ -148,10 +148,10 @@
                       style="width: 100%"
                       :header-cell-style="{'background-color': '#F4FAFF',}"
                       @selection-change="handleSelectionChange_query">
-              <!-- <el-table-column type="selection"
+              <el-table-column type="selection"
                                align="center"
                                width="55">
-              </el-table-column> -->
+              </el-table-column>
               <el-table-column prop="dataNumber"
                                label="编号">
 
@@ -236,13 +236,12 @@
 
               </el-table-column>
               <el-table-column prop="remarks"
-                               width="130px"
-                               show-overflow-tooltip
+                               width="110px"
+                               :show-overflow-tooltip="true"
                                label="备注">
-
                 <template slot-scope="scope">
                   <p v-if="scope.row.remarks">
-                    {{scope.row.remarks | ellipsis}}
+                    {{scope.row.remarks}}
                   </p>
                   <p v-else>
                     --
@@ -559,6 +558,7 @@ export default {
   },
   data () {
     return {
+      remarks2: '列表数据列表数据列表数据列表数据列表数据列表数据列表数据',
       dqtoken: "",
       headers: '',
       loading: false,
@@ -842,7 +842,7 @@ export default {
       this.see_data = false;
       this.projectNumber = data.projectNumber;// 项目名称：
       this.addPeople = data.addPeople;// 审计期间
-      this.title = data.title;//标题
+      this.title_details = data.title;//标题
       this.launchPeople = data.launchPeople;// 发起人
       this.dialogVisible = true;//显示反馈
       this.data_query.condition.dataTaskNumber = data.addDataTaskUuid
@@ -1118,6 +1118,14 @@ export default {
 @import "../../../assets/styles/css/lhg.css";
 .dlag_up >>> .el-dialog {
   min-width: 500px;
+}
+
+.dialog_conter >>> .el-tooltip p {
+  display: block;
+  width: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 >>> .foot .el-button {
   font-weight: normal;
