@@ -366,9 +366,9 @@ export default {
       follow_up_person(params).then(resp => {
         this.setting_people = resp.data.list;
         this.setting_people.forEach(item => {
-          // console.log(item);
           if (item.id == this.project_list[0].correctUser) {
             this.save_project_prople.setting_people_key = item.id;
+            this.save_project_prople.setting_people_name = item.realName
           }
         })
         this.edit_people_loading = false;
@@ -596,7 +596,7 @@ export default {
 /* 弹窗 title end*/
 
 .setting_people {
-  padding: 0 20px 20px;
+  padding: 10px 20px 20px;
   display: flex;
   justify-content: center;
   box-sizing: border-box;

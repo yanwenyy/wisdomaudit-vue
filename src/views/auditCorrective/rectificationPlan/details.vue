@@ -321,9 +321,10 @@ export default {
   width: 100%;
   padding: 20px;
   box-sizing: border-box;
-  background: #e6f1fc;
+  background: #f5f5f9;
   display: flex;
   flex-wrap: wrap;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 .list li {
   width: 100%;
@@ -336,6 +337,7 @@ export default {
 .list li p {
   width: 33%;
   float: left;
+  text-align: left;
   box-sizing: border-box;
 }
 .list li p span {

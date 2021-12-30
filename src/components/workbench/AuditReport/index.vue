@@ -891,11 +891,12 @@ export default {
   background: #f5f5f9;
   display: flex;
   flex-wrap: wrap;
-  box-shadow: 0px 2px 6px rgba(0, 0, 5, 0.2);
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 .list li {
   width: 100%;
   margin-bottom: 20px;
+  text-align: left;
   box-sizing: border-box;
   font-weight: 700;
   color: rgba(0, 0, 0, 0.8);

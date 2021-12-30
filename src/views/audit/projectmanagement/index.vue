@@ -2393,6 +2393,7 @@ export default {
         this.setting_people.forEach(item => {
           if (item.id == this.project_list.correctUser) {
             this.save_project_prople.setting_people_key = item.id;
+            this.save_project_prople.setting_people_name = item.realName;
           }
         })
 

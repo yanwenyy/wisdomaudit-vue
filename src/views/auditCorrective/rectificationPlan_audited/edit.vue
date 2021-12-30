@@ -402,7 +402,7 @@ export default {
     // 编辑
     edit (data) {
       this.looktype = '';
-      console.log(data);
+
       this.dialogVisible_edit = true;
       this.tableData2 = data;
       this.save.dutyDeptName = data.dutyDeptName;//主要负责部门
@@ -410,11 +410,22 @@ export default {
       this.save.planContent = data.planContent;//整改计划
       this.save.limitEndTime = data.limitEndTime;//预计整改完成时限
       this.save.remark = data.remark;//备注
-      this.save.rectDeparId = data.rectDeparId.split(",") || [];//配合本门id
-      this.save.rectDeparName == data.rectDeparName.split(",") || [];//配合本门name
-      this.department = data.rectDeparId.split(",") || [];
+      // this.save.rectDeparId = data.rectDeparId.split(",") || [];//配合本门id
+      // this.save.rectDeparName == data.rectDeparName.split(",") || [];//配合本门name
+      if (data.rectDeparId !== null) {
+        this.department = (data.rectDeparId || '').split(",");
+      } else {
+        this.department = [];
+      }
+
+      this.save.rectDeparId = (data.rectDeparId || '').split(",");//配合本门id
+      this.save.rectDeparName = (data.rectDeparName || '').split(",")
+
+
+
 
       this.save = JSON.parse(JSON.stringify(this.save));
+
 
       this.$nextTick(() => {
         this.$refs["save"].clearValidate();
@@ -590,13 +601,15 @@ export default {
   background: #f5f5f9;
   display: flex;
   flex-wrap: wrap;
-  box-shadow: 0px 2px 6px rgba(0, 0, 5, 0.2);
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 .list li {
   width: 100%;
   margin-bottom: 20px;
   box-sizing: border-box;
   font-weight: 700;
+  text-align: left;
+
   color: rgba(0, 0, 0, 0.8);
 }
 .list li:last-child {
