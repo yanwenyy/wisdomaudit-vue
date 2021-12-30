@@ -51,7 +51,8 @@
               border
               :data="tableData"
               highlight-current-row>
-      <el-table-column width="50" :resizable="false"
+      <el-table-column width="50"
+                       :resizable="false"
                        label="序号"
                        type="index" />
       <el-table-column :resizable="false"
@@ -90,7 +91,7 @@
                        algin="left"
                        width="150px">
         <template slot-scope="scope">
-          <span>{{scope.row.correctStatus=='1'?'待提交':scope.row.correctStatus=='2'?'待审核':scope.row.correctStatus=='3'?'领导审核通过':scope.row.correctStatus=='4'?'整改跟进人审核通过':scope.row.correctStatus=='5'?'驳回待提交':'--'}}</span>
+          <span>{{scope.row.correctStatus=='1'?'待提交':scope.row.correctStatus=='2'?'待审核':scope.row.correctStatus=='3'?'领导审批通过':scope.row.correctStatus=='4'?'整改跟进人审批通过':scope.row.correctStatus=='5'?'驳回待提交':'--'}}</span>
         </template>
       </el-table-column>
       <el-table-column :resizable="false"

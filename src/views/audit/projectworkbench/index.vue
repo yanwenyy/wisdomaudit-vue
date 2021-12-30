@@ -165,19 +165,19 @@
                   <span style="font-weight: bold;">报告阶段</span>
                 </template>
                 <el-menu-item-group>
-                  <el-menu-item index="3-1">审计报告<span></span></el-menu-item>
                   <el-menu-item index="3-2">经营指标<span></span></el-menu-item>
+                  <el-menu-item index="3-1">审计报告<span></span></el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
               <!--<el-menu-item v-show="-->
-                  <!--userInfo.userRole == '1' ||-->
-                  <!--userInfo.userRole == '3' ||-->
-                  <!--(userInfo.isLiaison == '1' && userInfo.userRole == '2')-->
-                <!--"-->
-                            <!--index="3-2"-->
-                            <!--class="one-menu_y-title">-->
-                <!--<span class="one-menu_y"-->
-                      <!--style="font-weight: bold;">经营指标</span>-->
+              <!--userInfo.userRole == '1' ||-->
+              <!--userInfo.userRole == '3' ||-->
+              <!--(userInfo.isLiaison == '1' && userInfo.userRole == '2')-->
+              <!--"-->
+              <!--index="3-2"-->
+              <!--class="one-menu_y-title">-->
+              <!--<span class="one-menu_y"-->
+              <!--style="font-weight: bold;">经营指标</span>-->
               <!--</el-menu-item>-->
             </el-menu>
           </div>
@@ -796,7 +796,7 @@ import Auditproblem from "@WISDOMAUDIT/components/workbench/auditproblem/index";
 import Businessindicator from "@WISDOMAUDIT/components/workbench/businessindicator/index"; //经营指标
 import AuditReport from "@WISDOMAUDIT/components/workbench/AuditReport/index"; //审计问题
 import AuditConfirmation from "@WISDOMAUDIT/views/audit/auditconfirmationform/index";
-import { get_userInfo,down_file } from "@SDMOBILE/api/shandong/ls";
+import { get_userInfo, down_file } from "@SDMOBILE/api/shandong/ls";
 import {
   projectList,
   thematicAreas,
@@ -1203,11 +1203,11 @@ export default {
       initProject(data).then((resp) => {
         this.projectInit = resp.data.records;
         if (resp.data.records && resp.data.records != '') {
-          var datas=resp.data.records[0];
+          var datas = resp.data.records[0];
           this.active_project = datas.managementProjectUuid;
           // 更新项目接口
           setprojectInit(this.active_project).then((resp) => {
-            var that=this;
+            var that = this;
             if (resp.code == 0) {
               that.$forceUpdate();
               that.userInfo.userRole = resp.data.peopleRole;
@@ -1697,7 +1697,7 @@ export default {
         this.$message({
           message: '初始化项目完成',
           type: 'success',
-          duration:1500
+          duration: 1500
         });
         this.addDialogVisibleRes();
         this.reset()
@@ -1821,6 +1821,7 @@ export default {
     addTaskSelf () {
       this.addDialogVisible = false;
       this.taskSelfDialogVisible = true;
+      this.taskSelf.taskDescription = '';//清空描述
     },
     // 专题下拉框
     thematicSelect (data) {
@@ -2553,7 +2554,7 @@ export default {
   width: 80%;
   height: 40px;
   vertical-align: text-bottom;
-  font-size: 0.7vw;
+  font-size: 14px;
   color: #000;
   line-height: 40px;
   text-align: center;
@@ -2618,8 +2619,8 @@ export default {
   width: 70%;
   height: 40px;
   vertical-align: text-bottom;
-  font-size: 0.7vw;
-  color: #000;
+  font-size: 14px;
+  color: #fff;
   line-height: 40px;
   text-align: center;
   margin-left: 11%;
@@ -2726,7 +2727,6 @@ export default {
 }
 </style>
 <style scoped>
-
 .addPerson >>> .el-transfer-panel__filter .el-input__inner {
   border-radius: 6px !important;
   padding: 7px !important;

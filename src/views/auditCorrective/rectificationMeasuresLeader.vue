@@ -90,7 +90,7 @@
                        algin="left"
                        width="150px">
         <template slot-scope="scope">
-          <span>{{scope.row.correctStatus=='1'?'待提交':scope.row.correctStatus=='2'?'待审批':scope.row.correctStatus=='3'?'领导审批通过':scope.row.correctStatus=='4'?'整改跟进人审核通过':scope.row.correctStatus=='5'?'驳回待提交':''}}</span>
+          <span>{{scope.row.correctStatus=='1'?'待提交':scope.row.correctStatus=='2'?'待审批':scope.row.correctStatus=='3'?'领导审批通过':scope.row.correctStatus=='4'?'整改跟进人审批通过':scope.row.correctStatus=='5'?'驳回待提交':''}}</span>
         </template>
       </el-table-column>
       <el-table-column :resizable="false"
@@ -180,11 +180,11 @@ export default {
     list_data_start (ifsel) {
       let params = {
         pageNo: this.searchForm.pageNo,
-        pageSize: ifsel=='getProjectList'?1000000:this.searchForm.pageSize,
+        pageSize: ifsel == 'getProjectList' ? 1000000 : this.searchForm.pageSize,
         condition: {
-          correctStatus:  ifsel=='getProjectList'?'':this.searchForm.correctStatus,
-          projectName:  ifsel=='getProjectList'?'':this.searchForm.projectName,
-          problemName:  ifsel=='getProjectList'?'':this.searchForm.problemName,
+          correctStatus: ifsel == 'getProjectList' ? '' : this.searchForm.correctStatus,
+          projectName: ifsel == 'getProjectList' ? '' : this.searchForm.projectName,
+          problemName: ifsel == 'getProjectList' ? '' : this.searchForm.problemName,
         }
       };
       this.loading = true;
@@ -197,12 +197,12 @@ export default {
           total: datas.total
         };
         this.loading = false;
-        var projectList=[];
-        if(ifsel=="getProjectList"){
-          datas.records.forEach((item)=>{
+        var projectList = [];
+        if (ifsel == "getProjectList") {
+          datas.records.forEach((item) => {
             projectList.push(item.projectName)
           });
-          this.projectList=new Set(projectList);
+          this.projectList = new Set(projectList);
         }
       })
     },

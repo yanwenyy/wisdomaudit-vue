@@ -170,9 +170,10 @@
           </el-select>
           <el-input v-model="temp.special"
                     v-if="input_select == false"></el-input>
-          <el-button  v-if="input_select == false" type="primary"
+          <el-button v-if="input_select == false"
+                     type="primary"
                      class="inline-block"
-                      style="position: absolute;top:0;right: -70px"
+                     style="position: absolute;top:0;right: -70px"
                      @click="input_select=!input_select">重选</el-button>
         </el-form-item>
         <!-- <el-form-item> </el-form-item> -->
@@ -340,8 +341,10 @@
         <!--<el-form-item></el-form-item>-->
         <el-popover placement="top-start"
                     max-width="600"
-                    trigger="hover">
-          <div>
+                    ref="popoverSH"
+                    trigger="click">
+          <div v-if="dqProblem.basis"
+               style="border:1px solid red">
             <p v-for="(e, i) in dqProblem.basis"
                :key="'basis' + i">
               {{ e }}
@@ -354,6 +357,7 @@
             <el-select v-model="dqProblem.basis"
                        class="inline-block yj-sel"
                        multiple
+                       @change="aa"
                        @visible-change="toopen"
                        placeholder="请选择"
                        no-data-text="请点击引用审计依据"
@@ -609,6 +613,7 @@ export default {
   filters: {},
   data () {
     return {
+      show: false,
       dqtoken: "",
       dqProblem: {},
       options: [
@@ -782,6 +787,16 @@ export default {
         this.dqProblem.riskAmount = number_only;
       }
     },
+    aa () {
+      this.$refs.popoverSH.doClose()
+      if (this.dqProblem.basis.length == 0) {
+        this.$refs.popoverSH.doClose()
+        console.log(this.dqProblem.basis.length);
+      } else {
+        console.log(this.dqProblem.basis.length);
+
+      }
+    },
     toopen (val) {
       if (val) {
         let _this = this;
@@ -850,6 +865,8 @@ export default {
     openbasis () {
       this.basisdialog = true;
       this.dqbasis.choose = [];
+      this.$refs.popoverSH.doClose()
+
     },
     //获取依据
     getbasis () {
@@ -950,6 +967,7 @@ export default {
         }
       });
     },
+    // 编辑
     openDetail (int) {
       this.ifadd = 1;
       axios({
@@ -968,6 +986,11 @@ export default {
           ? this.dqProblem.basis.split(",")
           : [];
         this.ifupdata = true;
+
+        if (this.dqProblem.basis.length == 0) {
+          this.show = false;
+        }
+
         this.dialogDetailVisible = true;
         this.$nextTick(() => {
           this.$refs["detailForm"].clearValidate();
@@ -1037,6 +1060,7 @@ export default {
     },
     add () {
       this.dialogFormVisible = true;
+
       this.ifadd = 0;
       this.temp.problemFindPeople = this.me;
       this.temp.problemDiscoveryTime = new Date();
@@ -1148,6 +1172,10 @@ export default {
 };
 </script>
 <style scoped>
+.popperclass {
+  display: none;
+}
+
 .min_height {
   min-height: 500px;
 }
@@ -1281,10 +1309,10 @@ export default {
 >>> .upload-yw .el-form-item__content {
   width: 60% !important;
 }
->>> .el-select__tags-text{
+>>> .el-select__tags-text {
   max-width: 400px;
   overflow: hidden;
-  text-overflow:ellipsis;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 </style>

@@ -1217,6 +1217,12 @@
             </el-table-column>
           </el-table>
         </div>
+
+      </div>
+      <div slot="footer">
+        <el-button type="primary"
+                   @click="confirm_problem_dlag =false">确 定
+        </el-button>
       </div>
     </el-dialog>
     <!-- 确认整改清单 end-->

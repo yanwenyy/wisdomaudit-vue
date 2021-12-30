@@ -37,9 +37,7 @@
         <el-table-column prop="problem"
                          show-overflow-tooltip
                          label="问题">
-
           <template slot-scope="scope">
-            <!-- @click="look(scope.row)" -->
             <p @click="details_show(scope.row,scope.$index+1)"
                class="look cursor"
                v-if="scope.row.problem">
@@ -80,7 +78,6 @@
         <el-table-column prop="rectDeparName"
                          width="150"
                          label="整改配合部门">
-
           <template slot-scope="scope">
             <p v-if="scope.row.rectDeparName">
               {{scope.row.rectDeparName}}
@@ -89,14 +86,13 @@
               --
             </p>
           </template>
-
         </el-table-column>
-        <el-table-column prop="planContent"
-                         show-overflow-tooltip
-                         label="整改计划">
 
+        <el-table-column prop="planContent"
+                         width="150"
+                         label="整改计划">
           <template slot-scope="scope">
-            <p v-if="scope.row.planContent">
+            <p v-if="scope.row.rectDeparName">
               {{scope.row.planContent}}
             </p>
             <p v-else>
@@ -105,7 +101,6 @@
           </template>
         </el-table-column>
         <el-table-column prop="limitTime"
-                         show-overflow-tooltip
                          label="预计整改完成时限">
 
           <template slot-scope="scope">
@@ -118,7 +113,6 @@
           </template>
         </el-table-column>
         <el-table-column prop="remark"
-                         show-overflow-tooltip
                          label="备注">
           <template slot-scope="scope">
             <p v-if="scope.row.remark">
@@ -363,7 +357,14 @@ export default {
       let t = new Date(date);
       // return fmtDate(t, 'yyyy-MM-dd hh:mm:ss');
       return fmtDate(t, 'yyyy-MM-dd ');
-    }
+    },
+    ellipsis (value, limit) {
+      if (!value) return ''
+      if (value.length > limit) {
+        return value.slice(0, limit) + '...'
+      }
+      return value
+    },
   },
   methods: {
     go_back () {

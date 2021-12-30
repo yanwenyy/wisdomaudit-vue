@@ -805,7 +805,7 @@ export default {
   width: 80%;
   height: 50px;
   vertical-align: text-bottom;
-  font-size: 0.7vw;
+  font-size: 14px;
   color: #000;
   line-height: 50px;
   text-align: center;
@@ -870,8 +870,8 @@ export default {
   width: 70%;
   height: 50px;
   vertical-align: text-bottom;
-  font-size: 0.7vw;
-  color: #000;
+  font-size: 14px;
+  color: #fff;
   line-height: 50px;
   text-align: right;
   margin-left: 8%;
