@@ -2800,6 +2800,7 @@ export default {
 }
 .projectInit >>> .el-row div p {
   margin-top: 10px;
+  font-size: 14px;
 }
 .initializeProject ul {
   min-height: 70px;
