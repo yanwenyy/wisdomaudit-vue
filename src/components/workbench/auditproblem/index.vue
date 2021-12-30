@@ -185,7 +185,7 @@
                      class="inline-block yj-sel"
                      multiple
                      @visible-change="toopen"
-                     placeholder="请选择"
+                     placeholder="请选择依据"
                      no-data-text="请点击引用审计依据">
           </el-select>
           <el-button type="primary"
@@ -252,7 +252,7 @@
                       prop="auditTaskUuid">
           <el-select v-model="temp.auditTaskUuid"
                      multiple
-                     placeholder="请选择">
+                     placeholder="请选择关联任务">
             <el-option v-for="item in auditTasklList"
                        :key="item.auditTaskUuid"
                        :label="item.taskName"
@@ -359,7 +359,7 @@
                        multiple
                        @change="aa"
                        @visible-change="toopen"
-                       placeholder="请选择"
+                       placeholder="请选择依据"
                        no-data-text="请点击引用审计依据"
                        :disabled="ifadd != 2 ? false : true">
             </el-select>
@@ -431,7 +431,7 @@
           <el-select disabled
                      v-model="dqProblem.auditTaskUuid"
                      multiple
-                     placeholder="请选择">
+                     placeholder="请选择关联任务">
             <el-option v-for="item in auditTasklList"
                        :key="item.auditTaskUuid"
                        :label="item.taskName"
