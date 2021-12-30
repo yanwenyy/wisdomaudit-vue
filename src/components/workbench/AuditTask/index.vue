@@ -918,20 +918,6 @@
                       :disabled="disabled"></el-input>
           </el-form-item>
 
-          <!-- 领域 -->
-          <el-form-item prop="belongField"
-                        label="领域："
-                        style="margin-bottom:30px!important">
-            <el-select v-model="save_zj_query.belongField"
-                       @change="changeHeader_zj_ly">
-              <el-option v-for="item in problems_slect"
-                         :key="item.value"
-                         :label="item.label"
-                         :value="item.label">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
           <!-- 专题 -->
           <el-form-item label="专题："
                         prop="belongSpcial"
@@ -947,6 +933,20 @@
             </el-select>
             <el-input v-model="save_zj_query.belongSpcial"
                       v-if="input_select==false"></el-input>
+          </el-form-item>
+          
+          <!-- 领域 -->
+          <el-form-item prop="belongField"
+                        label="领域："
+                        style="margin-bottom:30px!important">
+            <el-select v-model="save_zj_query.belongField"
+                       @change="changeHeader_zj_ly">
+              <el-option v-for="item in problems_slect"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.label">
+              </el-option>
+            </el-select>
           </el-form-item>
 
           <!-- 任务描述 -->
