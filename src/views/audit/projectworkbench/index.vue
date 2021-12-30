@@ -1466,6 +1466,7 @@ export default {
 
     //设为接口人事件
     isLiaison_Btn (row, list) {
+      this. arrRightValue.splice(this. arrRightValue.indexOf(row),1);
       let leader = {};
       this.peopleSelection.forEach((a) => {
         if (a.peopleRole == 1) {
