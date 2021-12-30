@@ -337,9 +337,14 @@
           <el-input v-model="dqProblem.special"
                     v-if="input_selecte == false"
                     :disabled="ifadd != 2 ? false : true"></el-input>
+                    <el-button v-if="input_selecte == false"
+                    type="primary"
+                    class="inline-block"
+                    style="position: absolute;top:0;right: -70px"
+                    @click="input_selecte=!input_selecte">重选</el-button>
         </el-form-item>
         <!--<el-form-item></el-form-item>-->
-        <el-popover placement="top-start"
+        <!-- <el-popover placement="top-start"
                     max-width="600"
                     ref="popoverSH"
                     trigger="click">
@@ -349,15 +354,14 @@
                :key="'basis' + i">
               {{ e }}
             </p>
-          </div>
+          </div> -->
           <el-form-item label="依据："
                         prop="basis"
                         class="itemOne"
-                        slot="reference">
+                        >
             <el-select v-model="dqProblem.basis"
                        class="inline-block yj-sel"
                        multiple
-                       @change="aa"
                        @visible-change="toopen"
                        placeholder="请选择依据"
                        no-data-text="请点击引用审计依据"
@@ -370,7 +374,7 @@
                        @click="openbasis()">引用审计依据</el-button>
           </el-form-item>
 
-        </el-popover>
+        <!-- </el-popover> -->
 
         <el-form-item label="描述："
                       style="margin-bottom:20px!important;"
@@ -740,6 +744,7 @@ export default {
         this.dqProblem = {};
       }
       this.input_select = true; //专题 恢复默认
+      this.input_selecte = true; //专题 恢复默认
     },
     change_zt (val) {
       this.temp.special = val;
@@ -785,16 +790,6 @@ export default {
         this.temp.riskAmount = number_only;
       } else {
         this.dqProblem.riskAmount = number_only;
-      }
-    },
-    aa () {
-      this.$refs.popoverSH.doClose()
-      if (this.dqProblem.basis.length == 0) {
-        this.$refs.popoverSH.doClose()
-        console.log(this.dqProblem.basis.length);
-      } else {
-        console.log(this.dqProblem.basis.length);
-
       }
     },
     toopen (val) {
@@ -865,8 +860,8 @@ export default {
     openbasis () {
       this.basisdialog = true;
       this.dqbasis.choose = [];
-      this.$refs.popoverSH.doClose()
-
+      this.dqbasis.info = "";
+      this.dqbasis.val = "";
     },
     //获取依据
     getbasis () {
