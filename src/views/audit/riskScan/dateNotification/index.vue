@@ -78,11 +78,31 @@ export default {
       value: "",
 
       formdates: "",
+      code:21,
     };
   },
 
   created() {
-    this.gettapylist();
+  if(this.$route.path){
+    if (this.$route.path=='/dataindividual') {
+      this.code=21
+      
+    }else if (this.$route.path=='/datagovernment') {
+       this.code=22
+      
+    }else if (this.$route.path=='/continuousprocurement') {
+       this.code=23
+      
+    }else if (this.$route.path=='/dataauditnetwork') {
+       this.code=24
+      
+    }else if (this.$route.path=='/dateenterprisefinance') {
+       this.code=25
+      
+    }
+     this.gettapylist();
+  }
+   
   },
 
   mounted() {},
@@ -106,7 +126,7 @@ export default {
           getdataAuditApi(result.data.token).then((res)=>{
 
            if (res.status== 'success') {
-             getTypes(`area=${this.$route.meta.id}`).then((rem) => {
+             getTypes(`area=${this.code}`).then((rem) => {
               this.options = rem.data;
               this.value = rem.data[0].type;
               this.gettablelist(this.value);
@@ -119,7 +139,7 @@ export default {
 
         }
       }).catch(err => {
-          let rem = getTypes(`area=${this.$route.meta.id}`);
+          let rem = getTypes(`area=${this.code}`);
           this.options = rem.data;
           this.value = rem.data[0].type;
           this.gettablelist(this.value);
