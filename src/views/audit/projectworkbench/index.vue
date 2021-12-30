@@ -576,7 +576,7 @@
           </el-table-column>
           <el-table-column prop="modelName"
                            label="模型名称"> </el-table-column>
-          <el-table-column prop="address"
+          <el-table-column prop="logicalDescription"
                            label="逻辑说明"
                            width="300">
           </el-table-column>
