@@ -665,7 +665,7 @@ export default {
             path: "/auditCorrective/rectificationMeasuresLeader",
             query: { projectId: projectId },
           });
-        } else if (obj.toTaskType == "整改措施待修改") {
+        } else if (obj.toTaskType == "整改措施待修改" || obj.toTaskType == "整改措施待修改(整改跟进人)") {
           this.$router.push({
             path: "/auditCorrective/rectificationMeasuresInterface",
             query: { projectId: projectId },
