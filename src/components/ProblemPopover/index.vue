@@ -86,7 +86,7 @@
             <el-form-item label="是否重要"
                           prop="isImportant">
               <el-select v-model="temp.isImportant"
-                         :placeholder="disableUpdate === true ? '' : '请选择'"
+                         :placeholder="disableUpdate === true ? '' : '请选择是否重要'"
                          :disabled="disableUpdate"
                          style="width: 100%">
                 <el-option v-for="item in isImportantList"
@@ -102,7 +102,7 @@
             <el-form-item label="审计人员"
                           prop="auditPersonUuid">
               <el-select v-model="temp.auditPersonUuid"
-                         :placeholder="disableUpdate === true ? '' : '请选择'"
+                         :placeholder="disableUpdate === true ? '' : '请选择审计人员'"
                          :disabled="disableUpdate"
                          style="width: 100%">
                 <el-option v-for="item in personQueryList"

@@ -4,7 +4,7 @@
       <el-row>
         <el-col :span="11">
           <el-form-item label="领域：">
-            <el-select v-model="form.domain" placeholder="请选择">
+            <el-select v-model="form.domain" placeholder="请选择领域">
               <el-option v-for="item in domains" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
@@ -46,7 +46,7 @@
       <el-row>
         <el-col :span="6">
           <el-form-item label="发现时间：">
-            <el-select v-model="form.time" placeholder="请选择">
+            <el-select v-model="form.time" placeholder="请选择发现时间">
               <el-option v-for="item in times" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
@@ -54,7 +54,7 @@
         </el-col>
         <el-col :span="6" :offset="2">
           <el-form-item label="关联项目：">
-            <el-select v-model="form.item" placeholder="请选择">
+            <el-select v-model="form.item" placeholder="请选择关联项目">
               <el-option v-for="item in items" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>

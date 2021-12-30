@@ -102,21 +102,21 @@
                       label="资料名称:">
           <el-input :disabled="ifLook"
                     v-model="formState.basyName"
-                    placeholder="请输入"></el-input>
+                    placeholder="请输入资料名称"></el-input>
         </el-form-item>
         <el-form-item class="itemTwo"
                       prop="basySymbol"
                       label="文号:">
           <el-input :disabled="ifLook"
                     v-model="formState.basySymbol"
-                    placeholder="请输入"></el-input>
+                    placeholder="请输入文号"></el-input>
         </el-form-item>
         <el-form-item class="itemTwo"
                       prop="keyClauses"
                       label="重点条款:">
           <el-input :disabled="ifLook"
                     v-model="formState.keyClauses"
-                    placeholder="请输入"></el-input>
+                    placeholder="请输入重点条款"></el-input>
         </el-form-item>
         <el-form-item class="itemTwo"
                       prop="issueDate"
@@ -124,7 +124,7 @@
           <el-date-picker :disabled="ifLook"
                           v-model="formState.issueDate"
                           type="date"
-                          placeholder="请选择"
+                          placeholder="请选择发文日期"
                           format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
@@ -134,7 +134,7 @@
                       label="发文部门:">
           <el-input :disabled="ifLook"
                     v-model="formState.publishDepartment"
-                    placeholder="请输入"></el-input>
+                    placeholder="请输入发文部门"></el-input>
         </el-form-item>
         <el-form-item class="itemTwo"
                       style="visibility: hidden;"
@@ -143,7 +143,7 @@
           <el-date-picker :disabled="ifLook"
                           v-model="formState.issueDate"
                           type="date"
-                          placeholder="请选择"
+                          placeholder="请选择发文日期"
                           format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
