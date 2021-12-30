@@ -443,7 +443,7 @@ export default {
       if (index == 0) {
         this.$set(this.details_list, 'style_top', '90px')//核实意见
       } else {
-        let top_px = (this.style_px * index + 80) + 'px'
+        let top_px = (this.style_px * index + 8) + 'px'
         this.$set(this.details_list, 'style_top', top_px)//核实意见
       }
     },

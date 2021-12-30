@@ -219,7 +219,6 @@
     <!-- 关联问题 -->
     <el-dialog width="60%"
                center
-               class="dlag"
                @close='closeDialog'
                popper-class="status_data_dlag_verify"
                :visible.sync="dlag_Correlation_wt"
@@ -235,99 +234,97 @@
                style=" background: rgb(12, 135, 214) !important;"
                @click="search_list(2)">
             <i class="el-icon-search"
-               style="color: white;   "></i>
+               style="color: white;"></i>
           </div>
         </div>
-        <!-- 表单 -->
-        <el-table :data="tableData2_list"
-                  ref="multipleTable"
-                  tooltip-effect="dark"
-                  v-loading="loading"
-                  style="width: 100%"
-                  :header-cell-style="{'background-color': '#F4FAFF',}"
-                  @selection-change="handleSelectionChange_wt">
-          >
-          <el-table-column type="selection"
-                           width="55">
-          </el-table-column>
-          <el-table-column prop="field"
-                           show-overflow-tooltip
-                           label="领域">
-            <template slot-scope="scope">
-              <p v-if="scope.row.field">{{scope.row.field}}</p>
-              <p v-else>--</p>
-            </template>
-          </el-table-column>
+        <div class="dlag">
+          <!-- 表单 -->
+          <el-table :data="tableData2_list"
+                    ref="multipleTable"
+                    tooltip-effect="dark"
+                    v-loading="loading"
+                    style="width: 100%"
+                    :header-cell-style="{'background-color': '#F4FAFF',}"
+                    @selection-change="handleSelectionChange_wt">
+            <el-table-column type="selection"
+                             width="55">
+            </el-table-column>
+            <el-table-column prop="field"
+                             show-overflow-tooltip
+                             label="领域">
+              <template slot-scope="scope">
+                <p v-if="scope.row.field">{{scope.row.field}}</p>
+                <p v-else>--</p>
+              </template>
+            </el-table-column>
 
-          <el-table-column prop="problem"
-                           show-overflow-tooltip
-                           label="问题">
-            <template slot-scope="scope">
-              <p v-if="scope.row.problem"
-                 @click="details_show(scope.row,scope.$index+1)"
-                 style="cursor: pointer;color:rgb(68, 163, 223);">{{scope.row.problem| ellipsis(10) }}</p>
-              <p v-else>--</p>
-            </template>
-          </el-table-column>
-          <!-- 
-          <el-table-column prop="basis"
-                           show-overflow-tooltip
-                           label="依据">
-            <template slot-scope="scope">
-              <p v-if="scope.row.basis">{{scope.row.basis}}</p>
-              <p v-else>--</p>
-            </template>
-          </el-table-column> -->
+            <el-table-column prop="problem"
+                             show-overflow-tooltip
+                             label="问题">
+              <template slot-scope="scope">
+                <p v-if="scope.row.problem"
+                   @click="details_show(scope.row,scope.$index+1)"
+                   style="cursor: pointer;color:rgb(68, 163, 223);">{{scope.row.problem| ellipsis(10) }}</p>
+                <p v-else>--</p>
+              </template>
+            </el-table-column>
+            <el-table-column prop="discoveryTime"
+                             show-overflow-tooltip
+                             label="发现日期">
+              <template slot-scope="scope">
+                <p v-if="scope.row.discoveryTime">{{scope.row.discoveryTime}}</p>
+                <p v-else>--</p>
+              </template>
 
-          <!-- <el-table-column prop="describe"
-                           show-overflow-tooltip
-                           label="描述">
-            <template slot-scope="scope">
-              <p v-if="scope.row.describe">{{scope.row.describe}}</p>
-              <p v-else>--</p>
-            </template>
-          </el-table-column> -->
-          <el-table-column prop="discoveryTime"
-                           show-overflow-tooltip
-                           label="发现日期">
-            <template slot-scope="scope">
-              <p v-if="scope.row.discoveryTime">{{scope.row.discoveryTime}}</p>
-              <p v-else>--</p>
-            </template>
+            </el-table-column>
+            <el-table-column prop="riskAmount"
+                             show-overflow-tooltip
+                             align="center"
+                             label="风险金额（万元）">
 
-          </el-table-column>
-          <el-table-column prop="riskAmount"
-                           show-overflow-tooltip
-                           align="center"
-                           label="风险金额（万元）">
+              <template slot-scope="scope">
+                <p v-if="scope.row.riskAmount">
+                  {{ parseFloat(scope.row.riskAmount.toString()) }}</p>
+                <p v-else>--</p>
+              </template>
+            </el-table-column>
+            <el-table-column prop="problemFindPeople"
+                             show-overflow-tooltip
+                             label="发现人">
+              <template slot-scope="scope">
+                <p v-if="scope.row.problemFindPeople">{{scope.row.problemFindPeople}}</p>
+                <p v-else>--</p>
+              </template>
+            </el-table-column>
+          </el-table>
+          <div class="mose"
+               @click="close_mose"
+               v-if="details == true"></div>
 
-            <template slot-scope="scope">
-              <p v-if="scope.row.riskAmount">
-                {{ parseFloat(scope.row.riskAmount.toString()) }}</p>
-              <p v-else>--</p>
-            </template>
-          </el-table-column>
-          <!-- <el-table-column prop="managementAdvice"
-                           show-overflow-tooltip
-                           label="管理建议">
+          <!-- 详情 -->
+          <div class="problem_details_conter"
+               :style="{'top':details_list.style_top}"
+               v-if="details == true">
+            <ul class="list">
+              <li>
+                问题：{{details_list.problem}}
+              </li>
+              <li>
+                依据：{{details_list.basis}}
+              </li>
+              <li>
+                描述：{{details_list.describe}}
+              </li>
+              <li>
+                管理建议：{{details_list.managementAdvice}}
+              </li>
 
-            <template slot-scope="scope">
-              <p v-if="scope.row.managementAdvice">{{scope.row.managementAdvice}}</p>
-              <p v-else>--</p>
-            </template>
-          </el-table-column> -->
-          <el-table-column prop="problemFindPeople"
-                           show-overflow-tooltip
-                           label="发现人">
-            <template slot-scope="scope">
-              <p v-if="scope.row.problemFindPeople">{{scope.row.problemFindPeople}}</p>
-              <p v-else>--</p>
-            </template>
-          </el-table-column>
-        </el-table>
-        <div class="mose"
-             @click="close_mose"
-             v-if="details == true"></div>
+            </ul>
+          </div>
+          <!-- 详情 end-->
+
+        </div>
+
         <span slot="footer"
               class="foot">
 
@@ -339,28 +336,6 @@
                      @click="query_save_wt()">确定</el-button>
         </span>
       </div>
-
-      <!-- 详情 -->
-      <div class="problem_details_conter"
-           :style="{'top':details_list.style_top}"
-           v-if="details == true">
-        <ul class="list">
-          <li>
-            问题：{{details_list.problem}}
-          </li>
-          <li>
-            依据：{{details_list.basis}}
-          </li>
-          <li>
-            描述：{{details_list.describe}}
-          </li>
-          <li>
-            管理建议：{{details_list.managementAdvice}}
-          </li>
-
-        </ul>
-      </div>
-      <!-- 详情 end-->
 
     </el-dialog>
 
@@ -472,9 +447,9 @@ export default {
       this.details = true
       this.details_list = data;
       if (index == 0) {
-        this.$set(this.details_list, 'style_top', '243px')//问题
+        this.$set(this.details_list, 'style_top', '223px')//问题
       } else {
-        let top_px = (this.style_px * index + 210) + 'px'
+        let top_px = (this.style_px * index + 180) + 'px'
         this.$set(this.details_list, 'style_top', top_px)//问题
       }
     },
