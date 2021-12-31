@@ -41,11 +41,12 @@
         <el-table-column prop="historyAuditFindDescribe"
                          show-overflow-tooltip
                          width="200px"
+                         :show-overflow-tooltip="true"
                          label="标题">
           <template slot-scope="scope">
             <div v-if="scope.row.historyAuditFindDescribe"
                  class="over">
-              {{ scope.row.title | ellipsis(18) }}
+              {{ scope.row.title}}
             </div>
             <div v-else>--</div>
           </template>
@@ -66,7 +67,7 @@
         </el-table-column>
         <!-- 被审计单位 -->
         <el-table-column prop="auditedEntityName"
-                         show-overflow-tooltip
+                         :show-overflow-tooltip="true"
                          label="被审计单位">
           <template slot-scope="scope">
             <div v-if="scope.row.auditedEntityName">
