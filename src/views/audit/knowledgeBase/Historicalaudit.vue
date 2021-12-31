@@ -1090,6 +1090,10 @@ export default {
 .sjyjForm .el-tag.el-tag--info {
   width: 250px !important;
 }
+.sjzl >>> .el-table .cell,
+.sjzl >>> .el-table th div {
+  padding-right: 0 !important;
+}
 .conter >>> .el-tooltip div {
   display: block;
   width: auto;

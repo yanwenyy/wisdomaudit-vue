@@ -1119,7 +1119,10 @@ export default {
 .dlag_up >>> .el-dialog {
   min-width: 500px;
 }
-
+.feeback >>> .el-table .cell,
+.feeback >>> .el-table th div {
+  padding-right: 0 !important;
+}
 .dialog_conter >>> .el-tooltip p {
   display: block;
   width: auto;
