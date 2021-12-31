@@ -92,7 +92,7 @@
                          width="150"
                          label="整改计划">
           <template slot-scope="scope">
-            <p v-if="scope.row.rectDeparName">
+            <p v-if="scope.row.planContent">
               {{scope.row.planContent}}
             </p>
             <p v-else>
