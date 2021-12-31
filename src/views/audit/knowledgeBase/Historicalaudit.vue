@@ -39,7 +39,6 @@
         </el-table-column>
         <!-- 历史审计标题 -->
         <el-table-column prop="historyAuditFindDescribe"
-                         show-overflow-tooltip
                          width="200px"
                          :show-overflow-tooltip="true"
                          label="标题">
