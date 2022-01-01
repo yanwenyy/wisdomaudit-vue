@@ -30,33 +30,6 @@
   </el-form-item>
 
 </el-form>
-
-        <!-- <el-col :span="4">
-          <p>专题</p>
-          <el-select
-            v-model="value"
-            placeholder="请选择"
-            @change="ChooseThetype"
-          >
-            <el-option
-              v-for="item in options"
-              :key="item.index"
-              :label="item.typename"
-              :value="item.type"
-            >
-            </el-option>
-          </el-select>
-        </el-col>
-        <el-col :span="3">
-          <el-date-picker
-            v-model="value2"
-            type="month"
-            value-format="yyyyMM"
-            placeholder="选择月"
-            @change="changesj"
-          >
-          </el-date-picker>
-        </el-col> -->
       </el-row>
 
       <el-row>
@@ -116,6 +89,22 @@ export default {
   },
 
   created() {
+    
+ let arr={
+   '/personal':1,
+   '/enterprise':2,
+   '/dateenterprise':3,
+   '/datenetwork':4,
+   '/dateFinance':5,
+   '/dataindividual':21,
+   '/datagovernment':22,
+   '/continuousprocurement':23,
+   '/dataauditnetwork':24,
+   '/dateenterprisefinance':25
+ }
+ 
+
+ this.code=arr[this.$route.path]
    this.gettapylist();
   },
 
@@ -142,7 +131,7 @@ export default {
           getdataAuditApi(result.data.token).then((res)=>{
 
            if (res.status== 'success') {
-             getTypes("area=1").then((rem) => {
+             getTypes(`area=${this.code}`).then((rem) => {
               this.options = rem.data;
               this.value = rem.data[0].type;
               this.gettablelist(this.value);
@@ -153,14 +142,9 @@ export default {
           });
 
 
-        } else {
-          let rem = getTypes("area=1");
-          this.options = rem.data;
-          this.value = rem.data[0].type;
-          this.gettablelist(this.value);
-        }
+        } 
       }).catch(err => {
-          let rem = getTypes("area=1");
+          let rem = getTypes(`area=${this.code}`);
           this.options = rem.data;
           this.value = rem.data[0].type;
           this.gettablelist(this.value);
