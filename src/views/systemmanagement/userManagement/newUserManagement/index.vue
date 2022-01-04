@@ -36,7 +36,7 @@
         <el-input class="m-input-normal" placeholder="请输入" v-model="form.email"></el-input>
       </el-form-item>
       <el-form-item class="u-margin-top-20" label-width="108px" label="角色名称：" prop="roleName">
-        <el-select v-model="form.roleName" class="m-select-normal" multiple placeholder="请选择" @change='getRoleName'>
+        <el-select v-model="form.roleName" class="m-select-normal" multiple placeholder="请选择角色" @change='getRoleName'>
           <el-option
               v-for="item in roleNameList"
               :key="item.id"

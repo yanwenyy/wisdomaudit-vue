@@ -92,7 +92,7 @@
         <el-form-item label="指标类型:"
                       prop="indexType">
           <el-select v-model="temp.indexType"
-                     placeholder="请选择"
+                     placeholder="请选择指标类型"
                      @change="
                       getName(
                         temp.indexType,
@@ -115,7 +115,7 @@
         <el-form-item label="单位:"
                       prop="numericSymbol">
           <el-select v-model="temp.numericSymbol"
-                     placeholder="请选择"
+                     placeholder="请选择单位"
                      @change="
                       getName(
                         temp.numericSymbol,
@@ -133,7 +133,7 @@
         <el-form-item label="资料提供部门:"
                       prop="dataProvidingDepartment">
           <el-select v-model="temp.dataProvidingDepartment"
-                     placeholder="请选择"
+                     placeholder="请选择资料提供部门"
                      @change="
                       getName2(
                         temp.dataProvidingDepartment	,

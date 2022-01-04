@@ -171,7 +171,7 @@
                 <el-select v-model="save_project_prople.setting_people_key"
                            @change="change_peoplr"
                            filterable
-                           placeholder="请选择">
+                           placeholder="请选择整改跟进人">
                   <el-option v-for="item in setting_people"
                              :key="item.id"
                              :label="item.realName"

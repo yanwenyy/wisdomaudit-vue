@@ -115,7 +115,7 @@
                           :label-width="formLabelWidth">
               <el-date-picker v-model="value1"
                               type="date"
-                              placeholder="请选择">
+                              placeholder="请选择发文日期">
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -125,7 +125,7 @@
             <el-form-item label="文本类型"
                           :label-width="formLabelWidth">
               <el-select v-model="value"
-                         placeholder="请选择">
+                         placeholder="请选择文本类型">
                 <el-option v-for="item in options"
                            :key="item.value"
                            :label="item.label"

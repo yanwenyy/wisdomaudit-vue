@@ -106,7 +106,7 @@
                           required
                           :label-width="formLabelWidth">
               <el-select v-model="value"
-                         placeholder="请选择">
+                         placeholder="请选择指标单位">
                 <el-option v-for="item in options"
                            :key="item.value"
                            :label="item.label"
@@ -121,7 +121,7 @@
                           required
                           :label-width="formLabelWidth">
               <el-select v-model="department"
-                         placeholder="请选择">
+                         placeholder="请选择资料提供部门">
                 <el-option v-for="item in departments"
                            :key="item.value"
                            :label="item.label"
@@ -137,7 +137,7 @@
                           required
                           :label-width="formLabelWidth">
               <el-select v-model="contacts"
-                         placeholder="请选择">
+                         placeholder="请选择联系人员">
                 <el-option v-for="item in contactss"
                            :key="item.value"
                            :label="item.label"

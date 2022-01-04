@@ -179,7 +179,7 @@
           <el-select :disabled="ifLook"
                      @change="select_Company"
                      v-model="formDetail.auditDepart"
-                     placeholder="请选择"
+                     placeholder="请选择二级部门"
                      clearable>
             <el-option v-for="(item,index) in Company_data_list"
                        :label="item.orgName"
@@ -216,7 +216,7 @@
                       label="审计人员:">
           <el-select :disabled="ifLook"
                      v-model="formDetail.auditorsName"
-                     placeholder="请选择"
+                     placeholder="请选择审计人员"
                      clearable>
             <el-option v-for="(item,index) in sjryList"
                        :label="item.peopleName"
@@ -233,7 +233,7 @@
                       label="复核人:">
           <el-select :disabled="ifLook"
                      v-model="formDetail.reviewerName	"
-                     placeholder="请选择"
+                     placeholder="请选择复核人"
                      clearable>
             <el-option v-for="(item,index) in FhrList"
                        :label="item.realName"

@@ -8,7 +8,7 @@
                  @keyup.enter.native="list_data_start()">
           <el-form-item label="状态:">
             <el-select v-model="searchForm.correctStatus"
-                       placeholder="请选择"
+                       placeholder="请选择状态"
                        clearable>
               <el-option label="待提交"
                          value="1"></el-option>
@@ -24,7 +24,7 @@
           </el-form-item>
           <el-form-item label="项目:">
             <el-select v-model="searchForm.projectName	"
-                       placeholder="请选择"
+                       placeholder="请选择项目"
                        @change="list_data_start"
                        clearable>
               <el-option v-for="(item,index) in projectList"
