@@ -337,11 +337,11 @@
           <el-input v-model="dqProblem.special"
                     v-if="input_selecte == false"
                     :disabled="ifadd != 2 ? false : true"></el-input>
-                    <el-button v-if="input_selecte == false"
-                    type="primary"
-                    class="inline-block"
-                    style="position: absolute;top:0;right: -70px"
-                    @click="input_selecte=!input_selecte">重选</el-button>
+          <el-button v-if="input_selecte == false"
+                     type="primary"
+                     class="inline-block"
+                     style="position: absolute;top:0;right: -70px"
+                     @click="input_selecte=!input_selecte">重选</el-button>
         </el-form-item>
         <!--<el-form-item></el-form-item>-->
         <!-- <el-popover placement="top-start"
@@ -355,24 +355,23 @@
               {{ e }}
             </p>
           </div> -->
-          <el-form-item label="依据："
-                        prop="basis"
-                        class="itemOne"
-                        >
-            <el-select v-model="dqProblem.basis"
-                       class="inline-block yj-sel"
-                       multiple
-                       @visible-change="toopen"
-                       placeholder="请选择依据"
-                       no-data-text="请点击引用审计依据"
-                       :disabled="ifadd != 2 ? false : true">
-            </el-select>
-            <el-button v-if="ifadd != 2 ? true : false"
-                       type="primary"
-                       ref="basisbtn0"
-                       class="citebtn inline-block"
-                       @click="openbasis()">引用审计依据</el-button>
-          </el-form-item>
+        <el-form-item label="依据："
+                      prop="basis"
+                      class="itemOne">
+          <el-select v-model="dqProblem.basis"
+                     class="inline-block yj-sel"
+                     multiple
+                     @visible-change="toopen"
+                     placeholder="请选择依据"
+                     no-data-text="请点击引用审计依据"
+                     :disabled="ifadd != 2 ? false : true">
+          </el-select>
+          <el-button v-if="ifadd != 2 ? true : false"
+                     type="primary"
+                     ref="basisbtn0"
+                     class="citebtn inline-block"
+                     @click="openbasis()">引用审计依据</el-button>
+        </el-form-item>
 
         <!-- </el-popover> -->
 

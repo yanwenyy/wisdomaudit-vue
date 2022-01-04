@@ -1,7 +1,7 @@
 <template>
   <div class="sjzl">
     <!-- tab 切换 -->
- <Vault :vaultV="vaultV"
+    <Vault :vaultV="vaultV"
            :sceneId="sceneId"
            :approvers="approvers"
            :maxTime="maxTime"
@@ -10,7 +10,7 @@
            :appSessionId="appSessionId"
            @changevault="changevault"
            @vdownload="vdownload"></Vault>
-           
+
     <div>
       <div class="projectTab">
         <el-table @row-dblclick="getLook"
@@ -20,6 +20,7 @@
                   @select="Selects">
           <el-table-column algin="left"
                            type="index"
+                           width="70"
                            label="编号"> </el-table-column>
           <el-table-column align="left"
                            prop="basyName"
@@ -213,7 +214,7 @@ export default {
       dqtime: "",//当前时间
       account: "",//返回的账户
       appSessionId: "",//应用sessionid
-      downloaobj:{},//暂存的下载目标
+      downloaobj: {},//暂存的下载目标
 
       headers: '',
       isDisable: false,
@@ -280,8 +281,8 @@ export default {
   methods: {
     //通过认证后的方法
     vdownload () {
-      this.downFile(this.downloaobj.attachment_uuid,this.downloaobj.file_name)
-     },
+      this.downFile(this.downloaobj.attachment_uuid, this.downloaobj.file_name)
+    },
     //控制认证弹窗
     changevault (val) {
       this.vaultV = val;

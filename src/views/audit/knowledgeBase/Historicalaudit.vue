@@ -35,7 +35,7 @@
                 style="width: 100%">
         <el-table-column type="index"
                          label="序号"
-                         width="50">
+                         width="70">
         </el-table-column>
         <!-- 历史审计标题 -->
         <el-table-column prop="historyAuditFindDescribe"
