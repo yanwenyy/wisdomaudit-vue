@@ -30,7 +30,6 @@
   </el-form-item>
 
 </el-form>
-
       </el-row>
 
       <el-row>
@@ -42,16 +41,24 @@
                 size="medium"
                 v-for="item in tablelist"
                 :key="item.tab"
-                >{{ item.tabName }}</el-radio-button
+                >
+                 <el-tooltip class="item" effect="dark" :content="item.tabName" placement="top-start">
+                <span>{{ item.tabName }}</span>
+                </el-tooltip>
+                </el-radio-button
               >
             </el-radio-group>
           </div>
         </el-col>
       </el-row>
 
-       <div width="100%"  height="1000px">
+
+    <div width="100%"  height="1000px">
      <iframe :src="formdates" frameborder="0" width="100%"  height="1000px" ></iframe>
     </div>
+
+
+
     </div>
   </div>
 </template>
@@ -78,34 +85,32 @@ export default {
       value: "",
 
       formdates: "",
-      code:21,
     };
   },
 
   created() {
-  if(this.$route.path){
-    if (this.$route.path=='/dataindividual') {
-      this.code=21
-      
-    }else if (this.$route.path=='/datagovernment') {
-       this.code=22
-      
-    }else if (this.$route.path=='/continuousprocurement') {
-       this.code=23
-      
-    }else if (this.$route.path=='/dataauditnetwork') {
-       this.code=24
-      
-    }else if (this.$route.path=='/dateenterprisefinance') {
-       this.code=25
-      
-    }
-     this.gettapylist();
-  }
-   
+    
+ let arr={
+   '/personal':1,
+   '/enterprise':2,
+   '/dateenterprise':3,
+   '/datenetwork':4,
+   '/dateFinance':5,
+   '/dataindividual':21,
+   '/datagovernment':22,
+   '/continuousprocurement':23,
+   '/dataauditnetwork':24,
+   '/dateenterprisefinance':25
+ }
+ 
+
+ this.code=arr[this.$route.path]
+   this.gettapylist();
   },
 
-  mounted() {},
+  mounted() {
+ 
+  },
 
   methods: {
     changemx(val) {
@@ -137,7 +142,7 @@ export default {
           });
 
 
-        }
+        } 
       }).catch(err => {
           let rem = getTypes(`area=${this.code}`);
           this.options = rem.data;
@@ -192,4 +197,17 @@ export default {
     z-index: 9;
   }
 }
+.el-radio-button{
+  width: 100px;
+  margin-top: 10px;
+}
+.el-radio-button::v-deep    .el-radio-button__inner{
+  width: 100px;
+  white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+}
+
 </style>

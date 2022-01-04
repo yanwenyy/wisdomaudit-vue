@@ -92,7 +92,7 @@
                          width="150"
                          label="整改计划">
           <template slot-scope="scope">
-            <p v-if="scope.row.rectDeparName">
+            <p v-if="scope.row.planContent">
               {{scope.row.planContent}}
             </p>
             <p v-else>
@@ -200,6 +200,7 @@
 
     <!-- 编辑 -->
     <el-dialog title=""
+               :close-on-click-modal='false'
                :append-to-body='true'
                center
                @close="resetForm_verify('save')"

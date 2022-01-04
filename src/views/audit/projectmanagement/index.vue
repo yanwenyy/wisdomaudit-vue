@@ -2573,8 +2573,8 @@ export default {
 
     // 选择问题==============
     select_problem () {
-      this.problem_dialog = true;//关闭 选择问题
-      this.confirm_problem_dlag = false;//整改清单
+      this.problem_dialog = true;// 选择问题
+      // this.confirm_problem_dlag = false;//整改清单
       this.selection_questions_list_data();//整改问题清单
     },
     // 选择问题列表

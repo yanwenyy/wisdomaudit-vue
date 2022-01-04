@@ -39,13 +39,13 @@
         </el-table-column>
         <!-- 历史审计标题 -->
         <el-table-column prop="historyAuditFindDescribe"
-                         show-overflow-tooltip
                          width="200px"
+                         :show-overflow-tooltip="true"
                          label="标题">
           <template slot-scope="scope">
             <div v-if="scope.row.historyAuditFindDescribe"
                  class="over">
-              {{ scope.row.title | ellipsis(18) }}
+              {{ scope.row.title}}
             </div>
             <div v-else>--</div>
           </template>
@@ -54,6 +54,7 @@
         <!-- 历史审计发现描述 -->
         <el-table-column prop="historyAuditFindDescribe"
                          width="200px"
+                         :show-overflow-tooltip="true"
                          label="历史审计发现描述">
           <template slot-scope="scope">
             <div v-if="scope.row.historyAuditFindDescribe"
@@ -65,7 +66,7 @@
         </el-table-column>
         <!-- 被审计单位 -->
         <el-table-column prop="auditedEntityName"
-                         show-overflow-tooltip
+                         :show-overflow-tooltip="true"
                          label="被审计单位">
           <template slot-scope="scope">
             <div v-if="scope.row.auditedEntityName">
@@ -1089,6 +1090,14 @@ export default {
 .sjyjForm .el-tag.el-tag--info {
   width: 250px !important;
 }
+
+.conter >>> .el-tooltip div {
+  display: block;
+  width: auto;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 >>> .el-select__tags-text {
   max-width: 250px;
   overflow: hidden;
