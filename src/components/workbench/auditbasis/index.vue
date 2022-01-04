@@ -293,7 +293,7 @@ export default {
         method: "post",
         url: `/wisdomaudit/treasury/getTreasuryStatus`,
         headers: {
-          TOKEN: this.dqtoken,
+          TOKEN: this.headers.TOKEN,
         },
         data: {
           sceneId: this.sceneId,
@@ -326,7 +326,7 @@ export default {
           }
         } else {
           //否则不处理或在此处直接进行后面的操作
-          return;
+          this.vdownload()
         }
       });
     },
