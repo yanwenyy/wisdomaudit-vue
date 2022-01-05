@@ -1187,7 +1187,8 @@ export default {
         if (resp.data.data.isVaultProfiles) {
           let rep = resp.data.data.treasuryStatusRsp;
           if (rep.result == 0) {
-            this.$message(rep.resultDesc);
+            // this.$message(rep.resultDesc);
+            this.vdownload()
             return;
           } else {
             console.log(rep);
