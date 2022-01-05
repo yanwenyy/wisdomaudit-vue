@@ -1,0 +1,2472 @@
+<template>
+  <div class="auditConfirmation">
+    <el-button type="primary"
+               @click="addConfirmation()"
+               class="subBtn">新增确认单</el-button>
+    <!-- 审计确认单列表 -->
+    <div class="min_height">
+      <el-table @row-dblclick="getLook"
+                :header-cell-style="{'background-color': '#F4FAFF',}"
+                :data="confirmaryData"
+                style="margin-top: 1%"
+                class="confirmaryTable">
+        <el-table-column algin="left"
+                         width="50"
+                         type="index"
+                         label="序号"></el-table-column>
+        <el-table-column algin="left"
+                         label="审计(调查)事项"
+                         prop="matter"></el-table-column>
+        <el-table-column algin="left"
+                         label="审计人员"
+                         prop="auditorsName"></el-table-column>
+        <el-table-column algin="left"
+                         label="问题数"
+                         prop="problemsNumber">
+          <template slot-scope="scope">
+            <p style="color:#4084F2">{{scope.row.problemsNumber?scope.row.problemsNumber:'--'}}</p>
+
+          </template>
+        </el-table-column>
+        <el-table-column algin="left"
+                         label="确认单">
+          <template slot-scope="scope">
+            <el-popover :popper-class="tableFileList==''?'no-padding':''"
+                        placement="bottom"
+                        width="250"
+                        v-if="scope.row.attachmentFileCounts"
+                        @show="getFileList(scope.row.auditConfirmationUuid)"
+                        trigger="click">
+              <ul v-if="tableFileList!=''"
+                  class="fileList-ul">
+                <li class="tableFileList-title">文件名称</li>
+                <li v-for="item in tableFileList"
+                    class="pointer blue"
+                    @click="downFile(item.attachment_uuid,item.file_name)">{{item.file_name}}</li>
+              </ul>
+              <div slot="reference"
+                   class="pointer"
+                   style="color:#4084F2"><i
+                   class="el-icon-folder-opened list-folder"></i>{{scope.row.attachmentFileCounts}}
+              </div>
+            </el-popover>
+            <p v-else>--</p>
+          </template>
+        </el-table-column>
+        <el-table-column algin="left"
+                         label="附件">
+          <template slot-scope="scope">
+            <el-popover :popper-class="tableFileList==''?'no-padding':''"
+                        placement="bottom"
+                        width="250"
+                        @show="getFileList('f'+scope.row.auditConfirmationUuid)"
+                        v-if="scope.row.fileCounts"
+                        trigger="click">
+              <ul v-if="tableFileList!=''"
+                  class="fileList-ul">
+                <li class="tableFileList-title">文件名称</li>
+                <li v-for="item in tableFileList"
+                    class="pointer blue tableFileList-li"
+                    @click="downFile(item.attachment_uuid,item.file_name)">
+                  <div class="inline-block">{{item.file_name}}</div><span class="delFile inline-block"
+                        @click.stop="delListFile(item.attachment_uuid)">X</span>
+                </li>
+              </ul>
+              <div slot="reference"
+                   class="pointer"
+                   style="color:#4084F2"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.fileCounts}}
+              </div>
+            </el-popover>
+            <p v-else>--</p>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作"
+                         algin="left">
+          <template slot-scope="scope">
+            <el-button size="small"
+                       type="text"
+                       class="btnStyle editBtn"
+                       @click="edit(scope.row)"
+                       v-if="scope.row.createUserUuid==userInfo.user.id">编辑</el-button>
+            <el-button size="small"
+                       type="text"
+                       class="btnStyle red"
+                       @click="deletes(scope.row.auditConfirmationUuid)"
+                       v-if="scope.row.createUserUuid==userInfo.user.id">删除</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="最终版扫描件"
+                         algin="left">
+          <template slot-scope="scope">
+
+            <el-popover style="margin-right: 20px"
+                        class="inline-block"
+                        placement="bottom"
+                        width="250"
+                        @show="getFileList('z'+scope.row.auditConfirmationUuid)"
+                        trigger="click"
+                        v-if="scope.row.endFileCounts!==0">
+              <ul v-if="tableFileList!=''"
+                  class="fileList-ul">
+                <li class="tableFileList-title">文件名称</li>
+                <li v-for="item in tableFileList"
+                    class="pointer blue tableFileList-li"
+                    @click="downFile(item.attachment_uuid,item.file_name)">
+                  <div class="inline-block">{{item.file_name}}</div><span class="delFile inline-block"
+                        @click.stop="delListFile(item.attachment_uuid)">X</span>
+                </li>
+              </ul>
+              <div slot="reference"
+                   class="pointer"
+                   style="color:#4084F2"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.endFileCounts}}
+              </div>
+            </el-popover>
+            <!--<el-upload v-if="scope.row.endConfirmationFile==''||scope.row.endConfirmationFile==null&&(scope.row.createUserUuid==userInfo.user.id)"-->
+            <el-upload :show-file-list="false"
+                       class="upload-demo inline-block btnStyle"
+                       :on-change="fileChange"
+                       :action="'/wisdomaudit/auditConfirmation/endFileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid"
+                       :on-success="list_data_start"
+                       :headers="headers"
+                       accept=".docx,.xls,.xlsx,.txt,.zip,.doc">
+              <el-button size="small"
+                         type="text"
+                         style="background: transparent;padding:0"
+                         class="editBtn">上传</el-button>
+            </el-upload>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <!-- 新增确认单弹出框 -->
+    <el-form :rules="rules"
+             ref="addForm"
+             class="formData qrdForm"
+             label-width="180px"
+             :model="formDetail">
+      <!--label-width="130px"-->
+      <el-dialog class="qrd-dialog"
+                 :append-to-body='true'
+                 :visible.sync="confirmationDialogVisible"
+                 width="70%"
+                 @close="handleClose">
+        <div class="title">{{confirmationDialogTitle}}</div>
+
+        <el-form-item class="itemTwo"
+                      label="审计项目名称:">{{managementProjectName!=''?managementProjectName:'--'}}</el-form-item>
+        <el-form-item class="itemTwo"
+                      label="被审计单位:">{{auditOrgName!=''?auditOrgName:'--'}}</el-form-item>
+        <!-- 二级部门 -->
+        <el-form-item class="itemTwo"
+                      v-if="compileDate ==true"
+                      label="二级部门:">
+          <el-select :disabled="ifLook"
+                     @change="select_Company"
+                     v-model="formDetail.auditDepart"
+                     placeholder="请选择二级部门"
+                     clearable>
+            <el-option v-for="(item,index) in Company_data_list"
+                       :label="item.orgName"
+                       :value="item.auditOrgUuid"
+                       :key="index">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item class="itemOne"
+                      prop="matter"
+                      label="审计（调查）事项:">
+          <el-input :disabled="ifLook"
+                    type="textarea"
+                    v-model="formDetail.matter"></el-input>
+        </el-form-item>
+        <el-form-item class="itemOne"
+                      prop="matterDetail"
+                      label="审计(调查)事项描述:">
+
+          <div style="display:flex">
+            <el-button :disabled="ifLook"
+                       type="primary"
+                       @click="add_problem()"
+                       class="relationBtn">新增问题</el-button>
+            <el-button :disabled="ifLook"
+                       @click="getRelationQues()"
+                       class="relationBtn">编辑问题</el-button>
+          </div>
+
+          <el-input rows="6"
+                    :disabled="ifLook"
+                    type="textarea"
+                    v-model="formDetail.matterDetail"></el-input>
+        </el-form-item>
+        <el-form-item prop="auditorsName"
+                      class="itemTwo"
+                      label="审计人员:">
+          <el-select :disabled="ifLook"
+                     v-model="formDetail.auditorsName"
+                     placeholder="请选择审计人员"
+                     clearable>
+            <el-option v-for="(item,index) in sjryList"
+                       :label="item.peopleName"
+                       :value="item.peopleName"
+                       :key="index">
+            </el-option>
+          </el-select>
+          <!--<el-input :disabled="ifLook"-->
+          <!--placeholder="请输入"-->
+          <!--v-model="formDetail.auditorsName"></el-input>-->
+        </el-form-item>
+        <el-form-item prop="reviewerName"
+                      class="itemTwo"
+                      label="复核人:">
+          <el-select :disabled="ifLook"
+                     v-model="formDetail.reviewerName	"
+                     placeholder="请选择复核人"
+                     clearable>
+            <el-option v-for="(item,index) in FhrList"
+                       :label="item.realName"
+                       :value="item.realName"
+                       :key="index">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item prop="compileDate"
+                      class="itemTwo"
+                      label="编制日期:">
+          <el-date-picker :disabled="ifLook"
+                          v-model="formDetail.compileDate"
+                          type="date"
+                          placeholder="选择日期"
+                          format="yyyy-MM-dd"
+                          value-format="yyyy-MM-dd"
+                          style="width: 100%"></el-date-picker>
+        </el-form-item>
+
+        <el-form-item class="itemOne"
+                      v-if="confirmationDialogTitle=='编辑确认单'||ifLook"
+                      prop="compileDate"
+                      label="被审计(调查)单位确认意见:">
+          <el-input :disabled="ifLook"
+                    type="textarea"
+                    v-model="formDetail.auditOrgOpinion"></el-input>
+        </el-form-item>
+        <el-form-item label="上传附件:"
+                      class="upload-yw">
+          <el-upload v-if="!ifLook"
+                     class="upload-demo"
+                     drag
+                     action="/wisdomaudit/auditBasy/filesUpload"
+                     :on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList1)}"
+                     :on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList1,fileList1,fileList1_del)}"
+                     multiple
+                     :limit="3"
+                     :key="key"
+                     :on-exceed="handleExceed"
+                     :headers="headers"
+                     :file-list="fileList1">
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">
+              点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc
+            </div>
+          </el-upload>
+          <div class="inline-block"
+               v-if="ifLook">
+            <el-tooltip class="item"
+                        effect="dark"
+                        v-for="(item,index) in fileList1"
+                        :key="index"
+                        :content="item.fileName"
+                        placement="top">
+              <div class="blue pointer"
+                   @click="downFile(item.attachmentUuid,item.fileName)">
+                {{item.fileName.length>20?item.fileName.slice(0,20)+"...":item.fileName}}</div>
+            </el-tooltip>
+          </div>
+        </el-form-item>
+        <span slot="footer"
+              class="dialog-footer">
+          <el-button @click="handleClose">取 消</el-button>
+          <el-button v-if="!ifLook"
+                     type="primary"
+                     :disabled="isDisable"
+                     @click="saveForm(1)"
+                     class="subBtn">确 定</el-button>
+
+          <el-button v-if="!ifLook"
+                     type="primary"
+                     :disabled="isDisable"
+                     @click="saveForm(2)"
+                     class="subBtn">生 成</el-button>
+
+        </span>
+      </el-dialog>
+      <el-dialog class="qrd-dialog"
+                 :append-to-body='true'
+                 :visible.sync="confirmationDialogVisibleZx"
+                 width="70%"
+                 @close="handleClose">
+        <div class="title">{{confirmationDialogTitle}}</div>
+        <div class="zxTabel-div">
+          <table class="zxTabel">
+            <tr>
+              <td>项目名称</td>
+              <td colspan="5">{{formDetail.managementProjectName}}</td>
+            </tr>
+            <tr>
+              <td>被审计(调查)单位</td>
+              <td colspan="5">{{formDetail.auditOrgName	}}</td>
+            </tr>
+            <tr>
+              <td>审计(调查)事项</td>
+              <td colspan="5">
+                <el-input :disabled="ifLook"
+                          type="textarea"
+                          v-model="formDetail.matter"></el-input>
+              </td>
+              <!--<td colspan="5">{{formDetail.matter	}}</td>-->
+            </tr>
+            <tr>
+              <td>审计(调查)事项描述</td>
+              <td colspan="5">
+                <el-input :disabled="ifLook"
+                          type="textarea"
+                          v-model="formDetail.matterDetail"></el-input>
+              </td>
+              <!--<td colspan="5">-->
+              <!--<div>{{formDetail.matterDetail}}</div>-->
+              <!--</td>-->
+            </tr>
+            <tr>
+              <td>审计人员(签名)</td>
+              <td width="20%">{{formDetail.auditorsName}}</td>
+              <td>复审人(签名)</td>
+              <td width="20%">{{formDetail.reviewerName}}</td>
+              <td>编制日期</td>
+              <td>{{formDetail.compileDate | dateformat}}</td>
+            </tr>
+            <tr>
+              <td>被审计(调查)单位确认意见</td>
+              <td colspan="5">
+                <el-input :disabled="ifLook"
+                          type="textarea"
+                          v-model="formDetail.auditOrgOpinion"></el-input>
+              </td>
+              <!--<td colspan="5">{{formDetail.auditOrgOpinion}}</td>-->
+            </tr>
+            <tr>
+              <td>相关负责人(签名)</td>
+              <!--<td><el-input  :disabled="ifLook" v-model="formDetail.principalName"></el-input></td>-->
+              <td>{{formDetail.principalName}}</td>
+              <td>职务</td>
+              <!--<td><el-input  :disabled="ifLook" v-model="formDetail.principalPost"></el-input></td>-->
+              <td>{{formDetail.principalPost}}</td>
+              <td>日期</td>
+              <!--<td><el-input  :disabled="ifLook" v-model="formDetail.signatureDate"></el-input></td>-->
+              <td>{{formDetail.signatureDate | dateformat}}</td>
+            </tr>
+          </table>
+        </div>
+        <span slot="footer"
+              class="dialog-footer">
+          <el-button @click="handleClose">取 消</el-button>
+          <el-button v-if="!ifLook"
+                     :disabled="isDisable"
+                     type="primary"
+                     @click="saveForm"
+                     class="subBtn">确 定</el-button>
+        </span>
+      </el-dialog>
+    </el-form>
+
+    <!-- 编辑问题列表 -->
+    <!-- <search-list ref="searchTabel"
+                 @refreshSearch="getSearchInfo"></search-list> -->
+    <el-dialog center
+               width="80%"
+               title="问题列表"
+               class="edit_table"
+               :visible.sync="visible"
+               :append-to-body="true">
+      <div class="relation-div">
+        <div class="relation-div-search search-form">
+
+          <el-form :inline="true"
+                   :model="searchform"
+                   @keyup.enter.native="init(id)"
+                   class="queryForm">
+            <el-button type="primary"
+                       style="margin:0;float:left;"
+                       @click="add_problem()"
+                       size="medium"
+                       class="relationBtn">新增问题</el-button>
+            <el-form-item class="searchBtn">
+              <el-input v-model="searchform.problem"
+                        placeholder="问题名称"
+                        clearable>
+                <el-button slot="append"
+                           icon="el-icon-search"
+                           @click="init(id)"></el-button>
+              </el-input>
+            </el-form-item>
+          </el-form>
+        </div>
+        <div class="dlag">
+
+          <el-table :header-cell-style="{'text-align': 'center','background-color': '#F4FAFF',}"
+                    ref="multipleTable"
+                    :data="relationTabel2"
+                    class="relationTabelClass"
+                    tooltip-effect="dark"
+                    style="width: 100%"
+                    @selection-change="relationTabelSel">
+            <el-table-column type="selection"
+                             align="center" />
+            <el-table-column align="center"
+                             type="index"
+                             label="序号">
+            </el-table-column>
+            <el-table-column align="center"
+                             prop="field"
+                             label="领域"
+                             width="180">
+            </el-table-column>
+            <el-table-column align="center"
+                             prop="problem"
+                             show-overflow-tooltip
+                             label="问题">
+              <template slot-scope="scope">
+                <p v-if="scope.row.problem"
+                   @click="details_show(scope.row,scope.$index+1)"
+                   style="cursor: pointer;color:rgb(68, 163, 223);">{{scope.row.problem }}</p>
+                <p v-else>--</p>
+              </template>
+            </el-table-column>
+            <!-- <el-table-column align="center"
+                             prop="basis"
+                             width="180"
+                             :show-overflow-tooltip="true"
+                             label="依据">
+            </el-table-column>
+            <el-table-column align="center"
+                             prop="describe"
+                             width="200"
+                             :show-overflow-tooltip="true"
+                             label="描述">
+            </el-table-column>
+            -->
+            <el-table-column align="center"
+                             prop="riskAmount"
+                             width="150"
+                             label="风险金额(万元)">
+              <template slot-scope="scope">
+                {{ parseFloat(scope.row.riskAmount) }}
+              </template>
+            </el-table-column>
+            <el-table-column align="center"
+                             prop="problemDiscoveryTime"
+                             width="150"
+                             label="发现日期">
+              <template slot-scope="scope">{{
+              scope.row.problemDiscoveryTime | dateformat
+              }}</template>
+            </el-table-column>
+            <el-table-column align="center"
+                             prop="problemFindPeople"
+                             width="150"
+                             label="发现人">
+            </el-table-column>
+
+            <!-- 附件 -->
+            <el-table-column prop="attachmentList"
+                             width="100"
+                             align="center"
+                             label="附件">
+              <template slot-scope="scope">
+
+                <el-popover :popper-class="enclosure_details_list==''?'no-padding':''"
+                            v-if="scope.row.attachmentList.length!==0"
+                            placement="bottom"
+                            width="250"
+                            @show="open_enclosure_details(scope.row.attachmentList)"
+                            trigger="click">
+                  <ul v-if="scope.row.attachmentList!=''"
+                      class="fileList-ul">
+                    <li class="tableFileList-title">文件名称</li>
+                    <li v-for="(item,index) in enclosure_details_list"
+                        :key="index"
+                        class="pointer blue"
+                        @click="download(item.attachmentUuid,item.fileName)">
+                      {{item.fileName}}</li>
+                  </ul>
+                  <div slot="reference"
+                       style="color: #1371cc;"
+                       class="pointer"><i
+                       class="el-icon-folder-opened list-folder"></i>{{scope.row.attachmentList.length}}
+                  </div>
+                </el-popover>
+                <p v-else>--</p>
+
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center"
+                             prop="managementAdvice"
+                             :show-overflow-tooltip="true"
+                             label="管理建议">
+            </el-table-column>
+
+          </el-table>
+
+          <div class="mose"
+               @click="close_mose"
+               v-if="details == true"></div>
+
+          <!-- 详情 -->
+          <div class="problem_details_conter"
+               :style="{'top':details_list.style_top}"
+               v-if="details == true">
+            <ul class="list">
+              <li>
+                <p>序号：{{details_list.index}}</p>
+                <p>领域：{{details_list.field}}</p>
+                <p>专题：{{details_list.special}}</p>
+              </li>
+
+              <li>
+                <p>风险金额（万元）：{{details_list.riskAmount}}</p>
+                <p>发现日期：{{details_list.problemDiscoveryTime}}</p>
+                <p>发现人：{{details_list.problemFindPeople}}</p>
+              </li>
+
+              <li>
+                <p>附件：<i class="el-icon-folder-opened list-folder"></i>{{details_list.attachmentList.length}}</p>
+                <p>关联任务：{{details_list.index}}</p>
+              </li>
+
+              <li>
+                问题：{{details_list.problem}}
+              </li>
+              <li>
+                依据：{{details_list.basis}}
+              </li>
+              <li>
+                描述：{{details_list.describe}}
+              </li>
+              <li>
+                管理建议：{{details_list.managementAdvice}}
+              </li>
+
+            </ul>
+          </div>
+          <!-- 详情 end-->
+        </div>
+
+      </div>
+      <div slot="footer"
+           class="dialog-footer">
+        <el-button @click="visible=false">取消</el-button>
+        <el-button type="primary"
+                   @click="setRelation">生成</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 新增审计问题 -->
+    <el-dialog title="新增审计问题"
+               :append-to-body='true'
+               :visible.sync="dialogFormVisible"
+               :close-on-click-modal="false"
+               width="70%"
+               @close="resetForm('temp_problem')"
+               center>
+      <el-form ref="dataForm"
+               :rules="rules_problem"
+               :model="temp_problem"
+               label-position="right"
+               label-width="140px"
+               class="problem-form formData">
+        <el-form-item class="itemTwo"
+                      label="问题："
+                      prop="problem">
+          <el-input v-model="temp_problem.problem"
+                    placeholder="请输入问题" />
+        </el-form-item>
+        <el-form-item class="itemTwo"
+                      label="领域："
+                      prop="field">
+          <el-select v-model="temp_problem.field"
+                     placeholder="请选择领域">
+            <el-option v-for="item in CategoryList"
+                       :key="item.label"
+                       :label="item.label"
+                       :value="item.label">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item class="itemTwo"
+                      label="专题："
+                      prop="special">
+          <el-select v-model="temp_problem.special"
+                     placeholder="请选择专题"
+                     v-if="input_select == true"
+                     @change="change_zt">
+            <el-option v-for="item in SPECIALList"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.label">
+            </el-option>
+          </el-select>
+          <el-input v-model="temp_problem.special"
+                    v-if="input_select == false"></el-input>
+          <el-button v-if="input_select == false"
+                     type="primary"
+                     class="inline-block"
+                     style="position: absolute;top:0;right: -70px"
+                     @click="input_select=!input_select">重选</el-button>
+        </el-form-item>
+        <!-- <el-form-item> </el-form-item> -->
+        <el-form-item label="依据："
+                      style="margin-bottom:20px!important;"
+                      prop="basis"
+                      class="itemOne">
+          <el-select v-model="temp_problem.basis"
+                     class="inline-block yj-sel"
+                     multiple
+                     @visible-change="toopen"
+                     placeholder="请选择依据"
+                     no-data-text="请点击引用审计依据">
+          </el-select>
+          <el-button type="primary"
+                     ref="basisbtn0"
+                     class="citebtn inline-block"
+                     @click="openbasis()">引用审计依据</el-button>
+        </el-form-item>
+
+        <el-form-item label="描述："
+                      style="margin-bottom:20px!important;"
+                      prop="describe"
+                      class="itemOne">
+          <!-- <el-input v-model="temp.describe" placeholder="请输入描述" /> -->
+          <el-input type="textarea"
+                    v-model="temp_problem.describe"
+                    placeholder="请输入描述"
+                    :autosize="{ minRows: 3}"></el-input>
+        </el-form-item>
+        <el-form-item label="管理建议："
+                      style="margin-bottom:20px!important;"
+                      prop="managementAdvice"
+                      class="itemOne">
+          <el-input type="textarea"
+                    v-model="temp_problem.managementAdvice"
+                    placeholder="请输入管理建议"
+                    :autosize="{ minRows: 3}" />
+        </el-form-item>
+        <el-form-item class="itemTwo"
+                      label="发现日期："
+                      prop="problemDiscoveryTime">
+          <!-- <el-input
+            v-model="temp.problemDiscoveryTime"
+            type="date"
+            placeholder="请输入发现日期"
+          /> -->
+          <el-date-picker type="date"
+                          placeholder="选择日期"
+                          v-model="temp_problem.problemDiscoveryTime"
+                          style="width: 100%"></el-date-picker>
+        </el-form-item>
+        <el-form-item class="itemTwo"
+                      label="发现人："
+                      prop="problemFindPeople">
+          <el-select v-model="temp_problem.problemFindPeople"
+                     placeholder="请选择发现人">
+            <el-option v-for="(item, i) in personlist"
+                       :key="'person' + i"
+                       :label="item.realName"
+                       :value="item.realName">
+              {{ item.realName }}
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item class="itemTwo"
+                      label="风险金额（万元）："
+                      prop="riskAmount">
+          <el-input v-model="temp_problem.riskAmount"
+                    placeholder="请输入风险金额"
+                    @keyup.native="onlyNumOnePoint('temp_problem')"
+                    @input="temp_problem.riskAmount = temp_problem.riskAmount.slice(0, 27)" />
+        </el-form-item>
+        <el-form-item class="itemTwo"
+                      label="关联任务："
+                      prop="auditTaskUuid">
+          <el-select v-model="temp_problem.auditTaskUuid"
+                     multiple
+                     placeholder="请选择关联任务">
+            <el-option v-for="item in auditTasklList"
+                       :key="item.auditTaskUuid"
+                       :label="item.taskName"
+                       :value="item.auditTaskUuid">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item class="itemTwo"
+                      label="上传附件：">
+          <el-upload class="upload-demo"
+                     drag
+                     action="/wisdomaudit/auditBasy/filesUpload"
+                     :on-success="( response, file, fileList)=>{
+                       uploadPorgress2( response, file, fileList,attachmentList2)
+                       }"
+                     :on-remove="( file, fileList)=>{
+                       handleRemove2( file, fileList,attachmentList2,fileList2,fileList2_del)
+                       }"
+                     :on-progress="update_ing"
+                     multiple
+                     :limit="3"
+                     :key="key"
+                     :on-exceed="handleExceed"
+                     :headers="headers"
+                     :file-list="fileList2">
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">
+              点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc
+            </div>
+          </el-upload>
+          <div class="inline-block">
+            <el-tooltip class="item"
+                        effect="dark"
+                        v-for="(item,index) in fileList2"
+                        :key="index"
+                        :content="item.fileName"
+                        placement="top">
+              <div class="blue pointer"
+                   @click="downFile2(item.attachmentUuid,item.fileName)">
+                {{item.fileName.length>20?item.fileName.slice(0,20)+"...":item.fileName}}</div>
+            </el-tooltip>
+          </div>
+        </el-form-item>
+
+      </el-form>
+      <div slot="footer">
+        <el-button v-if="!closeStatus"
+                   @click="dialogFormVisible = false">取消</el-button>
+        <el-button v-if="closeStatus"
+                   type="primary"
+                   @click="dialogFormVisible = false">关闭</el-button>
+
+        <el-button type="primary"
+                   v-if="success_btn==1"
+                   :loading="true">上传中</el-button>
+
+        <el-button v-if="success_btn==0 && !closeStatus"
+                   type="primary"
+                   @click="createData()">保存</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 编辑审计问题 -->
+    <el-dialog width="70%"
+               :title="ifadd == 1 ? '编辑问题' : '问题详情'"
+               :visible.sync="dialogDetailVisible"
+               :close-on-click-modal="false"
+               :append-to-body='true'
+               @close="resetForm('dqProblem')"
+               center>
+      <el-form ref="detailForm"
+               :model="dqProblem"
+               :rules="rules"
+               label-position="right"
+               label-width="140px"
+               class="problem-form formData">
+        <el-form-item class="itemTwo"
+                      label="问题："
+                      prop="problem">
+          <el-input v-model="dqProblem.problem"
+                    placeholder="请输入问题"
+                    :disabled="ifadd != 2 ? false : true" />
+        </el-form-item>
+        <el-form-item class="itemTwo"
+                      label="领域："
+                      prop="field">
+          <el-select v-model="dqProblem.field"
+                     placeholder="请选择领域"
+                     :disabled="ifadd != 2 ? false : true">
+            <el-option v-for="item in CategoryList"
+                       :key="item.label"
+                       :label="item.label"
+                       :value="item.label">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item class="itemTwo"
+                      label="专题："
+                      prop="special">
+          <el-select v-model="dqProblem.special"
+                     placeholder="请选择专题"
+                     :disabled="ifadd != 2 ? false : true"
+                     v-if="input_selecte == true"
+                     @change="change_zte">
+            <el-option v-for="item in SPECIALList"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.label">
+            </el-option>
+          </el-select>
+          <el-input v-model="dqProblem.special"
+                    v-if="input_selecte == false"
+                    :disabled="ifadd != 2 ? false : true"></el-input>
+          <el-button v-if="input_selecte == false"
+                     type="primary"
+                     class="inline-block"
+                     style="position: absolute;top:0;right: -70px"
+                     @click="input_selecte=!input_selecte">重选</el-button>
+        </el-form-item>
+        <el-form-item label="依据："
+                      prop="basis"
+                      class="itemOne">
+          <el-select v-model="dqProblem.basis"
+                     class="inline-block yj-sel"
+                     multiple
+                     @visible-change="toopen"
+                     placeholder="请选择依据"
+                     no-data-text="请点击引用审计依据"
+                     :disabled="ifadd != 2 ? false : true">
+          </el-select>
+          <el-button v-if="ifadd != 2 ? true : false"
+                     type="primary"
+                     ref="basisbtn0"
+                     class="citebtn inline-block"
+                     @click="openbasis()">引用审计依据</el-button>
+        </el-form-item>
+
+        <!-- </el-popover> -->
+
+        <el-form-item label="描述："
+                      style="margin-bottom:20px!important;"
+                      prop="describe"
+                      class="itemOne">
+          <el-input type="textarea"
+                    v-model="dqProblem.describe"
+                    placeholder="请输入描述"
+                    :disabled="ifadd != 2 ? false : true"
+                    :autosize="{ minRows: 3}" />
+        </el-form-item>
+        <el-form-item label="管理建议："
+                      style="margin-bottom:20px!important;"
+                      prop="managementAdvice"
+                      class="itemOne">
+          <el-input type="textarea"
+                    v-model="dqProblem.managementAdvice"
+                    placeholder="请输入管理建议"
+                    :disabled="ifadd != 2 ? false : true"
+                    :autosize="{ minRows: 3}" />
+        </el-form-item>
+        <el-form-item class="itemTwo"
+                      label="发现日期："
+                      prop="problemDiscoveryTime">
+          <el-date-picker type="date"
+                          placeholder="选择日期"
+                          v-model="dqProblem.problemDiscoveryTime"
+                          style="width: 100%"
+                          :disabled="ifadd != 2 ? false : true"></el-date-picker>
+        </el-form-item>
+        <el-form-item class="itemTwo"
+                      label="发现人："
+                      prop="problemFindPeople">
+          <el-select v-model="dqProblem.problemFindPeople"
+                     placeholder="请选择发现人"
+                     :disabled="ifadd != 2 ? false : true">
+            <el-option v-for="(item, i) in personlist"
+                       :key="'person' + i"
+                       :label="item.realName"
+                       :value="item.realName">
+              {{ item.realName }}
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item class="itemTwo"
+                      label="风险金额（万元）："
+                      prop="riskAmount"
+                      width="180">
+          <el-input v-model="dqProblem.riskAmount"
+                    placeholder="请输入风险金额"
+                    :disabled="ifadd != 2 ? false : true"
+                    @keyup.native="onlyNumOnePoint('dqProblem')"
+                    @input="temp.riskAmount = temp.riskAmount.slice(0, 27)" />
+        </el-form-item>
+        <el-form-item class="itemTwo"
+                      label="关联任务："
+                      prop="auditTaskUuid">
+          <el-select disabled
+                     v-model="dqProblem.auditTaskUuid"
+                     multiple
+                     placeholder="请选择关联任务">
+            <el-option v-for="item in auditTasklList"
+                       :key="item.auditTaskUuid"
+                       :label="item.taskName"
+                       :value="item.auditTaskUuid">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer"
+           class="dialog-footer">
+        <el-button type="primary"
+                   @click="updateData()"
+                   v-if="ifupdata">保存修改</el-button>
+        <el-button type="primary"
+                   @click="dialogDetailVisible = false">关闭</el-button>
+      </div>
+    </el-dialog>
+    <!-- 引用设计依据 -->
+    <el-dialog title="引用审计依据"
+               :append-to-body='true'
+               :visible.sync="basisdialog"
+               width="70%"
+               class="post"
+               custom-class="outmax">
+      <div style="display: flex; height: 100%; padding: 20px">
+        <div style="max-height: 60vh; width: 50%; overflow: scroll">
+          <el-form ref="basisform"
+                   class="problem-form"
+                   :model="dqbasis"
+                   label-width="120px"
+                   label-position="right">
+            <el-form-item label="审计依据名称"
+                          class="long">
+              <el-select v-model="dqbasis.val"
+                         placeholder="请选择依据名称"
+                         filterable
+                         remote
+                         reserve-keyword
+                         :remote-method="basisremoteMethod"
+                         :loading="basisloading"
+                         @change="getbasisdetail(dqbasis.val)">
+                <el-option v-for="item in basislist"
+                           :key="item.basy_uuid"
+                           :label="item.basy_name"
+                           :value="item.basy_uuid">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-form>
+          <el-card class="box-card"
+                   style="width: 70%; min-height: 300px; margin: auto">
+            <el-tree :data="dqbasis.info.tree"
+                     :props="defaultProps"
+                     @node-click="treeNodeClick"
+                     default-expand-all
+                     v-loading="basisload"
+                     class="problemtree"></el-tree>
+          </el-card>
+        </div>
+        <el-card class="box-card basiscard"
+                 style="width: 50%"
+                 v-loading="basisload">
+          <div v-for="(item, index) in dqbasis.info.arr"
+               :key="'dqbasisarr' + index">
+            <div slot="header"
+                 class="clearfix"
+                 style="padding: 5px 0"
+                 v-if="item.contentLev != 3">
+              <span style="font-weight: bold"
+                    :style="
+                  item.contentLev == 1
+                    ? 'font-size:18px;'
+                    : item.contentLev == 2
+                    ? 'font-size:16px;'
+                    : 'font-size:14px;'
+                ">{{ item.label }}</span>
+            </div>
+
+            <el-button style="padding: 10px 0 3px 20px; color: #ffba00; float: right"
+                       v-if="item.contentLev == 3"
+                       @click="choosebasis(item.attachmentContent)"
+                       type="text">引用</el-button>
+            <p class=""
+               v-if="item.contentLev == 3">
+              {{ item.attachmentContent }}
+            </p>
+          </div>
+        </el-card>
+      </div>
+      <span slot="footer"
+            class="dialog-footer">
+        <el-button @click="basisdialog = false">取 消</el-button>
+        <el-button type="primary"
+                   @click="surebasis()">确 定</el-button>
+      </span>
+    </el-dialog>
+
+  </div>
+</template>
+
+<script>
+import { del_file, get_userInfo, projectMembership_listUserInfo, down_file, auditBasy_getFileList, auditConfirmation_pageList, auditConfirmation_save, auditConfirmation_delete, auditConfirmation_getDetail, auditConfirmation_update, Company } from
+  '@SDMOBILE/api/shandong/ls'
+import { task_pageList_wt } from
+  '@SDMOBILE/api/shandong/AuditReport'
+import { task_select_people } from
+  '@SDMOBILE/api/shandong/task'
+import SearchList from "./searchList"
+import axios from "axios";
+import $ from "jquery";
+export default {
+  components: { SearchList },
+  props: ['active_project', 'userRole'],
+  data () {
+    return {
+      compileDate: false,
+      key: 0,
+      attachmentList1: [],//附件上传列表
+      fileList1: [],//附件上传回显列表
+      fileList1_del: [],
+      headers: {},
+      isDisable: false,
+      ifLook: false,
+      confirmationDialogTitle: '新增确认单',
+      confirmaryData: [],
+      confirmationDialogVisible: false, //新增确认单弹框
+      confirmationDialogVisibleZx: false,//专项确认单编辑
+      formDetail: {
+        auditDepart: '',//被审计部门
+        attachmentList: [],
+        matter: '',
+        matterDetail: '',
+        auditorsName: '',
+        reviewerName: '',
+        compileDate: '',
+        auditOrgOpinion: '',
+        principalName: '',
+        principalPost: '',
+        signatureDate: '',
+      },//确认单数据
+      relationTabel: [],//关联问题
+      relationStatus: false,//关联问题显示状态
+      multipleSelection: [],//关联问题列表已选
+
+      managementProjectName: '',//审计项目名称
+      auditOrgName: '',//被审计单位
+      projectType: '',//项目类型 jzsj经责审计  zxsj专项审计
+      tableFileList: [],//确认单附件列表
+      FhrList: [],//复核人列表
+      sjryList: [],//审计人员列表
+      userInfo: {
+        user: {}
+      },//用户信息
+      // 新增的表单验证
+      rules: {
+        matter: [
+          { required: true, message: "请填写审计（调查）事项", trigger: "blur" },
+        ],
+        matterDetail: [
+          { required: true, message: "请填写审计（调查）事项描述", trigger: "blur" },
+        ],
+        auditorsName: [
+          { required: true, message: "请填写审计人员", trigger: "blur" },
+        ],
+        reviewerName: [
+          { required: true, message: "请填写复核人", trigger: "blur" },
+        ],
+        compileDate: [
+          { required: true, message: "请填写编制日期", trigger: "blur" },
+        ],
+      },
+
+      // 被审计机构
+      Company_data_list: [],
+
+      success_btn: 0,//上传 ing
+      // 新增审计问题
+      temp_problem: {
+        managementProjectUuid: this.active_project,
+        // 业务分类
+        auditTaskUuid: [],
+        basis: [],
+        describe: "",
+        field: "",
+        special: "",
+        isDeleted: 0,
+        problem: "",
+        problemDiscoveryTime: "",
+        problemFindPeople: "",
+        managementAdvice: "",
+        problemListUuid: "",
+        riskAmount: "",
+        status: 0,
+        attachmentList: [],
+      },
+      attachmentList2: [],//附件上传列表
+      fileList2: [],//附件上传回显列表
+      fileList2_del: [],
+
+      selections: [],
+      dialogFormVisible: false,
+      ifupdata: false,
+      dialogDetailVisible: false,
+      dialogStatus: "",
+      // 新增的表单验证
+      rules_problem: {
+        auditTaskUuid: [
+          { required: true, message: "请选择关联任务", trigger: "change" },
+        ],
+        // basis: [{ required: true, message: "请选择依据", trigger: "change" }],
+        field: [{ required: true, message: "请选择领域", trigger: "change" }],
+        problem: [{ required: true, message: "请填写问题", trigger: "change" }],
+        problemDiscoveryTime: [
+          { required: true, message: "请填写发现时间", trigger: "change" },
+        ],
+        problemFindPeople: [
+          { required: true, message: "请填写发现人", trigger: "change" },
+        ],
+        special: [{ required: true, message: "请选择专题", trigger: "change" }],
+        riskAmount: [
+          { required: true, message: "请填写风险金额", trigger: "change" },
+        ],
+      },
+      closeStatus: false,
+      headers: { "Content-Type": "multipart/form-data" },
+      file: "",
+      CategoryList: [],
+      SPECIALList: [],
+      auditTasklList: [],
+      basisdialog: false,
+      basislist: [],
+      dqbasis: {
+        val: "",
+        info: "",
+        choose: [],
+      },
+      defaultProps: {
+        children: "children",
+        label: "label",
+      },
+      basisload: false,
+      ifadd: 0,
+      personlist: [],
+      me: "",
+      input_select: true,
+      input_selecte: true,
+      basisloading: false,
+      dqProblem: {},//编辑问题
+      dqtoken: "",
+
+
+      // 编辑问题弹窗
+      relationTabel2: [],
+      multipleSelection: [],
+      visible: false,
+      temp: {},
+      dataList: [],
+      searchform: {
+        problem: ''
+      },//关联问题搜索
+      page: {
+        current: 1,
+        size: 10,
+        total: 0
+      },
+      details: false,//悬浮问题 背景
+      Index: '',
+      style_px: 40,//悬浮定位
+      details_list: [],//悬浮数据
+      enclosure_details_list: [],//附件
+    };
+  },
+  created () {
+    this.dqtoken = sessionStorage.getItem("TOKEN");
+    this.list_data_start();
+    this.getFhrList();
+    this.getSjryList();
+    this.getloadcascader("Category");
+    this.getloadcascader("SPECIAL");
+    this.getSelectTask();
+    this.getbasis();//获取依据
+    this.getperson();//获取人员 
+    let params = {
+      entity: {},
+    }
+    this.Company_data(params); // 被审计单位
+  },
+  mounted () {
+    this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
+  },
+  methods: {
+    // 下载
+    download (id, fileName) {
+      let formData = new FormData()
+      formData.append('fileId', id)
+      down_file(formData).then(resp => {
+        const content = resp;
+        const blob = new Blob([content],
+          { type: 'application/octet-stream,charset=UTF-8' }
+        )
+        if ('download' in document.createElement('a')) {
+          // 非IE下载
+          const elink = document.createElement('a')
+          elink.download = fileName //下载后文件名
+          elink.style.display = 'none'
+          elink.href = window.URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象
+          document.body.removeChild(elink)
+        } else {
+          // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
+      }).catch((err) => {
+
+      })
+    },
+    // 查看附件详情
+    open_enclosure_details (item) {
+      this.enclosure_details_list = [];//清空附件
+
+      if (item) {
+        this.enclosure_details_list = item
+      }
+    },
+
+    // 审计问题====================================
+    // 新增审计问题
+    add_problem () {
+      this.dialogFormVisible = true;
+
+      this.ifadd = 0;
+      this.temp_problem.problemFindPeople = this.me;
+      this.temp_problem.problemDiscoveryTime = new Date();
+      this.$nextTick(() => {
+        this.$refs["dataForm"].clearValidate();
+      });
+
+    },
+    // 新增问题关闭
+    resetForm (str) {
+      if (str == "temp") {
+        this.temp_problem = {
+          managementProjectUuid: this.active_project,
+          // 业务分类
+          auditTaskUuid: [],
+          basis: [],
+          describe: "",
+          field: "",
+          special: "",
+          isDeleted: 0,
+          problem: "",
+          problemDiscoveryTime: "",
+          problemFindPeople: "",
+          managementAdvice: "",
+          problemListUuid: "",
+          riskAmount: "",
+          status: 0,
+        };
+      } else if (str == "dqProblem") {
+        this.dqProblem = {};
+      }
+      this.input_select = true; //专题 恢复默认
+      this.input_selecte = true; //专题 恢复默认
+    },
+    // 金额处理
+    onlyNumOnePoint (str) {
+      let number_only = "";
+      if (str == "temp_problem") {
+        number_only = this.temp_problem.riskAmount;
+      } else {
+        number_only = this.dqProblem.riskAmount;
+      }
+      //先把非数字的都替换掉，除了数字和小数点
+      number_only = number_only.replace(/[^\d.]/g, "");
+      //必须保证第一个为数字而不是小数点
+      number_only = number_only.replace(/^\./g, "");
+      //保证只有出现一个小数点而没有多个小数点
+      number_only = number_only.replace(/\.{2,}/g, ".");
+      //保证小数点只出现一次，而不能出现两次以上
+      number_only = number_only
+        .replace(".", "$#$")
+        .replace(/\./g, "")
+        .replace("$#$", ".");
+      //保证只能输入两个小数
+      number_only = number_only.replace(/^(\-)*(\d+)\.(\d{6}).*$/, "$1$2.$3");
+      if (str == "temp_problem") {
+        this.temp_problem.riskAmount = number_only;
+      } else {
+        this.dqProblem.riskAmount = number_only;
+      }
+    },
+    // 点击依据
+    toopen (val) {
+      if (val) {
+        let _this = this;
+        setTimeout(function () {
+          _this.$refs["basisbtn0"].handleClick();
+        }, 100);
+        return false;
+      }
+    },
+
+    //获取人员
+    getperson () {
+      axios({
+        url: `/wisdomaudit/user/listUserInfo?pageCurrent=1&pageSize=1000`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
+        method: "get",
+        data: {},
+      }).then((res) => {
+        this.personlist = res.data.data.list;
+      });
+    },
+    change_zt (val) {
+      this.temp_problem.special = val;
+      if (val == "其他") {
+        this.input_select = false;
+        this.temp_problem.special = "";
+      }
+    },
+    change_zte (val) {
+      this.dqProblem.special = val;
+      if (val == "其他") {
+        this.input_selecte = false;
+        this.dqProblem.special = "";
+      }
+    },
+
+    // 审计问题 end====================================
+
+    // 依据==================================================
+    //确定选择依据
+    surebasis () {
+      this.basisdialog = false;
+      if (this.ifadd == 0) {
+        this.temp_problem.basis = this.dqbasis.choose;
+      } else {
+        this.dqProblem.basis = this.dqbasis.choose;
+      }
+      this.dqbasis.choose = [];
+    },
+    //选择依据
+    choosebasis (val) {
+      if (this.dqbasis.choose.indexOf(val) > -1) {
+        this.$message({
+          message: "您已引用这一条",
+          type: "warning",
+        });
+        return;
+      } else {
+        this.dqbasis.choose.push(val);
+        this.$message({
+          message: "引用成功",
+          type: "success",
+        });
+      }
+    },
+    //依据树
+    treeNodeClick () { },
+    //打开依据
+    openbasis () {
+      this.basisdialog = true;
+      this.dqbasis.choose = [];
+      this.dqbasis.info = "";
+      this.dqbasis.val = "";
+    },
+    //获取依据
+    getbasis () {
+      axios({
+        url: `/wisdomaudit/auditBasy/getAuditbasyList`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
+        method: "post",
+        data: {
+          basyName: "",
+        },
+      }).then((res) => {
+        this.basislist = res.data.data;
+      });
+    },
+    //模糊查询依据详情
+    basisremoteMethod (query) {
+      this.basisloading = true
+      axios({
+        url: `/wisdomaudit/auditBasy/getAuditbasyList`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
+        method: "post",
+        data: {
+          basyName: query,
+        },
+      }).then((res) => {
+        this.basislist = res.data.data;
+        this.basisloading = false
+      });
+    },
+    //获取依据详情
+    getbasisdetail (bid) {
+      this.basisload = true;
+      axios({
+        url: `/wisdomaudit/auditBasy/getById/` + bid + ``,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
+        method: "get",
+        data: {},
+      }).then((res) => {
+        this.dqbasis.info = res.data.data.treeData;
+        this.basisload = false;
+      });
+    },
+    getloadcascader (str) {
+      axios({
+        url: `/wisdomaudit/init/loadcascader`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
+        method: "post",
+        data: {
+          typecode: str,
+        },
+      }).then((res) => {
+        if (str == "Category") {
+          this.CategoryList = res.data.data;
+        } else if (str == "SPECIAL") {
+          this.SPECIALList = res.data.data;
+        }
+      });
+    },
+
+    // 依据 end==================================================
+    getSelectTask () {
+      axios({
+        url: `/wisdomaudit/auditTask/selectTask`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
+        method: "post",
+        data: {
+          managementProjectUuid: this.active_project,
+        },
+      }).then((res) => {
+        this.auditTasklList = res.data.data;
+      });
+    },
+    // 编辑
+    openDetail (int) {
+      this.ifadd = 1;
+      axios({
+        url:
+          `/wisdomaudit/problemList/getById/` + this.list[int].problemListUuid,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
+        method: "get",
+        data: {},
+      }).then((res) => {
+        this.dqProblem = res.data.data;
+        this.dqProblem.riskAmount = parseFloat(this.dqProblem.riskAmount)
+        this.dqProblem.auditTaskUuid = this.dqProblem.auditTaskUuid.split(",");
+        this.dqProblem.basis = this.dqProblem.basis
+          ? this.dqProblem.basis.split(",")
+          : [];
+        this.ifupdata = true;
+
+        if (this.dqProblem.basis.length == 0) {
+          this.show = false;
+        }
+
+        this.dialogDetailVisible = true;
+        this.$nextTick(() => {
+          this.$refs["detailForm"].clearValidate();
+        });
+      });
+    },
+    checkDetail (pid) {
+      this.ifadd = 2;
+      axios({
+        url: `/wisdomaudit/problemList/getById/` + pid,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
+        method: "get",
+        data: {},
+      }).then((res) => {
+        this.dqProblem = res.data.data;
+        this.dqProblem.riskAmount = parseFloat(this.dqProblem.riskAmount)
+        this.dqProblem.auditTaskUuid = this.dqProblem.auditTaskUuid.split(",");
+        this.dqProblem.basis = this.dqProblem.basis
+          ? this.dqProblem.basis.split(",")
+          : [];
+        this.ifupdata = false;
+        this.dialogDetailVisible = true;
+        this.$nextTick(() => {
+          this.$refs["detailForm"].clearValidate();
+        });
+      });
+    },
+    repDate (data) {
+      let date = new Date(data);
+      let Y = date.getFullYear() + "-";
+      let M =
+        (date.getMonth() + 1 < 10
+          ? "0" + (date.getMonth() + 1)
+          : date.getMonth() + 1) + "-";
+      let D =
+        (date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) + " ";
+      let h =
+        (date.getHours() < 10 ? "0" + date.getHours() : date.getHours()) + ":";
+      let m =
+        (date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()) +
+        ":";
+      let s =
+        date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+      return Y + M + D;
+    },
+
+    //列表附件删除
+    delListFile (id) {
+      var that = this;
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        del_file(id).then(resp => {
+          if (resp.code == 0) {
+            that.$message({
+              message: "删除成功",
+              type: "success",
+            });
+            this.list_data_start();
+          } else {
+            that.$message({
+              message: resp.data.msg,
+              type: "error",
+            });
+          }
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+
+
+    },
+    handleExceed () { },
+    // 上传时
+    update_ing () {
+      this.success_btn = 1;
+    },
+    //新增问题 附件上传
+    uploadPorgress2 (response, file, fileList, tableList) {
+      this.success_btn = 0;
+      if (response && response.code === 0) {
+        response.data.isDeleted = 2;
+        tableList.push(response.data);
+        this.$message({
+          message: '上传成功',
+          type: 'success',
+          duration: 1500,
+          onClose: () => {
+            // response.data.isDeleted=2;
+            // tableList.push(response.data);
+          }
+        })
+      } else {
+        this.$message({
+          message: '上传失败',
+          type: 'error',
+          duration: 1500,
+          onClose: () => {
+
+          }
+        })
+      }
+    },
+    //新增问题 附件删除
+    handleRemove2 (file, fileList, tableList, showList, delList) {
+      if (file.response) {
+        tableList.remove(file.response.data);
+        // this.key = Math.random();
+      } else {
+        showList.remove(file);
+        file.isDeleted = 1;
+        delList.push(file);
+        console.log(showList, delList)
+      }
+    },
+    //新增问题 附件下载
+    downFile2 (id, fileName) {
+      let formData = new FormData()
+      formData.append('fileId', id)
+      down_file(formData).then(resp => {
+        const content = resp;
+        const blob = new Blob([content],
+          { type: 'application/octet-stream,charset=UTF-8' }
+        )
+        if ('download' in document.createElement('a')) {
+          // 非IE下载
+          const elink = document.createElement('a')
+          elink.download = fileName //下载后文件名
+          elink.style.display = 'none'
+          elink.href = window.URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象
+          document.body.removeChild(elink)
+        } else {
+          // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
+    },
+
+
+    // 新增问题保存
+    createData () {
+      this.$refs["dataForm"].validate((valid) => {
+        if (valid) {
+
+          var uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
+          console.log(uploadList2);
+          uploadList2.forEach((item) => {
+            console.log(item);
+            item.status = null;
+          });
+          this.temp_problem.attachmentList = uploadList2;
+
+
+          let rep = this.temp_problem;
+          rep.riskAmount = parseFloat(rep.riskAmount)
+          rep.auditTaskUuid = rep.auditTaskUuid
+            ? rep.auditTaskUuid.join(",")
+            : "";
+          rep.basis = rep.basis ? rep.basis.join(",") : "";
+          axios({
+            url: `/wisdomaudit/problemList/save`,
+            headers: {
+              TOKEN: this.dqtoken,
+            },
+            method: "post",
+            data: rep,
+          }).then((res) => {
+            if (res.data.code == 0) {
+              this.$message({
+                message: "新增成功",
+                type: "success",
+              });
+              this.dialogFormVisible = false;
+              this.temp_problem.auditTaskUuid = [];
+              this.temp_problem.basis = [];
+              this.temp_problem.describe = "";
+              this.temp_problem.field = "";
+              this.temp_problem.problem = "";
+              this.temp_problem.problemDiscoveryTime = "";
+              this.temp_problem.problemFindPeople = "";
+              this.temp_problem.managementAdvice = "";
+              this.temp_problem.riskAmount = "";
+              this.temp_problem.special = "";
+              this.init();
+            }
+          });
+        } else {
+          return false;
+        }
+      });
+    },
+    updateData () {
+      this.$refs["detailForm"].validate((valid) => {
+        if (valid) {
+          let rep = this.dqProblem;
+          rep.riskAmount = parseFloat(rep.riskAmount)
+          rep.auditTaskUuid = rep.auditTaskUuid.join(",");
+          rep.basis = rep.basis.join(",");
+          this.dialogDetailVisible = false;
+          axios({
+            url: `/wisdomaudit/problemList/update`,
+            headers: {
+              TOKEN: this.dqtoken,
+            },
+            method: "put",
+            data: rep,
+          }).then((res) => {
+            if (res.data.code == 0) {
+              this.$message({
+                message: "编辑成功",
+                type: "success",
+              });
+              this.getList();
+            }
+          });
+        }
+      });
+    },
+
+    // 编辑问题 标题查看详情
+    details_show (data, index) {
+      this.Index = index
+      this.details = true
+      this.details_list = data;
+      let top_px = (this.style_px * index + 180) + 'px'
+      this.$set(this.details_list, 'style_top', top_px)//问题
+    },
+    // 关闭
+    close_mose () {
+      this.details = false
+    },
+
+
+    // 点击编辑问题弹窗
+    //关联问题点击
+    getRelationQues () {
+      // this.$nextTick(() => {
+      //   this.$refs.searchTabel.init(this.active_project);
+      // });
+      this.init();
+      this.visible = true;//显示编辑弹窗
+    },
+
+    // 初始化
+    init () {
+      let params = {
+        condition: {
+          managementProjectUuid: this.active_project,
+          problem: this.searchform.problem
+        }
+      };
+      task_pageList_wt(params).then(resp => {
+        let datas = resp.data;
+        this.relationTabel2 = datas.records;
+        this.visible = true;
+        console.log(this.relationTabel2);
+
+      })
+    },
+    //关联问题多选的时候
+    relationTabelSel (row) {
+      this.multipleSelection = row
+    },
+    //生成关联问题
+    setRelation () {
+      if (this.multipleSelection.length >= 1) {
+        var str = '', problemListUuidList = [];
+        this.multipleSelection.forEach((item, index) => {
+          str += (index + 1) + "." + item.problem + '\n' + "\xa0\xa0\xa0" + item.describe + '\n';
+          problemListUuidList.push(item.problemListUuid)
+        });
+        var data = { str: str, problemListUuidList: problemListUuidList, multipleSelection: this.multipleSelection };
+        this.$emit('refreshSearch', data)
+      } else {
+        this.$message('请至少选择我一条数据进行生成');
+        return false
+      }
+      this.visible = false;
+    },
+    //分页点击
+    handleSizeChange (val) {
+      this.searchForm.pageSize = val;
+      this.getData();
+    },
+    handleCurrentChange (val) {
+      this.searchForm.pageNo = val;
+      this.getData();
+    },
+
+
+    // -------------------------------------------
+    // 被审计单位
+    Company_data (params) {
+      console.log(params);
+      Company(params).then(resp => {
+        this.Company_data_list = resp.data
+      })
+    },
+    select_Company (val) {
+      this.formDetail.auditDepart = val;
+    },
+    //列表附件删除
+    delListFile (id) {
+      var that = this;
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        del_file(id).then(resp => {
+          if (resp.code == 0) {
+            that.$message({
+              message: "删除成功",
+              type: "success",
+            });
+            this.list_data_start();
+          } else {
+            that.$message({
+              message: resp.data.msg,
+              type: "error",
+            });
+          }
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+
+
+    },
+    handleExceed () { },
+    //附件上传
+    uploadPorgress (response, file, fileList, tableList) {
+      if (response && response.code === 0) {
+        response.data.isDeleted = 2;
+        tableList.push(response.data);
+        this.$message({
+          message: '上传成功',
+          type: 'success',
+          duration: 1500,
+          onClose: () => {
+            // response.data.isDeleted=2;
+            // tableList.push(response.data);
+          }
+        })
+      } else {
+        this.$message({
+          message: '上传失败',
+          type: 'error',
+          duration: 1500,
+          onClose: () => {
+
+          }
+        })
+      }
+    },
+    //附件删除
+    handleRemove (file, fileList, tableList, showList, delList) {
+      if (file.response) {
+        tableList.remove(file.response.data);
+        // this.key = Math.random();
+      } else {
+        showList.remove(file);
+        file.isDeleted = 1;
+        delList.push(file);
+        console.log(showList, delList)
+      }
+    },
+    //附件下载
+    downFile (id, fileName) {
+      let formData = new FormData()
+      formData.append('fileId', id)
+      down_file(formData).then(resp => {
+        const content = resp;
+        const blob = new Blob([content],
+          { type: 'application/octet-stream,charset=UTF-8' }
+        )
+        if ('download' in document.createElement('a')) {
+          // 非IE下载
+          const elink = document.createElement('a')
+          elink.download = fileName //下载后文件名
+          elink.style.display = 'none'
+          elink.href = window.URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象
+          document.body.removeChild(elink)
+        } else {
+          // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
+    },
+    //获取用户信息
+    getUser () {
+      var that = this;
+      get_userInfo().then(resp => {
+        that.userInfo = resp.data;
+        that.formDetail.reviewerName = that.userInfo.managementProject.projectChargemanName;
+        that.formDetail.auditorsName = this.userInfo.user.realName;
+
+        // sj[1]=sj[1]<10?'0'+sj[1]:sj[1];
+
+        if (!!window.ActiveXObject || "ActiveXObject" in window) {
+          var sj = new Date().toLocaleDateString()
+          sj = sj.replace(/(年|月)/g, '/').replace('日', '').replace(/[^\d-/]/g, '').split('/');
+          sj[1] = sj[1] < 10 ? '0' + sj[1] : sj[1];
+          sj[2] = sj[2] < 10 ? '0' + sj[2] : sj[2];
+        } else {
+          var sj = new Date().toLocaleDateString().split('/');
+          sj[1] = sj[1].padStart(2, '0');
+          sj[2] = sj[2].padStart(2, '0');
+        }
+        that.formDetail.compileDate = sj[0] + "-" + sj[1] + "-" + sj[2];
+        // console.log(that.formDetail.compileDate)
+      })
+    },
+    //复核人列表
+    getFhrList () {
+      projectMembership_listUserInfo(1, 10000).then(resp => {
+        this.FhrList = resp.data.list;
+      })
+    },
+    //审计人员列表
+    getSjryList () {
+      var params = {
+        condition: {
+          managementProjectUuid: this.active_project,
+        },
+        pageNo: 1,
+        pageSize: 1000000,
+      };
+      task_select_people(params).then(resp => {
+        this.sjryList = resp.data.records;
+      })
+    },
+    //附件上传时
+    fileChange (file, fileList) {
+      const loading = this.$loading({
+        lock: true,
+        text: '上传中',
+        spinner: 'el-icon-loading',
+        background: 'transparent'
+      });
+      if (file.response && file.response.code === 0) {
+        loading.close();
+        this.$message({
+          message: '上传成功',
+          type: 'success',
+          duration: 1500,
+          onClose: () => {
+
+          }
+        })
+      } else if (file.response && file.response.code != 0) {
+        loading.close();
+        this.$message({
+          message: '上传失败',
+          type: 'error',
+          duration: 1500,
+          onClose: () => {
+
+          }
+        })
+      }
+    },
+    //附件下载
+    downFile (id, fileName) {
+      let formData = new FormData()
+      formData.append('fileId', id)
+      down_file(formData).then(resp => {
+        const content = resp;
+        const blob = new Blob([content],
+          { type: 'application/octet-stream,charset=UTF-8' }
+        )
+        if ('download' in document.createElement('a')) {
+          // 非IE下载
+          const elink = document.createElement('a')
+          elink.download = fileName //下载后文件名
+          elink.style.display = 'none'
+          elink.href = window.URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象
+          document.body.removeChild(elink)
+        } else {
+          // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
+    },
+    //点击确认单附件显示附件列表
+    getFileList (id) {
+      this.tableFileList = [];
+      auditBasy_getFileList(id).then(resp => {
+        this.tableFileList = resp.data;
+      })
+    },
+    //删除
+    deletes (val) {
+      this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        auditConfirmation_delete(val).then(resp => {
+          if (resp.code == 0) {
+            this.$message({
+              message: "删除成功",
+              type: "success",
+            });
+            this.list_data_start();
+          } else {
+            this.$message({
+              message: resp.data.msg,
+              type: "error",
+            });
+          }
+        });
+      }).catch(() => { })
+
+    },
+    //编辑
+    edit (row) {
+      this.clearForm();
+      this.isAdd = true;
+      this.confirmationDialogTitle = "编辑确认单";
+      this.ifLook = false;
+      this.getDetail(row);
+
+      // 显示二级部门
+      if (this.auditOrgName == '省本部') {
+        this.compileDate = true;
+      }
+
+
+    },
+    getDetail (row) {
+      auditConfirmation_getDetail(row.auditConfirmationUuid).then(resp => {
+        var datas = resp.data;
+        this.formDetail = datas;
+        this.confirmationDialogVisible = true;
+        if (this.formDetail.auditOrgOpinion.indexOf("情况属实") == -1) {
+          this.formDetail.auditOrgOpinion = "情况属实\n" + this.formDetail.auditOrgOpinion
+        }
+        if (datas.attachmentList) {
+          datas.attachmentList.forEach((item) => {
+            item.name = item.fileName;
+            item.url = item.filePath;
+            item.isDeleted = 0;
+          });
+        }
+        this.fileList1 = datas.attachmentList || [];
+
+
+        // if (this.projectType == 'zxsj') {
+        //   this.confirmationDialogVisibleZx = true;
+        //   if (this.formDetail.auditOrgOpinion.indexOf("情况属实") == -1) {
+        //     this.formDetail.auditOrgOpinion = "情况属实\n" + this.formDetail.auditOrgOpinion
+        //   }
+        //   // }else if (this.projectType == 'jzsj') {
+        // } else {
+        //   this.confirmationDialogVisible = true;
+        // }
+      })
+    },
+    getLook (row, column, event) {
+      this.clearForm();
+      this.ifLook = true;
+      this.isAdd = true;
+      this.confirmationDialogTitle = "查看确认单";
+      this.getDetail(row);
+    },
+    //列表数据
+    list_data_start () {
+      let params = {
+        condition: {
+          managementProjectUuid: this.active_project,
+        }
+      };
+      this.loading = true
+      auditConfirmation_pageList(params).then(resp => {
+        var datas = resp.data;
+        this.confirmaryData = datas.dataList;
+        this.managementProjectName = datas.managementProjectName;
+        this.auditOrgName = datas.auditOrgName;
+        this.projectType = datas.projectType;
+        this.loading = false;
+        this.getUser();
+      })
+    },
+    //   新增确认单按钮事件
+    addConfirmation () {
+      this.clearForm();
+      this.confirmationDialogTitle = "新增确认单";
+      this.confirmationDialogVisible = true;
+      this.getUser();
+      this.ifLook = false;
+
+      // 显示二级部门
+      if (this.auditOrgName == '省本部') {
+        this.compileDate = true;
+      }
+
+
+    },
+    // 增加弹出框关闭事件
+    handleClose () {
+      this.compileDate = false;//隐藏二级部门
+      this.confirmationDialogVisible = false
+      this.confirmationDialogVisibleZx = false
+    },
+
+    //获取关联的问题
+    getSearchInfo (data) {
+      this.formDetail.matterDetail = data.str;
+      this.formDetail.problemListUuidList = data.problemListUuidList;
+      this.formDetail.problemsNumber = data.multipleSelection.length;
+    },
+    debounce (fn, delay = 300) {   //默认300毫秒
+      var timer;
+      return function () {
+        var args = arguments;
+        if (timer) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(() => {
+          fn.apply(this, args);   // this 指向vue
+        }, delay);
+      };
+    },
+    //保存审计确认单
+    saveForm (type) {
+      this.isDisable = true;
+      setTimeout(() => {
+        this.isDisable = false;
+      }, 3000);
+      this.$refs['addForm'].validate((valid) => {
+        if (valid) {
+          var uploadList1 = this.attachmentList1.concat(this.fileList1, this.fileList1_del);
+          console.log(uploadList1);
+
+          uploadList1.forEach((item) => {
+            item.status = null;
+          });
+          this.formDetail.attachmentList = uploadList1;
+          if (this.confirmationDialogTitle == '新增确认单') {
+            this.formDetail.managementProjectName = this.managementProjectName;
+            this.formDetail.auditOrgName = this.auditOrgName;
+            this.formDetail.managementProjectUuid = this.active_project;
+            console.log(this.formDetail);
+            console.log(this.formDetail.auditDepart);
+
+            auditConfirmation_save(this.formDetail).then(resp => {
+              if (resp.code == 0) {
+                this.$message({
+                  message: "保存成功",
+                  type: "success",
+                });
+                this.confirmationDialogVisible = false;
+                this.list_data_start();
+              } else {
+                this.$message({
+                  message: resp.data.msg,
+                  type: "error",
+                });
+              }
+
+            })
+          } else {
+            auditConfirmation_update(this.formDetail).then(resp => {
+              if (resp.code == 0) {
+                this.$message({
+                  message: "修改成功",
+                  type: "success",
+                });
+                this.confirmationDialogVisible = false;
+                this.confirmationDialogVisibleZx = false;
+                this.list_data_start();
+              } else {
+                this.$message({
+                  message: resp.data.msg,
+                  type: "error",
+                });
+              }
+
+            })
+          }
+        } else {
+          this.$message.error("请添加必填项和正确的数据格式");
+          return false;
+        }
+      });
+    },
+    clearForm () {
+      this.formDetail = {
+        attachmentList: [],
+        matter: '',
+        matterDetail: '',
+        auditorsName: '',
+        reviewerName: '',
+        compileDate: '',
+        auditOrgOpinion: '',
+        principalName: '',
+        principalPost: '',
+        signatureDate: '',
+      };
+      this.attachmentList1 = [];
+      this.fileList1 = [];
+      this.fileList1_del = [];
+      if (this.$refs['addForm']) {
+        this.$refs['addForm'].resetFields();
+      }
+
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.min_height {
+  min-height: 500px;
+}
+.confirmaryTable {
+  .update {
+    display: flex;
+    align-items: left;
+    justify-content: left;
+  }
+  .update_icon {
+    width: 15px;
+    height: 15px;
+  }
+  .update_icon svg {
+    float: left;
+    width: 15px;
+    height: 15px;
+  }
+  .update span {
+    color: #1371cc;
+    margin-left: 5px;
+  }
+  .btnStyle {
+    background: none;
+    border: 0px;
+    margin: 0 3px;
+    font-size: 14px;
+  }
+}
+.title {
+  border-bottom: 1px solid #d2d2d2;
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+.formData {
+  // border: 1px solid red;
+  /*padding: 2%;*/
+  .el-button {
+    border-color: #ececec;
+    color: #9e9e9f;
+  }
+}
+</style>
+<style scoped>
+@import "../../../assets/styles/css/yw.css";
+.el-table__header {
+  margin-top: 0 !important;
+}
+/* 问题详情框 */
+.mose {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 9998;
+}
+.dlag >>> .el-dialog {
+  position: relative;
+}
+.problem_details_conter {
+  width: 100%;
+  position: absolute;
+  /* top: 90px; */
+  left: 0;
+  padding: 0 20px;
+  box-sizing: border-box;
+  z-index: 9999;
+}
+.problem_details_conter .list {
+  margin: 0 auto;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  background: #f5f5f9;
+  display: flex;
+  flex-wrap: wrap;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+.list li {
+  width: 100%;
+  margin-bottom: 20px;
+  text-align: left;
+  line-height: 20px;
+  box-sizing: border-box;
+  color: rgba(0, 0, 0, 0.8);
+}
+.list li:last-child {
+  margin-bottom: 0;
+}
+.list li p {
+  width: 33%;
+  float: left;
+}
+/* 问题详情框 end*/
+
+/* 编辑   */
+.edit_table >>> .zb-form .el-form-item {
+  margin-bottom: 10px !important;
+}
+.edit_table >>> .zb-form .el-form-item__content {
+  width: 30%;
+  display: inline-block;
+}
+.edit_table >>> .zb-form .el-form-item__label {
+  width: 20% !important;
+  text-align: right !important;
+  display: inline-block;
+}
+.relation-div-footer {
+  margin-top: 10px;
+  text-align: center;
+}
+.edit_table >>> .relation-div-footer button {
+  margin-left: 10px;
+}
+.relation-div {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+}
+.edit_table >>> .relationTabelClass label {
+  width: auto !important;
+}
+.edit_table >>> .relation-div-search .el-form-item__content {
+  position: static !important;
+}
+.relation-div-search {
+  text-align: right;
+  clear: both;
+}
+.searchBtn button {
+  background: #0089d6 !important;
+  color: #fff !important;
+}
+.edit_table >>> .searchBtn .el-input-group__append {
+  border: none !important;
+}
+/* 编辑  end */
+
+.qrd-dialog >>> .el-dialog__header,
+.qrd-dialog >>> .el-dialog__body {
+  padding: 0 !important;
+}
+.qrd-dialog >>> .el-dialog__headerbtn {
+  top: 15px !important;
+  right: 15px !important;
+}
+.qrd-dialog >>> .el-dialog__footer {
+  padding-left: 35px !important;
+  padding-right: 35px !important;
+}
+.relationBtn {
+  margin-bottom: 10px;
+  border-color: #dcdfe6 !important;
+  display: block;
+}
+.list-folder {
+  color: orange;
+  margin-right: 5px;
+}
+.smb-folder {
+  transform: scale(1.1);
+  display: inline-block;
+}
+.smb-btn {
+  font-size: 14px !important;
+  color: #666;
+  font-weight: normal !important;
+}
+>>> .list-folder-btn {
+  font-weight: normal;
+  background: transparent;
+  border: none;
+  color: blue;
+}
+.zxTabel-div {
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+.zxTabel {
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  width: 100%;
+}
+.zxTabel > tr:not(:last-child) {
+  border-bottom: 1px solid #ddd;
+  background: #fff;
+}
+.zxTabel td {
+  padding: 10px;
+}
+.zxTabel td:not(:last-child) {
+  border-right: 1px solid #ddd;
+}
+.inline-block {
+  display: inline-block !important;
+}
+.blue {
+  color: blue;
+}
+.orange {
+  color: orange;
+}
+>>> .el-form-item {
+  margin-bottom: 20px !important;
+}
+>>> .el-dialog__footer {
+  text-align: center;
+}
+>>> .btnStyle .el-upload {
+  width: 100% !important;
+  margin: 0 !important;
+  text-align: center !important;
+}
+
+>>> .itemOne .el-form-item__content {
+  width: 77% !important;
+}
+.itemOne .el-select,
+.itemOne .el-textarea {
+  width: 70% !important;
+}
+>>> .itemThree .el-form-item__content {
+  margin-left: 140px !important;
+}
+.itemTwo {
+  width: 48.5%;
+}
+.itemTwo .el-select {
+  width: 100% !important;
+}
+>>> .itemTwo .el-form-item__content {
+  width: 59% !important;
+}
+>>> .itemThree .el-form-item__label {
+  width: 130px !important;
+}
+>>> .upload-yw .el-form-item__content {
+  width: 60% !important;
+}
+.tableFileList-li > div {
+  width: 85%;
+  vertical-align: middle;
+}
+.delFile {
+  width: 15%;
+  text-align: right;
+  vertical-align: middle;
+  font-weight: bold;
+}
+</style>

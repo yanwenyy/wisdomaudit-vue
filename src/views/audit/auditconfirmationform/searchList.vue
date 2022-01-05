@@ -8,10 +8,6 @@
       <div class="relation-div">
         <div class="relation-div-search search-form">
 
-          <el-button type="primary"
-                     @click="add_problem()"
-                     class="relationBtn">新增问题</el-button>
-
           <el-form :inline="true"
                    :model="searchform"
                    @keyup.enter.native="init(id)"
