@@ -82,12 +82,12 @@ export default {
 
       activeName: "",
       tablelist: [
-        // {tabName:'已支付铁塔服务费但未起租'},
-        //  {tabName:'为不真实站点结算铁塔服务费'},
-        //   {tabName:"起租表中塔类产品类型、机房类型、生命状态与实际不一致"},
-        //    {tabName:'同一站点重复支付场地费'},
-        //     {tabName:'同一站点重复结算铁塔服务费、铁塔代维费'},
-        //      {tabName:'同站点按次工单结算类型与包年规模不一致，多支付代维费'},
+        {tabName:'已支付铁塔服务费但未起租'},
+         {tabName:'为不真实站点结算铁塔服务费哈'},
+          {tabName:"起租表中塔类产品类型、机房类型、生命状态与实际不一致"},
+           {tabName:'同一站点重复支付场地费哈'},
+            {tabName:'同一站点重复结算铁塔服务费、铁塔代维费'},
+             {tabName:'同站点按次工单结算类型与包年规模不一致，多支付代维费'},
 
       ],
       value: "",
@@ -207,13 +207,15 @@ export default {
   }
 }
 .el-radio-button{
-  width: 220px;
+  width: 180px;
   margin-top: 10px;
+    margin-left: 4px;
 
 }
 
 .el-radio-button ::v-deep  .el-radio-button__inner{
-width: 220px;
+font-size: 12px;
+width: 180px;
 white-space:nowrap;
 overflow:hidden;
 text-overflow:ellipsis;
@@ -223,8 +225,8 @@ border-top-left-radius: 10px;
 box-shadow:none !important  ; 
 
 }
-.el-radio-button--medium ::v-deep .el-radio-button__inner  {
-  padding: 10px 0 ;
+.el-radio-button::v-deep .el-radio-button__inner  {
+  padding: 10px 15px ;
 }
 
 
