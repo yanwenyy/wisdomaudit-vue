@@ -263,7 +263,7 @@
               <template slot-scope="scope">
                 <span v-if="scope.row.problem"
                    @click="details_show(scope.row,scope.$index+1)"
-                   style="cursor: pointer;color:rgb(68, 163, 223);">{{scope.row.problem| ellipsis(10) }}</span>
+                   style="cursor: pointer;color:rgb(68, 163, 223);">{{scope.row.problem}}</span>
                 <span v-else>--</span>
               </template>
             </el-table-column>
