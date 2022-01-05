@@ -1,7 +1,15 @@
 <template>
   <div class="feeback">
     <!-- <p class="title">反馈资料列表</p> -->
-
+<Vault :vaultV="vaultV"
+           :sceneId="sceneId"
+           :approvers="approvers"
+           :maxTime="maxTime"
+           :dqtime="dqtime"
+           :account="account"
+           :appSessionId="appSessionId"
+           @changevault="changevault"
+           @vdownload="vdownload"></Vault>
     <div class="task_type">
       <!-- 表单 -->
       <el-table :data="list_data_list"
@@ -221,7 +229,7 @@
                       <li v-for="(item,index) in findFile_list_moban"
                           :key="index"
                           class="pointer blue"
-                          @click="download(item.attachmentUuid,item.fileName)">
+                          @click="openVault(item,'下载1')">
                         {{item.fileName}}</li>
                     </ul>
                     <div slot="reference"
@@ -286,7 +294,7 @@
                       <li v-for="(item,index) in findFile_list"
                           :key="index"
                           class="pointer blue"
-                          @click="download(item.attachmentUuid,item.fileName)">
+                          @click="openVault(item,'下载1')">
                         {{item.fileName}}</li>
                     </ul>
                     <div slot="reference"
@@ -509,7 +517,7 @@
                            align="center"
                            label="文件名称">
             <template slot-scope="scope">
-              <span @click="enclosure(scope.row.attachmentUuid,scope.row.fileName)"> {{  scope.row.fileName }}</span>
+              <span @click="openVault(scope.row,'下载2')"> {{  scope.row.fileName }}</span>
             </template>
 
           </el-table-column>
@@ -534,7 +542,7 @@
                            align="center"
                            label="文件名称">
             <template slot-scope="scope">
-              <span @click="enclosure(scope.row.attachmentUuid,scope.row.fileName)">{{scope.row.fileName}}</span>
+              <span @click="openVault(scope.row,'下载2')">{{scope.row.fileName}}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -546,6 +554,8 @@
 
 <script>
 import axios from "axios";
+import Vault from "@WISDOMAUDIT/components/Vaultcertification";
+
 import { down_file } from
   '@SDMOBILE/api/shandong/ls'
 
@@ -555,9 +565,19 @@ import { fmtDate } from '@SDMOBILE/model/time.js';
 
 export default {
   components: {
+    Vault
   },
   data () {
     return {
+      vaultV: false,
+      sceneId: 1557, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
+      approvers: [], //审批人列表
+      maxTime: "",//最大时间
+      dqtime: "",//当前时间
+      account: "",//返回的账户
+      appSessionId: "",//应用sessionid
+      downloaobj: {},//暂存的下载目标
+
       remarks2: '列表数据列表数据列表数据列表数据列表数据列表数据列表数据',
       dqtoken: "",
       headers: '',
@@ -654,6 +674,66 @@ export default {
     this.list_data_page(params); // 反馈列表
   },
   methods: {
+    //通过认证后的方法
+    vdownload () {
+      console.log(this.downloaobj.dtype)
+      if(this.downloaobj.dtype=='下载1'){
+        this.download(this.downloaobj.attachmentUuid,this.downloaobj.fileName)
+      }else{
+        this.enclosure(this.downloaobj.attachmentUuid,this.downloaobj.fileName)
+      }
+    },
+    //控制认证弹窗
+    changevault (val) {
+      this.vaultV = val;
+    },
+    //打开金库
+    openVault (obj,downtype) {
+      console.log("芝麻开门")
+      this.downloaobj = obj
+      this.downloaobj.dtype = downtype
+      axios({
+        method: "post",
+        url: `/wisdomaudit/treasury/getTreasuryStatus`,
+        headers: {
+          TOKEN: this.headers.TOKEN,
+        },
+        data: {
+          sceneId: this.sceneId,
+          sceneName: "附件上传后下载", //场景名称
+          sensitiveData: "report_download", //敏感数据对应的编号：  data_export 经营指标、模型结果 report_download 附件上传后下载;
+          sensitiveOperate: "export", //敏感操作对应的编号：export： 导出   select：查询
+        },
+      }).then((resp) => {
+        //result 是否开启 开启：1  无需开启：0
+        //resultDesc 无需开启原因（成功错误信息）
+        //historyAppSessionId 历史有效应用sessionid（仅当已授权状态时必填属性）
+        //relation 多值授权方式与访问方式关系
+        //policyAuthMethod 授权方式： remoteAuth远程授权
+        //policyAccessMethod
+        //maxTime 授权条件（必填属性）单位为小时： 当为0时，为单次授权；否则为时间段授权即允许以当前时间为开始时间，开始时间+maxTime时间为最大结束时间，允许用户在此范围选择；
+        //approvers 审批人列表
+        //如果是线上环境
+        if (resp.data.data.isVaultProfiles) {
+          let rep = resp.data.data.treasuryStatusRsp;
+          if (rep.result == 0) {
+            this.$message(rep.resultDesc);
+            return;
+          } else {
+            console.log(rep);
+            this.approvers = rep.approvers || "";
+            this.maxTime = rep.maxTime;
+            this.dqtime = new Date();
+            this.account = resp.data.data.account;
+            this.appSessionId = resp.data.data.appSessionId;
+            this.vaultV = true;
+          }
+        } else {
+          //否则不处理或在此处直接进行后面的操作
+          this.vdownload()
+        }
+      });
+    },
 
     // 新增上传附件
     handleChangePic_verify (file, fileList) {

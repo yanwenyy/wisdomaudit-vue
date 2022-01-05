@@ -383,7 +383,7 @@
     <!-- <search-list ref="searchTabel"
                  @refreshSearch="getSearchInfo"></search-list> -->
     <el-dialog center
-               width="80%"
+               width="70%"
                title="问题列表"
                class="edit_table"
                :visible.sync="visible"
@@ -405,6 +405,7 @@
                         placeholder="问题名称"
                         clearable>
                 <el-button slot="append"
+                           style="height:36px;"
                            icon="el-icon-search"
                            @click="init(id)"></el-button>
               </el-input>
@@ -433,13 +434,14 @@
             </el-table-column>
             <el-table-column align="center"
                              prop="problem"
+                             width="250"
                              show-overflow-tooltip
                              label="问题">
               <template slot-scope="scope">
-                <p v-if="scope.row.problem"
-                   @click="details_show(scope.row,scope.$index+1)"
-                   style="cursor: pointer;color:rgb(68, 163, 223);">{{scope.row.problem }}</p>
-                <p v-else>--</p>
+                <span v-if="scope.row.problem"
+                      @click="details_show(scope.row,scope.$index+1)"
+                      style="cursor: pointer;color:rgb(68, 163, 223);">{{scope.row.problem }}</span>
+                <span v-else>--</span>
               </template>
             </el-table-column>
             <!-- <el-table-column align="center"
@@ -457,7 +459,6 @@
             -->
             <el-table-column align="center"
                              prop="riskAmount"
-                             width="150"
                              label="风险金额(万元)">
               <template slot-scope="scope">
                 {{ parseFloat(scope.row.riskAmount) }}
@@ -465,7 +466,6 @@
             </el-table-column>
             <el-table-column align="center"
                              prop="problemDiscoveryTime"
-                             width="150"
                              label="发现日期">
               <template slot-scope="scope">{{
               scope.row.problemDiscoveryTime | dateformat
@@ -473,7 +473,6 @@
             </el-table-column>
             <el-table-column align="center"
                              prop="problemFindPeople"
-                             width="150"
                              label="发现人">
             </el-table-column>
 
@@ -483,14 +482,13 @@
                              align="center"
                              label="附件">
               <template slot-scope="scope">
-
                 <el-popover :popper-class="enclosure_details_list==''?'no-padding':''"
-                            v-if="scope.row.attachmentList.length!==0"
                             placement="bottom"
+                            v-if="scope.row.attachmentList.length!==0"
                             width="250"
                             @show="open_enclosure_details(scope.row.attachmentList)"
                             trigger="click">
-                  <ul v-if="scope.row.attachmentList!=''"
+                  <ul v-if="enclosure_details_list!=''"
                       class="fileList-ul">
                     <li class="tableFileList-title">文件名称</li>
                     <li v-for="(item,index) in enclosure_details_list"
@@ -505,15 +503,28 @@
                        class="el-icon-folder-opened list-folder"></i>{{scope.row.attachmentList.length}}
                   </div>
                 </el-popover>
-                <p v-else>--</p>
+                <span v-else>--</span>
 
               </template>
             </el-table-column>
 
-            <el-table-column align="center"
+            <!-- <el-table-column align="center"
                              prop="managementAdvice"
                              :show-overflow-tooltip="true"
                              label="管理建议">
+            </el-table-column> -->
+
+            <el-table-column label="操作"
+                             width="100"
+                             v-if="userRole == 1 || userRole == 2">
+              <template slot-scope="scope">
+                <el-button @click="list_openDetail(scope.row.problemListUuid)"
+                           type="text"
+                           style="color: #0c87d6">编辑</el-button>
+                <el-button @click="del_list(scope.row.problemListUuid)"
+                           type="text"
+                           style="color: #ff8a72">删除</el-button>
+              </template>
             </el-table-column>
 
           </el-table>
@@ -525,7 +536,7 @@
           <!-- 详情 -->
           <div class="problem_details_conter"
                :style="{'top':details_list.style_top}"
-               v-if="details == true">
+               v-if="details == true &&details_list">
             <ul class="list">
               <li>
                 <p>序号：{{details_list.index}}</p>
@@ -541,7 +552,6 @@
 
               <li>
                 <p>附件：<i class="el-icon-folder-opened list-folder"></i>{{details_list.attachmentList.length}}</p>
-                <p>关联任务：{{details_list.index}}</p>
               </li>
 
               <li>
@@ -908,6 +918,45 @@
             </el-option>
           </el-select>
         </el-form-item>
+
+        <el-form-item class="itemTwo"
+                      label="上传附件：">
+          <el-upload class="upload-demo"
+                     drag
+                     action="/wisdomaudit/auditBasy/filesUpload"
+                     :on-success="( response, file, fileList)=>{
+                       uploadPorgress2( response, file, fileList,attachmentList2)
+                       }"
+                     :on-remove="( file, fileList)=>{
+                       handleRemove2( file, fileList,attachmentList2,fileList2,fileList2_del)
+                       }"
+                     :on-progress="update_ing"
+                     multiple
+                     :limit="3"
+                     :key="key"
+                     :on-exceed="handleExceed"
+                     :headers="headers"
+                     :file-list="fileList2">
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">
+              点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc
+            </div>
+          </el-upload>
+          <!-- <div class="inline-block"
+               v-if="ifLook==1">
+            <el-tooltip class="item"
+                        effect="dark"
+                        v-for="(item,index) in fileList2"
+                        :key="index"
+                        :content="item.fileName"
+                        placement="top">
+              <div class="blue pointer"
+                   @click="downFile2(item.attachmentUuid,item.fileName)">
+                {{item.fileName.length>20?item.fileName.slice(0,20)+"...":item.fileName}}</div>
+            </el-tooltip>
+          </div> -->
+        </el-form-item>
+
       </el-form>
       <div slot="footer"
            class="dialog-footer">
@@ -1222,7 +1271,6 @@ export default {
     // 查看附件详情
     open_enclosure_details (item) {
       this.enclosure_details_list = [];//清空附件
-
       if (item) {
         this.enclosure_details_list = item
       }
@@ -1679,6 +1727,7 @@ export default {
         }
       });
     },
+    // 问题 更新编辑保存
     updateData () {
       this.$refs["detailForm"].validate((valid) => {
         if (valid) {
@@ -1686,6 +1735,14 @@ export default {
           rep.riskAmount = parseFloat(rep.riskAmount)
           rep.auditTaskUuid = rep.auditTaskUuid.join(",");
           rep.basis = rep.basis.join(",");
+
+          rep.attachmentList.forEach((item) => {
+            console.log(item);
+            item.status = null;
+          });
+          console.log(rep.attachmentList);
+
+
           this.dialogDetailVisible = false;
           axios({
             url: `/wisdomaudit/problemList/update`,
@@ -1700,7 +1757,7 @@ export default {
                 message: "编辑成功",
                 type: "success",
               });
-              this.getList();
+              this.init();//刷新问题编辑的列表
             }
           });
         }
@@ -1712,13 +1769,92 @@ export default {
       this.Index = index
       this.details = true
       this.details_list = data;
-      let top_px = (this.style_px * index + 180) + 'px'
+      let top_px = (this.style_px * index + 155) + 'px'
       this.$set(this.details_list, 'style_top', top_px)//问题
     },
     // 关闭
     close_mose () {
       this.details = false
     },
+
+    // 编辑问题
+    list_openDetail (id) {
+      this.ifadd = 1;
+      axios({
+        url:
+          `/wisdomaudit/problemList/getById/` + id,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
+        method: "get",
+        data: {},
+      }).then((res) => {
+        this.dqProblem = res.data.data;
+        this.dqProblem.riskAmount = parseFloat(this.dqProblem.riskAmount)
+        this.dqProblem.auditTaskUuid = this.dqProblem.auditTaskUuid.split(",");
+        this.dqProblem.basis = this.dqProblem.basis
+          ? this.dqProblem.basis.split(",")
+          : [];
+        this.ifupdata = true;
+
+        if (this.dqProblem.basis.length == 0) {
+          this.show = false;
+        }
+
+        // 附件
+        let datas = res.data.data
+        console.log(datas);
+
+        if (datas.attachmentList) {
+          datas.attachmentList.forEach((item) => {
+            item.name = item.fileName;
+            item.url = item.filePath;
+            item.isDeleted = 0;
+          });
+        }
+        this.fileList2 = datas.attachmentList || [];
+
+
+        this.dialogDetailVisible = true;
+        this.$nextTick(() => {
+          this.$refs["detailForm"].clearValidate();
+        });
+      });
+    },
+    // 删除
+    del_list (pid) {
+      this.$confirm("确认删除该条数据吗?删除后数据不可恢复?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        axios({
+          url: `/wisdomaudit/problemList/delete/` + pid,
+          headers: {
+            TOKEN: this.dqtoken,
+          },
+          method: "delete",
+          data: {},
+        }).then((res) => {
+          if (res.data.code == 0) {
+            this.$message({
+              message: "删除成功",
+              type: "success",
+            });
+            this.init();
+          }
+        });
+      });
+      let rep = [];
+      // for(let i = 0;i<this.problemtableSelection.length;i++){
+      //   rep.push(this.problemtableSelection[i].problemListUuid)
+      // }
+      // rep =  rep.join(",")
+    },
+
+
+
+
 
 
     // 点击编辑问题弹窗
@@ -1762,7 +1898,7 @@ export default {
         var data = { str: str, problemListUuidList: problemListUuidList, multipleSelection: this.multipleSelection };
         this.$emit('refreshSearch', data)
       } else {
-        this.$message('请至少选择我一条数据进行生成');
+        this.$message('请至少选择一条数据进行生成');
         return false
       }
       this.visible = false;
@@ -2028,8 +2164,6 @@ export default {
       if (this.auditOrgName == '省本部') {
         this.compileDate = true;
       }
-
-
     },
     getDetail (row) {
       auditConfirmation_getDetail(row.auditConfirmationUuid).then(resp => {
@@ -2261,9 +2395,21 @@ export default {
 </style>
 <style scoped>
 @import "../../../assets/styles/css/yw.css";
-.el-table__header {
+>>> .el-table__header {
   margin-top: 0 !important;
 }
+/* .edit_table >>> .el-table__row,
+.edit_table >>> table tr,
+.edit_table >>> .el-table__cell,
+.edit_table >>> .has-gutter {
+  height: 40px;
+  max-height: 40px;
+} */
+
+.edit_table >>> .el-table--medium .el-table__cell {
+  padding: 8px 0 !important;
+}
+
 /* 问题详情框 */
 .mose {
   width: 100%;

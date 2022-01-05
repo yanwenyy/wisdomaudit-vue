@@ -1,5 +1,14 @@
 <template>
   <div class="sjzl ">
+    <Vault :vaultV="vaultV"
+           :sceneId="sceneId"
+           :approvers="approvers"
+           :maxTime="maxTime"
+           :dqtime="dqtime"
+           :account="account"
+           :appSessionId="appSessionId"
+           @changevault="changevault"
+           @vdownload="vdownload"></Vault>
     <!-- tab 切换 -->
     <el-tabs v-model="activeName"
              @tab-click="handleClick">
@@ -96,7 +105,7 @@
                      style="display: flex;">
 
                   <!-- 导出 -->
-                  <el-button @click="exportList(scope.row)"
+                  <el-button @click="openVault(scope.row,'导出')"
                              v-if="scope.row.status == 2"
                              type="text"
                              class="status_btn"
@@ -286,7 +295,7 @@
                     <li v-for="(item,index) in enclosure_details_list"
                         :key="index"
                         class="pointer blue"
-                        @click="download(item.attachmentUuid,item.fileName)">
+                        @click="openVault(item,'下载')">
                       {{item.fileName}}</li>
                   </ul>
                   <div slot="reference"
@@ -943,7 +952,7 @@
                   <li v-for="(item,index) in enclosure_details_list"
                       :key="index"
                       class="pointer blue"
-                      @click="download(item.attachmentUuid,item.fileName)">
+                      @click="openVault(item,'下载')">
                     {{item.fileName}}</li>
                 </ul>
                 <div slot="reference"
@@ -1032,7 +1041,7 @@
                     <li v-for="(item,index) in enclosure_details_list"
                         :key="index"
                         class="pointer blue"
-                        @click="download(item.attachmentUuid,item.fileName)">
+                        @click="openVault(item,'下载')">
                       {{item.fileName}}</li>
                   </ul>
                   <div slot="reference"
@@ -1101,7 +1110,7 @@
         <el-table-column prop="fileName"
                          label="文件名称">
           <template slot-scope="scope">
-            <el-button @click="download(scope.row.attachmentUuid,scope.row.fileName)"
+            <el-button @click="openVault(item,'下载')"
                        class="file_name"
                        type="text"
                        style="color: #1371cc"
@@ -1197,7 +1206,7 @@
                   <li v-for="(item,index) in details_list"
                       :key="index"
                       class="pointer blue"
-                      @click="download(item.attachmentUuid,item.fileName)">
+                      @click="openVault(item,'下载')">
                     {{item.fileName}}</li>
                 </ul>
                 <div slot="reference"
@@ -1241,6 +1250,7 @@
 
 <script>
 import axios from "axios";
+import Vault from "@WISDOMAUDIT/components/Vaultcertification";
 import {
   data_pageList, data_push, data_save, add_pageList, data_pageListDone, data_delete, data_push_ing, data_edit_details, data_update, data_add_savePush, data_edit_savePush, loadcascader, saveTemp, operation_list_data, operation_record_list, operation_audit, operation_uploadData, select_loadcascader, enclosure_details, select_user_data,
   enclosure_sysLogById, enclosure_details_file, enclosure_downloadByFileId, operation_addExit, operation_addTitle,
@@ -1257,9 +1267,18 @@ import { down_file, addDataTask_export } from
   '@SDMOBILE/api/shandong/ls'
 import { Input } from 'element-ui';
 export default {
-  components: {},
+  components: { Vault },
   data () {
     return {
+      vaultV: false,
+      sceneId: 1557, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
+      approvers: [], //审批人列表
+      maxTime: "",//最大时间
+      dqtime: "",//当前时间
+      account: "",//返回的账户
+      appSessionId: "",//应用sessionid
+      downloaobj: {},//暂存的下载目标
+
       edit_file_list2: [],//上传
       dqtoken: "",
       headers: '',
@@ -1478,6 +1497,66 @@ export default {
   },
 
   methods: {
+    //通过认证后的方法
+    vdownload () {
+      console.log(this.downloaobj.dtype)
+      if(this.downloaobj.dtype=="导出"){
+        this.exportList(this.downloaobj)
+      }else{
+        this.download(this.downloaobj.attachmentUuid,this.downloaobj.fileName)
+      }
+    },
+    //控制认证弹窗
+    changevault (val) {
+      this.vaultV = val;
+    },
+    //打开金库
+    openVault (obj,downtype) {
+      console.log("芝麻开门")
+      this.downloaobj = obj
+      this.downloaobj.dtype = downtype
+      axios({
+        method: "post",
+        url: `/wisdomaudit/treasury/getTreasuryStatus`,
+        headers: {
+          TOKEN: this.headers.TOKEN,
+        },
+        data: {
+          sceneId: this.sceneId,
+          sceneName: "附件上传后下载", //场景名称
+          sensitiveData: "report_download", //敏感数据对应的编号：  data_export 经营指标、模型结果 report_download 附件上传后下载;
+          sensitiveOperate: "export", //敏感操作对应的编号：export： 导出   select：查询
+        },
+      }).then((resp) => {
+        //result 是否开启 开启：1  无需开启：0
+        //resultDesc 无需开启原因（成功错误信息）
+        //historyAppSessionId 历史有效应用sessionid（仅当已授权状态时必填属性）
+        //relation 多值授权方式与访问方式关系
+        //policyAuthMethod 授权方式： remoteAuth远程授权
+        //policyAccessMethod
+        //maxTime 授权条件（必填属性）单位为小时： 当为0时，为单次授权；否则为时间段授权即允许以当前时间为开始时间，开始时间+maxTime时间为最大结束时间，允许用户在此范围选择；
+        //approvers 审批人列表
+        //如果是线上环境
+        if (resp.data.data.isVaultProfiles) {
+          let rep = resp.data.data.treasuryStatusRsp;
+          if (rep.result == 0) {
+            this.$message(rep.resultDesc);
+            return;
+          } else {
+            console.log(rep);
+            this.approvers = rep.approvers || "";
+            this.maxTime = rep.maxTime;
+            this.dqtime = new Date();
+            this.account = resp.data.data.account;
+            this.appSessionId = resp.data.data.appSessionId;
+            this.vaultV = true;
+          }
+        } else {
+          //否则不处理或在此处直接进行后面的操作
+          this.vdownload()
+        }
+      });
+    },
     // 导出
     exportList (row) {
       // let formData = new FormData();

@@ -313,7 +313,6 @@
                              width="55">
             </el-table-column>
             <el-table-column prop="fileName"
-                             show-overflow-tooltip
                              label="文件名称">
 
               <template slot-scope="scope">
