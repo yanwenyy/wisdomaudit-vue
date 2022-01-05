@@ -27,14 +27,13 @@
                          width="50">
         </el-table-column>
         <el-table-column prop="problem"
-                         label="问题"
-                         show-overflow-tooltip>
+                         label="问题">
           <template slot-scope="scope">
-            <p @click="details_show(scope.row,scope.$index+1)"
-               v-if="scope.row.problem"
-               style="cursor: pointer;color:rgb(68, 163, 223);">{{scope.row.problem}}</p>
+            <span @click="details_show(scope.row,scope.$index+1)"
+                  v-if="scope.row.problem"
+                  style="cursor: pointer;color:rgb(68, 163, 223);">{{scope.row.problem}}</span>
 
-            <p v-else>--</p>
+            <span v-else>--</span>
           </template>
 
         </el-table-column>

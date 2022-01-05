@@ -7,6 +7,11 @@
                :append-to-body="true">
       <div class="relation-div">
         <div class="relation-div-search search-form">
+
+          <el-button type="primary"
+                     @click="add_problem()"
+                     class="relationBtn">新增问题</el-button>
+
           <el-form :inline="true"
                    :model="searchform"
                    @keyup.enter.native="init(id)"
@@ -93,6 +98,7 @@
                    @click="setRelation">生成</el-button>
       </div>
     </el-dialog>
+
   </div>
 
 </template>
@@ -122,6 +128,7 @@ export default {
     }
   },
   methods: {
+
     // 初始化
     init (id) {
       if (id) {

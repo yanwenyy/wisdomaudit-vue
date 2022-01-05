@@ -44,8 +44,8 @@
                              label="资料标题">
 
               <template slot-scope="scope">
-                <p v-if="scope.row.dataTitle">{{scope.row.dataTitle}}</p>
-                <p v-else>--</p>
+                <span v-if="scope.row.dataTitle">{{scope.row.dataTitle}}</span>
+                <span v-else>--</span>
               </template>
 
             </el-table-column>

@@ -35,14 +35,13 @@
                          width="50">
         </el-table-column>
         <el-table-column prop="problem"
-                         show-overflow-tooltip
                          label="问题">
           <template slot-scope="scope">
-            <p @click="details_show(scope.row,scope.$index+1)"
-               class="look cursor"
-               v-if="scope.row.problem">
+            <span @click="details_show(scope.row,scope.$index+1)"
+                  class="look cursor"
+                  v-if="scope.row.problem">
               {{scope.row.problem}}
-            </p>
+            </span>
             <p v-else>
               --
             </p>
@@ -53,9 +52,9 @@
                          show-overflow-tooltip
                          label="主要负责部门">
           <template slot-scope="scope">
-            <p v-if="scope.row.dutyDeptName">
+            <span v-if="scope.row.dutyDeptName">
               {{scope.row.dutyDeptName}}
-            </p>
+            </span>
             <p v-else>
               --
             </p>
@@ -66,12 +65,12 @@
                          label="整改责任人">
 
           <template slot-scope="scope">
-            <p v-if="scope.row.dutyPersonName">
+            <span v-if="scope.row.dutyPersonName">
               {{scope.row.dutyPersonName}}
-            </p>
-            <p v-else>
+            </span>
+            <span v-else>
               --
-            </p>
+            </span>
           </template>
 
         </el-table-column>
@@ -90,14 +89,15 @@
 
         <el-table-column prop="planContent"
                          width="150"
+                         show-overflow-tooltip
                          label="整改计划">
           <template slot-scope="scope">
-            <p v-if="scope.row.planContent">
+            <span v-if="scope.row.planContent">
               {{scope.row.planContent}}
-            </p>
-            <p v-else>
+            </span>
+            <span v-else>
               --
-            </p>
+            </span>
           </template>
         </el-table-column>
         <el-table-column prop="limitTime"
@@ -113,14 +113,15 @@
           </template>
         </el-table-column>
         <el-table-column prop="remark"
+                         show-overflow-tooltip
                          label="备注">
           <template slot-scope="scope">
-            <p v-if="scope.row.remark">
+            <span v-if="scope.row.remark">
               {{scope.row.remark}}
-            </p>
-            <p v-else>
+            </span>
+            <span v-else>
               --
-            </p>
+            </span>
           </template>
         </el-table-column>
 

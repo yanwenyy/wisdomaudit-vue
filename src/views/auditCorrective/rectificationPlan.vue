@@ -35,8 +35,7 @@
                          width="50">
         </el-table-column>
         <el-table-column prop="projectName"
-                         label="审计项目名称"
-                         show-overflow-tooltip>
+                         label="审计项目名称">
         </el-table-column>
         <el-table-column prop="projectTypeName"
                          label="项目类型"

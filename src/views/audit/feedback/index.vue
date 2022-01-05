@@ -23,12 +23,12 @@
                          label="标题">
 
           <template slot-scope="scope">
-            <p v-if="scope.row.title">
+            <span v-if="scope.row.title">
               {{scope.row.title}}
-            </p>
-            <p v-else>
+            </span>
+            <span v-else>
               --
-            </p>
+            </span>
           </template>
 
         </el-table-column>
@@ -156,12 +156,12 @@
                                label="编号">
 
                 <template slot-scope="scope">
-                  <p v-if="scope.row.dataNumber">
+                  <span v-if="scope.row.dataNumber">
                     {{scope.row.dataNumber}}
-                  </p>
-                  <p v-else>
+                  </span>
+                  <span v-else>
                     --
-                  </p>
+                  </span>
                 </template>
 
               </el-table-column>
@@ -183,12 +183,12 @@
                                label="资料名称">
 
                 <template slot-scope="scope">
-                  <p v-if="scope.row.dataName">
+                  <span v-if="scope.row.dataName">
                     {{scope.row.dataName}}
-                  </p>
-                  <p v-else>
+                  </span>
+                  <span v-else>
                     --
-                  </p>
+                  </span>
                 </template>
 
               </el-table-column>
@@ -237,15 +237,15 @@
               </el-table-column>
               <el-table-column prop="remarks"
                                width="110px"
-                               :show-overflow-tooltip="true"
+                               show-overflow-tooltip
                                label="备注">
                 <template slot-scope="scope">
-                  <p v-if="scope.row.remarks">
+                  <span v-if="scope.row.remarks">
                     {{scope.row.remarks}}
-                  </p>
-                  <p v-else>
+                  </span>
+                  <span v-else>
                     --
-                  </p>
+                  </span>
                 </template>
 
               </el-table-column>
@@ -996,6 +996,7 @@ export default {
     resetForm2 () {
       this.success_btn2 = false;//隐藏上传按钮
       this.success_btn = 0//隐藏反馈按钮
+      this.record_status = false;//隐藏哈看的列表
     },
     //查看操作 记录
     look_record (data) {
@@ -1160,6 +1161,7 @@ export default {
   padding: 0 10px;
   margin-bottom: 20px;
   box-sizing: border-box;
+  text-align: left;
 }
 /* header end*/
 .title {

@@ -41,15 +41,14 @@
             <!-- 任务/自建任务名称 -->
             <el-table-column prop="taskName"
                              width="180"
-                             show-overflow-tooltip
                              label="任务名称">
               <template slot-scope="scope">
-                <p v-if="scope.row.taskName">
+                <span v-if="scope.row.taskName">
                   {{scope.row.taskName}}
-                </p>
-                <p v-else>
+                </span>
+                <span v-else>
                   --
-                </p>
+                </span>
               </template>
             </el-table-column>
 
@@ -58,12 +57,12 @@
                              show-overflow-tooltip
                              label="专题">
               <template slot-scope="scope">
-                <p v-if="scope.row.belongSpcial">
+                <span v-if="scope.row.belongSpcial">
                   {{scope.row.belongSpcial}}
-                </p>
-                <p v-else>
+                </span>
+                <span v-else>
                   --
-                </p>
+                </span>
               </template>
             </el-table-column>
 
@@ -567,7 +566,6 @@
                            label="领域"> </el-table-column>
           <el-table-column prop="problem"
                            align="center"
-                           show-overflow-tooltip
                            label="问题"> </el-table-column>
           <el-table-column prop="basis"
                            show-overflow-tooltip
@@ -934,7 +932,7 @@
             <el-input v-model="save_zj_query.belongSpcial"
                       v-if="input_select==false"></el-input>
           </el-form-item>
-          
+
           <!-- 领域 -->
           <el-form-item prop="belongField"
                         label="领域："

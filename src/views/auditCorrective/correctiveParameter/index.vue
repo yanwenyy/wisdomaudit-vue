@@ -40,8 +40,10 @@
       </el-table-column>
       <el-table-column label="问题描述"
                        width="150px"
+                       show-overflow-tooltip
                        prop="problemDesc"
                        align="left" />
+
       <el-table-column label="整改期间"
                        width="200px"
                        prop="date"

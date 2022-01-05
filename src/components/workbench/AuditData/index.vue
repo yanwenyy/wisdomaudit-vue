@@ -225,7 +225,6 @@
                              label="序号">
             </el-table-column>
             <el-table-column prop="dataName"
-                             show-overflow-tooltip
                              label="资料名称">
             </el-table-column>
 
@@ -251,12 +250,12 @@
                              show-overflow-tooltip
                              label="备注">
               <template slot-scope="scope">
-                <p v-if="scope.row.remarks">
+                <span v-if="scope.row.remarks">
                   {{scope.row.remarks}}
-                </p>
-                <p v-else>
+                </span>
+                <span v-else>
                   --
-                </p>
+                </span>
               </template>
             </el-table-column>
 
@@ -378,8 +377,7 @@
                                width="55">
               </el-table-column>
               <el-table-column prop="dataName"
-                               label="资料名称"
-                               show-overflow-tooltip>
+                               label="资料名称">
 
                 <template slot-scope="scope">
                   <div v-if="scope.row.dataName">
@@ -479,12 +477,12 @@
                                label="备注"
                                show-overflow-tooltip>
                 <template slot-scope="scope">
-                  <div v-if="scope.row.remarks">
+                  <span v-if="scope.row.remarks">
                     {{
                   scope.row.remarks
                 }}
-                  </div>
-                  <div v-else>--</div>
+                  </span>
+                  <span v-else>--</span>
                 </template>
 
               </el-table-column>
@@ -625,7 +623,7 @@
 
           <div class="son"
                v-if="user_data">
-            <el-form-item label="1编号："
+            <el-form-item label="编号："
                           style="padding:0 0 0 0"
                           label-width="130px"
                           prop="dataNumber">
@@ -892,8 +890,7 @@
                            show-overflow-tooltip>
           </el-table-column> -->
           <el-table-column prop="dataName"
-                           label="资料名称"
-                           show-overflow-tooltip>
+                           label="资料名称">
           </el-table-column>
           <el-table-column prop="department"
                            label="部门"
@@ -1151,6 +1148,7 @@
     <!-- 操作记录 -->
     <el-dialog :visible.sync="history"
                center
+               @close="close_list()"
                :append-to-body='true'
                width="width">
       <div class="title_dlag">操作记录</div>
@@ -1598,10 +1596,14 @@ export default {
     },
     // 操作记录分页
     handleCurrentChange_operation (val) {
+      console.log(val);
       this.operation_query.pageNo = val
       this.operation_data()//操作记录
     },
-
+    // 关闭操作记录
+    close_list () {
+      this.operation_query.pageNo = 1;
+    },
     // 上传中回调
     beforeAvatarUpload (file) {
       // const isJPG = file.type === 'image/jpeg';
