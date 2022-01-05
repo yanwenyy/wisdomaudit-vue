@@ -156,14 +156,14 @@
             </template>
 
           </el-table-column>
-          <el-table-column prop="accessCaliberName"
+          <!-- <el-table-column prop="accessCaliberName"
                            show-overflow-tooltip
                            label="依据">
             <template slot-scope="scope">
-              <p v-if="scope.row.accessCaliberName">{{scope.row.accessCaliberName}}</p>
-              <p v-else>--</p>
+              <span v-if="scope.row.accessCaliberName">{{scope.row.accessCaliberName}}</span>
+              <span v-else>--</span>
             </template>
-          </el-table-column>
+          </el-table-column> -->
 
           <el-table-column prop="indexUnitName"
                            label="单位">
@@ -537,7 +537,7 @@ export default {
         array1.push((i + 1) + '.' + item.indexDate + ','
           + item.indexTypeName + ','
           + item.dataProvideDepartmentName + ','
-          + item.accessCaliberName + ','
+          // + item.accessCaliberName + ','
           + item.indexValue + item.indexUnitName + '</br>' + '</br>');
       });
       let array_list = array1.join('')
