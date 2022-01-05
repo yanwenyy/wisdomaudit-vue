@@ -40,12 +40,10 @@
             </el-table-column>
             <!-- 标题 -->
             <el-table-column prop="dataTitle"
-                             show-overflow-tooltip
                              label="资料标题">
-
               <template slot-scope="scope">
-                <p v-if="scope.row.dataTitle">{{scope.row.dataTitle}}</p>
-                <p v-else>--</p>
+                <span v-if="scope.row.dataTitle">{{scope.row.dataTitle}}</span>
+                <span v-else>--</span>
               </template>
 
             </el-table-column>
@@ -55,8 +53,8 @@
                              label="资料分类">
 
               <template slot-scope="scope">
-                <p v-if="scope.row.dataSortName">{{scope.row.dataSortName}}</p>
-                <p v-else>--</p>
+                <span v-if="scope.row.dataSortName">{{scope.row.dataSortName}}</span>
+                <span v-else>--</span>
               </template>
 
             </el-table-column>
@@ -66,8 +64,8 @@
                              label="来源项目">
 
               <template slot-scope="scope">
-                <p v-if="scope.row.sourceItem">{{scope.row.sourceItem}}</p>
-                <p v-else>--</p>
+                <span v-if="scope.row.sourceItem">{{scope.row.sourceItem}}</span>
+                <span v-else>--</span>
               </template>
 
             </el-table-column>
@@ -77,8 +75,8 @@
                              label="资料简介">
 
               <template slot-scope="scope">
-                <p v-if="scope.row.dataIntroduce">{{scope.row.dataIntroduce}}</p>
-                <p v-else>--</p>
+                <span v-if="scope.row.dataIntroduce">{{scope.row.dataIntroduce}}</span>
+                <span v-else>--</span>
               </template>
 
             </el-table-column>
@@ -88,8 +86,8 @@
                              label="创建人">
 
               <template slot-scope="scope">
-                <p v-if="scope.row.createUserName">{{scope.row.createUserName}}</p>
-                <p v-else>--</p>
+                <span v-if="scope.row.createUserName">{{scope.row.createUserName}}</span>
+                <span v-else>--</span>
               </template>
 
             </el-table-column>
@@ -99,8 +97,8 @@
                              label="创建时间">
 
               <template slot-scope="scope">
-                <p v-if="scope.row.createTime">{{scope.row.createTime | filtedate}}</p>
-                <p v-else>--</p>
+                <span v-if="scope.row.createTime">{{scope.row.createTime | filtedate}}</span>
+                <span v-else>--</span>
               </template>
 
             </el-table-column>
@@ -110,8 +108,8 @@
                              label="下载总次数">
 
               <template slot-scope="scope">
-                <p v-if="scope.row.downNum">{{scope.row.downNum}}</p>
-                <p v-else>--</p>
+                <span v-if="scope.row.downNum">{{scope.row.downNum}}</span>
+                <span v-else>--</span>
               </template>
 
             </el-table-column>

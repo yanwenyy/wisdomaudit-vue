@@ -58,18 +58,19 @@
           </template>
         </el-table-column>
         <el-table-column prop="logicalDescription"
+                         show-overflow-tooltip
                          label="逻辑说明">
           <template slot-scope="scope">
-            <p v-if="scope.row.logicalDescription">{{scope.row.logicalDescription}}</p>
-            <p v-else>--</p>
+            <span v-if="scope.row.logicalDescription">{{scope.row.logicalDescription}}</span>
+            <span v-else>--</span>
           </template>
         </el-table-column>
 
         <el-table-column prop="ruleDescription"
                          label="业务规则">
           <template slot-scope="scope">
-            <p v-if="scope.row.ruleDescription">{{scope.row.ruleDescription}}</p>
-            <p v-else>--</p>
+            <span v-if="scope.row.ruleDescription">{{scope.row.ruleDescription}}</span>
+            <span v-else>--</span>
           </template>
 
         </el-table-column>
