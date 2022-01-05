@@ -2,7 +2,7 @@
   <div class="sjzl anmition_show">
     <div class="header">
       <div class="search_ms">
-        历史审计发现描述：
+        <span style="width:200px;"> 历史审计发现描述：</span>
         <el-input v-model="query.historyAuditFindDescribe"
                   placeholder="请输入描述名称"></el-input>
       </div>
@@ -43,7 +43,7 @@
                          label="标题">
           <template slot-scope="scope">
             <span v-if="scope.row.historyAuditFindDescribe"
-                 class="over">
+                  class="over">
               {{ scope.row.title}}
             </span>
             <span v-else>--</span>
@@ -57,7 +57,7 @@
                          label="历史审计发现描述">
           <template slot-scope="scope">
             <span v-if="scope.row.historyAuditFindDescribe"
-                 class="over">
+                  class="over">
               {{ scope.row.historyAuditFindDescribe  }}
             </span>
             <span v-else>--</span>
@@ -183,7 +183,7 @@
           <!-- 历史审计发现描述 -->
           <el-form-item prop="title"
                         style="margin-bottom: 22px !important">
-            <span style="color: red">*</span> 标题：
+            <p> <span style="color: red">*</span> 标题：</p>
             <el-input v-model="add.title"
                       placeholder="请输入标题"></el-input>
           </el-form-item>
@@ -191,7 +191,7 @@
           <!-- 历史审计发现描述 -->
           <el-form-item prop="historyAuditFindDescribe"
                         style="margin-bottom: 22px !important">
-            <span style="color: red">*</span> 历史审计发现描述：
+            <p> <span style="color: red">*</span> 历史审计发现描述：</p>
             <el-input v-model="add.historyAuditFindDescribe"
                       placeholder="请输入历史审计发现描述"></el-input>
           </el-form-item>
@@ -199,7 +199,7 @@
           <!-- 被审计单位 -->
           <el-form-item prop="auditedEntity"
                         style="margin-bottom: 22px !important">
-              <span style="color: red">*</span> 被审计单位：
+            <p><span style="color: red">*</span> 被审计单位：</p>
             <el-select v-model="add.auditedEntity"
                        @change="changeHeader_danwei">
               <el-option v-for="item in audit_Company"
@@ -213,7 +213,7 @@
           <!-- 领域 -->
           <el-form-item prop="field"
                         style="margin-bottom: 22px !important">
-            <span style="color: red">*</span> 领域：
+            <p> <span style="color: red">*</span> 领域：</p>
             <el-select v-model="add.field"
                        @change="changeHeader_ly">
               <el-option v-for="item in problems_slect_ly"
@@ -227,7 +227,7 @@
           <!-- 专题 -->
           <el-form-item prop="special"
                         style="margin-bottom: 22px !important">
-            <span style="color: red">*</span> 专题：
+            <p><span style="color: red">*</span> 专题：</p>
             <el-select v-model="add.special"
                        v-if="input_select==true"
                        @change="changeHeader_zt">
@@ -243,14 +243,14 @@
 
           <!-- 发现人 -->
           <el-form-item style="margin-bottom: 22px !important">
-            发现人：
+            <p>发现人：</p>
             <el-input v-model="add.findPeople"
                       placeholder="请输入发现人"></el-input>
           </el-form-item>
 
           <!--审计依据 -->
           <el-form-item style="margin-bottom: 22px !important">
-            审计依据：
+            <p> 审计依据：</p>
             <!-- <el-select v-model="add.auditBasis"
                        @change="changeHeader_yj">
               <el-option v-for="item in problems_slect_yj"
@@ -275,7 +275,7 @@
           <!--发现日期 -->
           <el-form-item prop="findData"
                         style="margin-bottom: 22px!important">
-            <span style="color: red">*</span>发现日期：
+            <p><span style="color: red">*</span>发现日期：</p>
             <el-date-picker v-model="add.findData"
                             type="date"
                             placeholder="选择日期">
@@ -284,7 +284,7 @@
 
           <!--所属年份 -->
           <el-form-item style="margin-bottom: 22px !important">
-            所属年份：
+            <p> 所属年份：</p>
             <!-- <el-select v-model="add.year"
                      @change="changeHeader_nf">
             <el-option v-for="item in problems_slect"
@@ -302,14 +302,14 @@
 
           <!-- 发现来源 -->
           <el-form-item style="margin-bottom: 22px !important">
-            发现来源：
+            <p> 发现来源：</p>
             <el-input v-model="add.source"
                       placeholder="请输入发现来源"></el-input>
           </el-form-item>
 
           <!-- 风险金额 -->
           <el-form-item style="margin-bottom: 22px !important">
-            风险金额（万元)：
+            <p>风险金额（万元)：</p>
             <!--v-model.number="add.riskAmount"-->
             <el-input v-model="add.riskAmount"
                       type="number"
@@ -795,7 +795,7 @@ export default {
             if (this.add.auditBasis) {
               this.auditBasis = this.add.auditBasis.join(",");
             } else {
-              this.auditBasis = [];
+              this.auditBasis = '';
             }
 
             let params = {
