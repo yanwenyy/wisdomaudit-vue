@@ -391,16 +391,12 @@
       <div class="relation-div">
         <div class="relation-div-search search-form">
 
-          <el-form :inline="true"
+          <!-- <el-form :inline="true"
                    :model="searchform"
                    @keyup.enter.native="init(id)"
-                   class="queryForm">
-            <el-button type="primary"
-                       style="margin:0;float:left;"
-                       @click="add_problem()"
-                       size="medium"
-                       class="relationBtn">新增问题</el-button>
-            <el-form-item class="searchBtn">
+                   class="queryForm"> -->
+
+          <!-- <el-form-item class="searchBtn">
               <el-input v-model="searchform.problem"
                         placeholder="问题名称"
                         clearable>
@@ -409,8 +405,30 @@
                            icon="el-icon-search"
                            @click="init(id)"></el-button>
               </el-input>
-            </el-form-item>
-          </el-form>
+            </el-form-item> -->
+
+          <el-row>
+            <div class="search">
+              <el-button type="primary"
+                         style="margin:0;float:left;"
+                         @click="add_problem()"
+                         size="medium"
+                         class="relationBtn">新增问题</el-button>
+
+              <el-input v-model="searchform.problem"
+                        placeholder="问题名称"
+                        clearable>
+              </el-input>
+              <div class="search_icon"
+                   style="background: rgb(12, 135, 214) !important"
+                   @click="init()">
+                <i class="el-icon-search"
+                   style="color: white"></i>
+              </div>
+            </div>
+          </el-row>
+
+          <!-- </el-form> -->
         </div>
         <div class="dlag">
 
@@ -742,7 +760,7 @@
               点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc
             </div>
           </el-upload>
-          <div class="inline-block">
+          <!-- <div class="inline-block">
             <el-tooltip class="item"
                         effect="dark"
                         v-for="(item,index) in fileList2"
@@ -752,8 +770,8 @@
               <div class="blue pointer"
                    @click="downFile2(item.attachmentUuid,item.fileName)">
                 {{item.fileName.length>20?item.fileName.slice(0,20)+"...":item.fileName}}</div>
-            </el-tooltip>
-          </div>
+            </el-tooltip> 
+          </div>-->
         </el-form-item>
 
       </el-form>
@@ -1280,10 +1298,12 @@ export default {
     // 新增审计问题
     add_problem () {
       this.dialogFormVisible = true;
-
       this.ifadd = 0;
       this.temp_problem.problemFindPeople = this.me;
       this.temp_problem.problemDiscoveryTime = new Date();
+      this.temp_problem.attachmentList = []; //清空附件
+      this.fileList2 = [];
+
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
       });
@@ -1312,6 +1332,7 @@ export default {
       } else if (str == "dqProblem") {
         this.dqProblem = {};
       }
+      this.fileList2 = [];
       this.input_select = true; //专题 恢复默认
       this.input_selecte = true; //专题 恢复默认
     },
@@ -1571,38 +1592,6 @@ export default {
         date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
       return Y + M + D;
     },
-
-    //列表附件删除
-    delListFile (id) {
-      var that = this;
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        del_file(id).then(resp => {
-          if (resp.code == 0) {
-            that.$message({
-              message: "删除成功",
-              type: "success",
-            });
-            this.list_data_start();
-          } else {
-            that.$message({
-              message: resp.data.msg,
-              type: "error",
-            });
-          }
-        });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
-
-
-    },
     handleExceed () { },
     // 上传时
     update_ing () {
@@ -1673,8 +1662,6 @@ export default {
         console.log(err);
       })
     },
-
-
     // 新增问题保存
     createData () {
       this.$refs["dataForm"].validate((valid) => {
@@ -1735,7 +1722,7 @@ export default {
           rep.riskAmount = parseFloat(rep.riskAmount)
           rep.auditTaskUuid = rep.auditTaskUuid.join(",");
           rep.basis = rep.basis.join(",");
-
+          console.log(rep.attachmentList);
           rep.attachmentList.forEach((item) => {
             console.log(item);
             item.status = null;
@@ -2398,6 +2385,45 @@ export default {
 >>> .el-table__header {
   margin-top: 0 !important;
 }
+
+/* 筛选 */
+.search >>> .el-input__inner::-webkit-input-placeholder {
+  color: #c0c4cc !important;
+}
+.search {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative;
+}
+.search >>> .el-input__inner {
+  width: 250px !important;
+  display: flex;
+  float: right;
+  border-radius: 0 !important;
+}
+.search >>> .el-button {
+  border-radius: 0 !important;
+}
+.search >>> .search_icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  cursor: pointer;
+}
+/* 筛选  end*/
 /* .edit_table >>> .el-table__row,
 .edit_table >>> table tr,
 .edit_table >>> .el-table__cell,
