@@ -195,6 +195,7 @@ export default {
     // 控制每页条数
     handleSizeChange (val) {
       this.model_liat_query.pageSize = val
+      this.model_list_data();
     },
     // 查看
     look_details (id, index) {
