@@ -298,7 +298,7 @@ export default {
       ifpush: true,
 
       vaultV: false,
-      sceneId: 1556, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
+      sceneId: 1557, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
       approvers: [], //审批人列表
       maxTime: "",
       account: "",
@@ -335,8 +335,8 @@ export default {
         },
         data: {
           sceneId: this.sceneId,
-          sceneName: "导出授权场景", //场景名称
-          sensitiveData: "data_export", //敏感数据对应的编号：  data_export 经营指标、模型结果 report_download 附件上传后下载;
+          sceneName: "附件上传后下载", //场景名称
+          sensitiveData: "report_download", //敏感数据对应的编号：  data_export 经营指标、模型结果 report_download 附件上传后下载;
           sensitiveOperate: "export", //敏感操作对应的编号：export： 导出   select：查询
         },
       }).then((resp) => {

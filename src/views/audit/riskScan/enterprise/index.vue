@@ -6,7 +6,7 @@
   <el-form-item label="专题:">
    <el-select
             v-model="value"
-            placeholder="请选择"
+            placeholder="请选择专题"
             @change="ChooseThetype"
           >
             <el-option

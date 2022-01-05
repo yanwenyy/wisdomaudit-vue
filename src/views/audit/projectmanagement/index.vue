@@ -528,7 +528,7 @@
           <el-row>
             <el-form-item label="ㅤ项目类型:"
                           prop="projectTypeName">
-              <el-select placeholder="请选择"
+              <el-select placeholder="请选择项目类型"
                          v-model="addProjectManagement.projectTypeName"
                          :label-in-value="true"
                          @change="selectprojectType"
@@ -552,7 +552,7 @@
           <el-row>
             <el-form-item label="项目负责人:"
                           prop="projectLeaderName">
-              <el-select placeholder="请选择"
+              <el-select placeholder="请选择项目负责人"
                          v-model="addProjectManagement.projectLeaderName"
                          @change="selectprojectLeader"
                          disabled>
@@ -581,7 +581,7 @@
           <el-row>
             <el-form-item label="ㅤㅤㅤ领域:"
                           prop="field">
-              <el-select placeholder="请选择"
+              <el-select placeholder="请选择领域"
                          v-model="addProjectManagement.field"
                          @change="selectField"
                          multiple
@@ -603,7 +603,7 @@
               <el-col :span="8">
                 <el-form-item prop="auditStartData">
                   <el-date-picker type="date"
-                                  placeholder="请选择"
+                                  placeholder="请选择审计期间"
                                   v-model="addProjectManagement.auditStartData"
                                   :picker-options="startPickerOptions"
                                   value-format="yyyy-MM-dd"></el-date-picker>
@@ -613,7 +613,7 @@
                 <el-form-item prop="auditFinishData"
                               style="margin-left: -5px">
                   <el-date-picker type="date"
-                                  placeholder="请选择"
+                                  placeholder="请选择审计期间"
                                   v-model="addProjectManagement.auditFinishData"
                                   style="margin-left: 5px"
                                   :picker-options="endPickerOptions"
@@ -638,7 +638,7 @@
                                 :rules="addzhuanRules.auditOrgName">
                     <el-select :disabled="scope.row.status=='1'"
                                class="table-select"
-                               placeholder="请选择"
+                               placeholder="请选择被审计单位"
                                v-model="scope.row.auditOrgUuid"
                                @change="orgSelect(scope.row)">
                       <el-option v-for="item in loadaudittorgoptions"
@@ -659,7 +659,7 @@
                     "
                                 :rules="addzhuanRules.projectChargemanName">
                     <el-select class="table-select"
-                               placeholder="请选择"
+                               placeholder="请选择分配组长"
                                v-model="scope.row.projectChargemanName"
                                @change="LeaderSelectEdit(scope.row)"
                                :disabled="scope.row.isChargemanCanChenge == 0||scope.row.status=='1'? true : false">
@@ -725,7 +725,7 @@
           </el-row>
           <el-row>
             <el-form-item label="ㅤ项目类型:">
-              <el-select placeholder="请选择"
+              <el-select placeholder="请选择项目类型"
                          v-model="addprojectjing.projectTypeName"
                          :label-in-value="true"
                          @change="selectprojectType"
@@ -741,7 +741,7 @@
           <el-row>
             <el-form-item label="被审计单位:"
                           prop="auditOrgName">
-              <el-select placeholder="请选择"
+              <el-select placeholder="请选择被审计单位"
                          v-model="addprojectjing.auditOrgName"
                          @change="selectorg">
                 <el-option v-for="item in loadaudittorgoptions"
@@ -771,7 +771,7 @@
           <el-row>
             <el-form-item label="项目负责人:"
                           prop="projectLeaderName">
-              <el-select placeholder="请选择"
+              <el-select placeholder="请选择项目负责人"
                          v-model="addprojectjing.projectLeaderName"
                          @change="selectprojectLeader"
                          disabled>
@@ -821,7 +821,7 @@
           <el-row>
             <el-form-item label="ㅤ项目组长:"
                           prop="projectChargemanName">
-              <el-select placeholder="请选择"
+              <el-select placeholder="请选择项目组长"
                          v-model="addprojectjing.projectChargemanName"
                          @change="selectChargeman"
                          :disabled="setLeaderDisable">
@@ -840,7 +840,7 @@
               <el-col :span="8">
                 <el-form-item>
                   <el-date-picker type="date"
-                                  placeholder="请选择"
+                                  placeholder="请选择审计期间"
                                   v-model="addprojectjing.auditStartData"
                                   :picker-options="startPickerOptions"
                                   value-format="yyyy-MM-dd"></el-date-picker>
@@ -849,7 +849,7 @@
               <el-col :span="8">
                 <el-form-item style="margin-left: -5px">
                   <el-date-picker type="date"
-                                  placeholder="请选择"
+                                  placeholder="请选择审计期间"
                                   v-model="addprojectjing.auditFinishData"
                                   style="margin-left: 3px"
                                   :picker-options="endPickerOptions"
@@ -924,7 +924,7 @@
                 <el-select v-model="save_project_prople.setting_people_key"
                            @change="change_peoplr"
                            filterable
-                           placeholder="请选择">
+                           placeholder="请选择整改跟进人">
                   <el-option v-for="item in setting_people"
                              :key="item.id"
                              :label="item.realName"
@@ -1053,7 +1053,7 @@
             <el-select v-model="dqProblem.auditTaskUuid"
                        multiple
                        disabled
-                       placeholder="请选择">
+                       placeholder="请选择关联任务">
               <el-option v-for="item in auditTasklList"
                          :key="item.auditTaskUuid"
                          :label="item.taskName"

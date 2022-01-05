@@ -182,7 +182,7 @@
           <el-date-picker :disabled="ifLook"
                           v-model="formState.planEndDate"
                           type="date"
-                          placeholder="请选择"
+                          placeholder="请选择日期"
                           value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
@@ -190,7 +190,7 @@
                       label="整改状态:">
           <el-select :disabled="ifLook"
                      v-model="formState.correctState"
-                     placeholder="请选择">
+                     placeholder="请选择整改状态">
             <el-option label="未整改"
                        value="0"></el-option>
             <el-option label="整改中"

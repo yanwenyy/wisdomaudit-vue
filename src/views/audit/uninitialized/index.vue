@@ -347,7 +347,7 @@
         <el-form label-width="100px">
           <el-row>
             <el-form-item label="被审计单位">
-              <el-select placeholder="请选择"></el-select>
+              <el-select placeholder="请选择被审计单位"></el-select>
             </el-form-item>
           </el-row>
           <el-row>

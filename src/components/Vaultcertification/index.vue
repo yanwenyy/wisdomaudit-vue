@@ -118,6 +118,9 @@ export default {
         cerReason: [
           { required: true, message: "请输入申请原因", trigger: "blur" },
         ],
+        approverAccount: [
+          { required: true, message: "请选择审批人", trigger: "blur" },
+        ],
       },
       sortform: {
         info: "",

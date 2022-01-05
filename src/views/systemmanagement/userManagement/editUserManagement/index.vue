@@ -69,7 +69,7 @@
       >
         <el-select
           v-model="form.roleId"
-          placeholder="请选择"
+          placeholder="请选择角色名称"
           class="m-select-normal"
           multiple
           @change="getRoleName"

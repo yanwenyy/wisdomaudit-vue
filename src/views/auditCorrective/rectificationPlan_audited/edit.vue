@@ -230,7 +230,7 @@
           </el-form-item>
           <el-form-item label="整改配合部门：">
             <el-select :disabled="looktype=='look'"
-                       placeholder="请选择"
+                       placeholder="请选择整改配合部门"
                        multiple
                        v-model="department">
               <el-option v-for="item in loadaudittorgoptions"
