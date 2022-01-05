@@ -49,7 +49,6 @@
 
         </el-table-column>
         <el-table-column prop="dutyDeptName"
-                         show-overflow-tooltip
                          label="主要负责部门">
           <template slot-scope="scope">
             <span v-if="scope.row.dutyDeptName">
@@ -61,7 +60,6 @@
           </template>
         </el-table-column>
         <el-table-column prop="dutyPersonName"
-                         show-overflow-tooltip
                          label="整改责任人">
 
           <template slot-scope="scope">
