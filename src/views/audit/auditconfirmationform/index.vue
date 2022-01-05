@@ -232,7 +232,7 @@
                       class="itemTwo"
                       label="复核人:">
           <el-select :disabled="ifLook"
-                     v-model="formDetail.reviewerName	"
+                     v-model="formDetail.reviewerName "
                      placeholder="请选择复核人"
                      clearable>
             <el-option v-for="(item,index) in FhrList"
@@ -343,7 +343,7 @@
             </tr>
             <tr>
               <td>被审计(调查)单位</td>
-              <td colspan="5">{{formDetail.auditOrgName	}}</td>
+              <td colspan="5">{{formDetail.auditOrgName }}</td>
             </tr>
             <tr>
               <td>审计(调查)事项</td>
@@ -352,7 +352,7 @@
                           type="textarea"
                           v-model="formDetail.matter"></el-input>
               </td>
-              <!--<td colspan="5">{{formDetail.matter	}}</td>-->
+              <!--<td colspan="5">{{formDetail.matter }}</td>-->
             </tr>
             <tr>
               <td>审计(调查)事项描述</td>
@@ -1097,3 +1097,4 @@ export default {
   font-weight: bold;
 }
 </style>
+
