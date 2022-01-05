@@ -34,7 +34,7 @@
 
       <el-row>
         <el-col :span="24">
-          <div style="margin-top: 20px">
+          <div style="margin-top: 20px;">
             <el-radio-group v-model="radio2" size="medium" @change="changemx">
               <el-radio-button
                 :label="item"
@@ -42,8 +42,8 @@
                 v-for="item in tablelist"
                 :key="item.tab"
                 >
-                 <el-tooltip class="item" effect="dark" :content="item.tabName" placement="top-start">
-                <span>{{ item.tabName }}</span>
+                 <el-tooltip class="item" effect="dark" :content="item.tabName" placement="top-start" >
+                <span >{{ item.tabName }}</span>
                 </el-tooltip>
                 </el-radio-button
               >
@@ -81,7 +81,15 @@ export default {
       radio2: {},
 
       activeName: "",
-      tablelist: [],
+      tablelist: [
+        {tabName:'已支付铁塔服务费但未起租'},
+         {tabName:'为不真实站点结算铁塔服务费'},
+          {tabName:"起租表中塔类产品类型、机房类型、生命状态与实际不一致"},
+           {tabName:'同一站点重复支付场地费'},
+            {tabName:'同一站点重复结算铁塔服务费、铁塔代维费'},
+             {tabName:'同站点按次工单结算类型与包年规模不一致，多支付代维费'},
+
+      ],
       value: "",
 
       formdates: "",
@@ -105,10 +113,11 @@ export default {
  
 
  this.code=arr[this.$route.path]
-   this.gettapylist();
+
   },
 
   mounted() {
+       this.gettapylist();
  
   },
 
@@ -198,16 +207,26 @@ export default {
   }
 }
 .el-radio-button{
-  width: 100px;
+  width: 220px;
   margin-top: 10px;
+
 }
-.el-radio-button::v-deep    .el-radio-button__inner{
-  width: 100px;
-  white-space:nowrap;
+
+.el-radio-button ::v-deep  .el-radio-button__inner{
+width: 220px;
+white-space:nowrap;
 overflow:hidden;
 text-overflow:ellipsis;
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
+border: 1px solid #DCDFE6;
+border-top-right-radius: 10px;
+border-top-left-radius: 10px;
+box-shadow:none !important  ; 
+
 }
+.el-radio-button--medium ::v-deep .el-radio-button__inner  {
+  padding: 10px 0 ;
+}
+
+
 
 </style>
