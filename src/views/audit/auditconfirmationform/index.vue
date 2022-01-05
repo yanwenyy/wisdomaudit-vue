@@ -1,4 +1,4 @@
-<template>
+  <template>
   <div class="auditConfirmation">
     <el-button type="primary"
                @click="addConfirmation()"
@@ -203,8 +203,8 @@
                      @click="getRelationQues"
                      class="relationBtn">关联问题</el-button>
           <!-- <el-button :disabled="ifLook"
-                     @click="getRelationQues"
-                     class="relationBtn">编辑问题</el-button> -->
+                      @click="getRelationQues"
+                      class="relationBtn">编辑问题</el-button> -->
 
           <el-input rows="6"
                     :disabled="ifLook"
@@ -232,7 +232,7 @@
                       class="itemTwo"
                       label="复核人:">
           <el-select :disabled="ifLook"
-                     v-model="formDetail.reviewerName	"
+                     v-model="formDetail.reviewerName "
                      placeholder="请选择复核人"
                      clearable>
             <el-option v-for="(item,index) in FhrList"
@@ -343,7 +343,7 @@
             </tr>
             <tr>
               <td>被审计(调查)单位</td>
-              <td colspan="5">{{formDetail.auditOrgName	}}</td>
+              <td colspan="5">{{formDetail.auditOrgName }}</td>
             </tr>
             <tr>
               <td>审计(调查)事项</td>
@@ -352,7 +352,7 @@
                           type="textarea"
                           v-model="formDetail.matter"></el-input>
               </td>
-              <!--<td colspan="5">{{formDetail.matter	}}</td>-->
+              <!--<td colspan="5">{{formDetail.matter }}</td>-->
             </tr>
             <tr>
               <td>审计(调查)事项描述</td>
@@ -411,7 +411,7 @@
   </div>
 </template>
 
-<script>
+  <script>
 import { del_file, get_userInfo, projectMembership_listUserInfo, down_file, auditBasy_getFileList, auditConfirmation_pageList, auditConfirmation_save, auditConfirmation_delete, auditConfirmation_getDetail, auditConfirmation_update, Company } from
   '@SDMOBILE/api/shandong/ls'
 import { task_pageList_wt } from
@@ -937,9 +937,9 @@ export default {
     },
   },
 };
-</script>
+  </script>
 
-<style lang="scss" scoped>
+  <style lang="scss" scoped>
 .min_height {
   min-height: 500px;
 }
@@ -985,7 +985,7 @@ export default {
   }
 }
 </style>
-<style scoped>
+  <style scoped>
 @import "../../../assets/styles/css/yw.css";
 .qrd-dialog >>> .el-dialog__header,
 .qrd-dialog >>> .el-dialog__body {
@@ -1097,3 +1097,4 @@ export default {
   font-weight: bold;
 }
 </style>
+
