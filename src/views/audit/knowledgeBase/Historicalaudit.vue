@@ -744,6 +744,15 @@ export default {
     },
     handleSizeChange (val) {
       this.query.pageSize = val;
+      let params = {
+        pageNo: this.query.pageNo,
+        pageSize: val,
+        condition: {
+          findPeople: this.query.findPeople,
+          historyAuditFindDescribe: this.query.historyAuditFindDescribe,
+        },
+      };
+      this.page_list(params);
     },
     // 分页
     handleCurrentChange (val) {

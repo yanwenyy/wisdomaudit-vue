@@ -496,6 +496,7 @@ export default {
     // 资料清单 没页
     handleSizeChange_data (val) {
       this.list_query.pageSize = val;
+      this.pageList_data();//列表
     },
     // 资料清单 分页
     handleCurrentChange_data (val) {
