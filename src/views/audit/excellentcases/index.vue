@@ -60,7 +60,6 @@
             </el-table-column>
             <!-- 来源项目 -->
             <el-table-column prop="sourceItem"
-                             show-overflow-tooltip
                              label="来源项目">
 
               <template slot-scope="scope">
