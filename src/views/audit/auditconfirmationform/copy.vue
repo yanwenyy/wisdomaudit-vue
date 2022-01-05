@@ -1723,11 +1723,21 @@ export default {
           rep.auditTaskUuid = rep.auditTaskUuid.join(",");
           rep.basis = rep.basis.join(",");
           console.log(rep.attachmentList);
-          rep.attachmentList.forEach((item) => {
+
+
+          let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
+          console.log(uploadList2);
+          uploadList2.forEach((item) => {
             console.log(item);
             item.status = null;
           });
-          console.log(rep.attachmentList);
+          this.dqProblem.attachmentList = uploadList2;
+
+          // rep.attachmentList.forEach((item) => {
+          //   console.log(item);
+          //   item.status = null;
+          // });
+          // console.log(rep.attachmentList);
 
 
           this.dialogDetailVisible = false;

@@ -1,4 +1,4 @@
-<template>
+  <template>
   <div class="auditConfirmation">
     <el-button type="primary"
                @click="addConfirmation()"
@@ -203,8 +203,8 @@
                      @click="getRelationQues"
                      class="relationBtn">关联问题</el-button>
           <!-- <el-button :disabled="ifLook"
-                     @click="getRelationQues"
-                     class="relationBtn">编辑问题</el-button> -->
+                      @click="getRelationQues"
+                      class="relationBtn">编辑问题</el-button> -->
 
           <el-input rows="6"
                     :disabled="ifLook"
@@ -411,7 +411,7 @@
   </div>
 </template>
 
-<script>
+  <script>
 import { del_file, get_userInfo, projectMembership_listUserInfo, down_file, auditBasy_getFileList, auditConfirmation_pageList, auditConfirmation_save, auditConfirmation_delete, auditConfirmation_getDetail, auditConfirmation_update, Company } from
   '@SDMOBILE/api/shandong/ls'
 import { task_pageList_wt } from
@@ -937,9 +937,9 @@ export default {
     },
   },
 };
-</script>
+  </script>
 
-<style lang="scss" scoped>
+  <style lang="scss" scoped>
 .min_height {
   min-height: 500px;
 }
@@ -985,7 +985,7 @@ export default {
   }
 }
 </style>
-<style scoped>
+  <style scoped>
 @import "../../../assets/styles/css/yw.css";
 .qrd-dialog >>> .el-dialog__header,
 .qrd-dialog >>> .el-dialog__body {
