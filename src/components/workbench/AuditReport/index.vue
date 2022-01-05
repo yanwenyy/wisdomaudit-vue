@@ -253,27 +253,26 @@
                              show-overflow-tooltip
                              label="领域">
               <template slot-scope="scope">
-                <p v-if="scope.row.field">{{scope.row.field}}</p>
-                <p v-else>--</p>
+                <span v-if="scope.row.field">{{scope.row.field}}</span>
+                <span v-else>--</span>
               </template>
             </el-table-column>
 
             <el-table-column prop="problem"
-                             show-overflow-tooltip
                              label="问题">
               <template slot-scope="scope">
-                <p v-if="scope.row.problem"
+                <span v-if="scope.row.problem"
                    @click="details_show(scope.row,scope.$index+1)"
-                   style="cursor: pointer;color:rgb(68, 163, 223);">{{scope.row.problem| ellipsis(10) }}</p>
-                <p v-else>--</p>
+                   style="cursor: pointer;color:rgb(68, 163, 223);">{{scope.row.problem| ellipsis(10) }}</span>
+                <span v-else>--</span>
               </template>
             </el-table-column>
             <el-table-column prop="discoveryTime"
                              show-overflow-tooltip
                              label="发现日期">
               <template slot-scope="scope">
-                <p v-if="scope.row.discoveryTime">{{scope.row.discoveryTime}}</p>
-                <p v-else>--</p>
+                <span v-if="scope.row.discoveryTime">{{scope.row.discoveryTime}}</span>
+                <span v-else>--</span>
               </template>
 
             </el-table-column>
@@ -283,17 +282,17 @@
                              label="风险金额（万元）">
 
               <template slot-scope="scope">
-                <p v-if="scope.row.riskAmount">
-                  {{ parseFloat(scope.row.riskAmount.toString()) }}</p>
-                <p v-else>--</p>
+                <span v-if="scope.row.riskAmount">
+                  {{ parseFloat(scope.row.riskAmount.toString()) }}</span>
+                <span v-else>--</span>
               </template>
             </el-table-column>
             <el-table-column prop="problemFindPeople"
                              show-overflow-tooltip
                              label="发现人">
               <template slot-scope="scope">
-                <p v-if="scope.row.problemFindPeople">{{scope.row.problemFindPeople}}</p>
-                <p v-else>--</p>
+                <span v-if="scope.row.problemFindPeople">{{scope.row.problemFindPeople}}</span>
+                <span v-else>--</span>
               </template>
             </el-table-column>
           </el-table>
