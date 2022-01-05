@@ -31,10 +31,9 @@
 
 </el-form>
       </el-row>
-
       <el-row>
         <el-col :span="24">
-          <div style="margin-top: 20px;">
+          <div>
             <el-radio-group v-model="radio2" size="medium" @change="changemx">
               <el-radio-button
                 :label="item"
@@ -202,14 +201,13 @@ export default {
   .month-position {
     position: absolute;
     right: 10px;
-
     z-index: 9;
   }
 }
 .el-radio-button{
   width: 180px;
-  margin-top: 10px;
-    margin-left: 4px;
+  margin-top: 16px;
+  margin-left: 2px;
 
 }
 
