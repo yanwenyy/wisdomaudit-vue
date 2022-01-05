@@ -877,11 +877,17 @@ export default {
     },
     handleSizeChange (val) {
       this.params.pageSize = val
+      let params = {
+        pageNo: this.params.pageNo,
+        pageSize: this.params.pageSize,
+      }
+      this.list_data_page(params);
     },
     // 反馈分页
     handleCurrentChange (val) {
+      this.params.pageNo = val
       let params = {
-        pageNo: val,
+        pageNo: this.params.pageNo,
         pageSize: this.params.pageSize,
       }
       this.list_data_page(params);
@@ -950,11 +956,20 @@ export default {
     },
     handleSizeChange_data (val) {
       this.data_query.pageSize = val
+      let params = {
+        pageNo: this.data_query.pageNo,
+        pageSize: this.data_query.pageSize,
+        condition: {
+          dataTaskNumber: this.data_query.condition.dataTaskNumber,
+        }
+      }
+      this.feedback_post(params)//资料列表
     },
     // 反馈资料 分页
     handleCurrentChange_data (val) {
+      this.data_query.pageNo = val
       let params = {
-        pageNo: val,
+        pageNo: this.data_query.pageNo,
         pageSize: this.data_query.pageSize,
         condition: {
           dataTaskNumber: this.data_query.condition.dataTaskNumber,
@@ -1087,6 +1102,7 @@ export default {
     },
     handleSizeChange_log (val) {
       this.log.pageSize = val;
+      this.post_operation_record()//刷新 操作记录 列表
     },
     // 操作记录分页
     handleCurrentChange_log (val) {

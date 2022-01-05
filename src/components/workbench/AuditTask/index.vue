@@ -1367,12 +1367,25 @@ export default {
     },
     handleSizeChange_zijian (val) {
       this.params.pageSize = val
+      // 资料列表
+      let params = {
+        pageNo: this.params.pageNo,
+        pageSize: this.params.pageSize,
+        condition: {
+          auditModelCategory: this.params.auditModelCategory,
+          managementProjectUuid: this.managementProjectUuid,
+          taskName: this.search_taskName,
+          // taskType: 2//自建任务列表
+        }
+      }
+      this.list_data(params);
     },
     // 自建任务 列表分页
     handleCurrentChange_zijian (val) {
+      this.params.pageNo = val
       // 资料列表
       let params = {
-        pageNo: val,
+        pageNo: this.params.pageNo,
         pageSize: this.params.pageSize,
         condition: {
           auditModelCategory: this.params.auditModelCategory,
@@ -2230,14 +2243,23 @@ export default {
     // 问题数分页 每页几条
     handleSizeChange_probleNum (val) {
       this.probleNum.pageSize = val
-    },
-    // 问题数分页
-    handleCurrentChange_probleNum (val) {
       let params = {
         condition: {
           auditTaskUuid: this.auditTaskUuid,
         },
-        pageNo: val,
+        pageNo: this.probleNum.pageNo,
+        pageSize: this.probleNum.pageSize,
+      };
+      this.task_problems_data(params);
+    },
+    // 问题数分页
+    handleCurrentChange_probleNum (val) {
+      this.probleNum.pageNo = val
+      let params = {
+        condition: {
+          auditTaskUuid: this.auditTaskUuid,
+        },
+        pageNo: this.probleNum.pageNo,
         pageSize: this.probleNum.pageSize,
       };
       this.task_problems_data(params);

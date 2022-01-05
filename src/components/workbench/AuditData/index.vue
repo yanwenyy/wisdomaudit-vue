@@ -1758,11 +1758,21 @@ export default {
         this.loading = false
       })
     },
-    handleSizeChange_model () {
+    handleSizeChange_model (val) {
       this.params.pageSize = val
+      let params = {
+        pageNo: this.params.pageNo,
+        pageSize: val,
+        condition: {
+          projectNumber: this.projectNumber,
+          title: this.search_title,
+        }
+      }
+      this.list_data_start(params)
     },
     // 任务列表分页
     handleCurrentChange_model (val) {
+      this.params.pageNo = val
       let params = {
         pageNo: val,
         pageSize: this.params.pageSize,
@@ -2948,17 +2958,25 @@ export default {
     },
     handleSizeChange_zj (val) {
       this.params2.pageSize = val
-    },
-    // 已完成 分页
-    handleCurrentChange_zj (val) {
-
       let params = {
         pageNo: this.params2.pageNo,
         pageSize: this.params2.pageSize,
         condition: {
           dataTaskNumber: this.projectNumber,
           dataName: this.search_title2,
-
+        }
+      }
+      this.list_data_end(params)//刷新已完成列表
+    },
+    // 已完成 分页
+    handleCurrentChange_zj (val) {
+      this.params2.pageNo = val
+      let params = {
+        pageNo: this.params2.pageNo,
+        pageSize: this.params2.pageSize,
+        condition: {
+          dataTaskNumber: this.projectNumber,
+          dataName: this.search_title2,
         }
       }
       this.list_data_end(params)//刷新已完成列表
