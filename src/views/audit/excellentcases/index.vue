@@ -317,12 +317,12 @@
                              label="文件名称">
 
               <template slot-scope="scope">
-                <p v-if="scope.row.fileName">
+                <span v-if="scope.row.fileName">
                   {{scope.row.fileName}}
-                </p>
-                <p v-else>
+                </span>
+                <span v-else>
                   --
-                </p>
+                </span>
               </template>
 
             </el-table-column>
@@ -331,8 +331,8 @@
                              show-overflow-tooltip
                              label="上传时间">
               <template slot-scope="scope">
-                <p v-if="scope.row.createTime">{{scope.row.createTime | filtedate}}</p>
-                <p v-else>--</p>
+                <span v-if="scope.row.createTime">{{scope.row.createTime | filtedate}}</span>
+                <span v-else>--</span>
               </template>
 
             </el-table-column>

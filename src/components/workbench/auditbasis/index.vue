@@ -58,9 +58,6 @@
               }}</template>
           </el-table-column>
           <el-table-column algin="left"
-                           prop="keyClauses"
-                           label="重点条款"> </el-table-column>
-          <el-table-column algin="left"
                            label="操作">
             <template slot-scope="scope">
               <el-link type="primary blue"
@@ -260,9 +257,6 @@ export default {
         ],
         basySymbol: [
           { required: true, message: "请填写文号", trigger: "blur" },
-        ],
-        keyClauses: [
-          { required: true, message: "请填写重点条款", trigger: "blur" },
         ],
         publishDepartment: [
           { required: true, message: "请填写发文部门", trigger: "blur" },
