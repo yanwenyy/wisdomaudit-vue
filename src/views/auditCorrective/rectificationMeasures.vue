@@ -43,7 +43,7 @@
             </el-input>
           </el-form-item>
           <el-button type="primary"
-                     @click="list_data_start">搜索</el-button>
+                     @click="list_data()">搜索</el-button>
           <el-button type="primary"
                      @click="exportList">导出</el-button>
         </el-form>
@@ -135,7 +135,6 @@
     <div class="page">
       <el-pagination :current-page="page.current"
                      :page-size="page.size"
-                     :page-sizes="[10, 50, 100]"
                      :total="page.total"
                      @current-change="handleCurrentChange"
                      @size-change="handleSizeChange"
@@ -175,6 +174,7 @@ export default {
     Detail
   },
   mounted () {
+    this.list_data()//列表
     this.list_data_start();
     this.list_data_start("getProjectList");
     // correctStep_getProjectList().then(resp => {
@@ -228,7 +228,44 @@ export default {
     refreshList () {
       this.list_data_start();
     },
-    //列表数据
+
+    // 列表
+    list_data (ifsel) {
+      let params = {
+        pageNo: this.page.current,
+        pageSize: this.page.size,
+        condition: {
+          correctStatus: this.searchForm.correctStatus,
+          projectName: this.searchForm.projectName,
+          problemName: this.searchForm.problemName,
+        }
+      };
+      console.log(params);
+      this.loading = true;
+      correctStep_pageList(params).then(resp => {
+        var datas = resp.data;
+        this.tableData = datas.records;
+        this.page = {
+          current: datas.current,
+          size: datas.size,
+          total: datas.total
+        };
+        // console.log(this.page);
+        this.loading = false;
+        // var projectList = [];
+        // if (ifsel == "getProjectList") {
+        //   datas.records.forEach((item) => {
+        //     projectList.push(item.projectName)
+        //   });
+        //   this.projectList = new Set(projectList);
+        // }
+      })
+
+
+    },
+
+
+    //下拉框
     list_data_start (ifsel) {
       let params = {
         pageNo: this.searchForm.pageNo,
@@ -242,13 +279,13 @@ export default {
       this.loading = true;
       correctStep_pageList(params).then(resp => {
         var datas = resp.data;
-        this.tableData = datas.records;
-        this.page = {
-          current: datas.current,
-          size: datas.size,
-          total: datas.total
-        };
-        this.loading = false;
+        // this.tableData = datas.records;
+        // this.page = {
+        //   current: datas.current,
+        //   size: datas.size,
+        //   total: datas.total
+        // };
+        // this.loading = false;
         var projectList = [];
         if (ifsel == "getProjectList") {
           datas.records.forEach((item) => {
@@ -263,13 +300,14 @@ export default {
     },
     //分页点击
     handleSizeChange (val) {
-      this.searchForm.pageSize = val;
-      this.list_data_start();
+      this.page.size = val;
+      this.list_data();
 
     },
+    // 每页几条
     handleCurrentChange (val) {
-      this.searchForm.pageNo = val;
-      this.list_data_start();
+      this.page.current = val
+      this.list_data();
     },
     //提交点击
     sub (row) { },
