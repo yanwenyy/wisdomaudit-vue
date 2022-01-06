@@ -1,7 +1,7 @@
 <template>
   <div>
-   <img :src="imgUrl" alt="" />
-    <router-link :to="newUrl "> </router-link>
+   <!-- <img :src="imgUrl" alt="" />
+    <router-link :to="newUrl "> </router-link> -->
   </div>
 </template>
 
@@ -9,10 +9,10 @@
 export default {
   data() {
     return {
-      imgUrl: require("@WISDOMAUDIT/assets/styles/image/Auditoverview.png"),
+      // imgUrl: require("@WISDOMAUDIT/assets/styles/image/Auditoverview.png"),
     };
   },
-  mounted(){
+  created(){
  let newUrl = this.$router.resolve({
           path: "/Newpage"
         });
