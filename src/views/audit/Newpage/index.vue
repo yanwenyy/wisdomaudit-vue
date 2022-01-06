@@ -47,7 +47,7 @@ export default {
                   console.log("帆软认证接口调用成功");
                   // window.open(item.url);
                   
-                  this.openurl=item.url
+                  this.openurl='http://10.19.206.196:8088/WebReport/decision/view/form?viewlet=vendor/zhuowang/Form18.frm&ref_t=design&ref_c=d6740dbd-0279-40d0-b361-3cc1adb80d35'
                   return;
                 }
               },
