@@ -28,47 +28,47 @@ const wisdomauditRouter = {
       }
     },
 
-    {
-      path: "riskMonitoring",
-      name: "riskMonitoring",
-      redirect: "/riskMonitoring/riskScan/personal",
-      component:  () => import('@WISDOMAUDIT/layout/components'),
-      meta: {
-        title: "风险监控"
-      },
-      children: [
-        {
-          path: "riskScan",
-          name: "riskScan",
-          component: () => import("@WISDOMAUDIT/layout/blank"),
-          // component: () => import('@WISDOMAUDIT/views/audit/accountableAdd'),
-          // wisdomaudit-vue\src\views\audit\riskScan\personal
-          meta: {
-            title: "风险扫描"
-          },
-          children: [
-            {
-              path: "personal",
-              name: "personal",
-              component: () =>
-                import("@WISDOMAUDIT/views/audit/riskScan/personal"),
-              meta: {
-                title: "个人"
-              }
-            },
-            {
-              path: "enterprise",
-              name: "enterprise",
-              component: () =>
-                import("@WISDOMAUDIT/views/audit/riskScan/enterprise"),
-              meta: {
-                title: "政企"
-              }
-            }
-          ]
-        }
-      ]
-    },
+    // {
+    //   path: "riskMonitoring",
+    //   name: "riskMonitoring",
+    //   redirect: "/riskMonitoring/riskScan/personal",
+    //   component:  () => import('@WISDOMAUDIT/layout/components'),
+    //   meta: {
+    //     title: "风险监控"
+    //   },
+    //   children: [
+    //     {
+    //       path: "riskScan",
+    //       name: "riskScan",
+    //       component: () => import("@WISDOMAUDIT/layout/blank"),
+    //       // component: () => import('@WISDOMAUDIT/views/audit/accountableAdd'),
+    //       // wisdomaudit-vue\src\views\audit\riskScan\personal
+    //       meta: {
+    //         title: "风险扫描"
+    //       },
+    //       children: [
+    //         {
+    //           path: "personal",
+    //           name: "personal",
+    //           component: () =>
+    //             import("@WISDOMAUDIT/views/audit/riskScan/personal"),
+    //           meta: {
+    //             title: "个人"
+    //           }
+    //         },
+    //         {
+    //           path: "enterprise",
+    //           name: "enterprise",
+    //           component: () =>
+    //             import("@WISDOMAUDIT/views/audit/riskScan/enterprise"),
+    //           meta: {
+    //             title: "政企"
+    //           }
+    //         }
+    //       ]
+    //     }
+    //   ]
+    // },
 
     // {
     //   path: "projectInit",
