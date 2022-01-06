@@ -125,6 +125,7 @@
                 @pagination="getList" />
     <!-- 新增和编辑的弹框 -->
     <el-dialog title="新增审计问题"
+               class="add"
                :append-to-body='true'
                :visible.sync="dialogFormVisible"
                :close-on-click-modal="false"
@@ -247,7 +248,7 @@
                     @keyup.native="onlyNumOnePoint('temp')"
                     @input="temp.riskAmount = temp.riskAmount.slice(0, 27)" />
         </el-form-item>
-        <el-form-item class="itemTwo"
+        <el-form-item class="itemTwo task"
                       label="关联任务："
                       prop="auditTaskUuid">
           <el-select v-model="temp.auditTaskUuid"
@@ -357,7 +358,7 @@
           </div> -->
         <el-form-item label="依据："
                       prop="basis"
-                      class="itemOne">
+                      class="itemOne yj">
           <el-select v-model="dqProblem.basis"
                      class="inline-block yj-sel"
                      multiple
@@ -428,7 +429,7 @@
                     @keyup.native="onlyNumOnePoint('dqProblem')"
                     @input="temp.riskAmount = temp.riskAmount.slice(0, 27)" />
         </el-form-item>
-        <el-form-item class="itemTwo"
+        <el-form-item class="itemTwo task"
                       label="关联任务："
                       prop="auditTaskUuid">
           <el-select disabled
@@ -1303,8 +1304,14 @@ export default {
 >>> .upload-yw .el-form-item__content {
   width: 60% !important;
 }
->>> .el-select__tags-text {
+.yj-sel >>> .el-select__tags-text {
   max-width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.task >>> .el-select__tags-text {
+  max-width: 220px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

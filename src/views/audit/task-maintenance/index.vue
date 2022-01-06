@@ -95,7 +95,7 @@
                 </template>
               </el-table-column>
               <el-table-column prop="taskDescription"
-                               label="任务描述">
+                               label="1111任务描述">
                 <template slot-scope="scope">
                   <div v-if="scope.row.taskDescription == null || scope.row.taskDescription == ''">--</div>
                   <div v-else>{{scope.row.taskDescription}}</div>
@@ -215,6 +215,18 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="领ㅤ域:"
+                        prop="belongField">
+            <el-select placeholder="请选择领域"
+                       v-model="editTask.belongField">
+              <el-option v-for="item in areasOption"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.label">
+              </el-option>
+            </el-select>
+          </el-form-item>
+
           <el-form-item label="专ㅤ题:"
                         prop="belongSpcial">
             <el-select placeholder="请选择专题"
@@ -230,18 +242,8 @@
             <el-input v-model="editTask.belongSpcial"
                       v-if="other_input == false"></el-input>
           </el-form-item>
-          <el-form-item label="领ㅤ域:"
-                        prop="belongField">
-            <el-select placeholder="请选择领域"
-                       v-model="editTask.belongField">
-              <el-option v-for="item in areasOption"
-                         :key="item.value"
-                         :label="item.label"
-                         :value="item.label">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="任务描述：">
+
+          <el-form-item label="22任务描述：">
             <el-input type="textarea"
                       placeholder="请输入任务描述"
                       v-model="editTask.taskDescription"></el-input>
@@ -308,7 +310,17 @@
               </el-option>
             </el-select>
           </el-form-item>
-
+          <el-form-item label="领ㅤ域："
+                        prop="belongField">
+            <el-select placeholder="请选择领域"
+                       v-model="taskSelf.belongField">
+              <el-option v-for="item in areasOption"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.label">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="专ㅤ题："
                         prop="belongSpcial">
             <el-select placeholder="请选择专题"
@@ -324,17 +336,7 @@
             <el-input v-model="taskSelf.belongSpcial"
                       v-if="other_input == false"></el-input>
           </el-form-item>
-          <el-form-item label="领ㅤ域："
-                        prop="belongField">
-            <el-select placeholder="请选择领域"
-                       v-model="taskSelf.belongField">
-              <el-option v-for="item in areasOption"
-                         :key="item.value"
-                         :label="item.label"
-                         :value="item.label">
-              </el-option>
-            </el-select>
-          </el-form-item>
+
           <el-form-item label="任务类型：">
             <el-select v-model="taskSelf.taskType"
                        filterable
@@ -510,7 +512,7 @@ import {
 import { down_file } from
   '@SDMOBILE/api/shandong/ls'
 export default {
-  components: { Pagination,Vault },
+  components: { Pagination, Vault },
   props: ["active_project", "userRole"],
   data () {
     return {
@@ -793,7 +795,7 @@ export default {
         }
       });
     },
-    
+
     // 专题选择其他变成可输入
     changeBelongSpcial (val) {
       if (val == "其他") {
