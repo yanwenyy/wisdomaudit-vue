@@ -1,5 +1,7 @@
 <template>
+
   <div style="width:100vw;height:100vh;">
+  <p>测试----访问地址:{{openurl}}</p>
  <iframe :src="openurl" frameborder="0"  width="100%"
                 height="100%"></iframe>
   </div>
