@@ -1,5 +1,14 @@
 <template>
   <div class="auditedInstitution">
+    <Vault :vaultV="vaultV"
+           :sceneId="sceneId"
+           :approvers="approvers"
+           :maxTime="maxTime"
+           :dqtime="dqtime"
+           :account="account"
+           :appSessionId="appSessionId"
+           @changevault="changevault"
+           @vdownload="vdownload"></Vault>
     <el-row :gutter="24">
       <el-col :span="6"
               class="filterTree">
@@ -33,7 +42,7 @@
             <el-button type="text"
                        style="color: #44a3df; background: none; border: 0;"
                        size="small xz"
-                       @click="orgDownload()">下载模板</el-button>
+                       @click="openVault({})">下载模板</el-button>
           </el-col>
           <div class="search">
             <el-input placeholder="请输入机构名称"
@@ -138,6 +147,8 @@
 
 <script>
 import axios from "axios";
+import Vault from "@WISDOMAUDIT/components/Vaultcertification";
+
 import {
   auditOrgList,
   auditOrgTree,
@@ -145,9 +156,18 @@ import {
 } from "@SDMOBILE/api/shandong/auditedInstitution";
 import Pagination from "@WISDOMAUDIT/components/Pagination";
 export default {
-  components: { Pagination },
+  components: { Vault,Pagination },
   data () {
     return {
+      vaultV: false,
+      sceneId: 1557, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
+      approvers: [], //审批人列表
+      maxTime: "",//最大时间
+      dqtime: "",//当前时间
+      account: "",//返回的账户
+      appSessionId: "",//应用sessionid
+      downloaobj: {},//暂存的下载目标
+
       dqtoken: "",
       orgTableData: [], //被审计机构table
       total: 0, //table 总条数
@@ -183,6 +203,62 @@ export default {
     this.getauditOrgTree(this.queryTree);
   },
   methods: {
+    //通过认证后的方法
+    vdownload () {
+      this.orgDownload()
+    },
+    //控制认证弹窗
+    changevault (val) {
+      this.vaultV = val;
+    },
+    //打开金库
+    openVault (obj) {
+      console.log("芝麻开门")
+      this.downloaobj = obj
+      axios({
+        method: "post",
+        url: `/wisdomaudit/treasury/getTreasuryStatus`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
+        data: {
+          sceneId: this.sceneId,
+          sceneName: "附件上传后下载", //场景名称
+          sensitiveData: "report_download", //敏感数据对应的编号：  data_export 经营指标、模型结果 report_download 附件上传后下载;
+          sensitiveOperate: "export", //敏感操作对应的编号：export： 导出   select：查询
+        },
+      }).then((resp) => {
+        //result 是否开启 开启：1  无需开启：0
+        //resultDesc 无需开启原因（成功错误信息）
+        //historyAppSessionId 历史有效应用sessionid（仅当已授权状态时必填属性）
+        //relation 多值授权方式与访问方式关系
+        //policyAuthMethod 授权方式： remoteAuth远程授权
+        //policyAccessMethod
+        //maxTime 授权条件（必填属性）单位为小时： 当为0时，为单次授权；否则为时间段授权即允许以当前时间为开始时间，开始时间+maxTime时间为最大结束时间，允许用户在此范围选择；
+        //approvers 审批人列表
+        //如果是线上环境
+        if (resp.data.data.isVaultProfiles) {
+          let rep = resp.data.data.treasuryStatusRsp;
+          if (rep.result == 0) {
+            // this.$message(rep.resultDesc);
+            this.vdownload()
+            return;
+          } else {
+            console.log(rep);
+            this.approvers = rep.approvers || "";
+            this.maxTime = rep.maxTime;
+            this.dqtime = new Date();
+            this.account = resp.data.data.account;
+            this.appSessionId = resp.data.data.appSessionId;
+            this.vaultV = true;
+          }
+        } else {
+          //否则不处理或在此处直接进行后面的操作
+          this.vdownload()
+        }
+      });
+    },
+
     //对树节点进行筛选时执行的方法
     filterNode (value, data) {
       console.log(value);

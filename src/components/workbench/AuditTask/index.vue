@@ -1,6 +1,15 @@
 <template>
   <div class="sjzl anmition_show">
     <!-- {{managementProjectUuid}} -->
+    <Vault :vaultV="vaultV"
+           :sceneId="sceneId"
+           :approvers="approvers"
+           :maxTime="maxTime"
+           :dqtime="dqtime"
+           :account="account"
+           :appSessionId="appSessionId"
+           @changevault="changevault"
+           @vdownload="vdownload"></Vault>
     <div class="conter">
       <div class="projectTab">
         <!-- tab -->
@@ -148,7 +157,7 @@
                 <el-popover placement="bottom"
                             width="350"
                             v-if="scope.row.fileCount"
-                            @show="open_enclosure_details_data(scope.row.auditTaskUuid,scope.row.paramTaskUuid,)"
+                             @show="open_enclosure_details_data(scope.row.auditTaskUuid,scope.row.paramTaskUuid,)"
                             :popper-class="file_new==''?'no-padding':''"
                             trigger="click">
 
@@ -157,7 +166,7 @@
                     <li v-for="(item,index) in file_new.attachmentList1"
                         :key="index"
                         class="pointer blue"
-                        @click="download(item.attachmentUuid,item.fileName)">
+                        @click="openVault(item)">
                       {{item.fileName}}</li>
                   </ul>
 
@@ -166,7 +175,7 @@
                     <li v-for="(item,index) in file_new.attachmentList2"
                         :key="index"
                         class="pointer blue"
-                        @click="download(item.attachmentUuid,item.fileName)">
+                        @click="openVault(item)">
                       {{item.fileName}}</li>
                   </ul>
 
@@ -175,7 +184,7 @@
                     <li v-for="(item,index) in file_new.attachmentList3"
                         :key="index"
                         class="pointer blue"
-                        @click="download(item.attachmentUuid,item.fileName)">
+                        @click="openVault(item)">
                       {{item.fileName}}</li>
                   </ul>
 
@@ -424,7 +433,7 @@
                   <li v-for="(item,index) in enclosure_details_list"
                       :key="index"
                       class="pointer blue"
-                      @click="download(item.attachmentUuid,item.fileName)">
+                      @click="openVault(item)">
                     {{item.fileName}}</li>
                 </ul>
                 <div slot="reference"
@@ -1051,6 +1060,7 @@
 
 <script>
 import axios from "axios";
+import Vault from "@WISDOMAUDIT/components/Vaultcertification";
 import {
   task_pageList,
   //task_model_pageList,
@@ -1087,10 +1097,20 @@ import Paramdrawnew from '@WISDOMAUDIT/components/workbench/AuditTask/paramdrawn
 
 export default {
   components: {
-    Paramdrawnew
+    Paramdrawnew,
+    Vault
   },
   data () {
     return {
+      vaultV: false,
+      sceneId: 1557, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
+      approvers: [], //审批人列表
+      maxTime: "",//最大时间
+      dqtime: "",//当前时间
+      account: "",//返回的账户
+      appSessionId: "",//应用sessionid
+      downloaobj: {},//暂存的下载目标
+
       dqtoken: "",
       headers: '',
       input_select: true,
@@ -1356,6 +1376,62 @@ export default {
 
   },
   methods: {
+    //通过认证后的方法
+    vdownload () {
+      this.download(this.downloaobj.attachmentUuid,this.downloaobj.fileName)
+    },
+    //控制认证弹窗
+    changevault (val) {
+      this.vaultV = val;
+    },
+    //打开金库
+    openVault (obj) {
+      console.log("芝麻开门")
+      this.downloaobj = obj
+      axios({
+        method: "post",
+        url: `/wisdomaudit/treasury/getTreasuryStatus`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
+        data: {
+          sceneId: this.sceneId,
+          sceneName: "附件上传后下载", //场景名称
+          sensitiveData: "report_download", //敏感数据对应的编号：  data_export 经营指标、模型结果 report_download 附件上传后下载;
+          sensitiveOperate: "export", //敏感操作对应的编号：export： 导出   select：查询
+        },
+      }).then((resp) => {
+        //result 是否开启 开启：1  无需开启：0
+        //resultDesc 无需开启原因（成功错误信息）
+        //historyAppSessionId 历史有效应用sessionid（仅当已授权状态时必填属性）
+        //relation 多值授权方式与访问方式关系
+        //policyAuthMethod 授权方式： remoteAuth远程授权
+        //policyAccessMethod
+        //maxTime 授权条件（必填属性）单位为小时： 当为0时，为单次授权；否则为时间段授权即允许以当前时间为开始时间，开始时间+maxTime时间为最大结束时间，允许用户在此范围选择；
+        //approvers 审批人列表
+        //如果是线上环境
+        if (resp.data.data.isVaultProfiles) {
+          let rep = resp.data.data.treasuryStatusRsp;
+          if (rep.result == 0) {
+            // this.$message(rep.resultDesc);
+            this.vdownload()
+            return;
+          } else {
+            console.log(rep);
+            this.approvers = rep.approvers || "";
+            this.maxTime = rep.maxTime;
+            this.dqtime = new Date();
+            this.account = resp.data.data.account;
+            this.appSessionId = resp.data.data.appSessionId;
+            this.vaultV = true;
+          }
+        } else {
+          //否则不处理或在此处直接进行后面的操作
+          this.vdownload()
+        }
+      });
+    },
+    
     // 模型/自建任务列表
     list_data (params) {
       this.loading = true;
