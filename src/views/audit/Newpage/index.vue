@@ -6,22 +6,25 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
       openurl:''
-      // imgUrl: require("@WISDOMAUDIT/assets/styles/image/Auditoverview.png"),
     };
   },
   created(){
+    this.shortcutEvent()
+    
     
   },
   mounted() {
+
    
   },
   methods: {
-       shortcutEvent(item) {
-  
+       shortcutEvent() {
+         console.log('我调用了');
         axios({
           url:
             `/wisdomaudit/dataAuditApi/getSignature?userName=` +
