@@ -214,6 +214,8 @@ export default {
     // 详情每页
     handleSizeChange_details (val) {
       this.details_query.pageSize = val
+      this.details_data();
+
     },
     // 详情 分页
     handleCurrentChange_details (val) {

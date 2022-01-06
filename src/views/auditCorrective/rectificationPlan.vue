@@ -277,6 +277,8 @@ export default {
     // 列表每条条数
     handleSizeChange (val) {
       this.list_query.pageSize = val;
+      this.pageProblemCorrectList_data();//列表
+
     },
     // 列表分页
     handleCurrentChange (val) {

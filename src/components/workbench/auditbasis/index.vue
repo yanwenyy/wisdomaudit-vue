@@ -283,6 +283,7 @@ export default {
     },
     //打开金库
     openVault (obj) {
+      console.log("芝麻开门")
       this.downloaobj = obj
       axios({
         method: "post",
