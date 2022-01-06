@@ -775,7 +775,7 @@
           </div>
 
           <div class="son cd">
-            <el-form-item label="备注："
+            <el-form-item label="资料描述（备注）："
                           label-width="260px"
                           prop="remarks">
               <el-input type="textarea"
@@ -1337,7 +1337,7 @@ export default {
         // secondLevelDataNumber: [{ required: true, message: '请输入二级编号', trigger: 'blur' }],
         department: [{ required: true, message: '请选择部门', trigger: 'change' }],
         source: [{ required: true, message: '请选择来源', trigger: 'change' }],
-        // remarks: [{ required: true, message: '请输入备注', trigger: 'blur' }],
+        remarks: [{ required: true, message: '请输入资料描述（备注）', trigger: 'blur' }],
         status: [{ required: true, message: '请选择是否沉淀', trigger: 'change' }],
         // fileList: [{ required: true, message: '请上传模板', trigger: 'change' }],
         // addTime: [{ required: true, message: '请设置添加日期', trigger: 'change' }],
@@ -1500,10 +1500,10 @@ export default {
     //通过认证后的方法
     vdownload () {
       console.log(this.downloaobj.dtype)
-      if(this.downloaobj.dtype=="导出"){
+      if (this.downloaobj.dtype == "导出") {
         this.exportList(this.downloaobj)
-      }else{
-        this.download(this.downloaobj.attachmentUuid,this.downloaobj.fileName)
+      } else {
+        this.download(this.downloaobj.attachmentUuid, this.downloaobj.fileName)
       }
     },
     //控制认证弹窗
@@ -1511,7 +1511,7 @@ export default {
       this.vaultV = val;
     },
     //打开金库
-    openVault (obj,downtype) {
+    openVault (obj, downtype) {
       console.log("芝麻开门")
       this.downloaobj = obj
       this.downloaobj.dtype = downtype

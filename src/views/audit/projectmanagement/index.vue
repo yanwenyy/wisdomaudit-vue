@@ -991,8 +991,8 @@
             </el-select>
           </el-form-item>
           <el-form-item></el-form-item>
+          <!-- prop="basis" -->
           <el-form-item label="依据"
-                        prop="basis"
                         class="long">
             <el-input v-model="dqProblem.basis"
                       placeholder=""
@@ -1093,10 +1093,9 @@
           <el-table-column type="selection"
                            align="center"></el-table-column>
           <el-table-column prop="problem"
-                           label="问题"
-                           width="200">
+                           label="问题">
             <template slot-scope="scope">
-              <p class="problem_name">{{ scope.row.problem }}</p>
+              <span class="problem_name">{{ scope.row.problem }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="field"
