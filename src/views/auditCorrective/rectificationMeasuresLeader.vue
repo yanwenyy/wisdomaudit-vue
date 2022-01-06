@@ -42,7 +42,7 @@
             </el-input>
           </el-form-item>
           <el-button type="primary"
-                     @click="list_data_start">搜索</el-button>
+                     @click="list_data()">搜索</el-button>
         </el-form>
       </div>
     </div>
@@ -124,13 +124,22 @@
 
     <!-- 分页 -->
     <div class="page">
-      <el-pagination :current-page="page.current"
+
+      <el-pagination @size-change="handleSizeChange"
+                     @current-change="handleCurrentChange"
+                     layout="total, sizes, prev, pager, next, jumper"
+                     :total="this.page.total"
+                     :current-page="this.page.current"
+                     :page-size="this.page.size">
+      </el-pagination>
+
+      <!-- <el-pagination :current-page="page.current"
                      :page-size="page.size"
                      :page-sizes="[10, 50, 100]"
                      :total="page.total"
                      @current-change="handleCurrentChange"
                      @size-change="handleSizeChange"
-                     layout="total, sizes, prev, pager, next, jumper"></el-pagination>
+                     layout="total, sizes, prev, pager, next, jumper"></el-pagination> -->
     </div>
     <!-- 分页 end-->
     <detail ref="detail"
@@ -139,7 +148,7 @@
 </template>
 
 <script>
-import { correctStep_pageListLd, correctStep_getProjectList } from
+import { correctStep_pageListLd } from
   '@SDMOBILE/api/shandong/ls'
 import Detail from "./rectificationDetail";
 export default {
@@ -166,6 +175,7 @@ export default {
   },
   mounted () {
     this.list_data_start();
+    this.list_data()//列表
     this.list_data_start("getProjectList");
     // correctStep_getProjectList().then(resp => {
     //   this.projectList = resp.data;
@@ -176,7 +186,42 @@ export default {
     refreshList () {
       this.list_data_start();
     },
-    //列表数据
+
+    // 列表
+    list_data (ifsel) {
+      let params = {
+        pageNo: this.page.current,
+        pageSize: this.page.size,
+        condition: {
+          correctStatus: this.searchForm.correctStatus,
+          projectName: this.searchForm.projectName,
+          problemName: this.searchForm.problemName,
+        }
+      };
+      console.log(params);
+      this.loading = true;
+      correctStep_pageListLd(params).then(resp => {
+        var datas = resp.data;
+        this.tableData = datas.records;
+        this.page = {
+          current: datas.current,
+          size: datas.size,
+          total: datas.total
+        };
+        console.log(this.page);
+        this.loading = false;
+        // var projectList = [];
+        // if (ifsel == "getProjectList") {
+        //   datas.records.forEach((item) => {
+        //     projectList.push(item.projectName)
+        //   });
+        //   this.projectList = new Set(projectList);
+        // }
+      })
+
+
+    },
+    //下拉框数据
     list_data_start (ifsel) {
       let params = {
         pageNo: this.searchForm.pageNo,
@@ -187,16 +232,16 @@ export default {
           problemName: ifsel == 'getProjectList' ? '' : this.searchForm.problemName,
         }
       };
-      this.loading = true;
+      // this.loading = true;
       correctStep_pageListLd(params).then(resp => {
         var datas = resp.data;
-        this.tableData = datas.records;
-        this.page = {
-          current: datas.current,
-          size: datas.size,
-          total: datas.total
-        };
-        this.loading = false;
+        // this.tableData = datas.records;
+        // this.page = {
+        //   current: datas.current,
+        //   size: datas.size,
+        //   total: datas.total
+        // };
+        // this.loading = false;
         var projectList = [];
         if (ifsel == "getProjectList") {
           datas.records.forEach((item) => {
@@ -208,13 +253,14 @@ export default {
     },
     //分页点击
     handleSizeChange (val) {
-      this.searchForm.pageSize = val;
-      this.list_data_start();
+      this.page.size = val;
+      this.list_data();
 
     },
+    // 每页几条
     handleCurrentChange (val) {
-      this.searchForm.pageNo = val;
-      this.list_data_start();
+      this.page.current = val
+      this.list_data();
     },
     //提交点击
     sub (row) { },

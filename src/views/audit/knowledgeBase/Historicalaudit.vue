@@ -66,6 +66,7 @@
         <!-- 被审计单位 -->
         <el-table-column prop="auditedEntityName"
                          :show-overflow-tooltip="true"
+                         width="150"
                          label="被审计单位">
           <template slot-scope="scope">
             <span v-if="scope.row.auditedEntityName">

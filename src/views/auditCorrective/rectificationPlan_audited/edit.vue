@@ -389,6 +389,8 @@ export default {
     // 每页条数
     handleSizeChange (val) {
       this.list_query.pageSize = val
+      this.page_list_data();//刷新列表
+
     },
     // 分页
     handleCurrentChange (val) {

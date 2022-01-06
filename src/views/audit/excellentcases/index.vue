@@ -243,6 +243,7 @@
 
     <!-- 文件管理 -->
     <el-dialog title=""
+               class="fileList"
                center
                :append-to-body='true'
                :close-on-click-modal="false"
@@ -336,6 +337,7 @@
             </el-table-column>
 
             <el-table-column prop="createTime"
+                             width="150"
                              show-overflow-tooltip
                              label="上传时间">
               <template slot-scope="scope">
@@ -1156,5 +1158,9 @@ export default {
 }
 .btn_type >>> .el-col {
   margin-left: 10px;
+}
+
+.fileList >>> .el-dialog {
+  min-width: 850px;
 }
 </style>>
