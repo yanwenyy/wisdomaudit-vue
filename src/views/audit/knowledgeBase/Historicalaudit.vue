@@ -23,6 +23,7 @@
     <div class="header"
          style="padding: 0 20px 20px">
       <el-button type="primary"
+                 v-if="Add==true"
                  :disabled="isDisable"
                  @click="add_sj()">新增省内审计发现</el-button>
     </div>
@@ -135,6 +136,7 @@
           <template slot-scope="scope">
             <el-button @click="edit(scope.row.historyAuditFindUuid)"
                        type="text"
+                       v-if="Edit==true"
                        plain
                        :disabled="isDisable"
                        style="color: #0c87d6 !important; font-size: 14px !important"
@@ -143,6 +145,7 @@
             </el-button>
             <el-button @click="delete_model(scope.row.historyAuditFindUuid)"
                        plain
+                       v-if="Delete==true"
                        type="text"
                        style="color: #ff8a72 !important; font-size: 14px !important"
                        size="small">
@@ -445,6 +448,7 @@ import {
   historicalaudit_yj,
 } from "@SDMOBILE/api/shandong/Historicalaudit";
 import { task_problems_loadcascader } from "@SDMOBILE/api/shandong/task";
+import { getUserPermissionList } from '@SDMOBILE/api/shandong/common';
 import axios from "axios";
 import $ from "jquery";
 
@@ -542,11 +546,17 @@ export default {
       me: "",
       userRole: 0,
       input_select: true,
+
+      Add: false,//权限
+      Edit: false,//权限
+      Delete: false,//权限
     };
   },
   computed: {},
   watch: {},
   created () {
+    this.jurisdiction_control();//按钮权限控制
+
     this.dqtoken = sessionStorage.getItem("TOKEN");
     // list
     let params = {
@@ -613,6 +623,37 @@ export default {
   },
 
   methods: {
+    // 按钮权限 接口
+    jurisdiction_control () {
+      getUserPermissionList().then(resp => {
+        let data = resp.data
+        data.forEach((item) => {
+          if (item.name == '知识库') {
+            let control_children = item.children
+            // console.log(this.control_children);
+            control_children.forEach((item_son) => {
+              if (item_son.name == '审计依据') {
+                let control_children_son = item_son.children
+                control_children_son.forEach((item_son_child) => {
+                  // this.children_data.push(item_son_child.url)
+                  if (item_son_child.url == 'add') {
+                    this.Add = true;
+                  }
+                  if (item_son_child.url == 'edit') {
+                    this.Edit = true;
+                  }
+                  if (item_son_child.url == 'delete') {
+                    this.Delete = true;
+                  }
+                })
+              }
+            })
+          }
+        })
+
+      })
+    },
+
     // 关闭 清空引用依据
     resetForm () {
       this.dqbasis.val = '';

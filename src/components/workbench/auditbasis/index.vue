@@ -10,7 +10,6 @@
            :appSessionId="appSessionId"
            @changevault="changevault"
            @vdownload="vdownload"></Vault>
-
     <div>
       <div class="projectTab">
         <el-table @row-dblclick="getLook"
@@ -61,6 +60,7 @@
                            label="操作">
             <template slot-scope="scope">
               <el-link type="primary blue"
+                       v-if="Edit == true"
                        @click="edit(scope.row)">编辑</el-link>
               <el-link type="primary"
                        class="delete red"
@@ -197,11 +197,16 @@ import axios from "axios";
 import Vault from "@WISDOMAUDIT/components/Vaultcertification";
 import { del_file_batch, down_file, del_file, auditBasy_pageList, auditBasy_save, auditBasy_delete, auditBasy_getDetail, auditBasy_getFileList } from
   '@SDMOBILE/api/shandong/ls'
+
+
+
 import '@WISDOMAUDIT/styles/from.scss'
 export default {
   components: {
     Vault,
   },
+
+  props: ['Add', 'Edit', 'Delete',],
   data () {
     return {
       vaultV: false,
@@ -268,6 +273,7 @@ export default {
           { required: true, message: "请填写附件内容", trigger: "blur" },
         ],
       },
+
     };
   },
   computed: {},
@@ -663,6 +669,7 @@ export default {
   },
   mounted () {
     this.list_data_start()
+
   },
 };
 </script>

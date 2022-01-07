@@ -28,15 +28,23 @@
         </el-col>
       </div>
     </el-row>
-    <div class="addbtn"><el-button type="primary" @click="addlist">新增依据</el-button></div>
-    <auditbasis ref="listShow"></auditbasis>
-   
+    <div class="addbtn">
+      <el-button type="primary"
+                 v-if="Add == true"
+                 @click="addlist">新增依据</el-button>
+    </div>
+
+    <auditbasis ref="listShow"
+                :Add="Add"
+                :Edit="Edit"
+                :Delete="Delete"></auditbasis>
+
   </div>
 </template>
 
 <script>
 import auditbasis from "@WISDOMAUDIT/components/workbench/auditbasis/index";
-
+import { getUserPermissionList } from '@SDMOBILE/api/shandong/common';
 export default {
   components: {
     auditbasis,
@@ -51,12 +59,52 @@ export default {
       },
       input: "",
       name: "",
+      Add: false,//权限
+      Edit: false,//权限
+      Delete: false,//权限
+
     };
   },
   created () {
     this.dqtoken = sessionStorage.getItem("TOKEN");
+    this.jurisdiction_control();//按钮权限控制
+
   },
+
   methods: {
+
+    // 按钮权限 接口
+    jurisdiction_control () {
+      getUserPermissionList().then(resp => {
+        let data = resp.data
+        data.forEach((item) => {
+          if (item.name == '知识库') {
+            let control_children = item.children
+            // console.log(this.control_children);
+            control_children.forEach((item_son) => {
+              if (item_son.name == '审计依据') {
+                let control_children_son = item_son.children
+                control_children_son.forEach((item_son_child) => {
+                  // this.children_data.push(item_son_child.url)
+                  if (item_son_child.url == 'add') {
+                    this.Add = true;
+                  }
+                  if (item_son_child.url == 'edit') {
+                    this.Edit = true;
+                  }
+                  if (item_son_child.url == 'delete') {
+                    this.Delete = true;
+                  }
+                })
+              }
+            })
+          }
+        })
+
+      })
+    },
+
+
     //查询按钮点击
     getData () {
       this.$nextTick(() => {
