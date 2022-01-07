@@ -821,7 +821,7 @@
         </el-form>
       </div>
       <span slot="footer">
-        <div v-if="user_data">
+        <div v-if="edit_title !== '详细信息'">
 
           <el-button plain
                      @click="dialogVisible2 = false">取 消</el-button>
@@ -847,7 +847,7 @@
                @close="editDialogClosed()"
                :visible.sync="dialogVisibl_operation"
                style="padding-bottom: 59px; ">
-      <div class="title_dlag">审批</div>
+      <div class="title_dlag">审核</div>
 
       <div class="dlag_conter3">
 
@@ -871,6 +871,7 @@
               </el-option>
             </el-select>
             <el-button type="primary"
+                       style="margin-left:10px"
                        @click="search_operation_list()">查询</el-button>
           </div>
         </div>
@@ -1887,6 +1888,10 @@ export default {
     // 添加资料
     add_data_click () {
       this.add_data = {}; //清空
+      // this.$nextTick(() => {
+      //   this.$refs.add_data.clearSelection();//清空
+      // })
+
       this.dialogVisible2 = true;
       this.edit_title = '添加资料';
       this.query_title("getFgs")
@@ -1909,13 +1914,19 @@ export default {
 
     // 新增任务初始化 列表 分页每页条数
     handleSizeChange_csh (val) {
-      this.params_add.pageSize = val
+      let params = {
+        pageNo: this.params_add.pageNo,
+        pageSize: val,
+        condition: {
+          projectType: this.projectNumber,//项目id
+        }
+      }
+      this.add_add_csh(params)//初始化列表
     },
     // 新增任务初始化 列表 分页
     handleCurrentChange_csh (val) {
-      this.params_add.pageNo = val;
       let params = {
-        pageNo: this.params_add.pageNo,
+        pageNo: val,
         pageSize: this.params_add.pageSize,
         condition: {
           projectType: this.projectNumber,//项目id
@@ -2262,6 +2273,7 @@ export default {
     },
     //添加资料 关闭清空
     resetForm (formName) {
+
       this.$refs[formName].resetFields();//清空添加的值
       this.$refs.upload.clearFiles();
 
@@ -2592,9 +2604,17 @@ export default {
         this.isDisable = false
       }, 2000)
       //
+
+      this.add_data = {};
+      // this.$nextTick(() => {
+      //   this.$refs.add_data.clearSelection();//清空
+      // })
+
       // this.record_status = true;
       this.record_query.id = data.auditPreviousDemandDataUuid;
       this.dialogVisible2 = true//显示编辑
+
+
       this.edit_title = '详细信息'
       let params = {
         dataCategory: data.dataCategory
@@ -2933,7 +2953,15 @@ export default {
     },
     // 编辑分页每页
     handleSizeChange_details (val) {
-      this.edit_details_query.pageSize = val
+      let params = {
+        condition: {
+          addDataTaskUuid: this.addDataTaskUuid,
+          projectType: this.active_project,
+        },
+        pageNo: this.edit_details_query.pageNo,
+        pageSize: val,
+      };
+      this.edut_details(params);
     },
     // 编辑分页
     handleCurrentChange_details (val) {

@@ -95,7 +95,7 @@
                 </template>
               </el-table-column>
               <el-table-column prop="taskDescription"
-                               label="1111任务描述">
+                               label="任务描述">
                 <template slot-scope="scope">
                   <div v-if="scope.row.taskDescription == null || scope.row.taskDescription == ''">--</div>
                   <div v-else>{{scope.row.taskDescription}}</div>

@@ -654,6 +654,7 @@ export default {
         problemListUuid: "",
         riskAmount: "",
         status: 0,
+        attachmentList: [],
       },
       selections: [],
       dialogFormVisible: false,
@@ -1104,6 +1105,10 @@ export default {
             ? rep.auditTaskUuid.join(",")
             : "";
           rep.basis = rep.basis ? rep.basis.join(",") : "";
+
+
+          this.temp.attachmentList = [];
+
           axios({
             url: `/wisdomaudit/problemList/save`,
             headers: {
