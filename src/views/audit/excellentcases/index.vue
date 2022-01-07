@@ -21,6 +21,7 @@
             <el-col :span="1.5">
               <el-button type="primary"
                          style="border:none;"
+                         v-if="Add==true"
                          @click="add_data_click()">新增资料</el-button>
               <!-- v-if="is_add==1" -->
             </el-col>
@@ -129,6 +130,7 @@
               <template slot-scope="scope">
                 <el-button @click="edit(scope.row)"
                            type="text"
+                           v-if="Edit==true"
                            :disabled="isDisable"
                            style="color:#0c87d6;background:none;border:none;
                             font-size: 14px !important;"
@@ -146,6 +148,7 @@
 
                 <el-button @click="remove(scope.row)"
                            type="text"
+                           v-if="Delete==true"
                            :disabled="isDisable"
                            style="color:#ff8a72;background:none;border:none;
                             font-size: 14px !important;"
@@ -472,11 +475,16 @@ export default {
 
       // 上传
       fileList: [],
+      Add: false,//权限
+      Edit: false,//权限
+      Delete: false,//权限
     }
   },
   computed: {},
   watch: {},
   created () {
+    this.jurisdiction_control();//按钮权限控制
+
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
     this.dqtoken = sessionStorage.getItem("TOKEN");
     this.pageList_data();//列表
@@ -493,6 +501,41 @@ export default {
     },
   },
   methods: {
+
+
+    // 按钮权限 接口
+    jurisdiction_control () {
+      getUserPermissionList().then(resp => {
+        let data = resp.data
+        data.forEach((item) => {
+          if (item.name == '知识库') {
+            let control_children = item.children
+            // console.log(this.control_children);
+            control_children.forEach((item_son) => {
+              if (item_son.name == '审计依据') {
+                let control_children_son = item_son.children
+                control_children_son.forEach((item_son_child) => {
+                  // this.children_data.push(item_son_child.url)
+                  if (item_son_child.url == 'add') {
+                    this.Add = true;
+                  }
+                  if (item_son_child.url == 'edit') {
+                    this.Edit = true;
+                  }
+                  if (item_son_child.url == 'delete') {
+                    this.Delete = true;
+                  }
+                })
+              }
+            })
+          }
+        })
+
+      })
+    },
+
+
+
     //通过认证后的方法
     vdownload () {
       this.download()
