@@ -32,6 +32,7 @@ export default {
   methods: {
        gettapylist () {
       let p = this.$route.query.id
+      console.log(p,'用户名');
       getSignature(p).then((result) => {
         if (result.code == 0 && result.data.url !== null) {
           getdataAuditApi(result.data.token).then((res) => {
@@ -43,6 +44,7 @@ export default {
 
         }
       }).catch(err => {
+        console.log(err);
         
       });
     },
