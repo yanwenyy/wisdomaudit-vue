@@ -1,6 +1,5 @@
 <template>
   <div style="width:100vw;height:100vh;">
-  <p>测试----访问地址:{{openurl+"TOKEN"+dqtoken}}</p>
  <iframe :src="openurl" frameborder="0"  width="100%"
                 height="100%"></iframe>
   </div>
@@ -31,20 +30,23 @@ export default {
    
   },
   methods: {
-        gettapylist () {
+       gettapylist () {
       let p = this.$store.state.user.datauserid
       getSignature(p).then((result) => {
         if (result.code == 0 && result.data.url !== null) {
+          getdataAuditApi(result.data.token).then((res) => {
 
-          this.openurl='http://10.19.206.196:8088/WebReport/decision/view/form?viewlet=vendor/zhuowang/Form18.frm&ref_t=design&ref_c=d6740dbd-0279-40d0-b361-3cc1adb80d35'
-             
-        console.log(this.openurl);
+            if (res.status == 'success') {
+              this.openurl='http://10.19.206.196:8088/WebReport/decision/view/form?viewlet=vendor/zhuowang/Form18.frm&ref_t=design&ref_c=d6740dbd-0279-40d0-b361-3cc1adb80d35'
+            
+
+            }
+          });
 
 
         }
       }).catch(err => {
-        console.log(err);
-   
+        
       });
     },
 
