@@ -1909,13 +1909,19 @@ export default {
 
     // 新增任务初始化 列表 分页每页条数
     handleSizeChange_csh (val) {
-      this.params_add.pageSize = val
+      let params = {
+        pageNo: this.params_add.pageNo,
+        pageSize: val,
+        condition: {
+          projectType: this.projectNumber,//项目id
+        }
+      }
+      this.add_add_csh(params)//初始化列表
     },
     // 新增任务初始化 列表 分页
     handleCurrentChange_csh (val) {
-      this.params_add.pageNo = val;
       let params = {
-        pageNo: this.params_add.pageNo,
+        pageNo: val,
         pageSize: this.params_add.pageSize,
         condition: {
           projectType: this.projectNumber,//项目id
@@ -2933,7 +2939,15 @@ export default {
     },
     // 编辑分页每页
     handleSizeChange_details (val) {
-      this.edit_details_query.pageSize = val
+      let params = {
+        condition: {
+          addDataTaskUuid: this.addDataTaskUuid,
+          projectType: this.active_project,
+        },
+        pageNo: this.edit_details_query.pageNo,
+        pageSize: val,
+      };
+      this.edut_details(params);
     },
     // 编辑分页
     handleCurrentChange_details (val) {
