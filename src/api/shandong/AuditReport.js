@@ -14,15 +14,38 @@ export function operatingIndicators_list (data) {
 
 
 // 问题
+// export function task_pageList_wt (data) {
+//   return request({
+//     baseURL: baseURL,
+//     url: `/problemList/pageList1`,
+//     method: 'post',
+//     isLoading: false,
+//     data,
+//   })
+// }
+// 确认单 列表
 export function task_pageList_wt (data) {
   return request({
     baseURL: baseURL,
-    url: `/problemList/pageList1`,
+    url: '/auditConfirmation/queryList',
     method: 'post',
     isLoading: false,
     data,
   })
 }
+
+
+// 确认单 列表确认
+export function queryAllProblemList (data) {
+  return request({
+    baseURL: baseURL,
+    url: '/problemList/queryAllProblemList ',
+    method: 'post',
+    isLoading: false,
+    data,
+  })
+}
+
 
 // 问题导出
 export function task_pageList_export (data) {
