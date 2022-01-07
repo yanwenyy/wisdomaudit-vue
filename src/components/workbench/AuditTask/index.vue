@@ -157,7 +157,7 @@
                 <el-popover placement="bottom"
                             width="350"
                             v-if="scope.row.fileCount"
-                             @show="open_enclosure_details_data(scope.row.auditTaskUuid,scope.row.paramTaskUuid,)"
+                            @show="open_enclosure_details_data(scope.row.auditTaskUuid,scope.row.paramTaskUuid,)"
                             :popper-class="file_new==''?'no-padding':''"
                             trigger="click">
 
@@ -924,7 +924,19 @@
             <el-input v-model="save_zj_query.peopleName"
                       :disabled="disabled"></el-input>
           </el-form-item>
-
+          <!-- 领域 -->
+          <el-form-item prop="belongField"
+                        label="领域："
+                        style="margin-bottom:30px!important">
+            <el-select v-model="save_zj_query.belongField"
+                       @change="changeHeader_zj_ly">
+              <el-option v-for="item in problems_slect"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.label">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <!-- 专题 -->
           <el-form-item label="专题："
                         prop="belongSpcial"
@@ -940,20 +952,6 @@
             </el-select>
             <el-input v-model="save_zj_query.belongSpcial"
                       v-if="input_select==false"></el-input>
-          </el-form-item>
-
-          <!-- 领域 -->
-          <el-form-item prop="belongField"
-                        label="领域："
-                        style="margin-bottom:30px!important">
-            <el-select v-model="save_zj_query.belongField"
-                       @change="changeHeader_zj_ly">
-              <el-option v-for="item in problems_slect"
-                         :key="item.value"
-                         :label="item.label"
-                         :value="item.label">
-              </el-option>
-            </el-select>
           </el-form-item>
 
           <!-- 任务描述 -->
@@ -1378,7 +1376,7 @@ export default {
   methods: {
     //通过认证后的方法
     vdownload () {
-      this.download(this.downloaobj.attachmentUuid,this.downloaobj.fileName)
+      this.download(this.downloaobj.attachmentUuid, this.downloaobj.fileName)
     },
     //控制认证弹窗
     changevault (val) {
@@ -1431,7 +1429,7 @@ export default {
         }
       });
     },
-    
+
     // 模型/自建任务列表
     list_data (params) {
       this.loading = true;
