@@ -31,15 +31,12 @@ export default {
   },
   methods: {
        gettapylist () {
-      let p = this.$store.state.user.datauserid
+      let p = this.$route.query.id
       getSignature(p).then((result) => {
         if (result.code == 0 && result.data.url !== null) {
           getdataAuditApi(result.data.token).then((res) => {
-
             if (res.status == 'success') {
               this.openurl='http://10.19.206.196:8088/WebReport/decision/view/form?viewlet=vendor/zhuowang/Form18.frm&ref_t=design&ref_c=d6740dbd-0279-40d0-b361-3cc1adb80d35'
-            
-
             }
           });
 

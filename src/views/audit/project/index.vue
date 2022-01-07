@@ -13,7 +13,10 @@ export default {
   },
   created(){
  let newUrl = this.$router.resolve({
-          path: "/Newpage"
+          path: "/Newpage",
+          query: {
+            id:this.$store.state.user.datauserid
+          }
         });
 window.open(newUrl.href, "_blank");
   },
