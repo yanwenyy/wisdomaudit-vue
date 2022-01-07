@@ -1,7 +1,7 @@
 <template>
   <div class="projectWorkbench"
        style="background: #fff">
-       <Vault :vaultV="vaultV"
+    <Vault :vaultV="vaultV"
            :sceneId="sceneId"
            :approvers="approvers"
            :maxTime="maxTime"
@@ -639,6 +639,17 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="领ㅤ域:"
+                        prop="belongField">
+            <el-select placeholder="请选择领域"
+                       v-model="taskSelf.belongField">
+              <el-option v-for="item in areasOption"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.label">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="专ㅤ题:"
                         prop="belongSpcial">
             <el-select placeholder="请选择专题"
@@ -654,17 +665,7 @@
             <el-input v-model="taskSelf.belongSpcial"
                       v-if="other_input == false"></el-input>
           </el-form-item>
-          <el-form-item label="领ㅤ域:"
-                        prop="belongField">
-            <el-select placeholder="请选择领域"
-                       v-model="taskSelf.belongField">
-              <el-option v-for="item in areasOption"
-                         :key="item.value"
-                         :label="item.label"
-                         :value="item.label">
-              </el-option>
-            </el-select>
-          </el-form-item>
+
           <!-- prop="taskDescription" -->
           <el-form-item label="任务描述：">
             <el-input type="textarea"
@@ -731,6 +732,18 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="领ㅤ域:"
+                        prop="belongField">
+            <el-select placeholder="请选择领域"
+                       v-model="edittaskSelfForm.belongField">
+              <el-option v-for="item in areasOption"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.label">
+              </el-option>
+            </el-select>
+          </el-form-item>
+
           <el-form-item label="专ㅤ题:"
                         prop="belongSpcial">
             <el-select placeholder="请选择专题"
@@ -746,17 +759,7 @@
             <el-input v-model="edittaskSelfForm.belongSpcial"
                       v-if="other_input == false"></el-input>
           </el-form-item>
-          <el-form-item label="领ㅤ域:"
-                        prop="belongField">
-            <el-select placeholder="请选择领域"
-                       v-model="edittaskSelfForm.belongField">
-              <el-option v-for="item in areasOption"
-                         :key="item.value"
-                         :label="item.label"
-                         :value="item.label">
-              </el-option>
-            </el-select>
-          </el-form-item>
+
           <el-form-item label="任务描述：">
             <el-input type="textarea"
                       placeholder="请输入任务描述"
@@ -1539,7 +1542,7 @@ export default {
 
     //设为接口人事件
     isLiaison_Btn (row, list) {
-      this. arrRightValue.splice(this. arrRightValue.indexOf(row),1);
+      this.arrRightValue.splice(this.arrRightValue.indexOf(row), 1);
       let leader = {};
       this.peopleSelection.forEach((a) => {
         if (a.peopleRole == 1) {

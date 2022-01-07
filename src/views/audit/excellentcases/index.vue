@@ -21,8 +21,8 @@
             <el-col :span="1.5">
               <el-button type="primary"
                          style="border:none;"
-                         @click="add_data_click()"
-                         v-if="is_add==1">新增资料</el-button>
+                         @click="add_data_click()">新增资料</el-button>
+              <!-- v-if="is_add==1" -->
             </el-col>
             <!-- 筛选 -->
             <div class="search">
@@ -295,6 +295,7 @@
                          :headers="headers"
                          :show-file-list="false"
                          :http-request="handleUploadForm"
+                         :before-upload="befooreupload"
                          :file-list="fileList"
                          accept=".zip,.doc,.docx,.xls,.xlsx,.txt">
                 <el-button type="primary"
@@ -415,7 +416,7 @@ export default {
       dqtoken: "",
       headers: '',
       activeName: 0,//0:资料清单,1:主要发现
-      is_add: 1,//新增
+      // is_add: 1,//新增
       loading: false,
       list_query: {
         pageNo: 1,
@@ -817,7 +818,19 @@ export default {
     },
     // 上传时
     up_ing (file) {
+      // console.log('上传时');
     },
+
+    befooreupload (file) {
+      if (file.size == 0) {
+        this.$message({
+          message: '请不要上传空文件',
+          type: 'warning'
+        });
+        return false
+      }
+    },
+
     // 上传
     handleUploadForm (file) {
       this.success_btn2 = 1;//显示加载按钮  0成功  1 loaging
