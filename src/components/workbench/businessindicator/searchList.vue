@@ -61,7 +61,7 @@
         <div class="page">
           <el-pagination :current-page="page.current"
                          :page-size="page.size"
-                         :page-sizes="[20, 50, 100]"
+                         :page-sizes="[10, 20, 50, 100]"
                          :total="page.total"
                          @current-change="handleCurrentChange"
                          @size-change="handleSizeChange"
