@@ -455,7 +455,7 @@
                       <li v-for="(item,index) in enclosure_moban_list"
                           :key="index"
                           class="pointer blue"
-                          @click="download(item.attachmentUuid,item.fileName)">
+                          @click="openVault(item,'下载')">
                         {{item.fileName}}</li>
                     </ul>
                     <div slot="reference"
