@@ -127,6 +127,7 @@
                              show-overflow-tooltip
                              label="操作">
               <template slot-scope="scope">
+                <!-- v-if="Edit==true" -->
                 <el-button @click="edit(scope.row)"
                            type="text"
                            :disabled="isDisable"
@@ -135,7 +136,6 @@
                            size="small">
                   编辑
                 </el-button>
-                <!-- v-if="Edit==true" -->
                 <el-button @click="file_list(scope.row)"
                            type="text"
                            style="color:#0c87d6;background:none;border:none;
@@ -144,6 +144,7 @@
                   文件管理
                 </el-button>
 
+                <!-- v-if="Delete==true"  -->
                 <el-button @click="remove(scope.row)"
                            type="text"
                            :disabled="isDisable"
@@ -426,7 +427,6 @@ export default {
       },
       // 列表
       tableData_list: [
-        { title: '1' }
       ],//
       isDisable: false,
       dialogVisible: false,//弹窗
@@ -481,11 +481,10 @@ export default {
   computed: {},
   watch: {},
   created () {
+    this.pageList_data();//列表
     this.jurisdiction_control();//按钮权限控制
-
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
     this.dqtoken = sessionStorage.getItem("TOKEN");
-    this.pageList_data();//列表
   },
   mounted () {
 
