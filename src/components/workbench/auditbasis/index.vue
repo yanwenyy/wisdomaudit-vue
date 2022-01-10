@@ -59,13 +59,17 @@
           <el-table-column algin="left"
                            label="操作">
             <template slot-scope="scope">
-              <!-- v-if="Edit == true" -->
-              <el-link type="primary blue"
-                       @click="edit(scope.row)">编辑</el-link>
-              <!-- v-if="Delete == true" -->
-              <el-link type="primary"
-                       class="delete red"
-                       @click="deletes(scope.row.basyUuid)">删除</el-link>
+              <!-- -->
+              <el-button type="text"
+                         size="small"
+                         class="delete blue"
+                         @click="edit(scope.row)">编辑</el-button>
+
+              <!-- -->
+              <el-button class="delete red"
+                         type="text"
+                         size="small"
+                         @click="deletes(scope.row.basyUuid)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>

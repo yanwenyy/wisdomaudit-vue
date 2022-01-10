@@ -396,9 +396,11 @@
 <script>
 import axios from "axios";
 import Vault from "@WISDOMAUDIT/components/Vaultcertification";
+import { getUserPermissionList } from '@SDMOBILE/api/shandong/common';
 import { pageList, save_query, loadcascader, update, deleteEntity, toManagementList, uploadFile, queryByFid, deleteAttachment, fileDownload } from
   '@SDMOBILE/api/shandong/excellentcases'
 import { fmtDate } from "@SDMOBILE/model/time.js";
+
 
 export default {
   components: { Vault },
@@ -485,6 +487,8 @@ export default {
     this.jurisdiction_control();//按钮权限控制
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
     this.dqtoken = sessionStorage.getItem("TOKEN");
+
+    console.log(this.dqtoken);
   },
   mounted () {
 
