@@ -346,7 +346,7 @@ export default {
         auditBasy_delete(val).then(resp => {
           // console.log(resp.data);
           if (resp.code == 0) {
-            this.$message({
+            ({
               message: "删除成功",
               type: "success",
             });
