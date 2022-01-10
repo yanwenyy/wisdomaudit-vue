@@ -24,7 +24,7 @@
          style="padding: 0 20px 20px">
       <el-button type="primary"
                  :disabled="isDisable"
-                  v-if="Add==true"
+                 v-if="Add==true"
                  @click="add_sj()">新增省内审计发现</el-button>
     </div>
     <div class="conter">
@@ -146,7 +146,7 @@
             <!---->
             <el-button @click="delete_model(scope.row.historyAuditFindUuid)"
                        plain
-                        v-if="Delete==true" 
+                       v-if="Delete==true"
                        type="text"
                        style="color: #ff8a72 !important; font-size: 14px !important"
                        size="small">
@@ -239,7 +239,7 @@
               <el-option v-for="item in problems_slect_zt"
                          :key="item.value"
                          :label="item.label"
-                         :value="item.label">
+                         :value="item.value">
               </el-option>
             </el-select>
             <el-input v-model="add.special"
@@ -1109,7 +1109,7 @@ export default {
     // 专题change
     changeHeader_zt (val) {
       this.add.special = val;
-      if (val == '其他') {
+      if (val == 'otherzt') {
         this.input_select = false;
         this.add.special = ''
       }

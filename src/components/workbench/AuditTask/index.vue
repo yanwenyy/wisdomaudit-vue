@@ -947,7 +947,7 @@
               <el-option v-for="item in zt_slect"
                          :key="item.value"
                          :label="item.label"
-                         :value="item.label">
+                         :value="item.value">
               </el-option>
             </el-select>
             <el-input v-model="save_zj_query.belongSpcial"
@@ -2362,7 +2362,7 @@ export default {
     // 专题 change
     changeHeader_zj_zt (val) {
       this.save_zj_query.belongSpcial = val;
-      if (val == '其他') {
+      if (val == 'otherzt') {
         this.input_select = false;
         this.save_zj_query.belongSpcial = ''
       }

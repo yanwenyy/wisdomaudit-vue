@@ -654,7 +654,7 @@
             <el-option v-for="item in SPECIALList"
                        :key="item.value"
                        :label="item.label"
-                       :value="item.label">
+                       :value="item.value">
             </el-option>
           </el-select>
           <el-input v-model="temp_problem.special"
@@ -1502,14 +1502,14 @@ export default {
     },
     change_zt (val) {
       this.temp_problem.special = val;
-      if (val == "其他") {
+      if (val == "otherzt") {
         this.input_select = false;
         this.temp_problem.special = "";
       }
     },
     change_zte (val) {
       this.dqProblem.special = val;
-      if (val == "其他") {
+      if (val == "otherzt") {
         this.input_selecte = false;
         this.dqProblem.special = "";
       }
