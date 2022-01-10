@@ -7,7 +7,7 @@
     <div class="min_height">
       <el-table @row-dblclick="getLook"
                 :header-cell-style="{'background-color': '#F4FAFF',}"
-                :data="confirmaryData" 
+                :data="confirmaryData"
                 style="margin-top: 1%"
                 class="confirmaryTable">
         <el-table-column algin="left"
@@ -40,9 +40,13 @@
               <ul v-if="tableFileList!=''"
                   class="fileList-ul">
                 <li class="tableFileList-title">文件名称</li>
+                <!-- <li v-for="item in tableFileList"
+                    class="pointer blue"
+                    @click="downFile(item.attachment_uuid,item.file_name)">{{item.file_name}}</li> -->
+                <!-- 金库 -->
                 <li v-for="item in tableFileList"
                     class="pointer blue"
-                    @click="downFile(item.attachment_uuid,item.file_name)">{{item.file_name}}</li>
+                    @click="openVault(item,'下载1')">{{item.file_name}}</li>
               </ul>
               <div slot="reference"
                    class="pointer"
@@ -109,9 +113,13 @@
               <ul v-if="tableFileList!=''"
                   class="fileList-ul">
                 <li class="tableFileList-title">文件名称</li>
+                <!-- <li v-for="item in tableFileList"
+                    class="pointer blue tableFileList-li"
+                    @click="downFile(item.attachment_uuid,item.file_name)"> -->
+                <!-- 金库 -->
                 <li v-for="item in tableFileList"
                     class="pointer blue tableFileList-li"
-                    @click="downFile(item.attachment_uuid,item.file_name)">
+                    @click="openVault(item,'下载1')">
                   <div class="inline-block">{{item.file_name}}</div><span class="delFile inline-block"
                         @click.stop="delListFile(item.attachment_uuid)">X</span>
                 </li>
@@ -278,8 +286,11 @@
                         :key="index"
                         :content="item.fileName"
                         placement="top">
-              <div class="blue pointer"
+              <!-- <div class="blue pointer"
                    @click="downFile(item.attachmentUuid,item.fileName)">
+                {{item.fileName.length>20?item.fileName.slice(0,20)+"...":item.fileName}}</div> -->
+              <div class="blue pointer"
+                   @click="openVault(item,'下载2')">
                 {{item.fileName.length>20?item.fileName.slice(0,20)+"...":item.fileName}}</div>
             </el-tooltip>
           </div>
@@ -513,8 +524,9 @@
                     <li v-for="(item,index) in enclosure_details_list"
                         :key="index"
                         class="pointer blue"
-                        @click="download(item.attachmentUuid,item.fileName)">
+                        @click="openVault(item,'下载2')">
                       {{item.fileName}}</li>
+                    <!-- @click="download(item.attachmentUuid,item.fileName)" -->
                   </ul>
                   <div slot="reference"
                        style="color: #1371cc;"
@@ -770,7 +782,7 @@
               <div class="blue pointer"
                    @click="downFile2(item.attachmentUuid,item.fileName)">
                 {{item.fileName.length>20?item.fileName.slice(0,20)+"...":item.fileName}}</div>
-            </el-tooltip> 
+            </el-tooltip>
           </div>-->
         </el-form-item>
 
@@ -1070,20 +1082,35 @@
 </template>
 
 <script>
+import axios from "axios";//金库
+import Vault from "@WISDOMAUDIT/components/Vaultcertification";//金库
+
 import { del_file, get_userInfo, projectMembership_listUserInfo, down_file, auditBasy_getFileList, auditConfirmation_pageList, auditConfirmation_save, auditConfirmation_delete, auditConfirmation_getDetail, auditConfirmation_update, Company } from
   '@SDMOBILE/api/shandong/ls'
-import { task_pageList_wt } from
+import { task_pageList_query } from
   '@SDMOBILE/api/shandong/AuditReport'
 import { task_select_people } from
   '@SDMOBILE/api/shandong/task'
 import SearchList from "./searchList"
-import axios from "axios";
 import $ from "jquery";
 export default {
-  components: { SearchList },
+  components: {
+    SearchList,
+    Vault//金库
+  },
   props: ['active_project', 'userRole'],
   data () {
     return {
+      vaultV: false,
+      sceneId: 1557, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
+      approvers: [], //审批人列表
+      maxTime: "",//最大时间
+      dqtime: "",//当前时间
+      account: "",//返回的账户
+      appSessionId: "",//应用sessionid
+      downloaobj: {},//暂存的下载目标
+      dqtoken: '',
+      //金库end
       compileDate: false,
       key: 0,
       attachmentList1: [],//附件上传列表
@@ -1253,7 +1280,7 @@ export default {
     this.getloadcascader("SPECIAL");
     this.getSelectTask();
     this.getbasis();//获取依据
-    this.getperson();//获取人员 
+    this.getperson();//获取人员
     let params = {
       entity: {},
     }
@@ -1263,6 +1290,68 @@ export default {
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
   },
   methods: {
+
+    //金库通过认证后的方法
+    vdownload () {
+      console.log(this.downloaobj.dtype)
+      if (this.downloaobj.dtype == '下载1') {
+        this.downFile(this.downloaobj.attachment_uuid, this.downloaobj.file_name)
+      } else {
+        this.downFile(this.downloaobj.attachmentUuid, this.downloaobj.fileName)
+      }
+    },
+    //金库控制认证弹窗
+    changevault (val) {
+      this.vaultV = val;
+    },
+    //打开金库
+    openVault (obj, downtype) {
+      console.log("芝麻开门")
+      this.downloaobj = obj
+      this.downloaobj.dtype = downtype
+      axios({
+        method: "post",
+        url: `/wisdomaudit/treasury/getTreasuryStatus`,
+        headers: {
+          TOKEN: this.headers.TOKEN,
+        },
+        data: {
+          sceneId: this.sceneId,
+          sceneName: "附件上传后下载", //场景名称
+          sensitiveData: "report_download", //敏感数据对应的编号：  data_export 经营指标、模型结果 report_download 附件上传后下载;
+          sensitiveOperate: "export", //敏感操作对应的编号：export： 导出   select：查询
+        },
+      }).then((resp) => {
+        //result 是否开启 开启：1  无需开启：0
+        //resultDesc 无需开启原因（成功错误信息）
+        //historyAppSessionId 历史有效应用sessionid（仅当已授权状态时必填属性）
+        //relation 多值授权方式与访问方式关系
+        //policyAuthMethod 授权方式： remoteAuth远程授权
+        //policyAccessMethod
+        //maxTime 授权条件（必填属性）单位为小时： 当为0时，为单次授权；否则为时间段授权即允许以当前时间为开始时间，开始时间+maxTime时间为最大结束时间，允许用户在此范围选择；
+        //approvers 审批人列表
+        //如果是线上环境
+        if (resp.data.data.isVaultProfiles) {
+          let rep = resp.data.data.treasuryStatusRsp;
+          if (rep.result == 0) {
+            // this.$message(rep.resultDesc);
+            this.vdownload()
+            return;
+          } else {
+            console.log(rep);
+            this.approvers = rep.approvers || "";
+            this.maxTime = rep.maxTime;
+            this.dqtime = new Date();
+            this.account = resp.data.data.account;
+            this.appSessionId = resp.data.data.appSessionId;
+            this.vaultV = true;
+          }
+        } else {
+          //否则不处理或在此处直接进行后面的操作
+          this.vdownload()
+        }
+      });
+    },
     // 下载
     download (id, fileName) {
       let formData = new FormData()
@@ -1905,7 +1994,7 @@ export default {
         }
       };
       this.load = true;
-      task_pageList_wt(params).then(resp => {
+      task_pageList_query(params).then(resp => {
         this.load = false;
         let datas = resp.data;
         this.relationTabel2 = datas.records;
