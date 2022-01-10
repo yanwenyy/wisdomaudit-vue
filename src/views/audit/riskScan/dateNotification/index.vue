@@ -115,8 +115,7 @@ export default {
   },
 
   mounted () {
-    // this.gettapylist();
-    this.gettime ()
+    this.gettapylist();
 
   },
 
