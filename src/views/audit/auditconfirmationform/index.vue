@@ -1,5 +1,6 @@
   <template>
   <div class="auditConfirmation">
+    <!-- 金库 -->
     <Vault :vaultV="vaultV"
            :sceneId="sceneId"
            :approvers="approvers"
@@ -51,6 +52,7 @@
               <ul v-if="tableFileList!=''"
                   class="fileList-ul">
                 <li class="tableFileList-title">文件名称</li>
+                <!-- 金库 -->
                 <li v-for="item in tableFileList"
                     class="pointer blue"
                     @click="openVault(item,'下载1')">{{item.file_name}}</li>
@@ -76,6 +78,7 @@
               <ul v-if="tableFileList!=''"
                   class="fileList-ul">
                 <li class="tableFileList-title">文件名称</li>
+                <!-- 金库 -->
                 <li v-for="item in tableFileList"
                     class="pointer blue tableFileList-li"
                     @click="openVault(item,'下载1')">
@@ -134,6 +137,7 @@
               <ul v-if="tableFileList!=''"
                   class="fileList-ul">
                 <li class="tableFileList-title">文件名称</li>
+                <!-- 金库 -->
                 <li v-for="item in tableFileList"
                     class="pointer blue tableFileList-li"
                     @click="openVault(item,'下载1')">
@@ -320,6 +324,7 @@
                         :key="index"
                         :content="item.fileName"
                         placement="top">
+                        <!-- 金库 -->
               <div class="blue pointer"
                    @click="openVault(item,'下载2')">
                 {{item.fileName.length>20?item.fileName.slice(0,20)+"...":item.fileName}}</div>
@@ -422,8 +427,9 @@
 </template>
 
   <script>
-import axios from "axios";
-import Vault from "@WISDOMAUDIT/components/Vaultcertification";
+import axios from "axios";//金库
+import Vault from "@WISDOMAUDIT/components/Vaultcertification";//金库
+
 import { del_file, get_userInfo, projectMembership_listUserInfo, down_file, auditBasy_getFileList, auditConfirmation_pageList, auditConfirmation_save, auditConfirmation_delete, auditConfirmation_getDetail, auditConfirmation_update, Company } from
   '@SDMOBILE/api/shandong/ls'
 import { task_pageList_wt } from
@@ -432,7 +438,10 @@ import { task_select_people } from
   '@SDMOBILE/api/shandong/task'
 import SearchList from "./searchList"
 export default {
-  components: { SearchList, Vault },
+  components: {
+    SearchList,
+    Vault//金库
+  },
   props: ['active_project', 'userRole'],
   data () {
     return {
@@ -445,6 +454,7 @@ export default {
       appSessionId: "",//应用sessionid
       downloaobj: {},//暂存的下载目标
       dqtoken: '',
+      //金库end
 
       compileDate: false,
       key: 0,
@@ -522,7 +532,7 @@ export default {
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
   },
   methods: {
-    //通过认证后的方法
+    //金库通过认证后的方法
     vdownload () {
       console.log(this.downloaobj.dtype)
       if (this.downloaobj.dtype == '下载1') {
@@ -531,7 +541,7 @@ export default {
         this.downFile(this.downloaobj.attachmentUuid, this.downloaobj.fileName)
       }
     },
-    //控制认证弹窗
+    //金库控制认证弹窗
     changevault (val) {
       this.vaultV = val;
     },
