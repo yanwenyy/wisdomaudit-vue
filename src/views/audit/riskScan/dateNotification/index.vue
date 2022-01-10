@@ -20,7 +20,7 @@
             <el-date-picker v-model="value2"
                             type="month"
                             value-format="yyyyMM"
-                            placeholder="选择月"
+                            placeholder="请选择审计月份"
                             @change="changesj">
             </el-date-picker>
           </el-form-item>
@@ -80,12 +80,7 @@ export default {
 
       activeName: "",
       tablelist: [
-        // { tabName: '已支付铁塔服务费但未起租' },
-        // { tabName: '为不真实站点结算铁塔服务费哈' },
-        // { tabName: "起租表中塔类产品类型、机房类型、生命状态与实际不一致" },
-        // { tabName: '同一站点重复支付场地费哈' },
-        // { tabName: '同一站点重复结算铁塔服务费、铁塔代维费' },
-        // { tabName: '同站点按次工单结算类型与包年规模不一致，多支付代维费' },
+     
 
       ],
       value: "",
@@ -230,8 +225,8 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   border: 1px solid #dcdfe6;
-  border-top-right-radius: 10px;
-  border-top-left-radius: 10px;
+  border-top-right-radius: 10px !important;
+  border-top-left-radius: 10px !important;
   box-shadow: none !important  ;
 }
 .el-radio-button::v-deep .el-radio-button__inner {
