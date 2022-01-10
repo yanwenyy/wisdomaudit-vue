@@ -115,7 +115,8 @@ export default {
   },
 
   mounted () {
-    this.gettapylist();
+    // this.gettapylist();
+    this.gettime ()
 
   },
 
@@ -127,6 +128,7 @@ export default {
       console.log(this.value);
     },
     changesj (val) {
+      console.log(val,'................');
       this.formdates =
         this.radio2.excuteUrl + "&tab=" + this.radio2.tab + "&month=" + val;
     },
@@ -160,11 +162,26 @@ export default {
 
     gettime () {
       let date = new Date();
+  
       let year = date.getFullYear();
       let month = date.getMonth();
-      let value = year + "" + month;
+     if(month==0){
+       year=year-1
+       month=12
+       let value = year + "" + month;
       this.value2 = year + "" + month;
       this.changesj(value);
+
+     }else{
+       let value = year + "" + month;
+      this.value2 = year + "" + month;
+      this.changesj(value);
+     }
+
+      
+
+     
+     
     },
     // 获取模型列表
     async gettablelist () {
