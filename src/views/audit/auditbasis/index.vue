@@ -29,8 +29,9 @@
       </div>
     </el-row>
     <div class="addbtn">
-      <!-- v-if="Add == true" -->
+      <!--  -->
       <el-button type="primary"
+      v-if="Add == true"
                  @click="addlist">新增依据</el-button>
     </div>
 

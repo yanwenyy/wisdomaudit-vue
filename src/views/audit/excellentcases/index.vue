@@ -21,8 +21,8 @@
             <el-col :span="1.5">
               <el-button type="primary"
                          style="border:none;"
+                         v-if="Add==true"
                          @click="add_data_click()">新增资料</el-button>
-              <!--v-if="Add==true" -->
             </el-col>
             <!-- 筛选 -->
             <div class="search">
@@ -127,9 +127,10 @@
                              show-overflow-tooltip
                              label="操作">
               <template slot-scope="scope">
-                <!-- v-if="Edit==true" -->
+                <!--  -->
                 <el-button @click="edit(scope.row)"
                            type="text"
+                           v-if="Edit==true"
                            :disabled="isDisable"
                            style="color:#0c87d6;background:none;border:none;
                             font-size: 14px !important;"
@@ -144,9 +145,10 @@
                   文件管理
                 </el-button>
 
-                <!-- v-if="Delete==true"  -->
+                <!--  -->
                 <el-button @click="remove(scope.row)"
                            type="text"
+                           v-if="Delete==true" 
                            :disabled="isDisable"
                            style="color:#ff8a72;background:none;border:none;
                             font-size: 14px !important;"

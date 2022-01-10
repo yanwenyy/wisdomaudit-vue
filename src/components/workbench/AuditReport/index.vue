@@ -53,7 +53,7 @@
             <p>管理建议：</p>
             <el-button plain
                        v-if="userRole==1||isLiaison==1 "
-                       @click="Correlation_wt()">关联问题</el-button>
+                       @click="Correlation_wt()">关联确认单</el-button>
           </el-col>
 
           <div class="text">
@@ -94,8 +94,7 @@
             <li v-for="(item,index) in file_list.attachmentList"
                 :key="index">
               <p class="fileName_show"
-                 @click="download_click(item.attachmentUuid,item.fileName)">{{item.fileName}}</p>
-              @click="openVault(item)">{{item.fileName}}</p>
+                 @click="openVault(item)">{{item.fileName}}</p>
               <span style="color:#606266">版本1.0</span><span style="color:#606266">时间{{item.createTime|filtedate
 }}</span>
               <el-button type="text"
@@ -226,7 +225,7 @@
       </div>
     </el-dialog>
 
-    <!-- 关联问题 -->
+    <!-- 关联确认单列表 -->
     <el-dialog width="60%"
                center
                @close='closeDialog'
@@ -234,11 +233,11 @@
                :visible.sync="dlag_Correlation_wt"
                style="padding-bottom: 59px">
 
-      <div class="title_dlag">关联问题</div>
+      <div class="title_dlag">确认单列表</div>
 
       <div class="dlag_conter3">
         <div class="search">
-          <el-input placeholder="请输入关联问题名称"
+          <el-input placeholder="请输入确认单名称"
                     v-model="search_jy_name"> </el-input>
           <div class="search_icon"
                style=" background: rgb(12, 135, 214) !important;"
@@ -252,66 +251,58 @@
           <el-table :data="tableData2_list"
                     ref="multipleTable"
                     tooltip-effect="dark"
-                    v-loading="loading"
+                    v-loading="loading_card"
                     style="width: 100%"
                     :header-cell-style="{'background-color': '#F4FAFF',}"
                     @selection-change="handleSelectionChange_wt">
             <el-table-column type="selection"
                              width="55">
             </el-table-column>
-            <el-table-column prop="field"
+            <el-table-column type="index"
+                             width="100"
+                             align="center"
+                             label="序号">
+            </el-table-column>
+            <el-table-column prop="matter"
+                             align="center"
                              show-overflow-tooltip
-                             label="领域">
-              <template slot-scope="scope">
-                <span v-if="scope.row.field">{{scope.row.field}}</span>
-                <span v-else>--</span>
-              </template>
+                             label="审计（调查）事项">
             </el-table-column>
 
-            <el-table-column prop="problem"
-                             label="问题">
-              <template slot-scope="scope">
-                <span v-if="scope.row.problem"
-                      @click="details_show(scope.row,scope.$index+1)"
-                      style="cursor: pointer;color:rgb(68, 163, 223);">{{scope.row.problem}}</span>
-                <span v-else>--</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="discoveryTime"
+            <el-table-column prop="problemsNumber"
+                             width="100"
+                             align="center"
                              show-overflow-tooltip
-                             label="发现日期">
-              <template slot-scope="scope">
-                <span v-if="scope.row.discoveryTime">{{scope.row.discoveryTime}}</span>
-                <span v-else>--</span>
-              </template>
+                             label="问题数">
 
             </el-table-column>
-            <el-table-column prop="riskAmount"
+            <el-table-column prop="matterDetail"
                              show-overflow-tooltip
                              align="center"
-                             label="风险金额（万元）">
-
+                             label="审计（调查）事项描述">
               <template slot-scope="scope">
-                <span v-if="scope.row.riskAmount">
-                  {{ parseFloat(scope.row.riskAmount.toString()) }}</span>
+                <span v-if="scope.row.matter">
+                  {{scope.row.matterDetail}}
+                </span>
                 <span v-else>--</span>
               </template>
             </el-table-column>
-            <el-table-column prop="problemFindPeople"
+            <el-table-column prop="matter"
+                             align="center"
                              show-overflow-tooltip
-                             label="发现人">
+                             label="审计人员">
               <template slot-scope="scope">
-                <span v-if="scope.row.problemFindPeople">{{scope.row.problemFindPeople}}</span>
+                <span v-if="scope.row.matter">{{scope.row.matter}}</span>
                 <span v-else>--</span>
               </template>
             </el-table-column>
           </el-table>
-          <div class="mose"
+          <!-- <div class="mose"
                @click="close_mose"
-               v-if="details == true"></div>
+               v-if="details == true"></div> -->
 
           <!-- 详情 -->
-          <div class="problem_details_conter"
+          <!-- <div class="problem_details_conter"
                :style="{'top':details_list.style_top}"
                v-if="details == true">
             <ul class="list">
@@ -329,7 +320,7 @@
               </li>
 
             </ul>
-          </div>
+          </div> -->
           <!-- 详情 end-->
 
         </div>
@@ -362,11 +353,10 @@ import 'quill/dist/quill.bubble.css'
 // 富文本框end
 import { down_file } from
   '@SDMOBILE/api/shandong/ls'
-import { operatingIndicators_list, task_pageList_wt, task_pageList_export, export_selectFile, file_remove_list } from '@SDMOBILE/api/shandong/AuditReport'
+import { operatingIndicators_list, task_pageList_wt, task_pageList_export, export_selectFile, file_remove_list, queryAllProblemList } from '@SDMOBILE/api/shandong/AuditReport'
 import { fmtDate } from '@SDMOBILE/model/time.js';
 
 export default {
-  components: {},
   data () {
     return {
       vaultV: false,
@@ -421,6 +411,7 @@ export default {
       Index: '',
       style_px: 40,//悬浮定位
       details_list: [],//悬浮数据
+      loading_card: false,
     }
   },
   props: ['active_project', 'userRole', 'isLiaison'],
@@ -428,7 +419,6 @@ export default {
   computed: {},
   watch: {},
   created () {
-
     this.dqtoken = sessionStorage.getItem("TOKEN");
     this.export_selectFile_data()//附件
   },
@@ -560,8 +550,7 @@ export default {
         let params = {
           condition: {
             managementProjectUuid: this.active_project,//项目id
-            problem: this.search_zb_name,//模糊查询
-            status: '1',
+            matter: this.search_jy_name,//模糊查询
           },
         }
         this.correlation_problem(params)
@@ -626,44 +615,69 @@ export default {
     },
     // 添加关联问题====================================
     Correlation_wt () {
+      // let params = {
+      //   condition: {
+      //     managementProjectUuid: this.active_project,//项目id
+      //     problem: this.query.problem,//模糊查询
+      //     status: '1',
+      //   },
+      // }
       let params = {
         condition: {
-          managementProjectUuid: this.active_project,//项目id
-          problem: this.query.problem,//模糊查询
-          status: '1',
-        },
-      }
+          managementProjectUuid: this.active_project,
+          matter: this.search_jy_name,//模糊查询
+
+        }
+      };
+
       this.correlation_problem(params)
       this.dlag_Correlation_wt = true;//添加关联问题
 
     },
-    // 关联问题
+    // 缺认单列表
     correlation_problem (params) {
+      this.loading_card = true;
       task_pageList_wt(params).then(resp => {
+        this.loading_card = false;
         this.tableData2 = resp.data;
-        this.tableData2_list = resp.data.records;
+        this.tableData2_list = resp.data.dataList;
+        console.log(this.tableData2_list);
       })
     },
     // 问题多选
     handleSelectionChange_wt (val) {
       this.multipleSelection2 = val;
     },
-    // 问题保存
+
+
+
+    // 确认单保存
     query_save_wt () {
       if (this.multipleSelection2.length == 0) {
         this.$message.info("至少关联一条数据！");
         return false;
       }
-      let array1 = [];//数组1
-      this.multipleSelection2.forEach((item, i) => {
-        // array1.push((i + 1) + '.' + item.problemFindPeople + ',' + item.discoveryTime + ',' + item.basis + ',' + item.field + ',' + item.problem + ',' + item.describe + ',' + item.riskAmount + ',' + item.managementAdvice + '\n');
 
-        array1.push((i + 1) + '.' + item.describe + '</br>' + '</br>' + '管理建议：' + '</br > ' + '</br>' + item.managementAdvice + '</br>' + '</br>');
 
-      });
-      let array_list = array1.join('')
-      console.log(array_list);
-      this.businessEvaluation = array_list;
+      // 审计确认单保存 获取值
+      queryAllProblemList(this.multipleSelection2).then(resp => {
+        // this.businessEvaluation = resp.data;
+        console.log(resp.data);
+
+        let data = resp.data
+        let array1 = [];//数组1
+        data.forEach((item, i) => {
+          // array1.push((i + 1) + '.' + item.problemFindPeople + ',' + item.discoveryTime + ',' + item.basis + ',' + item.field + ',' + item.problem + ',' + item.describe + ',' + item.riskAmount + ',' + item.managementAdvice + '\n');
+
+          array1.push((i + 1) + '.' + item.describe + '</br>' + '</br>' + '管理建议：' + '</br > ' + '</br>' + item.managementAdvice + '</br>' + '</br>');
+
+        });
+        let array_list = array1.join('')
+        console.log(array_list);
+        this.businessEvaluation = array_list;
+
+      })
+
       this.dlag_Correlation_wt = false;//添加关联问题
 
     },
