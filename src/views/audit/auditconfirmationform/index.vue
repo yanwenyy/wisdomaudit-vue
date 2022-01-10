@@ -1135,6 +1135,7 @@ export default {
         principalName: '',
         principalPost: '',
         signatureDate: '',
+        auditOrgOpinion: '',
 
         butt: '',//是否 生成2
       },//确认单数据
@@ -2414,6 +2415,7 @@ export default {
               this.formDetail.butt = ''
             } else {
               this.formDetail.butt = 2
+              this.formDetail.auditOrgOpinion = '情况属实\n'
             }
             auditConfirmation_save(this.formDetail).then(resp => {
               if (resp.code == 0) {
@@ -2438,6 +2440,7 @@ export default {
               this.formDetail.butt = ''
             } else {
               this.formDetail.butt = 2
+              this.formDetail.auditOrgOpinion = '情况属实\n'
             }
 
             auditConfirmation_update(this.formDetail).then(resp => {

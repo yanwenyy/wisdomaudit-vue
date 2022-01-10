@@ -1151,6 +1151,7 @@
       <div slot="footer">
         <el-button @click="whether = false">取 消</el-button>
         <el-button type="primary"
+                   :disabled="isDisable"
                    @click="list_push()">确 定</el-button>
       </div>
     </el-dialog>
@@ -2427,11 +2428,6 @@ export default {
 
     // 显示下发 确认
     yes_push (data) {
-      this.isDisable = true
-      setTimeout(() => {
-        this.isDisable = false
-      }, 2000)
-
       this.push_id = data.addDataTaskUuid
       this.whether = true;//显示确认下发
     },
@@ -2441,7 +2437,7 @@ export default {
       this.isDisable = true
       setTimeout(() => {
         this.isDisable = false
-      }, 2000)
+      }, 3000)
 
       let params = {
         taskId: this.push_id,
