@@ -21,9 +21,8 @@
             <el-col :span="1.5">
               <el-button type="primary"
                          style="border:none;"
-                         v-if="Add==true"
                          @click="add_data_click()">新增资料</el-button>
-              <!-- v-if="is_add==1" -->
+              <!--v-if="Add==true" -->
             </el-col>
             <!-- 筛选 -->
             <div class="search">
@@ -130,14 +129,13 @@
               <template slot-scope="scope">
                 <el-button @click="edit(scope.row)"
                            type="text"
-                           v-if="Edit==true"
                            :disabled="isDisable"
                            style="color:#0c87d6;background:none;border:none;
                             font-size: 14px !important;"
                            size="small">
                   编辑
                 </el-button>
-
+                <!-- v-if="Edit==true" -->
                 <el-button @click="file_list(scope.row)"
                            type="text"
                            style="color:#0c87d6;background:none;border:none;
@@ -148,13 +146,13 @@
 
                 <el-button @click="remove(scope.row)"
                            type="text"
-                           v-if="Delete==true"
                            :disabled="isDisable"
                            style="color:#ff8a72;background:none;border:none;
                             font-size: 14px !important;"
                            size="small">
                   删除
                 </el-button>
+                <!-- v-if="Delete==true" -->
               </template>
             </el-table-column>
 

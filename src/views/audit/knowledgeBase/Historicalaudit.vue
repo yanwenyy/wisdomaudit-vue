@@ -23,11 +23,10 @@
     <div class="header"
          style="padding: 0 20px 20px">
       <el-button type="primary"
-                 v-if="Add==true"
                  :disabled="isDisable"
                  @click="add_sj()">新增省内审计发现</el-button>
     </div>
-
+    <!-- v-if="Add==true" -->
     <div class="conter">
       <!-- 表单 -->
       <el-table :data="tableData_list"
@@ -134,18 +133,18 @@
                          width="180"
                          label="操作">
           <template slot-scope="scope">
+            <!-- v-if="Edit==true" -->
             <el-button @click="edit(scope.row.historyAuditFindUuid)"
                        type="text"
-                       v-if="Edit==true"
                        plain
                        :disabled="isDisable"
                        style="color: #0c87d6 !important; font-size: 14px !important"
                        size="small">
               编辑
             </el-button>
+            <!-- v-if="Delete==true" -->
             <el-button @click="delete_model(scope.row.historyAuditFindUuid)"
                        plain
-                       v-if="Delete==true"
                        type="text"
                        style="color: #ff8a72 !important; font-size: 14px !important"
                        size="small">

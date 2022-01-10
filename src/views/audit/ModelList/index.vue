@@ -67,7 +67,7 @@
         </el-table-column>
 
         <el-table-column prop="ruleDescription"
-           show-overflow-tooltip
+                         show-overflow-tooltip
                          label="业务规则">
           <template slot-scope="scope">
             <span v-if="scope.row.ruleDescription">{{scope.row.ruleDescription}}</span>
