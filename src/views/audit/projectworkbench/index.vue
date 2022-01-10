@@ -2370,7 +2370,7 @@ export default {
         -webkit-transform: translate(-50%, -50%);
         transform: translate(-50%, -50%);
         border: 1px solid #fff;
-
+        overflow: hidden;
         display: flex;
         align-items: center;
         .hide {
