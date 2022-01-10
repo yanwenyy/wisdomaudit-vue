@@ -398,6 +398,7 @@ import axios from "axios";
 import Vault from "@WISDOMAUDIT/components/Vaultcertification";
 import { pageList, save_query, loadcascader, update, deleteEntity, toManagementList, uploadFile, queryByFid, deleteAttachment, fileDownload } from
   '@SDMOBILE/api/shandong/excellentcases'
+import { getUserPermissionList } from '@SDMOBILE/api/shandong/common';
 import { fmtDate } from "@SDMOBILE/model/time.js";
 
 export default {
@@ -483,6 +484,7 @@ export default {
   created () {
     this.pageList_data();//列表
     this.jurisdiction_control();//按钮权限控制
+
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
     this.dqtoken = sessionStorage.getItem("TOKEN");
   },
@@ -879,14 +881,13 @@ export default {
       formData.append('referenceTableUuid', this.referenceTableUuid)//主键id
       formData.append('dicId', this.pdictid)
       formData.append('file', file.file)
-
+      console.log(this.dqtoken);
       axios({
         method: 'post',
         url: '/wisdomaudit/referenceTable/uploadFile',
         headers: {
           TOKEN: this.dqtoken,
           'Content-Type': 'multipart/form-data'
-
         },
         data: formData,
 
