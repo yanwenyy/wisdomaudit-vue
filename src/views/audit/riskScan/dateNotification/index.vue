@@ -148,8 +148,6 @@ export default {
 
             }
           });
-
-
         }
       }).catch(err => {
         let rem = getTypes(`area=${this.code}`);
