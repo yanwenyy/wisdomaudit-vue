@@ -469,7 +469,7 @@
                              label="问题">
               <template slot-scope="scope">
                 <span v-if="scope.row.problem"
-                      @click="details_show(scope.row,scope.$index+1)"
+                      @click="details_show(scope.row,scope.$index)"
                       style="cursor: pointer;color:rgb(68, 163, 223);">{{scope.row.problem }}</span>
                 <span v-else>--</span>
               </template>
@@ -576,8 +576,8 @@
               </li>
 
               <li>
-                <p>风险金额（万元）：{{details_list.riskAmount}}</p>
-                <p>发现日期：{{details_list.problemDiscoveryTime}}</p>
+                <p>风险金额（万元）： {{ parseFloat(details_list.riskAmount) }}</p>
+                <p>发现日期：{{details_list.problemDiscoveryTime | dateformat}}</p>
                 <p>发现人：{{details_list.problemFindPeople}}</p>
               </li>
 
@@ -1266,7 +1266,7 @@ export default {
       },
       details: false,//悬浮问题 背景
       Index: '',
-      style_px: 40,//悬浮定位
+      style_px: 43,//悬浮定位
       details_list: [],//悬浮数据
       enclosure_details_list: [],//附件
       load: false,
@@ -1782,14 +1782,14 @@ export default {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
 
-          var uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
+          let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
           console.log(uploadList2);
           uploadList2.forEach((item) => {
             console.log(item);
             item.status = null;
           });
           this.temp_problem.attachmentList = uploadList2;
-
+          this.temp.attachmentList = [];
 
           let rep = this.temp_problem;
           rep.riskAmount = parseFloat(rep.riskAmount)
@@ -1838,15 +1838,9 @@ export default {
           rep.auditTaskUuid = rep.auditTaskUuid.join(",");
           rep.basis = rep.basis.join(",");
 
-          console.log(rep.attachmentList);//回显
-          console.log(this.attachmentList2);//新增
-          console.log(this.fileList2);//回显
-          console.log(this.fileList2_del);
 
           let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
-          // let uploadList2 = rep.attachmentList
           uploadList2.forEach((item) => {
-            // console.log(item);
             item.status = null;
             // 新增的
             if (item.attStatus != 1 && item.attStatus != 3) {
@@ -1855,11 +1849,6 @@ export default {
           });
           this.dqProblem.attachmentList = uploadList2;
 
-          // rep.attachmentList.forEach((item) => {
-          //   console.log(item);
-          //   item.status = null;
-          // });
-          // console.log(rep.attachmentList);
 
           axios({
             url: `/wisdomaudit/problemList/update`,
@@ -1888,8 +1877,14 @@ export default {
       this.Index = index
       this.details = true
       this.details_list = data;
-      let top_px = (this.style_px * index + 155) + 'px'
-      this.$set(this.details_list, 'style_top', top_px)//问题
+      if (this.Index == 0) {
+        let top_px = (this.style_px * index + 85) + 'px'
+        this.$set(this.details_list, 'style_top', top_px)//问题
+      } else {
+        let top_px = (this.style_px * index + 87) + 'px'
+        this.$set(this.details_list, 'style_top', top_px)//问题
+      }
+
     },
     // 关闭
     close_mose () {
@@ -2589,9 +2584,14 @@ export default {
   height: 40px;
   max-height: 40px;
 } */
-
-.edit_table >>> .el-table--medium .el-table__cell {
-  padding: 8px 0 !important;
+/* .dlag >>> .el-table__header-wrapper .has-gutter {
+  border: 1px solid red;
+  padding: 3px 0 !important;
+} */
+.edit_table >>> .el-table__row td {
+  padding: 3px 0 !important;
+  /* border: 1px solid blue; */
+  box-sizing: border-box;
 }
 
 /* 问题详情框 */
@@ -2603,7 +2603,7 @@ export default {
   top: 0;
   z-index: 9998;
 }
-.dlag >>> .el-dialog {
+.dlag {
   position: relative;
 }
 .problem_details_conter {
@@ -2798,5 +2798,41 @@ export default {
   text-align: right;
   vertical-align: middle;
   font-weight: bold;
+}
+
+/* 依据 */
+.yj-sel >>> .el-select__tags > span {
+  width: 100%;
+  display: block !important;
+}
+
+.yj-sel >>> .el-tree-node__children {
+  overflow: hide !important;
+}
+>>> .el-tree-node__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  word-break: break-all;
+  white-space: normal !important;
+  height: 16px;
+  font-size: 14px;
+  line-height: 16px;
+}
+>>> .tree {
+  background: #f2f2f2 !important;
+}
+>>> .el-tree-node__content {
+  cursor: pointer;
+  height: 24px !important;
+  padding-right: 10px;
+  box-sizing: border-box;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  word-break: break-all;
 }
 </style>
