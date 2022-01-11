@@ -474,21 +474,9 @@
                 <span v-else>--</span>
               </template>
             </el-table-column>
-            <!-- <el-table-column align="center"
-                             prop="basis"
-                             width="180"
-                             :show-overflow-tooltip="true"
-                             label="依据">
-            </el-table-column>
-            <el-table-column align="center"
-                             prop="describe"
-                             width="200"
-                             :show-overflow-tooltip="true"
-                             label="描述">
-            </el-table-column>
-            -->
             <el-table-column align="center"
                              prop="riskAmount"
+                             width="180"
                              label="风险金额(万元)">
               <template slot-scope="scope">
                 {{ parseFloat(scope.row.riskAmount) }}
@@ -508,7 +496,6 @@
 
             <!-- 附件 -->
             <el-table-column prop="attachmentList"
-                             width="100"
                              align="center"
                              label="附件">
               <template slot-scope="scope">
@@ -1917,7 +1904,6 @@ export default {
 
         // 附件
         let datas = res.data.data
-        console.log(datas);
 
         if (datas.attachmentList) {
           datas.attachmentList.forEach((item) => {

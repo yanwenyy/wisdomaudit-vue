@@ -1145,6 +1145,7 @@
     <el-dialog center
                :visible.sync="whether"
                :append-to-body='true'
+               class="push"
                width="15%">
       <div class="title_is">是否确认下发</div>
 
@@ -1892,10 +1893,14 @@ export default {
       // this.$nextTick(() => {
       //   this.$refs.add_data.clearSelection();//清空
       // })
+      this.edit_file_list = []; //清空附件
+      this.fileList = [];//fileList
+      // this.fileList2 = [];
 
       this.dialogVisible2 = true;
       this.edit_title = '添加资料';
       this.query_title("getFgs")
+      this.success_btn = 0;
     },
     // 新增任务初始化 列表
 
@@ -2294,9 +2299,16 @@ export default {
             this.success_btn = 1;//显示加载按钮  0成功  1 loaging
             let formData = new FormData()
             formData.append('file', this.file.raw)
+
+            console.log(this.edit_file_list);
+            console.log(this.fileList);
+
             this.fileList.forEach((item) => {
               formData.append('files', item.raw);
             })
+
+
+
             axios({
               method: 'post',
               url: '/wisdomaudit/attachment/fileUploads',
@@ -3016,6 +3028,11 @@ export default {
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
 /* @import "../../../assets/styles/css/yw.css"; */
+.push >>> .el-dialog {
+  min-width: 200px;
+  top: 50%;
+  margin-top: 0 !important;
+}
 
 .shenhe >>> .el-form-item--medium .el-form-item__content {
   flex: inherit !important;
