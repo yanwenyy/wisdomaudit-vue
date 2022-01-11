@@ -323,10 +323,7 @@ export default {
         if (resp.data.data.isVaultProfiles) {
           let rep = resp.data.data.treasuryStatusRsp;
           if (rep.result == 0) {
-            this.$message(rep.resultDesc);
-            if(rep.resultDesc=='无需开启'){
-              this.vdownload()
-            }
+            this.$message('因金库未开启或服务异常，文件下载失败，请联系系统管理员。');
             return;
           } else {
             console.log(rep);
