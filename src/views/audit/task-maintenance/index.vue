@@ -236,7 +236,7 @@
               <el-option v-for="item in thematicOption"
                          :key="item.value"
                          :label="item.label"
-                         :value="item.label">
+                         :value="item.value">
               </el-option>
             </el-select>
             <el-input v-model="editTask.belongSpcial"
@@ -330,7 +330,7 @@
               <el-option v-for="item in thematicOption"
                          :key="item.value"
                          :label="item.label"
-                         :value="item.label">
+                         :value="item.value">
               </el-option>
             </el-select>
             <el-input v-model="taskSelf.belongSpcial"
@@ -777,8 +777,10 @@ export default {
         if (resp.data.data.isVaultProfiles) {
           let rep = resp.data.data.treasuryStatusRsp;
           if (rep.result == 0) {
-            // this.$message(rep.resultDesc);
-            this.vdownload()
+            this.$message(rep.resultDesc);
+            if(rep.resultDesc=='无需开启'){
+              this.vdownload()
+            }
             return;
           } else {
             console.log(rep);
@@ -798,7 +800,7 @@ export default {
 
     // 专题选择其他变成可输入
     changeBelongSpcial (val) {
-      if (val == "其他") {
+      if (val == "otherzt") {
         this.other_input = false;
         this.taskSelf.belongSpcial = "";
         this.editTask.belongSpcial = "";
@@ -808,7 +810,7 @@ export default {
     thematicSelect (data) {
       thematicAreas(data).then((resp) => {
         this.thematicOption = resp.data;
-        // console.log(this.thematicOption);
+        console.log(this.thematicOption);
       });
     },
     //领域下拉框

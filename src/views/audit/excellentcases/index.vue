@@ -21,8 +21,8 @@
             <el-col :span="1.5">
               <el-button type="primary"
                          style="border:none;"
+                         v-if="Add==true"
                          @click="add_data_click()">新增资料</el-button>
-              <!--v-if="Add==true" -->
             </el-col>
             <!-- 筛选 -->
             <div class="search">
@@ -127,9 +127,10 @@
                              show-overflow-tooltip
                              label="操作">
               <template slot-scope="scope">
-                <!-- v-if="Edit==true" -->
+                <!--  -->
                 <el-button @click="edit(scope.row)"
                            type="text"
+                           v-if="Edit==true"
                            :disabled="isDisable"
                            style="color:#0c87d6;background:none;border:none;
                             font-size: 14px !important;"
@@ -144,9 +145,10 @@
                   文件管理
                 </el-button>
 
-                <!-- v-if="Delete==true"  -->
+                <!--  -->
                 <el-button @click="remove(scope.row)"
                            type="text"
+                           v-if="Delete==true" 
                            :disabled="isDisable"
                            style="color:#ff8a72;background:none;border:none;
                             font-size: 14px !important;"
@@ -399,6 +401,7 @@ import Vault from "@WISDOMAUDIT/components/Vaultcertification";
 import { getUserPermissionList } from '@SDMOBILE/api/shandong/common';
 import { pageList, save_query, loadcascader, update, deleteEntity, toManagementList, uploadFile, queryByFid, deleteAttachment, fileDownload } from
   '@SDMOBILE/api/shandong/excellentcases'
+import { getUserPermissionList } from '@SDMOBILE/api/shandong/common';
 import { fmtDate } from "@SDMOBILE/model/time.js";
 
 
@@ -485,6 +488,7 @@ export default {
   created () {
     this.pageList_data();//列表
     this.jurisdiction_control();//按钮权限控制
+
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
     this.dqtoken = sessionStorage.getItem("TOKEN");
 
@@ -574,8 +578,10 @@ export default {
         if (resp.data.data.isVaultProfiles) {
           let rep = resp.data.data.treasuryStatusRsp;
           if (rep.result == 0) {
-            // this.$message(rep.resultDesc);
-            this.vdownload()
+            this.$message(rep.resultDesc);
+            if(rep.resultDesc=='无需开启'){
+              this.vdownload()
+            }
             return;
           } else {
             console.log(rep);
@@ -883,14 +889,13 @@ export default {
       formData.append('referenceTableUuid', this.referenceTableUuid)//主键id
       formData.append('dicId', this.pdictid)
       formData.append('file', file.file)
-
+      console.log(this.dqtoken);
       axios({
         method: 'post',
         url: '/wisdomaudit/referenceTable/uploadFile',
         headers: {
           TOKEN: this.dqtoken,
           'Content-Type': 'multipart/form-data'
-
         },
         data: formData,
 

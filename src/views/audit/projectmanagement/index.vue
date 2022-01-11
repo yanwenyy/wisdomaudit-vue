@@ -982,6 +982,8 @@
           <el-form-item label="专题"
                         prop="special">
             <el-select v-model="dqProblem.special"
+                       v-if="input_select == true"
+                       @change="change_zt"
                        placeholder="请选择专题">
               <el-option v-for="item in SPECIALList"
                          :key="item.value"
@@ -989,6 +991,15 @@
                          :value="item.value">
               </el-option>
             </el-select>
+
+            <el-input v-model="dqProblem.special"
+                      v-if="input_select == false"></el-input>
+            <el-button v-if="input_select == false"
+                       type="primary"
+                       class="inline-block"
+                       style="position: absolute;top:0;left: -80px"
+                       @click="input_select=!input_select">重选</el-button>
+
           </el-form-item>
           <el-form-item></el-form-item>
           <!-- prop="basis" -->
@@ -1265,6 +1276,7 @@ export default {
   components: { Pagination },
   data () {
     return {
+      input_select: true,
       project_list: {},
       activeNames: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
       userInfo: {},
@@ -1631,6 +1643,16 @@ export default {
     //     },
   },
   methods: {
+
+    change_zt (val) {
+      this.dqProblem.special = val;
+      if (val == "otherzt") {
+        this.input_select = false;
+        this.dqProblem.special = "";
+      }
+    },
+
+
     // 金额限制
     oninput (number) {
       let str = number.toString().replace();

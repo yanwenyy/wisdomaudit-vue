@@ -24,9 +24,9 @@
          style="padding: 0 20px 20px">
       <el-button type="primary"
                  :disabled="isDisable"
+                 v-if="Add==true"
                  @click="add_sj()">新增省内审计发现</el-button>
     </div>
-    <!-- v-if="Add==true" -->
     <div class="conter">
       <!-- 表单 -->
       <el-table :data="tableData_list"
@@ -133,18 +133,20 @@
                          width="180"
                          label="操作">
           <template slot-scope="scope">
-            <!-- v-if="Edit==true" -->
+            <!--  -->
             <el-button @click="edit(scope.row.historyAuditFindUuid)"
                        type="text"
                        plain
+                       v-if="Edit==true"
                        :disabled="isDisable"
                        style="color: #0c87d6 !important; font-size: 14px !important"
                        size="small">
               编辑
             </el-button>
-            <!-- v-if="Delete==true" -->
+            <!---->
             <el-button @click="delete_model(scope.row.historyAuditFindUuid)"
                        plain
+                       v-if="Delete==true"
                        type="text"
                        style="color: #ff8a72 !important; font-size: 14px !important"
                        size="small">
@@ -237,7 +239,7 @@
               <el-option v-for="item in problems_slect_zt"
                          :key="item.value"
                          :label="item.label"
-                         :value="item.label">
+                         :value="item.value">
               </el-option>
             </el-select>
             <el-input v-model="add.special"
@@ -436,7 +438,11 @@
 </template>
 
 <script>
+<<<<<<< HEAD
 // 测试 dev
+=======
+//测试 deev_lhg
+>>>>>>> dev_lhg
 import { fmtDate } from "@SDMOBILE/model/time.js";
 import {
   historicalaudit_pageList,
@@ -1107,7 +1113,7 @@ export default {
     // 专题change
     changeHeader_zt (val) {
       this.add.special = val;
-      if (val == '其他') {
+      if (val == 'otherzt') {
         this.input_select = false;
         this.add.special = ''
       }

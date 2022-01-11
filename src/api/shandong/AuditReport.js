@@ -14,15 +14,15 @@ export function operatingIndicators_list (data) {
 
 
 // 问题
-// export function task_pageList_wt (data) {
-//   return request({
-//     baseURL: baseURL,
-//     url: `/problemList/pageList1`,
-//     method: 'post',
-//     isLoading: false,
-//     data,
-//   })
-// }
+export function task_pageList_query (data) {
+  return request({
+    baseURL: baseURL,
+    url: `/problemList/pageList1`,
+    method: 'post',
+    isLoading: false,
+    data,
+  })
+}
 // 确认单 列表
 export function task_pageList_wt (data) {
   return request({
