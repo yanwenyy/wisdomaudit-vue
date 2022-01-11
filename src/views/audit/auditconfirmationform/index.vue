@@ -420,11 +420,10 @@
 
           <el-row>
             <div class="search">
+
               <el-button type="primary"
-                         style="margin:0;float:left;"
-                         @click="add_problem()"
                          size="medium"
-                         class="relationBtn">新增问题</el-button>
+                         @click="add_problem()">新增问题</el-button>
 
               <el-input v-model="searchform.problem"
                         placeholder="问题名称"
