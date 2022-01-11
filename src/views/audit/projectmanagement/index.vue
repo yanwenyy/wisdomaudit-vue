@@ -1060,6 +1060,7 @@
                       placeholder="请输入风险金额" />
           </el-form-item>
           <el-form-item label="关联任务"
+                        class="task"
                         prop="auditTaskUuid">
             <el-select v-model="dqProblem.auditTaskUuid"
                        multiple
@@ -1184,14 +1185,20 @@
                              align="center"> </el-table-column> -->
             <el-table-column type="index"
                              label="序号"
+                             align="center"
                              width="50">
             </el-table-column>
             <el-table-column prop="problem"
-                             label="问题"
-                             show-overflow-tooltip>
+                             width="150"
+                             align="center"
+                             label="问题">
+              <template slot-scope="scope">
+                <span style="text-align: left;display: block;">{{ scope.row.problem }}</span>
+              </template>
             </el-table-column>
             <el-table-column prop="discoveryTime"
                              label="发现日期"
+                             align="center"
                              show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="riskAmount"
@@ -1203,6 +1210,7 @@
             </el-table-column>
             <el-table-column prop="problemFindPeople"
                              label="发现人"
+                             align="center"
                              show-overflow-tooltip>
             </el-table-column>
             <el-table-column align="center"
@@ -3459,9 +3467,20 @@ export default {
   margin-right: 10px;
   color: #000;
 }
-@media screen and(-ms-high-contrast:active), (-ms-high-contrast: none) {
+/* @media screen and(-ms-high-contrast:active), (-ms-high-contrast: none) {
   >>> .el-tag.el-tag--info {
     display: inline-block;
   }
+} */
+.task >>> .el-select__tags > span {
+  width: 100%;
+  display: block !important;
+}
+
+.task >>> .el-select__tags-text {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

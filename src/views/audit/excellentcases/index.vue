@@ -148,7 +148,7 @@
                 <!--  -->
                 <el-button @click="remove(scope.row)"
                            type="text"
-                           v-if="Delete==true" 
+                           v-if="Delete==true"
                            :disabled="isDisable"
                            style="color:#ff8a72;background:none;border:none;
                             font-size: 14px !important;"
@@ -516,7 +516,7 @@ export default {
             let control_children = item.children
             // console.log(this.control_children);
             control_children.forEach((item_son) => {
-              if (item_son.name == '审计依据') {
+              if (item_son.name == '优秀案例及内参') {
                 let control_children_son = item_son.children
                 control_children_son.forEach((item_son_child) => {
                   // this.children_data.push(item_son_child.url)

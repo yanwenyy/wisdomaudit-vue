@@ -209,8 +209,8 @@
                     v-model="formDetail.matterDetail"></el-input>
 
           <ul class="query_list"
-              v-if="formDetail.fileArr && formDetail.fileArr.length!=0">
-            <li v-for="(item,index) in formDetail.fileArr"
+              v-if="fileArr && fileArr.length!=0">
+            <li v-for="(item,index) in fileArr"
                 :key="index">
               <i class="el-icon-folder-opened list-folder"></i>
               <p>{{item.fileName}}</p>
@@ -1131,10 +1131,13 @@ export default {
         principalPost: '',
         signatureDate: '',
         auditOrgOpinion: '',
-        fileArr: [],//生成 后的 数组
+        fileArr: "",//生成 后的 数组
 
         butt: '',//是否 生成2
       },//确认单数据
+      fileArr: [],//生成 后的 数组
+
+
       relationTabel: [],//关联问题
       relationStatus: false,//关联问题显示状态
       multipleSelection: [],//关联问题列表已选
@@ -2057,8 +2060,8 @@ export default {
           }
         })
         console.log(arr);
+        this.fileArr = arr;//生成确认的附件
 
-        this.formDetail.fileArr = arr;//生成确认的附件
 
         // if (arr) {
         //   arr.attachmentList.forEach((item) => {
@@ -2456,8 +2459,9 @@ export default {
             this.formDetail.managementProjectName = this.managementProjectName;
             this.formDetail.auditOrgName = this.auditOrgName;
             this.formDetail.managementProjectUuid = this.active_project;
-
-
+            let arr = this.fileArr.join(',');
+            this.formDetail.fileArr = arr;//生成 后的 数组
+            // console.log(this.formDetail.fileArr);
 
             // 1确认 2生成
             if (type == 1) {
@@ -2895,7 +2899,10 @@ export default {
   width: 100%;
   display: block !important;
 }
-
+.yj-sel >>> .el-tag--info,
+.task >>> .el-tag--info {
+  float: left;
+}
 .yj-sel >>> .el-tree-node__children {
   overflow: hide !important;
 }

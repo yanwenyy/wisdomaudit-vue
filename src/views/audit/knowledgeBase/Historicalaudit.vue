@@ -633,7 +633,7 @@ export default {
             let control_children = item.children
             // console.log(this.control_children);
             control_children.forEach((item_son) => {
-              if (item_son.name == '审计依据') {
+              if (item_son.name == '省内审计发现') {
                 let control_children_son = item_son.children
                 control_children_son.forEach((item_son_child) => {
                   // this.children_data.push(item_son_child.url)

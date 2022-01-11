@@ -164,7 +164,7 @@ import { correctStep_export, correctStep_pageList, correctStep_getProjectList } 
 import Detail from "./rectificationDetail";
 export default {
   data () {
-    return { 
+    return {
       vaultV: false,
       sceneId: 1557, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
       approvers: [], //审批人列表
@@ -173,7 +173,7 @@ export default {
       account: "",//返回的账户
       appSessionId: "",//应用sessionid
       downloaobj: {},//暂存的下载目标
-      dqtoken:"",
+      dqtoken: "",
 
       projectList: [],//项目下拉列表
       multipleSelection: [],
@@ -193,7 +193,7 @@ export default {
     }
   },
   components: {
-    Detail,Vault
+    Detail, Vault
   },
   mounted () {
     this.dqtoken = sessionStorage.getItem('TOKEN')
@@ -205,8 +205,8 @@ export default {
     // })
   },
   methods: {
-    
-//通过认证后的方法
+
+    //通过认证后的方法
     vdownload () {
       this.exportList()
     },

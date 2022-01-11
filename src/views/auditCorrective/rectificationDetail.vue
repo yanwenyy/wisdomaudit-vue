@@ -6,7 +6,7 @@
              :destroy-on-close="true"
              width="80%"
              center>
-             <Vault :vaultV="vaultV"
+    <Vault :vaultV="vaultV"
            :sceneId="sceneId"
            :approvers="approvers"
            :maxTime="maxTime"
@@ -25,9 +25,10 @@
                   placeholder="请输入"></el-input>
       </el-form-item>
       <el-form-item label="问题描述:">
-        <el-input :disabled="ifLook"
+        <el-input :readonly="ifLook"
                   v-model="formState.problemDesc"
                   type="textarea"
+                  :class="ifLook?'bag':''"
                   rows="6"
                   placeholder="请输入"></el-input>
       </el-form-item>
@@ -55,16 +56,18 @@
                   placeholder="请输入"></el-input>
       </el-form-item>
       <el-form-item label="整改计划:">
-        <el-input :disabled="ifLook"
+        <el-input :readonly="ifLook"
+                  :class="ifLook?'bag':''"
                   v-model="formState.correctPlan"
                   type="textarea"
                   rows="6"
                   placeholder="请输入"></el-input>
       </el-form-item>
       <el-form-item label="整改落实情况:">
-        <el-input :disabled="ifLook"
+        <el-input :readonly="ifLook"
                   v-model="formState.correctResult"
                   type="textarea"
+                  :class="ifLook?'bag':''"
                   rows="6"
                   placeholder="请输入"></el-input>
       </el-form-item>
@@ -209,18 +212,40 @@
           </el-select>
         </el-form-item>
         <el-form-item label="备注:">
-          <el-input :disabled="ifLook"
+          <el-input :readonly="ifLook"
+                    v-model="formState.remarks"
+                    type="textarea"
+                    :class="ifLook?'bag':''"
+                    rows="6"
+                    placeholder="请输入"></el-input>
+        </el-form-item>
+        <!-- <el-form-item label="备注:"
+                      v-if="title !='整改事项明细'">
+          <el-input :readonly="ifLook"
+                    
                     v-model="formState.remarks"
                     type="textarea"
                     rows="6"
                     placeholder="请输入"></el-input>
         </el-form-item>
+
+        <el-form-item label="备注:"
+                      v-if="title=='整改事项明细'">
+          <el-input :readonly="ifLook"
+                    v-model="formState.remarks"
+                    type="textarea"
+                    rows="6"
+                    placeholder="请输入"></el-input>
+        </el-form-item> -->
       </div>
+
+      <!--   -->
       <el-form-item label="审核意见:"
                     v-if="type=='zgcs_examine'&&people=='gjr'">
         <el-input v-model="formState.auditCommend"
                   type="textarea"
                   rows="6"
+                  :class="ifLook?'bag':''"
                   placeholder="请输入"></el-input>
       </el-form-item>
       <el-form-item label="审核意见:"
@@ -321,7 +346,7 @@ export default {
   methods: {
     //通过认证后的方法
     vdownload () {
-      this.downFile(this.downloaobj.attachmentUuid,this.downloaobj.fileName)
+      this.downFile(this.downloaobj.attachmentUuid, this.downloaobj.fileName)
     },
     //控制认证弹窗
     changevault (val) {
@@ -614,6 +639,12 @@ export default {
 </script>
 
 <style scoped>
+/* textarea[readonly],
+>>> .el-textarea .el-textarea__inner {
+  background-color: #eef1f6;
+  cursor: not-allowed;
+} */
+
 >>> .zgLabel .el-form-item__label {
   width: 27% !important;
 }
@@ -646,10 +677,14 @@ export default {
   margin-top: 20px;
   font-weight: bold;
 }
->>> .formData .el-input.is-disabled .el-input__inner,
->>> .formData .el-textarea.is-disabled .el-textarea__inner {
-  color: #606266 !important;
+/* >>> .formData .el-input.is-disabled .el-input__inner,
+>>> .formData .el-textarea.is-disabled .el-textarea__inner  */
+.bag >>> .el-textarea__inner,
+.bag >>> .el-textarea__inner:focus {
+  border: 1px solid #dfe4ed !important;
+  color: rgba(0, 0, 0, 0.4) !important;
   background: #f5f7fa !important;
+  cursor: not-allowed;
 }
 .formData .el-input__inner::placeholder {
   color: #c1c1c1 !important;

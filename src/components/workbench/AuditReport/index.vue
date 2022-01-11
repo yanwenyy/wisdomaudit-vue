@@ -215,11 +215,9 @@
 
         <span slot="footer"
               class="foot">
-          <!-- <el-button size="small"
-                     @click="">
-            取消</el-button> -->
-          <el-button size="small"
-                     type="primary"
+          <el-button @click="dlag_Correlation_zb = false"
+                     class="cancel">取消</el-button>
+          <el-button type="primary"
                      @click="query_save_zb()">确定</el-button>
         </span>
       </div>
@@ -328,11 +326,9 @@
         <span slot="footer"
               class="foot">
 
-          <el-button size="small"
-                     @click="dlag_Correlation_wt = false">
+          <el-button @click="dlag_Correlation_wt = false">
             取消</el-button>
-          <el-button size="small"
-                     type="primary"
+          <el-button type="primary"
                      @click="query_save_wt()">确定</el-button>
         </span>
       </div>
