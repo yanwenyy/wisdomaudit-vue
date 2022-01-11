@@ -62,20 +62,14 @@
               <!-- -->
               <el-button type="text"
                          size="small"
-<<<<<<< HEAD
-=======
                           v-if="Edit == true"
->>>>>>> dev_lhg
                          class="delete blue"
                          @click="edit(scope.row)">编辑</el-button>
 
               <!-- -->
               <el-button class="delete red"
                          type="text"
-<<<<<<< HEAD
-=======
                           v-if="Delete == true"
->>>>>>> dev_lhg
                          size="small"
                          @click="deletes(scope.row.basyUuid)">删除</el-button>
             </template>
