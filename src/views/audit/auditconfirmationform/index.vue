@@ -420,11 +420,10 @@
 
           <el-row>
             <div class="search">
+
               <el-button type="primary"
-                         style="margin:0;float:left;"
-                         @click="add_problem()"
                          size="medium"
-                         class="relationBtn">新增问题</el-button>
+                         @click="add_problem()">新增问题</el-button>
 
               <el-input v-model="searchform.problem"
                         placeholder="问题名称"
@@ -1269,6 +1268,7 @@ export default {
     this.getSelectTask();
     this.getbasis();//获取依据
     this.getperson();//获取人员
+    this.getme();
     let params = {
       entity: {},
     }
@@ -1323,7 +1323,7 @@ export default {
           let rep = resp.data.data.treasuryStatusRsp;
           if (rep.result == 0) {
             this.$message(rep.resultDesc);
-            if(rep.resultDesc=='无需开启'){
+            if (rep.resultDesc == '无需开启') {
               this.vdownload()
             }
             return;
@@ -1369,6 +1369,21 @@ export default {
 
       })
     },
+    //获取当前人员信息
+    getme () {
+      axios({
+        url: `/wisdomaudit/init/getCurrentInfo`,
+        headers: {
+          TOKEN: this.dqtoken,
+        },
+        method: "get",
+        data: {},
+      }).then((res) => {
+        console.log(res.data.data.user);
+        this.me = res.data.data.user.realName;
+        this.userRole = res.data.data.userRole;
+      });
+    },
     // 查看附件详情
     open_enclosure_details (item) {
       this.enclosure_details_list = [];//清空附件
@@ -1382,6 +1397,9 @@ export default {
     add_problem () {
       this.dialogFormVisible = true;
       this.ifadd = 0;
+      console.log(this.me);
+      this.temp_problem.problemFindPeople = this.me;//发现人默认选择
+
       this.temp_problem = {};//清空
       this.temp_problem = {
         managementProjectUuid: this.active_project,
@@ -1487,6 +1505,7 @@ export default {
         data: {},
       }).then((res) => {
         this.personlist = res.data.data.list;
+        console.log(this.personlist);
       });
     },
     change_zt (val) {
@@ -2542,10 +2561,10 @@ export default {
   width: 250px !important;
   display: flex;
   float: right;
-  border-radius: 0 !important;
+  /* border-radius: 0 !important; */
 }
 .search >>> .el-button {
-  border-radius: 0 !important;
+  /* border-radius: 0 !important; */
 }
 .search >>> .search_icon {
   position: absolute;
@@ -2563,6 +2582,7 @@ export default {
   -ms-flex-align: center;
   align-items: center;
   cursor: pointer;
+  border-radius: 0 4px 4px 0;
 }
 /* 筛选  end*/
 /* .edit_table >>> .el-table__row,

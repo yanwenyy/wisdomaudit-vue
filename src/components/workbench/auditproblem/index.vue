@@ -512,6 +512,9 @@
       </el-form>
       <div slot="footer"
            class="dialog-footer">
+
+        <el-button @click="dialogDetailVisible = false">取消</el-button>
+
         <el-button type="primary"
                    @click="updateData()"
                    v-if="success_btn==0 && ifupdata">保存修改</el-button>
@@ -520,8 +523,6 @@
                    v-if="success_btn==1"
                    :loading="true">上传中</el-button>
 
-        <el-button type="primary"
-                   @click="dialogDetailVisible = false">关闭</el-button>
       </div>
     </el-dialog>
     <el-dialog title="引用审计依据"
