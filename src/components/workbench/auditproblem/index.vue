@@ -52,8 +52,6 @@
                 :data="list"
                 border
                 highlight-current-row
-                height="calc(100vh - 300px)"
-                max-height="calc(100vh - 300px)"
                 @selection-change="handleSelectionChange">
         <el-table-column label="序号"
                          width="70">
@@ -767,15 +765,26 @@ export default {
       this.input_select = true; //专题 恢复默认
       this.input_selecte = true; //专题 恢复默认
     },
-    change_zt (val) {
-      this.temp.special = val;
+    change_zt (value) {
+      let obj = {};
+      obj = this.SPECIALList.find((item) => {
+        return item.value === value; //筛选出匹配数据
+      });
+      let val = obj.value;
+      this.temp.special = obj.label;
+
       if (val == "otherzt") {
         this.input_select = false;
         this.temp.special = "";
       }
     },
-    change_zte (val) {
-      this.dqProblem.special = val;
+    change_zte (value) {
+      let obj = {};
+      obj = this.SPECIALList.find((item) => {
+        return item.value === value; //筛选出匹配数据
+      });
+      let val = obj.value;
+      this.dqProblem.special = obj.label;
       if (val == "otherzt") {
         this.input_selecte = false;
         this.dqProblem.special = "";
@@ -1312,9 +1321,6 @@ export default {
   display: none;
 }
 
-.min_height {
-  min-height: 500px;
-}
 .auditproblem-btn-box {
   float: right;
 }

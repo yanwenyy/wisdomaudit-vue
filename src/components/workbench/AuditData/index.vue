@@ -1544,7 +1544,7 @@ export default {
           let rep = resp.data.data.treasuryStatusRsp;
           if (rep.result == 0) {
             this.$message(rep.resultDesc);
-            if(rep.resultDesc=='无需开启'){
+            if (rep.resultDesc == '无需开启') {
               this.vdownload()
             }
             return;
@@ -3163,15 +3163,6 @@ export default {
 }
 .whether div .close:hover {
   color: rgba(0, 0, 0, 0.8);
-}
-/* .whether .projectTab >>> .el-table th.el-table__cell > .cell,
-.projectTab >>> .has-gutter .cell,
-.projectTab >>> .el-table td.el-table__cell div {
-  text-align: center;
-  justify-content: center !important;
-} */
-.projectTab >>> .el-table {
-  min-height: 500px;
 }
 
 .sjzl .conter {

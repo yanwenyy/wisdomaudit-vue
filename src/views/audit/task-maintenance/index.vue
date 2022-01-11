@@ -778,7 +778,7 @@ export default {
           let rep = resp.data.data.treasuryStatusRsp;
           if (rep.result == 0) {
             this.$message(rep.resultDesc);
-            if(rep.resultDesc=='无需开启'){
+            if (rep.resultDesc == '无需开启') {
               this.vdownload()
             }
             return;
@@ -799,7 +799,14 @@ export default {
     },
 
     // 专题选择其他变成可输入
-    changeBelongSpcial (val) {
+    changeBelongSpcial (value) {
+      let obj = {};
+      obj = this.thematicOption.find((item) => {
+        return item.value === value; //筛选出匹配数据
+      });
+      let val = obj.value;
+      this.taskSelf.belongSpcial = obj.label;
+
       if (val == "otherzt") {
         this.other_input = false;
         this.taskSelf.belongSpcial = "";
@@ -1510,9 +1517,6 @@ export default {
 </script>
 
 <style scoped>
-.min_height {
-  min-height: 500px;
-}
 .sjzl .conter {
   width: 100%;
   float: left;

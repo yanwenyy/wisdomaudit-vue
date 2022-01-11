@@ -1412,7 +1412,7 @@ export default {
           let rep = resp.data.data.treasuryStatusRsp;
           if (rep.result == 0) {
             this.$message(rep.resultDesc);
-            if(rep.resultDesc=='无需开启'){
+            if (rep.resultDesc == '无需开启') {
               this.vdownload()
             }
             return;
@@ -2359,16 +2359,21 @@ export default {
     zhuanti (params) {
       task_problems_loadcascader(params).then(resp => {
         this.zt_slect = resp.data
+        console.log(this.zt_slect);
       })
     },
     // 专题 change
-    changeHeader_zj_zt (val) {
-      this.save_zj_query.belongSpcial = val;
+    changeHeader_zj_zt (value) {
+      let obj = {};
+      obj = this.zt_slect.find((item) => {
+        return item.value === value; //筛选出匹配数据
+      });
+      let val = obj.value;
+      this.save_zj_query.belongSpcial = obj.label;
       if (val == 'otherzt') {
         this.input_select = false;
         this.save_zj_query.belongSpcial = ''
       }
-
     },
     // 新增  问题数 保存
     add_list_save (formName) {
@@ -2870,9 +2875,6 @@ export default {
 }
 .task_type {
   margin-top: 10px;
-}
-.task_type >>> .el-table {
-  min-height: 500px;
 }
 .titleMes {
   margin: 0;

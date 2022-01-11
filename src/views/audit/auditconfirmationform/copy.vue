@@ -432,7 +432,7 @@ import { task_select_people } from
   '@SDMOBILE/api/shandong/task'
 import SearchList from "./searchList"
 export default {
-  components: { SearchList,Vault },
+  components: { SearchList, Vault },
   props: ['active_project', 'userRole'],
   data () {
     return {
@@ -444,7 +444,7 @@ export default {
       account: "",//返回的账户
       appSessionId: "",//应用sessionid
       downloaobj: {},//暂存的下载目标
-      dqtoken:'',
+      dqtoken: '',
 
       compileDate: false,
       key: 0,
@@ -525,10 +525,10 @@ export default {
     //通过认证后的方法
     vdownload () {
       console.log(this.downloaobj.dtype)
-      if(this.downloaobj.dtype=='下载1'){
+      if (this.downloaobj.dtype == '下载1') {
         this.downFile(this.downloaobj.attachment_uuid, this.downloaobj.file_name)
-      }else{
-        this.downFile(this.downloaobj.attachmentUuid,this.downloaobj.fileName)
+      } else {
+        this.downFile(this.downloaobj.attachmentUuid, this.downloaobj.fileName)
       }
     },
     //控制认证弹窗
@@ -536,7 +536,7 @@ export default {
       this.vaultV = val;
     },
     //打开金库
-    openVault (obj,downtype) {
+    openVault (obj, downtype) {
       console.log("芝麻开门")
       this.downloaobj = obj
       this.downloaobj.dtype = downtype
@@ -566,7 +566,7 @@ export default {
           let rep = resp.data.data.treasuryStatusRsp;
           if (rep.result == 0) {
             this.$message(rep.resultDesc);
-            if(rep.resultDesc=='无需开启'){
+            if (rep.resultDesc == '无需开启') {
               this.vdownload()
             }
             return;
@@ -1027,9 +1027,6 @@ export default {
   </script>
 
   <style lang="scss" scoped>
-.min_height {
-  min-height: 500px;
-}
 .confirmaryTable {
   .update {
     display: flex;

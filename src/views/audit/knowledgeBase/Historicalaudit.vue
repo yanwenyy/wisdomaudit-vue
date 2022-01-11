@@ -1106,7 +1106,16 @@ export default {
       this.add.field = val;
     },
     // 专题change
-    changeHeader_zt (val) {
+    changeHeader_zt (value) {
+
+      let obj = {};
+      obj = this.problems_slect_zt.find((item) => {
+        return item.value === value; //筛选出匹配数据
+      });
+      let val = obj.value;
+      this.add.special = obj.label;
+
+
       this.add.special = val;
       if (val == 'otherzt') {
         this.input_select = false;

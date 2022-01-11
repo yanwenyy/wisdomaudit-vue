@@ -207,6 +207,15 @@
                     :disabled="ifLook"
                     type="textarea"
                     v-model="formDetail.matterDetail"></el-input>
+
+          <ul class="query_list"
+              v-if="formDetail.fileArr && formDetail.fileArr.length!=0">
+            <li v-for="(item,index) in formDetail.fileArr"
+                :key="index">
+              <i class="el-icon-folder-opened list-folder"></i>
+              <p>{{item.fileName}}</p>
+            </li>
+          </ul>
         </el-form-item>
         <el-form-item prop="auditorsName"
                       class="itemTwo"
@@ -594,7 +603,7 @@
            class="dialog-footer">
         <el-button @click="visible=false">取消</el-button>
         <el-button type="primary"
-                   @click="setRelation">生成</el-button>
+                   @click="setRelation()">生成</el-button>
       </div>
     </el-dialog>
 
@@ -1122,6 +1131,7 @@ export default {
         principalPost: '',
         signatureDate: '',
         auditOrgOpinion: '',
+        fileArr: [],//生成 后的 数组
 
         butt: '',//是否 生成2
       },//确认单数据
@@ -1256,6 +1266,8 @@ export default {
       details_list: [],//悬浮数据
       enclosure_details_list: [],//附件
       load: false,
+
+
     };
   },
   created () {
@@ -1281,7 +1293,7 @@ export default {
 
     //金库通过认证后的方法
     vdownload () {
-      console.log(this.downloaobj.dtype)
+
       if (this.downloaobj.dtype == '下载1') {
         this.downFile(this.downloaobj.attachment_uuid, this.downloaobj.file_name)
       } else {
@@ -1294,7 +1306,7 @@ export default {
     },
     //打开金库
     openVault (obj, downtype) {
-      console.log("芝麻开门")
+
       this.downloaobj = obj
       this.downloaobj.dtype = downtype
       axios({
@@ -1328,7 +1340,7 @@ export default {
             }
             return;
           } else {
-            console.log(rep);
+
             this.approvers = rep.approvers || "";
             this.maxTime = rep.maxTime;
             this.dqtime = new Date();
@@ -1379,7 +1391,7 @@ export default {
         method: "get",
         data: {},
       }).then((res) => {
-        console.log(res.data.data.user);
+
         this.me = res.data.data.user.realName;
         this.userRole = res.data.data.userRole;
       });
@@ -1397,7 +1409,7 @@ export default {
     add_problem () {
       this.dialogFormVisible = true;
       this.ifadd = 0;
-      console.log(this.me);
+
       this.temp_problem.problemFindPeople = this.me;//发现人默认选择
 
       this.temp_problem = {};//清空
@@ -1505,18 +1517,28 @@ export default {
         data: {},
       }).then((res) => {
         this.personlist = res.data.data.list;
-        console.log(this.personlist);
+
       });
     },
-    change_zt (val) {
-      this.temp_problem.special = val;
+    change_zt (value) {
+      let obj = {};
+      obj = this.SPECIALList.find((item) => {
+        return item.value === value; //筛选出匹配数据
+      });
+      let val = obj.value;
+      this.temp_problem.special = obj.label;
       if (val == "otherzt") {
         this.input_select = false;
         this.temp_problem.special = "";
       }
     },
-    change_zte (val) {
-      this.dqProblem.special = val;
+    change_zte (value) {
+      let obj = {};
+      obj = this.SPECIALList.find((item) => {
+        return item.value === value; //筛选出匹配数据
+      });
+      let val = obj.value;
+      this.dqProblem.special = obj.label;
       if (val == "otherzt") {
         this.input_selecte = false;
         this.dqProblem.special = "";
@@ -1755,7 +1777,7 @@ export default {
         file.attStatus = 3
 
         delList.push(file);
-        console.log(showList, delList)
+
       }
     },
     //新增问题 附件下载
@@ -1782,7 +1804,7 @@ export default {
           navigator.msSaveBlob(blob, fileName)
         }
       }).catch((err) => {
-        console.log(err);
+
       })
     },
     // 新增问题保存
@@ -1791,9 +1813,9 @@ export default {
         if (valid) {
 
           let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
-          console.log(uploadList2);
+
           uploadList2.forEach((item) => {
-            console.log(item);
+
             item.status = null;
           });
           this.temp_problem.attachmentList = uploadList2;
@@ -2002,7 +2024,7 @@ export default {
         let datas = resp.data;
         this.relationTabel2 = datas.records;
         this.visible = true;
-        console.log(this.relationTabel2);
+
 
       })
     },
@@ -2023,6 +2045,34 @@ export default {
         this.formDetail.matterDetail = data.str;
         this.formDetail.problemListUuidList = data.problemListUuidList;
         this.formDetail.problemsNumber = data.multipleSelection.length;
+
+        // 确认的附件
+        let datas = [];
+        this.multipleSelection.forEach((item, index) => {
+          datas.push(item.attachmentList)
+        })
+        let imglist = [];
+        let arr = [];
+        datas.forEach((i, index) => {
+          if (i.length !== 0) {
+            imglist.push(i)
+            arr = arr.concat(i)
+          }
+        })
+        console.log(arr);
+
+        this.formDetail.fileArr = arr;//生成确认的附件
+
+        // if (arr) {
+        //   arr.attachmentList.forEach((item) => {
+        //     item.name = item.fileName;
+        //     item.url = item.filePath;
+        //     item.isDeleted = 0;
+        //   });
+        // }
+        // this.fileList2 = datas.attachmentList || [];
+
+
         // this.$emit('refreshSearch', data)
       } else {
         this.$message('请至少选择一条数据进行生成');
@@ -2053,7 +2103,7 @@ export default {
     // -------------------------------------------
     // 被审计单位
     Company_data (params) {
-      console.log(params);
+
       Company(params).then(resp => {
         this.Company_data_list = resp.data
       })
@@ -2127,7 +2177,7 @@ export default {
         showList.remove(file);
         file.isDeleted = 1;
         delList.push(file);
-        console.log(showList, delList)
+
       }
     },
     //附件下载
@@ -2154,7 +2204,7 @@ export default {
           navigator.msSaveBlob(blob, fileName)
         }
       }).catch((err) => {
-        console.log(err);
+
       })
     },
     //获取用户信息
@@ -2178,7 +2228,7 @@ export default {
           sj[2] = sj[2].padStart(2, '0');
         }
         that.formDetail.compileDate = sj[0] + "-" + sj[1] + "-" + sj[2];
-        // console.log(that.formDetail.compileDate)
+        // 
       })
     },
     //复核人列表
@@ -2254,7 +2304,7 @@ export default {
           navigator.msSaveBlob(blob, fileName)
         }
       }).catch((err) => {
-        console.log(err);
+
       })
     },
     //点击确认单附件显示附件列表
@@ -2399,7 +2449,7 @@ export default {
       this.$refs['addForm'].validate((valid) => {
         if (valid) {
           var uploadList1 = this.attachmentList1.concat(this.fileList1, this.fileList1_del);
-          console.log(uploadList1);
+
 
           uploadList1.forEach((item) => {
             item.status = null;
@@ -2409,8 +2459,8 @@ export default {
             this.formDetail.managementProjectName = this.managementProjectName;
             this.formDetail.auditOrgName = this.auditOrgName;
             this.formDetail.managementProjectUuid = this.active_project;
-            console.log(this.formDetail);
-            console.log(this.formDetail.auditDepart);
+
+
 
             // 1确认 2生成
             if (type == 1) {
@@ -2495,9 +2545,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.min_height {
-  min-height: 500px;
-}
 .confirmaryTable {
   .update {
     display: flex;
@@ -2544,6 +2591,43 @@ export default {
 @import "../../../assets/styles/css/yw.css";
 >>> .el-table__header {
   margin-top: 0 !important;
+}
+
+/* 生成后选择的附件 */
+.query_list {
+  width: 70%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  float: left;
+}
+.query_list li {
+  width: 100%;
+  float: left;
+  height: 20px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.query_list li i {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+}
+
+.query_list li p {
+  float: left;
+  width: 100%;
+  padding-left: 3%;
+  height: 100%;
+  line-height: 20px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  word-break: break-all;
 }
 
 /* 筛选 */

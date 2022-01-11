@@ -721,13 +721,6 @@ export default {
 </script>
   
 <style lang="scss" scoped>
-// .el-button{
-//   background: #4BDCB4;
-// }
-.min_height {
-  min-height: 500px;
-}
-
 .deleteBtn {
   color: red;
 }
