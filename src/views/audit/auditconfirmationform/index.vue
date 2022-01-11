@@ -731,7 +731,7 @@
                     @keyup.native="onlyNumOnePoint('temp_problem')"
                     @input="temp_problem.riskAmount = temp_problem.riskAmount.slice(0, 27)" />
         </el-form-item>
-        <el-form-item class="itemTwo"
+        <el-form-item class="itemTwo task"
                       label="关联任务："
                       prop="auditTaskUuid">
           <el-select v-model="temp_problem.auditTaskUuid"
@@ -926,7 +926,7 @@
                     @keyup.native="onlyNumOnePoint('dqProblem')"
                     @input="temp.riskAmount = temp.riskAmount.slice(0, 27)" />
         </el-form-item>
-        <el-form-item class="itemTwo"
+        <el-form-item class="itemTwo task"
                       label="关联任务："
                       prop="auditTaskUuid">
           <el-select disabled
@@ -2890,7 +2890,8 @@ export default {
 }
 
 /* 依据 */
-.yj-sel >>> .el-select__tags > span {
+.yj-sel >>> .el-select__tags > span,
+.task >>> .el-select__tags > span {
   width: 100%;
   display: block !important;
 }
