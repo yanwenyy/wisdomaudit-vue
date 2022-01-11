@@ -438,11 +438,6 @@
 </template>
 
 <script>
-<<<<<<< HEAD
-// 测试 dev
-=======
-//测试 deev_lhg
->>>>>>> dev_lhg
 import { fmtDate } from "@SDMOBILE/model/time.js";
 import {
   historicalaudit_pageList,

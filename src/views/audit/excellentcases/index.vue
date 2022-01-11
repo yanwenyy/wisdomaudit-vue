@@ -401,7 +401,6 @@ import Vault from "@WISDOMAUDIT/components/Vaultcertification";
 import { getUserPermissionList } from '@SDMOBILE/api/shandong/common';
 import { pageList, save_query, loadcascader, update, deleteEntity, toManagementList, uploadFile, queryByFid, deleteAttachment, fileDownload } from
   '@SDMOBILE/api/shandong/excellentcases'
-import { getUserPermissionList } from '@SDMOBILE/api/shandong/common';
 import { fmtDate } from "@SDMOBILE/model/time.js";
 
 
