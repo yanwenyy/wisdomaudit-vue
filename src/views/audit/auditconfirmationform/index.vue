@@ -1433,6 +1433,14 @@ export default {
     // 审计问题====================================
     // 新增审计问题
     add_problem () {
+
+
+
+      this.temp_problem.attachmentList = []; //清空附件
+      this.fileList2 = [];
+
+
+
       this.dialogFormVisible = true;
       this.ifadd = 0;
 
@@ -1460,6 +1468,7 @@ export default {
       this.temp_problem.problemDiscoveryTime = new Date();
       this.temp_problem.attachmentList = []; //清空附件
       this.fileList2 = [];
+      console.log(this.temp_problem.attachmentList);
 
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
@@ -1693,6 +1702,10 @@ export default {
     // 编辑
     openDetail (int) {
       this.ifadd = 1;
+      this.temp_problem.attachmentList = []; //清空附件
+      this.fileList2 = [];//清空附件
+
+
       axios({
         url:
           `/wisdomaudit/problemList/getById/` + this.list[int].problemListUuid,
@@ -1702,6 +1715,8 @@ export default {
         method: "get",
         data: {},
       }).then((res) => {
+
+
         this.dqProblem = res.data.data;
         this.dqProblem.riskAmount = parseFloat(this.dqProblem.riskAmount)
         this.dqProblem.auditTaskUuid = this.dqProblem.auditTaskUuid.split(",");
@@ -1792,6 +1807,8 @@ export default {
         })
       }
     },
+
+
     //新增问题 附件删除
     handleRemove2 (file, fileList, tableList, showList, delList) {
       if (file.response) {
@@ -1837,15 +1854,12 @@ export default {
     createData () {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
-
           let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
-
           uploadList2.forEach((item) => {
-
             item.status = null;
           });
           this.temp_problem.attachmentList = uploadList2;
-          this.temp.attachmentList = [];
+          // this.temp.attachmentList = [];
 
           let rep = this.temp_problem;
           rep.riskAmount = parseFloat(rep.riskAmount)
@@ -1853,6 +1867,7 @@ export default {
             ? rep.auditTaskUuid.join(",")
             : "";
           rep.basis = rep.basis ? rep.basis.join(",") : "";
+
           axios({
             url: `/wisdomaudit/problemList/save`,
             headers: {
@@ -1877,6 +1892,8 @@ export default {
               this.temp_problem.managementAdvice = "";
               this.temp_problem.riskAmount = "";
               this.temp_problem.special = "";
+              this.temp_problem.attachmentList = []
+
               this.init();
             }
           });
@@ -1904,8 +1921,6 @@ export default {
             }
           });
           this.dqProblem.attachmentList = uploadList2;
-
-
           axios({
             url: `/wisdomaudit/problemList/update`,
             headers: {
@@ -1921,11 +1936,14 @@ export default {
               });
               this.dialogDetailVisible = false;
 
+
               this.init();//刷新问题编辑的列表
+
             }
           });
         }
       });
+
     },
 
     // 编辑问题 标题查看详情
@@ -1957,6 +1975,13 @@ export default {
     // 编辑问题
     list_openDetail (id) {
       this.ifadd = 1;
+
+      this.fileList2 = [];
+      this.fileList2_del = [];
+      this.attachmentList2 = [];
+      this.dqProblem.attachmentList = [];
+
+
       axios({
         url:
           `/wisdomaudit/problemList/getById/` + id,
@@ -1989,6 +2014,8 @@ export default {
           });
         }
         this.fileList2 = datas.attachmentList || [];
+
+
 
 
         this.dialogDetailVisible = true;
