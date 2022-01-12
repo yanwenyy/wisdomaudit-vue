@@ -272,7 +272,7 @@ export default {
         // 设置基础功能选中
         if (Object.keys(parentObj) == 0) return
         let basicFunctionId = parentObj.children.find(item => {
-          return (item.label = '基础功能')
+          return (item.label == '基础功能')
         }).id
         this.$refs.tree.setChecked(basicFunctionId, true)
       }
