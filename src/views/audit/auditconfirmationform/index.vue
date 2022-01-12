@@ -2079,14 +2079,15 @@ export default {
       this.Index = index
       this.details = true
       this.details_list = data;
+      this.taskList = [];//清空人任务
 
       this.auditTasklList.forEach(item => {
         if (this.details_list.auditTaskUuid == item.auditTaskUuid) {
           this.taskList.push(item)
         }
       })
-      console.log(this.taskList);
-      console.log(this.auditTasklList);
+      // console.log(this.taskList);
+      // console.log(this.auditTasklList);
 
       if (this.Index == 0) {
         let top_px = (this.style_px * index + 85) + 'px'
