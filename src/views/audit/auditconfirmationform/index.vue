@@ -565,32 +565,46 @@
                v-if="details == true &&details_list">
             <ul class="list">
               <li>
-                <p>序号：{{details_list.index}}</p>
-                <p>领域：{{details_list.field}}</p>
-                <p>专题：{{details_list.special}}</p>
+                <p style="margin-bottom:10px;"><span class="fl sp">序号：</span><span>{{Index+1}}</span></p>
+                <p style="margin-bottom:10px;"><span class="fl sp">领域：</span><span>{{details_list.field}}</span></p>
+                <p><span class="fl sp">专题：</span><span>{{details_list.special}}</span></p>
               </li>
 
               <li>
-                <p>风险金额（万元）： {{ parseFloat(details_list.riskAmount) }}</p>
-                <p>发现日期：{{details_list.problemDiscoveryTime | dateformat}}</p>
-                <p>发现人：{{details_list.problemFindPeople}}</p>
+                <p style="margin-bottom:10px;"><span class="fl sp">风险金额（万元）</span>
+
+                  <span>{{ parseFloat(details_list.riskAmount) }}</span>
+                </p>
+                <p style="margin-bottom:10px;"><span
+                        class="fl sp">发现日期：</span><span>{{details_list.problemDiscoveryTime | dateformat}}</span></p>
+                <p><span class="fl sp">发现人：</span><span>{{details_list.problemFindPeople}}</span></p>
               </li>
 
               <li>
-                <p>附件：<i class="el-icon-folder-opened list-folder"></i>{{details_list.attachmentList.length}}</p>
+                <span class="fl sp">附件：</span><i
+                   class="el-icon-folder-opened list-folder"></i><span>{{details_list.attachmentList.length}}</span>
+
               </li>
 
               <li>
-                问题：{{details_list.problem}}
+                <span class="fl sp">问题：</span>
+                <p><span>{{details_list.problem}}</span></p>
+
               </li>
               <li>
-                依据：{{details_list.basis}}
+                <span class="fl sp">依据：</span>
+                <p><span>{{details_list.basis}}</span></p>
+
               </li>
               <li>
-                描述：{{details_list.describe}}
+                <span class="fl sp">描述：</span>
+
+                <p><span>{{details_list.describe}}</span></p>
               </li>
               <li>
-                管理建议：{{details_list.managementAdvice}}
+                <span class="fl sp">管理建议：</span>
+                <p><span>{{details_list.managementAdvice}}</span></p>
+
               </li>
 
             </ul>
@@ -2711,12 +2725,14 @@ export default {
 .problem_details_conter .list {
   margin: 0 auto;
   width: 100%;
-  padding: 20px;
+  padding: 20px 10px;
   box-sizing: border-box;
   background: #f5f5f9;
   display: flex;
   flex-wrap: wrap;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  height: 250px;
+  overflow-x: auto;
 }
 .list li {
   width: 100%;
@@ -2730,8 +2746,21 @@ export default {
   margin-bottom: 0;
 }
 .list li p {
-  width: 33%;
-  float: left;
+  /* width: 33%;
+  float: left; */
+  text-align: left;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  display: inline-block;
+  width: calc(100% - 130px);
+  line-height: 20px;
+}
+.list li .sp {
+  width: 130px;
+  text-align: right;
+}
+.list li p span {
+  font-weight: 500;
 }
 /* 问题详情框 end*/
 

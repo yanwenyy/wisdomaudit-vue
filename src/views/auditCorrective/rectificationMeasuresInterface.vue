@@ -228,6 +228,7 @@ export default {
 
     //列表数据
     list_data_start (ifsel) {
+      console.log(1111);
       let params = {
         pageNo: this.searchForm.pageNo,
         pageSize: ifsel == 'getProjectList' ? 1000000 : this.searchForm.pageSize,
@@ -283,6 +284,8 @@ export default {
               type: "success",
             });
             this.list_data_start();
+            this.list_data();
+
           } else {
             this.$message({
               message: resp.data.msg,

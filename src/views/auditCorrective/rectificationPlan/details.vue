@@ -108,20 +108,22 @@
             <p>领域：<span v-if="details_list.field">{{details_list.field}}</span>
               <span v-else>--</span>
             </p> -->
-
-            <p>问题：<span v-if="details_list.problem">{{details_list.problem}}</span>
+            <span class="fl  sp">问题：</span>
+            <p><span v-if="details_list.problem">{{details_list.problem}}</span>
               <span v-else>--</span>
             </p>
 
           </li>
           <li>
-            <p>描述：<span v-if="details_list.describe">{{details_list.describe}}</span>
+            <span class="fl sp">描述：</span>
+            <p><span v-if="details_list.describe">{{details_list.describe}}</span>
               <span v-else>--</span>
             </p>
 
           </li>
           <li>
-            <p>管理建议：<span v-if="details_list.managementAdvice">{{details_list.managementAdvice}}</span>
+            <span class="fl sp">管理建议：</span>
+            <p><span v-if="details_list.managementAdvice">{{details_list.managementAdvice}}</span>
               <span v-else>--</span>
             </p>
           </li>
@@ -332,6 +334,8 @@ export default {
   display: flex;
   flex-wrap: wrap;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  height: 250px;
+  overflow-x: auto;
 }
 .list li {
   width: 100%;
@@ -341,14 +345,24 @@ export default {
 .list li:last-child {
   margin-bottom: 0;
 }
+.list li .sp {
+  width: 70px;
+  text-align: right;
+}
 .list li p {
-  width: 33%;
+  /* width: 33%;
   float: left;
   text-align: left;
+  box-sizing: border-box; */
+  text-align: left;
+  -webkit-box-sizing: border-box;
   box-sizing: border-box;
+  display: inline-block;
+  width: calc(100% - 80px);
+  line-height: 20px;
 }
 .list li p span {
-  font-weight: 600;
+  font-weight: 500;
 }
 </style>
 

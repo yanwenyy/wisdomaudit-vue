@@ -245,7 +245,6 @@
         <el-input v-model="formState.auditCommend"
                   type="textarea"
                   rows="6"
-                  :class="ifLook?'bag':''"
                   placeholder="请输入"></el-input>
       </el-form-item>
       <el-form-item label="审核意见:"
@@ -549,6 +548,8 @@ export default {
             this.isExamine = false;
             this.$nextTick(() => {
               this.$parent.list_data_start();
+              this.$parent.list_data();
+
             })
           } else {
             this.$message({
@@ -568,6 +569,8 @@ export default {
             this.isExamine = false;
             this.$nextTick(() => {
               this.$parent.list_data_start();
+              this.$parent.list_data();
+
             })
           } else {
             this.$message({
@@ -677,12 +680,13 @@ export default {
   margin-top: 20px;
   font-weight: bold;
 }
-/* >>> .formData .el-input.is-disabled .el-input__inner,
->>> .formData .el-textarea.is-disabled .el-textarea__inner  */
+>>> .formData .el-input.is-disabled .el-input__inner,
+>>> .formData .el-textarea.is-disabled .el-textarea__inner,
 .bag >>> .el-textarea__inner,
 .bag >>> .el-textarea__inner:focus {
   border: 1px solid #dfe4ed !important;
-  color: rgba(0, 0, 0, 0.4) !important;
+  /* color: rgba(0, 0, 0, 0.4) !important; */
+  color: #606266 !important;
   background: #f5f7fa !important;
   cursor: not-allowed;
 }
