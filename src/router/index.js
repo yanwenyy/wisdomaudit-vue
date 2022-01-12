@@ -85,7 +85,7 @@ export const constantRoutes = [{
     name: "auditeehome",
     component: () => import("@WISDOMAUDIT/views/audit/auditeehome"),
     meta: {
-      title: "被审计单位首页"
+      title: "工作台"
     },
   },]
 
