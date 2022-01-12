@@ -196,7 +196,7 @@
           <div style="display:flex">
             <el-button :disabled="ifLook"
                        type="primary"
-                       @click="add_problem()"
+                       @click="add_problem(1)"
                        class="relationBtn">新增问题</el-button>
             <el-button :disabled="ifLook"
                        @click="getRelationQues()"
@@ -432,7 +432,7 @@
 
               <el-button type="primary"
                          size="medium"
-                         @click="add_problem()">新增问题</el-button>
+                         @click="add_problem(2)">新增问题</el-button>
 
               <el-input v-model="searchform.problem"
                         placeholder="问题名称"
@@ -1301,6 +1301,8 @@ export default {
       enclosure_details_list: [],//附件
       load: false,
       taskList: [],//详情  任务回显
+
+      type: '',
     };
   },
   created () {
@@ -1435,13 +1437,21 @@ export default {
 
     // 审计问题====================================
     // 新增审计问题
-    add_problem () {
+    add_problem (type) {
 
       this.fileList2 = [];
       this.fileList2_del = [];
       this.attachmentList2 = [];
       this.temp_problem.attachmentList = []; //清空附件
 
+      // 新增回显
+      if (type == 1) {
+        this.type = 1
+      } else {
+        // 新增刷列表
+        this.type = 2
+
+      }
 
 
       this.dialogFormVisible = true;
@@ -1858,39 +1868,79 @@ export default {
     createData () {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
-          let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
-          uploadList2.forEach((item) => {
-            item.status = null;
-          });
-          this.temp_problem.attachmentList = uploadList2;
-          // this.temp.attachmentList = [];
 
-          let rep = this.temp_problem;
-          rep.riskAmount = parseFloat(rep.riskAmount)
-          rep.auditTaskUuid = rep.auditTaskUuid
-            ? rep.auditTaskUuid.join(",")
-            : "";
-          rep.basis = rep.basis ? rep.basis.join(",") : "";
+          // 新增回显
+          if (this.type == 1) {
+            // 新增刷列表
+            let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
+            uploadList2.forEach((item) => {
+              item.status = null;
+            });
+            this.temp_problem.attachmentList = uploadList2;
+            // this.temp.attachmentList = [];
 
-          axios({
-            url: `/wisdomaudit/problemList/save`,
-            headers: {
-              TOKEN: this.dqtoken,
-            },
-            method: "post",
-            data: rep,
-          }).then((res) => {
-            if (res.data.code == 0) {
-              this.$message({
-                message: "新增成功",
-                type: "success",
-              });
-              // this.dialogFormVisible = false;//新增的弹窗
+            let rep = this.temp_problem;
+            rep.riskAmount = parseFloat(rep.riskAmount)
+            rep.auditTaskUuid = rep.auditTaskUuid
+              ? rep.auditTaskUuid.join(",")
+              : "";
+            rep.basis = rep.basis ? rep.basis.join(",") : "";
+
+            axios({
+              url: `/wisdomaudit/problemList/save`,
+              headers: {
+                TOKEN: this.dqtoken,
+              },
+              method: "post",
+              data: rep,
+            }).then((res) => {
+              if (res.data.code == 0) {
+                this.$message({
+                  message: "新增成功",
+                  type: "success",
+                });
+                // this.dialogFormVisible = false;//新增的弹窗
 
 
-              this.save_problem();//新增问题 既是选择当前这条
-            }
-          });
+                this.save_problem();//新增问题 既是选择当前这条
+              }
+            });
+          } else {
+            // 刷列表   // 新增刷列表
+            let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
+            uploadList2.forEach((item) => {
+              item.status = null;
+            });
+            this.temp_problem.attachmentList = uploadList2;
+            // this.temp.attachmentList = [];
+
+            let rep = this.temp_problem;
+            rep.riskAmount = parseFloat(rep.riskAmount)
+            rep.auditTaskUuid = rep.auditTaskUuid
+              ? rep.auditTaskUuid.join(",")
+              : "";
+            rep.basis = rep.basis ? rep.basis.join(",") : "";
+
+            axios({
+              url: `/wisdomaudit/problemList/save`,
+              headers: {
+                TOKEN: this.dqtoken,
+              },
+              method: "post",
+              data: rep,
+            }).then((res) => {
+              if (res.data.code == 0) {
+                this.$message({
+                  message: "新增成功",
+                  type: "success",
+                });
+                this.dialogFormVisible = false;//新增的弹窗
+                this.init();//刷列表
+
+              }
+            });
+
+          }
         } else {
           return false;
         }
