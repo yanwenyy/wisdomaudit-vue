@@ -596,6 +596,11 @@
                         :key="ind">{{it.auditModelName}}</span>
                   <!-- </div> -->
                 </p>
+
+                <p class="one_p"
+                   style="">
+                </p>
+
               </li>
 
               <li>
@@ -1434,10 +1439,10 @@ export default {
     // 新增审计问题
     add_problem () {
 
-
-
-      this.temp_problem.attachmentList = []; //清空附件
       this.fileList2 = [];
+      this.fileList2_del = [];
+      this.attachmentList2 = [];
+      this.temp_problem.attachmentList = []; //清空附件
 
 
 
@@ -2067,6 +2072,7 @@ export default {
       //   this.$refs.searchTabel.init(this.active_project);
       // });
       this.init();
+      this.details = false;
       this.visible = true;//显示编辑弹窗
     },
 
@@ -2083,6 +2089,7 @@ export default {
         this.load = false;
         let datas = resp.data;
         this.relationTabel2 = datas.records;
+        this.details = false;
         this.visible = true;
 
 
@@ -2139,6 +2146,7 @@ export default {
         return false
       }
       this.visible = false;
+      this.details = false;
     },
 
     //获取关联的问题
@@ -2470,9 +2478,11 @@ export default {
     addConfirmation () {
       this.clearForm();
       this.confirmationDialogTitle = "新增确认单";
+
       this.confirmationDialogVisible = true;
       this.getUser();
       this.ifLook = false;
+
 
       // 显示二级部门
       if (this.auditOrgName == '省本部') {
@@ -2654,6 +2664,7 @@ export default {
   margin-top: 0 !important;
 }
 .one {
+  /* display: flex; */
 }
 .one .one_p {
   box-sizing: border-box;
@@ -2747,6 +2758,9 @@ export default {
   border: 1px solid red;
   padding: 3px 0 !important;
 } */
+.edit_table >>> .el-dialog {
+  min-width: 800px;
+}
 .edit_table >>> .el-table__row td {
   padding: 3px 0 !important;
   /* border: 1px solid blue; */
@@ -2777,16 +2791,19 @@ export default {
 .problem_details_conter .list {
   margin: 0 auto;
   width: 100%;
-  padding: 20px;
+  padding: 20px 0 20px 20px;
   box-sizing: border-box;
   background: #f5f5f9;
   display: flex;
   flex-wrap: wrap;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   height: 250px;
-  overflow-x: auto;
+  /* overflow-y: auto; */
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 .list li {
+  float: left;
   width: 100%;
   margin-bottom: 20px;
   text-align: left;
