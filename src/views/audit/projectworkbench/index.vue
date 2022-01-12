@@ -1288,7 +1288,7 @@ export default {
         this.projectInit = resp.data.records;
         if (resp.data.records && resp.data.records != '') {
           var datas = resp.data.records[0];
-          this.active_project = datas.managementProjectUuid;
+          this.active_project = this.queryInfo.projectId || datas.managementProjectUuid;
           // 更新项目接口
           setprojectInit(this.active_project).then((resp) => {
             var that = this;

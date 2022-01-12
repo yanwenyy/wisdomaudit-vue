@@ -467,7 +467,7 @@ export default {
             });
           }
           this.dqfastlist = rep;
-          if ((rep = [])) {
+          if ((rep == '')) {
             this.outfastlist = this.fastlist.slice(0, 3);
           } else {
             this.outfastlist = rep;
@@ -680,7 +680,7 @@ export default {
     },
     auditInfoEvent(data, projectId) {
       this.$router.push({
-        path: "/auditCorrective/rectificationMeasures",
+        path: "/audit/auditItems/projectWorkbench",
         query: { index: "2-1", projectId: projectId },
       });
     },
