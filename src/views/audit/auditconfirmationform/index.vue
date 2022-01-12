@@ -564,26 +564,38 @@
                :style="{'top':details_list.style_top}"
                v-if="details == true &&details_list">
             <ul class="list">
-              <li>
-                <p style="margin-bottom:10px;"><span class="fl sp">序号：</span><span>{{Index+1}}</span></p>
-                <p style="margin-bottom:10px;"><span class="fl sp">领域：</span><span>{{details_list.field}}</span></p>
-                <p><span class="fl sp">专题：</span><span>{{details_list.special}}</span></p>
+              <li class="one">
+                <p class="one_p"><span class="fl sp">序号：</span><span>{{Index+1}}</span></p>
+                <p class="one_p"><span class="fl sp">领域：</span><span>{{details_list.field}}</span></p>
+                <p class="one_p"><span class="fl sp">专题：</span><span>{{details_list.special}}</span></p>
               </li>
 
-              <li>
-                <p style="margin-bottom:10px;"><span class="fl sp">风险金额（万元）</span>
+              <li class="one">
+                <p class="one_p"><span class="fl sp">风险金额（万元）：</span>
 
                   <span>{{ parseFloat(details_list.riskAmount) }}</span>
                 </p>
-                <p style="margin-bottom:10px;"><span
-                        class="fl sp">发现日期：</span><span>{{details_list.problemDiscoveryTime | dateformat}}</span></p>
-                <p><span class="fl sp">发现人：</span><span>{{details_list.problemFindPeople}}</span></p>
+                <p class="one_p"><span class="fl sp">发现日期：</span>
+                  <span>{{details_list.problemDiscoveryTime | dateformat}}</span>
+                </p>
+                <p class="one_p">
+                  <span class="fl sp">发现人：</span>
+                  <span>{{details_list.problemFindPeople}}</span>
+                </p>
               </li>
 
-              <li>
-                <span class="fl sp">附件：</span><i
-                   class="el-icon-folder-opened list-folder"></i><span>{{details_list.attachmentList.length}}</span>
-
+              <li class="one">
+                <p class="one_p">
+                  <span class="fl sp">附件：</span><i
+                     class="el-icon-folder-opened list-folder"></i><span>{{details_list.attachmentList.length}}</span>
+                </p>
+                <p class="one_p">
+                  <span class="fl sp">关联任务：</span>
+                  <!-- <div> -->
+                  <span v-for="(it,ind) in taskList"
+                        :key="ind">{{it.auditModelName}}</span>
+                  <!-- </div> -->
+                </p>
               </li>
 
               <li>
@@ -1283,7 +1295,7 @@ export default {
       details_list: [],//悬浮数据
       enclosure_details_list: [],//附件
       load: false,
-
+      taskList: [],//详情  任务回显
 
     };
   },
@@ -1921,6 +1933,13 @@ export default {
       this.Index = index
       this.details = true
       this.details_list = data;
+
+      this.auditTasklList.forEach(item => {
+        if (this.details_list.auditTaskUuid == item.auditTaskUuid) {
+          this.taskList.push(item)
+        }
+      })
+
       if (this.Index == 0) {
         let top_px = (this.style_px * index + 85) + 'px'
         this.$set(this.details_list, 'style_top', top_px)//问题
@@ -2607,7 +2626,13 @@ export default {
 >>> .el-table__header {
   margin-top: 0 !important;
 }
-
+.one {
+}
+.one .one_p {
+  box-sizing: border-box;
+  width: 33%;
+  float: left;
+}
 /* 生成后选择的附件 */
 .query_list {
   width: 70%;
@@ -2725,7 +2750,7 @@ export default {
 .problem_details_conter .list {
   margin: 0 auto;
   width: 100%;
-  padding: 20px 10px;
+  padding: 20px;
   box-sizing: border-box;
   background: #f5f5f9;
   display: flex;
@@ -2756,7 +2781,7 @@ export default {
   line-height: 20px;
 }
 .list li .sp {
-  width: 130px;
+  /* width: 130px; */
   text-align: right;
 }
 .list li p span {
