@@ -631,6 +631,7 @@ export default {
     search_list (index) {
       if (index == 1) {
         // 资料清单
+        this.list_query.pageNo = 1;
         this.pageList_data();//列表
       } else {
         // 主要发现
