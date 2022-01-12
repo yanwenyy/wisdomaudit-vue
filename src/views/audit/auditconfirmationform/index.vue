@@ -593,7 +593,7 @@
                   <span class="fl sp">关联任务：</span>
                   <!-- <div> -->
                   <span v-for="(it,ind) in taskList"
-                        :key="ind">{{it.auditModelName}}</span>
+                        :key="ind">{{it.taskName}}</span>
                   <!-- </div> -->
                 </p>
 
@@ -2085,6 +2085,8 @@ export default {
           this.taskList.push(item)
         }
       })
+      console.log(this.taskList);
+      console.log(this.auditTasklList);
 
       if (this.Index == 0) {
         let top_px = (this.style_px * index + 85) + 'px'
