@@ -285,12 +285,12 @@
                 <span v-else>--</span>
               </template>
             </el-table-column>
-            <el-table-column prop="matter"
+            <el-table-column prop="auditorsName"
                              align="center"
                              show-overflow-tooltip
                              label="审计人员">
               <template slot-scope="scope">
-                <span v-if="scope.row.matter">{{scope.row.matter}}</span>
+                <span v-if="scope.row.auditorsName">{{scope.row.auditorsName}}</span>
                 <span v-else>--</span>
               </template>
             </el-table-column>

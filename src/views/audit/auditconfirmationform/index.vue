@@ -1301,7 +1301,6 @@ export default {
       enclosure_details_list: [],//附件
       load: false,
       taskList: [],//详情  任务回显
-
     };
   },
   created () {
@@ -1481,6 +1480,7 @@ export default {
     },
     // 新增问题关闭
     resetForm (str) {
+      this.temp_problem = [];//清空
       if (str == "temp") {
         this.temp_problem = {};//清空
         this.temp_problem = {
@@ -1885,20 +1885,10 @@ export default {
                 message: "新增成功",
                 type: "success",
               });
-              this.dialogFormVisible = false;
-              this.temp_problem.auditTaskUuid = [];
-              this.temp_problem.basis = [];
-              this.temp_problem.describe = "";
-              this.temp_problem.field = "";
-              this.temp_problem.problem = "";
-              this.temp_problem.problemDiscoveryTime = "";
-              this.temp_problem.problemFindPeople = "";
-              this.temp_problem.managementAdvice = "";
-              this.temp_problem.riskAmount = "";
-              this.temp_problem.special = "";
-              this.temp_problem.attachmentList = []
+              // this.dialogFormVisible = false;//新增的弹窗
 
-              this.init();
+
+              this.save_problem();//新增问题 既是选择当前这条
             }
           });
         } else {
@@ -1906,6 +1896,90 @@ export default {
         }
       });
     },
+
+
+    // 临时需求
+
+    //生成关联问题
+    save_problem () {
+      // this.init();
+      //编辑问题列表
+      let params = {
+        condition: {
+          managementProjectUuid: this.active_project,
+          problem: this.searchform.problem
+        }
+      };
+      task_pageList_query(params).then(resp => {
+        let datas = resp.data;
+        this.one_list = datas.records[0];
+        console.log(this.one_list);
+        this.dialogFormVisible = false;//新增的弹窗
+        this.temp_problem.auditTaskUuid = [];
+        this.temp_problem.basis = [];
+        this.temp_problem.describe = "";
+        this.temp_problem.field = "";
+        this.temp_problem.problem = "";
+        this.temp_problem.problemDiscoveryTime = "";
+        this.temp_problem.problemFindPeople = "";
+        this.temp_problem.managementAdvice = "";
+        this.temp_problem.riskAmount = "";
+        this.temp_problem.special = "";
+        this.temp_problem.attachmentList = []
+
+
+        //编辑问题列表
+
+        if (this.one_list) {
+          // if (this.multipleSelection.length >= 1) {
+          // var str = '', problemListUuidList = [];
+
+          // this.multipleSelection.forEach((item, index) => {
+          //   str += (index + 1) + "." + item.problem + '\n' + "\xa0\xa0\xa0" + item.describe + '\n';
+          //   problemListUuidList.push(item.problemListUuid)
+          // });
+
+          var str = '', problemListUuidList = [];
+          str += (1) + "." + this.one_list.problem + '\n' + "\xa0\xa0\xa0" + this.one_list.describe + '\n';
+          problemListUuidList.push(this.one_list.problemListUuid)
+
+          var data = {
+            str: str,
+            problemListUuidList: problemListUuidList,
+            multipleSelection: this.one_list
+          };
+
+          this.formDetail.matterDetail = data.str;
+          this.formDetail.problemListUuidList = data.problemListUuidList;
+          this.formDetail.problemsNumber = 1;
+
+          // 确认的附件
+          let datas = [];
+          // this.multipleSelection.forEach((item, index) => {
+          //   datas.push(item.attachmentList)
+          // })
+          // this.multipleSelection.forEach((item, index) => {
+          datas.push(this.one_list.attachmentList)
+          // })
+
+          let imglist = [];
+          let arr = [];
+          datas.forEach((i, index) => {
+            if (i.length !== 0) {
+              imglist.push(i)
+              arr = arr.concat(i)
+            }
+          })
+          console.log(arr);
+          this.fileArr = arr;//生成确认的附件
+        }
+      })
+
+      this.visible = false;
+      this.details = false;
+    },
+
+
     // 问题 更新编辑保存
     updateData () {
       this.$refs["detailForm"].validate((valid) => {
