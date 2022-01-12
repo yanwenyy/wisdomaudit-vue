@@ -71,7 +71,7 @@
                 <li class="tableFileList-title">文件名称</li>
                 <li v-for="item in tableFileList"
                     class="pointer blue tableFileList-li"
-                    @click="downFile(item.attachment_uuid,item.file_name)">
+                    @click="openVault(item,'下载1')">
                   <div class="inline-block">{{item.file_name}}</div><span class="delFile inline-block"
                         @click.stop="delListFile(item.attachment_uuid)">X</span>
                 </li>
@@ -1340,7 +1340,6 @@ export default {
     },
     //打开金库
     openVault (obj, downtype) {
-
       this.downloaobj = obj
       this.downloaobj.dtype = downtype
       axios({
