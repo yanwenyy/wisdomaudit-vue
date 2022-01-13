@@ -1490,7 +1490,7 @@ export default {
     },
     // 新增问题关闭
     resetForm (str) {
-      this.temp_problem = [];//清空
+      this.temp_problem = {};//清空
       if (str == "temp") {
         this.temp_problem = {};//清空
         this.temp_problem = {
@@ -1962,8 +1962,13 @@ export default {
       };
       task_pageList_query(params).then(resp => {
         let datas = resp.data;
-        this.one_list = datas.records[0];
-        console.log(this.one_list);
+        // this.one_list = datas.records[0];
+        let arr = [];
+        arr.push(datas.records[0]);
+        this.one_list = arr;
+        // console.log(this.one_list);
+        // return false
+
         this.dialogFormVisible = false;//新增的弹窗
         this.temp_problem.auditTaskUuid = [];
         this.temp_problem.basis = [];
@@ -1977,40 +1982,27 @@ export default {
         this.temp_problem.special = "";
         this.temp_problem.attachmentList = []
 
-
         //编辑问题列表
-
-        if (this.one_list) {
-          // if (this.multipleSelection.length >= 1) {
-          // var str = '', problemListUuidList = [];
-
-          // this.multipleSelection.forEach((item, index) => {
-          //   str += (index + 1) + "." + item.problem + '\n' + "\xa0\xa0\xa0" + item.describe + '\n';
-          //   problemListUuidList.push(item.problemListUuid)
-          // });
-
+        if (this.one_list && this.one_list.length >= 1) {
           var str = '', problemListUuidList = [];
-          str += (1) + "." + this.one_list.problem + '\n' + "\xa0\xa0\xa0" + this.one_list.describe + '\n';
-          problemListUuidList.push(this.one_list.problemListUuid)
-
-          var data = {
+          this.one_list.forEach((item, index) => {
+            str += (index + 1) + "." + item.problem + '\n' + "\xa0\xa0\xa0" + item.describe + '\n';
+            problemListUuidList.push(item.problemListUuid)
+          });
+          let _data = {
             str: str,
             problemListUuidList: problemListUuidList,
-            multipleSelection: this.one_list
+            one_list: this.one_list
           };
-
-          this.formDetail.matterDetail = data.str;
-          this.formDetail.problemListUuidList = data.problemListUuidList;
-          this.formDetail.problemsNumber = 1;
+          this.formDetail.matterDetail = _data.str;
+          this.formDetail.problemListUuidList = _data.problemListUuidList;
+          this.formDetail.problemsNumber = this.one_list.length;
 
           // 确认的附件
           let datas = [];
-          // this.multipleSelection.forEach((item, index) => {
-          //   datas.push(item.attachmentList)
-          // })
-          // this.multipleSelection.forEach((item, index) => {
-          datas.push(this.one_list.attachmentList)
-          // })
+          this.one_list.forEach((item, index) => {
+            datas.push(item.attachmentList)
+          })
 
           let imglist = [];
           let arr = [];
@@ -2020,11 +2012,10 @@ export default {
               arr = arr.concat(i)
             }
           })
-          console.log(arr);
+          // console.log(arr);
           this.fileArr = arr;//生成确认的附件
         }
       })
-
       this.visible = false;
       this.details = false;
     },
@@ -2063,8 +2054,6 @@ export default {
                 type: "success",
               });
               this.dialogDetailVisible = false;
-
-
               this.init();//刷新问题编辑的列表
 
             }
@@ -2233,7 +2222,11 @@ export default {
           str += (index + 1) + "." + item.problem + '\n' + "\xa0\xa0\xa0" + item.describe + '\n';
           problemListUuidList.push(item.problemListUuid)
         });
-        var data = { str: str, problemListUuidList: problemListUuidList, multipleSelection: this.multipleSelection };
+        var data = {
+          str: str,
+          problemListUuidList: problemListUuidList,
+          multipleSelection: this.multipleSelection
+        };
 
         this.formDetail.matterDetail = data.str;
         this.formDetail.problemListUuidList = data.problemListUuidList;
@@ -2604,7 +2597,6 @@ export default {
     addConfirmation () {
       this.clearForm();
       this.confirmationDialogTitle = "新增确认单";
-
       this.confirmationDialogVisible = true;
       this.getUser();
       this.ifLook = false;
