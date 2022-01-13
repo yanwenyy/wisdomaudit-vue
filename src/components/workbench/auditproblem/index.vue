@@ -1451,7 +1451,7 @@ export default {
   width: 60% !important;
 }
 .yj-sel >>> .el-select__tags-text {
-  max-width: 400px;
+  max-width: 220px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
