@@ -394,6 +394,7 @@
             </el-col> -->
           </el-row>
           <el-table :data="modelListTab"
+                    v-loading="modelloading"
                     style="width: 100%"
                     stripe
                     :header-cell-style="{ 'background-color': '#F4FAFF' }">
@@ -876,6 +877,7 @@ export default {
       data: [],
       value: [],
       loading: false,
+      modelloading:true,
       ifshow: false,
       refreash: false,
       active_project: "", //初始化项目有 默认选择
@@ -1865,6 +1867,7 @@ export default {
     getauditModelList (data) {
       this.modelListTab = [];
       modelTaskList(data).then((resp) => {
+        this.modelloading = false;
         this.modelListTab = resp.data.records;
         this.modelListTabSize = resp.data;
         this.taskTotal = resp.data.total;
