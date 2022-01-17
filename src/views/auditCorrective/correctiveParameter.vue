@@ -19,6 +19,7 @@
       fit
       :header-cell-style="{'text-align':'left','background-color': '#F4FAFF',}"
       style="width: 100%"
+      stripe
       border
       :data="tableData"
       highlight-current-row

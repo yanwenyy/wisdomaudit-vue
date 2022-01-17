@@ -141,6 +141,7 @@
                   tooltip-effect="dark"
                   v-loading="loading"
                   style="width: 100%"
+                  stripe
                   :header-cell-style="{'background-color': '#F4FAFF',}"
                   @selection-change="handleSelectionChange_zb">
           >
@@ -251,6 +252,7 @@
                     tooltip-effect="dark"
                     v-loading="loading_card"
                     style="width: 100%"
+                    stripe
                     :header-cell-style="{'background-color': '#F4FAFF',}"
                     @selection-change="handleSelectionChange_wt">
             <el-table-column type="selection"

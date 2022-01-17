@@ -47,6 +47,7 @@
                       ref="singleTable"
                       :data="tableData"
                       style="width: 100%"
+                      stripe
                       border
                       :header-cell-style="{
               'background-color': '#F4FAFF',

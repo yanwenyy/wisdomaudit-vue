@@ -395,6 +395,7 @@
           </el-row>
           <el-table :data="modelListTab"
                     style="width: 100%"
+                    stripe
                     :header-cell-style="{ 'background-color': '#F4FAFF' }">
             <el-table-column prop="taskName"
                              label="任务名称">
@@ -563,6 +564,7 @@
         </el-row>
         <el-table :data="modelTableData"
                   style="width: 100%"
+                  stripe
                   @selection-change="handleSelectionChangeModel"
                   ref="multipleModelRef"
                   v-loading="lding_model"

@@ -21,6 +21,7 @@
                 :header-cell-style="{'background-color': '#F4FAFF',}"
                 v-loading="loading_details"
                 ref="table_width"
+                stripe
                 style="width: 100%;min-height:400px">
         <el-table-column type="index"
                          label="序号"

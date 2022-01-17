@@ -23,6 +23,7 @@
           border
           v-loading="listLoading"
           style="width: 100%"
+          stripe
         >
           <el-table-column fixed label="序号" width="60">
             <template slot-scope="scope">
@@ -112,6 +113,7 @@
         <el-table
           :data="tableData2"
           style="width: 100%"
+          stripe
           v-loading="listLoading"
         >
           <el-table-column fixed label="序号" width="80">

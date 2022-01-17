@@ -162,6 +162,7 @@
             <template>
               <el-table :key="detailTableKey"
                         v-loading="detailListLoading"
+                        stripe
                         fit
                         style="width: 100%"
                         border

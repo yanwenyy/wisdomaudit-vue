@@ -14,7 +14,7 @@
       </el-form-item>
       <el-form-item label="审计(调查)事项描述：" class="form-item-describe">
         <el-popover placement="bottom-start" trigger="click" @hide="popoverHide">
-          <el-table :data="proData">
+          <el-table :data="proData" stripe>
             <el-table-column type="selection" width="55">
             </el-table-column>
             <el-table-column property="number" label="序号"></el-table-column>

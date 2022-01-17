@@ -21,6 +21,7 @@
         <el-table ref="singleTable"
                   :data="tableData"
                   style="width: 100%"
+                  stripe
                   border>
           <el-table-column type="index"
                            width="100"
@@ -90,6 +91,7 @@
       </el-row>
       <el-table :data="auditTab"
                 style="width: 100%"
+                stripe
                 border>
         <el-table-column type="selection"
                          width="100"> </el-table-column>
@@ -133,6 +135,7 @@
       </el-row>
       <el-table :data="auditDataTab"
                 style="width: 100%"
+                stripe
                 border>
         <el-table-column type="selection"
                          width="100"> </el-table-column>
@@ -306,7 +309,7 @@
           </el-col>
         </el-row>
       </el-card>
-      <el-table :data="listIndicators">
+      <el-table :data="listIndicators" stripe>
         <el-table-column type="selection"
                          width="55">
         </el-table-column>

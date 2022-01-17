@@ -29,7 +29,7 @@
             </el-col> -->
           </el-row>
           <!-- 表单 -->
-          <el-table :data="tableData" style="width: 100%">
+          <el-table :data="tableData" style="width: 100%" stripe>
             <el-table-column prop="userName" label="用户账户">
             </el-table-column>
             <el-table-column prop="orgId" label="所属组织"></el-table-column>

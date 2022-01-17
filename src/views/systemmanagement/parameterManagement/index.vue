@@ -28,6 +28,7 @@
               highlight-current-row
               :data="maintableData"
               style="width: 100%"
+              stripe
               :header-cell-style="{ 'background-color': '#F4FAFF' }">
       <el-table-column type="selection"
                        width="100"></el-table-column>

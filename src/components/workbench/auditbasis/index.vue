@@ -15,6 +15,7 @@
         <el-table @row-dblclick="getLook"
                   :header-cell-style="{'text-align':'left','background-color': '#F4FAFF',}"
                   :data="tableData"
+                  stripe
                   style="width: 100%"
                   @select="Selects">
           <el-table-column algin="left"

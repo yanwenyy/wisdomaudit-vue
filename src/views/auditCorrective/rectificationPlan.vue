@@ -25,6 +25,7 @@
                 v-loading="loading"
                 @selection-change="handleSelectionChange_list"
                 :header-cell-style="{'background-color': '#F4FAFF',}"
+                stripe
                 style="width: 100%;min-height:400px">
 
         <el-table-column type="selection"

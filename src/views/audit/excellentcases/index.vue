@@ -39,6 +39,7 @@
 
           <el-table :data="tableData_list.records"
                     style="width: 100%;"
+                    stripe
                     v-loading="loading"
                     :header-cell-style="{'background-color': '#F4FAFF',}">
 
@@ -322,6 +323,7 @@
                     v-loading="loading_file_table"
                     :header-cell-style="{'background-color': '#F4FAFF',}"
                     style="width: 100%;"
+                    stripe
                     @selection-change="handleSelectionChange_operation">
             >
             <el-table-column type="selection"

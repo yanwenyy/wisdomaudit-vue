@@ -60,6 +60,7 @@
       </div>
     </div>
     <el-table style="width: 100%"
+              stripe
               :header-cell-style="{'text-align':'left','background-color': '#F4FAFF',}"
               border
               :data="tableData"

@@ -21,6 +21,7 @@
           'text-align': 'left',
           'background-color': '#F4FAFF',
         }"
+                  stripe
                   style="width: 100%;">
           <el-table-column :selectable="selectable"
                            algin="left"

@@ -26,6 +26,7 @@
     <el-table
         fit
         style="width: 100%"
+        stripe
         border
         :data="tableData"
         highlight-current-row

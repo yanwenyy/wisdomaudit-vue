@@ -13,6 +13,7 @@
 
         <el-table :data="tableData"
                   style="width: 100%"
+                  stripe
                   @select="Selects">
           <el-table-column prop="date"
                            label="编号"> </el-table-column>

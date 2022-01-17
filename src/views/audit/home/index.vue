@@ -235,6 +235,7 @@
             ref="multipleTable"
             :data="fastlist"
             style="width: 100%"
+            stripe
             @selection-change="handleSelectionChange"
           >
             <el-table-column type="selection" width="55"> </el-table-column>
@@ -247,6 +248,7 @@
           <el-table
             :data="dqfastlist"
             style="width: 100%"
+            stripe
             @selection-change="handleSelectionChange"
           >
             <el-table-column label="" width="55"></el-table-column>
