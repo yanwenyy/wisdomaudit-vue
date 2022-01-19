@@ -62,14 +62,14 @@
               <!-- -->
               <el-button type="text"
                          size="small"
-                          v-if="Edit == true"
+                         v-if="Edit == true"
                          class="delete blue"
                          @click="edit(scope.row)">编辑</el-button>
 
               <!-- -->
               <el-button class="delete red"
                          type="text"
-                          v-if="Delete == true"
+                         v-if="Delete == true"
                          size="small"
                          @click="deletes(scope.row.basyUuid)">删除</el-button>
             </template>
@@ -666,7 +666,8 @@ export default {
     getFileList (id) {
       this.tableFileList = [];
       auditBasy_getFileList(id).then(resp => {
-        this.tableFileList = resp.data;
+        this.tableFileList = resp.data.attachmentList;
+        console.log(this.tableFileList);
       })
     }
   },

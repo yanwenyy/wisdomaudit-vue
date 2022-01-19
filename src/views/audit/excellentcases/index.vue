@@ -249,6 +249,7 @@
     <el-dialog title=""
                class="fileList"
                center
+               @close='close'
                :append-to-body='true'
                :close-on-click-modal="false"
                :visible.sync="dialogVisible_file"
@@ -289,7 +290,7 @@
             <el-col :span="1.5">
               <el-button type="primary"
                          :disabled="isDisable"
-                         @click="openVault({})">文件下载</el-button>
+                         @click="openVault()">文件下载</el-button>
             </el-col>
             <el-col :span="1.5">
               <el-upload class="upload-demo"
@@ -382,14 +383,7 @@
 
         <!-- 右侧内容 end-->
       </div>
-
-      <!-- <div slot="footer">
-        <el-button @click="dialogVisible_file = false">取 消</el-button>
-        <el-button type="primary"
-                   @click="dialogVisible_file = false">确 定</el-button>
-      </div> -->
     </el-dialog>
-
     <!-- 文件管理 end-->
 
   </div>
@@ -491,7 +485,7 @@ export default {
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
     this.dqtoken = sessionStorage.getItem("TOKEN");
 
-    console.log(this.dqtoken);
+
   },
   mounted () {
 
@@ -505,8 +499,6 @@ export default {
     },
   },
   methods: {
-
-
     // 按钮权限 接口
     jurisdiction_control () {
       getUserPermissionList().then(resp => {
@@ -514,7 +506,7 @@ export default {
         data.forEach((item) => {
           if (item.name == '知识库') {
             let control_children = item.children
-            // console.log(this.control_children);
+            // 
             control_children.forEach((item_son) => {
               if (item_son.name == '优秀案例及内参') {
                 let control_children_son = item_son.children
@@ -537,9 +529,6 @@ export default {
 
       })
     },
-
-
-
     //通过认证后的方法
     vdownload () {
       this.download()
@@ -550,7 +539,7 @@ export default {
     },
     //打开金库
     openVault (obj) {
-      console.log("芝麻开门")
+
       this.downloaobj = obj
       axios({
         method: "post",
@@ -580,7 +569,7 @@ export default {
             this.$message('因金库未开启或服务异常，文件下载失败，请联系系统管理员。');
             return;
           } else {
-            console.log(rep);
+
             this.approvers = rep.approvers || "";
             this.maxTime = rep.maxTime;
             this.dqtime = new Date();
@@ -599,7 +588,7 @@ export default {
     handleClick (val, event) {
       if (val.index == 0) {
       } else {
-        console.log(2);
+
       }
     },
     // 列表数据
@@ -681,7 +670,7 @@ export default {
             dataIntroduce: this.add_data.dataIntroduce,// 简介
           }
           save_query(params).then(resp => {
-            console.log(resp.data);
+
             if (resp.code == 0) {
               this.$message({
                 message: "新增成功",
@@ -745,7 +734,7 @@ export default {
             referenceTableUuid: this.add_data.referenceTableUuid,//主键id
           }
           update(params).then(resp => {
-            console.log(resp.data);
+
             if (resp.code == 0) {
               this.$message({
                 message: "编辑成功",
@@ -784,7 +773,7 @@ export default {
       })
         .then(() => {
           deleteEntity(params).then(resp => {
-            console.log(resp.data);
+
             if (resp.code == 0) {
               this.$message({
                 message: "删除成功",
@@ -852,6 +841,10 @@ export default {
       })
     },
 
+    // 文件管理
+    close () {
+      this.success_btn2 = 0;//隐藏加载按钮
+    },
     // 文件管理列表选择
     handleSelectionChange_operation (val) {
       this.data_list_check = val
@@ -865,7 +858,7 @@ export default {
     },
     // 上传时
     up_ing (file) {
-      // console.log('上传时');
+      // 
     },
 
     befooreupload (file) {
@@ -878,6 +871,11 @@ export default {
       }
     },
 
+
+
+
+
+
     // 上传
     handleUploadForm (file) {
       this.success_btn2 = 1;//显示加载按钮  0成功  1 loaging
@@ -885,8 +883,11 @@ export default {
 
       formData.append('referenceTableUuid', this.referenceTableUuid)//主键id
       formData.append('dicId', this.pdictid)
+
+      // let pos = file.file.name.lastIndexOf('\\')
+      // file.file.name.substring(pos + 1);
       formData.append('file', file.file)
-      console.log(this.dqtoken);
+
       axios({
         method: 'post',
         url: '/wisdomaudit/referenceTable/uploadFile',
@@ -897,7 +898,7 @@ export default {
         data: formData,
 
       }).then(resp => {
-        console.log(resp.data);
+
         if (resp.data.code == 0) {
           this.$message({
             message: '上传成功',
@@ -915,6 +916,9 @@ export default {
         }
       })
     },
+
+
+
 
     // 下载
     download () {
@@ -945,7 +949,7 @@ export default {
       formData.append('attachmentUuid', attachmentUuid)
       fileDownload(formData).then(resp => {
         const content = resp;
-        console.log(content);
+
         const blob = new Blob([content],
           { type: 'application/octet-stream,charset=UTF-8' }
         )
@@ -994,7 +998,7 @@ export default {
 
             let list = this.data_list_check;
             deleteAttachment(list).then(resp => {
-              console.log(resp.data);
+
               if (resp.code == 0) {
                 this.$message({
                   message: "删除成功",

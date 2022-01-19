@@ -27,7 +27,7 @@
           <el-table-column prop="leixing"
                            label="描述"> </el-table-column>
           <el-table-column prop="zip"
-                           label="风险金额(元)"> </el-table-column>
+                           label="涉及金额(元)"> </el-table-column>
           <el-table-column prop="state"
                            label="附件">
             <template slot-scope="scope">

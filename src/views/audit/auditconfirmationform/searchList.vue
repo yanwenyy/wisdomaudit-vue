@@ -69,7 +69,7 @@
           <el-table-column align="center"
                            prop="riskAmount"
                            width="150"
-                           label="风险金额(万元)">
+                           label="涉及金额(万元)">
             <template slot-scope="scope">
               {{ parseFloat(scope.row.riskAmount) }}
             </template>

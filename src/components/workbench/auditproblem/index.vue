@@ -39,6 +39,17 @@
       </el-row>
       <!-- <div class="auditproblem-btn-box"></div> -->
     </div>
+
+    <Vault :vaultV="vaultV"
+           :sceneId="sceneId"
+           :approvers="approvers"
+           :maxTime="maxTime"
+           :dqtime="dqtime"
+           :account="account"
+           :appSessionId="appSessionId"
+           @changevault="changevault"
+           @vdownload="vdownload"></Vault>
+
     <!-- @sort-change="sortChange"
        -->
     <div class="min_height">
@@ -84,9 +95,9 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="风险金额（万元）"
-                         width="140px"
+        <el-table-column label="涉及金额(万元)"
                          prop="riskAmount"
+                         width="117px"
                          align="right">
           <template slot-scope="scope">
             {{ parseFloat(scope.row.riskAmount) }}
@@ -96,11 +107,42 @@
                          width="40px"> </el-table-column>
         <el-table-column label="发现日期">
           <template slot-scope="scope">
-            {{ repDate(scope.row.problemDiscoveryTime) }}
+            {{ repDate(scope.row.problemDiscoveryTime)}}
           </template>
         </el-table-column>
         <el-table-column label="发现人"
                          prop="problemFindPeople" />
+
+        <!-- 附件 -->
+        <el-table-column prop="attachmentList"
+                         label="附件">
+          <template slot-scope="scope">
+            <el-popover :popper-class="enclosure_details_list==''?'no-padding':''"
+                        placement="bottom"
+                        v-if="scope.row.attachmentList.length!==0"
+                        width="250"
+                        @show="open_enclosure_details(scope.row.attachmentList)"
+                        trigger="click">
+              <ul v-if="enclosure_details_list!=''"
+                  class="fileList-ul">
+                <li class="tableFileList-title">文件名称</li>
+                <li v-for="(item,index) in enclosure_details_list"
+                    :key="index"
+                    class="pointer blue"
+                    @click="openVault(item,'下载2')">
+                  {{item.fileName}}</li>
+                <!-- @click="download(item.attachmentUuid,item.fileName)" -->
+              </ul>
+              <div slot="reference"
+                   style="color: #1371cc;"
+                   class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.attachmentList.length}}
+              </div>
+            </el-popover>
+            <span v-else>--</span>
+
+          </template>
+        </el-table-column>
+
         <el-table-column label="操作"
                          width="100"
                          v-if="userRole == 1 || userRole == 2">
@@ -239,10 +281,10 @@
           </el-select>
         </el-form-item>
         <el-form-item class="itemTwo"
-                      label="风险金额（万元）："
+                      label="涉及金额(万元)："
                       prop="riskAmount">
           <el-input v-model="temp.riskAmount"
-                    placeholder="请输入风险金额"
+                    placeholder="请输入涉及金额"
                     @keyup.native="onlyNumOnePoint('temp')"
                     @input="temp.riskAmount = temp.riskAmount.slice(0, 27)" />
         </el-form-item>
@@ -446,11 +488,10 @@
           </el-select>
         </el-form-item>
         <el-form-item class="itemTwo"
-                      label="风险金额（万元）："
-                      prop="riskAmount"
-                      width="180">
+                      label="涉及金额(万元)："
+                      prop="riskAmount">
           <el-input v-model="dqProblem.riskAmount"
-                    placeholder="请输入风险金额"
+                    placeholder="请输入涉及金额"
                     :disabled="ifadd != 2 ? false : true"
                     @keyup.native="onlyNumOnePoint('dqProblem')"
                     @input="temp.riskAmount = temp.riskAmount.slice(0, 27)" />
@@ -613,16 +654,33 @@
 </template>
 
 <script>
+import Vault from "@WISDOMAUDIT/components/Vaultcertification";//金库
+import { down_file } from
+  '@SDMOBILE/api/shandong/ls'
 import Pagination from "@WISDOMAUDIT/components/Pagination"; // secondary package based on el-pagination
 import _ from "lodash";
 import axios from "axios";
 import $ from "jquery";
 export default {
   props: ["active_project"],
-  components: { Pagination },
+  components: {
+    Pagination,
+    Vault//金库
+  },
   filters: {},
   data () {
     return {
+      vaultV: false,
+      sceneId: 1557, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
+      approvers: [], //审批人列表
+      maxTime: "",//最大时间
+      dqtime: "",//当前时间
+      account: "",//返回的账户
+      appSessionId: "",//应用sessionid
+      downloaobj: {},//暂存的下载目标
+      dqtoken: '',
+      //金库end
+
       show: false,
       dqtoken: "",
       dqProblem: {},//编辑问题
@@ -663,6 +721,11 @@ export default {
         riskAmount: "",
         status: 0,
         attachmentList: [],
+        // zdyCode: 0,
+        entity: {
+          belongSpcialSize: '',
+          dictname: '',
+        },
       },
       attachmentList1: [],//附件上传列表
       success_btn: 0,//上传 ing
@@ -692,7 +755,7 @@ export default {
         ],
         special: [{ required: true, message: "请选择专题", trigger: "change" }],
         riskAmount: [
-          { required: true, message: "请填写风险金额", trigger: "change" },
+          { required: true, message: "请填写涉及金额", trigger: "change" },
         ],
       },
       closeStatus: false,
@@ -722,6 +785,13 @@ export default {
       input_select: true,
       input_selecte: true,
       basisloading: false,
+
+      enclosure_details_list: [],//附件
+
+      // 自定义专题
+      zdyCode: 0,//区别自定义
+      belongSpcialSize: '',//专题集合数
+      belongSpcialCode: 'SPECIAL',
     };
   },
   watch: {},
@@ -739,6 +809,104 @@ export default {
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
   },
   methods: {
+
+    //金库通过认证后的方法
+    vdownload () {
+
+      if (this.downloaobj.dtype == '下载1') {
+        this.downFile(this.downloaobj.attachment_uuid, this.downloaobj.file_name)
+      } else {
+        this.downFile(this.downloaobj.attachmentUuid, this.downloaobj.fileName)
+      }
+    },
+    //附件下载
+    downFile (id, fileName) {
+      let formData = new FormData()
+      formData.append('fileId', id)
+      down_file(formData).then(resp => {
+        const content = resp;
+        const blob = new Blob([content],
+          { type: 'application/octet-stream,charset=UTF-8' }
+        )
+        if ('download' in document.createElement('a')) {
+          // 非IE下载
+          const elink = document.createElement('a')
+          elink.download = fileName //下载后文件名
+          elink.style.display = 'none'
+          elink.href = window.URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象
+          document.body.removeChild(elink)
+        } else {
+          // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
+      }).catch((err) => {
+
+      })
+    },
+    //金库控制认证弹窗
+    changevault (val) {
+      this.vaultV = val;
+    },
+    //打开金库
+    openVault (obj, downtype) {
+      this.downloaobj = obj
+      this.downloaobj.dtype = downtype
+      axios({
+        method: "post",
+        url: `/wisdomaudit/treasury/getTreasuryStatus`,
+        headers: {
+          TOKEN: this.headers.TOKEN,
+        },
+        data: {
+          sceneId: this.sceneId,
+          sceneName: "附件上传后下载", //场景名称
+          sensitiveData: "report_download", //敏感数据对应的编号：  data_export 经营指标、模型结果 report_download 附件上传后下载;
+          sensitiveOperate: "export", //敏感操作对应的编号：export： 导出   select：查询
+        },
+      }).then((resp) => {
+        //result 是否开启 开启：1  无需开启：0
+        //resultDesc 无需开启原因（成功错误信息）
+        //historyAppSessionId 历史有效应用sessionid（仅当已授权状态时必填属性）
+        //relation 多值授权方式与访问方式关系
+        //policyAuthMethod 授权方式： remoteAuth远程授权
+        //policyAccessMethod
+        //maxTime 授权条件（必填属性）单位为小时： 当为0时，为单次授权；否则为时间段授权即允许以当前时间为开始时间，开始时间+maxTime时间为最大结束时间，允许用户在此范围选择；
+        //approvers 审批人列表
+        //如果是线上环境
+        if (resp.data.data.isVaultProfiles) {
+          let rep = resp.data.data.treasuryStatusRsp;
+          if (rep.result == 0) {
+            this.$message('因金库未开启或服务异常，文件下载失败，请联系系统管理员。');
+            return;
+          } else {
+
+            this.approvers = rep.approvers || "";
+            this.maxTime = rep.maxTime;
+            this.dqtime = new Date();
+            this.account = resp.data.data.account;
+            this.appSessionId = resp.data.data.appSessionId;
+            this.vaultV = true;
+          }
+        } else {
+          //否则不处理或在此处直接进行后面的操作
+          this.vdownload()
+        }
+      });
+    },
+
+
+    // 查看附件详情
+    open_enclosure_details (item) {
+      this.enclosure_details_list = [];//清空附件
+      if (item) {
+        this.enclosure_details_list = item
+      }
+    },
+
+
     // 新增问题关闭
     resetForm (str) {
       if (str == "temp") {
@@ -773,9 +941,13 @@ export default {
       let val = obj.value;
       this.temp.special = obj.label;
 
+
       if (val == "otherzt") {
         this.input_select = false;
         this.temp.special = "";
+        this.zdyCode = 1;//自定义标识
+      } else {
+        this.zdyCode = 0;//自定义标识
       }
     },
     change_zte (value) {
@@ -788,6 +960,9 @@ export default {
       if (val == "otherzt") {
         this.input_selecte = false;
         this.dqProblem.special = "";
+        this.zdyCode = 1;//自定义标识
+      } else {
+        this.zdyCode = 0;//自定义标识
       }
     },
     // UpNumber(e){
@@ -974,6 +1149,7 @@ export default {
         this.auditTasklList = res.data.data;
       });
     },
+    // 获取专题数据 
     getloadcascader (str) {
       axios({
         url: `/wisdomaudit/init/loadcascader`,
@@ -1096,8 +1272,11 @@ export default {
         }
       });
     },
+    // 新增问题
     add () {
       this.dialogFormVisible = true;
+      this.getloadcascader('SPECIAL');//专题数据
+
 
       this.ifadd = 0;
       this.temp.problemFindPeople = this.me;
@@ -1220,26 +1399,85 @@ export default {
 
     // 附件 end-------------------------------------
 
-
+    // 新增 保存
     createData () {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
-          let rep = this.temp;
-          rep.riskAmount = parseFloat(rep.riskAmount)
-          rep.auditTaskUuid = rep.auditTaskUuid
-            ? rep.auditTaskUuid.join(",")
-            : "";
-          rep.basis = rep.basis ? rep.basis.join(",") : "";
+          console.log(this.zdyCode);
 
-          // 附件
+          // 判断自定义的专题是否重复
+          if (this.zdyCode == 1) {
+            let msg = true;
+            this.SPECIALList.forEach(item => {
+              if (item.label == this.temp.special) {
+                msg = false
+                return false
+              }
+            })
+            if (msg == false) {
+              this.$message({
+                message: '该专题已经存在',
+                type: 'warning'
+              });
+              return false
+            }
+          }
+
+
+          // 新增刷列表
           let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
-          console.log(uploadList2);
           uploadList2.forEach((item) => {
-            console.log(item);
             item.status = null;
           });
-          this.temp.attachmentList = uploadList2;
-          // this.temp.attachmentList = [];
+          // let rep = this.temp;
+          // this.temp.riskAmount = parseFloat(this.temp.riskAmount)
+          // this.temp.auditTaskUuid = this.temp.auditTaskUuid
+          //   ? this.temp.auditTaskUuid.join(",")
+          //   : "";
+          // this.temp.basis = this.temp.basis ? this.temp.basis.join(",") : "";
+
+          // 专题
+          // this.temp.zdyCode = this.zdyCode;
+          let params = {
+            managementProjectUuid: this.active_project,
+            // 业务分类
+            auditTaskUuid: this.temp.auditTaskUuid
+              ? this.temp.auditTaskUuid.join(",")
+              : "",
+            basis: this.temp.basis ? this.temp.basis.join(",") : "",
+            describe: this.temp.describe,
+            field: this.temp.field,
+            special: this.temp.special,
+            isDeleted: 0,
+            problem: this.temp.problem,
+            problemDiscoveryTime: this.temp.problemDiscoveryTime,
+            problemFindPeople: this.temp.problemFindPeople,
+            managementAdvice: this.temp.managementAdvice,
+            problemListUuid: this.temp.problemListUuid,
+            riskAmount: parseFloat(this.temp.riskAmount),
+            status: 0,
+            attachmentList: uploadList2,
+            zdyCode: this.zdyCode,
+            entity: {
+              belongSpcialSize: this.SPECIALList.length,
+              dictname: this.temp.special,
+            },
+          };
+          // let rep = this.temp;
+          // rep.riskAmount = parseFloat(rep.riskAmount)
+          // rep.auditTaskUuid = rep.auditTaskUuid
+          //   ? rep.auditTaskUuid.join(",")
+          //   : "";
+          // rep.basis = rep.basis ? rep.basis.join(",") : "";
+
+          // // 附件
+          // let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
+          // console.log(uploadList2);
+          // uploadList2.forEach((item) => {
+          //   console.log(item);
+          //   item.status = null;
+          // });
+          // this.temp.attachmentList = uploadList2;
 
           axios({
             url: `/wisdomaudit/problemList/save`,
@@ -1247,7 +1485,7 @@ export default {
               TOKEN: this.dqtoken,
             },
             method: "post",
-            data: rep,
+            data: params,
           }).then((res) => {
             if (res.data.code == 0) {
               this.$message({
@@ -1273,15 +1511,49 @@ export default {
         }
       });
     },
+    // 编辑更新保存
     updateData () {
       this.$refs["detailForm"].validate((valid) => {
         if (valid) {
-          let rep = this.dqProblem;
-          rep.riskAmount = parseFloat(rep.riskAmount)
-          rep.auditTaskUuid = rep.auditTaskUuid.join(",");
-          rep.basis = rep.basis.join(",");
+          // let rep = this.dqProblem;
+          // rep.riskAmount = parseFloat(rep.riskAmount)
+          // rep.auditTaskUuid = rep.auditTaskUuid.join(",");
+          // rep.basis = rep.basis.join(",");
 
-          // 附件
+          // // 附件
+          // let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
+          // uploadList2.forEach((item) => {
+          //   item.status = null;
+          //   // 新增的
+          //   if (item.attStatus != 1 && item.attStatus != 3) {
+          //     item.attStatus = 2
+          //   }
+          // });
+          // this.dqProblem.attachmentList = uploadList2;
+
+          // 判断自定义的专题是否重复
+          if (this.zdyCode == 1) {
+            let msg = true;
+            this.SPECIALList.forEach(item => {
+              if (item.label == this.dqProblem.special) {
+                msg = false
+                return false
+              }
+            })
+            if (msg == false) {
+              this.$message({
+                message: '该专题已经存在',
+                type: 'warning'
+              });
+              return false
+            }
+          }
+
+
+          // let rep = this.dqProblem;
+          // rep.riskAmount = parseFloat(rep.riskAmount)
+          // rep.auditTaskUuid = rep.auditTaskUuid.join(",");
+          // rep.basis = rep.basis.join(",");
           let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
           uploadList2.forEach((item) => {
             item.status = null;
@@ -1290,15 +1562,48 @@ export default {
               item.attStatus = 2
             }
           });
-          this.dqProblem.attachmentList = uploadList2;
+          this.dqProblem.attachmentList = uploadList2;//附件
 
+          // 专题
+          // this.dqProblem.zdyCode = this.zdyCode;
+
+          let params = {
+            managementProjectUuid: this.active_project,
+            // 业务分类
+            auditTaskUuid: this.dqProblem.auditTaskUuid
+              ? this.dqProblem.auditTaskUuid.join(",")
+              : "",
+            basis: this.dqProblem.basis ? this.dqProblem.basis.join(",") : "",
+
+            // auditTaskUuid: rep.auditTaskUuid.join(","),
+            // basis = rep.basis.join(","),
+            // basis: this.dqProblem.basis,
+            describe: this.dqProblem.describe,
+            field: this.dqProblem.field,
+            special: this.dqProblem.special,
+            isDeleted: 0,
+            problem: this.dqProblem.problem,
+
+            problemDiscoveryTime: this.dqProblem.problemDiscoveryTime,
+            problemFindPeople: this.dqProblem.problemFindPeople,
+            managementAdvice: this.dqProblem.managementAdvice,
+            problemListUuid: this.dqProblem.problemListUuid,
+            riskAmount: parseFloat(this.dqProblem.riskAmount),
+            status: 0,
+            attachmentList: uploadList2,
+            zdyCode: this.zdyCode,
+            entity: {
+              belongSpcialSize: this.SPECIALList.length,
+              dictname: this.dqProblem.special,
+            },
+          };
           axios({
             url: `/wisdomaudit/problemList/update`,
             headers: {
               TOKEN: this.dqtoken,
             },
             method: "put",
-            data: rep,
+            data: params,
           }).then((res) => {
             if (res.data.code == 0) {
               this.$message({

@@ -194,11 +194,11 @@
                @close="editResetForm2('editTaskRef')">
       <div class="title">编辑任务</div>
       <div class="taskAdd">
-        <el-form label-width="120px"
+        <el-form label-width="125px"
                  class="selfTask"
                  :model="editTask"
-                 ref="editTaskRef"
-                 hide-required-asterisk>
+                 ref="editTaskRef">
+          <!-- hide-required-asterisk -->
           <el-form-item label="自建任务名称：">
             <el-input placeholder="请输入自建任务名称"
                       v-model="editTask.taskName"></el-input>
@@ -241,9 +241,14 @@
             </el-select>
             <el-input v-model="editTask.belongSpcial"
                       v-if="other_input == false"></el-input>
+            <el-button v-if="other_input == false"
+                       type="primary"
+                       class="inline-block"
+                       style="position: absolute;top:0;right: -70px"
+                       @click="other_input=!other_input">重选</el-button>
           </el-form-item>
 
-          <el-form-item label="22任务描述：">
+          <el-form-item label="任务描述：">
             <el-input type="textarea"
                       placeholder="请输入任务描述"
                       v-model="editTask.taskDescription"></el-input>
@@ -287,16 +292,17 @@
       <div class="taskTitle">新增任务</div>
       <div class="taskAdd"
            v-if="task == '1'">
-        <el-form label-width="120px"
+        <el-form label-width="125px"
                  :model="taskSelf"
                  ref="selfTaskRef"
-                 :rules="taskSelfRules"
-                 hide-required-asterisk>
+                 :rules="taskSelfRules">
+          <!-- hide-required-asterisk -->
           <el-form-item label="自建任务名称："
                         prop="taskName">
-            <el-input placeholder="请输入自建任务名称"
-                      v-model="taskSelf.taskName"></el-input>
+            <el-input v-model="taskSelf.taskName"
+                      placeholder="请输入自建任务名称"></el-input>
           </el-form-item>
+
           <el-form-item label="责任人："
                         prop="peopleName">
             <el-select v-model="taskSelf.peopleName"
@@ -334,7 +340,13 @@
               </el-option>
             </el-select>
             <el-input v-model="taskSelf.belongSpcial"
-                      v-if="other_input == false"></el-input>
+                      v-if="other_input == false">
+            </el-input>
+            <el-button v-if="other_input == false"
+                       type="primary"
+                       class="inline-block"
+                       style="position: absolute;top:0;right: -70px"
+                       @click="other_input=!other_input">重选</el-button>
           </el-form-item>
 
           <el-form-item label="任务类型：">
@@ -1774,7 +1786,7 @@ export default {
   margin-bottom: 25px !important;
   display: flex;
 
-  width: 400px;
+  width: 450px;
   margin: 0 auto;
 }
 .taskAdd >>> .el-form-item__content {

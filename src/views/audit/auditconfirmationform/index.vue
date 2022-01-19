@@ -3,11 +3,22 @@
     <el-button type="primary"
                @click="addConfirmation()"
                class="subBtn">新增确认单</el-button>
+    <Vault :vaultV="vaultV"
+           :sceneId="sceneId"
+           :approvers="approvers"
+           :maxTime="maxTime"
+           :dqtime="dqtime"
+           :account="account"
+           :appSessionId="appSessionId"
+           @changevault="changevault"
+           @vdownload="vdownload"></Vault>
+
     <!-- 审计确认单列表 -->
     <div class="min_height">
       <el-table @row-dblclick="getLook"
+                v-loading="confirmaryData_loding"
                 :header-cell-style="{'background-color': '#F4FAFF',}"
-                :data="confirmaryData"
+                :data="confirmaryData.records"
                 style="margin-top: 1%"
                 class="confirmaryTable">
         <el-table-column algin="left"
@@ -34,19 +45,20 @@
             <el-popover :popper-class="tableFileList==''?'no-padding':''"
                         placement="bottom"
                         width="250"
-                        v-if="scope.row.attachmentFileCounts"
-                        @show="getFileList(scope.row.auditConfirmationUuid)"
+                        @show="getFileList('f'+scope.row.auditConfirmationUuid)"
+                        v-if="scope.row.fileCounts"
                         trigger="click">
-              <ul v-if="tableFileList!=''"
+
+              <ul v-if="tableFileList.attachmentList1!=''"
                   class="fileList-ul">
-                <li class="tableFileList-title">文件名称</li>
-                <!-- <li v-for="item in tableFileList"
-                    class="pointer blue"
-                    @click="downFile(item.attachment_uuid,item.file_name)">{{item.file_name}}</li> -->
-                <!-- 金库 -->
-                <li v-for="item in tableFileList"
-                    class="pointer blue"
-                    @click="openVault(item,'下载1')">{{item.file_name}}</li>
+                <li class="tableFileList-title">确认单附件</li>
+                <li v-for="item in tableFileList.attachmentList1"
+                    class="pointer blue tableFileList-li"
+                    @click="openVault(item,'下载1')">
+                  <div class="inline-block">{{item.file_name}}</div>
+                  <!-- <span class="delFile inline-block"
+                        @click.stop="delListFile(item.attachment_uuid)">X</span> -->
+                </li>
               </ul>
               <div slot="reference"
                    class="pointer"
@@ -66,16 +78,31 @@
                         @show="getFileList('f'+scope.row.auditConfirmationUuid)"
                         v-if="scope.row.fileCounts"
                         trigger="click">
-              <ul v-if="tableFileList!=''"
+
+              <ul v-if="tableFileList.attachmentList!=''"
                   class="fileList-ul">
-                <li class="tableFileList-title">文件名称</li>
-                <li v-for="item in tableFileList"
+                <li class="tableFileList-title">附件</li>
+                <li v-for="item in tableFileList.attachmentList"
                     class="pointer blue tableFileList-li"
                     @click="openVault(item,'下载1')">
-                  <div class="inline-block">{{item.file_name}}</div><span class="delFile inline-block"
-                        @click.stop="delListFile(item.attachment_uuid)">X</span>
+                  <div class="inline-block">{{item.file_name}}</div>
+                  <!-- <span class="delFile inline-block"
+                        @click.stop="delListFile(item.attachment_uuid)">X</span> -->
                 </li>
               </ul>
+
+              <ul v-if="tableFileList.problemList!=''"
+                  class="fileList-ul">
+                <li class="tableFileList-title">问题附件</li>
+                <li v-for="item2 in tableFileList.problemList"
+                    class="pointer blue tableFileList-li"
+                    @click="openVault(item2,'下载2')">
+                  <div class="inline-block">{{item2.fileName}}</div>
+                  <!-- <span class="delFile inline-block"
+                        @click.stop="delListFile(item2.attachmentUuid)">X</span> -->
+                </li>
+              </ul>
+
               <div slot="reference"
                    class="pointer"
                    style="color:#4084F2"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.fileCounts}}
@@ -90,8 +117,13 @@
             <el-button size="small"
                        type="text"
                        class="btnStyle editBtn"
-                       @click="edit(scope.row)"
+                       @click="edit(scope.row,'edit')"
                        v-if="scope.row.createUserUuid==userInfo.user.id">编辑</el-button>
+            <el-button size="small"
+                       type="text"
+                       class="btnStyle editBtn"
+                       @click="edit(scope.row,'look')"
+                       v-if="scope.row.createUserUuid==userInfo.user.id">查看</el-button>
             <el-button size="small"
                        type="text"
                        class="btnStyle red"
@@ -112,12 +144,8 @@
                         v-if="scope.row.endFileCounts!==0">
               <ul v-if="tableFileList!=''"
                   class="fileList-ul">
-                <li class="tableFileList-title">文件名称</li>
-                <!-- <li v-for="item in tableFileList"
-                    class="pointer blue tableFileList-li"
-                    @click="downFile(item.attachment_uuid,item.file_name)"> -->
-                <!-- 金库 -->
-                <li v-for="item in tableFileList"
+                <li class="tableFileList-title">最终版扫描件</li>
+                <li v-for="item in tableFileList.attachmentList"
                     class="pointer blue tableFileList-li"
                     @click="openVault(item,'下载1')">
                   <div class="inline-block">{{item.file_name}}</div><span class="delFile inline-block"
@@ -145,6 +173,20 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <!-- 分页 -->
+      <div class="page"
+           v-show="this.confirmaryData.total>0">
+        <el-pagination @size-change="handleSizeChange_zj"
+                       @current-change="handleCurrentChange_zj"
+                       :page-size="this.confirmaryData.size"
+                       :current-page="this.confirmaryData.current"
+                       :total="this.confirmaryData.total"
+                       layout="total, sizes, prev, pager, next, jumper">
+        </el-pagination>
+
+      </div>
+      <!-- 分页 end-->
     </div>
 
     <!-- 新增确认单弹出框 -->
@@ -174,10 +216,10 @@
                      v-model="formDetail.auditDepart"
                      placeholder="请选择二级部门"
                      clearable>
-            <el-option v-for="(item,index) in Company_data_list"
-                       :label="item.orgName"
-                       :value="item.auditOrgUuid"
-                       :key="index">
+            <el-option v-for="(item_com,index_com) in Company_data_list"
+                       :label="item_com.orgName"
+                       :value="item_com.auditOrgUuid"
+                       :key="index_com">
             </el-option>
           </el-select>
         </el-form-item>
@@ -208,12 +250,25 @@
                     type="textarea"
                     v-model="formDetail.matterDetail"></el-input>
 
+          <!-- 回显的数据列表 -->
           <ul class="query_list"
               v-if="fileArr && fileArr.length!=0">
-            <li v-for="(item,index) in fileArr"
-                :key="index">
-              <i class="el-icon-folder-opened list-folder"></i>
-              <p>{{item.fileName}}</p>
+            <li v-for="(item1,index2) in fileArr"
+                :key="'fileArr'+index2">
+              <div v-show="!ifLook"
+                   class="edit">
+                <i class="el-icon-folder-opened list-folder"></i>
+                <p @click="openVault(item1,'下载2')">{{item1.fileName}}</p>
+                <span @click="del_list_img(item1)">x</span>
+              </div>
+
+              <div v-show="ifLook"
+                   class="look">
+                <i class="el-icon-folder-opened list-folder"></i>
+                <p>{{item1.fileName}}</p>
+                <span>x</span>
+              </div>
+
             </li>
           </ul>
         </el-form-item>
@@ -224,10 +279,10 @@
                      v-model="formDetail.auditorsName"
                      placeholder="请选择审计人员"
                      clearable>
-            <el-option v-for="(item,index) in sjryList"
-                       :label="item.peopleName"
-                       :value="item.peopleName"
-                       :key="index">
+            <el-option v-for="(item3,index3) in sjryList"
+                       :label="item3.peopleName"
+                       :value="item3.peopleName"
+                       :key="index3">
             </el-option>
           </el-select>
           <!--<el-input :disabled="ifLook"-->
@@ -241,10 +296,10 @@
                      v-model="formDetail.reviewerName	"
                      placeholder="请选择复核人"
                      clearable>
-            <el-option v-for="(item,index) in FhrList"
-                       :label="item.realName"
-                       :value="item.realName"
-                       :key="index">
+            <el-option v-for="(item_fh,index_fh) in FhrList"
+                       :label="item_fh.realName"
+                       :value="item_fh.realName"
+                       :key="index_fh">
             </el-option>
           </el-select>
         </el-form-item>
@@ -270,9 +325,11 @@
         </el-form-item>
         <el-form-item label="上传附件:"
                       class="upload-yw">
-          <el-upload v-if="!ifLook"
-                     class="upload-demo"
+          <div class="ifLook_upload"
+               v-if="ifLook"></div>
+          <el-upload class="upload-demo"
                      drag
+                     :disabled="ifLook?true:false"
                      action="/wisdomaudit/auditBasy/filesUpload"
                      :on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList1)}"
                      :on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList1,fileList1,fileList1_del)}"
@@ -287,7 +344,7 @@
               点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc
             </div>
           </el-upload>
-          <div class="inline-block"
+          <!-- <div class="inline-block"
                v-if="ifLook">
             <el-tooltip class="item"
                         effect="dark"
@@ -295,14 +352,11 @@
                         :key="index"
                         :content="item.fileName"
                         placement="top">
-              <!-- <div class="blue pointer"
-                   @click="downFile(item.attachmentUuid,item.fileName)">
-                {{item.fileName.length>20?item.fileName.slice(0,20)+"...":item.fileName}}</div> -->
               <div class="blue pointer"
                    @click="openVault(item,'下载2')">
                 {{item.fileName.length>20?item.fileName.slice(0,20)+"...":item.fileName}}</div>
             </el-tooltip>
-          </div>
+          </div> -->
         </el-form-item>
         <span slot="footer"
               class="dialog-footer">
@@ -389,11 +443,11 @@
         </div>
         <span slot="footer"
               class="dialog-footer">
-          <el-button @click="handleClose">取 消</el-button>
+          <el-button @click="handleClose()">取 消</el-button>
           <el-button v-if="!ifLook"
                      :disabled="isDisable"
                      type="primary"
-                     @click="saveForm"
+                     @click="saveForm()"
                      class="subBtn">确 定</el-button>
         </span>
       </el-dialog>
@@ -440,7 +494,7 @@
               </el-input>
               <div class="search_icon"
                    style="background: rgb(12, 135, 214) !important"
-                   @click="init()">
+                   @click="serch()">
                 <i class="el-icon-search"
                    style="color: white"></i>
               </div>
@@ -449,11 +503,12 @@
 
           <!-- </el-form> -->
         </div>
-        <div class="dlag">
+        <div class="dlag"
+             ref="myBox">
 
           <el-table :header-cell-style="{'text-align': 'center','background-color': '#F4FAFF',}"
                     ref="multipleTable"
-                    :data="relationTabel2"
+                    :data="relationTabel2.records"
                     class="relationTabelClass"
                     tooltip-effect="dark"
                     style="width: 100%"
@@ -476,16 +531,96 @@
                              show-overflow-tooltip
                              label="问题">
               <template slot-scope="scope">
-                <span v-if="scope.row.problem"
-                      @click="details_show(scope.row,scope.$index)"
-                      style="cursor: pointer;color:rgb(68, 163, 223);">{{scope.row.problem }}</span>
-                <span v-else>--</span>
+
+                <!-- 详情 -->
+                <el-popover placement="bottom"
+                            visible-arrow='false'
+                            popper-class="popover"
+                            :width=" details_list.style_width"
+                            @show="details_show(scope.row,scope.$index+1)"
+                            trigger="click">
+                  <div class="problem_details_conter"
+                       :width=" details_list.style_width + 'px'"
+                       v-if="details == true">
+                    <ul class="list">
+                      <li class="one">
+                        <p class="one_p"><span class="fl sp">序号：</span><span>{{Index+1}}</span></p>
+                        <p class="one_p"><span class="fl sp">领域：</span><span>{{details_list.field}}</span></p>
+                        <p class="one_p"><span class="fl sp">专题：</span><span>{{details_list.special}}</span></p>
+                      </li>
+
+                      <li class="one">
+                        <p class="one_p"><span class="fl sp">涉及金额(万元)：</span>
+
+                          <span>{{ parseFloat(details_list.riskAmount) }}</span>
+                        </p>
+                        <p class="one_p"><span class="fl sp">发现日期：</span>
+                          <span>{{details_list.problemDiscoveryTime | dateformat}}</span>
+                        </p>
+                        <p class="one_p">
+                          <span class="fl sp">发现人：</span>
+                          <span>{{details_list.problemFindPeople}}</span>
+                        </p>
+                      </li>
+
+                      <li class="one">
+                        <p class="one_p">
+                          <span class="fl sp">附件：</span><i
+                             class="el-icon-folder-opened list-folder"></i><span>{{details_list.attachmentList.length}}</span>
+                        </p>
+                        <p class="one_p">
+                          <span class="fl sp">关联任务：</span>
+                          <!-- <div> -->
+                          <span v-for="(it,ind) in taskList"
+                                :key="'taskList'+ind">{{it.taskName}}</span>
+                          <!-- </div> -->
+                        </p>
+
+                        <p class="one_p"
+                           style="">
+                        </p>
+
+                      </li>
+
+                      <li>
+                        <span class="fl sp">问题：</span>
+                        <p><span>{{details_list.problem}}</span></p>
+
+                      </li>
+                      <li>
+                        <span class="fl sp">依据：</span>
+                        <p><span>{{details_list.basis}}</span></p>
+
+                      </li>
+                      <li>
+                        <span class="fl sp">描述：</span>
+
+                        <p><span>{{details_list.describe}}</span></p>
+                      </li>
+                      <li>
+                        <span class="fl sp">管理建议：</span>
+                        <p><span>{{details_list.managementAdvice}}</span></p>
+
+                      </li>
+
+                    </ul>
+                  </div>
+
+                  <div slot="reference"
+                       class="pointer">
+                    <span v-if="scope.row.problem"
+                          @click="details_show(scope.row,scope.$index)"
+                          style="cursor: pointer;color:rgb(68, 163, 223);">{{scope.row.problem }}</span>
+                    <span v-else>--</span>
+                  </div>
+                </el-popover>
+
               </template>
             </el-table-column>
-            <el-table-column align="center"
-                             prop="riskAmount"
-                             width="180"
-                             label="风险金额(万元)">
+            <el-table-column prop="riskAmount"
+                             width="117px"
+                             label="涉及金额(万元)"
+                             align="right">
               <template slot-scope="scope">
                 {{ parseFloat(scope.row.riskAmount) }}
               </template>
@@ -516,11 +651,11 @@
                   <ul v-if="enclosure_details_list!=''"
                       class="fileList-ul">
                     <li class="tableFileList-title">文件名称</li>
-                    <li v-for="(item,index) in enclosure_details_list"
-                        :key="index"
+                    <li v-for="(item_file,index_file) in enclosure_details_list"
+                        :key="index_file"
                         class="pointer blue"
-                        @click="openVault(item,'下载2')">
-                      {{item.fileName}}</li>
+                        @click="openVault(item_file,'下载2')">
+                      {{item_file.fileName}}</li>
                     <!-- @click="download(item.attachmentUuid,item.fileName)" -->
                   </ul>
                   <div slot="reference"
@@ -555,78 +690,24 @@
 
           </el-table>
 
-          <div class="mose"
+          <!-- <div class="mose"
                @click="close_mose"
-               v-if="details == true"></div>
+               v-if="details == true"></div> -->
 
-          <!-- 详情 -->
-          <div class="problem_details_conter"
-               :style="{'top':details_list.style_top}"
-               v-if="details == true &&details_list">
-            <ul class="list">
-              <li class="one">
-                <p class="one_p"><span class="fl sp">序号：</span><span>{{Index+1}}</span></p>
-                <p class="one_p"><span class="fl sp">领域：</span><span>{{details_list.field}}</span></p>
-                <p class="one_p"><span class="fl sp">专题：</span><span>{{details_list.special}}</span></p>
-              </li>
+          <!-- 分页 -->
+          <!-- v-show="this.relationTabel2.total>0" -->
+          <div class="page">
+            <el-pagination @size-change="handleSizeChange_wt"
+                           @current-change="handleCurrentChange_wt"
+                           :page-size="this.relationTabel2.size"
+                           :current-page="this.relationTabel2.current"
+                           :total="this.relationTabel2.total"
+                           layout="total, sizes, prev, pager, next, jumper">
+            </el-pagination>
 
-              <li class="one">
-                <p class="one_p"><span class="fl sp">风险金额（万元）：</span>
-
-                  <span>{{ parseFloat(details_list.riskAmount) }}</span>
-                </p>
-                <p class="one_p"><span class="fl sp">发现日期：</span>
-                  <span>{{details_list.problemDiscoveryTime | dateformat}}</span>
-                </p>
-                <p class="one_p">
-                  <span class="fl sp">发现人：</span>
-                  <span>{{details_list.problemFindPeople}}</span>
-                </p>
-              </li>
-
-              <li class="one">
-                <p class="one_p">
-                  <span class="fl sp">附件：</span><i
-                     class="el-icon-folder-opened list-folder"></i><span>{{details_list.attachmentList.length}}</span>
-                </p>
-                <p class="one_p">
-                  <span class="fl sp">关联任务：</span>
-                  <!-- <div> -->
-                  <span v-for="(it,ind) in taskList"
-                        :key="ind">{{it.taskName}}</span>
-                  <!-- </div> -->
-                </p>
-
-                <p class="one_p"
-                   style="">
-                </p>
-
-              </li>
-
-              <li>
-                <span class="fl sp">问题：</span>
-                <p><span>{{details_list.problem}}</span></p>
-
-              </li>
-              <li>
-                <span class="fl sp">依据：</span>
-                <p><span>{{details_list.basis}}</span></p>
-
-              </li>
-              <li>
-                <span class="fl sp">描述：</span>
-
-                <p><span>{{details_list.describe}}</span></p>
-              </li>
-              <li>
-                <span class="fl sp">管理建议：</span>
-                <p><span>{{details_list.managementAdvice}}</span></p>
-
-              </li>
-
-            </ul>
           </div>
-          <!-- 详情 end-->
+          <!-- 分页 end-->
+
         </div>
 
       </div>
@@ -663,10 +744,10 @@
                       prop="field">
           <el-select v-model="temp_problem.field"
                      placeholder="请选择领域">
-            <el-option v-for="item in CategoryList"
-                       :key="item.label"
-                       :label="item.label"
-                       :value="item.label">
+            <el-option v-for="items in CategoryList"
+                       :key="items.label"
+                       :label="items.label"
+                       :value="items.label">
             </el-option>
           </el-select>
         </el-form-item>
@@ -677,10 +758,10 @@
                      placeholder="请选择专题"
                      v-if="input_select == true"
                      @change="change_zt">
-            <el-option v-for="item in SPECIALList"
-                       :key="item.value"
-                       :label="item.label"
-                       :value="item.value">
+            <el-option v-for="item_sp in SPECIALList"
+                       :key="item_sp.value"
+                       :label="item_sp.label"
+                       :value="item_sp.value">
             </el-option>
           </el-select>
           <el-input v-model="temp_problem.special"
@@ -755,10 +836,10 @@
           </el-select>
         </el-form-item>
         <el-form-item class="itemTwo"
-                      label="风险金额（万元）："
+                      label="涉及金额(万元)："
                       prop="riskAmount">
           <el-input v-model="temp_problem.riskAmount"
-                    placeholder="请输入风险金额"
+                    placeholder="请输入涉及金额"
                     @keyup.native="onlyNumOnePoint('temp_problem')"
                     @input="temp_problem.riskAmount = temp_problem.riskAmount.slice(0, 27)" />
         </el-form-item>
@@ -872,10 +953,10 @@
                      :disabled="ifadd != 2 ? false : true"
                      v-if="input_selecte == true"
                      @change="change_zte">
-            <el-option v-for="item in SPECIALList"
-                       :key="item.value"
-                       :label="item.label"
-                       :value="item.label">
+            <el-option v-for="item_sp2 in SPECIALList"
+                       :key="item_sp2.value"
+                       :label="item_sp2.label"
+                       :value="item_sp2.value">
             </el-option>
           </el-select>
           <el-input v-model="dqProblem.special"
@@ -939,20 +1020,20 @@
           <el-select v-model="dqProblem.problemFindPeople"
                      placeholder="请选择发现人"
                      :disabled="ifadd != 2 ? false : true">
-            <el-option v-for="(item, i) in personlist"
+            <el-option v-for="(item_peole, i) in personlist"
                        :key="'person' + i"
-                       :label="item.realName"
-                       :value="item.realName">
-              {{ item.realName }}
+                       :label="item_peole.realName"
+                       :value="item_peole.realName">
+              {{ item_peole.realName }}
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item class="itemTwo"
-                      label="风险金额（万元）："
+                      label="涉及金额(万元)："
                       prop="riskAmount"
                       width="180">
           <el-input v-model="dqProblem.riskAmount"
-                    placeholder="请输入风险金额"
+                    placeholder="请输入涉及金额"
                     :disabled="ifadd != 2 ? false : true"
                     @keyup.native="onlyNumOnePoint('dqProblem')"
                     @input="temp.riskAmount = temp.riskAmount.slice(0, 27)" />
@@ -964,10 +1045,10 @@
                      v-model="dqProblem.auditTaskUuid"
                      multiple
                      placeholder="请选择关联任务">
-            <el-option v-for="item in auditTasklList"
-                       :key="item.auditTaskUuid"
-                       :label="item.taskName"
-                       :value="item.auditTaskUuid">
+            <el-option v-for="item_audit in auditTasklList"
+                       :key="item_audit.auditTaskUuid"
+                       :label="item_audit.taskName"
+                       :value="item_audit.auditTaskUuid">
             </el-option>
           </el-select>
         </el-form-item>
@@ -1048,10 +1129,10 @@
                          :remote-method="basisremoteMethod"
                          :loading="basisloading"
                          @change="getbasisdetail(dqbasis.val)">
-                <el-option v-for="item in basislist"
-                           :key="item.basy_uuid"
-                           :label="item.basy_name"
-                           :value="item.basy_uuid">
+                <el-option v-for="item_bs in basislist"
+                           :key="item_bs.basy_uuid"
+                           :label="item_bs.basy_name"
+                           :value="item_bs.basy_uuid">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -1127,7 +1208,9 @@ export default {
   props: ['active_project', 'userRole'],
   data () {
     return {
-      vaultV: false,
+      confirmaryData_loding: false,//确认单列表loadng
+      Table_loading: false,
+      vaultV: true,
       sceneId: 1557, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
       approvers: [], //审批人列表
       maxTime: "",//最大时间
@@ -1163,7 +1246,7 @@ export default {
         signatureDate: '',
         auditOrgOpinion: '',
         fileArr: "",//生成 后的 数组
-
+        fileArrList: "",
         butt: '',//是否 生成2
       },//确认单数据
       fileArr: [],//生成 后的 数组
@@ -1223,7 +1306,15 @@ export default {
         riskAmount: "",
         status: 0,
         attachmentList: [],
+        // zdyCode: 0,
+        entity: {
+          belongSpcialSize: '',
+          dictname: '',
+        },
       },
+
+
+
       attachmentList2: [],//附件上传列表
       fileList2: [],//附件上传回显列表
       fileList2_del: [],
@@ -1249,7 +1340,7 @@ export default {
         ],
         special: [{ required: true, message: "请选择专题", trigger: "change" }],
         riskAmount: [
-          { required: true, message: "请填写风险金额", trigger: "change" },
+          { required: true, message: "请填写涉及金额", trigger: "change" },
         ],
       },
       closeStatus: false,
@@ -1303,6 +1394,27 @@ export default {
       taskList: [],//详情  任务回显
 
       type: '',
+      // 确认单列表
+      params2: {
+        pageNo: 1,
+        pageSize: 10,
+      },
+      // 问题编辑
+      params3: {
+        pageNo: 1,
+        pageSize: 10,
+      },
+
+
+      // 自定义专题
+      zdyCode: 0,//区别自定义
+      belongSpcialSize: '',//专题集合数
+      belongSpcialCode: 'SPECIAL',
+
+
+      style_w: '',
+
+
     };
   },
   created () {
@@ -1325,6 +1437,32 @@ export default {
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
   },
   methods: {
+
+    // 确认单列表
+    handleSizeChange_zj (val) {
+      this.params2.pageSize = val
+      this.list_data_start()//刷新已完成列表
+    },
+    // 已完成 分页
+    handleCurrentChange_zj (val) {
+      this.params2.pageNo = val
+      this.list_data_start()//刷新已完成列表
+    },
+
+    // 问题编辑
+    handleSizeChange_wt (val) {
+      this.params3.pageSize = val
+      this.init();
+    },
+    handleCurrentChange_wt (val) {
+      this.params3.pageNo = val
+      this.init();
+    },
+    // 筛选
+    serch () {
+      this.params3.pageNo = 1
+      this.init();
+    },
 
     //金库通过认证后的方法
     vdownload () {
@@ -1443,6 +1581,7 @@ export default {
       this.fileList2_del = [];
       this.attachmentList2 = [];
       this.temp_problem.attachmentList = []; //清空附件
+      this.getloadcascader('SPECIAL');//专题数据
 
       // 新增回显
       if (type == 1) {
@@ -1452,9 +1591,7 @@ export default {
         this.type = 2
 
       }
-
-
-      this.dialogFormVisible = true;
+      this.dialogFormVisible = true;//新增问题
       this.ifadd = 0;
 
       this.temp_problem.problemFindPeople = this.me;//发现人默认选择
@@ -1481,11 +1618,11 @@ export default {
       this.temp_problem.problemDiscoveryTime = new Date();
       this.temp_problem.attachmentList = []; //清空附件
       this.fileList2 = [];
-      console.log(this.temp_problem.attachmentList);
 
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
       });
+
 
     },
     // 新增问题关闭
@@ -1579,9 +1716,13 @@ export default {
       if (val == "otherzt") {
         this.input_select = false;
         this.temp_problem.special = "";
+        this.zdyCode = 1;//自定义标识
+      } else {
+        this.zdyCode = 0;//自定义标识
       }
     },
     change_zte (value) {
+
       let obj = {};
       obj = this.SPECIALList.find((item) => {
         return item.value === value; //筛选出匹配数据
@@ -1591,6 +1732,9 @@ export default {
       if (val == "otherzt") {
         this.input_selecte = false;
         this.dqProblem.special = "";
+        this.zdyCode = 1;//自定义标识
+      } else {
+        this.zdyCode = 0;//自定义标识
       }
     },
 
@@ -1679,6 +1823,8 @@ export default {
         this.basisload = false;
       });
     },
+
+    // 获取专题接口
     getloadcascader (str) {
       axios({
         url: `/wisdomaudit/init/loadcascader`,
@@ -1869,6 +2015,24 @@ export default {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
 
+          // 判断自定义的专题是否重复
+          if (this.zdyCode == 1) {
+            let msg = true;
+            this.SPECIALList.forEach(item => {
+              if (item.label == this.temp_problem.special) {
+                msg = false
+                return false
+              }
+            })
+            if (msg == false) {
+              this.$message({
+                message: '该专题已经存在',
+                type: 'warning'
+              });
+              return false
+            }
+          }
+
           // 新增回显
           if (this.type == 1) {
             // 新增刷列表
@@ -1876,15 +2040,41 @@ export default {
             uploadList2.forEach((item) => {
               item.status = null;
             });
-            this.temp_problem.attachmentList = uploadList2;
-            // this.temp.attachmentList = [];
 
-            let rep = this.temp_problem;
-            rep.riskAmount = parseFloat(rep.riskAmount)
-            rep.auditTaskUuid = rep.auditTaskUuid
-              ? rep.auditTaskUuid.join(",")
-              : "";
-            rep.basis = rep.basis ? rep.basis.join(",") : "";
+            // let rep = this.temp_problem;
+            // this.temp_problem.riskAmount = parseFloat(this.temp_problem.riskAmount)
+            // this.temp_problem.auditTaskUuid = this.temp_problem.auditTaskUuid
+            //   ? this.temp_problem.auditTaskUuid.join(",")
+            //   : "";
+            // this.temp_problem.basis = this.temp_problem.basis ? this.temp_problem.basis.join(",") : "";
+
+            // 专题
+            // this.temp_problem.zdyCode = this.zdyCode;
+            let params = {
+              managementProjectUuid: this.active_project,
+              // 业务分类
+              auditTaskUuid: this.temp_problem.auditTaskUuid
+                ? this.temp_problem.auditTaskUuid.join(",")
+                : "",
+              basis: this.temp_problem.basis ? this.temp_problem.basis.join(",") : "",
+              describe: this.temp_problem.describe,
+              field: this.temp_problem.field,
+              special: this.temp_problem.special,
+              isDeleted: 0,
+              problem: this.temp_problem.problem,
+              problemDiscoveryTime: this.temp_problem.problemDiscoveryTime,
+              problemFindPeople: this.temp_problem.problemFindPeople,
+              managementAdvice: this.temp_problem.managementAdvice,
+              problemListUuid: this.temp_problem.problemListUuid,
+              riskAmount: parseFloat(this.temp_problem.riskAmount),
+              status: 0,
+              attachmentList: uploadList2,
+              zdyCode: this.zdyCode,
+              entity: {
+                belongSpcialSize: this.SPECIALList.length,
+                dictname: this.temp_problem.special,
+              },
+            };
 
             axios({
               url: `/wisdomaudit/problemList/save`,
@@ -1892,34 +2082,75 @@ export default {
                 TOKEN: this.dqtoken,
               },
               method: "post",
-              data: rep,
+              data: params,
             }).then((res) => {
               if (res.data.code == 0) {
                 this.$message({
                   message: "新增成功",
                   type: "success",
                 });
-                // this.dialogFormVisible = false;//新增的弹窗
-
-
+                this.dialogFormVisible = false;//新增的弹窗
                 this.save_problem();//新增问题 既是选择当前这条
               }
             });
           } else {
-            // 刷列表   // 新增刷列表
+            // 刷列表   新增刷列表
+            // let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
+            // uploadList2.forEach((item) => {
+            //   item.status = null;
+            // });
+            // this.temp_problem.attachmentList = uploadList2;
+            // // this.temp.attachmentList = [];
+
+            // let rep = this.temp_problem;
+            // rep.riskAmount = parseFloat(rep.riskAmount)
+            // rep.auditTaskUuid = rep.auditTaskUuid
+            //   ? rep.auditTaskUuid.join(",")
+            //   : "";
+            // rep.basis = rep.basis ? rep.basis.join(",") : "";
+            // // 专题
+
+
+            // 新增刷列表
             let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
             uploadList2.forEach((item) => {
               item.status = null;
             });
-            this.temp_problem.attachmentList = uploadList2;
-            // this.temp.attachmentList = [];
 
-            let rep = this.temp_problem;
-            rep.riskAmount = parseFloat(rep.riskAmount)
-            rep.auditTaskUuid = rep.auditTaskUuid
-              ? rep.auditTaskUuid.join(",")
-              : "";
-            rep.basis = rep.basis ? rep.basis.join(",") : "";
+            // let rep = this.temp_problem;
+            // this.temp_problem.riskAmount = parseFloat(this.temp_problem.riskAmount)
+            // this.temp_problem.auditTaskUuid = this.temp_problem.auditTaskUuid
+            //   ? this.temp_problem.auditTaskUuid.join(",")
+            //   : "";
+            // this.temp_problem.basis = this.temp_problem.basis ? this.temp_problem.basis.join(",") : "";
+
+            // 专题
+            // this.temp_problem.zdyCode = this.zdyCode;
+            let params = {
+              managementProjectUuid: this.active_project,
+              // 业务分类
+              auditTaskUuid: this.temp_problem.auditTaskUuid
+                ? this.temp_problem.auditTaskUuid.join(",")
+                : "",
+              basis: this.temp_problem.basis ? this.temp_problem.basis.join(",") : "",
+              describe: this.temp_problem.describe,
+              field: this.temp_problem.field,
+              special: this.temp_problem.special,
+              isDeleted: 0,
+              problem: this.temp_problem.problem,
+              problemDiscoveryTime: this.temp_problem.problemDiscoveryTime,
+              problemFindPeople: this.temp_problem.problemFindPeople,
+              managementAdvice: this.temp_problem.managementAdvice,
+              problemListUuid: this.temp_problem.problemListUuid,
+              riskAmount: parseFloat(this.temp_problem.riskAmount),
+              status: 0,
+              attachmentList: uploadList2,
+              zdyCode: this.zdyCode,
+              entity: {
+                belongSpcialSize: this.SPECIALList.length,
+                dictname: this.temp_problem.special,
+              },
+            };
 
             axios({
               url: `/wisdomaudit/problemList/save`,
@@ -1927,7 +2158,7 @@ export default {
                 TOKEN: this.dqtoken,
               },
               method: "post",
-              data: rep,
+              data: params,
             }).then((res) => {
               if (res.data.code == 0) {
                 this.$message({
@@ -1952,7 +2183,6 @@ export default {
 
     //生成关联问题
     save_problem () {
-      // this.init();
       //编辑问题列表
       let params = {
         condition: {
@@ -1960,16 +2190,15 @@ export default {
           problem: this.searchform.problem
         }
       };
+
       task_pageList_query(params).then(resp => {
         let datas = resp.data;
         // this.one_list = datas.records[0];
         let arr = [];
         arr.push(datas.records[0]);
         this.one_list = arr;
-        // console.log(this.one_list);
-        // return false
 
-        this.dialogFormVisible = false;//新增的弹窗
+
         this.temp_problem.auditTaskUuid = [];
         this.temp_problem.basis = [];
         this.temp_problem.describe = "";
@@ -1980,7 +2209,10 @@ export default {
         this.temp_problem.managementAdvice = "";
         this.temp_problem.riskAmount = "";
         this.temp_problem.special = "";
-        this.temp_problem.attachmentList = []
+        this.zdyCode = 0;
+        // this.belongSpcialCode = '',
+        this.temp_problem.attachmentList = [];
+
 
         //编辑问题列表
         if (this.one_list && this.one_list.length >= 1) {
@@ -2012,7 +2244,7 @@ export default {
               arr = arr.concat(i)
             }
           })
-          // console.log(arr);
+          // 
           this.fileArr = arr;//生成确认的附件
         }
       })
@@ -2025,10 +2257,31 @@ export default {
     updateData () {
       this.$refs["detailForm"].validate((valid) => {
         if (valid) {
-          let rep = this.dqProblem;
-          rep.riskAmount = parseFloat(rep.riskAmount)
-          rep.auditTaskUuid = rep.auditTaskUuid.join(",");
-          rep.basis = rep.basis.join(",");
+
+
+          // 判断自定义的专题是否重复
+          if (this.zdyCode == 1) {
+            let msg = true;
+            this.SPECIALList.forEach(item => {
+              if (item.label == this.dqProblem.special) {
+                msg = false
+                return false
+              }
+            })
+            if (msg == false) {
+              this.$message({
+                message: '该专题已经存在',
+                type: 'warning'
+              });
+              return false
+            }
+          }
+
+
+          // let rep = this.dqProblem;
+          // rep.riskAmount = parseFloat(rep.riskAmount)
+          // rep.auditTaskUuid = rep.auditTaskUuid.join(",");
+          // rep.basis = rep.basis.join(",");
 
 
           let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
@@ -2039,14 +2292,52 @@ export default {
               item.attStatus = 2
             }
           });
-          this.dqProblem.attachmentList = uploadList2;
+          this.dqProblem.attachmentList = uploadList2;//附件
+
+          // 专题
+          // this.dqProblem.zdyCode = this.zdyCode;
+
+          let params = {
+            managementProjectUuid: this.active_project,
+            // 业务分类
+            // auditTaskUuid: this.dqProblem.auditTaskUuid,
+            // basis: this.dqProblem.basis,
+
+            auditTaskUuid: this.dqProblem.auditTaskUuid
+              ? this.dqProblem.auditTaskUuid.join(",")
+              : "",
+            basis: this.dqProblem.basis ? this.dqProblem.basis.join(",") : "",
+
+
+
+            describe: this.dqProblem.describe,
+            field: this.dqProblem.field,
+            special: this.dqProblem.special,
+            isDeleted: 0,
+            problem: this.dqProblem.problem,
+            problemDiscoveryTime: this.dqProblem.problemDiscoveryTime,
+            problemFindPeople: this.dqProblem.problemFindPeople,
+            managementAdvice: this.dqProblem.managementAdvice,
+            problemListUuid: this.dqProblem.problemListUuid,
+            riskAmount: this.dqProblem.riskAmount,
+            status: 0,
+            attachmentList: uploadList2,
+            zdyCode: this.zdyCode,
+            entity: {
+              belongSpcialSize: this.SPECIALList.length,
+              dictname: this.dqProblem.special,
+            },
+          };
+
+
+
           axios({
             url: `/wisdomaudit/problemList/update`,
             headers: {
               TOKEN: this.dqtoken,
             },
             method: "put",
-            data: rep,
+            data: params,
           }).then((res) => {
             if (res.data.code == 0) {
               this.$message({
@@ -2065,27 +2356,23 @@ export default {
 
     // 编辑问题 标题查看详情
     details_show (data, index) {
-      this.Index = index
-      this.details = true
-      this.details_list = data;
-      this.taskList = [];//清空人任务
+      // this.Index = index
+      this.$nextTick(() => {
+        this.details = true
+        this.details_list = data;
+        this.taskList = [];//清空人任务
 
-      this.auditTasklList.forEach(item => {
-        if (this.details_list.auditTaskUuid == item.auditTaskUuid) {
-          this.taskList.push(item)
-        }
-      })
-      // console.log(this.taskList);
-      // console.log(this.auditTasklList);
+        this.auditTasklList.forEach(item => {
+          if (this.details_list.auditTaskUuid == item.auditTaskUuid) {
+            this.taskList.push(item)
+          }
+        })
 
-      if (this.Index == 0) {
-        let top_px = (this.style_px * index + 85) + 'px'
-        this.$set(this.details_list, 'style_top', top_px)//问题
-      } else {
-        let top_px = (this.style_px * index + 87) + 'px'
-        this.$set(this.details_list, 'style_top', top_px)//问题
-      }
+        this.style_w = this.$refs.myBox.offsetWidth
 
+        this.$set(this.details_list, 'style_width', this.style_w)
+
+      });
     },
     // 关闭
     close_mose () {
@@ -2101,6 +2388,7 @@ export default {
       this.attachmentList2 = [];
       this.dqProblem.attachmentList = [];
 
+      this.getloadcascader('SPECIAL');//专题数据
 
       axios({
         url:
@@ -2175,9 +2463,15 @@ export default {
       // rep =  rep.join(",")
     },
 
+    // 删除指定元素
+    del_list_img (item) {
+      for (let i = 0; i < this.fileArr.length; i++) {
+        if (this.fileArr[i] == item) {
+          this.fileArr.splice(i, 1)
+        }
+      }
 
-
-
+    },
 
 
     // 点击编辑问题弹窗
@@ -2189,11 +2483,16 @@ export default {
       this.init();
       this.details = false;
       this.visible = true;//显示编辑弹窗
+
+
+
     },
 
     // 初始化
     init () {
       let params = {
+        pageNo: this.params3.pageNo,
+        pageSize: this.params3.pageSize,
         condition: {
           managementProjectUuid: this.active_project,
           problem: this.searchform.problem
@@ -2203,7 +2502,7 @@ export default {
       task_pageList_query(params).then(resp => {
         this.load = false;
         let datas = resp.data;
-        this.relationTabel2 = datas.records;
+        this.relationTabel2 = datas;
         this.details = false;
         this.visible = true;
 
@@ -2245,7 +2544,7 @@ export default {
             arr = arr.concat(i)
           }
         })
-        console.log(arr);
+
         this.fileArr = arr;//生成确认的附件
 
 
@@ -2496,9 +2795,11 @@ export default {
     },
     //点击确认单附件显示附件列表
     getFileList (id) {
+      // alert(11)
       this.tableFileList = [];
       auditBasy_getFileList(id).then(resp => {
-        this.tableFileList = resp.data;
+        this.tableFileList = resp.data;//确认单附件
+
       })
     },
     //删除
@@ -2526,11 +2827,18 @@ export default {
 
     },
     //编辑
-    edit (row) {
+    edit (row, name) {
       this.clearForm();
-      this.isAdd = true;
-      this.confirmationDialogTitle = "编辑确认单";
-      this.ifLook = false;
+      this.fileArr = [];//清空回显附件
+      if (name == 'edit') {
+        this.confirmationDialogTitle = "编辑确认单";
+        this.ifLook = false;
+
+      } else if (name == 'look') {
+        this.ifLook = true;
+        this.confirmationDialogTitle = "查看确认单";
+      }
+
       this.getDetail(row);
 
 
@@ -2555,6 +2863,7 @@ export default {
           });
         }
         this.fileList1 = datas.attachmentList || [];
+        this.fileArr = datas.fileArrList;//回显问题附件
 
 
         // if (this.projectType == 'zxsj') {
@@ -2578,29 +2887,34 @@ export default {
     //列表数据
     list_data_start () {
       let params = {
+        pageNo: this.params2.pageNo,
+        pageSize: this.params2.pageSize,
         condition: {
           managementProjectUuid: this.active_project,
         }
       };
-      this.loading = true
+
+      this.confirmaryData_loding = true
       auditConfirmation_pageList(params).then(resp => {
         var datas = resp.data;
+        this.confirmaryData = true;
         this.confirmaryData = datas.dataList;
         this.managementProjectName = datas.managementProjectName;
         this.auditOrgName = datas.auditOrgName;
         this.projectType = datas.projectType;
-        this.loading = false;
+        this.confirmaryData_loding = false;
         this.getUser();
       })
     },
     //   新增确认单按钮事件
     addConfirmation () {
       this.clearForm();
-      this.confirmationDialogTitle = "新增确认单";
-      this.confirmationDialogVisible = true;
+
+      this.fileArr = [];//清空回显附件
       this.getUser();
       this.ifLook = false;
-
+      this.confirmationDialogTitle = "新增确认单";
+      this.confirmationDialogVisible = true;
 
       // 显示二级部门
       if (this.auditOrgName == '省本部') {
@@ -2647,9 +2961,18 @@ export default {
             this.formDetail.managementProjectName = this.managementProjectName;
             this.formDetail.auditOrgName = this.auditOrgName;
             this.formDetail.managementProjectUuid = this.active_project;
-            let arr = this.fileArr.join(',');
-            this.formDetail.fileArr = arr;//生成 后的 数组
-            // console.log(this.formDetail.fileArr);
+            // let arr = this.fileArr.join(',');
+            // let arr = { ...this.fileArr };
+
+            // 
+            // var arr2 = this.fileArr
+            // var obj = {}
+            // for (var key in arr2) {
+            //   obj[key] = arr2[key]
+            // }
+            // //{0: "啦啦", 1: "呵呵", 2: "哥哥", 3: "嗯嗯"}
+
+            this.formDetail.fileArrList = this.fileArr;//生成 后的 数组
 
             // 1确认 2生成
             if (type == 1) {
@@ -2683,6 +3006,8 @@ export default {
               this.formDetail.butt = 2
               this.formDetail.auditOrgOpinion = '情况属实\n'
             }
+
+            this.formDetail.fileArrList = this.fileArr;//生成 后的 数组
 
             auditConfirmation_update(this.formDetail).then(resp => {
               if (resp.code == 0) {
@@ -2733,6 +3058,21 @@ export default {
 };
 </script>
 
+<style >
+.el-popover.popover {
+  padding: 0 !important;
+  transform: translate(-50%, 0%);
+  left: 50% !important;
+  /* box-shadow: none !important;
+  border: none !important;
+  background: none !important; */
+}
+.el-popover.popover[x-placement^="bottom"] .popper__arrow {
+  left: 150px !important;
+  opacity: 0 !important;
+}
+</style> 
+
 <style lang="scss" scoped>
 .confirmaryTable {
   .update {
@@ -2781,6 +3121,28 @@ export default {
 >>> .el-table__header {
   margin-top: 0 !important;
 }
+
+/* 上传的文件列表禁止删除 */
+.upload-demo {
+  position: relative;
+}
+.ifLook_upload {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  cursor: not-allowed;
+}
+/* 上传的文件列表禁止删除 */
+
+/* 分页样式 */
+.page {
+  width: 100%;
+  padding: 20px 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+/* 分页样式 end*/
 .one {
   /* display: flex; */
 }
@@ -2805,7 +3167,11 @@ export default {
   align-items: center;
   position: relative;
 }
-.query_list li i {
+.query_list li div {
+  position: relative;
+  padding: 0 3%;
+}
+.query_list li div i {
   position: absolute;
   left: 2px;
   top: 2px;
@@ -2814,7 +3180,6 @@ export default {
 .query_list li p {
   float: left;
   width: 100%;
-  padding-left: 3%;
   height: 100%;
   line-height: 20px;
   display: -webkit-box;
@@ -2825,7 +3190,37 @@ export default {
   box-sizing: border-box;
   word-break: break-all;
 }
-
+.query_list li div,
+.query_list span {
+  cursor: pointer;
+}
+.edit span,
+.edit p {
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.7) !important;
+}
+.edit span:hover,
+.edit p:hover {
+  color: #1890ff !important;
+}
+.look span,
+.look p,
+.look p:hover,
+.look span:hover {
+  cursor: not-allowed;
+  color: rgba(0, 0, 0, 0.7) !important;
+}
+.query_list span {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  font-size: 14px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+}
 /* 筛选 */
 .search >>> .el-input__inner::-webkit-input-placeholder {
   color: #c0c4cc !important;
@@ -2899,12 +3294,14 @@ export default {
 }
 .problem_details_conter {
   width: 100%;
-  position: absolute;
+  /* position: absolute; */
   /* top: 90px; */
-  left: 0;
-  padding: 0 20px;
+  /* left: 0; */
+  /* padding: 0 20px; */
   box-sizing: border-box;
-  z-index: 9999;
+  /* z-index: 100;
+  border: 1px solid red; */
+  float: right;
 }
 .problem_details_conter .list {
   margin: 0 auto;

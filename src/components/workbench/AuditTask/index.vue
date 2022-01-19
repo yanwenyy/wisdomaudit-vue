@@ -476,6 +476,7 @@
 
       <div class="dlag_conter3 verify">
         <el-form ref="verify_model"
+                 class="el_f"
                  :rules='rules_verify'
                  :model="verify_model"
                  :inline="false">
@@ -599,7 +600,7 @@
                            align="center"
                            width="180"
                            show-overflow-tooltip
-                           label="风险金额（万元）">
+                           label="涉及金额(万元)">
             <template slot-scope="scope">
               {{ parseFloat(scope.row.riskAmount.toString()) }}
             </template>
@@ -716,7 +717,7 @@
 
             <el-form-item prop="riskAmount"
                           style="margin-left:20px">
-              <p>风险金额：</p>
+              <p>涉及金额：</p>
               <el-input type="input"
                         v-model="problems_form.riskAmount"
                         placeholder=""></el-input>
@@ -938,6 +939,7 @@
             </el-select>
           </el-form-item>
           <!-- 专题 -->
+
           <el-form-item label="专题："
                         prop="belongSpcial"
                         style="margin-bottom:30px!important">
@@ -952,6 +954,11 @@
             </el-select>
             <el-input v-model="save_zj_query.belongSpcial"
                       v-if="input_select==false"></el-input>
+            <el-button v-if="input_select == false"
+                       type="primary"
+                       class="inline-block"
+                       style="position: absolute;top:0;right: -20px"
+                       @click="input_select=!input_select">重选</el-button>
           </el-form-item>
 
           <!-- 任务描述 -->
@@ -1114,13 +1121,13 @@ export default {
       input_select: true,
       task_type: 0, //默认显示任务/自建任务
       tab: [{ name: "审计资料任务列表" }, { name: "已操作的资料列表" }], //任务切换
-      dialogVisible_quote: false, //模型任务引用
+      // dialogVisible_quote: false, //模型任务引用
       dialogVisible_zj: false, // 自建任务新增弹窗
       dialogVisible_data_num: false, //模型任务结果数
       setParametersDialogVisible: false, //模型任务设置参数
       problemsDialogVisible: false, //模型任务问题数
       dialogVisible_data_verify: false,//模型任务 核实 结果
-      dialogVisible_add_list: false,//问题数新增
+      // dialogVisible_add_list: false,//问题数新增
       dialogVisibl_enclosure_details: false,//附件详情
       multipleSelection_data_list: [],// 结果数 全选数据
 
@@ -1182,6 +1189,11 @@ export default {
         belongSpcial: '',//专题
 
       },
+      zdyCode: 0,//区别自定义
+      belongSpcialSize: '',//专题集合数
+      belongSpcialCode: 'SPECIAL',
+
+
       // 编辑数据
       edit_datails: [],
 
@@ -1222,7 +1234,7 @@ export default {
         basis: '',//依据
         problemDiscoveryTime: '',//发现时间
         describe: '', // 描述
-        riskAmount: '',// 风险金额
+        riskAmount: '',// 涉及金额
         associatedTask: '',// 关联任务
         // 附件
       },
@@ -1233,7 +1245,7 @@ export default {
         basis: [{ required: true, message: '请输入依据', trigger: 'blur' }],
         problemDiscoveryTime: [{ required: true, message: '请选择发现时间', trigger: 'change' }],
         describe: [{ required: true, message: '请输入描述', trigger: 'blur' }],
-        riskAmount: [{ required: true, message: '请输入风险金额', trigger: 'change' }],
+        riskAmount: [{ required: true, message: '请输入涉及金额', trigger: 'change' }],
         // associatedTask: [{ required: true, message: '请选择关联任务', trigger: 'change' }],
       },
       problems_slect: [],//领域
@@ -1358,10 +1370,8 @@ export default {
     this.lingyu(params2);//领域
 
 
-    let params3 = {
-      typecode: 'SPECIAL',
-    }
-    this.zhuanti(params3);//专题
+
+    this.zhuanti();//专题
 
 
     let params4 = {
@@ -1484,10 +1494,14 @@ export default {
       setTimeout(() => {
         this.isDisable = false
       }, 2000)
+      this.zdyCode = 0;//重置自定义code
+      this.zhuanti();//专题数据
+
       // 1:新增  2:编辑
       //自建任务 新增
       this.dialogVisible_zj = true;
       this.title = '新增任务';
+
     },
     // 新增上传附件
     handleChangePic (file, fileList, name) {
@@ -1518,6 +1532,24 @@ export default {
       setTimeout(() => {
         this.isDisable = false
       }, 2000)
+      // 判断自定义的专题是否重复
+      if (this.zdyCode == 1) {
+        let msg = true;
+        this.zt_slect.forEach(item => {
+          if (item.label == this.save_zj_query.belongSpcial) {
+            msg = false
+            return false
+          }
+        })
+        if (msg == false) {
+          this.$message({
+            message: '该专题已经存在',
+            type: 'warning'
+          });
+          return false
+        }
+      }
+
       // 1:新增  2:编辑
       if (index == 1) {
         this.$refs[save_zj_query].validate((valid) => {
@@ -1529,8 +1561,15 @@ export default {
               let formData = new FormData()
               formData.append('file', this.file.raw)
               this.fileList.forEach((item) => {
+                // let pos = item.raw.name.lastIndexOf('\"')
+                // item.raw.name.substring(pos + 1);
                 formData.append('files', item.raw);
+                console.log(item);
+
               })
+
+
+
               axios({
                 method: 'post',
                 url: '/wisdomaudit/attachment/fileUploads',
@@ -1558,6 +1597,13 @@ export default {
                     belongSpcial: this.save_zj_query.belongSpcial,//领域
                     belongField: this.save_zj_query.belongField,//专题
                     attachmentList: this.Upload_file,//上传成功de 的文件
+
+                    // 专题
+                    entity: {
+                      belongSpcialSize: this.belongSpcialSize,//专题size
+                      dictname: this.save_zj_query.belongSpcial,//专题name
+                    },
+                    zdyCode: this.zdyCode,
                   }
 
                   this.new_add(params1)//新增上传
@@ -1585,6 +1631,14 @@ export default {
                 belongSpcial: this.save_zj_query.belongSpcial,//领域
                 belongField: this.save_zj_query.belongField,//专题
                 attachmentList: this.edit_file_list,//上传成功的 的文件
+
+                // 专题
+                entity: {
+                  belongSpcialSize: this.belongSpcialSize,//专题size
+                  dictname: this.save_zj_query.belongSpcial,//专题name
+                },
+                zdyCode: this.zdyCode,
+
               }
 
               this.new_add(params1)//新增上传
@@ -1654,6 +1708,13 @@ export default {
                 belongSpcial: this.save_zj_query.belongSpcial,//领域
                 belongField: this.save_zj_query.belongField,//专题
                 attachmentList: upList,//上传成功de 的文件
+                // 专题
+                entity: {
+                  belongSpcialSize: this.belongSpcialSize,//专题size
+                  dictname: this.save_zj_query.belongSpcial,//专题name
+                },
+                zdyCode: this.zdyCode,
+
               }
 
               this.edit_data_update(params2);//编辑
@@ -1693,6 +1754,13 @@ export default {
             belongSpcial: this.save_zj_query.belongSpcial,//专题
             belongField: this.save_zj_query.belongField,//领域
             attachmentList: upList,//上传成功de 的文件
+            // 专题
+            entity: {
+              belongSpcialSize: this.belongSpcialSize,//专题size
+              dictname: this.save_zj_query.belongSpcial,//专题name
+            },
+            zdyCode: this.zdyCode,
+
           }
           this.edit_data_update(params2);//编辑
         }
@@ -1785,6 +1853,9 @@ export default {
 
       this.loading_edit = true;
       this.title = '编辑任务';
+      this.zdyCode = 0;//重置自定义code
+      this.zhuanti();//专题数据
+
       this.dialogVisible_zj = true;//显示新增编辑 弹窗
       this.save_zj_query.auditTaskUuid = data.auditTaskUuid;
       // this.save_zj_query.peopleName = data.peopleName;//责任人
@@ -2156,6 +2227,13 @@ export default {
             this.fileList2.forEach((item) => {
               formData.append('files', item.raw);
             })
+            console.log(item);
+
+
+            // let pos = file.file.name.lastIndexOf('\"')
+            // file.file.name.substring(pos + 1);
+
+
 
             axios({
               method: 'post',
@@ -2353,10 +2431,15 @@ export default {
       this.save_zj_query.belongField = val
     },
     // 专题select
-    zhuanti (params) {
+    zhuanti () {
+      let params = {
+        typecode: this.belongSpcialCode,
+      }
       task_problems_loadcascader(params).then(resp => {
         this.zt_slect = resp.data
-        console.log(this.zt_slect);
+        //专题父code
+        this.belongSpcialSize = resp.data.length;
+        console.log(this.belongSpcialSize);
       })
     },
     // 专题 change
@@ -2366,10 +2449,16 @@ export default {
         return item.value === value; //筛选出匹配数据
       });
       let val = obj.value;
-      this.save_zj_query.belongSpcial = obj.label;
+      // this.belongSpcialId = obj.uuid;//专题uuid
+      this.save_zj_query.belongSpcial = obj.label;//专题label
+
+
       if (val == 'otherzt') {
         this.input_select = false;
-        this.save_zj_query.belongSpcial = ''
+        this.save_zj_query.belongSpcial = '';
+        this.zdyCode = 1;//自定义标识 1
+      } else {
+        this.zdyCode = 0;//自定义标识 1
       }
     },
     // 新增  问题数 保存
@@ -2383,7 +2472,7 @@ export default {
             basis: this.problems_form.basis,//依据
             problemDiscoveryTime: this.problems_form.problemDiscoveryTime,//发现时间
             describe: this.problems_form.describe, // 描述
-            riskAmount: this.problems_form.riskAmount,// 风险金额
+            riskAmount: this.problems_form.riskAmount,// 涉及金额
             associatedTask: this.problems_form.associatedTask,// 关联任务
             // 附件
           };
@@ -2449,7 +2538,7 @@ export default {
         this.problems_form.basis = data.basis;//依据
         this.problems_form.problemDiscoveryTime = data.problemDiscoveryTime;//发现时间
         this.problems_form.describe = data.describe;// 描述
-        this.problems_form.riskAmount = data.riskAmount;// 风险金额
+        this.problems_form.riskAmount = data.riskAmount;// 涉及金额
         this.problems_form.associatedTask = data.associatedTask;// 关联任务
       })
     },
@@ -2462,7 +2551,7 @@ export default {
         basis: this.problems_form.basis,//依据
         problemDiscoveryTime: this.problems_form.problemDiscoveryTime,//发现时间
         describe: this.problems_form.describe, // 描述
-        riskAmount: this.problems_form.riskAmount,// 风险金额
+        riskAmount: this.problems_form.riskAmount,// 涉及金额
         associatedTask: this.problems_form.associatedTask,// 关联任务
         // 附件
       };
@@ -2824,6 +2913,17 @@ export default {
 
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
+
+.verify {
+}
+
+.verify >>> .el_f {
+  width: 460px;
+}
+.verify >>> .el-upload-dragger {
+  width: 300px !important;
+}
+
 >>> .el-dialog--center .el-dialog__body {
   padding: 0 !important;
 }
