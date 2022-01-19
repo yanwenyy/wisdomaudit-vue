@@ -1,6 +1,7 @@
 <template>
   <div class="add-confirmation-popover">
-    <el-form ref="form" :model="form">
+    <el-form ref="form"
+             :model="form">
       <el-row>
         <el-col :span="12">
           审计项目名称：2021年泰安分公司经责审计
@@ -10,42 +11,71 @@
         </el-col>
       </el-row>
       <el-form-item label="审计(调查)事项：">
-        <el-input type="textarea" v-model="form.item" placeholder="请输入"></el-input>
+        <el-input type="textarea"
+                  v-model="form.item"
+                  placeholder="请输入"></el-input>
       </el-form-item>
-      <el-form-item label="审计(调查)事项描述：" class="form-item-describe">
-        <el-popover placement="bottom-start" trigger="click" @hide="popoverHide">
-          <el-table :data="proData" stripe>
-            <el-table-column type="selection" width="55">
+      <el-form-item label="审计(调查)事项描述："
+                    class="form-item-describe">
+        <el-popover placement="bottom-start"
+                    trigger="click"
+                    @hide="popoverHide">
+          <el-table :data="proData"
+                    stripe>
+            <el-table-column type="selection"
+                             width="55">
             </el-table-column>
-            <el-table-column property="number" label="序号"></el-table-column>
-            <el-table-column property="field" label="领域"></el-table-column>
-            <el-table-column property="proName" label="问题"></el-table-column>
-            <el-table-column property="gist" label="依据"></el-table-column>
-            <el-table-column property="describe" label="描述"></el-table-column>
-            <el-table-column property="date" label="发现日期" width="130"></el-table-column>
-            <el-table-column property="money" label="风险金额(元)" width="130"></el-table-column>
-            <el-table-column property="suggest" label="管理建议"></el-table-column>
-            <el-table-column property="discoverer" label="发现人"></el-table-column>
+            <el-table-column property="number"
+                             label="序号"></el-table-column>
+            <el-table-column property="field"
+                             label="领域"></el-table-column>
+            <el-table-column property="proName"
+                             label="问题"></el-table-column>
+            <el-table-column property="gist"
+                             label="依据"></el-table-column>
+            <el-table-column property="describe"
+                             label="描述"></el-table-column>
+            <el-table-column property="date"
+                             label="发现日期"
+                             width="130"></el-table-column>
+            <el-table-column property="money"
+                             label="涉及金额(元)"
+                             width="130"></el-table-column>
+            <el-table-column property="suggest"
+                             label="管理建议"></el-table-column>
+            <el-table-column property="discoverer"
+                             label="发现人"></el-table-column>
           </el-table>
-          <el-button slot="reference" class="related-problem-btn">关联问题</el-button>
+          <el-button slot="reference"
+                     class="related-problem-btn">关联问题</el-button>
         </el-popover>
-        <el-input type="textarea" v-model="form.describe" placeholder="请输入" :autosize="{ minRows: 5, maxRows: 5}">
+        <el-input type="textarea"
+                  v-model="form.describe"
+                  placeholder="请输入"
+                  :autosize="{ minRows: 5, maxRows: 5}">
         </el-input>
       </el-form-item>
       <el-row>
         <el-col :span="6">
           <el-form-item label="审计人员：">
-            <el-input v-model="form.auditor" placeholder="请输入"></el-input>
+            <el-input v-model="form.auditor"
+                      placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6" :offset="1">
+        <el-col :span="6"
+                :offset="1">
           <el-form-item label="复核人：">
-            <el-input v-model="form.reviewer" placeholder="请输入"></el-input>
+            <el-input v-model="form.reviewer"
+                      placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6" :offset="1">
-          <el-form-item label="编制日期：" placeholder="请输入">
-            <el-date-picker v-model="form.date" type="date" placeholder="选择日期">
+        <el-col :span="6"
+                :offset="1">
+          <el-form-item label="编制日期："
+                        placeholder="请输入">
+            <el-date-picker v-model="form.date"
+                            type="date"
+                            placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
         </el-col>
@@ -57,7 +87,7 @@
 <script>
 export default {
   components: {},
-  data() {
+  data () {
     return {
       form: {
         // name: "",
@@ -108,11 +138,11 @@ export default {
   },
   computed: {},
   watch: {},
-  created() {},
-  mounted() {},
+  created () { },
+  mounted () { },
   methods: {
     // 关联问题
-    popoverHide() {
+    popoverHide () {
       this.form.describe =
         "问题一、部分工程项目转资时点不准确。抽查发现山东移动2某设备割接入网时间为2019年3月28日，其转资时间为2019年1月30日，设备转资提前，涉及金额XX元。问题二、部分工程项目转资金额不准确。抽查发现山东移动2018年融合核心网电路某设备割接入网时间为2019年3月28日，其转资时间为2019年1月30日，设备转资提前，涉及金额XX元。";
     },

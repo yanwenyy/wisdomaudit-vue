@@ -25,8 +25,10 @@
       </div>
     </div>
 
-    <div class="padding table">
+    <div class="padding table"
+         ref="myBox">
       <el-table :data="tableData.records"
+                ref="myBox"
                 :header-cell-style="{'background-color': '#F4FAFF',}"
                 v-loading="loading"
                 stripe
@@ -38,14 +40,44 @@
         <el-table-column prop="problem"
                          label="问题">
           <template slot-scope="scope">
-            <span @click="details_show(scope.row,scope.$index+1)"
-                  class="look cursor"
-                  v-if="scope.row.problem">
-              {{scope.row.problem}}
-            </span>
-            <p v-else>
-              --
-            </p>
+            <!-- :style="{'width':details_list.style_width+'px!imoprtant'}" -->
+            <el-popover placement="bottom"
+                        visible-arrow='false'
+                        popper-class="popover"
+                        :width=" details_list.style_width"
+                        @show="details_show(scope.row,scope.$index+1)"
+                        trigger="click">
+              <div class="problem_details_conter"
+                   :width=" details_list.style_width + 'px'"
+                   v-if="details == true">
+                <ul class="list">
+                  <li>
+                    问题：{{details_list.problem}}
+                  </li>
+                  <li>
+                    依据：{{details_list.basis}}
+                  </li>
+                  <li>
+                    描述：{{details_list.describe}}
+                  </li>
+                  <li>
+                    管理建议：{{details_list.managementAdvice}}
+                  </li>
+                </ul>
+              </div>
+
+              <div slot="reference"
+                   class="pointer">
+                <span class="look cursor"
+                      v-if="scope.row.problem">
+                  {{scope.row.problem}}
+                </span>
+                <span v-else>
+                  --
+                </span>
+              </div>
+            </el-popover>
+
           </template>
 
         </el-table-column>
@@ -154,9 +186,7 @@
         </el-table-column>
 
       </el-table>
-      <div class="mose"
-           @click="close_mose"
-           v-if="details == true"></div>
+
       <!-- 分页 -->
       <div class="page">
         <el-button type="primary"
@@ -175,8 +205,12 @@
         </el-pagination>
       </div>
       <!-- 分页 end-->
+
+      <!-- <div class="mose"
+           @click="close_mose"
+           v-if="details == true"></div> -->
       <!-- 详情 -->
-      <div class="problem_details_conter"
+      <!-- <div class="problem_details_conter"
            :style="{'top':details_list.style_top}"
            v-if="details == true">
         <ul class="list">
@@ -194,7 +228,7 @@
           </li>
 
         </ul>
-      </div>
+      </div> -->
       <!-- 详情 end-->
     </div>
 
@@ -339,6 +373,8 @@ export default {
       details_list: [],//悬浮数据
       Index: '',
 
+      style_w: '',
+
     }
   },
   computed: {},
@@ -347,6 +383,7 @@ export default {
     this.list_query.id = this.$route.params && this.$route.params.id
     this.type = this.$route.query.type
     this.page_list_data()
+
   },
   mounted () {
     loadaudittorg({}).then((resp) => {
@@ -457,16 +494,20 @@ export default {
     // },
 
 
-    details_show (data, index) {
-      this.Index = index
-      this.details = true
-      this.details_list = data;
-      if (index == 0) {
-        this.$set(this.details_list, 'style_top', '90px')//核实意见
-      } else {
-        let top_px = (this.style_px * index + 8) + 'px'
-        this.$set(this.details_list, 'style_top', top_px)//核实意见
-      }
+    details_show (data) {
+
+      this.$nextTick(() => {
+        this.style_w = this.$refs.myBox.offsetWidth
+        console.log(this.style_w);
+
+        this.details = true
+        this.details_list = data;
+
+        // let top_px = (this.style_px * index + 8) + 'px'
+        this.$set(this.details_list, 'style_width', this.style_w - '43')
+        console.log(this.details_list.style_width);
+      });
+
     },
     close_mose () {
       this.details = false
@@ -580,7 +621,21 @@ export default {
   },
 }
 </script>
-
+<style >
+.el-popover.popover {
+  padding: 0 !important;
+  /* transform: translate(-50%, 0%);
+  left: 50% !important; */
+  left: inherit !important;
+  right: 20px !important;
+  box-shadow: none !important;
+  border: none !important;
+  background: none !important;
+}
+.el-popover.popover[x-placement^="bottom"] .popper__arrow {
+  left: 150px !important;
+}
+</style> 
 <style scoped>
 .mose {
   width: 100%;
@@ -589,6 +644,7 @@ export default {
   left: 0;
   top: 0;
   z-index: 99;
+  background: rgba(0, 0, 0, 0.5);
 }
 .table {
   position: relative;
@@ -596,12 +652,14 @@ export default {
 
 .problem_details_conter {
   width: 100%;
-  position: absolute;
+  /* position: absolute; */
   /* top: 90px; */
-  left: 0;
-  padding: 0 20px;
+  /* left: 0; */
+  /* padding: 0 20px; */
   box-sizing: border-box;
-  z-index: 100;
+  /* z-index: 100;
+  border: 1px solid red; */
+  float: right;
 }
 .problem_details_conter .list {
   margin: 0 auto;

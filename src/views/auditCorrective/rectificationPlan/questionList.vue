@@ -41,7 +41,7 @@
       <el-table-column label="发现日期"
                        width="200px"
                        prop="address" />
-      <el-table-column label="风险金额(元)"
+      <el-table-column label="涉及金额(元)"
                        width="200px"
                        prop="date">
         <template slot-scope="scope">

@@ -95,7 +95,7 @@
                 :key="index">
               <p class="fileName_show"
                  @click="openVault(item)">{{item.fileName}}</p>
-              <span style="color:#606266">版本1.0</span><span style="color:#606266">时间{{item.createTime|filtedate
+              <span style="color:#606266">版本{{item.ext3}}</span><span style="color:#606266">时间{{item.createTime|filtedate
 }}</span>
               <el-button type="text"
                          plain

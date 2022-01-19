@@ -619,11 +619,10 @@
                width="50%">
       <div class="dialogTitle">自建任务</div>
       <div class="selfTask">
-        <el-form label-width="120px"
+        <el-form label-width="125px"
                  :model="taskSelf"
                  ref="selfTaskRef"
-                 :rules="taskSelfRules"
-                 hide-required-asterisk>
+                 :rules="taskSelfRules">
           <el-form-item label="自建任务名称："
                         prop="taskName">
             <el-input placeholder="请输入自建任务名称"
@@ -667,6 +666,11 @@
             </el-select>
             <el-input v-model="taskSelf.belongSpcial"
                       v-if="other_input == false"></el-input>
+            <el-button v-if="other_input == false"
+                       type="primary"
+                       class="inline-block"
+                       style="position: absolute;top:0;right: -70px"
+                       @click="other_input=!other_input">重选</el-button>
           </el-form-item>
 
           <!-- prop="taskDescription" -->
@@ -708,10 +712,10 @@
                @close="editResetForm2('editTaskRef')">
       <div class="dialogTitle">编辑自建任务</div>
       <div class="selfTask">
-        <el-form label-width="120px"
+        <el-form label-width="125px"
                  :model="edittaskSelfForm"
-                 ref="editTaskRef"
-                 hide-required-asterisk>
+                 ref="editTaskRef">
+          <!-- hide-required-asterisk -->
           <!-- <el-form-item label="类型：" style="margin-bottom: 50px">
             <div style="margin-top: -5%; margin-bottom: 20px">
               <el-radio v-model="radio" label="1">模型任务</el-radio>
@@ -761,6 +765,12 @@
             </el-select>
             <el-input v-model="edittaskSelfForm.belongSpcial"
                       v-if="other_input == false"></el-input>
+
+            <el-button v-if="other_input == false"
+                       type="primary"
+                       class="inline-block"
+                       style="position: absolute;top:0;right: -70px"
+                       @click="other_input=!other_input">重选</el-button>
           </el-form-item>
 
           <el-form-item label="任务描述：">
@@ -2983,7 +2993,7 @@ export default {
   margin-bottom: 25px !important;
   display: flex;
   -ms-flex-wrap: wrap;
-  width: 400px;
+  width: 450px;
   margin: 0 auto;
 }
 .selfTask >>> .el-form-item__content {

@@ -1148,7 +1148,7 @@
                              show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="riskAmount"
-                             label="风险金额(万元)"
+                             label="涉及金额(万元)"
                              show-overflow-tooltip>
               <template slot-scope="scope">
                 {{ parseFloat(scope.row.riskAmount.toString()) }}
@@ -1282,7 +1282,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="风险金额（万元）"
+          <el-form-item label="涉及金额(万元)"
                         prop="riskAmount"
                         width="180">
             <!--v-model.number="dqProblem.riskAmount"-->
@@ -1291,7 +1291,7 @@
                       @keyup.native="
                 dqProblem.riskAmount = oninput(dqProblem.riskAmount)
               "
-                      placeholder="请输入风险金额" />
+                      placeholder="请输入涉及金额" />
           </el-form-item>
           <el-form-item label="关联任务"
                         prop="auditTaskUuid">
@@ -1366,7 +1366,7 @@
                              show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="riskAmount"
-                             label="风险金额(万元)"
+                             label="涉及金额(万元)"
                              show-overflow-tooltip>
               <template slot-scope="scope">
                 <p>
@@ -1653,7 +1653,7 @@ export default {
         managementAdvice: "", //建议
         problemDiscoveryTime: "", //发现日期
         problemFindPeople: "", //发现人
-        riskAmount: "", //风险金额
+        riskAmount: "", //涉及金额
         basis: "", //依据
         auditTaskUuid: "", //依据
       },
@@ -1680,7 +1680,7 @@ export default {
         ],
         special: [{ required: true, message: "请选择专题", trigger: "change" }],
         riskAmount: [
-          { required: false, message: "请填写风险金额", trigger: "blue" },
+          { required: false, message: "请填写涉及金额", trigger: "blue" },
         ],
       },
       temp: {
@@ -2788,7 +2788,7 @@ export default {
         this.dqProblem.managementAdvice = entity.managementAdvice; //建议
         this.dqProblem.problemDiscoveryTime = entity.problemDiscoveryTime; //发现日期
         this.dqProblem.problemFindPeople = entity.problemFindPeople; //发现人
-        this.dqProblem.riskAmount = parseFloat(entity.riskAmount.toString()); //风险金额
+        this.dqProblem.riskAmount = parseFloat(entity.riskAmount.toString()); //涉及金额
         // 依据
         if (entity.basis) {
           this.dqProblem.basis = entity.basis;

@@ -36,6 +36,7 @@ export function down_file (data) {
     ifDownFile: true,
     responseType: 'blob',
     method: 'post',
+
     // timeout:-1,
     data
   })
@@ -46,6 +47,8 @@ export function auditBasy_pageList (data) {
     baseURL: baseURL,
     url: `/auditBasy/pageList`,
     method: 'post',
+    isLoading: false,
+
     data
   })
 }
@@ -82,6 +85,8 @@ export function auditBasy_getFileList (data) {
     baseURL: baseURL,
     url: '/auditBasy/getFileListById/' + data + '',
     method: 'get',
+    isLoading: false,
+
     data
   })
 }
@@ -91,6 +96,8 @@ export function auditConfirmation_pageList (data) {
     baseURL: baseURL,
     url: '/auditConfirmation/queryList',
     method: 'post',
+    isLoading: false,
+
     data
   })
 }
@@ -100,6 +107,7 @@ export function auditConfirmation_save (data) {
     baseURL: baseURL,
     url: '/auditConfirmation/save',
     method: 'post',
+
     data
   })
 }
@@ -136,6 +144,8 @@ export function indexManagement_pageList (data) {
     baseURL: baseURL,
     url: '/operatingIndicators/list',
     method: 'post',
+    isLoading: false,
+
     data
   })
 }

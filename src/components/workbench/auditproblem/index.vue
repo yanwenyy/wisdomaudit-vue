@@ -1,10 +1,12 @@
 <template>
   <div class="page-container auditproblem">
     <div class="filter-container">
-      <el-row :gutter="24" class="titleMes">
+      <el-row :gutter="24"
+              class="titleMes">
         <!-- 自建新增   -->
         <el-col :span="1.5">
-          <el-button type="primary" @click="add()">新增审计问题</el-button>
+          <el-button type="primary"
+                     @click="add()">新增审计问题</el-button>
         </el-col>
 
         <!-- <div class="search">
@@ -22,17 +24,14 @@
           </el-input>
         </div> -->
         <div class="search">
-          <el-input
-            placeholder="请输入问题"
-            v-model="pageQuery.condition.problem"
-          >
+          <el-input placeholder="请输入问题"
+                    v-model="pageQuery.condition.problem">
           </el-input>
-          <div
-            class="search_icon"
-            style="background: rgb(12, 135, 214) !important"
-            @click="getList(1)"
-          >
-            <i class="el-icon-search" style="color: white"></i>
+          <div class="search_icon"
+               style="background: rgb(12, 135, 214) !important"
+               @click="getList(1)">
+            <i class="el-icon-search"
+               style="color: white"></i>
           </div>
           <!-- <el-button type="primary"
                       >筛选</el-button> -->
@@ -40,41 +39,50 @@
       </el-row>
       <!-- <div class="auditproblem-btn-box"></div> -->
     </div>
+
+    <Vault :vaultV="vaultV"
+           :sceneId="sceneId"
+           :approvers="approvers"
+           :maxTime="maxTime"
+           :dqtime="dqtime"
+           :account="account"
+           :appSessionId="appSessionId"
+           @changevault="changevault"
+           @vdownload="vdownload"></Vault>
+
     <!-- @sort-change="sortChange"
        -->
     <div class="min_height">
-      <el-table
-        ref="problemtable"
-        :key="tableKey"
-        :header-cell-style="{
+      <el-table ref="problemtable"
+                :key="tableKey"
+                :header-cell-style="{
           'text-align': 'left',
           'background-color': '#F4FAFF',
         }"
-        v-loading="listLoading"
-        fit
-        style="width: 100%"
-        stripe
-        :data="list"
-        border
-        highlight-current-row
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column label="序号" width="70">
+                v-loading="listLoading"
+                fit
+                style="width: 100%"
+                stripe
+                :data="list"
+                border
+                highlight-current-row
+                @selection-change="handleSelectionChange">
+        <el-table-column label="序号"
+                         width="70">
           <template slot-scope="scope">
             {{ scope.$index + 1 }}
           </template>
         </el-table-column>
         <el-table-column label="问题">
           <template slot-scope="scope">
-            <div
-              class="canclick"
-              @click="checkDetail(scope.row.problemListUuid)"
-            >
+            <div class="canclick"
+                 @click="checkDetail(scope.row.problemListUuid)">
               {{ scope.row.problem }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="领域" prop="field">
+        <el-table-column label="领域"
+                         prop="field">
           <template slot-scope="scope">
             <div>
               <!-- {{ fieldFilter(scope.row.field) }} -->
@@ -82,249 +90,236 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="专题" prop="special">
+        <el-table-column label="专题"
+                         prop="special">
           <template slot-scope="scope">
             <div>
               {{ scope.row.special }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column
-          label="风险金额（万元）"
-          width="140px"
-          prop="riskAmount"
-          align="right"
-        >
+        <el-table-column label="涉及金额(万元)"
+                         prop="riskAmount"
+                         width="117px"
+                         align="right">
           <template slot-scope="scope">
             {{ parseFloat(scope.row.riskAmount) }}
           </template>
         </el-table-column>
-        <el-table-column label="" width="40px"> </el-table-column>
+        <el-table-column label=""
+                         width="40px"> </el-table-column>
         <el-table-column label="发现日期">
           <template slot-scope="scope">
-            {{ repDate(scope.row.problemDiscoveryTime) }}
+            {{ repDate(scope.row.problemDiscoveryTime)}}
           </template>
         </el-table-column>
-        <el-table-column label="发现人" prop="problemFindPeople" />
-        <el-table-column
-          label="操作"
-          width="100"
-          v-if="userRole == 1 || userRole == 2"
-        >
+
+        <el-table-column label="发现人"
+                         prop="problemFindPeople">
+
+        </el-table-column>
+
+        <!-- 附件 -->
+        <el-table-column prop="attachmentList"
+                         label="附件">
           <template slot-scope="scope">
-            <el-button
-              @click="openDetail(scope.$index)"
-              type="text"
-              style="color: #0c87d6"
-              >编辑</el-button
-            >
-            <el-button
-              @click="del(scope.row.problemListUuid)"
-              type="text"
-              style="color: #ff8a72"
-              >删除</el-button
-            >
+            <el-popover :popper-class="enclosure_details_list==''?'no-padding':''"
+                        placement="bottom"
+                        v-if="scope.row.attachmentList.length!==0"
+                        width="250"
+                        @show="open_enclosure_details(scope.row.attachmentList)"
+                        trigger="click">
+              <ul v-if="enclosure_details_list!=''"
+                  class="fileList-ul">
+                <li class="tableFileList-title">文件名称</li>
+                <li v-for="(item,index) in enclosure_details_list"
+                    :key="index"
+                    class="pointer blue"
+                    @click="openVault(item,'下载2')">
+                  {{item.fileName}}</li>
+                <!-- @click="download(item.attachmentUuid,item.fileName)" -->
+              </ul>
+              <div slot="reference"
+                   style="color: #1371cc;"
+                   class="pointer"><i class="el-icon-folder-opened list-folder"></i>{{scope.row.attachmentList.length}}
+              </div>
+            </el-popover>
+            <span v-else>--</span>
+
+          </template>
+        </el-table-column>
+
+        <el-table-column label="操作"
+                         width="100"
+                         v-if="userRole == 1 || userRole == 2">
+          <template slot-scope="scope">
+            <el-button @click="openDetail(scope.$index)"
+                       type="text"
+                       style="color: #0c87d6">编辑</el-button>
+            <el-button @click="del(scope.row.problemListUuid)"
+                       type="text"
+                       style="color: #ff8a72">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
 
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      :page.sync="pageQuery.pageNo"
-      :limit.sync="pageQuery.pageSize"
-      @pagination="getList"
-    />
+    <pagination v-show="total > 0"
+                :total="total"
+                :page.sync="pageQuery.pageNo"
+                :limit.sync="pageQuery.pageSize"
+                @pagination="getList" />
     <!-- 新增和编辑的弹框 -->
-    <el-dialog
-      title="新增审计问题"
-      class="add"
-      :append-to-body="true"
-      :visible.sync="dialogFormVisible"
-      :close-on-click-modal="false"
-      width="70%"
-      @close="resetForm('temp')"
-      center
-    >
-      <el-form
-        ref="dataForm"
-        :rules="rules"
-        :model="temp"
-        label-position="right"
-        label-width="140px"
-        class="problem-form formData"
-      >
-        <el-form-item class="itemTwo" label="问题：" prop="problem">
-          <el-input v-model="temp.problem" placeholder="请输入问题" />
+    <el-dialog title="新增审计问题"
+               class="add"
+               :append-to-body="true"
+               :visible.sync="dialogFormVisible"
+               :close-on-click-modal="false"
+               width="70%"
+               @close="resetForm('temp')"
+               center>
+      <el-form ref="dataForm"
+               :rules="rules"
+               :model="temp"
+               label-position="right"
+               label-width="140px"
+               class="problem-form formData">
+        <el-form-item class="itemTwo"
+                      label="问题："
+                      prop="problem">
+          <el-input v-model="temp.problem"
+                    placeholder="请输入问题" />
         </el-form-item>
-        <el-form-item class="itemTwo" label="领域：" prop="field">
-          <el-select v-model="temp.field" placeholder="请选择领域">
-            <el-option
-              v-for="item in CategoryList"
-              :key="item.label"
-              :label="item.label"
-              :value="item.label"
-            >
+        <el-form-item class="itemTwo"
+                      label="领域："
+                      prop="field">
+          <el-select v-model="temp.field"
+                     placeholder="请选择领域">
+            <el-option v-for="item in CategoryList"
+                       :key="item.label"
+                       :label="item.label"
+                       :value="item.label">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item class="itemTwo" label="专题：" prop="special">
-          <el-select
-            v-model="temp.special"
-            placeholder="请选择专题"
-            v-if="input_select == true"
-            @change="change_zt"
-          >
-            <el-option
-              v-for="item in SPECIALList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
+        <el-form-item class="itemTwo"
+                      label="专题："
+                      prop="special">
+          <el-select v-model="temp.special"
+                     placeholder="请选择专题"
+                     v-if="input_select == true"
+                     @change="change_zt">
+            <el-option v-for="item in SPECIALList"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.value">
             </el-option>
           </el-select>
-          <el-input
-            v-model="temp.special"
-            v-if="input_select == false"
-          ></el-input>
-          <el-button
-            v-if="input_select == false"
-            type="primary"
-            class="inline-block"
-            style="position: absolute; top: 0; right: -70px"
-            @click="input_select = !input_select"
-            >重选</el-button
-          >
+          <el-input v-model="temp.special"
+                    v-if="input_select == false"></el-input>
+          <el-button v-if="input_select == false"
+                     type="primary"
+                     class="inline-block"
+                     style="position: absolute; top: 0; right: -70px"
+                     @click="input_select = !input_select">重选</el-button>
         </el-form-item>
         <!-- <el-form-item> </el-form-item> -->
-        <el-form-item
-          label="依据："
-          style="margin-bottom: 20px !important"
-          prop="basis"
-          class="itemOne"
-        >
-          <el-select
-            v-model="temp.basis"
-            class="inline-block yj-sel"
-            multiple
-            @visible-change="toopen"
-            placeholder="请选择依据"
-            no-data-text="请点击引用审计依据"
-          >
+        <el-form-item label="依据："
+                      style="margin-bottom: 20px !important"
+                      prop="basis"
+                      class="itemOne">
+          <el-select v-model="temp.basis"
+                     class="inline-block yj-sel"
+                     multiple
+                     @visible-change="toopen"
+                     placeholder="请选择依据"
+                     no-data-text="请点击引用审计依据">
           </el-select>
-          <el-button
-            type="primary"
-            ref="basisbtn0"
-            class="citebtn inline-block"
-            @click="openbasis()"
-            >引用审计依据</el-button
-          >
+          <el-button type="primary"
+                     ref="basisbtn0"
+                     class="citebtn inline-block"
+                     @click="openbasis()">引用审计依据</el-button>
         </el-form-item>
 
-        <el-form-item
-          label="描述："
-          style="margin-bottom: 20px !important"
-          prop="describe"
-          class="itemOne"
-        >
+        <el-form-item label="描述："
+                      style="margin-bottom: 20px !important"
+                      prop="describe"
+                      class="itemOne">
           <!-- <el-input v-model="temp.describe" placeholder="请输入描述" /> -->
-          <el-input
-            type="textarea"
-            v-model="temp.describe"
-            placeholder="请输入描述"
-            :autosize="{ minRows: 3 }"
-          ></el-input>
+          <el-input type="textarea"
+                    v-model="temp.describe"
+                    placeholder="请输入描述"
+                    :autosize="{ minRows: 3 }"></el-input>
         </el-form-item>
-        <el-form-item
-          label="管理建议："
-          style="margin-bottom: 20px !important"
-          prop="managementAdvice"
-          class="itemOne"
-        >
-          <el-input
-            type="textarea"
-            v-model="temp.managementAdvice"
-            placeholder="请输入管理建议"
-            :autosize="{ minRows: 3 }"
-          />
+        <el-form-item label="管理建议："
+                      style="margin-bottom: 20px !important"
+                      prop="managementAdvice"
+                      class="itemOne">
+          <el-input type="textarea"
+                    v-model="temp.managementAdvice"
+                    placeholder="请输入管理建议"
+                    :autosize="{ minRows: 3 }" />
         </el-form-item>
-        <el-form-item
-          class="itemTwo"
-          label="发现日期："
-          prop="problemDiscoveryTime"
-        >
+        <el-form-item class="itemTwo"
+                      label="发现日期："
+                      prop="problemDiscoveryTime">
           <!-- <el-input
             v-model="temp.problemDiscoveryTime"
             type="date"
             placeholder="请输入发现日期"
           /> -->
-          <el-date-picker
-            type="date"
-            placeholder="选择日期"
-            v-model="temp.problemDiscoveryTime"
-            style="width: 100%"
-          ></el-date-picker>
+          <el-date-picker type="date"
+                          placeholder="选择日期"
+                          v-model="temp.problemDiscoveryTime"
+                          style="width: 100%"></el-date-picker>
         </el-form-item>
-        <el-form-item class="itemTwo" label="发现人：" prop="problemFindPeople">
-          <el-select
-            v-model="temp.problemFindPeople"
-            placeholder="请选择发现人"
-          >
-            <el-option
-              v-for="(item, i) in personlist"
-              :key="'person' + i"
-              :label="item.realName"
-              :value="item.realName"
-            >
+        <el-form-item class="itemTwo"
+                      label="发现人："
+                      prop="problemFindPeople">
+          <el-select v-model="temp.problemFindPeople"
+                     placeholder="请选择发现人">
+            <el-option v-for="(item, i) in personlist"
+                       :key="'person' + i"
+                       :label="item.realName"
+                       :value="item.realName">
               {{ item.realName }}
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item
-          class="itemTwo"
-          label="风险金额（万元）："
-          prop="riskAmount"
-        >
-          <el-input
-            v-model="temp.riskAmount"
-            placeholder="请输入风险金额"
-            @keyup.native="onlyNumOnePoint('temp')"
-            @input="temp.riskAmount = temp.riskAmount.slice(0, 27)"
-          />
+        <el-form-item class="itemTwo"
+                      label="风险金额（万元）："
+                      prop="riskAmount">
+          <el-input v-model="temp.riskAmount"
+                    placeholder="请输入风险金额"
+                    @keyup.native="onlyNumOnePoint('temp')"
+                    @input="temp.riskAmount = temp.riskAmount.slice(0, 27)" />
         </el-form-item>
-        <el-form-item
-          class="itemTwo task"
-          label="关联任务："
-          prop="auditTaskUuid"
-        >
-          <el-select
-            v-model="temp.auditTaskUuid"
-            multiple
-            placeholder="请选择关联任务"
-            @change="changetempauditTaskUuid"
-          >
-            <el-option
-              v-for="item in auditTasklList"
-              :key="item.auditTaskUuid"
-              :label="item.taskName"
-              :value="item.auditTaskUuid"
-            >
+        <el-form-item class="itemTwo task"
+                      label="关联任务："
+                      prop="auditTaskUuid">
+          <el-select v-model="temp.auditTaskUuid"
+                     multiple
+                     placeholder="请选择关联任务"
+                     @change="changetempauditTaskUuid">
+            <el-option v-for="item in auditTasklList"
+                       :key="item.auditTaskUuid"
+                       :label="item.taskName"
+                       :value="item.auditTaskUuid">
             </el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item class="itemTwo" label="上传附件：">
-          <el-upload
-            class="upload-demo"
-            drag
-            action="/wisdomaudit/auditBasy/filesUpload"
-            :on-success="
+        <el-form-item class="itemTwo"
+                      label="上传附件：">
+          <el-upload class="upload-demo"
+                     drag
+                     action="/wisdomaudit/auditBasy/filesUpload"
+                     :on-success="
               (response, file, fileList) => {
                 uploadPorgress2(response, file, fileList, attachmentList2);
               }
             "
-            :on-remove="
+                     :on-remove="
               (file, fileList) => {
                 handleRemove2(
                   file,
@@ -335,13 +330,12 @@
                 );
               }
             "
-            :on-progress="update_ing"
-            multiple
-            :key="key"
-            :on-exceed="handleExceed"
-            :headers="headers"
-            :file-list="fileList2"
-          >
+                     :on-progress="update_ing"
+                     multiple
+                     :key="key"
+                     :on-exceed="handleExceed"
+                     :headers="headers"
+                     :file-list="fileList2">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">
               点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip
@@ -363,97 +357,77 @@
         </el-form-item>
       </el-form>
       <div slot="footer">
-        <el-button v-if="!closeStatus" @click="dialogFormVisible = false"
-          >取消</el-button
-        >
-        <el-button
-          v-if="closeStatus"
-          type="primary"
-          @click="dialogFormVisible = false"
-          >关闭</el-button
-        >
+        <el-button v-if="!closeStatus"
+                   @click="dialogFormVisible = false">取消</el-button>
+        <el-button v-if="closeStatus"
+                   type="primary"
+                   @click="dialogFormVisible = false">关闭</el-button>
 
-        <el-button type="primary" v-if="success_btn == 1" :loading="true"
-          >上传中</el-button
-        >
+        <el-button type="primary"
+                   v-if="success_btn == 1"
+                   :loading="true">上传中</el-button>
 
-        <el-button
-          v-if="success_btn == 0 && !closeStatus"
-          type="primary"
-          @click="createData()"
-          >保存</el-button
-        >
+        <el-button v-if="success_btn == 0 && !closeStatus"
+                   type="primary"
+                   @click="createData()">保存</el-button>
       </div>
     </el-dialog>
 
-    <el-dialog
-      width="70%"
-      :title="ifadd == 1 ? '编辑问题' : '问题详情'"
-      :visible.sync="dialogDetailVisible"
-      :close-on-click-modal="false"
-      :append-to-body="true"
-      @close="resetForm('dqProblem')"
-      center
-    >
-      <el-form
-        ref="detailForm"
-        :model="dqProblem"
-        :rules="rules"
-        label-position="right"
-        label-width="140px"
-        class="problem-form formData"
-      >
-        <el-form-item class="itemTwo" label="问题：" prop="problem">
-          <el-input
-            v-model="dqProblem.problem"
-            placeholder="请输入问题"
-            :disabled="ifadd != 2 ? false : true"
-          />
+    <el-dialog width="70%"
+               :title="ifadd == 1 ? '编辑问题' : '问题详情'"
+               :visible.sync="dialogDetailVisible"
+               :close-on-click-modal="false"
+               :append-to-body="true"
+               @close="resetForm('dqProblem')"
+               center>
+      <el-form ref="detailForm"
+               :model="dqProblem"
+               :rules="rules"
+               label-position="right"
+               label-width="140px"
+               class="problem-form formData">
+        <el-form-item class="itemTwo"
+                      label="问题："
+                      prop="problem">
+          <el-input v-model="dqProblem.problem"
+                    placeholder="请输入问题"
+                    :disabled="ifadd != 2 ? false : true" />
         </el-form-item>
-        <el-form-item class="itemTwo" label="领域：" prop="field">
-          <el-select
-            v-model="dqProblem.field"
-            placeholder="请选择领域"
-            :disabled="ifadd != 2 ? false : true"
-          >
-            <el-option
-              v-for="item in CategoryList"
-              :key="item.label"
-              :label="item.label"
-              :value="item.label"
-            >
+        <el-form-item class="itemTwo"
+                      label="领域："
+                      prop="field">
+          <el-select v-model="dqProblem.field"
+                     placeholder="请选择领域"
+                     :disabled="ifadd != 2 ? false : true">
+            <el-option v-for="item in CategoryList"
+                       :key="item.label"
+                       :label="item.label"
+                       :value="item.label">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item class="itemTwo" label="专题：" prop="special">
-          <el-select
-            v-model="dqProblem.special"
-            placeholder="请选择专题"
-            :disabled="ifadd != 2 ? false : true"
-            v-if="input_selecte == true"
-            @change="change_zte"
-          >
-            <el-option
-              v-for="item in SPECIALList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
+        <el-form-item class="itemTwo"
+                      label="专题："
+                      prop="special">
+          <el-select v-model="dqProblem.special"
+                     placeholder="请选择专题"
+                     :disabled="ifadd != 2 ? false : true"
+                     v-if="input_selecte == true"
+                     @change="change_zte">
+            <el-option v-for="item in SPECIALList"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.value">
             </el-option>
           </el-select>
-          <el-input
-            v-model="dqProblem.special"
-            v-if="input_selecte == false"
-            :disabled="ifadd != 2 ? false : true"
-          ></el-input>
-          <el-button
-            v-if="input_selecte == false"
-            type="primary"
-            class="inline-block"
-            style="position: absolute; top: 0; right: -70px"
-            @click="input_selecte = !input_selecte"
-            >重选</el-button
-          >
+          <el-input v-model="dqProblem.special"
+                    v-if="input_selecte == false"
+                    :disabled="ifadd != 2 ? false : true"></el-input>
+          <el-button v-if="input_selecte == false"
+                     type="primary"
+                     class="inline-block"
+                     style="position: absolute; top: 0; right: -70px"
+                     @click="input_selecte = !input_selecte">重选</el-button>
         </el-form-item>
         <!--<el-form-item></el-form-item>-->
         <!-- <el-popover placement="top-start"
@@ -467,133 +441,105 @@
               {{ e }}
             </p>
           </div> -->
-        <el-form-item label="依据：" prop="basis" class="itemOne yj">
-          <el-select
-            v-model="dqProblem.basis"
-            class="inline-block yj-sel"
-            multiple
-            @visible-change="toopen"
-            placeholder="请选择依据"
-            no-data-text="请点击引用审计依据"
-            :disabled="ifadd != 2 ? false : true"
-          >
+        <el-form-item label="依据："
+                      prop="basis"
+                      class="itemOne yj">
+          <el-select v-model="dqProblem.basis"
+                     class="inline-block yj-sel"
+                     multiple
+                     @visible-change="toopen"
+                     placeholder="请选择依据"
+                     no-data-text="请点击引用审计依据"
+                     :disabled="ifadd != 2 ? false : true">
           </el-select>
-          <el-button
-            v-if="ifadd != 2 ? true : false"
-            type="primary"
-            ref="basisbtn0"
-            class="citebtn inline-block"
-            @click="openbasis()"
-            >引用审计依据</el-button
-          >
+          <el-button v-if="ifadd != 2 ? true : false"
+                     type="primary"
+                     ref="basisbtn0"
+                     class="citebtn inline-block"
+                     @click="openbasis()">引用审计依据</el-button>
         </el-form-item>
 
         <!-- </el-popover> -->
 
-        <el-form-item
-          label="描述："
-          style="margin-bottom: 20px !important"
-          prop="describe"
-          class="itemOne"
-        >
-          <el-input
-            type="textarea"
-            v-model="dqProblem.describe"
-            placeholder="请输入描述"
-            :disabled="ifadd != 2 ? false : true"
-            :autosize="{ minRows: 3 }"
-          />
+        <el-form-item label="描述："
+                      style="margin-bottom: 20px !important"
+                      prop="describe"
+                      class="itemOne">
+          <el-input type="textarea"
+                    v-model="dqProblem.describe"
+                    placeholder="请输入描述"
+                    :disabled="ifadd != 2 ? false : true"
+                    :autosize="{ minRows: 3 }" />
         </el-form-item>
-        <el-form-item
-          label="管理建议："
-          style="margin-bottom: 20px !important"
-          prop="managementAdvice"
-          class="itemOne"
-        >
-          <el-input
-            type="textarea"
-            v-model="dqProblem.managementAdvice"
-            placeholder="请输入管理建议"
-            :disabled="ifadd != 2 ? false : true"
-            :autosize="{ minRows: 3 }"
-          />
+        <el-form-item label="管理建议："
+                      style="margin-bottom: 20px !important"
+                      prop="managementAdvice"
+                      class="itemOne">
+          <el-input type="textarea"
+                    v-model="dqProblem.managementAdvice"
+                    placeholder="请输入管理建议"
+                    :disabled="ifadd != 2 ? false : true"
+                    :autosize="{ minRows: 3 }" />
         </el-form-item>
-        <el-form-item
-          class="itemTwo"
-          label="发现日期："
-          prop="problemDiscoveryTime"
-        >
-          <el-date-picker
-            type="date"
-            placeholder="选择日期"
-            v-model="dqProblem.problemDiscoveryTime"
-            style="width: 100%"
-            :disabled="ifadd != 2 ? false : true"
-          ></el-date-picker>
+        <el-form-item class="itemTwo"
+                      label="发现日期："
+                      prop="problemDiscoveryTime">
+          <el-date-picker type="date"
+                          placeholder="选择日期"
+                          v-model="dqProblem.problemDiscoveryTime"
+                          style="width: 100%"
+                          :disabled="ifadd != 2 ? false : true"></el-date-picker>
         </el-form-item>
-        <el-form-item class="itemTwo" label="发现人：" prop="problemFindPeople">
-          <el-select
-            v-model="dqProblem.problemFindPeople"
-            placeholder="请选择发现人"
-            :disabled="ifadd != 2 ? false : true"
-          >
-            <el-option
-              v-for="(item, i) in personlist"
-              :key="'person' + i"
-              :label="item.realName"
-              :value="item.realName"
-            >
+        <el-form-item class="itemTwo"
+                      label="发现人："
+                      prop="problemFindPeople">
+          <el-select v-model="dqProblem.problemFindPeople"
+                     placeholder="请选择发现人"
+                     :disabled="ifadd != 2 ? false : true">
+            <el-option v-for="(item, i) in personlist"
+                       :key="'person' + i"
+                       :label="item.realName"
+                       :value="item.realName">
               {{ item.realName }}
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item
-          class="itemTwo"
-          label="风险金额（万元）："
-          prop="riskAmount"
-          width="180"
-        >
-          <el-input
-            v-model="dqProblem.riskAmount"
-            placeholder="请输入风险金额"
-            :disabled="ifadd != 2 ? false : true"
-            @keyup.native="onlyNumOnePoint('dqProblem')"
-            @input="temp.riskAmount = temp.riskAmount.slice(0, 27)"
-          />
+        <el-form-item class="itemTwo"
+                      label="涉及金额(万元)："
+                      prop="riskAmount">
+          <el-input v-model="dqProblem.riskAmount"
+                    placeholder="请输入涉及金额"
+                    :disabled="ifadd != 2 ? false : true"
+                    @keyup.native="onlyNumOnePoint('dqProblem')"
+                    @input="temp.riskAmount = temp.riskAmount.slice(0, 27)" />
         </el-form-item>
-        <el-form-item
-          class="itemTwo task"
-          label="关联任务："
-          prop="auditTaskUuid"
-        >
-          <el-select
-            disabled
-            v-model="dqProblem.auditTaskUuid"
-            multiple
-            placeholder="请选择关联任务"
-            @change="changedqProblemauditTaskUuid"
-          >
-            <el-option
-              v-for="item in auditTasklList"
-              :key="item.auditTaskUuid"
-              :label="item.taskName"
-              :value="item.auditTaskUuid"
-            >
+        <el-form-item class="itemTwo task"
+                      label="关联任务："
+                      prop="auditTaskUuid">
+          <el-select disabled
+                     v-model="dqProblem.auditTaskUuid"
+                     multiple
+                     placeholder="请选择关联任务"
+                     @change="changedqProblemauditTaskUuid">
+            <el-option v-for="item in auditTasklList"
+                       :key="item.auditTaskUuid"
+                       :label="item.taskName"
+                       :value="item.auditTaskUuid">
             </el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item class="itemTwo" label="上传附件：">
-          <el-upload
-            class="upload-demo"
-            drag
-            action="/wisdomaudit/auditBasy/filesUpload"
-            :on-success="
+        <el-form-item class="itemTwo"
+                      label="上传附件：">
+          <el-upload class="upload-demo"
+                     drag
+                     action="/wisdomaudit/auditBasy/filesUpload"
+                     :on-success="
               (response, file, fileList) => {
                 uploadPorgress2(response, file, fileList, attachmentList2);
               }
             "
-            :on-remove="
+                     :on-remove="
               (file, fileList) => {
                 handleRemove2(
                   file,
@@ -604,13 +550,12 @@
                 );
               }
             "
-            :on-progress="update_ing"
-            multiple
-            :key="key"
-            :on-exceed="handleExceed"
-            :headers="headers"
-            :file-list="fileList2"
-          >
+                     :on-progress="update_ing"
+                     multiple
+                     :key="key"
+                     :on-exceed="handleExceed"
+                     :headers="headers"
+                     :file-list="fileList2">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">
               点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip
@@ -632,71 +577,58 @@
           </div> -->
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div slot="footer"
+           class="dialog-footer">
         <el-button @click="dialogDetailVisible = false">取消</el-button>
 
-        <el-button
-          type="primary"
-          @click="updateData()"
-          v-if="success_btn == 0 && ifupdata"
-          >保存修改</el-button
-        >
+        <el-button type="primary"
+                   @click="updateData()"
+                   v-if="success_btn == 0 && ifupdata">保存修改</el-button>
 
-        <el-button type="primary" v-if="success_btn == 1" :loading="true"
-          >上传中</el-button
-        >
+        <el-button type="primary"
+                   v-if="success_btn == 1"
+                   :loading="true">上传中</el-button>
       </div>
     </el-dialog>
-    <el-dialog
-      title="引用审计依据"
-      :append-to-body="true"
-      :visible.sync="basisdialog"
-      width="70%"
-      class="post"
-      custom-class="outmax"
-    >
+    <el-dialog title="引用审计依据"
+               :append-to-body="true"
+               :visible.sync="basisdialog"
+               width="70%"
+               class="post"
+               custom-class="outmax">
       <div style="display: flex; height: 100%; padding: 20px">
         <div style="max-height: 60vh; width: 50%; overflow: scroll">
-          <el-form
-            ref="basisform"
-            class="problem-form"
-            :model="dqbasis"
-            label-width="120px"
-            label-position="right"
-          >
-            <el-form-item label="审计依据名称" class="long">
-              <el-select
-                v-model="dqbasis.val"
-                placeholder="请选择依据名称"
-                filterable
-                remote
-                reserve-keyword
-                :remote-method="basisremoteMethod"
-                :loading="basisloading"
-                @change="getbasisdetail(dqbasis.val)"
-              >
-                <el-option
-                  v-for="item in basislist"
-                  :key="item.basy_uuid"
-                  :label="item.basy_name"
-                  :value="item.basy_uuid"
-                >
+          <el-form ref="basisform"
+                   class="problem-form"
+                   :model="dqbasis"
+                   label-width="120px"
+                   label-position="right">
+            <el-form-item label="审计依据名称"
+                          class="long">
+              <el-select v-model="dqbasis.val"
+                         placeholder="请选择依据名称"
+                         filterable
+                         remote
+                         reserve-keyword
+                         :remote-method="basisremoteMethod"
+                         :loading="basisloading"
+                         @change="getbasisdetail(dqbasis.val)">
+                <el-option v-for="item in basislist"
+                           :key="item.basy_uuid"
+                           :label="item.basy_name"
+                           :value="item.basy_uuid">
                 </el-option>
               </el-select>
             </el-form-item>
           </el-form>
-          <el-card
-            class="box-card"
-            style="width: 70%; min-height: 300px; margin: auto"
-          >
-            <el-tree
-              :data="dqbasis.info.tree"
-              :props="defaultProps"
-              @node-click="treeNodeClick"
-              default-expand-all
-              v-loading="basisload"
-              class="problemtree"
-            ></el-tree>
+          <el-card class="box-card"
+                   style="width: 70%; min-height: 300px; margin: auto">
+            <el-tree :data="dqbasis.info.tree"
+                     :props="defaultProps"
+                     @node-click="treeNodeClick"
+                     default-expand-all
+                     v-loading="basisload"
+                     class="problemtree"></el-tree>
           </el-card>
           <!-- <div
             v-for="(item, index) in basislist"
@@ -707,66 +639,74 @@
             {{ item.basy_name }}
           </div> -->
         </div>
-        <el-card
-          class="box-card basiscard"
-          style="width: 50%"
-          v-loading="basisload"
-        >
-          <div
-            v-for="(item, index) in dqbasis.info.arr"
-            :key="'dqbasisarr' + index"
-          >
-            <div
-              slot="header"
-              class="clearfix"
-              style="padding: 5px 0"
-              v-if="item.contentLev != 3"
-            >
-              <span
-                style="font-weight: bold"
-                :style="
+        <el-card class="box-card basiscard"
+                 style="width: 50%"
+                 v-loading="basisload">
+          <div v-for="(item, index) in dqbasis.info.arr"
+               :key="'dqbasisarr' + index">
+            <div slot="header"
+                 class="clearfix"
+                 style="padding: 5px 0"
+                 v-if="item.contentLev != 3">
+              <span style="font-weight: bold"
+                    :style="
                   item.contentLev == 1
                     ? 'font-size:18px;'
                     : item.contentLev == 2
                     ? 'font-size:16px;'
                     : 'font-size:14px;'
-                "
-                >{{ item.label }}</span
-              >
+                ">{{ item.label }}</span>
             </div>
 
-            <el-button
-              style="padding: 10px 0 3px 20px; color: #ffba00; float: right"
-              v-if="item.contentLev == 3"
-              @click="choosebasis(item.attachmentContent)"
-              type="text"
-              >引用</el-button
-            >
-            <p class="" v-if="item.contentLev == 3">
+            <el-button style="padding: 10px 0 3px 20px; color: #ffba00; float: right"
+                       v-if="item.contentLev == 3"
+                       @click="choosebasis(item.attachmentContent)"
+                       type="text">引用</el-button>
+            <p class=""
+               v-if="item.contentLev == 3">
               {{ item.attachmentContent }}
             </p>
           </div>
         </el-card>
       </div>
-      <span slot="footer" class="dialog-footer">
+      <span slot="footer"
+            class="dialog-footer">
         <el-button @click="basisdialog = false">取 消</el-button>
-        <el-button type="primary" @click="surebasis()">确 定</el-button>
+        <el-button type="primary"
+                   @click="surebasis()">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import Vault from "@WISDOMAUDIT/components/Vaultcertification";//金库
+import { down_file } from
+  '@SDMOBILE/api/shandong/ls'
 import Pagination from "@WISDOMAUDIT/components/Pagination"; // secondary package based on el-pagination
 import _ from "lodash";
 import axios from "axios";
 import $ from "jquery";
 export default {
   props: ["active_project"],
-  components: { Pagination },
+  components: {
+    Pagination,
+    Vault//金库
+  },
   filters: {},
-  data() {
+  data () {
     return {
+      vaultV: false,
+      sceneId: 1557, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
+      approvers: [], //审批人列表
+      maxTime: "",//最大时间
+      dqtime: "",//当前时间
+      account: "",//返回的账户
+      appSessionId: "",//应用sessionid
+      downloaobj: {},//暂存的下载目标
+      dqtoken: '',
+      //金库end
+
       show: false,
       dqtoken: "",
       dqProblem: {}, //编辑问题
@@ -807,6 +747,11 @@ export default {
         riskAmount: "",
         status: 0,
         attachmentList: [],
+        // zdyCode: 0,
+        entity: {
+          belongSpcialSize: '',
+          dictname: '',
+        },
       },
       attachmentList1: [], //附件上传列表
       success_btn: 0, //上传 ing
@@ -835,7 +780,7 @@ export default {
         ],
         special: [{ required: true, message: "请选择专题", trigger: "change" }],
         riskAmount: [
-          { required: true, message: "请填写风险金额", trigger: "change" },
+          { required: true, message: "请填写涉及金额", trigger: "change" },
         ],
       },
       closeStatus: false,
@@ -865,10 +810,17 @@ export default {
       input_select: true,
       input_selecte: true,
       basisloading: false,
+
+      enclosure_details_list: [],//附件
+
+      // 自定义专题
+      zdyCode: 0,//区别自定义
+      belongSpcialSize: '',//专题集合数
+      belongSpcialCode: 'SPECIAL',
     };
   },
   watch: {},
-  created() {
+  created () {
     this.dqtoken = sessionStorage.getItem("TOKEN");
     this.getloadcascader("Category");
     this.getloadcascader("SPECIAL");
@@ -878,12 +830,110 @@ export default {
     this.getbasis();
     this.getList();
   },
-  mounted() {
+  mounted () {
     this.headers = { TOKEN: sessionStorage.getItem("TOKEN") };
   },
   methods: {
+
+    //金库通过认证后的方法
+    vdownload () {
+
+      if (this.downloaobj.dtype == '下载1') {
+        this.downFile(this.downloaobj.attachment_uuid, this.downloaobj.file_name)
+      } else {
+        this.downFile(this.downloaobj.attachmentUuid, this.downloaobj.fileName)
+      }
+    },
+    //附件下载
+    downFile (id, fileName) {
+      let formData = new FormData()
+      formData.append('fileId', id)
+      down_file(formData).then(resp => {
+        const content = resp;
+        const blob = new Blob([content],
+          { type: 'application/octet-stream,charset=UTF-8' }
+        )
+        if ('download' in document.createElement('a')) {
+          // 非IE下载
+          const elink = document.createElement('a')
+          elink.download = fileName //下载后文件名
+          elink.style.display = 'none'
+          elink.href = window.URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          window.URL.revokeObjectURL(elink.href) // 释放URL 对象
+          document.body.removeChild(elink)
+        } else {
+          // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
+      }).catch((err) => {
+
+      })
+    },
+    //金库控制认证弹窗
+    changevault (val) {
+      this.vaultV = val;
+    },
+    //打开金库
+    openVault (obj, downtype) {
+      this.downloaobj = obj
+      this.downloaobj.dtype = downtype
+      axios({
+        method: "post",
+        url: `/wisdomaudit/treasury/getTreasuryStatus`,
+        headers: {
+          TOKEN: this.headers.TOKEN,
+        },
+        data: {
+          sceneId: this.sceneId,
+          sceneName: "附件上传后下载", //场景名称
+          sensitiveData: "report_download", //敏感数据对应的编号：  data_export 经营指标、模型结果 report_download 附件上传后下载;
+          sensitiveOperate: "export", //敏感操作对应的编号：export： 导出   select：查询
+        },
+      }).then((resp) => {
+        //result 是否开启 开启：1  无需开启：0
+        //resultDesc 无需开启原因（成功错误信息）
+        //historyAppSessionId 历史有效应用sessionid（仅当已授权状态时必填属性）
+        //relation 多值授权方式与访问方式关系
+        //policyAuthMethod 授权方式： remoteAuth远程授权
+        //policyAccessMethod
+        //maxTime 授权条件（必填属性）单位为小时： 当为0时，为单次授权；否则为时间段授权即允许以当前时间为开始时间，开始时间+maxTime时间为最大结束时间，允许用户在此范围选择；
+        //approvers 审批人列表
+        //如果是线上环境
+        if (resp.data.data.isVaultProfiles) {
+          let rep = resp.data.data.treasuryStatusRsp;
+          if (rep.result == 0) {
+            this.$message('因金库未开启或服务异常，文件下载失败，请联系系统管理员。');
+            return;
+          } else {
+
+            this.approvers = rep.approvers || "";
+            this.maxTime = rep.maxTime;
+            this.dqtime = new Date();
+            this.account = resp.data.data.account;
+            this.appSessionId = resp.data.data.appSessionId;
+            this.vaultV = true;
+          }
+        } else {
+          //否则不处理或在此处直接进行后面的操作
+          this.vdownload()
+        }
+      });
+    },
+
+
+    // 查看附件详情
+    open_enclosure_details (item) {
+      this.enclosure_details_list = [];//清空附件
+      if (item) {
+        this.enclosure_details_list = item
+      }
+    },
+
+
     // 新增问题关闭
-    resetForm(str) {
+    resetForm (str) {
       if (str == "temp") {
         this.temp = {
           managementProjectUuid: this.active_project,
@@ -908,7 +958,7 @@ export default {
       this.input_select = true; //专题 恢复默认
       this.input_selecte = true; //专题 恢复默认
     },
-    change_zt(value) {
+    change_zt (value) {
       let obj = {};
       obj = this.SPECIALList.find((item) => {
         return item.value === value; //筛选出匹配数据
@@ -916,12 +966,16 @@ export default {
       let val = obj.value;
       this.temp.special = obj.label;
 
+
       if (val == "otherzt") {
         this.input_select = false;
         this.temp.special = "";
+        this.zdyCode = 1;//自定义标识
+      } else {
+        this.zdyCode = 0;//自定义标识
       }
     },
-    change_zte(value) {
+    change_zte (value) {
       let obj = {};
       obj = this.SPECIALList.find((item) => {
         return item.value === value; //筛选出匹配数据
@@ -931,6 +985,9 @@ export default {
       if (val == "otherzt") {
         this.input_selecte = false;
         this.dqProblem.special = "";
+        this.zdyCode = 1;//自定义标识
+      } else {
+        this.zdyCode = 0;//自定义标识
       }
     },
     // UpNumber(e){
@@ -939,7 +996,7 @@ export default {
     //   //输入框只允许输入小数点和数字，小数点后一位
     //   e.target.value = (e.target.value.match(/^\d*(\.?\d{0,1})/g)[0])
     // },
-    onlyNumOnePoint(str) {
+    onlyNumOnePoint (str) {
       let number_only = "";
       if (str == "temp") {
         number_only = this.temp.riskAmount;
@@ -965,7 +1022,7 @@ export default {
         this.dqProblem.riskAmount = number_only;
       }
     },
-    toopen(val) {
+    toopen (val) {
       if (val) {
         let _this = this;
         setTimeout(function () {
@@ -975,7 +1032,7 @@ export default {
       }
     },
     //获取当前人员信息
-    getme() {
+    getme () {
       axios({
         url: `/wisdomaudit/init/getCurrentInfo`,
         headers: {
@@ -989,7 +1046,7 @@ export default {
       });
     },
     //获取人员
-    getperson() {
+    getperson () {
       axios({
         url: `/wisdomaudit/user/listUserInfo?pageCurrent=1&pageSize=1000`,
         headers: {
@@ -1002,7 +1059,7 @@ export default {
       });
     },
     //确定选择依据
-    surebasis() {
+    surebasis () {
       this.basisdialog = false;
       if (this.ifadd == 0) {
         this.temp.basis = this.dqbasis.choose;
@@ -1012,7 +1069,7 @@ export default {
       this.dqbasis.choose = [];
     },
     //选择依据
-    choosebasis(val) {
+    choosebasis (val) {
       if (this.dqbasis.choose.indexOf(val) > -1) {
         this.$message({
           message: "您已引用这一条",
@@ -1028,16 +1085,16 @@ export default {
       }
     },
     //依据树
-    treeNodeClick() {},
+    treeNodeClick () { },
     //打开依据
-    openbasis() {
+    openbasis () {
       this.basisdialog = true;
       this.dqbasis.choose = [];
       this.dqbasis.info = "";
       this.dqbasis.val = "";
     },
     //获取依据
-    getbasis() {
+    getbasis () {
       axios({
         url: `/wisdomaudit/auditBasy/getAuditbasyList`,
         headers: {
@@ -1052,7 +1109,7 @@ export default {
       });
     },
     //模糊查询依据详情
-    basisremoteMethod(query) {
+    basisremoteMethod (query) {
       this.basisloading = true;
       axios({
         url: `/wisdomaudit/auditBasy/getAuditbasyList`,
@@ -1069,7 +1126,7 @@ export default {
       });
     },
     //获取依据详情
-    getbasisdetail(bid) {
+    getbasisdetail (bid) {
       this.basisload = true;
       axios({
         url: `/wisdomaudit/auditBasy/getById/` + bid + ``,
@@ -1084,7 +1141,7 @@ export default {
       });
     },
     //领域返显
-    fieldFilter(str) {
+    fieldFilter (str) {
       let rep = "";
       this.CategoryList.forEach((e) => {
         if (e.value == str) {
@@ -1094,7 +1151,7 @@ export default {
       return rep;
     },
     //专题返显
-    specialFilter(str) {
+    specialFilter (str) {
       let rep = "";
       this.SPECIALList.forEach((e) => {
         if (e.value == str) {
@@ -1103,7 +1160,7 @@ export default {
       });
       return rep;
     },
-    getSelectTask() {
+    getSelectTask () {
       axios({
         url: `/wisdomaudit/auditTask/selectTask`,
         headers: {
@@ -1117,7 +1174,8 @@ export default {
         this.auditTasklList = res.data.data;
       });
     },
-    getloadcascader(str) {
+    // 获取专题数据 
+    getloadcascader (str) {
       axios({
         url: `/wisdomaudit/init/loadcascader`,
         headers: {
@@ -1136,7 +1194,7 @@ export default {
       });
     },
     // 编辑
-    openDetail(int) {
+    openDetail (int) {
       this.ifadd = 1;
       axios({
         url:
@@ -1176,7 +1234,7 @@ export default {
         });
       });
     },
-    checkDetail(pid) {
+    checkDetail (pid) {
       this.ifadd = 2;
       axios({
         url: `/wisdomaudit/problemList/getById/` + pid,
@@ -1199,7 +1257,7 @@ export default {
         });
       });
     },
-    repDate(data) {
+    repDate (data) {
       let date = new Date(data);
       let Y = date.getFullYear() + "-";
       let M =
@@ -1217,7 +1275,7 @@ export default {
         date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
       return Y + M + D;
     },
-    getList(page) {
+    getList (page) {
       if (page == 1) {
         this.pageQuery.pageNo = 1;
       }
@@ -1237,8 +1295,11 @@ export default {
         }
       });
     },
-    add() {
+    // 新增问题
+    add () {
       this.dialogFormVisible = true;
+      this.getloadcascader('SPECIAL');//专题数据
+
 
       this.ifadd = 0;
       this.temp.problemFindPeople = this.me;
@@ -1250,10 +1311,10 @@ export default {
         this.$refs["dataForm"].clearValidate();
       });
     },
-    handleSelectionChange(val) {
+    handleSelectionChange (val) {
       this.problemtableSelection = val;
     },
-    del(pid) {
+    del (pid) {
       this.$confirm("确认删除该条数据吗?删除后数据不可恢复?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -1285,13 +1346,13 @@ export default {
 
     // 附件 -------------------------------------
 
-    handleExceed() {},
+    handleExceed () { },
     // 上传时
-    update_ing() {
+    update_ing () {
       this.success_btn = 1;
     },
     //新增问题 附件上传
-    uploadPorgress2(response, file, fileList, tableList) {
+    uploadPorgress2 (response, file, fileList, tableList) {
       this.success_btn = 0;
       if (response && response.code === 0) {
         response.data.isDeleted = 2;
@@ -1310,12 +1371,12 @@ export default {
           message: "上传失败",
           type: "error",
           duration: 1500,
-          onClose: () => {},
+          onClose: () => { },
         });
       }
     },
     //新增问题 附件删除
-    handleRemove2(file, fileList, tableList, showList, delList) {
+    handleRemove2 (file, fileList, tableList, showList, delList) {
       if (file.response) {
         tableList.remove(file.response.data);
         // this.key = Math.random();
@@ -1329,7 +1390,7 @@ export default {
       }
     },
     //新增问题 附件下载
-    downFile2(id, fileName) {
+    downFile2 (id, fileName) {
       let formData = new FormData();
       formData.append("fileId", id);
       down_file(formData)
@@ -1360,7 +1421,7 @@ export default {
 
     // 附件 end-------------------------------------
 
-    createData() {
+    createData () {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           let rep = this.temp;
@@ -1377,11 +1438,57 @@ export default {
           );
           console.log(uploadList2);
           uploadList2.forEach((item) => {
-            console.log(item);
             item.status = null;
           });
-          this.temp.attachmentList = uploadList2;
-          // this.temp.attachmentList = [];
+          // let rep = this.temp;
+          // this.temp.riskAmount = parseFloat(this.temp.riskAmount)
+          // this.temp.auditTaskUuid = this.temp.auditTaskUuid
+          //   ? this.temp.auditTaskUuid.join(",")
+          //   : "";
+          // this.temp.basis = this.temp.basis ? this.temp.basis.join(",") : "";
+
+          // 专题
+          // this.temp.zdyCode = this.zdyCode;
+          let params = {
+            managementProjectUuid: this.active_project,
+            // 业务分类
+            auditTaskUuid: this.temp.auditTaskUuid
+              ? this.temp.auditTaskUuid.join(",")
+              : "",
+            basis: this.temp.basis ? this.temp.basis.join(",") : "",
+            describe: this.temp.describe,
+            field: this.temp.field,
+            special: this.temp.special,
+            isDeleted: 0,
+            problem: this.temp.problem,
+            problemDiscoveryTime: this.temp.problemDiscoveryTime,
+            problemFindPeople: this.temp.problemFindPeople,
+            managementAdvice: this.temp.managementAdvice,
+            problemListUuid: this.temp.problemListUuid,
+            riskAmount: parseFloat(this.temp.riskAmount),
+            status: 0,
+            attachmentList: uploadList2,
+            zdyCode: this.zdyCode,
+            entity: {
+              belongSpcialSize: this.SPECIALList.length,
+              dictname: this.temp.special,
+            },
+          };
+          // let rep = this.temp;
+          // rep.riskAmount = parseFloat(rep.riskAmount)
+          // rep.auditTaskUuid = rep.auditTaskUuid
+          //   ? rep.auditTaskUuid.join(",")
+          //   : "";
+          // rep.basis = rep.basis ? rep.basis.join(",") : "";
+
+          // // 附件
+          // let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
+          // console.log(uploadList2);
+          // uploadList2.forEach((item) => {
+          //   console.log(item);
+          //   item.status = null;
+          // });
+          // this.temp.attachmentList = uploadList2;
 
           axios({
             url: `/wisdomaudit/problemList/save`,
@@ -1389,7 +1496,7 @@ export default {
               TOKEN: this.dqtoken,
             },
             method: "post",
-            data: rep,
+            data: params,
           }).then((res) => {
             if (res.data.code == 0) {
               this.$message({
@@ -1415,7 +1522,7 @@ export default {
         }
       });
     },
-    updateData() {
+    updateData () {
       this.$refs["detailForm"].validate((valid) => {
         if (valid) {
           let rep = this.dqProblem;
@@ -1435,15 +1542,48 @@ export default {
               item.attStatus = 2;
             }
           });
-          this.dqProblem.attachmentList = uploadList2;
+          this.dqProblem.attachmentList = uploadList2;//附件
 
+          // 专题
+          // this.dqProblem.zdyCode = this.zdyCode;
+
+          let params = {
+            managementProjectUuid: this.active_project,
+            // 业务分类
+            auditTaskUuid: this.dqProblem.auditTaskUuid
+              ? this.dqProblem.auditTaskUuid.join(",")
+              : "",
+            basis: this.dqProblem.basis ? this.dqProblem.basis.join(",") : "",
+
+            // auditTaskUuid: rep.auditTaskUuid.join(","),
+            // basis = rep.basis.join(","),
+            // basis: this.dqProblem.basis,
+            describe: this.dqProblem.describe,
+            field: this.dqProblem.field,
+            special: this.dqProblem.special,
+            isDeleted: 0,
+            problem: this.dqProblem.problem,
+
+            problemDiscoveryTime: this.dqProblem.problemDiscoveryTime,
+            problemFindPeople: this.dqProblem.problemFindPeople,
+            managementAdvice: this.dqProblem.managementAdvice,
+            problemListUuid: this.dqProblem.problemListUuid,
+            riskAmount: parseFloat(this.dqProblem.riskAmount),
+            status: 0,
+            attachmentList: uploadList2,
+            zdyCode: this.zdyCode,
+            entity: {
+              belongSpcialSize: this.SPECIALList.length,
+              dictname: this.dqProblem.special,
+            },
+          };
           axios({
             url: `/wisdomaudit/problemList/update`,
             headers: {
               TOKEN: this.dqtoken,
             },
             method: "put",
-            data: rep,
+            data: params,
           }).then((res) => {
             if (res.data.code == 0) {
               this.$message({
@@ -1458,7 +1598,7 @@ export default {
         }
       });
     },
-    changedqProblemauditTaskUuid(val) {
+    changedqProblemauditTaskUuid (val) {
       console.log(val);
       for (let i = 0; i < this.auditTasklList.length; i++) {
         if (this.auditTasklList[i].auditTaskUuid == val[0]) {
@@ -1471,7 +1611,7 @@ export default {
         }
       }
     },
-    changetempauditTaskUuid(val) {
+    changetempauditTaskUuid (val) {
       console.log(val);
       for (let i = 0; i < this.auditTasklList.length; i++) {
         if (this.auditTasklList[i].auditTaskUuid == val[0]) {

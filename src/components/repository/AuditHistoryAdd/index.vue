@@ -38,7 +38,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="11" :offset="2">
-          <el-form-item label="风险金额（万元）：">
+          <el-form-item label="涉及金额(万元)：">
             <el-input v-model="form.money" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
