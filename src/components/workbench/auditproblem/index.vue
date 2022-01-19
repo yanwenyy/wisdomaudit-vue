@@ -113,8 +113,11 @@
             {{ repDate(scope.row.problemDiscoveryTime)}}
           </template>
         </el-table-column>
+
         <el-table-column label="发现人"
-                         prop="problemFindPeople" />
+                         prop="problemFindPeople">
+
+        </el-table-column>
 
         <!-- 附件 -->
         <el-table-column prop="attachmentList"
