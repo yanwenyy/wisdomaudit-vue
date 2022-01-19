@@ -551,7 +551,7 @@ export default {
           sceneId: this.sceneId,
           sceneName: "附件上传后下载", //场景名称
           sensitiveData: "report_download", //敏感数据对应的编号：  data_export 经营指标、模型结果 report_download 附件上传后下载;
-          sensitiveOperate: "export", //敏感操作对应的编号：export： 导出   select：查询
+          sensitiveOperate: "download", //敏感操作对应的编号：export： 导出   select：查询
         },
       }).then((resp) => {
         //result 是否开启 开启：1  无需开启：0
