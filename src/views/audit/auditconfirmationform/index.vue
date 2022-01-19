@@ -537,7 +537,7 @@
                 <!-- 详情 -->
                 <el-popover placement="bottom"
                             visible-arrow='false'
-                            popper-class="popover"
+                            popper-class="popover2"
                             :width=" details_list.style_width"
                             @show="details_show(scope.row,scope.$index+1)"
                             trigger="click">
@@ -3061,7 +3061,7 @@ export default {
 </script>
 
 <style >
-.el-popover.popover {
+.el-popover.popover2 {
   padding: 0 !important;
   transform: translate(-50%, 0%);
   left: 50% !important;
@@ -3069,7 +3069,7 @@ export default {
   border: none !important;
   background: none !important; */
 }
-.el-popover.popover[x-placement^="bottom"] .popper__arrow {
+.el-popover.popover2[x-placement^="bottom"] .popper__arrow {
   left: 150px !important;
   opacity: 0 !important;
 }
