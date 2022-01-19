@@ -29,6 +29,7 @@
                   class="relationTabelClass"
                   tooltip-effect="dark"
                   style="width: 100%"
+                  stripe
                   @selection-change="relationTabelSel">
           <el-table-column type="selection"
                            align="center" />

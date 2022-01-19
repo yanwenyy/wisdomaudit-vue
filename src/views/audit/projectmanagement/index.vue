@@ -243,6 +243,7 @@
           <span class="slef-title">设置组长:</span>
           <el-table :data="addProjectManagement.auditList"
                     style="width: 100%"
+                    stripe
                     border
                     class="projectTable"
                     :header-cell-style="{ 'background-color': '#F4FAFF' }">
@@ -624,6 +625,7 @@
             <span class="slef-title">设置组长:</span>
             <el-table :data="addProjectManagement.auditList"
                       style="width: 100%"
+                      stripe
                       class="projectTable"
                       :header-cell-style="{ 'background-color': '#F4FAFF' }">
               <!-- <el-table-column label="项目编号"
@@ -1101,6 +1103,7 @@
             }"
                   v-loading="problem_loading"
                   style="width: 100%"
+                  stripe
                   @selection-change="handleSelectionChange_issues">
           <el-table-column type="selection"
                            align="center"></el-table-column>
@@ -1182,6 +1185,7 @@
             }"
                     v-loading="issues_list_loading"
                     style="width: 100%"
+                    stripe
                     @selection-change="handleSelectionChange_problem">
             <!-- <el-table-column type="selection"
                              align="center"> </el-table-column> -->

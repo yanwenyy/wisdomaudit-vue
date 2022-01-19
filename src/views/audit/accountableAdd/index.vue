@@ -80,7 +80,7 @@
               <el-button type="primary" @click="addgroupLeader">新增</el-button>
             </el-col>
           </el-row>
-          <el-table :data="tableData" style="width: 100%" :cell-style="{ textAlign: 'center' }" :show-header="false"  border>
+          <el-table :data="tableData" stripe style="width: 100%" :cell-style="{ textAlign: 'center' }" :show-header="false"  border>
             <el-table-column prop="itemCode" width="300"> </el-table-column>
             <el-table-column width="250"> 被审计对象 </el-table-column>
             <el-table-column prop="auditeeValue" width="250">

@@ -123,6 +123,7 @@
       </div>
       <el-table :data="kulistData"
                 style="width: 100%"
+                stripe
                 @selection-change="kulistSelectionChange">
         <el-table-column type="selection"
                          align="center" />

@@ -394,7 +394,9 @@
             </el-col> -->
           </el-row>
           <el-table :data="modelListTab"
+                    v-loading="modelloading"
                     style="width: 100%"
+                    stripe
                     :header-cell-style="{ 'background-color': '#F4FAFF' }">
             <el-table-column prop="taskName"
                              label="任务名称">
@@ -563,6 +565,7 @@
         </el-row>
         <el-table :data="modelTableData"
                   style="width: 100%"
+                  stripe
                   @selection-change="handleSelectionChangeModel"
                   ref="multipleModelRef"
                   v-loading="lding_model"
@@ -884,6 +887,7 @@ export default {
       data: [],
       value: [],
       loading: false,
+      modelloading:true,
       ifshow: false,
       refreash: false,
       active_project: "", //初始化项目有 默认选择
@@ -1873,6 +1877,7 @@ export default {
     getauditModelList (data) {
       this.modelListTab = [];
       modelTaskList(data).then((resp) => {
+        this.modelloading = false;
         this.modelListTab = resp.data.records;
         this.modelListTabSize = resp.data;
         this.taskTotal = resp.data.total;

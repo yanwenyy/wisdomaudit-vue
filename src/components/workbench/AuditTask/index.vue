@@ -45,6 +45,7 @@
           <!-- 表单 -->
           <el-table :data="tableData_list"
                     :header-cell-style="{'background-color': '#F4FAFF',}"
+                    stripe
                     v-loading="loading"
                     style="width: 100%">
             <!-- 任务/自建任务名称 -->
@@ -373,6 +374,7 @@
                   tooltip-effect="dark"
                   style="width: 100%"
                   :header-cell-style="{'background-color': '#F4FAFF',}"
+                  stripe
                   @selection-change="handleSelectionChange_operation">
           >
           <el-table-column type="selection"
@@ -565,6 +567,7 @@
                   v-loading="loading"
                   :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                   ref="multipleTable"
+                  stripe
                   style="width: 100%;margin-bottom:2%">
           <!-- tooltip-effect="dark" -->
           <!-- @selection-change="handleSelectionChange_wts" -->

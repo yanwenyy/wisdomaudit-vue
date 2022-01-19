@@ -27,7 +27,7 @@
             </el-col> -->
           </el-row>
           <!-- 表单 -->
-          <el-table :data="tableData" style="width: 100%">
+          <el-table :data="tableData" style="width: 100%" stripe>
             <el-table-column prop="roleName" label="角色名称">
             </el-table-column>
             <el-table-column prop="roleDesc" label="角色描述">

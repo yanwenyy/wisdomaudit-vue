@@ -31,6 +31,7 @@
                 ref="myBox"
                 :header-cell-style="{'background-color': '#F4FAFF',}"
                 v-loading="loading"
+                stripe
                 style="width: 100%">
         <el-table-column type="index"
                          label="序号"

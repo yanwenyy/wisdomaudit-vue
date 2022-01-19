@@ -20,6 +20,7 @@
                 :header-cell-style="{'background-color': '#F4FAFF',}"
                 :data="confirmaryData.records"
                 style="margin-top: 1%"
+                stripe
                 class="confirmaryTable">
         <el-table-column algin="left"
                          width="50"
@@ -512,6 +513,7 @@
                     class="relationTabelClass"
                     tooltip-effect="dark"
                     style="width: 100%"
+                    stripe
                     v-loading="load"
                     @selection-change="relationTabelSel">
             <el-table-column type="selection"

@@ -15,6 +15,7 @@
       <el-table :data="list_data_list"
                 v-loading="loading"
                 :header-cell-style="{'background-color': '#F4FAFF',}"
+                stripe
                 style="width: 100%">
         <el-table-column prop="createTime"
                          show-overflow-tooltip
@@ -154,6 +155,7 @@
                       :data="feedback_list.records"
                       tooltip-effect="dark"
                       style="width: 100%"
+                      stripe
                       :header-cell-style="{'background-color': '#F4FAFF',}"
                       @selection-change="handleSelectionChange_query">
               <el-table-column type="selection"
@@ -381,6 +383,7 @@
             <el-table :data="record_log.records"
                       v-loading="loading_list2"
                       :header-cell-style="{'background-color': '#F4FAFF',}"
+                      stripe
                       style="width: 100%">
               <el-table-column prop="opOperate"
                                label="动作"

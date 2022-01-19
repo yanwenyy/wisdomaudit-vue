@@ -421,6 +421,7 @@
           <el-table v-loading="modelInfoLoading"
                     :data="modelTableData"
                     style="width: 100%"
+                    stripe
                     @selection-change="handleSelectionChangeModel"
                     ref="multipleModelRef">
             <el-table-column type="selection"> </el-table-column>

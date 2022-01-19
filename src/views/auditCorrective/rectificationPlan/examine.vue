@@ -20,6 +20,7 @@
       <el-table :data="details_data_list.problemCorrectList"
                 :header-cell-style="{'text-align':'center','background-color': '#F4FAFF',}"
                 v-loading="loading"
+                stripe
                 style="width: 100%">
         <el-table-column type="index"
                          label="编号"

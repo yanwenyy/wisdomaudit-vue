@@ -235,6 +235,7 @@
             ref="multipleTable"
             :data="fastlist"
             style="width: 100%"
+            stripe
             @selection-change="handleSelectionChange"
           >
             <el-table-column type="selection" width="55"> </el-table-column>
@@ -247,6 +248,7 @@
           <el-table
             :data="dqfastlist"
             style="width: 100%"
+            stripe
             @selection-change="handleSelectionChange"
           >
             <el-table-column label="" width="55"></el-table-column>
@@ -685,50 +687,50 @@ export default {
       });
     },
 
-    //  shortcutEvent(item) {
-    //   if (item.menuName == "审计概览") {
-    //     axios({
-    //       url:
-    //         `/wisdomaudit/dataAuditApi/getSignature?userName=` +
-    //         this.$store.state.user.datauserid,
-    //       headers: {
-    //         TOKEN: this.dqtoken,
-    //       },
-    //       method: "get",
-    //       data: {},
-    //     }).then((res) => {
-    //       if (res.data.code == 0) {
-    //         let reptoken = res.data.data.token;
-    //         let url =
-    //           "http://10.19.206.196:8088/WebReport/decision/third/auth/cross/login";
-    //         $.ajax({
-    //           url: url,
-    //           dataType: "jsonp",
-    //           data: { third_token: reptoken },
-    //           success: function (res2) {
-    //             if (res2.errorCode) {
-    //               console.log("帆软认证接口调用失败");
-    //             } else {
-    //               console.log("帆软认证接口调用成功");
-    //               window.open(item.url);
-    //               return;
-    //             }
-    //           },
-    //           error: function () {
-    //             alert("超时或服务器其他错误"); // 登录失败（超时或服务器其他错误）
-    //             return;
-    //           },
-    //         });
-    //       } else {
-    //         return;
-    //       }
-    //     });
-    //   } else {
-    //     this.$router.push({
-    //       path: item.url,
-    //     });
-    //   }
-    // },
+     shortcutEvent(item) {
+      // if (item.menuName == "审计概览") {
+      //   axios({
+      //     url:
+      //       `/wisdomaudit/dataAuditApi/getSignature?userName=` +
+      //       this.$store.state.user.datauserid,
+      //     headers: {
+      //       TOKEN: this.dqtoken,
+      //     },
+      //     method: "get",
+      //     data: {},
+      //   }).then((res) => {
+      //     if (res.data.code == 0) {
+      //       let reptoken = res.data.data.token;
+      //       let url =
+      //         "http://10.19.206.196:8088/WebReport/decision/third/auth/cross/login";
+      //       $.ajax({
+      //         url: url,
+      //         dataType: "jsonp",
+      //         data: { third_token: reptoken },
+      //         success: function (res2) {
+      //           if (res2.errorCode) {
+      //             console.log("帆软认证接口调用失败");
+      //           } else {
+      //             console.log("帆软认证接口调用成功");
+      //             window.open(item.url);
+      //             return;
+      //           }
+      //         },
+      //         error: function () {
+      //           alert("超时或服务器其他错误"); // 登录失败（超时或服务器其他错误）
+      //           return;
+      //         },
+      //       });
+      //     } else {
+      //       return;
+      //     }
+      //   });
+      // } else {
+        this.$router.push({
+          path: item.url,
+        });
+      // }
+    },
   },
 };
 </script>

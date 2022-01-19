@@ -50,6 +50,7 @@
       <el-table :data="tableData_list"
                 v-loading="loading"
                 :header-cell-style="{ 'background-color': '#F4FAFF' }"
+                stripe
                 style="width: 100%">
         <el-table-column type="index"
                          label="序号"

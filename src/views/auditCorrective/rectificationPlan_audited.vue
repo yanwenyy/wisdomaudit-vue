@@ -17,6 +17,7 @@
     <div class="padding">
       <el-table :data="tableData.records"
                 :header-cell-style="{'background-color': '#F4FAFF',}"
+                stripe
                 v-loading="loading"
                 style="width: 100%;min-height:400px">
         <el-table-column type="index"

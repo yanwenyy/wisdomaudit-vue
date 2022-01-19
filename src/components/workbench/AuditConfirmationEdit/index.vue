@@ -20,7 +20,8 @@
         <el-popover placement="bottom-start"
                     trigger="click"
                     @hide="popoverHide">
-          <el-table :data="proData">
+          <el-table :data="proData"
+                    stripe>
             <el-table-column type="selection"
                              width="55">
             </el-table-column>

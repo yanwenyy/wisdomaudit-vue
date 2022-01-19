@@ -42,6 +42,7 @@
           </el-row>
           <el-table :data="tableData_list"
                     style="width: 100%;"
+                    stripe
                     v-loading="loading"
                     :header-cell-style="{'background-color': '#F4FAFF',}">
 
@@ -223,6 +224,7 @@
         <div class="projectTab anmition_show">
           <el-table :data="tableData_list2"
                     style="width: 100%;"
+                    stripe
                     v-loading="loading"
                     :header-cell-style="{'background-color': '#F4FAFF',}">
             <!-- <el-table-column prop="dataTaskNumber"
@@ -380,6 +382,7 @@
                       :data="task_list_records"
                       tooltip-effect="dark"
                       style="width: 100%"
+                      stripe
                       :header-cell-style="{'background-color': '#F4FAFF',}"
                       @selection-change="handleSelectionChange_query">
               <el-table-column type="selection"
@@ -521,6 +524,7 @@
                       :data="task_list_records_details"
                       tooltip-effect="dark"
                       style="width: 100%"
+                      stripe
                       @selection-change="handleSelectionChange_query">
               <el-table-column type="selection"
                                width="55">
@@ -880,6 +884,7 @@
                   :data="operation_tableData"
                   tooltip-effect="dark"
                   style="width: 100%"
+                  stripe
                   v-loading="loading"
                   :header-cell-style="{'background-color': '#F4FAFF',}"
                   @selection-change="handleSelectionChange_operation">
@@ -1005,6 +1010,7 @@
           <el-table :data="record_list_table"
                     :header-cell-style="{
                     'background-color': '#F4FAFF',}"
+                    stripe
                     style="width: 100%">
 
             <el-table-column prop="opOperate"
@@ -1107,6 +1113,7 @@
       <!-- 0模版资料 -->
       <el-table :data="enclosure_moban_list"
                 v-if="moban_list==0"
+                stripe
                 style="width: 100%;">
         <el-table-column prop="fileName"
                          label="文件名称">
@@ -1169,6 +1176,7 @@
         <el-table :data="history_log.records"
                   v-loading="loading_history"
                   :header-cell-style="{'background-color': '#F4FAFF',}"
+                  stripe
                   style="width: 100%;">
 
           <el-table-column prop="opOperate"

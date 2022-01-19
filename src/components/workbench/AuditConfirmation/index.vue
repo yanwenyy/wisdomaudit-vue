@@ -12,6 +12,7 @@
           </el-row>
           <!-- 表单 -->
           <el-table :data="tableData"
+                    stripe
                     style="width: 100%;">
             <el-table-column prop="number"
                              label="编号">

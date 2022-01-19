@@ -20,6 +20,7 @@
       <el-table :data="tableData.records"
                 v-loading="loading"
                 :header-cell-style="{'background-color': '#F4FAFF',}"
+                stripe
                 style="width: 100%">
 
         <el-table-column label="模型编号"

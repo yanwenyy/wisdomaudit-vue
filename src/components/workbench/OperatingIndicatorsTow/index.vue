@@ -25,6 +25,7 @@
           </el-row>
           <el-table :data="tableData"
                     style="width: 100%;"
+                    stripe
                     @select='Selects'>
             <el-table-column
                type="selection"

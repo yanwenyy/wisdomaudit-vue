@@ -40,6 +40,7 @@
         </el-row>
         <el-table :data="tableData"
                   style="width: 100%"
+                  stripe
                   @select="Selects">
           <el-table-column type="selection"
                            width="55"> </el-table-column>
@@ -230,6 +231,7 @@
         </el-row>
         <el-table :data="tableDatas"
                   border
+                  stripe
                   style="width: 100%">
           <el-table-column type="selection"
                            width="55">

@@ -65,6 +65,7 @@
                 v-loading="listLoading"
                 fit
                 style="width: 100%;"
+                stripe
                 :data="list"
                 border
                 highlight-current-row

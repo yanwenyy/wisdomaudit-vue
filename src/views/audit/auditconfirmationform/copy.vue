@@ -20,6 +20,7 @@
                 :header-cell-style="{'background-color': '#F4FAFF',}"
                 :data="confirmaryData"
                 style="margin-top: 1%"
+                stripe
                 class="confirmaryTable">
         <el-table-column algin="left"
                          width="50"

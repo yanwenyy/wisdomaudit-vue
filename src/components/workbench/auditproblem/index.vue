@@ -53,13 +53,16 @@
     <!-- @sort-change="sortChange"
        -->
     <div class="min_height">
-
       <el-table ref="problemtable"
                 :key="tableKey"
-                :header-cell-style="{'text-align':'left','background-color': '#F4FAFF',}"
+                :header-cell-style="{
+          'text-align': 'left',
+          'background-color': '#F4FAFF',
+        }"
                 v-loading="listLoading"
                 fit
                 style="width: 100%"
+                stripe
                 :data="list"
                 border
                 highlight-current-row
@@ -166,7 +169,7 @@
     <!-- 新增和编辑的弹框 -->
     <el-dialog title="新增审计问题"
                class="add"
-               :append-to-body='true'
+               :append-to-body="true"
                :visible.sync="dialogFormVisible"
                :close-on-click-modal="false"
                width="70%"
@@ -214,12 +217,12 @@
           <el-button v-if="input_select == false"
                      type="primary"
                      class="inline-block"
-                     style="position: absolute;top:0;right: -70px"
-                     @click="input_select=!input_select">重选</el-button>
+                     style="position: absolute; top: 0; right: -70px"
+                     @click="input_select = !input_select">重选</el-button>
         </el-form-item>
         <!-- <el-form-item> </el-form-item> -->
         <el-form-item label="依据："
-                      style="margin-bottom:20px!important;"
+                      style="margin-bottom: 20px !important"
                       prop="basis"
                       class="itemOne">
           <el-select v-model="temp.basis"
@@ -236,23 +239,23 @@
         </el-form-item>
 
         <el-form-item label="描述："
-                      style="margin-bottom:20px!important;"
+                      style="margin-bottom: 20px !important"
                       prop="describe"
                       class="itemOne">
           <!-- <el-input v-model="temp.describe" placeholder="请输入描述" /> -->
           <el-input type="textarea"
                     v-model="temp.describe"
                     placeholder="请输入描述"
-                    :autosize="{ minRows: 3}"></el-input>
+                    :autosize="{ minRows: 3 }"></el-input>
         </el-form-item>
         <el-form-item label="管理建议："
-                      style="margin-bottom:20px!important;"
+                      style="margin-bottom: 20px !important"
                       prop="managementAdvice"
                       class="itemOne">
           <el-input type="textarea"
                     v-model="temp.managementAdvice"
                     placeholder="请输入管理建议"
-                    :autosize="{ minRows: 3}" />
+                    :autosize="{ minRows: 3 }" />
         </el-form-item>
         <el-form-item class="itemTwo"
                       label="发现日期："
@@ -281,10 +284,10 @@
           </el-select>
         </el-form-item>
         <el-form-item class="itemTwo"
-                      label="涉及金额(万元)："
+                      label="风险金额（万元）："
                       prop="riskAmount">
           <el-input v-model="temp.riskAmount"
-                    placeholder="请输入涉及金额"
+                    placeholder="请输入风险金额"
                     @keyup.native="onlyNumOnePoint('temp')"
                     @input="temp.riskAmount = temp.riskAmount.slice(0, 27)" />
         </el-form-item>
@@ -293,7 +296,8 @@
                       prop="auditTaskUuid">
           <el-select v-model="temp.auditTaskUuid"
                      multiple
-                     placeholder="请选择关联任务">
+                     placeholder="请选择关联任务"
+                     @change="changetempauditTaskUuid">
             <el-option v-for="item in auditTasklList"
                        :key="item.auditTaskUuid"
                        :label="item.taskName"
@@ -307,12 +311,22 @@
           <el-upload class="upload-demo"
                      drag
                      action="/wisdomaudit/auditBasy/filesUpload"
-                     :on-success="( response, file, fileList)=>{
-                       uploadPorgress2( response, file, fileList,attachmentList2)
-                       }"
-                     :on-remove="( file, fileList)=>{
-                       handleRemove2( file, fileList,attachmentList2,fileList2,fileList2_del)
-                       }"
+                     :on-success="
+              (response, file, fileList) => {
+                uploadPorgress2(response, file, fileList, attachmentList2);
+              }
+            "
+                     :on-remove="
+              (file, fileList) => {
+                handleRemove2(
+                  file,
+                  fileList,
+                  attachmentList2,
+                  fileList2,
+                  fileList2_del
+                );
+              }
+            "
                      :on-progress="update_ing"
                      multiple
                      :key="key"
@@ -321,7 +335,8 @@
                      :file-list="fileList2">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">
-              点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc
+              点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip
+              .doc
             </div>
           </el-upload>
           <!-- <div class="inline-block">
@@ -337,7 +352,6 @@
             </el-tooltip>
           </div>-->
         </el-form-item>
-
       </el-form>
       <div slot="footer">
         <el-button v-if="!closeStatus"
@@ -347,10 +361,10 @@
                    @click="dialogFormVisible = false">关闭</el-button>
 
         <el-button type="primary"
-                   v-if="success_btn==1"
+                   v-if="success_btn == 1"
                    :loading="true">上传中</el-button>
 
-        <el-button v-if="success_btn==0 && !closeStatus"
+        <el-button v-if="success_btn == 0 && !closeStatus"
                    type="primary"
                    @click="createData()">保存</el-button>
       </div>
@@ -360,7 +374,7 @@
                :title="ifadd == 1 ? '编辑问题' : '问题详情'"
                :visible.sync="dialogDetailVisible"
                :close-on-click-modal="false"
-               :append-to-body='true'
+               :append-to-body="true"
                @close="resetForm('dqProblem')"
                center>
       <el-form ref="detailForm"
@@ -409,8 +423,8 @@
           <el-button v-if="input_selecte == false"
                      type="primary"
                      class="inline-block"
-                     style="position: absolute;top:0;right: -70px"
-                     @click="input_selecte=!input_selecte">重选</el-button>
+                     style="position: absolute; top: 0; right: -70px"
+                     @click="input_selecte = !input_selecte">重选</el-button>
         </el-form-item>
         <!--<el-form-item></el-form-item>-->
         <!-- <el-popover placement="top-start"
@@ -445,24 +459,24 @@
         <!-- </el-popover> -->
 
         <el-form-item label="描述："
-                      style="margin-bottom:20px!important;"
+                      style="margin-bottom: 20px !important"
                       prop="describe"
                       class="itemOne">
           <el-input type="textarea"
                     v-model="dqProblem.describe"
                     placeholder="请输入描述"
                     :disabled="ifadd != 2 ? false : true"
-                    :autosize="{ minRows: 3}" />
+                    :autosize="{ minRows: 3 }" />
         </el-form-item>
         <el-form-item label="管理建议："
-                      style="margin-bottom:20px!important;"
+                      style="margin-bottom: 20px !important"
                       prop="managementAdvice"
                       class="itemOne">
           <el-input type="textarea"
                     v-model="dqProblem.managementAdvice"
                     placeholder="请输入管理建议"
                     :disabled="ifadd != 2 ? false : true"
-                    :autosize="{ minRows: 3}" />
+                    :autosize="{ minRows: 3 }" />
         </el-form-item>
         <el-form-item class="itemTwo"
                       label="发现日期："
@@ -502,7 +516,8 @@
           <el-select disabled
                      v-model="dqProblem.auditTaskUuid"
                      multiple
-                     placeholder="请选择关联任务">
+                     placeholder="请选择关联任务"
+                     @change="changedqProblemauditTaskUuid">
             <el-option v-for="item in auditTasklList"
                        :key="item.auditTaskUuid"
                        :label="item.taskName"
@@ -516,12 +531,22 @@
           <el-upload class="upload-demo"
                      drag
                      action="/wisdomaudit/auditBasy/filesUpload"
-                     :on-success="( response, file, fileList)=>{
-                       uploadPorgress2( response, file, fileList,attachmentList2)
-                       }"
-                     :on-remove="( file, fileList)=>{
-                       handleRemove2( file, fileList,attachmentList2,fileList2,fileList2_del)
-                       }"
+                     :on-success="
+              (response, file, fileList) => {
+                uploadPorgress2(response, file, fileList, attachmentList2);
+              }
+            "
+                     :on-remove="
+              (file, fileList) => {
+                handleRemove2(
+                  file,
+                  fileList,
+                  attachmentList2,
+                  fileList2,
+                  fileList2_del
+                );
+              }
+            "
                      :on-progress="update_ing"
                      multiple
                      :key="key"
@@ -530,7 +555,8 @@
                      :file-list="fileList2">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">
-              点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc
+              点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip
+              .doc
             </div>
           </el-upload>
           <!-- <div class="inline-block"
@@ -547,25 +573,22 @@
             </el-tooltip>
           </div> -->
         </el-form-item>
-
       </el-form>
       <div slot="footer"
            class="dialog-footer">
-
         <el-button @click="dialogDetailVisible = false">取消</el-button>
 
         <el-button type="primary"
                    @click="updateData()"
-                   v-if="success_btn==0 && ifupdata">保存修改</el-button>
+                   v-if="success_btn == 0 && ifupdata">保存修改</el-button>
 
         <el-button type="primary"
-                   v-if="success_btn==1"
+                   v-if="success_btn == 1"
                    :loading="true">上传中</el-button>
-
       </div>
     </el-dialog>
     <el-dialog title="引用审计依据"
-               :append-to-body='true'
+               :append-to-body="true"
                :visible.sync="basisdialog"
                width="70%"
                class="post"
@@ -683,7 +706,7 @@ export default {
 
       show: false,
       dqtoken: "",
-      dqProblem: {},//编辑问题
+      dqProblem: {}, //编辑问题
       options: [
         { value: "xxx1", label: "xxx1" },
         { value: "xxx2", label: "xxx2" },
@@ -727,12 +750,11 @@ export default {
           dictname: '',
         },
       },
-      attachmentList1: [],//附件上传列表
-      success_btn: 0,//上传 ing
-      attachmentList2: [],//附件上传列表
-      fileList2: [],//附件上传回显列表
+      attachmentList1: [], //附件上传列表
+      success_btn: 0, //上传 ing
+      attachmentList2: [], //附件上传列表
+      fileList2: [], //附件上传回显列表
       fileList2_del: [],
-
 
       selections: [],
       dialogFormVisible: false,
@@ -806,7 +828,7 @@ export default {
     this.getList();
   },
   mounted () {
-    this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
+    this.headers = { TOKEN: sessionStorage.getItem("TOKEN") };
   },
   methods: {
 
@@ -1085,7 +1107,7 @@ export default {
     },
     //模糊查询依据详情
     basisremoteMethod (query) {
-      this.basisloading = true
+      this.basisloading = true;
       axios({
         url: `/wisdomaudit/auditBasy/getAuditbasyList`,
         headers: {
@@ -1097,7 +1119,7 @@ export default {
         },
       }).then((res) => {
         this.basislist = res.data.data;
-        this.basisloading = false
+        this.basisloading = false;
       });
     },
     //获取依据详情
@@ -1181,7 +1203,7 @@ export default {
         data: {},
       }).then((res) => {
         this.dqProblem = res.data.data;
-        this.dqProblem.riskAmount = parseFloat(this.dqProblem.riskAmount)
+        this.dqProblem.riskAmount = parseFloat(this.dqProblem.riskAmount);
         this.dqProblem.auditTaskUuid = this.dqProblem.auditTaskUuid.split(",");
         this.dqProblem.basis = this.dqProblem.basis
           ? this.dqProblem.basis.split(",")
@@ -1193,7 +1215,7 @@ export default {
         }
 
         // 附件
-        let datas = res.data.data
+        let datas = res.data.data;
         if (datas.attachmentList) {
           datas.attachmentList.forEach((item) => {
             item.name = item.fileName;
@@ -1202,8 +1224,6 @@ export default {
           });
         }
         this.fileList2 = datas.attachmentList || [];
-
-
 
         this.dialogDetailVisible = true;
         this.$nextTick(() => {
@@ -1222,7 +1242,7 @@ export default {
         data: {},
       }).then((res) => {
         this.dqProblem = res.data.data;
-        this.dqProblem.riskAmount = parseFloat(this.dqProblem.riskAmount)
+        this.dqProblem.riskAmount = parseFloat(this.dqProblem.riskAmount);
         this.dqProblem.auditTaskUuid = this.dqProblem.auditTaskUuid.split(",");
         this.dqProblem.basis = this.dqProblem.basis
           ? this.dqProblem.basis.split(",")
@@ -1321,7 +1341,6 @@ export default {
       // rep =  rep.join(",")
     },
 
-
     // 附件 -------------------------------------
 
     handleExceed () { },
@@ -1336,23 +1355,21 @@ export default {
         response.data.isDeleted = 2;
         tableList.push(response.data);
         this.$message({
-          message: '上传成功',
-          type: 'success',
+          message: "上传成功",
+          type: "success",
           duration: 1500,
           onClose: () => {
             // response.data.isDeleted=2;
             // tableList.push(response.data);
-          }
-        })
+          },
+        });
       } else {
         this.$message({
-          message: '上传失败',
-          type: 'error',
+          message: "上传失败",
+          type: "error",
           duration: 1500,
-          onClose: () => {
-
-          }
-        })
+          onClose: () => { },
+        });
       }
     },
     //新增问题 附件删除
@@ -1363,69 +1380,60 @@ export default {
       } else {
         showList.remove(file);
         file.isDeleted = 1;
-        file.attStatus = 3
+        file.attStatus = 3;
 
         delList.push(file);
-        console.log(showList, delList)
+        console.log(showList, delList);
       }
     },
     //新增问题 附件下载
     downFile2 (id, fileName) {
-      let formData = new FormData()
-      formData.append('fileId', id)
-      down_file(formData).then(resp => {
-        const content = resp;
-        const blob = new Blob([content],
-          { type: 'application/octet-stream,charset=UTF-8' }
-        )
-        if ('download' in document.createElement('a')) {
-          // 非IE下载
-          const elink = document.createElement('a')
-          elink.download = fileName //下载后文件名
-          elink.style.display = 'none'
-          elink.href = window.URL.createObjectURL(blob)
-          document.body.appendChild(elink)
-          elink.click()
-          window.URL.revokeObjectURL(elink.href) // 释放URL 对象
-          document.body.removeChild(elink)
-        } else {
-          // IE10+下载
-          navigator.msSaveBlob(blob, fileName)
-        }
-      }).catch((err) => {
-        console.log(err);
-      })
+      let formData = new FormData();
+      formData.append("fileId", id);
+      down_file(formData)
+        .then((resp) => {
+          const content = resp;
+          const blob = new Blob([content], {
+            type: "application/octet-stream,charset=UTF-8",
+          });
+          if ("download" in document.createElement("a")) {
+            // 非IE下载
+            const elink = document.createElement("a");
+            elink.download = fileName; //下载后文件名
+            elink.style.display = "none";
+            elink.href = window.URL.createObjectURL(blob);
+            document.body.appendChild(elink);
+            elink.click();
+            window.URL.revokeObjectURL(elink.href); // 释放URL 对象
+            document.body.removeChild(elink);
+          } else {
+            // IE10+下载
+            navigator.msSaveBlob(blob, fileName);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
 
     // 附件 end-------------------------------------
 
-    // 新增 保存
     createData () {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
-          console.log(this.zdyCode);
+          let rep = this.temp;
+          rep.riskAmount = parseFloat(rep.riskAmount);
+          rep.auditTaskUuid = rep.auditTaskUuid
+            ? rep.auditTaskUuid.join(",")
+            : "";
+          rep.basis = rep.basis ? rep.basis.join(",") : "";
 
-          // 判断自定义的专题是否重复
-          if (this.zdyCode == 1) {
-            let msg = true;
-            this.SPECIALList.forEach(item => {
-              if (item.label == this.temp.special) {
-                msg = false
-                return false
-              }
-            })
-            if (msg == false) {
-              this.$message({
-                message: '该专题已经存在',
-                type: 'warning'
-              });
-              return false
-            }
-          }
-
-
-          // 新增刷列表
-          let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
+          // 附件
+          let uploadList2 = this.attachmentList2.concat(
+            this.fileList2,
+            this.fileList2_del
+          );
+          console.log(uploadList2);
           uploadList2.forEach((item) => {
             item.status = null;
           });
@@ -1511,55 +1519,24 @@ export default {
         }
       });
     },
-    // 编辑更新保存
     updateData () {
       this.$refs["detailForm"].validate((valid) => {
         if (valid) {
-          // let rep = this.dqProblem;
-          // rep.riskAmount = parseFloat(rep.riskAmount)
-          // rep.auditTaskUuid = rep.auditTaskUuid.join(",");
-          // rep.basis = rep.basis.join(",");
+          let rep = this.dqProblem;
+          rep.riskAmount = parseFloat(rep.riskAmount);
+          rep.auditTaskUuid = rep.auditTaskUuid.join(",");
+          rep.basis = rep.basis.join(",");
 
-          // // 附件
-          // let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
-          // uploadList2.forEach((item) => {
-          //   item.status = null;
-          //   // 新增的
-          //   if (item.attStatus != 1 && item.attStatus != 3) {
-          //     item.attStatus = 2
-          //   }
-          // });
-          // this.dqProblem.attachmentList = uploadList2;
-
-          // 判断自定义的专题是否重复
-          if (this.zdyCode == 1) {
-            let msg = true;
-            this.SPECIALList.forEach(item => {
-              if (item.label == this.dqProblem.special) {
-                msg = false
-                return false
-              }
-            })
-            if (msg == false) {
-              this.$message({
-                message: '该专题已经存在',
-                type: 'warning'
-              });
-              return false
-            }
-          }
-
-
-          // let rep = this.dqProblem;
-          // rep.riskAmount = parseFloat(rep.riskAmount)
-          // rep.auditTaskUuid = rep.auditTaskUuid.join(",");
-          // rep.basis = rep.basis.join(",");
-          let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
+          // 附件
+          let uploadList2 = this.attachmentList2.concat(
+            this.fileList2,
+            this.fileList2_del
+          );
           uploadList2.forEach((item) => {
             item.status = null;
             // 新增的
             if (item.attStatus != 1 && item.attStatus != 3) {
-              item.attStatus = 2
+              item.attStatus = 2;
             }
           });
           this.dqProblem.attachmentList = uploadList2;//附件
@@ -1617,6 +1594,32 @@ export default {
           });
         }
       });
+    },
+    changedqProblemauditTaskUuid (val) {
+      console.log(val);
+      for (let i = 0; i < this.auditTasklList.length; i++) {
+        if (this.auditTasklList[i].auditTaskUuid == val[0]) {
+          if (this.dqProblem.field == "") {
+            this.dqProblem.field = this.auditTasklList[i].belongField;
+          }
+          if (this.dqProblem.special == "") {
+            this.dqProblem.special = this.auditTasklList[i].belongSpcial;
+          }
+        }
+      }
+    },
+    changetempauditTaskUuid (val) {
+      console.log(val);
+      for (let i = 0; i < this.auditTasklList.length; i++) {
+        if (this.auditTasklList[i].auditTaskUuid == val[0]) {
+          if (this.temp.field == "") {
+            this.temp.field = this.auditTasklList[i].belongField;
+          }
+          if (this.temp.special == "") {
+            this.temp.special = this.auditTasklList[i].belongSpcial;
+          }
+        }
+      }
     },
   },
 };
@@ -1756,7 +1759,7 @@ export default {
   width: 60% !important;
 }
 .yj-sel >>> .el-select__tags-text {
-  max-width: 400px;
+  max-width: 220px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
