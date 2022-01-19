@@ -15,7 +15,8 @@
            style="color: white;"></i>
       </div>
     </div>
-    <div class="dialog table">
+    <div class="dialog table"
+         ref="myBox">
 
       <el-table :data="tableData_details.records"
                 :header-cell-style="{'background-color': '#F4FAFF',}"
@@ -30,13 +31,51 @@
         <el-table-column prop="problem"
                          label="问题">
           <template slot-scope="scope">
-            <span @click="details_show(scope.row,scope.$index+1)"
-                  v-if="scope.row.problem"
-                  style="cursor: pointer;color:rgb(68, 163, 223);">{{scope.row.problem}}</span>
+            <el-popover placement="bottom"
+                        visible-arrow='false'
+                        popper-class="popover"
+                        :width=" details_list.style_width"
+                        @show="details_show(scope.row,scope.$index+1)"
+                        trigger="click">
 
-            <span v-else>--</span>
+              <!-- 详情 -->
+              <div class="problem_details_conter"
+                   :width=" details_list.style_width + 'px'"
+                   v-if="details == true">
+                <ul class="list">
+                  <li>
+                    <span class="fl  sp">问题：</span>
+                    <p><span v-if="details_list.problem">{{details_list.problem}}</span>
+                      <span v-else>--</span>
+                    </p>
+
+                  </li>
+                  <li>
+                    <span class="fl sp">描述：</span>
+                    <p><span v-if="details_list.describe">{{details_list.describe}}</span>
+                      <span v-else>--</span>
+                    </p>
+
+                  </li>
+                  <li>
+                    <span class="fl sp">管理建议：</span>
+                    <p><span v-if="details_list.managementAdvice">{{details_list.managementAdvice}}</span>
+                      <span v-else>--</span>
+                    </p>
+                  </li>
+
+                </ul>
+              </div>
+              <!-- 详情 end-->
+              <div slot="reference"
+                   class="pointer">
+                <span v-if="scope.row.problem"
+                      style="cursor: pointer;color:rgb(68, 163, 223);">{{scope.row.problem}}</span>
+
+                <span v-else>--</span>
+              </div>
+            </el-popover>
           </template>
-
         </el-table-column>
         <el-table-column prop="discoveryTime"
                          label="发现日期"
@@ -83,9 +122,7 @@
         </el-table-column>
 
       </el-table>
-      <div class="mose"
-           @click="close_mose"
-           v-if="details == true"></div>
+
       <!-- 分页 -->
       <div class="page">
         <el-pagination @size-change="handleSizeChange_details"
@@ -97,61 +134,6 @@
         </el-pagination>
       </div>
       <!-- 分页 end-->
-      <!-- 详情 -->
-      <div class="problem_details_conter"
-           :style="{'top':details_list.style_top}"
-           v-if="details == true">
-        <ul class="list">
-          <li>
-            <!-- <p>序号：<span v-if="Index">{{Index}}</span>
-              <span v-else>--</span>
-            </p>
-            <p>领域：<span v-if="details_list.field">{{details_list.field}}</span>
-              <span v-else>--</span>
-            </p> -->
-            <span class="fl  sp">问题：</span>
-            <p><span v-if="details_list.problem">{{details_list.problem}}</span>
-              <span v-else>--</span>
-            </p>
-
-          </li>
-          <li>
-            <span class="fl sp">描述：</span>
-            <p><span v-if="details_list.describe">{{details_list.describe}}</span>
-              <span v-else>--</span>
-            </p>
-
-          </li>
-          <li>
-            <span class="fl sp">管理建议：</span>
-            <p><span v-if="details_list.managementAdvice">{{details_list.managementAdvice}}</span>
-              <span v-else>--</span>
-            </p>
-          </li>
-          <!-- <li>
-            <p>发现日期：<span v-if="details_list.discoveryTime">{{details_list.discoveryTime}}</span>
-              <span v-else>--</span>
-            </p>
-            <p>涉及金额(万元)：<span v-if="details_list.riskAmount">{{
-               parseFloat(details_list.riskAmount.toString()) 
-              }}</span>
-              <span v-else>--</span>
-            </p>
-            <p>描述：<span v-if="details_list.describe">{{details_list.describe}}</span>
-              <span v-else>--</span>
-            </p>
-          </li>
-          <li>
-            <p>发现人：<span v-if="details_list.problemFindPeople">{{details_list.problemFindPeople}}</span>
-              <span v-else>--</span>
-            </p>
-            <p>管理建议：<span v-if="details_list.managementAdvice">{{details_list.managementAdvice}}</span>
-              <span v-else>--</span>
-            </p>
-          </li> -->
-        </ul>
-      </div>
-      <!-- 详情 end-->
 
     </div>
 
@@ -177,6 +159,9 @@ export default {
       style_px: 40,//悬浮定位
       details_list: [],//悬浮数据
       Index: '',
+
+      style_w: '',
+
     }
   },
   computed: {},
@@ -226,15 +211,15 @@ export default {
       this.details_data();
     },
     details_show (data, index) {
-      this.Index = index
+      this.style_w = this.$refs.myBox.offsetWidth
+      console.log(this.style_w);
+
       this.details = true
       this.details_list = data;
-      if (index == 0) {
-        this.$set(this.details_list, 'style_top', '90px')//核实意见
-      } else {
-        let top_px = (this.style_px * index + 45) + 'px'
-        this.$set(this.details_list, 'style_top', top_px)//核实意见
-      }
+
+      // let top_px = (this.style_px * index + 8) + 'px'
+      this.$set(this.details_list, 'style_width', this.style_w - '43')
+      console.log(this.details_list.style_width);
     },
     close_mose () {
       this.details = false
@@ -244,6 +229,21 @@ export default {
 
 }
 </script>
+<style >
+.el-popover.popover {
+  padding: 0 !important;
+  /* transform: translate(-50%, 0%);
+  left: 50% !important; */
+  left: inherit !important;
+  right: 20px !important;
+  box-shadow: none !important;
+  border: none !important;
+  background: none !important;
+}
+.el-popover.popover[x-placement^="bottom"] .popper__arrow {
+  left: 150px !important;
+}
+</style> 
 <style scoped>
 .back-group >>> span {
   display: flex;
@@ -319,12 +319,14 @@ export default {
 
 .problem_details_conter {
   width: 100%;
-  position: absolute;
+  /* position: absolute; */
   /* top: 90px; */
-  left: 0;
-  padding: 0 20px;
+  /* left: 0; */
+  /* padding: 0 20px; */
   box-sizing: border-box;
-  z-index: 100;
+  /* z-index: 100;
+  border: 1px solid red; */
+  float: right;
 }
 .problem_details_conter .list {
   margin: 0 auto;
