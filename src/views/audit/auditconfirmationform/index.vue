@@ -1467,7 +1467,7 @@ export default {
             this.$message('因金库未开启或服务异常，文件下载失败，请联系系统管理员。');
             return;
           } else {
-
+            
             this.approvers = rep.approvers || "";
             this.maxTime = rep.maxTime;
             this.dqtime = new Date();
@@ -1476,7 +1476,6 @@ export default {
             this.vaultV = true;
           }
         } else {
-          this.vaultV = true;
           //否则不处理或在此处直接进行后面的操作
           this.vdownload()
         }
