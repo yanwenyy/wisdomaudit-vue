@@ -515,6 +515,7 @@ export default {
 <style scoped>
 .jyzb-div {
   min-height: 500px;
+  -ms-overflow-style: auto !important;
 }
 .jyzb-tr-title {
   text-align: left !important;
