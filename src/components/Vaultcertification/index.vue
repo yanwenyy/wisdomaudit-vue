@@ -224,7 +224,8 @@ export default {
         this.sortinfoVisible = false;
         this.sortform.info = "";
         if (resp.data.code == 0) {
-          this.$message(resp.data.data.resultDesc);
+          let rep = resp.data.data.resultDesc || "验证成功"
+          this.$message(rep);
           if (resp.data.data.result == 1) {
             this.$emit("vdownload");
           }
