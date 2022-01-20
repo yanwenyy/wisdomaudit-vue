@@ -77,7 +77,7 @@
         </template>
       </el-table-column>
       <el-table-column :resizable="false"
-                       label="2整改责任部门及联系人"
+                       label="整改责任部门及联系人"
                        width="250px"
                        algin="left"
                        prop="name">
