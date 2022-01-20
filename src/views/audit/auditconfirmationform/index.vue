@@ -1467,7 +1467,7 @@ export default {
             this.$message('因金库未开启或服务异常，文件下载失败，请联系系统管理员。');
             return;
           } else {
-            
+            console.log('芝麻开门')
             this.approvers = rep.approvers || "";
             this.maxTime = rep.maxTime;
             this.dqtime = new Date();
