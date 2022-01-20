@@ -95,7 +95,7 @@
                 :key="index">
               <p class="fileName_show"
                  @click="openVault(item)">{{item.fileName}}</p>
-              <span style="color:#606266">版本{{item.ext3}}</span><span style="color:#606266">时间{{item.createTime|filtedate
+              <span style="color:#606266">{{item.ext3}}</span><span style="color:#606266">时间{{item.createTime|filtedate
 }}</span>
               <el-button type="text"
                          plain
@@ -235,7 +235,7 @@
       <div class="title_dlag">确认单列表</div>
 
       <div class="dlag_conter3">
-        <div class="search">
+        <!-- <div class="search">
           <el-input placeholder="请输入确认单名称"
                     v-model="search_jy_name"> </el-input>
           <div class="search_icon"
@@ -244,10 +244,10 @@
             <i class="el-icon-search"
                style="color: white;"></i>
           </div>
-        </div>
+        </div> -->
         <div class="dlag">
           <!-- 表单 -->
-          <el-table :data="tableData2_list"
+          <el-table :data="tableData2_list.records"
                     ref="multipleTable"
                     tooltip-effect="dark"
                     v-loading="loading_card"
@@ -297,31 +297,18 @@
               </template>
             </el-table-column>
           </el-table>
-          <!-- <div class="mose"
-               @click="close_mose"
-               v-if="details == true"></div> -->
+          <!-- 分页 -->
+          <div class="page">
+            <el-pagination @size-change="handleSizeChange_wt"
+                           @current-change="handleCurrentChange_wt"
+                           :page-size="this.tableData2_list.size"
+                           :current-page="this.tableData2_list.current"
+                           :total="this.tableData2_list.total"
+                           layout="total, sizes, prev, pager, next, jumper">
+            </el-pagination>
 
-          <!-- 详情 -->
-          <!-- <div class="problem_details_conter"
-               :style="{'top':details_list.style_top}"
-               v-if="details == true">
-            <ul class="list">
-              <li>
-                问题：{{details_list.problem}}
-              </li>
-              <li>
-                依据：{{details_list.basis}}
-              </li>
-              <li>
-                描述：{{details_list.describe}}
-              </li>
-              <li>
-                管理建议：{{details_list.managementAdvice}}
-              </li>
-
-            </ul>
-          </div> -->
-          <!-- 详情 end-->
+          </div>
+          <!-- 分页 end-->
 
         </div>
 
@@ -410,6 +397,12 @@ export default {
       style_px: 40,//悬浮定位
       details_list: [],//悬浮数据
       loading_card: false,
+
+      // 确认单分页
+      params3: {
+        pageNo: 1,
+        pageSize: 10,
+      },
     }
   },
   props: ['active_project', 'userRole', 'isLiaison'],
@@ -450,6 +443,18 @@ export default {
     },
   },
   methods: {
+    // 确认单 每页
+    handleSizeChange_wt (val) {
+      this.params3.pageSize = val
+      this.correlation_problem();
+    },
+    // 确认单 分页
+    handleCurrentChange_wt (val) {
+      this.params3.pageNo = val
+      this.correlation_problem();
+    },
+
+
     //通过认证后的方法
     vdownload () {
       this.download_click(this.downloaobj.attachmentUuid, this.downloaobj.fileName)
@@ -544,13 +549,8 @@ export default {
         this.correlation_index(params)// 关联指标
 
       } else {
-        let params = {
-          condition: {
-            managementProjectUuid: this.active_project,//项目id
-            matter: this.search_jy_name,//模糊查询
-          },
-        }
-        this.correlation_problem(params)
+
+        this.correlation_problem()
       }
     },
     //公用关闭
@@ -619,20 +619,31 @@ export default {
       //     status: '1',
       //   },
       // }
-      let params = {
-        condition: {
-          managementProjectUuid: this.active_project,
-          matter: this.search_jy_name,//模糊查询
 
-        }
-      };
-
-      this.correlation_problem(params)
+      this.correlation_problem()
       this.dlag_Correlation_wt = true;//添加关联问题
 
     },
     // 缺认单列表
-    correlation_problem (params) {
+    correlation_problem () {
+      let params = {
+        pageNo: this.params3.pageNo,
+        pageSize: this.params3.pageSize,
+        condition: {
+          managementProjectUuid: this.active_project,
+          // matter: this.search_jy_name,//模糊查询
+
+        }
+      };
+      // let params = {
+      //   pageNo: this.params3.pageNo,
+      //   pageSize: this.params3.pageSize,
+      //   condition: {
+      //     managementProjectUuid: this.active_project,
+      //     problem: this.search_jy_name
+      //   }
+      // };
+
       this.loading_card = true;
       task_pageList_wt(params).then(resp => {
         this.loading_card = false;
@@ -798,6 +809,15 @@ export default {
 
 <style scoped>
 @import "../../../assets/styles/css/lhg.css";
+/* 分页样式 */
+.page {
+  width: 100%;
+  padding: 20px 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 分页样式 end*/
 >>> .foot .el-button {
   font-weight: normal;
 }
@@ -854,10 +874,11 @@ export default {
   padding: 20px;
   box-sizing: border-box;
 }
-.dlag_conter3 >>> .el-table {
+
+/* .dlag_conter3 >>> .el-table {
   overflow-y: auto;
   height: 300px;
-}
+} */
 
 .dlag_conter3 >>> .foot {
   width: 100%;

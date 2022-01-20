@@ -235,7 +235,7 @@ export default {
   /* transform: translate(-50%, 0%);
   left: 50% !important; */
   left: inherit !important;
-  right: 20px !important;
+  right: 40px !important;
   box-shadow: none !important;
   border: none !important;
   background: none !important;
