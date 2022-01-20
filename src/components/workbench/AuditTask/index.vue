@@ -1567,7 +1567,6 @@ export default {
 
 
             if (this.fileList.length > 0) {
-              alert(1)
               this.success_btn = 1;//显示加载按钮  0成功  1 loaging
               // 上传
               let formData = new FormData()
@@ -1626,7 +1625,6 @@ export default {
                 }
               })//上传 end
             } else {
-              alert(2)
               //未上传文件 提交步骤
               this.Upload_file = [];
               this.edit_file_list = [];
