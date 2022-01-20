@@ -191,17 +191,19 @@
     </div>
 
     <!-- 新增确认单弹出框 -->
+
+    <!--label-width="130px"-->
     <el-form :rules="rules"
              ref="addForm"
              class="formData qrdForm"
              label-width="180px"
              :model="formDetail">
-      <!--label-width="130px"-->
+
       <el-dialog class="qrd-dialog"
                  :append-to-body='true'
                  :visible.sync="confirmationDialogVisible"
                  width="70%"
-                 @close="handleClose">
+                 @close="handleClose('dataForm')">
         <div class="title">{{confirmationDialogTitle}}</div>
 
         <el-form-item class="itemTwo"
@@ -359,6 +361,7 @@
             </el-tooltip>
           </div> -->
         </el-form-item>
+
         <span slot="footer"
               class="dialog-footer">
           <el-button @click="handleClose">取 消</el-button>
@@ -376,83 +379,84 @@
 
         </span>
       </el-dialog>
-      <el-dialog class="qrd-dialog"
-                 :append-to-body='true'
-                 :visible.sync="confirmationDialogVisibleZx"
-                 width="70%"
-                 @close="handleClose">
-        <div class="title">{{confirmationDialogTitle}}</div>
-        <div class="zxTabel-div">
-          <table class="zxTabel">
-            <tr>
-              <td>项目名称</td>
-              <td colspan="5">{{formDetail.managementProjectName}}</td>
-            </tr>
-            <tr>
-              <td>被审计(调查)单位</td>
-              <td colspan="5">{{formDetail.auditOrgName	}}</td>
-            </tr>
-            <tr>
-              <td>审计(调查)事项</td>
-              <td colspan="5">
-                <el-input :disabled="ifLook"
-                          type="textarea"
-                          v-model="formDetail.matter"></el-input>
-              </td>
-              <!--<td colspan="5">{{formDetail.matter	}}</td>-->
-            </tr>
-            <tr>
-              <td>审计(调查)事项描述</td>
-              <td colspan="5">
-                <el-input :disabled="ifLook"
-                          type="textarea"
-                          v-model="formDetail.matterDetail"></el-input>
-              </td>
-              <!--<td colspan="5">-->
-              <!--<div>{{formDetail.matterDetail}}</div>-->
-              <!--</td>-->
-            </tr>
-            <tr>
-              <td>审计人员(签名)</td>
-              <td width="20%">{{formDetail.auditorsName}}</td>
-              <td>复审人(签名)</td>
-              <td width="20%">{{formDetail.reviewerName}}</td>
-              <td>编制日期</td>
-              <td>{{formDetail.compileDate | dateformat}}</td>
-            </tr>
-            <tr>
-              <td>被审计(调查)单位确认意见</td>
-              <td colspan="5">
-                <el-input :disabled="ifLook"
-                          type="textarea"
-                          v-model="formDetail.auditOrgOpinion"></el-input>
-              </td>
-              <!--<td colspan="5">{{formDetail.auditOrgOpinion}}</td>-->
-            </tr>
-            <tr>
-              <td>相关负责人(签名)</td>
-              <!--<td><el-input  :disabled="ifLook" v-model="formDetail.principalName"></el-input></td>-->
-              <td>{{formDetail.principalName}}</td>
-              <td>职务</td>
-              <!--<td><el-input  :disabled="ifLook" v-model="formDetail.principalPost"></el-input></td>-->
-              <td>{{formDetail.principalPost}}</td>
-              <td>日期</td>
-              <!--<td><el-input  :disabled="ifLook" v-model="formDetail.signatureDate"></el-input></td>-->
-              <td>{{formDetail.signatureDate | dateformat}}</td>
-            </tr>
-          </table>
-        </div>
-        <span slot="footer"
-              class="dialog-footer">
-          <el-button @click="handleClose()">取 消</el-button>
-          <el-button v-if="!ifLook"
-                     :disabled="isDisable"
-                     type="primary"
-                     @click="saveForm()"
-                     class="subBtn">确 定</el-button>
-        </span>
-      </el-dialog>
     </el-form>
+
+    <el-dialog class="qrd-dialog"
+               :append-to-body='true'
+               :visible.sync="confirmationDialogVisibleZx"
+               width="70%"
+               @close="handleClose">
+      <div class="title">{{confirmationDialogTitle}}</div>
+      <div class="zxTabel-div">
+        <table class="zxTabel">
+          <tr>
+            <td>项目名称</td>
+            <td colspan="5">{{formDetail.managementProjectName}}</td>
+          </tr>
+          <tr>
+            <td>被审计(调查)单位</td>
+            <td colspan="5">{{formDetail.auditOrgName	}}</td>
+          </tr>
+          <tr>
+            <td>审计(调查)事项</td>
+            <td colspan="5">
+              <el-input :disabled="ifLook"
+                        type="textarea"
+                        v-model="formDetail.matter"></el-input>
+            </td>
+            <!--<td colspan="5">{{formDetail.matter	}}</td>-->
+          </tr>
+          <tr>
+            <td>审计(调查)事项描述</td>
+            <td colspan="5">
+              <el-input :disabled="ifLook"
+                        type="textarea"
+                        v-model="formDetail.matterDetail"></el-input>
+            </td>
+            <!--<td colspan="5">-->
+            <!--<div>{{formDetail.matterDetail}}</div>-->
+            <!--</td>-->
+          </tr>
+          <tr>
+            <td>审计人员(签名)</td>
+            <td width="20%">{{formDetail.auditorsName}}</td>
+            <td>复审人(签名)</td>
+            <td width="20%">{{formDetail.reviewerName}}</td>
+            <td>编制日期</td>
+            <td>{{formDetail.compileDate | dateformat}}</td>
+          </tr>
+          <tr>
+            <td>被审计(调查)单位确认意见</td>
+            <td colspan="5">
+              <el-input :disabled="ifLook"
+                        type="textarea"
+                        v-model="formDetail.auditOrgOpinion"></el-input>
+            </td>
+            <!--<td colspan="5">{{formDetail.auditOrgOpinion}}</td>-->
+          </tr>
+          <tr>
+            <td>相关负责人(签名)</td>
+            <!--<td><el-input  :disabled="ifLook" v-model="formDetail.principalName"></el-input></td>-->
+            <td>{{formDetail.principalName}}</td>
+            <td>职务</td>
+            <!--<td><el-input  :disabled="ifLook" v-model="formDetail.principalPost"></el-input></td>-->
+            <td>{{formDetail.principalPost}}</td>
+            <td>日期</td>
+            <!--<td><el-input  :disabled="ifLook" v-model="formDetail.signatureDate"></el-input></td>-->
+            <td>{{formDetail.signatureDate | dateformat}}</td>
+          </tr>
+        </table>
+      </div>
+      <span slot="footer"
+            class="dialog-footer">
+        <el-button @click="handleClose()">取 消</el-button>
+        <el-button v-if="!ifLook"
+                   :disabled="isDisable"
+                   type="primary"
+                   @click="saveForm()"
+                   class="subBtn">确 定</el-button>
+      </span>
+    </el-dialog>
 
     <!-- 编辑问题列表 -->
     <!-- <search-list ref="searchTabel"
@@ -574,7 +578,8 @@
                           <span class="fl sp">关联任务：</span>
                           <!-- <div> -->
                           <span v-for="(it,ind) in taskList"
-                                :key="'taskList'+ind">{{it.taskName}}</span>
+                                :key="'taskList'+ind"
+                                style="margin-right:10px;">{{it.taskName}} <i>、</i></span>
                           <!-- </div> -->
                         </p>
 
@@ -735,14 +740,14 @@
                label-position="right"
                label-width="140px"
                class="problem-form formData">
-        <el-form-item class="itemTwo"
-                      label="问题："
+        <el-form-item label="问题："
+                      class="itemTwo"
                       prop="problem">
           <el-input v-model="temp_problem.problem"
                     placeholder="请输入问题" />
         </el-form-item>
-        <el-form-item class="itemTwo"
-                      label="领域："
+        <el-form-item label="领域："
+                      class="itemTwo"
                       prop="field">
           <el-select v-model="temp_problem.field"
                      placeholder="请选择领域">
@@ -753,8 +758,8 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item class="itemTwo"
-                      label="专题："
+        <el-form-item label="专题："
+                      class="itemTwo"
                       prop="special">
           <el-select v-model="temp_problem.special"
                      placeholder="请选择专题"
@@ -773,6 +778,20 @@
                      class="inline-block"
                      style="position: absolute;top:0;right: -70px"
                      @click="input_select=!input_select">重选</el-button>
+        </el-form-item>
+        <el-form-item label="关联任务："
+                      class="itemTwo task"
+                      prop="auditTaskUuid">
+          <el-select v-model="temp_problem.auditTaskUuid"
+                     multiple
+                     @change="changetempauditTaskUuid"
+                     placeholder="请选择关联任务">
+            <el-option v-for="item in auditTasklList"
+                       :key="item.auditTaskUuid"
+                       :label="item.taskName"
+                       :value="item.auditTaskUuid">
+            </el-option>
+          </el-select>
         </el-form-item>
         <!-- <el-form-item> </el-form-item> -->
         <el-form-item label="依据："
@@ -811,8 +830,8 @@
                     placeholder="请输入管理建议"
                     :autosize="{ minRows: 3}" />
         </el-form-item>
-        <el-form-item class="itemTwo"
-                      label="发现日期："
+        <el-form-item label="发现日期："
+                      class="itemTwo"
                       prop="problemDiscoveryTime">
           <!-- <el-input
             v-model="temp.problemDiscoveryTime"
@@ -824,8 +843,8 @@
                           v-model="temp_problem.problemDiscoveryTime"
                           style="width: 100%"></el-date-picker>
         </el-form-item>
-        <el-form-item class="itemTwo"
-                      label="发现人："
+        <el-form-item label="发现人："
+                      class="itemTwo"
                       prop="problemFindPeople">
           <el-select v-model="temp_problem.problemFindPeople"
                      placeholder="请选择发现人">
@@ -837,30 +856,17 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item class="itemTwo"
-                      label="涉及金额(万元)："
+        <el-form-item label="涉及金额(万元)："
+                      class="itemTwo"
                       prop="riskAmount">
           <el-input v-model="temp_problem.riskAmount"
                     placeholder="请输入涉及金额"
                     @keyup.native="onlyNumOnePoint('temp_problem')"
                     @input="temp_problem.riskAmount = temp_problem.riskAmount.slice(0, 27)" />
         </el-form-item>
-        <el-form-item class="itemTwo task"
-                      label="关联任务："
-                      prop="auditTaskUuid">
-          <el-select v-model="temp_problem.auditTaskUuid"
-                     multiple
-                     placeholder="请选择关联任务">
-            <el-option v-for="item in auditTasklList"
-                       :key="item.auditTaskUuid"
-                       :label="item.taskName"
-                       :value="item.auditTaskUuid">
-            </el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item class="itemTwo"
-                      label="上传附件：">
+        <el-form-item label="上传附件："
+                      class="itemTwo"
+                      style="width:100%!important">
           <el-upload class="upload-demo"
                      drag
                      action="/wisdomaudit/auditBasy/filesUpload"
@@ -927,15 +933,15 @@
                label-position="right"
                label-width="140px"
                class="problem-form formData">
-        <el-form-item class="itemTwo"
-                      label="问题："
+        <el-form-item label="问题："
+                      class="itemTwo"
                       prop="problem">
           <el-input v-model="dqProblem.problem"
                     placeholder="请输入问题"
                     :disabled="ifadd != 2 ? false : true" />
         </el-form-item>
-        <el-form-item class="itemTwo"
-                      label="领域："
+        <el-form-item label="领域："
+                      class="itemTwo"
                       prop="field">
           <el-select v-model="dqProblem.field"
                      placeholder="请选择领域"
@@ -947,8 +953,8 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item class="itemTwo"
-                      label="专题："
+        <el-form-item label="专题："
+                      class="itemTwo"
                       prop="special">
           <el-select v-model="dqProblem.special"
                      placeholder="请选择专题"
@@ -970,6 +976,23 @@
                      style="position: absolute;top:0;right: -70px"
                      @click="input_selecte=!input_selecte">重选</el-button>
         </el-form-item>
+
+        <el-form-item label="关联任务："
+                      class="itemTwo task"
+                      prop="auditTaskUuid">
+          <el-select disabled
+                     v-model="dqProblem.auditTaskUuid"
+                     multiple
+                     @change="changedqProblemauditTaskUuid"
+                     placeholder="请选择关联任务">
+            <el-option v-for="item_audit in auditTasklList"
+                       :key="item_audit.auditTaskUuid"
+                       :label="item_audit.taskName"
+                       :value="item_audit.auditTaskUuid">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="依据："
                       prop="basis"
                       class="itemOne">
@@ -1040,22 +1063,8 @@
                     @keyup.native="onlyNumOnePoint('dqProblem')"
                     @input="temp.riskAmount = temp.riskAmount.slice(0, 27)" />
         </el-form-item>
-        <el-form-item class="itemTwo task"
-                      label="关联任务："
-                      prop="auditTaskUuid">
-          <el-select disabled
-                     v-model="dqProblem.auditTaskUuid"
-                     multiple
-                     placeholder="请选择关联任务">
-            <el-option v-for="item_audit in auditTasklList"
-                       :key="item_audit.auditTaskUuid"
-                       :label="item_audit.taskName"
-                       :value="item_audit.auditTaskUuid">
-            </el-option>
-          </el-select>
-        </el-form-item>
-
         <el-form-item class="itemTwo"
+                      style="width:100%!important"
                       label="上传附件：">
           <el-upload class="upload-demo"
                      drag
@@ -1273,7 +1282,7 @@ export default {
           { required: true, message: "请填写审计（调查）事项", trigger: "blur" },
         ],
         matterDetail: [
-          { required: true, message: "请填写审计（调查）事项描述", trigger: "blur" },
+          { required: true, message: "请填写审计（调查）事项描述", trigger: "change" },
         ],
         auditorsName: [
           { required: true, message: "请填写审计人员", trigger: "blur" },
@@ -1314,9 +1323,6 @@ export default {
           dictname: '',
         },
       },
-
-
-
       attachmentList2: [],//附件上传列表
       fileList2: [],//附件上传回显列表
       fileList2_del: [],
@@ -1439,6 +1445,35 @@ export default {
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
   },
   methods: {
+
+    // 新增选择任务
+    changetempauditTaskUuid (val) {
+      console.log(val);
+      for (let i = 0; i < this.auditTasklList.length; i++) {
+        if (this.auditTasklList[i].auditTaskUuid == val[0]) {
+          if (this.temp_problem.field == "") {
+            this.temp_problem.field = this.auditTasklList[i].belongField;
+          }
+          if (this.temp_problem.special == "") {
+            this.temp_problem.special = this.auditTasklList[i].belongSpcial;
+          }
+        }
+      }
+    },
+    // 编辑
+    changedqProblemauditTaskUuid (val) {
+      console.log(val);
+      for (let i = 0; i < this.auditTasklList.length; i++) {
+        if (this.auditTasklList[i].auditTaskUuid == val[0]) {
+          if (this.dqProblem.field == "") {
+            this.dqProblem.field = this.auditTasklList[i].belongField;
+          }
+          if (this.dqProblem.special == "") {
+            this.dqProblem.special = this.auditTasklList[i].belongSpcial;
+          }
+        }
+      }
+    },
 
     // 确认单列表
     handleSizeChange_zj (val) {
@@ -2359,22 +2394,39 @@ export default {
     // 编辑问题 标题查看详情
     details_show (data, index) {
       // this.Index = index
-      this.$nextTick(() => {
-        this.details = true
-        this.details_list = data;
-        this.taskList = [];//清空人任务
+      // this.$nextTick(() => {
+      this.details = true
+      this.details_list = data;
+      this.taskList = [];//清空人任务
 
-        this.auditTasklList.forEach(item => {
-          if (this.details_list.auditTaskUuid == item.auditTaskUuid) {
+      // this.auditTasklList.forEach(item => {
+      //   if (this.details_list.auditTaskUuid == item.auditTaskUuid) {
+      //     this.taskList.push(item)
+      //   }
+      // })
+
+      let arr = this.details_list.auditTaskUuid.split(",")
+      // console.log(arr);
+      // console.log(this.auditTasklList);
+      // 任务列表
+      this.auditTasklList.forEach(item => {
+        // console.log(item);
+        arr.forEach(it => {
+          // console.log(it);
+          if (it == item.auditTaskUuid) {
+            // console.log('匹配');
             this.taskList.push(item)
           }
         })
+      })
+      console.log(this.taskList);
 
-        this.style_w = this.$refs.myBox.offsetWidth
 
-        this.$set(this.details_list, 'style_width', this.style_w)
+      this.style_w = this.$refs.myBox.offsetWidth
 
-      });
+      this.$set(this.details_list, 'style_width', this.style_w)
+
+      // });
     },
     // 关闭
     close_mose () {
@@ -2925,7 +2977,9 @@ export default {
 
     },
     // 增加弹出框关闭事件
-    handleClose () {
+    handleClose (dataForm) {
+      this.$refs[dataForm].resetFields();
+      this.dataForm = {};//清空
       this.compileDate = false;//隐藏二级部门
       this.confirmationDialogVisible = false
       this.confirmationDialogVisibleZx = false
@@ -2945,7 +2999,7 @@ export default {
       };
     },
     //保存审计确认单
-    saveForm (type) {
+    saveForm (addForm, type) {
       this.isDisable = true;
       setTimeout(() => {
         this.isDisable = false;

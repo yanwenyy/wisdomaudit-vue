@@ -196,14 +196,17 @@
       <div class="taskAdd">
         <el-form label-width="125px"
                  class="selfTask"
+                 :rules="taskSelfRules"
                  :model="editTask"
                  ref="editTaskRef">
           <!-- hide-required-asterisk -->
-          <el-form-item label="自建任务名称：">
+          <el-form-item label="自建任务名称:"
+                        prop="taskName">
             <el-input placeholder="请输入自建任务名称"
                       v-model="editTask.taskName"></el-input>
           </el-form-item>
-          <el-form-item label="责任人：">
+          <el-form-item label="责任人:"
+                        prop="peopleName">
             <el-select v-model="editTask.peopleTableUuid"
                        filterable
                        placeholder="请选择责任人"
@@ -248,12 +251,12 @@
                        @click="other_input=!other_input">重选</el-button>
           </el-form-item>
 
-          <el-form-item label="任务描述：">
+          <el-form-item label="任务描述:">
             <el-input type="textarea"
                       placeholder="请输入任务描述"
                       v-model="editTask.taskDescription"></el-input>
           </el-form-item>
-          <el-form-item label="上传附件：">
+          <el-form-item label="上传附件:">
             <el-upload class="upload-demo"
                        drag
                        action="#"
@@ -279,7 +282,7 @@
         <el-button @click="resBtn('editTaskRef')"
                    style="border: 1px solid #d2d2d2">取消</el-button>
         <el-button style="background: #0c87d6; color: #fff"
-                   @click="editTaskSelfBtn"
+                   @click="editTaskSelfBtn('editTaskRef')"
                    :disabled="isdisabled">完成</el-button>
       </div>
     </el-dialog>
@@ -1299,89 +1302,97 @@ export default {
       });
     },
     // 编辑成功按钮
-    editTaskSelfBtn () {
-      if (this.fileList.length > 0) {
-        const loading = this.$loading({
-          lock: true,
-          text: "上传中",
-          spinner: "el-icon-loading",
-          background: "transparent",
-        });
-        let formData = new FormData();
-        // formData.append("file", this.file.raw);
-        this.fileList.forEach((item) => {
-          if (item.raw) {
-            formData.append("files", item.raw);
-          }
-        });
+    editTaskSelfBtn (editTaskRef) {
+      this.$refs[editTaskRef].validate((valid) => {
+        if (valid) {
 
-        axios({
-          method: "post",
-          url: "/wisdomaudit/attachment/fileUploads",
-          headers: {
-            TOKEN: this.dqtoken,
-            'Content-Type': 'multipart/form-data'
-          },
-          data: formData,
-        }).then((resp) => {
-          if (resp.data.code == 0) {
-            this.$message.success("上传成功！");
-            this.Upload_file = resp.data.data;
-            console.log(this.Upload_file);
-            loading.close();
-
-            if (this.Upload_file) {
-              for (let p = 0; p < this.Upload_file.length; p++) {
-                this.Upload_file[p].isDeleted = 2;
+          if (this.fileList.length > 0) {
+            const loading = this.$loading({
+              lock: true,
+              text: "上传中",
+              spinner: "el-icon-loading",
+              background: "transparent",
+            });
+            let formData = new FormData();
+            // formData.append("file", this.file.raw);
+            this.fileList.forEach((item) => {
+              if (item.raw) {
+                formData.append("files", item.raw);
               }
-            }
+            });
 
+            axios({
+              method: "post",
+              url: "/wisdomaudit/attachment/fileUploads",
+              headers: {
+                TOKEN: this.dqtoken,
+                'Content-Type': 'multipart/form-data'
+              },
+              data: formData,
+            }).then((resp) => {
+              if (resp.data.code == 0) {
+                this.$message.success("上传成功！");
+                this.Upload_file = resp.data.data;
+                console.log(this.Upload_file);
+                loading.close();
+
+                if (this.Upload_file) {
+                  for (let p = 0; p < this.Upload_file.length; p++) {
+                    this.Upload_file[p].isDeleted = 2;
+                  }
+                }
+
+                this.edit_file_list.forEach((item) => {
+                  item.status = null;
+                });
+                this.fileList_Delet.forEach((item) => {
+                  item.status = null;
+                });
+                var upList = this.edit_file_list
+                  .concat(this.Upload_file)
+                  .concat(this.fileList_Delet);
+                this.editTask.attachmentList = upList;
+                // console.log(this.Upload_file);
+                this.editTask.managementProjectUuid = this.active_project;
+                editTaskSelfInfo(this.editTask).then((resp) => {
+                  this.editModelDialogVisible = false;
+                  this.queryInfo.condition.managementProjectUuid =
+                    this.active_project;
+                  this.getmodelTaskList(this.queryInfo);
+                });
+              } else {
+                loading.close();
+                this.$message({
+                  message: resp.msg,
+                  type: "error",
+                });
+              }
+            });
+          } else {
             this.edit_file_list.forEach((item) => {
               item.status = null;
             });
             this.fileList_Delet.forEach((item) => {
               item.status = null;
             });
-            var upList = this.edit_file_list
-              .concat(this.Upload_file)
-              .concat(this.fileList_Delet);
+            this.isdisabled = true;
+            var upList = this.edit_file_list.concat(this.fileList_Delet);
             this.editTask.attachmentList = upList;
-            // console.log(this.Upload_file);
             this.editTask.managementProjectUuid = this.active_project;
             editTaskSelfInfo(this.editTask).then((resp) => {
               this.editModelDialogVisible = false;
-              this.queryInfo.condition.managementProjectUuid =
-                this.active_project;
+              this.queryInfo.condition.managementProjectUuid = this.active_project;
               this.getmodelTaskList(this.queryInfo);
             });
-          } else {
-            loading.close();
-            this.$message({
-              message: resp.msg,
-              type: "error",
-            });
+            setTimeout(() => {
+              this.isdisabled = false;
+            }, 3000);
           }
-        });
-      } else {
-        this.edit_file_list.forEach((item) => {
-          item.status = null;
-        });
-        this.fileList_Delet.forEach((item) => {
-          item.status = null;
-        });
-        this.isdisabled = true;
-        var upList = this.edit_file_list.concat(this.fileList_Delet);
-        this.editTask.attachmentList = upList;
-        this.editTask.managementProjectUuid = this.active_project;
-        editTaskSelfInfo(this.editTask).then((resp) => {
-          this.editModelDialogVisible = false;
-          this.queryInfo.condition.managementProjectUuid = this.active_project;
-          this.getmodelTaskList(this.queryInfo);
-        });
-        setTimeout(() => {
-          this.isdisabled = false;
-        }, 3000);
-      }
+        } else {
+          return false;
+
+        }
+      });
     },
     // 自建取消按钮
     resBtn (ref) {

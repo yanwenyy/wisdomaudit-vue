@@ -202,8 +202,8 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item class="itemTwo"
-                      label="专题："
+        <el-form-item label="专题："
+                      class="itemTwo"
                       prop="special">
           <el-select v-model="temp.special"
                      placeholder="请选择专题"
@@ -224,6 +224,22 @@
                      @click="input_select = !input_select">重选</el-button>
         </el-form-item>
         <!-- <el-form-item> </el-form-item> -->
+
+        <el-form-item label="关联任务："
+                      class="itemTwo task"
+                      prop="auditTaskUuid">
+          <el-select v-model="temp.auditTaskUuid"
+                     multiple
+                     placeholder="请选择关联任务"
+                     @change="changetempauditTaskUuid">
+            <el-option v-for="item in auditTasklList"
+                       :key="item.auditTaskUuid"
+                       :label="item.taskName"
+                       :value="item.auditTaskUuid">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="依据："
                       style="margin-bottom: 20px !important"
                       prop="basis"
@@ -260,8 +276,8 @@
                     placeholder="请输入管理建议"
                     :autosize="{ minRows: 3 }" />
         </el-form-item>
-        <el-form-item class="itemTwo"
-                      label="发现日期："
+        <el-form-item label="发现日期："
+                      class="itemTwo"
                       prop="problemDiscoveryTime">
           <!-- <el-input
             v-model="temp.problemDiscoveryTime"
@@ -273,8 +289,8 @@
                           v-model="temp.problemDiscoveryTime"
                           style="width: 100%"></el-date-picker>
         </el-form-item>
-        <el-form-item class="itemTwo"
-                      label="发现人："
+        <el-form-item label="发现人："
+                      class="itemTwo"
                       prop="problemFindPeople">
           <el-select v-model="temp.problemFindPeople"
                      placeholder="请选择发现人">
@@ -286,31 +302,18 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item class="itemTwo"
-                      label="风险金额（万元）："
+        <el-form-item label="风险金额（万元）："
+                      class="itemTwo"
                       prop="riskAmount">
           <el-input v-model="temp.riskAmount"
                     placeholder="请输入风险金额"
                     @keyup.native="onlyNumOnePoint('temp')"
                     @input="temp.riskAmount = temp.riskAmount.slice(0, 27)" />
         </el-form-item>
-        <el-form-item class="itemTwo task"
-                      label="关联任务："
-                      prop="auditTaskUuid">
-          <el-select v-model="temp.auditTaskUuid"
-                     multiple
-                     placeholder="请选择关联任务"
-                     @change="changetempauditTaskUuid">
-            <el-option v-for="item in auditTasklList"
-                       :key="item.auditTaskUuid"
-                       :label="item.taskName"
-                       :value="item.auditTaskUuid">
-            </el-option>
-          </el-select>
-        </el-form-item>
 
-        <el-form-item class="itemTwo"
-                      label="上传附件：">
+        <el-form-item label="上传附件："
+                      class="itemTwo"
+                      style="width:100%!important">
           <el-upload class="upload-demo"
                      drag
                      action="/wisdomaudit/auditBasy/filesUpload"
@@ -386,15 +389,15 @@
                label-position="right"
                label-width="140px"
                class="problem-form formData">
-        <el-form-item class="itemTwo"
-                      label="问题："
+        <el-form-item label="问题："
+                      class="itemTwo"
                       prop="problem">
           <el-input v-model="dqProblem.problem"
                     placeholder="请输入问题"
                     :disabled="ifadd != 2 ? false : true" />
         </el-form-item>
-        <el-form-item class="itemTwo"
-                      label="领域："
+        <el-form-item label="领域："
+                      class="itemTwo"
                       prop="field">
           <el-select v-model="dqProblem.field"
                      placeholder="请选择领域"
@@ -406,8 +409,8 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item class="itemTwo"
-                      label="专题："
+        <el-form-item label="专题："
+                      class="itemTwo"
                       prop="special">
           <el-select v-model="dqProblem.special"
                      placeholder="请选择专题"
@@ -429,6 +432,22 @@
                      style="position: absolute; top: 0; right: -70px"
                      @click="input_selecte = !input_selecte">重选</el-button>
         </el-form-item>
+        <el-form-item label="关联任务："
+                      class="itemTwo task"
+                      prop="auditTaskUuid">
+          <el-select disabled
+                     v-model="dqProblem.auditTaskUuid"
+                     multiple
+                     placeholder="请选择关联任务"
+                     @change="changedqProblemauditTaskUuid">
+            <el-option v-for="item in auditTasklList"
+                       :key="item.auditTaskUuid"
+                       :label="item.taskName"
+                       :value="item.auditTaskUuid">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
         <!--<el-form-item></el-form-item>-->
         <!-- <el-popover placement="top-start"
                     max-width="600"
@@ -481,8 +500,8 @@
                     :disabled="ifadd != 2 ? false : true"
                     :autosize="{ minRows: 3 }" />
         </el-form-item>
-        <el-form-item class="itemTwo"
-                      label="发现日期："
+        <el-form-item label="发现日期："
+                      class="itemTwo"
                       prop="problemDiscoveryTime">
           <el-date-picker type="date"
                           placeholder="选择日期"
@@ -490,8 +509,8 @@
                           style="width: 100%"
                           :disabled="ifadd != 2 ? false : true"></el-date-picker>
         </el-form-item>
-        <el-form-item class="itemTwo"
-                      label="发现人："
+        <el-form-item label="发现人："
+                      class="itemTwo"
                       prop="problemFindPeople">
           <el-select v-model="dqProblem.problemFindPeople"
                      placeholder="请选择发现人"
@@ -504,8 +523,8 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item class="itemTwo"
-                      label="涉及金额(万元)："
+        <el-form-item label="涉及金额(万元)："
+                      class="itemTwo"
                       prop="riskAmount">
           <el-input v-model="dqProblem.riskAmount"
                     placeholder="请输入涉及金额"
@@ -513,24 +532,10 @@
                     @keyup.native="onlyNumOnePoint('dqProblem')"
                     @input="temp.riskAmount = temp.riskAmount.slice(0, 27)" />
         </el-form-item>
-        <el-form-item class="itemTwo task"
-                      label="关联任务："
-                      prop="auditTaskUuid">
-          <el-select disabled
-                     v-model="dqProblem.auditTaskUuid"
-                     multiple
-                     placeholder="请选择关联任务"
-                     @change="changedqProblemauditTaskUuid">
-            <el-option v-for="item in auditTasklList"
-                       :key="item.auditTaskUuid"
-                       :label="item.taskName"
-                       :value="item.auditTaskUuid">
-            </el-option>
-          </el-select>
-        </el-form-item>
 
-        <el-form-item class="itemTwo"
-                      label="上传附件：">
+        <el-form-item label="上传附件："
+                      style="width:100%!important"
+                      class="itemTwo">
           <el-upload class="upload-demo"
                      drag
                      action="/wisdomaudit/auditBasy/filesUpload"
@@ -1424,12 +1429,32 @@ export default {
     createData () {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
-          let rep = this.temp;
-          rep.riskAmount = parseFloat(rep.riskAmount);
-          rep.auditTaskUuid = rep.auditTaskUuid
-            ? rep.auditTaskUuid.join(",")
-            : "";
-          rep.basis = rep.basis ? rep.basis.join(",") : "";
+
+          // 判断自定义的专题是否重复
+          if (this.zdyCode == 1) {
+            let msg = true;
+            this.SPECIALList.forEach(item => {
+              if (item.label == this.temp_problem.special) {
+                msg = false
+                return false
+              }
+            })
+            if (msg == false) {
+              this.$message({
+                message: '该专题已经存在',
+                type: 'warning'
+              });
+              return false
+            }
+          }
+
+
+          // let rep = this.temp;
+          // rep.riskAmount = parseFloat(rep.riskAmount);
+          // rep.auditTaskUuid = rep.auditTaskUuid
+          //   ? rep.auditTaskUuid.join(",")
+          //   : "";
+          // rep.basis = rep.basis ? rep.basis.join(",") : "";
 
           // 附件
           let uploadList2 = this.attachmentList2.concat(
@@ -1525,10 +1550,29 @@ export default {
     updateData () {
       this.$refs["detailForm"].validate((valid) => {
         if (valid) {
-          let rep = this.dqProblem;
-          rep.riskAmount = parseFloat(rep.riskAmount);
-          rep.auditTaskUuid = rep.auditTaskUuid.join(",");
-          rep.basis = rep.basis.join(",");
+
+          // 判断自定义的专题是否重复
+          if (this.zdyCode == 1) {
+            let msg = true;
+            this.SPECIALList.forEach(item => {
+              if (item.label == this.dqProblem.special) {
+                msg = false
+                return false
+              }
+            })
+            if (msg == false) {
+              this.$message({
+                message: '该专题已经存在',
+                type: 'warning'
+              });
+              return false
+            }
+          }
+
+          // let rep = this.dqProblem;
+          // rep.riskAmount = parseFloat(rep.riskAmount);
+          // rep.auditTaskUuid = rep.auditTaskUuid.join(",");
+          // rep.basis = rep.basis.join(",");
 
           // 附件
           let uploadList2 = this.attachmentList2.concat(

@@ -623,12 +623,12 @@
                  :model="taskSelf"
                  ref="selfTaskRef"
                  :rules="taskSelfRules">
-          <el-form-item label="自建任务名称："
+          <el-form-item label="自建任务名称:"
                         prop="taskName">
             <el-input placeholder="请输入自建任务名称"
                       v-model="taskSelf.taskName"></el-input>
           </el-form-item>
-          <el-form-item label="责任人："
+          <el-form-item label="责任人:"
                         prop="peopleName">
             <el-select v-model="taskSelf.peopleName"
                        filterable
@@ -674,12 +674,12 @@
           </el-form-item>
 
           <!-- prop="taskDescription" -->
-          <el-form-item label="任务描述：">
+          <el-form-item label="任务描述:">
             <el-input type="textarea"
                       placeholder="请输入任务描述"
                       v-model="taskSelf.taskDescription"></el-input>
           </el-form-item>
-          <el-form-item label="ㅤㅤ上传附件：">
+          <el-form-item label="上传附件:">
             <el-upload class="upload-demo"
                        :headers="headers"
                        drag
@@ -713,6 +713,7 @@
       <div class="dialogTitle">编辑自建任务</div>
       <div class="selfTask">
         <el-form label-width="125px"
+                 :rules="taskSelfRules"
                  :model="edittaskSelfForm"
                  ref="editTaskRef">
           <!-- hide-required-asterisk -->
@@ -722,11 +723,12 @@
               <el-radio v-model="radio" label="2">自建任务</el-radio>
             </div>
           </el-form-item> -->
-          <el-form-item label="自建任务名称：">
+          <el-form-item label="自建任务名称:"
+                        prop="taskName">
             <el-input placeholder="请输入自建任务名称"
                       v-model="edittaskSelfForm.taskName"></el-input>
           </el-form-item>
-          <el-form-item label="责任人："
+          <el-form-item label="责任人:"
                         prop="peopleName">
             <el-select v-model="edittaskSelfForm.peopleTableUuid"
                        filterable
@@ -773,12 +775,12 @@
                        @click="other_input=!other_input">重选</el-button>
           </el-form-item>
 
-          <el-form-item label="任务描述：">
+          <el-form-item label="任务描述:">
             <el-input type="textarea"
                       placeholder="请输入任务描述"
                       v-model="edittaskSelfForm.taskDescription"></el-input>
           </el-form-item>
-          <el-form-item label="上传附件：">
+          <el-form-item label="上传附件:">
             <el-upload class="upload-demo"
                        drag
                        action="#"
@@ -799,7 +801,7 @@
         <div class="temBtn">
           <el-button @click="editTaskSelfDialogVisible = false">取消</el-button>
           <el-button type="primary"
-                     @click="edittaskSelfSave"
+                     @click="edittaskSelfSave('editTaskRef')"
                      :disabled="isdisabled">确认</el-button>
         </div>
       </div>
@@ -887,7 +889,7 @@ export default {
       data: [],
       value: [],
       loading: false,
-      modelloading:true,
+      modelloading: true,
       ifshow: false,
       refreash: false,
       active_project: "", //初始化项目有 默认选择
@@ -1875,6 +1877,7 @@ export default {
     // },
     // 模型列表渲染
     getauditModelList (data) {
+      this.modelloading = true;
       this.modelListTab = [];
       modelTaskList(data).then((resp) => {
         this.modelloading = false;
@@ -2045,53 +2048,85 @@ export default {
       this.deletFileList = [];
     },
     // 自建任务编辑完成按钮
-    edittaskSelfSave () {
-      //
-      if (this.fileList.length > 0) {
-        const loading = this.$loading({
-          lock: true,
-          text: "上传中",
-          spinner: "el-icon-loading",
-          background: "transparent",
-        });
-        let formData = new FormData();
-        // formData.append("file", this.file.raw);
-        this.fileList.forEach((item) => {
-          if (item.raw) {
-            formData.append("files", item.raw);
-          }
-        });
+    edittaskSelfSave (editTaskRef) {
+      this.$refs[editTaskRef].validate((valid) => {
+        if (valid) {
 
-        axios({
-          method: "post",
-          url: "/wisdomaudit/attachment/fileUploads",
-          headers: {
-            TOKEN: this.dqtoken,
-            'Content-Type': 'multipart/form-data'
-          },
-          data: formData,
-
-        }).then((resp) => {
-          if (resp.data.code == 0) {
-            // this.$message.success("上传成功！");
-            this.Upload_file = resp.data.data;
-            loading.close();
-
-            if (this.Upload_file) {
-              for (let p = 0; p < this.Upload_file.length; p++) {
-                this.Upload_file[p].isDeleted = 2;
+          if (this.fileList.length > 0) {
+            const loading = this.$loading({
+              lock: true,
+              text: "上传中",
+              spinner: "el-icon-loading",
+              background: "transparent",
+            });
+            let formData = new FormData();
+            // formData.append("file", this.file.raw);
+            this.fileList.forEach((item) => {
+              if (item.raw) {
+                formData.append("files", item.raw);
               }
-            }
+            });
 
+            axios({
+              method: "post",
+              url: "/wisdomaudit/attachment/fileUploads",
+              headers: {
+                TOKEN: this.dqtoken,
+                'Content-Type': 'multipart/form-data'
+              },
+              data: formData,
+
+            }).then((resp) => {
+              if (resp.data.code == 0) {
+                // this.$message.success("上传成功！");
+                this.Upload_file = resp.data.data;
+                loading.close();
+
+                if (this.Upload_file) {
+                  for (let p = 0; p < this.Upload_file.length; p++) {
+                    this.Upload_file[p].isDeleted = 2;
+                  }
+                }
+
+                this.edit_file_list.forEach((item) => {
+                  item.status = null;
+                });
+                this.fileList_Delet.forEach((item) => {
+                  item.status = null;
+                });
+                var upList = this.edit_file_list
+                  .concat(this.Upload_file)
+                  .concat(this.fileList_Delet);
+                this.edittaskSelfForm.attachmentList = upList;
+                this.edittaskSelfForm.managementProjectUuid =
+                  this.managementProjectUuid;
+                editTaskSelfInfo(this.edittaskSelfForm).then((resp) => {
+                  if (resp.code == 0) {
+                    this.$message.success("修改自建任务成功！");
+                    this.editTaskSelfDialogVisible = false;
+                    this.addDialogVisible = true;
+                    this.getModelList.condition.managementProjectUuid =
+                      this.managementProjectUuid;
+                    this.getauditModelList(this.getModelList);
+                  }
+                });
+              } else {
+                loading.close();
+                this.$message({
+                  message: resp.msg,
+                  type: "error",
+                });
+              }
+            });
+          } else {
             this.edit_file_list.forEach((item) => {
               item.status = null;
             });
             this.fileList_Delet.forEach((item) => {
               item.status = null;
             });
-            var upList = this.edit_file_list
-              .concat(this.Upload_file)
-              .concat(this.fileList_Delet);
+            this.isdisabled = true;
+            var upList = this.edit_file_list.concat(this.fileList_Delet);
             this.edittaskSelfForm.attachmentList = upList;
             this.edittaskSelfForm.managementProjectUuid =
               this.managementProjectUuid;
@@ -2099,47 +2134,23 @@ export default {
               if (resp.code == 0) {
                 this.$message.success("修改自建任务成功！");
                 this.editTaskSelfDialogVisible = false;
-                this.addDialogVisible = true;
-                this.getModelList.condition.managementProjectUuid =
-                  this.managementProjectUuid;
-                this.getauditModelList(this.getModelList);
               }
             });
-          } else {
-            loading.close();
-            this.$message({
-              message: resp.msg,
-              type: "error",
-            });
-          }
-        });
-      } else {
-        this.edit_file_list.forEach((item) => {
-          item.status = null;
-        });
-        this.fileList_Delet.forEach((item) => {
-          item.status = null;
-        });
-        this.isdisabled = true;
-        var upList = this.edit_file_list.concat(this.fileList_Delet);
-        this.edittaskSelfForm.attachmentList = upList;
-        this.edittaskSelfForm.managementProjectUuid =
-          this.managementProjectUuid;
-        editTaskSelfInfo(this.edittaskSelfForm).then((resp) => {
-          if (resp.code == 0) {
-            this.$message.success("修改自建任务成功！");
-            this.editTaskSelfDialogVisible = false;
-          }
-        });
 
-        this.addDialogVisible = true;
-        this.getModelList.condition.managementProjectUuid =
-          this.managementProjectUuid;
-        this.getauditModelList(this.getModelList);
-        setTimeout(() => {
-          this.isdisabled = false;
-        }, 3000);
-      }
+            this.addDialogVisible = true;
+            this.getModelList.condition.managementProjectUuid =
+              this.managementProjectUuid;
+            this.getauditModelList(this.getModelList);
+            setTimeout(() => {
+              this.isdisabled = false;
+            }, 3000);
+          }
+        } else {
+          return false;
+
+        }
+      });
+
     },
     // 自建任务删除
     delete_zj (id) {
@@ -2372,7 +2383,7 @@ export default {
       float: left;
       width: 16%;
       height: 60px;
-      overflow: hidden;
+      // overflow: hidden;
       // background: #f1f5fb;
       margin-right: 0.5%;
       border-radius: 10px;
@@ -2439,6 +2450,7 @@ export default {
       }
 
       .tips {
+        display: none;
         border-radius: 10px;
         opacity: 0;
         position: absolute;
@@ -2479,6 +2491,7 @@ export default {
         overflow: initial;
       }
       &:hover .tips {
+        display: block;
         top: 70px;
         opacity: 1;
       }

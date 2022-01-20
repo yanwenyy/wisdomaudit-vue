@@ -17,7 +17,7 @@
 
         <!--自建任务 模型任务 筛选 -->
         <div class="search_ms">
-          <span>发现人：</span>
+          <span style="min-width:70px">发现人：</span>
           <el-input placeholder="请输入发现人"
                     v-model="query.findPeople">
           </el-input>
