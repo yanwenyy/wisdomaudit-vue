@@ -1142,7 +1142,7 @@ export default {
     return {
       confirmaryData_loding: false,//确认单列表loadng
       Table_loading: false,
-      vaultV: true,
+      vaultV: false,
       sceneId: 1557, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
       approvers: [], //审批人列表
       maxTime: "",//最大时间
@@ -1476,6 +1476,7 @@ export default {
             this.vaultV = true;
           }
         } else {
+          this.vaultV = true;
           //否则不处理或在此处直接进行后面的操作
           this.vdownload()
         }
