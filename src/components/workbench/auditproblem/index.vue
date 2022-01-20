@@ -190,6 +190,20 @@
           <el-input v-model="temp.problem"
                     placeholder="请输入问题" />
         </el-form-item>
+        <el-form-item label="关联任务："
+                      class="itemTwo task"
+                      prop="auditTaskUuid">
+          <el-select v-model="temp.auditTaskUuid"
+                     multiple
+                     placeholder="请选择关联任务"
+                     @change="changetempauditTaskUuid">
+            <el-option v-for="item in auditTasklList"
+                       :key="item.auditTaskUuid"
+                       :label="item.taskName"
+                       :value="item.auditTaskUuid">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item class="itemTwo"
                       label="领域："
                       prop="field">
@@ -224,21 +238,6 @@
                      @click="input_select = !input_select">重选</el-button>
         </el-form-item>
         <!-- <el-form-item> </el-form-item> -->
-
-        <el-form-item label="关联任务："
-                      class="itemTwo task"
-                      prop="auditTaskUuid">
-          <el-select v-model="temp.auditTaskUuid"
-                     multiple
-                     placeholder="请选择关联任务"
-                     @change="changetempauditTaskUuid">
-            <el-option v-for="item in auditTasklList"
-                       :key="item.auditTaskUuid"
-                       :label="item.taskName"
-                       :value="item.auditTaskUuid">
-            </el-option>
-          </el-select>
-        </el-form-item>
 
         <el-form-item label="依据："
                       style="margin-bottom: 20px !important"
@@ -396,6 +395,21 @@
                     placeholder="请输入问题"
                     :disabled="ifadd != 2 ? false : true" />
         </el-form-item>
+        <el-form-item label="关联任务："
+                      class="itemTwo task"
+                      prop="auditTaskUuid">
+          <el-select disabled
+                     v-model="dqProblem.auditTaskUuid"
+                     multiple
+                     placeholder="请选择关联任务"
+                     @change="changedqProblemauditTaskUuid">
+            <el-option v-for="item in auditTasklList"
+                       :key="item.auditTaskUuid"
+                       :label="item.taskName"
+                       :value="item.auditTaskUuid">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="领域："
                       class="itemTwo"
                       prop="field">
@@ -431,21 +445,6 @@
                      class="inline-block"
                      style="position: absolute; top: 0; right: -70px"
                      @click="input_selecte = !input_selecte">重选</el-button>
-        </el-form-item>
-        <el-form-item label="关联任务："
-                      class="itemTwo task"
-                      prop="auditTaskUuid">
-          <el-select disabled
-                     v-model="dqProblem.auditTaskUuid"
-                     multiple
-                     placeholder="请选择关联任务"
-                     @change="changedqProblemauditTaskUuid">
-            <el-option v-for="item in auditTasklList"
-                       :key="item.auditTaskUuid"
-                       :label="item.taskName"
-                       :value="item.auditTaskUuid">
-            </el-option>
-          </el-select>
         </el-form-item>
 
         <!--<el-form-item></el-form-item>-->
@@ -1200,6 +1199,12 @@ export default {
     },
     // 编辑
     openDetail (int) {
+
+      this.temp.attachmentList = []; //清空附件
+      this.fileList2 = [];
+      this.fileList2_del = [];
+      this.attachmentList2 = [];
+
       this.ifadd = 1;
       axios({
         url:
@@ -1302,6 +1307,13 @@ export default {
     },
     // 新增问题
     add () {
+
+
+      this.temp.attachmentList = []; //清空附件
+      this.fileList2 = [];
+      this.fileList2_del = [];
+      this.attachmentList2 = [];
+
       this.dialogFormVisible = true;
       this.getloadcascader('SPECIAL');//专题数据
 
@@ -1310,8 +1322,6 @@ export default {
       this.temp.problemFindPeople = this.me;
       this.temp.problemDiscoveryTime = new Date();
 
-      this.temp.attachmentList = []; //清空附件
-      this.fileList2 = [];
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
       });

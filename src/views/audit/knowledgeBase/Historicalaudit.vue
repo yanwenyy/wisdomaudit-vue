@@ -2,17 +2,16 @@
   <div class="sjzl anmition_show">
     <div class="header">
       <div class="flex_left">
+        <div class="search_ms">
+          <span> 历史审计发现标题：</span>
+          <el-input v-model="query.title"
+                    placeholder="请输入标题"></el-input>
+        </div>
 
         <div class="search_ms">
           <span> 历史审计发现描述：</span>
           <el-input v-model="query.historyAuditFindDescribe"
                     placeholder="请输入描述名称"></el-input>
-        </div>
-
-        <div class="search_ms">
-          <span> 历史审计发现标题：</span>
-          <el-input v-model="query.title"
-                    placeholder="请输入标题"></el-input>
         </div>
 
         <!--自建任务 模型任务 筛选 -->
