@@ -44,10 +44,10 @@
                          label="确认单">
           <template slot-scope="scope">
             <el-popover :popper-class="tableFileList==''?'no-padding':''"
+                        v-if="scope.row.attachmentFileCounts"
                         placement="bottom"
                         width="250"
                         @show="getFileList('f'+scope.row.auditConfirmationUuid)"
-                        v-if="scope.row.fileCounts"
                         trigger="click">
 
               <ul v-if="tableFileList.attachmentList1!=''"
