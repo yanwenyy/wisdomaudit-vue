@@ -268,7 +268,7 @@
                  :disabled="isDisable"
                  v-if="!ifLook&&(formState.correctStatus==1||formState.correctStatus==5)"
                  type="primary"
-                 @click="sub">提交</el-button>
+                 @click="sub()">提交</el-button>
       <el-button class="subBtn"
                  :disabled="isDisable"
                  v-if="type=='zgcs_examine'&&(formState.correctStatus==2||formState.correctStatus==3)"
@@ -524,6 +524,8 @@ export default {
           this.isExamine = false;
           this.$nextTick(() => {
             this.$parent.list_data_start();
+            this.$parent.list_data();
+
           })
         } else {
           this.$message({

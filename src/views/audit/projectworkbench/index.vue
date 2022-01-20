@@ -611,7 +611,7 @@
       </div>
     </el-dialog>
 
-    <!-- 自建任务弹出框 -->
+    <!--新增 自建任务弹出框 -->
     <el-dialog :visible.sync="taskSelfDialogVisible"
                :before-close="TaskDialogClosed"
                :append-to-body='true'
@@ -706,6 +706,7 @@
       </div>
     </el-dialog>
 
+    <!--编辑 自建任务弹出框 -->
     <el-dialog :visible.sync="editTaskSelfDialogVisible"
                width="50%"
                :append-to-body='true'
@@ -1923,7 +1924,15 @@ export default {
     // 新增自建任务
     addTaskSelf () {
       this.addDialogVisible = false;
-      this.taskSelfDialogVisible = true;
+      this.fileList_Delet = [];
+      this.fileList = [];
+      this.Upload_file = [];
+      this.taskSelf.attachmentList = [];
+      this.taskSelf = {};//清空传的集合
+
+
+
+      this.taskSelfDialogVisible = true;//显示新增任务
       this.taskSelf.taskDescription = '';//清空描述
     },
     // 专题下拉框
@@ -1957,6 +1966,7 @@ export default {
               formData.append("files", item.raw);
             });
 
+
             axios({
               method: "post",
               url: "/wisdomaudit/attachment/fileUploads",
@@ -1977,6 +1987,8 @@ export default {
                 this.taskSelf.managementProjectUuid =
                   this.managementProjectUuid;
                 this.taskSelf.taskType = 2;
+
+                console.log(this.taskSelf);
                 selfTaskFunction(this.taskSelf).then((resp) => {
                   this.$message.success("自建任务创建成功！");
                   this.taskSelfDialogVisible = false;
@@ -1995,6 +2007,11 @@ export default {
               }
             });
           } else {
+
+            console.log(this.Upload_file);
+            console.log(this.fileList);
+            console.log(this.taskSelf);
+
             this.isdisabled = true;
             this.taskSelf.taskType = 2;
             this.taskSelf.managementProjectUuid = this.managementProjectUuid;
@@ -2028,10 +2045,12 @@ export default {
     // 编辑自建按钮
     edit_data (row) {
       this.other_input = true;
-      this.edit_file_list = [];
       this.Upload_file = [];
       this.fileList_Delet = [];
+      this.fileList = [];
       this.editTaskSelfDialogVisible = true;
+
+
       editTaskSelf(row.auditTaskUuid).then((resp) => {
         this.edittaskSelfForm = resp.data;
       });
@@ -2171,10 +2190,14 @@ export default {
       this.$refs[resetForm2].resetFields();
       this.fileList = [];
       this.other_input = true;
+      this.fileList_Delet = [];
+      this.Upload_file = [];
     },
     editResetForm2 (ref) {
       this.$refs[ref].resetFields();
       this.fileList = [];
+      this.fileList_Delet = [];
+      this.Upload_file = [];
     },
     //新增自建任务上传附件
     handleChangePic (file, fileList) {

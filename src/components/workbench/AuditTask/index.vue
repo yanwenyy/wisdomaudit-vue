@@ -1397,7 +1397,7 @@ export default {
     },
     //打开金库
     openVault (obj) {
-      console.log("芝麻开门")
+
       this.downloaobj = obj
       axios({
         method: "post",
@@ -1427,7 +1427,7 @@ export default {
             this.$message('因金库未开启或服务异常，文件下载失败，请联系系统管理员。');
             return;
           } else {
-            console.log(rep);
+
             this.approvers = rep.approvers || "";
             this.maxTime = rep.maxTime;
             this.dqtime = new Date();
@@ -1500,6 +1500,11 @@ export default {
       this.zdyCode = 0;//重置自定义code
       this.zhuanti();//专题数据
 
+      this.fileList = [];//附件
+      this.edit_file_list = [];//清空
+      this.Upload_file = [];
+      this.save_zj_query = JSON.parse(JSON.stringify(this.save_zj_query));
+
       // 1:新增  2:编辑
       //自建任务 新增
       this.dialogVisible_zj = true;
@@ -1558,7 +1563,11 @@ export default {
         this.$refs[save_zj_query].validate((valid) => {
           if (valid) {
             this.title = '新增任务';
+
+
+
             if (this.fileList.length > 0) {
+              alert(1)
               this.success_btn = 1;//显示加载按钮  0成功  1 loaging
               // 上传
               let formData = new FormData()
@@ -1567,12 +1576,8 @@ export default {
                 // let pos = item.raw.name.lastIndexOf('\"')
                 // item.raw.name.substring(pos + 1);
                 formData.append('files', item.raw);
-                console.log(item);
-
               })
-
-
-
+              this.Upload_file = [];
               axios({
                 method: 'post',
                 url: '/wisdomaudit/attachment/fileUploads',
@@ -1587,7 +1592,7 @@ export default {
                 if (resp.data.code == 0) {
                   this.success_btn = 0;//显示加载按钮  0成功  1 loaging
                   //
-                  this.Upload_file = resp.data.data;//上传成功大的文件
+                  this.Upload_file = resp.data.data;//上传成功的文件
                   // 提交步骤
                   let params1 = {
                     managementProjectUuid: this.managementProjectUuid,//项目id
@@ -1608,7 +1613,6 @@ export default {
                     },
                     zdyCode: this.zdyCode,
                   }
-
                   this.new_add(params1)//新增上传
                   //上传成功 end
                 } else {
@@ -1622,7 +1626,10 @@ export default {
                 }
               })//上传 end
             } else {
+              alert(2)
               //未上传文件 提交步骤
+              this.Upload_file = [];
+              this.edit_file_list = [];
               let params1 = {
                 managementProjectUuid: this.managementProjectUuid,//项目id
                 taskDescription: this.save_zj_query.taskDescription,//描述
@@ -1633,8 +1640,7 @@ export default {
                 peopleTableUuid: this.save_zj_query.peopleTableUuid,//责任人id
                 belongSpcial: this.save_zj_query.belongSpcial,//领域
                 belongField: this.save_zj_query.belongField,//专题
-                attachmentList: this.edit_file_list,//上传成功的 的文件
-
+                attachmentList: [],//上传成功的 的文件
                 // 专题
                 entity: {
                   belongSpcialSize: this.belongSpcialSize,//专题size
@@ -1721,6 +1727,7 @@ export default {
               }
 
               this.edit_data_update(params2);//编辑
+
             } else {
 
               // 上传失败
@@ -1793,6 +1800,8 @@ export default {
             }
           }
           this.list_data(params);
+          this.edit_file_list = [];//清空
+          this.Upload_file = [];
         } else {
           this.$message({
             message: resp.msg,
@@ -1823,6 +1832,12 @@ export default {
             }
           }
           this.list_data(params);
+
+
+          this.edit_file_list = [];//清空
+          this.Upload_file = [];
+
+
         } else {
           this.$message({
             message: resp.msg,
@@ -1836,6 +1851,7 @@ export default {
     resetForm2 (save_zj_query) {
       this.$refs[save_zj_query].resetFields();
       this.$refs.upload.clearFiles();
+      this.save_zj_query.attachmentList = [];//清空
       this.save_zj_query.belongSpcial = '';//领域
       this.save_zj_query.belongField = '';//领域
 
@@ -1901,7 +1917,7 @@ export default {
     file_list_details (params) {
       this.file_new = [];
       projectRel_taskAttachment(params).then(resp => {
-        console.log(resp);
+
         this.file_new = resp.data;
         this.attachmentList1 = resp.data.attachmentList1;
         this.attachmentList2 = resp.data.attachmentList2;
@@ -1954,7 +1970,7 @@ export default {
       formData.append('fileId', id)
       down_file(formData).then(resp => {
         const content = resp;
-        console.log(resp);
+
         const blob = new Blob([content],
           { type: 'application/octet-stream,charset=UTF-8' }
         )
@@ -2056,7 +2072,7 @@ export default {
         this.arr = resp.data.records[0].result; //原列表
         this.table_title = resp.data.records[0].columns;//动态表头
 
-        console.log(this.status_data_list_data);
+
         this.new_table();//新接口 table
 
 
@@ -2077,7 +2093,7 @@ export default {
             this.$set(item, 'resultDetailProjectRelId', i.resultDetailProjectRelId)//核实信息表主键
           }
         })
-        // console.log(item);
+        // 
         // this.$set(item, 'count', i.count)//附件数
 
       })
@@ -2179,7 +2195,7 @@ export default {
         this.$message.info("请选择一条进行数据核实");
         return false
       }
-      console.log(this.multipleSelection_data_list);
+
       var that = this
       if (this.multipleSelection_data_list.every(item => item.isProbleam !== 0)) {
         that.dialogVisible_data_verify = true;//显示核实弹窗
@@ -2230,7 +2246,7 @@ export default {
             this.fileList2.forEach((item) => {
               formData.append('files', item.raw);
             })
-            console.log(item);
+
 
 
             // let pos = file.file.name.lastIndexOf('\"')
@@ -2442,7 +2458,6 @@ export default {
         this.zt_slect = resp.data
         //专题父code
         this.belongSpcialSize = resp.data.length;
-        console.log(this.belongSpcialSize);
       })
     },
     // 专题 change

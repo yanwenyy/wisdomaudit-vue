@@ -190,10 +190,13 @@ export default {
     //详情保存后刷新列表
     refreshList () {
       this.list_data_start();
+      this.list_data();
+
     },
 
     // 列表
     list_data (ifsel) {
+      console.log('测试刷新');
       let params = {
         pageNo: this.page.current,
         pageSize: this.page.size,
