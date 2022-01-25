@@ -65,7 +65,7 @@
                        algin="left"
                        prop="correctStatus">
         <template slot-scope="scope">
-          <span>{{scope.row.correctStatus=='1'?'待提交':scope.row.correctStatus=='2'?'待审核':scope.row.correctStatus=='3'?'领导审核通过':scope.row.correctStatus=='4'?'整改跟进人审核通过':scope.row.correctStatus=='5'?'驳回待提交':''}}</span>
+          <span>{{scope.row.correctStatus=='1'?'待提交':scope.row.correctStatus=='2'?'待审批':scope.row.correctStatus=='3'?'待审核':scope.row.correctStatus=='4'?'已完成':scope.row.correctStatus=='5'?'驳回待提交':''}}</span>
         </template>
       </el-table-column>
       <el-table-column label="整改结果"

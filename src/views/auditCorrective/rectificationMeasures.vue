@@ -22,11 +22,11 @@
                        clearable>
               <el-option label="待提交"
                          value="1"></el-option>
-              <el-option label="待审核"
+              <el-option label="待审批"
                          value="2"></el-option>
-              <el-option label="领导审核通过"
+              <el-option label="待审核"
                          value="3"></el-option>
-              <el-option label="整改跟进人审核通过"
+              <el-option label="已完成"
                          value="4"></el-option>
               <el-option label="驳回待提交"
                          value="5"></el-option>
@@ -110,7 +110,7 @@
                        algin="left"
                        width="150px">
         <template slot-scope="scope">
-          <span>{{scope.row.correctStatus=='1'?'待提交':scope.row.correctStatus=='2'?'待审核':scope.row.correctStatus=='3'?'领导审批通过':scope.row.correctStatus=='4'?'整改跟进人审批通过':scope.row.correctStatus=='5'?'驳回待提交':''}}</span>
+          <span>{{scope.row.correctStatus=='1'?'待提交':scope.row.correctStatus=='2'?'待审批':scope.row.correctStatus=='3'?'待审核':scope.row.correctStatus=='4'?'已完成':scope.row.correctStatus=='5'?'驳回待提交':''}}</span>
         </template>
       </el-table-column>
       <el-table-column :resizable="false"

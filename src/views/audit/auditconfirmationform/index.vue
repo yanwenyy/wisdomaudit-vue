@@ -3147,7 +3147,7 @@ export default {
 .query_list li p {
   float: left;
   width: 100%;
-  height: 100%;
+  height: 20px;
   line-height: 20px;
   display: -webkit-box;
   -webkit-box-orient: vertical;
