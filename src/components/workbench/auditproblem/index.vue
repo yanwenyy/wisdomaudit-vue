@@ -175,7 +175,7 @@
                :append-to-body="true"
                :visible.sync="dialogFormVisible"
                :close-on-click-modal="false"
-               width="70%"
+               width="80%"
                @close="resetForm('temp')"
                center>
       <el-form ref="dataForm"
@@ -375,7 +375,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog width="70%"
+    <el-dialog width="80%"
                :title="ifadd == 1 ? '编辑问题' : '问题详情'"
                :visible.sync="dialogDetailVisible"
                :close-on-click-modal="false"
@@ -1443,8 +1443,8 @@ export default {
           // 判断自定义的专题是否重复
           if (this.zdyCode == 1) {
             let msg = true;
-            this.SPECIALList.forEach(item => {
-              if (item.label == this.temp_problem.special) {
+            this.SPECIALList.forEach(e => {
+              if (e.label == this.temp.special) {
                 msg = false
                 return false
               }
