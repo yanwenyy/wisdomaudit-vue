@@ -2897,6 +2897,7 @@ export default {
 }
 
 .textarea {
+  font-family: -webkit-body;
   width: 270px;
   min-height: 37px;
   font-size: inherit;
