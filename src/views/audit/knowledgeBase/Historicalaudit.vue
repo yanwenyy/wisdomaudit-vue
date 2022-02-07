@@ -265,7 +265,7 @@
             <el-button v-if="input_select == false"
                        type="primary"
                        class="inline-block"
-                       style="position: absolute;top:0;right: -70px"
+                       style="position: absolute;top:0;right: -90px"
                        @click="input_select=!input_select">重选</el-button>
           </el-form-item>
 
@@ -897,6 +897,8 @@ export default {
                 //       title:
                 //   },
                 // };
+                this.zhuanti(); //专题
+
                 this.page_list();
               } else {
                 this.$message({
@@ -988,6 +990,8 @@ export default {
       }, 2000);
       this.historyAuditFindUuid = id;
       this.title = "编辑省内审计发现";
+      this.zhuanti(); //专题
+
       this.dialogVisible = true;
       let params = {
         id: this.historyAuditFindUuid,
@@ -1255,7 +1259,7 @@ export default {
 }
 /* 引用按钮 */
 .dlag_conter >>> .citebtn {
-  margin-left: 10px;
+  margin-left: 20px;
   height: 40px;
 }
 

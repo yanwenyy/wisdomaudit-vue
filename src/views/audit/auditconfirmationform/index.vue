@@ -712,7 +712,7 @@
           <el-button v-if="input_select == false"
                      type="primary"
                      class="inline-block"
-                     style="position: absolute;top:0;right: -70px"
+                     style="position: absolute;top:0;right: -90px"
                      @click="input_select=!input_select">重选</el-button>
         </el-form-item>
 
@@ -912,7 +912,7 @@
           <el-button v-if="input_selecte == false"
                      type="primary"
                      class="inline-block"
-                     style="position: absolute;top:0;right: -70px"
+                     style="position: absolute;top:0;right: -90px"
                      @click="input_selecte=!input_selecte">重选</el-button>
         </el-form-item>
 
@@ -3091,8 +3091,11 @@ export default {
   margin-top: 0 !important;
 }
 
+.citebtn {
+  margin-left: 15px;
+}
 .dlag_wi >>> .el-dialog {
-  min-width: 950px;
+  min-width: 960px;
 }
 
 /* 上传的文件列表禁止删除 */
@@ -3460,7 +3463,7 @@ export default {
   width: 100% !important;
 }
 >>> .itemTwo .el-form-item__content {
-  width: 59% !important;
+  width: 53% !important;
 }
 >>> .itemThree .el-form-item__label {
   width: 130px !important;

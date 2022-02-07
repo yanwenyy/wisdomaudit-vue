@@ -234,7 +234,7 @@
           <el-button v-if="input_select == false"
                      type="primary"
                      class="inline-block"
-                     style="position: absolute; top: 0; right: -70px"
+                     style="position: absolute; top: 0; right: -80px"
                      @click="input_select = !input_select">重选</el-button>
         </el-form-item>
         <!-- <el-form-item> </el-form-item> -->
@@ -376,6 +376,7 @@
     </el-dialog>
 
     <el-dialog width="80%"
+               class="add"
                :title="ifadd == 1 ? '编辑问题' : '问题详情'"
                :visible.sync="dialogDetailVisible"
                :close-on-click-modal="false"
@@ -443,7 +444,7 @@
           <el-button v-if="input_selecte == false"
                      type="primary"
                      class="inline-block"
-                     style="position: absolute; top: 0; right: -70px"
+                     style="position: absolute; top: 0; right: -80px"
                      @click="input_selecte = !input_selecte">重选</el-button>
         </el-form-item>
 
@@ -1685,7 +1686,12 @@ export default {
 .popperclass {
   display: none;
 }
-
+.add >>> .el-dialog {
+  min-width: 980px;
+}
+.citebtn {
+  margin-left: 15px;
+}
 .auditproblem-btn-box {
   float: right;
 }
@@ -1807,7 +1813,7 @@ export default {
   width: 77% !important;
 }
 >>> .itemTwo .el-form-item__content {
-  width: 59% !important;
+  width: 53% !important;
 }
 >>> .itemThree .el-form-item__label {
   width: 130px !important;

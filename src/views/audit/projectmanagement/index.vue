@@ -956,7 +956,7 @@
                title=""
                :close-on-click-modal="false"
                :visible.sync="confirm_problem_dlag_edit"
-               width="width">
+               width="60%">
       <div class="title">编辑问题</div>
       <div class="dialog2 auditproblem">
         <el-form ref="detailForm"
@@ -999,7 +999,7 @@
             <el-button v-if="input_select == false"
                        type="primary"
                        class="inline-block"
-                       style="position: absolute;top:0;left: -80px"
+                       style="position: absolute;top:0;right: -90px"
                        @click="input_select=!input_select">重选</el-button>
 
           </el-form-item>
@@ -1155,7 +1155,7 @@
                :append-to-body='true'
                center
                :visible.sync="confirm_problem_dlag"
-               width="width">
+               width="60%">
       <div class="title">确认问题整改清单</div>
 
       <div class="dialog">

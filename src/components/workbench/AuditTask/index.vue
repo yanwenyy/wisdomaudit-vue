@@ -960,7 +960,7 @@
             <el-button v-if="input_select == false"
                        type="primary"
                        class="inline-block"
-                       style="position: absolute;top:0;right: -20px"
+                       style="position: absolute;top:0;right: -10px"
                        @click="input_select=!input_select">重选</el-button>
           </el-form-item>
 
