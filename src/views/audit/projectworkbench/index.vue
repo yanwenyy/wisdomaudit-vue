@@ -675,9 +675,12 @@
 
           <!-- prop="taskDescription" -->
           <el-form-item label="任务描述:">
-            <el-input type="textarea"
+            <textarea placeholder="请输入任务描述"
+                      class="textarea"
+                      v-model="taskSelf.taskDescription"></textarea>
+            <!-- <el-input type="textarea"
                       placeholder="请输入任务描述"
-                      v-model="taskSelf.taskDescription"></el-input>
+                      v-model="taskSelf.taskDescription"></el-input> -->
           </el-form-item>
           <el-form-item label="上传附件:">
             <el-upload class="upload-demo"
@@ -777,9 +780,12 @@
           </el-form-item>
 
           <el-form-item label="任务描述:">
-            <el-input type="textarea"
+            <textarea placeholder="请输入任务描述"
+                      class="textarea"
+                      v-model="edittaskSelfForm.taskDescription"></textarea>
+            <!-- <el-input type="textarea"
                       placeholder="请输入任务描述"
-                      v-model="edittaskSelfForm.taskDescription"></el-input>
+                      v-model="edittaskSelfForm.taskDescription"></el-input> -->
           </el-form-item>
           <el-form-item label="上传附件:">
             <el-upload class="upload-demo"
@@ -1108,9 +1114,9 @@ export default {
         belongField: [
           { required: true, message: "请选择领域", trigger: "change" },
         ],
-        taskDescription: [
-          { required: true, message: "请输入任务描述", trigger: "change" },
-        ],
+        // taskDescription: [
+        //   { required: true, message: "请输入任务描述", trigger: "change" },
+        // ],
       },
       arrRightValue: [],
     };
@@ -1170,6 +1176,7 @@ export default {
     }
   },
   methods: {
+
     //通过认证后的方法
     vdownload () {
       this.enclosureDownload(this.downloaobj.attachmentUuid, this.downloaobj.fileName)
@@ -1929,9 +1936,6 @@ export default {
       this.Upload_file = [];
       this.taskSelf.attachmentList = [];
       this.taskSelf = {};//清空传的集合
-
-
-
       this.taskSelfDialogVisible = true;//显示新增任务
       this.taskSelf.taskDescription = '';//清空描述
     },
@@ -1987,6 +1991,9 @@ export default {
                 this.taskSelf.managementProjectUuid =
                   this.managementProjectUuid;
                 this.taskSelf.taskType = 2;
+
+
+                // this.taskSelf = JSON.parse(JSON.stringify(this.taskSelf));
 
                 console.log(this.taskSelf);
                 selfTaskFunction(this.taskSelf).then((resp) => {
@@ -2868,6 +2875,47 @@ export default {
   border-radius: 6px !important;
   padding: 7px !important;
   box-sizing: border-box;
+}
+.textarea::-webkit-input-placeholder {
+  color: #c0c4cc;
+  font-size: 12px;
+}
+.textarea::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: #c0c4cc;
+  font-size: 12px;
+}
+.textarea:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: #c0c4cc;
+  font-size: 12px;
+}
+.textarea:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: #c0c4cc;
+  font-size: 12px;
+}
+
+.textarea {
+  width: 270px;
+  min-height: 37px;
+  font-size: inherit;
+  color: #606266 !important;
+  background-color: #ffffff;
+  background-image: none;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  display: block;
+  resize: vertical;
+  padding: 5px 15px;
+  line-height: 1.5;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  outline: none;
+}
+.textarea:focus {
+  outline: none;
+  border-color: #1890ff;
 }
 .addPerson >>> .el-transfer {
   margin-top: 1%;

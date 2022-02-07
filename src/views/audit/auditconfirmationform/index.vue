@@ -245,9 +245,9 @@
                        @click="getRelationQues()"
                        class="relationBtn">编辑问题</el-button>
           </div>
-
-          <el-input rows="6"
-                    :disabled="ifLook"
+          <el-input :readonly="ifLook"
+                    rows="6"
+                    :class="ifLook?'bag':''"
                     type="textarea"
                     v-model="formDetail.matterDetail"></el-input>
 
@@ -3511,5 +3511,13 @@ export default {
   text-overflow: ellipsis;
   box-sizing: border-box;
   word-break: break-all;
+}
+.bag >>> .el-textarea__inner,
+.bag >>> .el-textarea__inner:focus {
+  border: 1px solid #dfe4ed !important;
+  color: rgba(0, 0, 0, 0.25) !important;
+  /* color: #606266 !important; */
+  background: #f5f7fa !important;
+  cursor: not-allowed;
 }
 </style>
