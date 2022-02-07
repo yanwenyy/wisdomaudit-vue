@@ -1563,9 +1563,6 @@ export default {
         this.$refs[save_zj_query].validate((valid) => {
           if (valid) {
             this.title = '新增任务';
-
-
-
             if (this.fileList.length > 0) {
               this.success_btn = 1;//显示加载按钮  0成功  1 loaging
               // 上传
@@ -2454,6 +2451,7 @@ export default {
       }
       task_problems_loadcascader(params).then(resp => {
         this.zt_slect = resp.data
+        console.log(this.zt_slect);
         //专题父code
         this.belongSpcialSize = resp.data.length;
       })

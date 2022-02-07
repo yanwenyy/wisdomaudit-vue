@@ -740,6 +740,12 @@ export default {
           { required: true, message: "请输入任务描述", trigger: "change" },
         ],
       },
+
+      zdyCode: 0,//区别自定义
+      belongSpcialSize: '',//专题集合数
+      belongSpcialCode: 'SPECIAL',
+
+
     };
   },
   computed: {},
@@ -820,10 +826,13 @@ export default {
       let val = obj.value;
       this.taskSelf.belongSpcial = obj.label;
 
-      if (val == "otherzt") {
+      if (val == 'otherzt') {
         this.other_input = false;
         this.taskSelf.belongSpcial = "";
         this.editTask.belongSpcial = "";
+        this.zdyCode = 1;//自定义标识 1
+      } else {
+        this.zdyCode = 0;//自定义标识 1
       }
     },
     // 专题下拉框
@@ -983,6 +992,8 @@ export default {
     },
     // 添加模型任务按钮
     addModel () {
+      this.zdyCode = 0;//重置自定义code
+
       this.TaskDialogVisible = true;
       this.task = 2;
       this.loading = true;
@@ -992,6 +1003,8 @@ export default {
     },
     // 添加自建任务页面
     addTask () {
+      this.zdyCode = 0;//重置自定义code
+
       this.task = 1;
       this.taskSelf.taskType = 2;
       this.TaskDialogVisible = true;
@@ -1231,7 +1244,25 @@ export default {
       // console.log( this.fileList)
       this.$refs[selfTaskRef].validate((valid) => {
         if (valid) {
-          // this.TaskDialogVisible = false;
+          // 判断自定义的专题是否重复
+          if (this.zdyCode == 1) {
+            let msg = true;
+            // 专题列表
+            this.thematicOption.forEach(item => {
+              if (item.label == this.taskSelf.belongSpcial) {
+                msg = false
+                return false
+              }
+            })
+            if (msg == false) {
+              this.$message({
+                message: '该专题已经存在',
+                type: 'warning'
+              });
+              return false
+            }
+          }
+          // 有附件
           if (this.fileList.length > 0) {
             const loading = this.$loading({
               lock: true,
@@ -1261,7 +1292,29 @@ export default {
                 //新增自建任务接口
                 this.taskSelf.attachmentList = this.Upload_file;
                 this.taskSelf.managementProjectUuid = this.active_project;
-                selfTaskFunction(this.taskSelf).then((resp) => {
+
+                // 提交步骤
+                let params1 = {
+                  managementProjectUuid: this.taskSelf.managementProjectUuid,//项目id
+                  taskDescription: this.taskSelf.taskDescription,//描述
+                  taskName: this.taskSelf.taskName,//名称
+                  taskType: 2,//任务类型
+                  enclosure: this.taskSelf.enclosure,//附件
+                  peopleName: this.taskSelf.peopleName,//责任人
+                  peopleTableUuid: this.taskSelf.peopleTableUuid,//责任人id
+                  belongSpcial: this.taskSelf.belongSpcial,//领域
+                  belongField: this.taskSelf.belongField,//专题
+                  attachmentList: this.taskSelf.attachmentList,//上传成功de 的文件
+
+                  // 专题
+                  entity: {
+                    belongSpcialSize: this.belongSpcialSize,//专题size
+                    dictname: this.taskSelf.belongSpcial,//专题name
+                  },
+                  zdyCode: this.zdyCode,
+                }
+                selfTaskFunction(params1).then((resp) => {
+                  // selfTaskFunction(this.taskSelf).then((resp) => {
                   this.$message.success("新增任务成功！");
                   this.TaskDialogVisible = false;
                   this.taskSelf = {};
@@ -1281,7 +1334,31 @@ export default {
           } else {
             this.isdisabled = true;
             this.taskSelf.managementProjectUuid = this.active_project;
-            selfTaskFunction(this.taskSelf).then((resp) => {
+
+            // 提交步骤
+            let params1 = {
+              managementProjectUuid: this.taskSelf.managementProjectUuid,//项目id
+              taskDescription: this.taskSelf.taskDescription,//描述
+              taskName: this.taskSelf.taskName,//名称
+              taskType: 2,//任务类型
+              enclosure: this.taskSelf.enclosure,//附件
+              peopleName: this.taskSelf.peopleName,//责任人
+              peopleTableUuid: this.taskSelf.peopleTableUuid,//责任人id
+              belongSpcial: this.taskSelf.belongSpcial,//领域
+              belongField: this.taskSelf.belongField,//专题
+              attachmentList: this.taskSelf.attachmentList,//上传成功de 的文件
+
+              // 专题
+              entity: {
+                belongSpcialSize: this.belongSpcialSize,//专题size
+                dictname: this.taskSelf.belongSpcial,//专题name
+              },
+              zdyCode: this.zdyCode,
+            }
+            selfTaskFunction(params1).then((resp) => {
+              // selfTaskFunction(this.taskSelf).then((resp) => {
+
+
               this.$message.success("新增任务成功！");
               this.TaskDialogVisible = false;
               this.taskSelf = {};
@@ -1305,7 +1382,26 @@ export default {
     editTaskSelfBtn (editTaskRef) {
       this.$refs[editTaskRef].validate((valid) => {
         if (valid) {
+          // 判断自定义的专题是否重复
+          if (this.zdyCode == 1) {
+            let msg = true;
+            // 专题列表
+            this.thematicOption.forEach(item => {
+              if (item.label == this.editTask.belongSpcial) {
+                msg = false
+                return false
+              }
+            })
+            if (msg == false) {
+              this.$message({
+                message: '该专题已经存在',
+                type: 'warning'
+              });
+              return false
+            }
+          }
 
+          // 有附件
           if (this.fileList.length > 0) {
             const loading = this.$loading({
               lock: true,
@@ -1354,7 +1450,33 @@ export default {
                 this.editTask.attachmentList = upList;
                 // console.log(this.Upload_file);
                 this.editTask.managementProjectUuid = this.active_project;
-                editTaskSelfInfo(this.editTask).then((resp) => {
+
+                // 提交步骤
+                let params1 = {
+                  auditTaskUuid: this.editTask.managementProjectUuid,
+                  managementProjectUuid: this.managementProjectUuid,//项目id
+                  taskDescription: this.editTask.taskDescription,//描述
+                  taskName: this.editTask.taskName,//名称
+                  taskType: 2,//任务类型
+                  enclosure: this.editTask.enclosure,//附件
+                  peopleName: this.editTask.peopleName,//责任人
+                  peopleTableUuid: this.editTask.peopleTableUuid,//责任人id
+                  belongSpcial: this.editTask.belongSpcial,//领域
+                  belongField: this.editTask.belongField,//专题
+                  attachmentList: this.editTask.attachmentList,//上传成功de 的文件
+
+                  // 专题
+                  entity: {
+                    belongSpcialSize: this.belongSpcialSize,//专题size
+                    dictname: this.editTask.belongSpcial,//专题name
+                  },
+                  zdyCode: this.zdyCode,
+                }
+                editTaskSelfInfo(params1).then((resp) => {
+
+
+
+                  // editTaskSelfInfo(this.editTask).then((resp) => {
                   this.editModelDialogVisible = false;
                   this.queryInfo.condition.managementProjectUuid =
                     this.active_project;
@@ -1379,7 +1501,32 @@ export default {
             var upList = this.edit_file_list.concat(this.fileList_Delet);
             this.editTask.attachmentList = upList;
             this.editTask.managementProjectUuid = this.active_project;
-            editTaskSelfInfo(this.editTask).then((resp) => {
+
+
+            // 提交步骤
+            let params1 = {
+              auditTaskUuid: this.editTask.auditTaskUuid,
+              managementProjectUuid: this.editTask.managementProjectUuid,//项目id
+              taskDescription: this.editTask.taskDescription,//描述
+              taskName: this.editTask.taskName,//名称
+              taskType: 2,//任务类型
+              enclosure: this.editTask.enclosure,//附件
+              peopleName: this.editTask.peopleName,//责任人
+              peopleTableUuid: this.editTask.peopleTableUuid,//责任人id
+              belongSpcial: this.editTask.belongSpcial,//领域
+              belongField: this.editTask.belongField,//专题
+              attachmentList: this.editTask.attachmentList,//上传成功de 的文件
+
+              // 专题
+              entity: {
+                belongSpcialSize: this.belongSpcialSize,//专题size
+                dictname: this.editTask.belongSpcial,//专题name
+              },
+              zdyCode: this.zdyCode,
+            }
+            editTaskSelfInfo(params1).then((resp) => {
+
+              // editTaskSelfInfo(this.editTask).then((resp) => {
               this.editModelDialogVisible = false;
               this.queryInfo.condition.managementProjectUuid = this.active_project;
               this.getmodelTaskList(this.queryInfo);

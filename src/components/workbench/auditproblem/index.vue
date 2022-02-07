@@ -301,11 +301,11 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="风险金额（万元）："
+        <el-form-item label="涉及金额（万元）："
                       class="itemTwo"
                       prop="riskAmount">
           <el-input v-model="temp.riskAmount"
-                    placeholder="请输入风险金额"
+                    placeholder="请输入涉及金额"
                     @keyup.native="onlyNumOnePoint('temp')"
                     @input="temp.riskAmount = temp.riskAmount.slice(0, 27)" />
         </el-form-item>

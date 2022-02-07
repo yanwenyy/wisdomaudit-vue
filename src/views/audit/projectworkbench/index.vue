@@ -361,7 +361,7 @@
               </span> -->
 
               <el-button style="background: #0c87d6; color: #fff"
-                         @click="addTaskSelf">新增自建任务</el-button>
+                         @click="addTaskSelf()">新增自建任务</el-button>
             </el-col>
 
             <!-- 条件查询模型名称 -->
@@ -1119,6 +1119,12 @@ export default {
         // ],
       },
       arrRightValue: [],
+
+
+      zdyCode: 0,//区别自定义
+      belongSpcialSize: '',//专题集合数
+      belongSpcialCode: 'SPECIAL',
+
     };
   },
   watch: {
@@ -1256,11 +1262,15 @@ export default {
       this.edittaskSelfForm.belongSpcial = obj.label;
 
 
-      if (val == "otherzt") {
+      if (val == 'otherzt') {
         this.other_input = false;
         this.taskSelf.belongSpcial = "";
         this.edittaskSelfForm.belongSpcial = "";
+        this.zdyCode = 1;//自定义标识 1
+      } else {
+        this.zdyCode = 0;//自定义标识 1
       }
+
     },
     //获取当前登录人信息
     get_user (ifMounted) {
@@ -1930,6 +1940,8 @@ export default {
     },
     // 新增自建任务
     addTaskSelf () {
+      this.zdyCode = 0;//重置自定义code
+
       this.addDialogVisible = false;
       this.fileList_Delet = [];
       this.fileList = [];
@@ -1938,12 +1950,15 @@ export default {
       this.taskSelf = {};//清空传的集合
       this.taskSelfDialogVisible = true;//显示新增任务
       this.taskSelf.taskDescription = '';//清空描述
+
+      this.thematicSelect(this.thematic);//专题下拉框
+
     },
     // 专题下拉框
     thematicSelect (data) {
       thematicAreas(data).then((resp) => {
         this.thematicOption = resp.data;
-        //
+        console.log(this.thematicOption);
       });
     },
     //领域下拉框
@@ -1957,6 +1972,27 @@ export default {
     taskSelfInfo (selfTaskRef) {
       this.$refs[selfTaskRef].validate((valid) => {
         if (valid) {
+
+          // 判断自定义的专题是否重复
+          if (this.zdyCode == 1) {
+            let msg = true;
+            // 专题列表
+            this.thematicOption.forEach(item => {
+              if (item.label == this.taskSelf.belongSpcial) {
+                msg = false
+                return false
+              }
+            })
+            if (msg == false) {
+              this.$message({
+                message: '该专题已经存在',
+                type: 'warning'
+              });
+              return false
+            }
+          }
+
+          // 有附件
           if (this.fileList.length > 0) {
             const loading = this.$loading({
               lock: true,
@@ -1991,18 +2027,37 @@ export default {
                 this.taskSelf.managementProjectUuid =
                   this.managementProjectUuid;
                 this.taskSelf.taskType = 2;
+                // 提交步骤
+                let params1 = {
+                  managementProjectUuid: this.managementProjectUuid,//项目id
+                  taskDescription: this.taskSelf.taskDescription,//描述
+                  taskName: this.taskSelf.taskName,//名称
+                  taskType: 2,//任务类型
+                  enclosure: this.taskSelf.enclosure,//附件
+                  peopleName: this.taskSelf.peopleName,//责任人
+                  peopleTableUuid: this.taskSelf.peopleTableUuid,//责任人id
+                  belongSpcial: this.taskSelf.belongSpcial,//领域
+                  belongField: this.taskSelf.belongField,//专题
+                  attachmentList: this.taskSelf.attachmentList,//上传成功de 的文件
+
+                  // 专题
+                  entity: {
+                    belongSpcialSize: this.belongSpcialSize,//专题size
+                    dictname: this.taskSelf.belongSpcial,//专题name
+                  },
+                  zdyCode: this.zdyCode,
+                }
 
 
-                // this.taskSelf = JSON.parse(JSON.stringify(this.taskSelf));
-
-                console.log(this.taskSelf);
-                selfTaskFunction(this.taskSelf).then((resp) => {
+                selfTaskFunction(params1).then((resp) => {
                   this.$message.success("自建任务创建成功！");
                   this.taskSelfDialogVisible = false;
                   this.addDialogVisible = true;
                   this.getModelList.condition.managementProjectUuid =
                     this.managementProjectUuid;
                   //
+                  this.thematicSelect(this.thematic);//专题下拉框
+
                   this.getauditModelList(this.getModelList);
                 });
               } else {
@@ -2014,15 +2069,33 @@ export default {
               }
             });
           } else {
-
-            console.log(this.Upload_file);
-            console.log(this.fileList);
-            console.log(this.taskSelf);
-
+            // 没有附件
             this.isdisabled = true;
-            this.taskSelf.taskType = 2;
-            this.taskSelf.managementProjectUuid = this.managementProjectUuid;
-            selfTaskFunction(this.taskSelf).then((resp) => {
+
+            // 提交步骤
+            let params1 = {
+              managementProjectUuid: this.managementProjectUuid,//项目id
+              taskDescription: this.taskSelf.taskDescription,//描述
+              taskName: this.taskSelf.taskName,//名称
+              taskType: 2,//任务类型
+              enclosure: this.taskSelf.enclosure,//附件
+              peopleName: this.taskSelf.peopleName,//责任人
+              peopleTableUuid: this.taskSelf.peopleTableUuid,//责任人id
+              belongSpcial: this.taskSelf.belongSpcial,//领域
+              belongField: this.taskSelf.belongField,//专题
+              attachmentList: this.taskSelf.attachmentList,//上传成功de 的文件
+
+              // 专题
+              entity: {
+                belongSpcialSize: this.belongSpcialSize,//专题size
+                dictname: this.taskSelf.belongSpcial,//专题name
+              },
+              zdyCode: this.zdyCode,
+            }
+            selfTaskFunction(params1).then((resp) => {
+              // this.taskSelf.taskType = 2;
+              // this.taskSelf.managementProjectUuid = this.managementProjectUuid;
+              // selfTaskFunction(this.taskSelf).then((resp) => {
               this.$message.success("自建任务创建成功！");
               this.taskSelfDialogVisible = false;
               this.addDialogVisible = true;
@@ -2077,7 +2150,27 @@ export default {
     edittaskSelfSave (editTaskRef) {
       this.$refs[editTaskRef].validate((valid) => {
         if (valid) {
+          // 判断自定义的专题是否重复
+          if (this.zdyCode == 1) {
+            let msg = true;
+            // 专题列表
+            this.thematicOption.forEach(item => {
+              if (item.label == this.edittaskSelfForm.belongSpcial) {
+                msg = false
+                return false
+              }
+            })
+            if (msg == false) {
+              this.$message({
+                message: '该专题已经存在',
+                type: 'warning'
+              });
+              return false
+            }
+          }
 
+
+          // 有附件
           if (this.fileList.length > 0) {
             const loading = this.$loading({
               lock: true,
@@ -2126,7 +2219,31 @@ export default {
                 this.edittaskSelfForm.attachmentList = upList;
                 this.edittaskSelfForm.managementProjectUuid =
                   this.managementProjectUuid;
-                editTaskSelfInfo(this.edittaskSelfForm).then((resp) => {
+
+
+
+                // 提交步骤
+                let params1 = {
+                  auditTaskUuid: this.edittaskSelfForm.auditTaskUuid,
+                  managementProjectUuid: this.managementProjectUuid,//项目id
+                  taskDescription: this.edittaskSelfForm.taskDescription,//描述
+                  taskName: this.edittaskSelfForm.taskName,//名称
+                  taskType: 2,//任务类型
+                  enclosure: this.edittaskSelfForm.enclosure,//附件
+                  peopleName: this.edittaskSelfForm.peopleName,//责任人
+                  peopleTableUuid: this.edittaskSelfForm.peopleTableUuid,//责任人id
+                  belongSpcial: this.edittaskSelfForm.belongSpcial,//领域
+                  belongField: this.edittaskSelfForm.belongField,//专题
+                  attachmentList: this.edittaskSelfForm.attachmentList,//上传成功de 的文件
+
+                  // 专题
+                  entity: {
+                    belongSpcialSize: this.belongSpcialSize,//专题size
+                    dictname: this.edittaskSelfForm.belongSpcial,//专题name
+                  },
+                  zdyCode: this.zdyCode,
+                }
+                editTaskSelfInfo(params1).then((resp) => {
                   if (resp.code == 0) {
                     this.$message.success("修改自建任务成功！");
                     this.editTaskSelfDialogVisible = false;
@@ -2145,6 +2262,8 @@ export default {
               }
             });
           } else {
+            // 没有附件
+
             this.edit_file_list.forEach((item) => {
               item.status = null;
             });
@@ -2156,9 +2275,32 @@ export default {
             this.edittaskSelfForm.attachmentList = upList;
             this.edittaskSelfForm.managementProjectUuid =
               this.managementProjectUuid;
-            editTaskSelfInfo(this.edittaskSelfForm).then((resp) => {
+
+            // 提交步骤
+            let params1 = {
+              auditTaskUuid: this.edittaskSelfForm.auditTaskUuid,
+              managementProjectUuid: this.edittaskSelfForm.managementProjectUuid,//项目id
+              taskDescription: this.edittaskSelfForm.taskDescription,//描述
+              taskName: this.edittaskSelfForm.taskName,//名称
+              taskType: 2,//任务类型
+              enclosure: this.edittaskSelfForm.enclosure,//附件
+              peopleName: this.edittaskSelfForm.peopleName,//责任人
+              peopleTableUuid: this.edittaskSelfForm.peopleTableUuid,//责任人id
+              belongSpcial: this.edittaskSelfForm.belongSpcial,//领域
+              belongField: this.edittaskSelfForm.belongField,//专题
+              attachmentList: this.edittaskSelfForm.attachmentList,//上传成功de 的文件
+
+              // 专题
+              entity: {
+                belongSpcialSize: this.belongSpcialSize,//专题size
+                dictname: this.edittaskSelfForm.belongSpcial,//专题name
+              },
+              zdyCode: this.zdyCode,
+            }
+            editTaskSelfInfo(params1).then((resp) => {
               if (resp.code == 0) {
                 this.$message.success("修改自建任务成功！");
+                this.thematicSelect(this.thematic);//专题下拉框
                 this.editTaskSelfDialogVisible = false;
               }
             });

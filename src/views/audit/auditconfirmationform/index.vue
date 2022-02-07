@@ -652,6 +652,7 @@
                :visible.sync="dialogFormVisible"
                :close-on-click-modal="false"
                width="70%"
+               class="dlag_wi"
                @close="resetForm('temp_problem')"
                center>
       <el-form ref="dataForm"
@@ -847,6 +848,7 @@
                :visible.sync="dialogDetailVisible"
                :close-on-click-modal="false"
                :append-to-body='true'
+               class="dlag_wi"
                @close="resetForm('dqProblem')"
                center>
       <el-form ref="detailForm"
@@ -3087,6 +3089,10 @@ export default {
 @import "../../../assets/styles/css/yw.css";
 >>> .el-table__header {
   margin-top: 0 !important;
+}
+
+.dlag_wi >>> .el-dialog {
+  min-width: 950px;
 }
 
 /* 上传的文件列表禁止删除 */
