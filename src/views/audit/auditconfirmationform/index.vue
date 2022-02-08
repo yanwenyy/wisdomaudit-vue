@@ -2044,13 +2044,18 @@ export default {
               method: "post",
               data: params,
             }).then((res) => {
+              this.dialogFormVisible = false;//新增的弹窗
               if (res.data.code == 0) {
-                this.dialogFormVisible = false;//新增的弹窗
                 this.$message({
                   message: "新增成功",
                   type: "success",
                 });
                 this.save_problem();//新增问题 既是选择当前这条
+              } else {
+                this.$message({
+                  message: res.msg,
+                  type: "error",
+                });
               }
             });
           } else {
@@ -2120,14 +2125,19 @@ export default {
               method: "post",
               data: params,
             }).then((res) => {
+              this.dialogFormVisible = false;//新增的弹窗
               if (res.data.code == 0) {
-                this.dialogFormVisible = false;//新增的弹窗
                 this.$message({
                   message: "新增成功",
                   type: "success",
                 });
                 this.init();//刷列表
 
+              } else {
+                this.$message({
+                  message: res.msg,
+                  type: "error",
+                });
               }
             });
 
