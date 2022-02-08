@@ -173,6 +173,7 @@
     <!-- @close="resetForm('temp')" -->
     <el-dialog title="新增审计问题"
                class="add"
+               @close="resetForm('temp')"
                :append-to-body="true"
                :visible.sync="dialogFormVisible"
                :close-on-click-modal="false"
@@ -379,6 +380,7 @@
 
     <el-dialog width="80%"
                class="add"
+               @close="resetForm('dqProblem')"
                :title="ifadd == 1 ? '编辑问题' : '问题详情'"
                :visible.sync="dialogDetailVisible"
                :close-on-click-modal="false"

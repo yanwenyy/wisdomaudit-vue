@@ -386,6 +386,7 @@
                width="70%"
                title="问题列表"
                class="edit_table"
+               @close="resetForm('temp_problem')"
                :visible.sync="visible"
                :append-to-body="true">
       <div class="relation-div">
@@ -650,6 +651,7 @@
     <!-- @close="resetForm('temp_problem')" -->
     <el-dialog title="新增审计问题"
                :append-to-body='true'
+              
                :visible.sync="dialogFormVisible"
                :close-on-click-modal="false"
                width="70%"
@@ -845,6 +847,7 @@
     <!-- 编辑审计问题 -->
     <!-- @close="resetForm('dqProblem')" -->
     <el-dialog width="70%"
+              
                :title="ifadd == 1 ? '编辑问题' : '问题详情'"
                :visible.sync="dialogDetailVisible"
                :close-on-click-modal="false"
@@ -1587,13 +1590,13 @@ export default {
     },
     // 新增问题关闭
     resetForm (str) {
-      this.temp_problem = {};//清空
 
       // 去除校验
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
       })
       if (str == "temp_problem") {
+        console.log(111);
         this.temp_problem = {};//清空
         this.temp_problem = {
           managementProjectUuid: this.active_project,
