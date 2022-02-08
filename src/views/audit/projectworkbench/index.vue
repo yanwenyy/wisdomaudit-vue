@@ -145,7 +145,7 @@
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="1-1">组员及任务维护<span></span></el-menu-item>
-                  <el-menu-item index="1-2">审计框架<span></span></el-menu-item>
+                  <!--<el-menu-item index="1-2">审计框架<span></span></el-menu-item>-->
                 </el-menu-item-group>
               </el-submenu>
               <el-submenu v-show="
