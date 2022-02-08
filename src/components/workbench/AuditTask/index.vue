@@ -1888,7 +1888,7 @@ export default {
       setTimeout(() => {
         this.isDisable = false
       }, 2000)
-
+      this.zdyCode = 0;
       this.loading_edit = true;
       this.title = '编辑任务';
       this.zdyCode = 0;//重置自定义code
@@ -2112,7 +2112,7 @@ export default {
             this.$set(item, 'resultDetailProjectRelId', i.resultDetailProjectRelId)//核实信息表主键
           }
         })
-        // 
+        //
         // this.$set(item, 'count', i.count)//附件数
 
       })

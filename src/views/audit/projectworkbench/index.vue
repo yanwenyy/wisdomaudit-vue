@@ -145,7 +145,7 @@
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="1-1">组员及任务维护<span></span></el-menu-item>
-                  <el-menu-item index="1-2">审计框架<span></span></el-menu-item>
+                  <!--<el-menu-item index="1-2">审计框架<span></span></el-menu-item>-->
                 </el-menu-item-group>
               </el-submenu>
               <el-submenu v-show="
@@ -1986,24 +1986,24 @@ export default {
       this.$refs[selfTaskRef].validate((valid) => {
         if (valid) {
 
-          // 判断自定义的专题是否重复
-          // if (this.zdyCode == 1) {
-          //   let msg = true;
-          //   // 专题列表
-          //   this.thematicOption.forEach(item => {
-          //     if (item.label == this.taskSelf.belongSpcial) {
-          //       msg = false
-          //       return false
-          //     }
-          //   })
-          //   if (msg == false) {
-          //     this.$message({
-          //       message: '该专题已经存在',
-          //       type: 'warning'
-          //     });
-          //     return false
-          //   }
-          // }
+          //判断自定义的专题是否重复
+          if (this.zdyCode == 1) {
+            let msg = true;
+            // 专题列表
+            this.thematicOption.forEach(item => {
+              if (item.label == this.taskSelf.belongSpcial) {
+                msg = false
+                return false
+              }
+            })
+            if (msg == false) {
+              this.$message({
+                message: '该专题已经存在',
+                type: 'warning'
+              });
+              return false
+            }
+          }
 
           // 有附件
           if (this.fileList.length > 0) {
@@ -2137,6 +2137,7 @@ export default {
     },
     // 编辑自建按钮
     edit_data (row) {
+      this.zdyCode = 0;
       this.other_input = true;
       this.Upload_file = [];
       this.fileList_Delet = [];
@@ -2164,23 +2165,23 @@ export default {
       this.$refs[editTaskRef].validate((valid) => {
         if (valid) {
           // 判断自定义的专题是否重复
-          // if (this.zdyCode == 1) {
-          //   let msg = true;
-          //   // 专题列表
-          //   this.thematicOption.forEach(item => {
-          //     if (item.label == this.edittaskSelfForm.belongSpcial) {
-          //       msg = false
-          //       return false
-          //     }
-          //   })
-          //   if (msg == false) {
-          //     this.$message({
-          //       message: '该专题已经存在',
-          //       type: 'warning'
-          //     });
-          //     return false
-          //   }
-          // }
+          if (this.zdyCode == 1) {
+            let msg = true;
+            // 专题列表
+            this.thematicOption.forEach(item => {
+              if (item.label == this.edittaskSelfForm.belongSpcial) {
+                msg = false
+                return false
+              }
+            })
+            if (msg == false) {
+              this.$message({
+                message: '该专题已经存在',
+                type: 'warning'
+              });
+              return false
+            }
+          }
 
 
           // 有附件
