@@ -145,6 +145,7 @@
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="1-1">组员及任务维护<span></span></el-menu-item>
+                  <el-menu-item index="1-2">审计框架<span></span></el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
               <el-submenu v-show="
@@ -201,6 +202,14 @@
           <div class="routerView"
                v-if="index == '1-1'">
             <TeamPersonTask ref="temPersonRef"
+                            :active_project="active_project"
+                            :userRole="userInfo.userRole"
+                            :isLiaison="userInfo.isLiaison" />
+          </div>
+          <!--审计框架-->
+          <div class="routerView"
+               v-if="index == '1-2'">
+            <AuditPreparation ref="auditPreparation"
                             :active_project="active_project"
                             :userRole="userInfo.userRole"
                             :isLiaison="userInfo.isLiaison" />
@@ -822,6 +831,7 @@ import axios from "axios";
 import Vault from "@WISDOMAUDIT/components/Vaultcertification";
 import Pagination from "@WISDOMAUDIT/components/Pagination";
 import TeamPersonTask from "@WISDOMAUDIT/views/audit/teamperson-task/index";
+import AuditPreparation from "@WISDOMAUDIT/components/workbench/auditPreparation/index";//审计框架
 import AuditData from "@WISDOMAUDIT/components/workbench/AuditData/index"; //审计资料
 import AuditTask from "@WISDOMAUDIT/components/workbench/AuditTask/index"; //审计任务
 import Auditproblem from "@WISDOMAUDIT/components/workbench/auditproblem/index"; //审计问题
@@ -861,6 +871,7 @@ import {
 export default {
   components: {
     TeamPersonTask, //业务说明-业务规则
+    AuditPreparation, //审计框架
     AuditData, //审计资料
     AuditTask, //审计任务
     Auditproblem, //审计问题

@@ -2214,7 +2214,7 @@ export default {
               arr = arr.concat(i)
             }
           })
-          // 
+          //
           this.fileArr = arr;//生成确认的附件
         }
       })
@@ -2701,7 +2701,7 @@ export default {
           sj[2] = sj[2].padStart(2, '0');
         }
         that.formDetail.compileDate = sj[0] + "-" + sj[1] + "-" + sj[2];
-        // 
+        //
       })
     },
     //复核人列表
@@ -3050,7 +3050,7 @@ export default {
   left: 150px !important;
   opacity: 0 !important;
 }
-</style> 
+</style>
 
 <style lang="scss" scoped>
 .confirmaryTable {
