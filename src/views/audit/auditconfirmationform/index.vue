@@ -1983,22 +1983,22 @@ export default {
         if (valid) {
 
           // 判断自定义的专题是否重复
-          // if (this.zdyCode == 1) {
-          //   let msg = true;
-          //   this.SPECIALList.forEach(item => {
-          //     if (item.label == this.temp_problem.special) {
-          //       msg = false
-          //       return false
-          //     }
-          //   })
-          //   if (msg == false) {
-          //     this.$message({
-          //       message: '该专题已经存在',
-          //       type: 'warning'
-          //     });
-          //     return false
-          //   }
-          // }
+          if (this.zdyCode == 1) {
+            let msg = true;
+            this.SPECIALList.forEach(item => {
+              if (item.label == this.temp_problem.special) {
+                msg = false
+                return false
+              }
+            })
+            if (msg == false) {
+              this.$message({
+                message: '该专题已经存在',
+                type: 'warning'
+              });
+              return false
+            }
+          }
 
           // 新增回显
           if (this.type == 1) {
@@ -2206,22 +2206,22 @@ export default {
 
 
           // 判断自定义的专题是否重复
-          // if (this.zdyCode == 1) {
-          //   let msg = true;
-          //   this.SPECIALList.forEach(item => {
-          //     if (item.label == this.dqProblem.special) {
-          //       msg = false
-          //       return false
-          //     }
-          //   })
-          //   if (msg == false) {
-          //     this.$message({
-          //       message: '该专题已经存在',
-          //       type: 'warning'
-          //     });
-          //     return false
-          //   }
-          // }
+          if (this.zdyCode == 1) {
+            let msg = true;
+            this.SPECIALList.forEach(item => {
+              if (item.label == this.dqProblem.special) {
+                msg = false
+                return false
+              }
+            })
+            if (msg == false) {
+              this.$message({
+                message: '该专题已经存在',
+                type: 'warning'
+              });
+              return false
+            }
+          }
 
 
           // let rep = this.dqProblem;
@@ -2344,6 +2344,7 @@ export default {
 
     // 编辑问题
     list_openDetail (id) {
+      this.zdyCode = 0;
       this.getloadcascader('SPECIAL');//专题数据
       this.ifadd = 1;
       this.fileList2 = [];

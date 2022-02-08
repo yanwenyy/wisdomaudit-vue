@@ -644,7 +644,7 @@ export default {
         data.forEach((item) => {
           if (item.name == '知识库') {
             let control_children = item.children
-            // 
+            //
             control_children.forEach((item_son) => {
               if (item_son.name == '省内审计发现') {
                 let control_children_son = item_son.children
@@ -850,22 +850,22 @@ export default {
           if (valid) {
 
             // 判断自定义的专题是否重复
-            // if (this.zdyCode == 1) {
-            //   let msg = true;
-            //   this.problems_slect_zt.forEach(item => {
-            //     if (item.label == this.add.special) {
-            //       msg = false
-            //       return false
-            //     }
-            //   })
-            //   if (msg == false) {
-            //     this.$message({
-            //       message: '该专题已经存在',
-            //       type: 'warning'
-            //     });
-            //     return false
-            //   }
-            // }
+            if (this.zdyCode == 1) {
+              let msg = true;
+              this.problems_slect_zt.forEach(item => {
+                if (item.label == this.add.special) {
+                  msg = false
+                  return false
+                }
+              })
+              if (msg == false) {
+                this.$message({
+                  message: '该专题已经存在',
+                  type: 'warning'
+                });
+                return false
+              }
+            }
 
 
             // 新增保存
@@ -942,22 +942,22 @@ export default {
           if (valid) {
 
             // 判断自定义的专题是否重复
-            // if (this.zdyCode == 1) {
-            //   let msg = true;
-            //   this.problems_slect_zt.forEach(item => {
-            //     if (item.label == this.add.special) {
-            //       msg = false
-            //       return false
-            //     }
-            //   })
-            //   if (msg == false) {
-            //     this.$message({
-            //       message: '该专题已经存在',
-            //       type: 'warning'
-            //     });
-            //     return false
-            //   }
-            // }
+            if (this.zdyCode == 1) {
+              let msg = true;
+              this.problems_slect_zt.forEach(item => {
+                if (item.label == this.add.special) {
+                  msg = false
+                  return false
+                }
+              })
+              if (msg == false) {
+                this.$message({
+                  message: '该专题已经存在',
+                  type: 'warning'
+                });
+                return false
+              }
+            }
 
 
 
@@ -1029,6 +1029,7 @@ export default {
 
     // 编辑
     edit (id) {
+      this.zdyCode = 0;
       this.ld = true;
       this.isDisable = true;
       setTimeout(() => {
@@ -1209,7 +1210,7 @@ export default {
     // 依据change
     changeHeader_yj (val) {
       // this.add.auditBasis = val
-      // 
+      //
       let obj = {};
       obj = this.problems_slect_yj.find((item) => {
         return item.basyUuid === val;
