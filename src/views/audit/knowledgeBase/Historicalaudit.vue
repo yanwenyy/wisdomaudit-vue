@@ -847,6 +847,26 @@ export default {
       if (index == 1) {
         this.$refs[add].validate((valid) => {
           if (valid) {
+
+            // 判断自定义的专题是否重复
+            if (this.zdyCode == 1) {
+              let msg = true;
+              this.problems_slect_zt.forEach(item => {
+                if (item.label == this.add.special) {
+                  msg = false
+                  return false
+                }
+              })
+              if (msg == false) {
+                this.$message({
+                  message: '该专题已经存在',
+                  type: 'warning'
+                });
+                return false
+              }
+            }
+
+
             // 新增保存
             if (this.add.auditBasis) {
               this.auditBasis = this.add.auditBasis.join(",");

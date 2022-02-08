@@ -395,7 +395,7 @@
           </el-row>
           <el-table :data="modelListTab"
                     v-loading="modelloading"
-                    style="width: 100%"
+                    style="width: 100%;min-height:300px;"
                     stripe
                     :header-cell-style="{ 'background-color': '#F4FAFF' }">
             <el-table-column prop="taskName"
@@ -896,7 +896,7 @@ export default {
       data: [],
       value: [],
       loading: false,
-      modelloading: true,
+      modelloading: false,
       ifshow: false,
       refreash: false,
       active_project: "", //初始化项目有 默认选择
@@ -1896,7 +1896,7 @@ export default {
     // 模型列表渲染
     getauditModelList (data) {
       this.modelloading = true;
-      this.modelListTab = [];
+      // this.modelListTab = [];
       modelTaskList(data).then((resp) => {
         this.modelloading = false;
         this.modelListTab = resp.data.records;
@@ -1959,6 +1959,8 @@ export default {
       thematicAreas(data).then((resp) => {
         this.thematicOption = resp.data;
         console.log(this.thematicOption);
+        this.belongSpcialSize = this.thematicOption.length;
+        console.log(this.belongSpcialSize);
       });
     },
     //领域下拉框

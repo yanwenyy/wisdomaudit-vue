@@ -1195,6 +1195,8 @@ export default {
           this.CategoryList = res.data.data;
         } else if (str == "SPECIAL") {
           this.SPECIALList = res.data.data;
+          this.belongSpcialSize = this.SPECIALList.length;
+          // console.log(this.belongSpcialSize);
         }
       });
     },
@@ -1646,7 +1648,7 @@ export default {
                 type: "success",
               });
               this.dialogDetailVisible = false;
-
+              this.getloadcascader('SPECIAL');//专题数据
               this.getList();
             }
           });
