@@ -247,7 +247,7 @@
             <el-button v-if="other_input == false"
                        type="primary"
                        class="inline-block"
-                       style="position: absolute;top:0;right: -70px"
+                       style="position: absolute;top:0;right: -90px"
                        @click="other_input=!other_input">重选</el-button>
           </el-form-item>
 
@@ -839,7 +839,8 @@ export default {
     thematicSelect (data) {
       thematicAreas(data).then((resp) => {
         this.thematicOption = resp.data;
-        console.log(this.thematicOption);
+        this.belongSpcialSize = this.thematicOption.length;
+        console.log(this.belongSpcialSize);
       });
     },
     //领域下拉框

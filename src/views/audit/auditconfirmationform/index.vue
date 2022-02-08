@@ -2045,11 +2045,11 @@ export default {
               data: params,
             }).then((res) => {
               if (res.data.code == 0) {
+                this.dialogFormVisible = false;//新增的弹窗
                 this.$message({
                   message: "新增成功",
                   type: "success",
                 });
-                this.dialogFormVisible = false;//新增的弹窗
                 this.save_problem();//新增问题 既是选择当前这条
               }
             });
@@ -2121,11 +2121,11 @@ export default {
               data: params,
             }).then((res) => {
               if (res.data.code == 0) {
+                this.dialogFormVisible = false;//新增的弹窗
                 this.$message({
                   message: "新增成功",
                   type: "success",
                 });
-                this.dialogFormVisible = false;//新增的弹窗
                 this.init();//刷列表
 
               }
@@ -2358,15 +2358,12 @@ export default {
 
     // 编辑问题
     list_openDetail (id) {
+      this.getloadcascader('SPECIAL');//专题数据
       this.ifadd = 1;
-
       this.fileList2 = [];
       this.fileList2_del = [];
       this.attachmentList2 = [];
       this.dqProblem.attachmentList = [];
-
-      this.getloadcascader('SPECIAL');//专题数据
-
       axios({
         url:
           `/wisdomaudit/problemList/getById/` + id,
@@ -2377,6 +2374,9 @@ export default {
         data: {},
       }).then((res) => {
         this.dqProblem = res.data.data;
+
+
+        this.dqProblem.special = res.data.data.special
         this.dqProblem.riskAmount = parseFloat(this.dqProblem.riskAmount)
         this.dqProblem.auditTaskUuid = this.dqProblem.auditTaskUuid.split(",");
         this.dqProblem.basis = this.dqProblem.basis
