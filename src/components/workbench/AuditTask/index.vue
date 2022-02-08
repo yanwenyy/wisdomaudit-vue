@@ -1540,28 +1540,31 @@ export default {
       setTimeout(() => {
         this.isDisable = false
       }, 2000)
-      // 判断自定义的专题是否重复
-      if (this.zdyCode == 1) {
-        let msg = true;
-        this.zt_slect.forEach(item => {
-          if (item.label == this.save_zj_query.belongSpcial) {
-            msg = false
-            return false
-          }
-        })
-        if (msg == false) {
-          this.$message({
-            message: '该专题已经存在',
-            type: 'warning'
-          });
-          return false
-        }
-      }
 
       // 1:新增  2:编辑
       if (index == 1) {
         this.$refs[save_zj_query].validate((valid) => {
           if (valid) {
+
+            // 判断自定义的专题是否重复
+            if (this.zdyCode == 1) {
+              let msg = true;
+              this.zt_slect.forEach(item => {
+                if (item.label == this.save_zj_query.belongSpcial) {
+                  msg = false
+                  return false
+                }
+              })
+              if (msg == false) {
+                this.$message({
+                  message: '该专题已经存在',
+                  type: 'warning'
+                });
+                return false
+              }
+            }
+
+
             this.title = '新增任务';
             if (this.fileList.length > 0) {
               this.success_btn = 1;//显示加载按钮  0成功  1 loaging
@@ -1654,6 +1657,27 @@ export default {
         })//验证 end
         //  新增 end
       } else {
+
+        // 判断自定义的专题是否重复
+        if (this.zdyCode == 1) {
+          let msg = true;
+          this.zt_slect.forEach(item => {
+            if (item.label == this.save_zj_query.belongSpcial) {
+              msg = false
+              return false
+            }
+          })
+          if (msg == false) {
+            this.$message({
+              message: '该专题已经存在',
+              type: 'warning'
+            });
+            return false
+          }
+        }
+
+
+
         // 编辑
         if (this.fileList.length > 0) {
           this.success_btn = 1;//显示加载按钮  0成功  1 loaging

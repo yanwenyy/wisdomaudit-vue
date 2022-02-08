@@ -647,13 +647,13 @@
     </el-dialog>
 
     <!-- 新增审计问题 -->
+    <!-- @close="resetForm('temp_problem')" -->
     <el-dialog title="新增审计问题"
                :append-to-body='true'
                :visible.sync="dialogFormVisible"
                :close-on-click-modal="false"
                width="70%"
                class="dlag_wi"
-               @close="resetForm('temp_problem')"
                center>
       <el-form ref="dataForm"
                :rules="rules_problem"
@@ -843,13 +843,13 @@
     </el-dialog>
 
     <!-- 编辑审计问题 -->
+    <!-- @close="resetForm('dqProblem')" -->
     <el-dialog width="70%"
                :title="ifadd == 1 ? '编辑问题' : '问题详情'"
                :visible.sync="dialogDetailVisible"
                :close-on-click-modal="false"
                :append-to-body='true'
                class="dlag_wi"
-               @close="resetForm('dqProblem')"
                center>
       <el-form ref="detailForm"
                :model="dqProblem"
@@ -1588,7 +1588,12 @@ export default {
     // 新增问题关闭
     resetForm (str) {
       this.temp_problem = {};//清空
-      if (str == "temp") {
+
+      // 去除校验
+      this.$nextTick(() => {
+        this.$refs["dataForm"].clearValidate();
+      })
+      if (str == "temp_problem") {
         this.temp_problem = {};//清空
         this.temp_problem = {
           managementProjectUuid: this.active_project,
@@ -1611,6 +1616,8 @@ export default {
         this.dqProblem = {};
       }
       this.fileList2 = [];
+      this.dialogFormVisible = false;//新增的弹窗
+
       this.input_select = true; //专题 恢复默认
       this.input_selecte = true; //专题 恢复默认
     },
@@ -1976,22 +1983,22 @@ export default {
         if (valid) {
 
           // 判断自定义的专题是否重复
-          if (this.zdyCode == 1) {
-            let msg = true;
-            this.SPECIALList.forEach(item => {
-              if (item.label == this.temp_problem.special) {
-                msg = false
-                return false
-              }
-            })
-            if (msg == false) {
-              this.$message({
-                message: '该专题已经存在',
-                type: 'warning'
-              });
-              return false
-            }
-          }
+          // if (this.zdyCode == 1) {
+          //   let msg = true;
+          //   this.SPECIALList.forEach(item => {
+          //     if (item.label == this.temp_problem.special) {
+          //       msg = false
+          //       return false
+          //     }
+          //   })
+          //   if (msg == false) {
+          //     this.$message({
+          //       message: '该专题已经存在',
+          //       type: 'warning'
+          //     });
+          //     return false
+          //   }
+          // }
 
           // 新增回显
           if (this.type == 1) {
@@ -2000,16 +2007,7 @@ export default {
             uploadList2.forEach((item) => {
               item.status = null;
             });
-
-            // let rep = this.temp_problem;
-            // this.temp_problem.riskAmount = parseFloat(this.temp_problem.riskAmount)
-            // this.temp_problem.auditTaskUuid = this.temp_problem.auditTaskUuid
-            //   ? this.temp_problem.auditTaskUuid.join(",")
-            //   : "";
-            // this.temp_problem.basis = this.temp_problem.basis ? this.temp_problem.basis.join(",") : "";
-
             // 专题
-            // this.temp_problem.zdyCode = this.zdyCode;
             let params = {
               managementProjectUuid: this.active_project,
               // 业务分类
@@ -2044,13 +2042,15 @@ export default {
               method: "post",
               data: params,
             }).then((res) => {
-              this.dialogFormVisible = false;//新增的弹窗
+
               if (res.data.code == 0) {
                 this.$message({
                   message: "新增成功",
                   type: "success",
                 });
+                this.resetForm('temp_problem');
                 this.save_problem();//新增问题 既是选择当前这条
+
               } else {
                 this.$message({
                   message: res.msg,
@@ -2059,38 +2059,13 @@ export default {
               }
             });
           } else {
-            // 刷列表   新增刷列表
-            // let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
-            // uploadList2.forEach((item) => {
-            //   item.status = null;
-            // });
-            // this.temp_problem.attachmentList = uploadList2;
-            // // this.temp.attachmentList = [];
-
-            // let rep = this.temp_problem;
-            // rep.riskAmount = parseFloat(rep.riskAmount)
-            // rep.auditTaskUuid = rep.auditTaskUuid
-            //   ? rep.auditTaskUuid.join(",")
-            //   : "";
-            // rep.basis = rep.basis ? rep.basis.join(",") : "";
-            // // 专题
-
 
             // 新增刷列表
             let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
             uploadList2.forEach((item) => {
               item.status = null;
             });
-
-            // let rep = this.temp_problem;
-            // this.temp_problem.riskAmount = parseFloat(this.temp_problem.riskAmount)
-            // this.temp_problem.auditTaskUuid = this.temp_problem.auditTaskUuid
-            //   ? this.temp_problem.auditTaskUuid.join(",")
-            //   : "";
-            // this.temp_problem.basis = this.temp_problem.basis ? this.temp_problem.basis.join(",") : "";
-
             // 专题
-            // this.temp_problem.zdyCode = this.zdyCode;
             let params = {
               managementProjectUuid: this.active_project,
               // 业务分类
@@ -2125,14 +2100,15 @@ export default {
               method: "post",
               data: params,
             }).then((res) => {
-              this.dialogFormVisible = false;//新增的弹窗
+
               if (res.data.code == 0) {
                 this.$message({
                   message: "新增成功",
                   type: "success",
                 });
+                this.resetForm('dqProblem');
+                this.save_problem();//新增问题 既是选择当前这条
                 this.init();//刷列表
-
               } else {
                 this.$message({
                   message: res.msg,
@@ -2140,8 +2116,8 @@ export default {
                 });
               }
             });
-
           }
+          return false
         } else {
           return false;
         }
@@ -2230,22 +2206,22 @@ export default {
 
 
           // 判断自定义的专题是否重复
-          if (this.zdyCode == 1) {
-            let msg = true;
-            this.SPECIALList.forEach(item => {
-              if (item.label == this.dqProblem.special) {
-                msg = false
-                return false
-              }
-            })
-            if (msg == false) {
-              this.$message({
-                message: '该专题已经存在',
-                type: 'warning'
-              });
-              return false
-            }
-          }
+          // if (this.zdyCode == 1) {
+          //   let msg = true;
+          //   this.SPECIALList.forEach(item => {
+          //     if (item.label == this.dqProblem.special) {
+          //       msg = false
+          //       return false
+          //     }
+          //   })
+          //   if (msg == false) {
+          //     this.$message({
+          //       message: '该专题已经存在',
+          //       type: 'warning'
+          //     });
+          //     return false
+          //   }
+          // }
 
 
           // let rep = this.dqProblem;

@@ -170,13 +170,13 @@
                 :limit.sync="pageQuery.pageSize"
                 @pagination="getList" />
     <!-- 新增和编辑的弹框 -->
+    <!-- @close="resetForm('temp')" -->
     <el-dialog title="新增审计问题"
                class="add"
                :append-to-body="true"
                :visible.sync="dialogFormVisible"
                :close-on-click-modal="false"
                width="80%"
-               @close="resetForm('temp')"
                center>
       <el-form ref="dataForm"
                :rules="rules"
@@ -375,13 +375,14 @@
       </div>
     </el-dialog>
 
+    <!-- @close="resetForm('dqProblem')" -->
+
     <el-dialog width="80%"
                class="add"
                :title="ifadd == 1 ? '编辑问题' : '问题详情'"
                :visible.sync="dialogDetailVisible"
                :close-on-click-modal="false"
                :append-to-body="true"
-               @close="resetForm('dqProblem')"
                center>
       <el-form ref="detailForm"
                :model="dqProblem"
@@ -939,25 +940,42 @@ export default {
 
     // 新增问题关闭
     resetForm (str) {
+      // 去除校验
+      this.$nextTick(() => {
+        this.$refs["dataForm"].clearValidate();
+      })
+      this.dialogDetailVisible = false;//编辑的弹窗
+      this.dialogFormVisible = false;//新增的弹窗        
       if (str == "temp") {
-        this.temp = {
-          managementProjectUuid: this.active_project,
-          // 业务分类
-          auditTaskUuid: [],
-          basis: [],
-          describe: "",
-          field: "",
-          special: "",
-          isDeleted: 0,
-          problem: "",
-          problemDiscoveryTime: "",
-          problemFindPeople: "",
-          managementAdvice: "",
-          problemListUuid: "",
-          riskAmount: "",
-          status: 0,
-        };
-      } else if (str == "dqProblem") {
+        this.temp.auditTaskUuid = [];
+        this.temp.basis = [];
+        this.temp.describe = "";
+        this.temp.field = "";
+        this.temp.problem = "";
+        this.temp.problemDiscoveryTime = "";
+        this.temp.problemFindPeople = "";
+        this.temp.managementAdvice = "";
+        this.temp.riskAmount = "";
+        this.temp.special = "";
+
+        // this.temp = {
+        //   managementProjectUuid: this.active_project,
+        //   // 业务分类
+        //   auditTaskUuid: [],
+        //   basis: [],
+        //   describe: "",
+        //   field: "",
+        //   special: "",
+        //   isDeleted: 0,
+        //   problem: "",
+        //   problemDiscoveryTime: "",
+        //   problemFindPeople: "",
+        //   managementAdvice: "",
+        //   problemListUuid: "",
+        //   riskAmount: "",
+        //   status: 0,
+        // };
+      } else if (str == "temp_problem") {
         this.dqProblem = {};
       }
       this.input_select = true; //专题 恢复默认
@@ -1202,7 +1220,8 @@ export default {
     },
     // 编辑
     openDetail (int) {
-
+      this.zdyCode = 0;
+      this.getloadcascader('SPECIAL');//专题数据
       this.temp.attachmentList = []; //清空附件
       this.fileList2 = [];
       this.fileList2_del = [];
@@ -1439,6 +1458,7 @@ export default {
 
     // 附件 end-------------------------------------
 
+    // 新增
     createData () {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
@@ -1461,14 +1481,6 @@ export default {
             }
           }
 
-
-          // let rep = this.temp;
-          // rep.riskAmount = parseFloat(rep.riskAmount);
-          // rep.auditTaskUuid = rep.auditTaskUuid
-          //   ? rep.auditTaskUuid.join(",")
-          //   : "";
-          // rep.basis = rep.basis ? rep.basis.join(",") : "";
-
           // 附件
           let uploadList2 = this.attachmentList2.concat(
             this.fileList2,
@@ -1478,15 +1490,7 @@ export default {
           uploadList2.forEach((item) => {
             item.status = null;
           });
-          // let rep = this.temp;
-          // this.temp.riskAmount = parseFloat(this.temp.riskAmount)
-          // this.temp.auditTaskUuid = this.temp.auditTaskUuid
-          //   ? this.temp.auditTaskUuid.join(",")
-          //   : "";
-          // this.temp.basis = this.temp.basis ? this.temp.basis.join(",") : "";
 
-          // 专题
-          // this.temp.zdyCode = this.zdyCode;
           let params = {
             managementProjectUuid: this.active_project,
             // 业务分类
@@ -1512,22 +1516,6 @@ export default {
               dictname: this.temp.special,
             },
           };
-          // let rep = this.temp;
-          // rep.riskAmount = parseFloat(rep.riskAmount)
-          // rep.auditTaskUuid = rep.auditTaskUuid
-          //   ? rep.auditTaskUuid.join(",")
-          //   : "";
-          // rep.basis = rep.basis ? rep.basis.join(",") : "";
-
-          // // 附件
-          // let uploadList2 = this.attachmentList2.concat(this.fileList2, this.fileList2_del);
-          // console.log(uploadList2);
-          // uploadList2.forEach((item) => {
-          //   console.log(item);
-          //   item.status = null;
-          // });
-          // this.temp.attachmentList = uploadList2;
-
           axios({
             url: `/wisdomaudit/problemList/save`,
             headers: {
@@ -1541,17 +1529,7 @@ export default {
                 message: "新增成功",
                 type: "success",
               });
-              this.dialogFormVisible = false;
-              this.temp.auditTaskUuid = [];
-              this.temp.basis = [];
-              this.temp.describe = "";
-              this.temp.field = "";
-              this.temp.problem = "";
-              this.temp.problemDiscoveryTime = "";
-              this.temp.problemFindPeople = "";
-              this.temp.managementAdvice = "";
-              this.temp.riskAmount = "";
-              this.temp.special = "";
+              this.resetForm('temp');
               this.getList(1);
             }
           });
@@ -1560,10 +1538,11 @@ export default {
         }
       });
     },
+
+    // 编辑
     updateData () {
       this.$refs["detailForm"].validate((valid) => {
         if (valid) {
-
           // 判断自定义的专题是否重复
           if (this.zdyCode == 1) {
             let msg = true;
@@ -1581,12 +1560,6 @@ export default {
               return false
             }
           }
-
-          // let rep = this.dqProblem;
-          // rep.riskAmount = parseFloat(rep.riskAmount);
-          // rep.auditTaskUuid = rep.auditTaskUuid.join(",");
-          // rep.basis = rep.basis.join(",");
-
           // 附件
           let uploadList2 = this.attachmentList2.concat(
             this.fileList2,
@@ -1602,7 +1575,6 @@ export default {
           this.dqProblem.attachmentList = uploadList2;//附件
 
           // 专题
-          // this.dqProblem.zdyCode = this.zdyCode;
 
           let params = {
             managementProjectUuid: this.active_project,
@@ -1647,7 +1619,8 @@ export default {
                 message: "编辑成功",
                 type: "success",
               });
-              this.dialogDetailVisible = false;
+
+              this.resetForm('temp_problem')
               this.getloadcascader('SPECIAL');//专题数据
               this.getList();
             }

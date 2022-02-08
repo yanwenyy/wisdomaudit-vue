@@ -1976,23 +1976,23 @@ export default {
         if (valid) {
 
           // 判断自定义的专题是否重复
-          if (this.zdyCode == 1) {
-            let msg = true;
-            // 专题列表
-            this.thematicOption.forEach(item => {
-              if (item.label == this.taskSelf.belongSpcial) {
-                msg = false
-                return false
-              }
-            })
-            if (msg == false) {
-              this.$message({
-                message: '该专题已经存在',
-                type: 'warning'
-              });
-              return false
-            }
-          }
+          // if (this.zdyCode == 1) {
+          //   let msg = true;
+          //   // 专题列表
+          //   this.thematicOption.forEach(item => {
+          //     if (item.label == this.taskSelf.belongSpcial) {
+          //       msg = false
+          //       return false
+          //     }
+          //   })
+          //   if (msg == false) {
+          //     this.$message({
+          //       message: '该专题已经存在',
+          //       type: 'warning'
+          //     });
+          //     return false
+          //   }
+          // }
 
           // 有附件
           if (this.fileList.length > 0) {
@@ -2153,23 +2153,23 @@ export default {
       this.$refs[editTaskRef].validate((valid) => {
         if (valid) {
           // 判断自定义的专题是否重复
-          if (this.zdyCode == 1) {
-            let msg = true;
-            // 专题列表
-            this.thematicOption.forEach(item => {
-              if (item.label == this.edittaskSelfForm.belongSpcial) {
-                msg = false
-                return false
-              }
-            })
-            if (msg == false) {
-              this.$message({
-                message: '该专题已经存在',
-                type: 'warning'
-              });
-              return false
-            }
-          }
+          // if (this.zdyCode == 1) {
+          //   let msg = true;
+          //   // 专题列表
+          //   this.thematicOption.forEach(item => {
+          //     if (item.label == this.edittaskSelfForm.belongSpcial) {
+          //       msg = false
+          //       return false
+          //     }
+          //   })
+          //   if (msg == false) {
+          //     this.$message({
+          //       message: '该专题已经存在',
+          //       type: 'warning'
+          //     });
+          //     return false
+          //   }
+          // }
 
 
           // 有附件

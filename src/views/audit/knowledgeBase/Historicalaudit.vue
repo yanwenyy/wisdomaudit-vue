@@ -189,8 +189,7 @@
     <!-- 分页 end-->
 
     <!-- 新增历史审计发现描述 -->
-    <el-dialog @close="resetForm2('add')"
-               center
+    <el-dialog center
                :append-to-body='true'
                :close-on-click-modal="false"
                :visible.sync="dialogVisible"
@@ -844,27 +843,29 @@ export default {
       setTimeout(() => {
         this.isDisable = false;
       }, 2000);
+
+      // 新增
       if (index == 1) {
         this.$refs[add].validate((valid) => {
           if (valid) {
 
             // 判断自定义的专题是否重复
-            if (this.zdyCode == 1) {
-              let msg = true;
-              this.problems_slect_zt.forEach(item => {
-                if (item.label == this.add.special) {
-                  msg = false
-                  return false
-                }
-              })
-              if (msg == false) {
-                this.$message({
-                  message: '该专题已经存在',
-                  type: 'warning'
-                });
-                return false
-              }
-            }
+            // if (this.zdyCode == 1) {
+            //   let msg = true;
+            //   this.problems_slect_zt.forEach(item => {
+            //     if (item.label == this.add.special) {
+            //       msg = false
+            //       return false
+            //     }
+            //   })
+            //   if (msg == false) {
+            //     this.$message({
+            //       message: '该专题已经存在',
+            //       type: 'warning'
+            //     });
+            //     return false
+            //   }
+            // }
 
 
             // 新增保存
@@ -905,6 +906,8 @@ export default {
                   message: "新增成功",
                   type: "success",
                 });
+
+                this.resetForm2('add')
                 this.dialogVisible = false;
                 // // 刷新列表
                 // let params = {
@@ -933,8 +936,31 @@ export default {
           }
         });
       } else {
+
+        // 编辑
         this.$refs[add].validate((valid) => {
           if (valid) {
+
+            // 判断自定义的专题是否重复
+            // if (this.zdyCode == 1) {
+            //   let msg = true;
+            //   this.problems_slect_zt.forEach(item => {
+            //     if (item.label == this.add.special) {
+            //       msg = false
+            //       return false
+            //     }
+            //   })
+            //   if (msg == false) {
+            //     this.$message({
+            //       message: '该专题已经存在',
+            //       type: 'warning'
+            //     });
+            //     return false
+            //   }
+            // }
+
+
+
             if (this.add.auditBasis) {
               this.auditBasis = this.add.auditBasis.join(",");
             } else {
