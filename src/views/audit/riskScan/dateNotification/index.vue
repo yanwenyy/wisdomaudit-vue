@@ -111,6 +111,7 @@ export default {
 
   mounted () {
     this.gettapylist();
+    // this.gettime()
 
   },
 
@@ -154,7 +155,6 @@ export default {
 
     gettime () {
       let date = new Date();
-  
       let year = date.getFullYear();
       let month = date.getMonth();
      if(month==0){
@@ -165,15 +165,11 @@ export default {
       this.changesj(value);
 
      }else{
-       let value = year + "" + month;
-      this.value2 = year + "" + month;
+       let mouths=month<10?`0${month}`:month
+       let value = year +''+mouths;
+      this.value2 = year+''+ mouths;
       this.changesj(value);
      }
-
-      
-
-     
-     
     },
     // 获取模型列表
     async gettablelist () {
