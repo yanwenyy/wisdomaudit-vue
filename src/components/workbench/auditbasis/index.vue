@@ -157,11 +157,29 @@
         <el-form-item class="itemTwo"
                       style="display:flex"
                       label="上传附件:">
+          <!--<el-upload v-if="!ifLook"-->
+                     <!--class="upload-demo"-->
+                     <!--drag-->
+                     <!--action="/wisdomaudit/auditBasy/filesUpload"-->
+                     <!--:on-success="handleChangePic"-->
+                     <!--:before-remove="handleRemoveApk"-->
+                     <!--accept=".docx,.xls,.xlsx,.txt,.zip,.doc"-->
+                     <!--:file-list="fileList"-->
+                     <!--multiple-->
+                     <!--:key="key"-->
+                     <!--:headers="headers">-->
+            <!--<i class="el-icon-upload"></i>-->
+            <!--<div class="el-upload__text">-->
+              <!--点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc-->
+            <!--</div>-->
+          <!--</el-upload>-->
           <el-upload v-if="!ifLook"
                      class="upload-demo"
                      drag
-                     action="/wisdomaudit/auditBasy/filesUpload"
-                     :on-success="handleChangePic"
+                     ref="upload"
+                     action="#"
+                     :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',apkFiles)}"
+                     :before-upload="beforeUpload"
                      :before-remove="handleRemoveApk"
                      accept=".docx,.xls,.xlsx,.txt,.zip,.doc"
                      :file-list="fileList"
@@ -217,6 +235,11 @@ export default {
   props: ['Add', 'Edit', 'Delete',],
   data () {
     return {
+      fileData:{},
+      uploadProgress:false,
+      fileDataList:[],
+      fileLeftList:[],
+
       vaultV: false,
       sceneId: 1557, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
       approvers: [], //审批人列表
@@ -287,6 +310,126 @@ export default {
   computed: {},
   watch: {},
   methods: {
+    // 上传文件之前
+    beforeUpload(file, fileList) {
+      this.uploadProgress = true;
+      this.fileData = file;
+      //  调用函数分割文件 我这里是分割成不超过20M的文件快
+      this.fileDataList = this.createFileChunk(file,1024*1024*3);
+      console.log(this.fileDataList)
+    },
+    // 自定义文件上传的模式，方法
+    myFileUpload(params,url,tableList){
+    /** 这里采用了循环请求，等全部循环上传请求完成以后再去执行合并请求的操作  Promise.all
+     * 参数既有url参数也有body参数
+     */
+      if(this.fileDataList.length>0){
+        this.ywUpload(this.fileDataList,params,url,tableList);
+      }
+      // let promiseAll = this.fileDataList.map(item => {
+      //   let formData =  new FormData();
+      //   formData.append('file', item.file);
+      //   formData.append('chunkNumber', item.chunkNumber);
+      //   formData.append('chunkSize', item.chunkSize);
+      //   formData.append('totalSize', item.totalSize);
+      //   formData.append('filename', item.filename);
+      //   formData.append('relativePath', item.relativePath);
+      //   formData.append('fileName', item.fileName);
+      //   formData.append('fileSize', item.fileSize);
+      //   formData.append('ext1', item.ext1);
+      //   formData.append('totalChunks', item.totalChunks);
+      //   formData.append('path', item.path);
+      //   formData.append('identifier', item.identifier);
+      //   return new Promise((resolve,reject) => {
+      //     axios({
+      //       method: 'post',
+      //       headers: {
+      //         'TOKEN': this.headers.TOKEN,
+      //       },
+      //       data: formData,
+      //       url:url,
+      //       // data: item.file,
+      //     })
+      //       .then(res=>{
+      //         resolve(res.data.data)
+      //       })
+      //       .catch(err=>{
+      //         reject(err)
+      //       })
+      //   })
+      // })
+      // Promise.all(promiseAll).then(resDataAll => {
+      //  console.log(resDataAll)
+      // })
+    },
+    ywUpload(list,params,url,tableList){
+      var data='';
+      var left=[],right=list;
+      var _obj=right.shift();
+      console.log(_obj);
+      let formData =  new FormData();
+      formData.append('file', _obj.file);
+      formData.append('chunkNumber', _obj.chunkNumber);
+      formData.append('chunkSize', _obj.chunkSize);
+      formData.append('totalSize', _obj.totalSize);
+      formData.append('filename', _obj.filename);
+      formData.append('relativePath', _obj.relativePath);
+      formData.append('fileName', _obj.fileName);
+      formData.append('fileSize', _obj.fileSize);
+      formData.append('ext1', _obj.ext1);
+      formData.append('totalChunks', _obj.totalChunks);
+      formData.append('path', _obj.path);
+      formData.append('identifier', _obj.identifier);
+      axios({
+        method: 'post',
+        headers: {
+          'TOKEN': this.headers.TOKEN,
+        },
+        data: formData,
+        url:url,
+        // data: item.file,
+      })
+        .then(res=>{
+          console.log(res.data.data);
+          data=res.data.data;
+        })
+        .catch(err=>{
+          console.log(err)
+        });
+
+      if(right.length>0){
+        this.ywUpload(list,params,url,tableList);
+      }
+    },
+    // 文件分割的方法
+    createFileChunk(file, size = chunkSize) {
+      console.log(file);
+    const fileChunkList = [];
+    let count = 0;
+    let num = 1;
+    var total=parseInt((file.size)/size);
+    while (num <= total) {
+      fileChunkList.push({
+        file: file.slice(count, count + size),
+        chunkNumber: num ,
+        chunkSize:size,
+        totalSize:file.size,
+        filename:file.name,
+        relativePath:file.name,
+        fileName:file.name,
+        fileSize:file.size,
+        ext1:'审计依据',
+        totalChunks:total,
+        path:'',
+        identifier:new Date().getTime(),
+      });
+      count += size;
+      num++
+    }
+    return fileChunkList
+    },
+
+
     //通过认证后的方法
     vdownload () {
       this.downFile(this.downloaobj.attachment_uuid, this.downloaobj.file_name)
