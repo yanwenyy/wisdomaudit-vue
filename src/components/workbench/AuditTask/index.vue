@@ -524,8 +524,8 @@
                        ref="upload2"
                        :headers="headers"
                        action="#"
-                       :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',Upload_file2,'upload2')}"
-                       :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'审计任务')}"
+                       :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',Upload_file,'upload2')}"
+                       :before-upload="(file, fileList)=>{beforeUpload(file,fileList,'审计任务')}"
                        :on-remove="handleRemoveApk"
                        :file-list="edit_file_list2"
                        :auto-upload="false"
@@ -1172,7 +1172,7 @@ export default {
       dialogVisibl_enclosure_details: false,//附件详情
       multipleSelection_data_list: [],// 结果数 全选数据
 
-      fileList: [],//上传的文件
+      fileList1: [],//上传的文件
       // 设置参数
       modelId: '',//外部引用模型id
       wts_data: [],// 问题数选择
@@ -1697,7 +1697,7 @@ export default {
       this.zdyCode = 0;//重置自定义code
       this.zhuanti();//专题数据
 
-      this.fileList = [];//附件
+      this.fileList1 = [];//附件
       this.edit_file_list = [];//清空
       this.Upload_file = [];
       this.save_zj_query = JSON.parse(JSON.stringify(this.save_zj_query));
@@ -1710,14 +1710,14 @@ export default {
     },
     // 新增上传附件
     handleChangePic (file, fileList, name) {
-      this.fileList = fileList;
+      this.fileList1 = fileList;
       this.file = file.raw
     },
 
     // 自建任务 附件 删除
     handleRemove (file, index) {
       if (file.response) {
-        this.fileList.remove(file.response.data);
+        this.fileList1.remove(file.response.data);
         this.key = Math.random();
       } else {
         this.edit_file_list.remove(file);
@@ -2046,6 +2046,7 @@ export default {
 
       this.edit_file_list = [];//清回显
       this.fileList = [];
+      this.Upload_file = [];
       this.fileList_Delet = [];
 
 
@@ -2386,8 +2387,8 @@ export default {
     handleRemoveApk (file, fileList2) {
       console.log(file, fileList2);
       if (file.raw) {
-        var idx = this.fileList2.findIndex(item => item.attachmentUuid === file.attachmentUuid);
-        this.fileList2.splice(idx, 1);
+        var idx = this.Upload_file.findIndex(item => item.attachmentUuid === file.attachmentUuid);
+        this.Upload_file.splice(idx, 1);
         // this.fileList2.remove(file.response.data);
         this.key = Math.random();
         // } else {
@@ -2395,6 +2396,10 @@ export default {
         //   file.isDeleted = 1;
         //   this.fileList_Delet.push(file)
         // }
+      }else {
+        this.edit_file_list.remove(file);
+        file.isDeleted = 1;
+        this.fileList_Delet.push(file);
       }
     },
     // 核实上传 保存附件
@@ -2406,7 +2411,7 @@ export default {
 
       this.$refs[verify_model].validate((valid) => {
         if (valid) {
-          if (this.Upload_file2.length > 0) {
+          if (this.Upload_file.length > 0) {
             // this.success_btn2 = 1;//显示加载按钮  0成功  1 loaging
             // // 上传
             // let formData = new FormData()
@@ -2427,7 +2432,7 @@ export default {
             //   // 上传成功
             //   if (resp.data.code == 0) {
             // this.success_btn2 = 0;//显示加载按钮  0成功  1 loaging
-            this.Upload_file2 = resp.data.data;//上传成功大的文件
+            // this.Upload_file = resp.data.data;//上传成功大的文件
             // var arr = this.multipleSelection_data_list.map(function (item, index) {
             //   return item.resultDetailId;
             // }).join(",");
@@ -2441,7 +2446,7 @@ export default {
               handleIdea: this.verify_model.handleIdea,//核实信息
               isProbleam: this.verify_model.isProbleam_data, //是否问题（0：否 1：是 ）
               resultDetailIds: arr,//核实明细结果id （多个）
-              attachmentList: this.Upload_file2,//上传成功de 的文件
+              attachmentList: this.Upload_file,//上传成功de 的文件
               projectId: this.managementProjectUuid,
               runTaskRelUuid: this.paramTaskUuid,//结果id
             };
