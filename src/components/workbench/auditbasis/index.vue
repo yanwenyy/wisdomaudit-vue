@@ -178,8 +178,8 @@
                      drag
                      ref="upload"
                      action="#"
-                     :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',apkFiles)}"
-                     :before-upload="beforeUpload"
+                     :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',apkFiles,'upload')}"
+                     :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'审计依据')}"
                      :before-remove="handleRemoveApk"
                      accept=".docx,.xls,.xlsx,.txt,.zip,.doc"
                      :file-list="fileList"
@@ -235,10 +235,7 @@ export default {
   props: ['Add', 'Edit', 'Delete',],
   data () {
     return {
-      fileData:{},
-      uploadProgress:false,
-      fileDataList:[],
-      fileLeftList:[],
+      fileDataList:[],//用来接收切割过的文件
 
       vaultV: false,
       sceneId: 1557, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
@@ -310,21 +307,20 @@ export default {
   computed: {},
   watch: {},
   methods: {
+    // 分块上传开始
     // 上传文件之前
-    beforeUpload(file, fileList) {
-      this.uploadProgress = true;
-      this.fileData = file;
+    beforeUpload(file, fileList,ext1) {
       //  调用函数分割文件 我这里是分割成不超过20M的文件快
-      this.fileDataList = this.createFileChunk(file,1024*1024*3);
-      console.log(this.fileDataList)
+      this.fileDataList = this.createFileChunk(file,1024*1024*3,ext1);
     },
     // 自定义文件上传的模式，方法
-    myFileUpload(params,url,tableList){
+    myFileUpload(params,url,tableList,refName){
     /** 这里采用了循环请求，等全部循环上传请求完成以后再去执行合并请求的操作  Promise.all
      * 参数既有url参数也有body参数
      */
       if(this.fileDataList.length>0){
-        this.ywUpload(this.fileDataList,params,url,tableList);
+
+        this.ywUpload(this.fileDataList,params,url,tableList,refName,params.file.uid);
       }
       // let promiseAll = this.fileDataList.map(item => {
       //   let formData =  new FormData();
@@ -362,11 +358,16 @@ export default {
       //  console.log(resDataAll)
       // })
     },
-    ywUpload(list,params,url,tableList){
+    ywUpload(list,params,url,tableList,refName,uid){
+      const loading = this.$loading({
+        lock: true,
+        text: '上传中',
+        spinner: 'el-icon-loading',
+        background: 'transparent'
+      });
       var data='';
       var left=[],right=list;
       var _obj=right.shift();
-      console.log(_obj);
       let formData =  new FormData();
       formData.append('file', _obj.file);
       formData.append('chunkNumber', _obj.chunkNumber);
@@ -390,44 +391,75 @@ export default {
         // data: item.file,
       })
         .then(res=>{
-          console.log(res.data.data);
           data=res.data.data;
+          if(data.status&&data.status==1){
+            loading.close();
+            this.$message({
+              message:data.fileName+ '上传成功',
+              type: 'success'
+            });
+            tableList.push(data);
+            console.log(tableList)
+          }
+          if(data.fileName&&data.status===0){
+            loading.close();
+            this.$message({
+              message:data.fileName+ '上传失败,请重新上传',
+              type: 'error'
+            });
+            var idx = this.$refs[refName].uploadFiles.findIndex(item => item.uid === uid) //去除文件列表失败文件（uploadFiles为el-upload中的ref值）
+            this.$refs[refName].uploadFiles.splice(idx, 1) //去除文件列表失败文件
+          }
+          if(right.length>0){
+            this.ywUpload(list,params,url,tableList,refName,uid);
+          }
         })
         .catch(err=>{
-          console.log(err)
+          console.log(err);
+          let uid = files.uid
+          let idx = this.$refs[refName].uploadFiles.findIndex(item => item.uid === uid) //去除文件列表失败文件（uploadFiles为el-upload中的ref值）
+          this.$refs[refName].uploadFiles.splice(idx, 1) //去除文件列表失败文件
         });
-
-      if(right.length>0){
-        this.ywUpload(list,params,url,tableList);
+    },
+    //随机数
+    passwords(pasLen) {
+      var pasArr = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9','_','-','$','%','&','@','+','!'];
+      var password = '';
+      var pasArrLen = pasArr.length;
+      for (var i=0; i<pasLen; i++){
+        var x = Math.floor(Math.random()*pasArrLen);
+        password += pasArr[x];
       }
+      return password;
     },
     // 文件分割的方法
-    createFileChunk(file, size = chunkSize) {
-      console.log(file);
-    const fileChunkList = [];
-    let count = 0;
-    let num = 1;
-    var total=parseInt((file.size)/size);
-    while (num <= total) {
-      fileChunkList.push({
-        file: file.slice(count, count + size),
-        chunkNumber: num ,
-        chunkSize:size,
-        totalSize:file.size,
-        filename:file.name,
-        relativePath:file.name,
-        fileName:file.name,
-        fileSize:file.size,
-        ext1:'审计依据',
-        totalChunks:total,
-        path:'',
-        identifier:new Date().getTime(),
-      });
-      count += size;
-      num++
+    createFileChunk(file, size = chunkSize,ext1) {
+      var _idStr=this.passwords(16);
+      const fileChunkList = [];
+      let count = 0;
+      let num = 1;
+      var total=parseInt((file.size)/size);
+      while (num <= total) {
+        fileChunkList.push({
+          file: file.slice(count, count + size),
+          chunkNumber: num ,
+          chunkSize:size,
+          totalSize:file.size,
+          filename:file.name,
+          relativePath:file.name,
+          fileName:file.name,
+          fileSize:file.size,
+          ext1:ext1,//模块名称
+          totalChunks:total,
+          path:'',
+          identifier:_idStr,
+        });
+        count += size;
+        num++
     }
     return fileChunkList
     },
+    //分块上传结束
 
 
     //通过认证后的方法
@@ -671,10 +703,11 @@ export default {
               that.apkFiles.remove(file.response.data);
               that.key = Math.random();
             } else {
-              // console.log(file)
-              that.fileList.remove(file);
+              console.log(file)
+
               that.formState.attachmentList = that.formState.attachmentList.filter((item) => { item.attachment_uuid != file.attachmentUuid })
-              // console.log(that.formState.attachmentList,222)
+              that.fileList.remove(file);
+              console.log(that.formState.attachmentList,222)
             }
             return true;
 
@@ -737,7 +770,8 @@ export default {
         });
       }
       this.formState.attachmentUuidList = attachmentUuidList;
-
+      console.log(this.formState.attachmentList)
+      console.log(this.formState.attachmentUuidList)
       this.$refs['addForm'].validate((valid) => {
         if (valid) {
 
