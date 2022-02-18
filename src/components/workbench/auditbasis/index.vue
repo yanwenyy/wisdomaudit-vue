@@ -158,20 +158,20 @@
                       style="display:flex"
                       label="上传附件:">
           <!--<el-upload v-if="!ifLook"-->
-                     <!--class="upload-demo"-->
-                     <!--drag-->
-                     <!--action="/wisdomaudit/auditBasy/filesUpload"-->
-                     <!--:on-success="handleChangePic"-->
-                     <!--:before-remove="handleRemoveApk"-->
-                     <!--accept=".docx,.xls,.xlsx,.txt,.zip,.doc"-->
-                     <!--:file-list="fileList"-->
-                     <!--multiple-->
-                     <!--:key="key"-->
-                     <!--:headers="headers">-->
-            <!--<i class="el-icon-upload"></i>-->
-            <!--<div class="el-upload__text">-->
-              <!--点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc-->
-            <!--</div>-->
+          <!--class="upload-demo"-->
+          <!--drag-->
+          <!--action="/wisdomaudit/auditBasy/filesUpload"-->
+          <!--:on-success="handleChangePic"-->
+          <!--:before-remove="handleRemoveApk"-->
+          <!--accept=".docx,.xls,.xlsx,.txt,.zip,.doc"-->
+          <!--:file-list="fileList"-->
+          <!--multiple-->
+          <!--:key="key"-->
+          <!--:headers="headers">-->
+          <!--<i class="el-icon-upload"></i>-->
+          <!--<div class="el-upload__text">-->
+          <!--点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc-->
+          <!--</div>-->
           <!--</el-upload>-->
           <el-upload v-if="!ifLook"
                      class="upload-demo"
@@ -235,10 +235,10 @@ export default {
   props: ['Add', 'Edit', 'Delete',],
   data () {
     return {
-      fileData:{},
-      uploadProgress:false,
-      fileDataList:[],
-      fileLeftList:[],
+      fileData: {},
+      uploadProgress: false,
+      fileDataList: [],
+      fileLeftList: [],
 
       vaultV: false,
       sceneId: 1557, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
@@ -311,20 +311,20 @@ export default {
   watch: {},
   methods: {
     // 上传文件之前
-    beforeUpload(file, fileList) {
+    beforeUpload (file, fileList) {
       this.uploadProgress = true;
       this.fileData = file;
       //  调用函数分割文件 我这里是分割成不超过20M的文件快
-      this.fileDataList = this.createFileChunk(file,1024*1024*3);
+      this.fileDataList = this.createFileChunk(file, 1024 * 1024 * 3);
       console.log(this.fileDataList)
     },
     // 自定义文件上传的模式，方法
-    myFileUpload(params,url,tableList){
-    /** 这里采用了循环请求，等全部循环上传请求完成以后再去执行合并请求的操作  Promise.all
-     * 参数既有url参数也有body参数
-     */
-      if(this.fileDataList.length>0){
-        this.ywUpload(this.fileDataList,params,url,tableList);
+    myFileUpload (params, url, tableList) {
+      /** 这里采用了循环请求，等全部循环上传请求完成以后再去执行合并请求的操作  Promise.all
+       * 参数既有url参数也有body参数
+       */
+      if (this.fileDataList.length > 0) {
+        this.ywUpload(this.fileDataList, params, url, tableList);
       }
       // let promiseAll = this.fileDataList.map(item => {
       //   let formData =  new FormData();
@@ -362,12 +362,12 @@ export default {
       //  console.log(resDataAll)
       // })
     },
-    ywUpload(list,params,url,tableList){
-      var data='';
-      var left=[],right=list;
-      var _obj=right.shift();
+    ywUpload (list, params, url, tableList) {
+      var data = '';
+      var left = [], right = list;
+      var _obj = right.shift();
       console.log(_obj);
-      let formData =  new FormData();
+      let formData = new FormData();
       formData.append('file', _obj.file);
       formData.append('chunkNumber', _obj.chunkNumber);
       formData.append('chunkSize', _obj.chunkSize);
@@ -386,47 +386,47 @@ export default {
           'TOKEN': this.headers.TOKEN,
         },
         data: formData,
-        url:url,
+        url: url,
         // data: item.file,
       })
-        .then(res=>{
+        .then(res => {
           console.log(res.data.data);
-          data=res.data.data;
+          data = res.data.data;
         })
-        .catch(err=>{
+        .catch(err => {
           console.log(err)
         });
 
-      if(right.length>0){
-        this.ywUpload(list,params,url,tableList);
+      if (right.length > 0) {
+        this.ywUpload(list, params, url, tableList);
       }
     },
     // 文件分割的方法
-    createFileChunk(file, size = chunkSize) {
+    createFileChunk (file, size = chunkSize) {
       console.log(file);
-    const fileChunkList = [];
-    let count = 0;
-    let num = 1;
-    var total=parseInt((file.size)/size);
-    while (num <= total) {
-      fileChunkList.push({
-        file: file.slice(count, count + size),
-        chunkNumber: num ,
-        chunkSize:size,
-        totalSize:file.size,
-        filename:file.name,
-        relativePath:file.name,
-        fileName:file.name,
-        fileSize:file.size,
-        ext1:'审计依据',
-        totalChunks:total,
-        path:'',
-        identifier:new Date().getTime(),
-      });
-      count += size;
-      num++
-    }
-    return fileChunkList
+      const fileChunkList = [];
+      let count = 0;
+      let num = 1;
+      var total = parseInt((file.size) / size);
+      while (num <= total) {
+        fileChunkList.push({
+          file: file.slice(count, count + size),
+          chunkNumber: num,
+          chunkSize: size,
+          totalSize: file.size,
+          filename: file.name,
+          relativePath: file.name,
+          fileName: file.name,
+          fileSize: file.size,
+          ext1: '审计依据',
+          totalChunks: total,
+          path: '',
+          identifier: new Date().getTime(),
+        });
+        count += size;
+        num++
+      }
+      return fileChunkList
     },
 
 
