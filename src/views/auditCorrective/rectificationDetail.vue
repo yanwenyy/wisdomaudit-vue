@@ -77,10 +77,27 @@
           <el-input :disabled="ifLook"
                     v-model="formState.ext1"
                     placeholder="请输入"></el-input>
+          <!--<el-upload v-if="type!='zgtz_look'&&type!='zgcs_examine'"-->
+                     <!--class="upload-demo inline-block"-->
+                     <!--action="/wisdomaudit/auditBasy/filesUpload"-->
+                     <!--:on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList1)}"-->
+                     <!--:on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList1,fileList1,fileList1_del)}"-->
+                     <!--multiple-->
+                     <!--:limit="3"-->
+                     <!--:key="key"-->
+                     <!--:on-exceed="handleExceed"-->
+                     <!--:headers="headers"-->
+                     <!--:file-list="fileList1">-->
+            <!--<el-button class="zl-up-btn"-->
+                       <!--size="small"-->
+                       <!--icon="el-icon-upload2">点击上传</el-button>-->
+          <!--</el-upload>-->
           <el-upload v-if="type!='zgtz_look'&&type!='zgcs_examine'"
                      class="upload-demo inline-block"
-                     action="/wisdomaudit/auditBasy/filesUpload"
-                     :on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList1)}"
+                     ref="upload1"
+                     action="#"
+                     :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',attachmentList1,'upload1')}"
+                     :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'整改措施')}"
                      :on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList1,fileList1,fileList1_del)}"
                      multiple
                      :limit="3"
@@ -113,10 +130,27 @@
           <el-input :disabled="ifLook"
                     v-model="formState.ext3"
                     placeholder="请输入"></el-input>
+          <!--<el-upload v-if="type!='zgtz_look'&&type!='zgcs_examine'"-->
+                     <!--class="upload-demo inline-block"-->
+                     <!--action="/wisdomaudit/auditBasy/filesUpload"-->
+                     <!--:on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList3)}"-->
+                     <!--:on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList3,fileList3,fileList3_del)}"-->
+                     <!--multiple-->
+                     <!--:limit="3"-->
+                     <!--:key="key"-->
+                     <!--:on-exceed="handleExceed"-->
+                     <!--:headers="headers"-->
+                     <!--:file-list="fileList3">-->
+            <!--<el-button class="zl-up-btn"-->
+                       <!--size="small"-->
+                       <!--icon="el-icon-upload2">点击上传</el-button>-->
+          <!--</el-upload>-->
           <el-upload v-if="type!='zgtz_look'&&type!='zgcs_examine'"
                      class="upload-demo inline-block"
-                     action="/wisdomaudit/auditBasy/filesUpload"
-                     :on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList3)}"
+                     ref="upload3"
+                     action="#"
+                     :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',attachmentList3,'upload3')}"
+                     :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'整改措施')}"
                      :on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList3,fileList3,fileList3_del)}"
                      multiple
                      :limit="3"
@@ -147,10 +181,27 @@
           <el-input :disabled="ifLook"
                     v-model="formState.ext2"
                     placeholder="请输入"></el-input>
+          <!--<el-upload v-if="type!='zgtz_look'&&type!='zgcs_examine'"-->
+                     <!--class="upload-demo inline-block"-->
+                     <!--action="/wisdomaudit/auditBasy/filesUpload"-->
+                     <!--:on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList2)}"-->
+                     <!--:on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList2,fileList2,fileList2_del)}"-->
+                     <!--multiple-->
+                     <!--:limit="3"-->
+                     <!--:key="key"-->
+                     <!--:on-exceed="handleExceed"-->
+                     <!--:headers="headers"-->
+                     <!--:file-list="fileList2">-->
+            <!--<el-button class="zl-up-btn"-->
+                       <!--size="small"-->
+                       <!--icon="el-icon-upload2">点击上传</el-button>-->
+          <!--</el-upload>-->
           <el-upload v-if="type!='zgtz_look'&&type!='zgcs_examine'"
                      class="upload-demo inline-block"
-                     action="/wisdomaudit/auditBasy/filesUpload"
-                     :on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList2)}"
+                     ref="upload2"
+                     action="#"
+                     :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',attachmentList2,'upload2')}"
+                     :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'整改措施')}"
                      :on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList2,fileList2,fileList2_del)}"
                      multiple
                      :limit="3"
@@ -222,7 +273,7 @@
         <!-- <el-form-item label="备注:"
                       v-if="title !='整改事项明细'">
           <el-input :readonly="ifLook"
-                    
+
                     v-model="formState.remarks"
                     type="textarea"
                     rows="6"
@@ -294,6 +345,8 @@ export default {
   },
   data () {
     return {
+      fileDataList:[],//用来接收切割过的文件
+
       vaultV: false,
       sceneId: 1557, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
       approvers: [], //审批人列表
@@ -343,6 +396,160 @@ export default {
     this.headers = { 'TOKEN': sessionStorage.getItem('TOKEN') }
   },
   methods: {
+    // 分块上传开始
+    // 上传文件之前
+    beforeUpload(file, fileList,ext1) {
+      //  调用函数分割文件 我这里是分割成不超过20M的文件快
+      this.fileDataList = this.createFileChunk(file,1024*1024*3,ext1);
+    },
+    // 自定义文件上传的模式，方法
+    myFileUpload(params,url,tableList,refName){
+      /** 这里采用了循环请求，等全部循环上传请求完成以后再去执行合并请求的操作  Promise.all
+       * 参数既有url参数也有body参数
+       */
+      if(this.fileDataList.length>0){
+
+        this.ywUpload(this.fileDataList,params,url,tableList,refName,params.file.uid);
+      }
+      // let promiseAll = this.fileDataList.map(item => {
+      //   let formData =  new FormData();
+      //   formData.append('file', item.file);
+      //   formData.append('chunkNumber', item.chunkNumber);
+      //   formData.append('chunkSize', item.chunkSize);
+      //   formData.append('totalSize', item.totalSize);
+      //   formData.append('filename', item.filename);
+      //   formData.append('relativePath', item.relativePath);
+      //   formData.append('fileName', item.fileName);
+      //   formData.append('fileSize', item.fileSize);
+      //   formData.append('ext1', item.ext1);
+      //   formData.append('totalChunks', item.totalChunks);
+      //   formData.append('path', item.path);
+      //   formData.append('identifier', item.identifier);
+      //   return new Promise((resolve,reject) => {
+      //     axios({
+      //       method: 'post',
+      //       headers: {
+      //         'TOKEN': this.headers.TOKEN,
+      //       },
+      //       data: formData,
+      //       url:url,
+      //       // data: item.file,
+      //     })
+      //       .then(res=>{
+      //         resolve(res.data.data)
+      //       })
+      //       .catch(err=>{
+      //         reject(err)
+      //       })
+      //   })
+      // })
+      // Promise.all(promiseAll).then(resDataAll => {
+      //  console.log(resDataAll)
+      // })
+    },
+    ywUpload(list,params,url,tableList,refName,uid){
+      const loading = this.$loading({
+        lock: true,
+        text: '上传中',
+        spinner: 'el-icon-loading',
+        background: 'transparent'
+      });
+      var data='';
+      var left=[],right=list;
+      var _obj=right.shift();
+      let formData =  new FormData();
+      formData.append('file', _obj.file);
+      formData.append('chunkNumber', _obj.chunkNumber);
+      formData.append('chunkSize', _obj.chunkSize);
+      formData.append('totalSize', _obj.totalSize);
+      formData.append('filename', _obj.filename);
+      formData.append('relativePath', _obj.relativePath);
+      formData.append('fileName', _obj.fileName);
+      formData.append('fileSize', _obj.fileSize);
+      formData.append('ext1', _obj.ext1);
+      formData.append('totalChunks', _obj.totalChunks);
+      formData.append('path', _obj.path);
+      formData.append('identifier', _obj.identifier);
+      axios({
+        method: 'post',
+        headers: {
+          'TOKEN': this.headers.TOKEN,
+        },
+        data: formData,
+        url:url,
+        // data: item.file,
+      })
+        .then(res=>{
+          data=res.data.data;
+          if(data.status&&data.status==1){
+            loading.close();
+            this.$message({
+              message:data.fileName+ '上传成功',
+              type: 'success'
+            });
+            tableList.push(data);
+            console.log(tableList)
+          }
+          if(data.fileName&&data.status===0){
+            loading.close();
+            this.$message({
+              message:data.fileName+ '上传失败,请重新上传',
+              type: 'error'
+            });
+            var idx = this.$refs[refName].uploadFiles.findIndex(item => item.uid === uid) //去除文件列表失败文件（uploadFiles为el-upload中的ref值）
+            this.$refs[refName].uploadFiles.splice(idx, 1) //去除文件列表失败文件
+          }
+          if(right.length>0){
+            this.ywUpload(list,params,url,tableList,refName,uid);
+          }
+        })
+        .catch(err=>{
+          console.log(err);
+          let uid = files.uid
+          let idx = this.$refs[refName].uploadFiles.findIndex(item => item.uid === uid) //去除文件列表失败文件（uploadFiles为el-upload中的ref值）
+          this.$refs[refName].uploadFiles.splice(idx, 1) //去除文件列表失败文件
+        });
+    },
+    //随机数
+    passwords(pasLen) {
+      var pasArr = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9','_','-','$','%','&','@','+','!'];
+      var password = '';
+      var pasArrLen = pasArr.length;
+      for (var i=0; i<pasLen; i++){
+        var x = Math.floor(Math.random()*pasArrLen);
+        password += pasArr[x];
+      }
+      return password;
+    },
+    // 文件分割的方法
+    createFileChunk(file, size = chunkSize,ext1) {
+      var _idStr=this.passwords(16);
+      const fileChunkList = [];
+      let count = 0;
+      let num = 1;
+      var total=parseInt((file.size)/size);
+      while (num <= total) {
+        fileChunkList.push({
+          file: file.slice(count, count + size),
+          chunkNumber: num ,
+          chunkSize:size,
+          totalSize:file.size,
+          filename:file.name,
+          relativePath:file.name,
+          fileName:file.name,
+          fileSize:file.size,
+          ext1:ext1,//模块名称
+          totalChunks:total,
+          path:'',
+          identifier:_idStr,
+        });
+        count += size;
+        num++
+      }
+      return fileChunkList
+    },
+    //分块上传结束
+
     //通过认证后的方法
     vdownload () {
       this.downFile(this.downloaobj.attachmentUuid, this.downloaobj.fileName)
