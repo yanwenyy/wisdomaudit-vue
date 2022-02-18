@@ -1653,30 +1653,48 @@ export default {
       return password;
     },
     // 文件分割的方法
-    createFileChunk(file, size = chunkSize,ext1) {
-      var _idStr=this.passwords(16);
+    createFileChunk (file, size = chunkSize, ext1) {
+      var _idStr = this.passwords(16);
       const fileChunkList = [];
       let count = 0;
       let num = 1;
-      var total=parseInt((file.size)/size);
-      while (num <= total) {
+      var total = parseInt((file.size) / size);
+      if(file.size<size){
         fileChunkList.push({
           file: file.slice(count, count + size),
-          chunkNumber: num ,
-          chunkSize:size,
-          totalSize:file.size,
-          filename:file.name,
-          relativePath:file.name,
-          fileName:file.name,
-          fileSize:file.size,
-          ext1:ext1,//模块名称
-          totalChunks:total,
-          path:'',
-          identifier:_idStr,
+          chunkNumber: num,
+          chunkSize: size,
+          totalSize: file.size,
+          filename: file.name,
+          relativePath: file.name,
+          fileName: file.name,
+          fileSize: file.size,
+          ext1: ext1,//模块名称
+          totalChunks: num,
+          path: '',
+          identifier: _idStr,
         });
-        count += size;
-        num++
+      }else{
+        while (num <= total) {
+          fileChunkList.push({
+            file: file.slice(count, count + size),
+            chunkNumber: num,
+            chunkSize: size,
+            totalSize: file.size,
+            filename: file.name,
+            relativePath: file.name,
+            fileName: file.name,
+            fileSize: file.size,
+            ext1: ext1,//模块名称
+            totalChunks: total,
+            path: '',
+            identifier: _idStr,
+          });
+          count += size;
+          num++
+        }
       }
+
       return fileChunkList
     },
     //分块上传结束
