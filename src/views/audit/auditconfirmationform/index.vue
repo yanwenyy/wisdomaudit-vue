@@ -328,11 +328,30 @@
                       class="upload-yw">
           <div class="ifLook_upload"
                v-if="ifLook"></div>
+          <!--<el-upload class="upload-demo"-->
+                     <!--drag-->
+                     <!--:disabled="ifLook?true:false"-->
+                     <!--action="/wisdomaudit/auditBasy/filesUpload"-->
+                     <!--:on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList1)}"-->
+                     <!--:on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList1,fileList1,fileList1_del)}"-->
+                     <!--multiple-->
+                     <!--:limit="3"-->
+                     <!--:key="key"-->
+                     <!--:on-exceed="handleExceed"-->
+                     <!--:headers="headers"-->
+                     <!--:file-list="fileList1">-->
+            <!--<i class="el-icon-upload"></i>-->
+            <!--<div class="el-upload__text">-->
+              <!--点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc-->
+            <!--</div>-->
+          <!--</el-upload>-->
           <el-upload class="upload-demo"
                      drag
                      :disabled="ifLook?true:false"
-                     action="/wisdomaudit/auditBasy/filesUpload"
-                     :on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList1)}"
+                     ref="upload1"
+                     action="#"
+                     :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',attachmentList1,'upload1')}"
+                     :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'审计确认单')}"
                      :on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList1,fileList1,fileList1_del)}"
                      multiple
                      :limit="3"
@@ -792,12 +811,32 @@
         <el-form-item label="上传附件："
                       class="itemTwo"
                       style="width:100%!important">
+          <!--<el-upload class="upload-demo"-->
+                     <!--drag-->
+                     <!--action="/wisdomaudit/auditBasy/filesUpload"-->
+                     <!--:on-success="( response, file, fileList)=>{-->
+                       <!--uploadPorgress2( response, file, fileList,attachmentList2)-->
+                       <!--}"-->
+                     <!--:on-remove="( file, fileList)=>{-->
+                       <!--handleRemove2( file, fileList,attachmentList2,fileList2,fileList2_del)-->
+                       <!--}"-->
+                     <!--:on-progress="update_ing"-->
+                     <!--multiple-->
+                     <!--:key="key"-->
+                     <!--:on-exceed="handleExceed"-->
+                     <!--:headers="headers"-->
+                     <!--:file-list="fileList2">-->
+            <!--<i class="el-icon-upload"></i>-->
+            <!--<div class="el-upload__text">-->
+              <!--点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc-->
+            <!--</div>-->
+          <!--</el-upload>-->
           <el-upload class="upload-demo"
                      drag
-                     action="/wisdomaudit/auditBasy/filesUpload"
-                     :on-success="( response, file, fileList)=>{
-                       uploadPorgress2( response, file, fileList,attachmentList2)
-                       }"
+                     ref="upload2"
+                     action="#"
+                     :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',attachmentList2,'upload2')}"
+                     :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'审计确认单')}"
                      :on-remove="( file, fileList)=>{
                        handleRemove2( file, fileList,attachmentList2,fileList2,fileList2_del)
                        }"
@@ -992,12 +1031,32 @@
         <el-form-item class="itemTwo"
                       style="width:100%!important"
                       label="上传附件：">
+          <!--<el-upload class="upload-demo"-->
+                     <!--drag-->
+                     <!--action="/wisdomaudit/auditBasy/filesUpload"-->
+                     <!--:on-success="( response, file, fileList)=>{-->
+                       <!--uploadPorgress2( response, file, fileList,attachmentList2)-->
+                       <!--}"-->
+                     <!--:on-remove="( file, fileList)=>{-->
+                       <!--handleRemove2( file, fileList,attachmentList2,fileList2,fileList2_del)-->
+                       <!--}"-->
+                     <!--:on-progress="update_ing"-->
+                     <!--multiple-->
+                     <!--:key="key"-->
+                     <!--:on-exceed="handleExceed"-->
+                     <!--:headers="headers"-->
+                     <!--:file-list="fileList2">-->
+            <!--<i class="el-icon-upload"></i>-->
+            <!--<div class="el-upload__text">-->
+              <!--点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc-->
+            <!--</div>-->
+          <!--</el-upload>-->
           <el-upload class="upload-demo"
                      drag
-                     action="/wisdomaudit/auditBasy/filesUpload"
-                     :on-success="( response, file, fileList)=>{
-                       uploadPorgress2( response, file, fileList,attachmentList2)
-                       }"
+                     ref="upload2"
+                     action="#"
+                     :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',attachmentList2,'upload2')}"
+                     :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'审计确认单')}"
                      :on-remove="( file, fileList)=>{
                        handleRemove2( file, fileList,attachmentList2,fileList2,fileList2_del)
                        }"
@@ -1464,8 +1523,9 @@ export default {
               message:data.fileName+ '上传成功',
               type: 'success'
             });
+            data.isDeleted = 2;
             tableList.push(data);
-            console.log(tableList)
+            this.$refs[refName].uploadFiles.forEach(item=>{item.attachmentUuid=data.attachmentUuid});
           }
           if(data.fileName&&data.status===0){
             loading.close();
@@ -2778,8 +2838,10 @@ export default {
     },
     //附件删除
     handleRemove (file, fileList, tableList, showList, delList) {
-      if (file.response) {
-        tableList.remove(file.response.data);
+      if (file.raw) {
+        var idx = tableList.findIndex(item => item.attachmentUuid === file.attachmentUuid);
+        tableList.splice(idx, 1);
+        // tableList.remove(file);
         // this.key = Math.random();
       } else {
         showList.remove(file);
