@@ -97,7 +97,7 @@
                      ref="upload1"
                      action="#"
                      :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',attachmentList1,'upload1')}"
-                     :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'整改措施')}"
+                     :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'审计整改')}"
                      :on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList1,fileList1,fileList1_del)}"
                      multiple
                      :limit="3"
@@ -150,7 +150,7 @@
                      ref="upload3"
                      action="#"
                      :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',attachmentList3,'upload3')}"
-                     :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'整改措施')}"
+                     :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'审计整改')}"
                      :on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList3,fileList3,fileList3_del)}"
                      multiple
                      :limit="3"
@@ -201,7 +201,7 @@
                      ref="upload2"
                      action="#"
                      :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',attachmentList2,'upload2')}"
-                     :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'整改措施')}"
+                     :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'审计整改')}"
                      :on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList2,fileList2,fileList2_del)}"
                      multiple
                      :limit="3"
@@ -487,8 +487,9 @@ export default {
               message:data.fileName+ '上传成功',
               type: 'success'
             });
+            data.isDeleted = 2;
             tableList.push(data);
-            console.log(tableList)
+            this.$refs[refName].uploadFiles.forEach(item=>{item.attachmentUuid=data.attachmentUuid});
           }
           if(data.fileName&&data.status===0){
             loading.close();
@@ -660,8 +661,10 @@ export default {
     },
     //附件删除
     handleRemove (file, fileList, tableList, showList, delList) {
-      if (file.response) {
-        tableList.remove(file.response.data);
+      if (file.raw) {
+        var idx = tableList.findIndex(item => item.attachmentUuid === file.attachmentUuid);
+        tableList.splice(idx, 1);
+        // tableList.remove(file);
         // this.key = Math.random();
       } else {
         showList.remove(file);
