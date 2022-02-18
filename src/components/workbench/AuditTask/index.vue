@@ -1559,7 +1559,7 @@ export default {
       let count = 0;
       let num = 1;
       var total = parseInt((file.size) / size);
-      while (num <= total) {
+      if(file.size<size){
         fileChunkList.push({
           file: file.slice(count, count + size),
           chunkNumber: num,
@@ -1570,13 +1570,31 @@ export default {
           fileName: file.name,
           fileSize: file.size,
           ext1: ext1,//模块名称
-          totalChunks: total,
+          totalChunks: num,
           path: '',
           identifier: _idStr,
         });
-        count += size;
-        num++
+      }else{
+        while (num <= total) {
+          fileChunkList.push({
+            file: file.slice(count, count + size),
+            chunkNumber: num,
+            chunkSize: size,
+            totalSize: file.size,
+            filename: file.name,
+            relativePath: file.name,
+            fileName: file.name,
+            fileSize: file.size,
+            ext1: ext1,//模块名称
+            totalChunks: total,
+            path: '',
+            identifier: _idStr,
+          });
+          count += size;
+          num++
+        }
       }
+
       return fileChunkList
     },
     //分块上传结束
