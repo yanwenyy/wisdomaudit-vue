@@ -1430,7 +1430,6 @@ export default {
     // 上传文件之前
     beforeUpload (file, fileList, ext1) {
       //  调用函数分割文件 我这里是分割成不超过20M的文件快
-
       this.fileDataList = this.createFileChunk(file, 1024 * 1024 * 3, ext1);
     },
     // 自定义文件上传的模式，方法
@@ -1439,9 +1438,44 @@ export default {
        * 参数既有url参数也有body参数
        */
       if (this.fileDataList.length > 0) {
+
         this.ywUpload(this.fileDataList, params, url, tableList, refName, params.file.uid);
       }
-
+      // let promiseAll = this.fileDataList.map(item => {
+      //   let formData =  new FormData();
+      //   formData.append('file', item.file);
+      //   formData.append('chunkNumber', item.chunkNumber);
+      //   formData.append('chunkSize', item.chunkSize);
+      //   formData.append('totalSize', item.totalSize);
+      //   formData.append('filename', item.filename);
+      //   formData.append('relativePath', item.relativePath);
+      //   formData.append('fileName', item.fileName);
+      //   formData.append('fileSize', item.fileSize);
+      //   formData.append('ext1', item.ext1);
+      //   formData.append('totalChunks', item.totalChunks);
+      //   formData.append('path', item.path);
+      //   formData.append('identifier', item.identifier);
+      //   return new Promise((resolve,reject) => {
+      //     axios({
+      //       method: 'post',
+      //       headers: {
+      //         'TOKEN': this.headers.TOKEN,
+      //       },
+      //       data: formData,
+      //       url:url,
+      //       // data: item.file,
+      //     })
+      //       .then(res=>{
+      //         resolve(res.data.data)
+      //       })
+      //       .catch(err=>{
+      //         reject(err)
+      //       })
+      //   })
+      // })
+      // Promise.all(promiseAll).then(resDataAll => {
+      //  console.log(resDataAll)
+      // })
     },
     ywUpload (list, params, url, tableList, refName, uid) {
       const loading = this.$loading({
@@ -1483,8 +1517,9 @@ export default {
               message: data.fileName + '上传成功',
               type: 'success'
             });
+            data.isDeleted = 2;
             tableList.push(data);
-
+            this.$refs[refName].uploadFiles.forEach(item => { item.attachmentUuid = data.attachmentUuid });
           }
           if (data.fileName && data.status === 0) {
             loading.close();
@@ -1500,7 +1535,7 @@ export default {
           }
         })
         .catch(err => {
-
+          console.log(err);
           let uid = files.uid
           let idx = this.$refs[refName].uploadFiles.findIndex(item => item.uid === uid) //去除文件列表失败文件（uploadFiles为el-upload中的ref值）
           this.$refs[refName].uploadFiles.splice(idx, 1) //去除文件列表失败文件
@@ -1545,6 +1580,7 @@ export default {
       return fileChunkList
     },
     //分块上传结束
+
 
 
 
@@ -1689,12 +1725,7 @@ export default {
         this.fileList_Delet.push(file)
       }
     },
-    // 删除 接口
-    fileRemove (params) {
-      task_fileRemove(params).then(resp => {
 
-      })
-    },
     // 新增自建任务 保存
     save_zj (index, save_zj_query) {
       this.isDisable = true
@@ -2353,8 +2384,11 @@ export default {
 
     // 结果数 核实上传  删除
     handleRemoveApk (file, fileList2) {
-      if (file.response) {
-        this.fileList2.remove(file.response.data);
+      console.log(file, fileList2);
+      if (file.raw) {
+        var idx = this.fileList2.findIndex(item => item.attachmentUuid === file.attachmentUuid);
+        this.fileList2.splice(idx, 1);
+        // this.fileList2.remove(file.response.data);
         this.key = Math.random();
         // } else {
         //   this.edit_file_list.remove(file);

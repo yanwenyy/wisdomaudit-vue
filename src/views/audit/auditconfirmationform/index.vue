@@ -159,10 +159,24 @@
               </div>
             </el-popover>
             <!--<el-upload v-if="scope.row.endConfirmationFile==''||scope.row.endConfirmationFile==null&&(scope.row.createUserUuid==userInfo.user.id)"-->
+            <!--<el-upload :show-file-list="false"-->
+                       <!--class="upload-demo inline-block btnStyle"-->
+                       <!--:on-change="fileChange"-->
+                       <!--:action="'/wisdomaudit/auditConfirmation/endFileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid"-->
+                       <!--:on-success="list_data_start"-->
+                       <!--:headers="headers"-->
+                       <!--accept=".docx,.xls,.xlsx,.txt,.zip,.doc">-->
+              <!--<el-button size="small"-->
+                         <!--type="text"-->
+                         <!--style="background: transparent;padding:0"-->
+                         <!--class="editBtn">上传</el-button>-->
+            <!--</el-upload>-->
             <el-upload :show-file-list="false"
                        class="upload-demo inline-block btnStyle"
-                       :on-change="fileChange"
-                       :action="'/wisdomaudit/auditConfirmation/endFileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid"
+                       ref="upload1"
+                       action="#"
+                       :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload')}"
+                       :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'审计确认单','z'+scope.row.auditConfirmationUuid)}"
                        :on-success="list_data_start"
                        :headers="headers"
                        accept=".docx,.xls,.xlsx,.txt,.zip,.doc">
@@ -1434,9 +1448,9 @@ export default {
   methods: {
     // 分块上传开始
     // 上传文件之前
-    beforeUpload(file, fileList,ext1) {
+    beforeUpload(file, fileList,ext1,ext2) {
       //  调用函数分割文件 我这里是分割成不超过20M的文件快
-      this.fileDataList = this.createFileChunk(file,1024*1024*3,ext1);
+      this.fileDataList = this.createFileChunk(file,1024*1024*3,ext1,ext2);
     },
     // 自定义文件上传的模式，方法
     myFileUpload(params,url,tableList,refName){
@@ -1503,6 +1517,7 @@ export default {
       formData.append('fileName', _obj.fileName);
       formData.append('fileSize', _obj.fileSize);
       formData.append('ext1', _obj.ext1);
+      formData.append('ext2', _obj.ext2);
       formData.append('totalChunks', _obj.totalChunks);
       formData.append('path', _obj.path);
       formData.append('identifier', _obj.identifier);
@@ -1523,9 +1538,14 @@ export default {
               message:data.fileName+ '上传成功',
               type: 'success'
             });
-            data.isDeleted = 2;
-            tableList.push(data);
-            this.$refs[refName].uploadFiles.forEach(item=>{item.attachmentUuid=data.attachmentUuid});
+            if(tableList){
+              data.isDeleted = 2;
+              tableList.push(data);
+              this.$refs[refName].uploadFiles.forEach(item=>{item.attachmentUuid=data.attachmentUuid});
+            }else{
+              this.list_data_start()
+            }
+
           }
           if(data.fileName&&data.status===0){
             loading.close();
@@ -1533,8 +1553,12 @@ export default {
               message:data.fileName+ '上传失败,请重新上传',
               type: 'error'
             });
-            var idx = this.$refs[refName].uploadFiles.findIndex(item => item.uid === uid) //去除文件列表失败文件（uploadFiles为el-upload中的ref值）
-            this.$refs[refName].uploadFiles.splice(idx, 1) //去除文件列表失败文件
+            if(tableList){
+              var idx = this.$refs[refName].uploadFiles.findIndex(item => item.uid === uid) //去除文件列表失败文件（uploadFiles为el-upload中的ref值）
+              this.$refs[refName].uploadFiles.splice(idx, 1) //去除文件列表失败文件
+            }else{
+              this.list_data_start()
+            }
           }
           if(right.length>0){
             this.ywUpload(list,params,url,tableList,refName,uid);
@@ -1559,7 +1583,7 @@ export default {
       return password;
     },
     // 文件分割的方法
-    createFileChunk(file, size = chunkSize,ext1) {
+    createFileChunk(file, size = chunkSize,ext1,ext2) {
       var _idStr=this.passwords(16);
       const fileChunkList = [];
       let count = 0;
@@ -1576,6 +1600,7 @@ export default {
           fileName:file.name,
           fileSize:file.size,
           ext1:ext1,//模块名称
+          ext2:ext2,//模块id
           totalChunks:total,
           path:'',
           identifier:_idStr,

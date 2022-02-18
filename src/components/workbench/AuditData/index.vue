@@ -802,16 +802,32 @@
               <!-- <el-input type="textarea"
                         v-model="add_data.file"
                         placeholder=""></el-input> -->
+              <!--<el-upload class="upload-demo"-->
+                         <!--:disabled="edit_title == '详细信息'?true:false"-->
+                         <!--drag-->
+                         <!--ref="upload"-->
+                         <!--action="#"-->
+                         <!--:headers="headers"-->
+                         <!--:on-change="handleChangePic_verify"-->
+                         <!--:on-remove="handleRemoveApk"-->
+                         <!--:file-list="edit_file_list"-->
+                         <!--:auto-upload="false"-->
+                         <!--accept=".zip,.doc,.docx,.xls,.xlsx,.txt"-->
+                         <!--multiple>-->
+
+                <!--<i class="el-icon-upload"></i>-->
+                <!--<div class="el-upload__text">点击上传或将文件拖到虚线框<br />支持.zip,.doc,.docx,.xls,.xlsx,.txt</div>-->
+              <!--</el-upload>-->
               <el-upload class="upload-demo"
                          :disabled="edit_title == '详细信息'?true:false"
                          drag
                          ref="upload"
                          action="#"
                          :headers="headers"
-                         :on-change="handleChangePic_verify"
+                         :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',fileList,'upload')}"
+                         :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'审计资料')}"
                          :on-remove="handleRemoveApk"
                          :file-list="edit_file_list"
-                         :auto-upload="false"
                          accept=".zip,.doc,.docx,.xls,.xlsx,.txt"
                          multiple>
 
@@ -832,12 +848,12 @@
           <el-button type="primary"
                      v-if="success_btn==0"
                      @click="save_data_btn('add_data')">确定</el-button>
-          <el-button v-if="success_btn==1"
-                     type="primary"
-                     :loading="true">上传中</el-button>
-          <el-button v-if="success_btn==2"
-                     type="primary"
-                     :loading="true">添加中</el-button>
+          <!--<el-button v-if="success_btn==1"-->
+                     <!--type="primary"-->
+                     <!--:loading="true">上传中</el-button>-->
+          <!--<el-button v-if="success_btn==2"-->
+                     <!--type="primary"-->
+                     <!--:loading="true">添加中</el-button>-->
         </div>
 
       </span>
@@ -1281,6 +1297,8 @@ export default {
   components: { Vault },
   data () {
     return {
+      fileDataList:[],//用来接收切割过的文件
+
       vaultV: false,
       sceneId: 1557, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
       approvers: [], //审批人列表
@@ -1508,6 +1526,162 @@ export default {
   },
 
   methods: {
+    // 分块上传开始
+    // 上传文件之前
+    beforeUpload(file, fileList,ext1) {
+      //  调用函数分割文件 我这里是分割成不超过20M的文件快
+      this.fileDataList = this.createFileChunk(file,1024*1024*3,ext1);
+    },
+    // 自定义文件上传的模式，方法
+    myFileUpload(params,url,tableList,refName){
+      /** 这里采用了循环请求，等全部循环上传请求完成以后再去执行合并请求的操作  Promise.all
+       * 参数既有url参数也有body参数
+       */
+      if(this.fileDataList.length>0){
+
+        this.ywUpload(this.fileDataList,params,url,tableList,refName,params.file.uid);
+      }
+      // let promiseAll = this.fileDataList.map(item => {
+      //   let formData =  new FormData();
+      //   formData.append('file', item.file);
+      //   formData.append('chunkNumber', item.chunkNumber);
+      //   formData.append('chunkSize', item.chunkSize);
+      //   formData.append('totalSize', item.totalSize);
+      //   formData.append('filename', item.filename);
+      //   formData.append('relativePath', item.relativePath);
+      //   formData.append('fileName', item.fileName);
+      //   formData.append('fileSize', item.fileSize);
+      //   formData.append('ext1', item.ext1);
+      //   formData.append('totalChunks', item.totalChunks);
+      //   formData.append('path', item.path);
+      //   formData.append('identifier', item.identifier);
+      //   return new Promise((resolve,reject) => {
+      //     axios({
+      //       method: 'post',
+      //       headers: {
+      //         'TOKEN': this.headers.TOKEN,
+      //       },
+      //       data: formData,
+      //       url:url,
+      //       // data: item.file,
+      //     })
+      //       .then(res=>{
+      //         resolve(res.data.data)
+      //       })
+      //       .catch(err=>{
+      //         reject(err)
+      //       })
+      //   })
+      // })
+      // Promise.all(promiseAll).then(resDataAll => {
+      //  console.log(resDataAll)
+      // })
+    },
+    ywUpload(list,params,url,tableList,refName,uid){
+      const loading = this.$loading({
+        lock: true,
+        text: '上传中',
+        spinner: 'el-icon-loading',
+        background: 'transparent'
+      });
+      var data='';
+      var left=[],right=list;
+      var _obj=right.shift();
+      let formData =  new FormData();
+      formData.append('file', _obj.file);
+      formData.append('chunkNumber', _obj.chunkNumber);
+      formData.append('chunkSize', _obj.chunkSize);
+      formData.append('totalSize', _obj.totalSize);
+      formData.append('filename', _obj.filename);
+      formData.append('relativePath', _obj.relativePath);
+      formData.append('fileName', _obj.fileName);
+      formData.append('fileSize', _obj.fileSize);
+      formData.append('ext1', _obj.ext1);
+      formData.append('totalChunks', _obj.totalChunks);
+      formData.append('path', _obj.path);
+      formData.append('identifier', _obj.identifier);
+      axios({
+        method: 'post',
+        headers: {
+          'TOKEN': this.headers.TOKEN,
+        },
+        data: formData,
+        url:url,
+        // data: item.file,
+      })
+        .then(res=>{
+          data=res.data.data;
+          if(data.status&&data.status==1){
+            loading.close();
+            this.$message({
+              message:data.fileName+ '上传成功',
+              type: 'success'
+            });
+            data.isDeleted = 2;
+            tableList.push(data);
+            this.$refs[refName].uploadFiles.forEach(item=>{item.attachmentUuid=data.attachmentUuid});
+          }
+          if(data.fileName&&data.status===0){
+            loading.close();
+            this.$message({
+              message:data.fileName+ '上传失败,请重新上传',
+              type: 'error'
+            });
+            var idx = this.$refs[refName].uploadFiles.findIndex(item => item.uid === uid) //去除文件列表失败文件（uploadFiles为el-upload中的ref值）
+            this.$refs[refName].uploadFiles.splice(idx, 1) //去除文件列表失败文件
+          }
+          if(right.length>0){
+            this.ywUpload(list,params,url,tableList,refName,uid);
+          }
+        })
+        .catch(err=>{
+          console.log(err);
+          let uid = files.uid
+          let idx = this.$refs[refName].uploadFiles.findIndex(item => item.uid === uid) //去除文件列表失败文件（uploadFiles为el-upload中的ref值）
+          this.$refs[refName].uploadFiles.splice(idx, 1) //去除文件列表失败文件
+        });
+    },
+    //随机数
+    passwords(pasLen) {
+      var pasArr = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9','_','-','$','%','&','@','+','!'];
+      var password = '';
+      var pasArrLen = pasArr.length;
+      for (var i=0; i<pasLen; i++){
+        var x = Math.floor(Math.random()*pasArrLen);
+        password += pasArr[x];
+      }
+      return password;
+    },
+    // 文件分割的方法
+    createFileChunk(file, size = chunkSize,ext1) {
+      var _idStr=this.passwords(16);
+      const fileChunkList = [];
+      let count = 0;
+      let num = 1;
+      var total=parseInt((file.size)/size);
+      while (num <= total) {
+        fileChunkList.push({
+          file: file.slice(count, count + size),
+          chunkNumber: num ,
+          chunkSize:size,
+          totalSize:file.size,
+          filename:file.name,
+          relativePath:file.name,
+          fileName:file.name,
+          fileSize:file.size,
+          ext1:ext1,//模块名称
+          totalChunks:total,
+          path:'',
+          identifier:_idStr,
+        });
+        count += size;
+        num++
+      }
+      return fileChunkList
+    },
+    //分块上传结束
+
+
     //通过认证后的方法
     vdownload () {
       console.log(this.downloaobj.dtype)
@@ -1712,8 +1886,14 @@ export default {
     },
     // 结果数 核实上传  删除
     handleRemoveApk (file, fileList) {
-      file.response && this.fileList.remove(file.response.data);
-      file.response && (this.key = Math.random())
+      if (file.raw) {
+        var idx = this.fileList.findIndex(item => item.attachmentUuid === file.attachmentUuid);
+        this.fileList.splice(idx, 1);
+        // that.apkFiles.remove(file.response.data);
+        this.key = Math.random();
+      }
+      // file.response && this.fileList.remove(file.response.data);
+      // file.response && (this.key = Math.random())
     },
     // 顶部tab 切换事件
     handleClick (val, event) {
@@ -2303,61 +2483,23 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.fileList.length !== 0) {
-            this.success_btn = 1;//显示加载按钮  0成功  1 loaging
-            let formData = new FormData()
-            formData.append('file', this.file.raw)
+            let params = {
+              dataCategory: this.add_data.dataCategory,//类别
+              dataName: this.add_data.dataName,//资料名称
+              dataNumber: this.add_data.dataNumber,//编号
+              secondLevelDataNumber: this.add_data.secondLevelDataNumber,//二级编号
+              department: this.add_data.department,//部门
+              source: this.add_data.source,//来源
+              remarks: this.add_data.remarks,//备注
+              addPeople: this.addPeople,//添加人
+              addTime: this.add_data.addTime,//添加时间
+              status: this.add_data.status,//是否沉淀
+              attachmentList: this.fileList,//回调上传的文件路径
+              // enclosure: '111',//回调上传的文件路径
+              projectType: this.projectNumber,//项目id
+            }
 
-            console.log(this.edit_file_list);
-            console.log(this.fileList);
-
-            this.fileList.forEach((item) => {
-              formData.append('files', item.raw);
-            })
-
-
-
-            axios({
-              method: 'post',
-              url: '/wisdomaudit/attachment/fileUploads',
-              headers: {
-                TOKEN: this.dqtoken,
-                'Content-Type': 'multipart/form-data'
-              },
-              data: formData,
-
-            }).then(resp => {
-              // 上传成功
-              if (resp.data.code == 0) {
-                this.success_btn = 0;//显示加载按钮  0成功  1 loaging
-                //
-                this.Upload_file = resp.data.data;//上传成功大的文件
-
-                let params = {
-                  dataCategory: this.add_data.dataCategory,//类别
-                  dataName: this.add_data.dataName,//资料名称
-                  dataNumber: this.add_data.dataNumber,//编号
-                  secondLevelDataNumber: this.add_data.secondLevelDataNumber,//二级编号
-                  department: this.add_data.department,//部门
-                  source: this.add_data.source,//来源
-                  remarks: this.add_data.remarks,//备注
-                  addPeople: this.addPeople,//添加人
-                  addTime: this.add_data.addTime,//添加时间
-                  status: this.add_data.status,//是否沉淀
-                  attachmentList: this.Upload_file,//回调上传的文件路径
-                  // enclosure: '111',//回调上传的文件路径
-                  projectType: this.projectNumber,//项目id
-                }
-
-                this.save_data_up(params, "add")//保存
-              } else {
-                // 上传失败
-                this.$message({
-                  message: resp.data.msg,
-                  type: 'error'
-                });
-                this.success_btn = 0;//显示加载按钮  0成功  1 loaging
-              }
-            })
+            this.save_data_up(params, "add")//保存
           } else {
             this.success_btn = 2;//显示加载按钮  0成功  1 loaging  2:确认中
             // 如果未上传
@@ -2375,7 +2517,7 @@ export default {
               attachmentList: this.edit_file_list,//回调上传的文件路径
               // enclosure: '111',//回调上传的文件路径
               projectType: this.projectNumber,//项目id
-            }
+            };
             this.save_data_up(params)
           }
         } else {
