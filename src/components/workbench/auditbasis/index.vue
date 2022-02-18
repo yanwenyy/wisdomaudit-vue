@@ -315,9 +315,9 @@ export default {
     },
     // 自定义文件上传的模式，方法
     myFileUpload(params,url,tableList,refName){
-    /** 这里采用了循环请求，等全部循环上传请求完成以后再去执行合并请求的操作  Promise.all
-     * 参数既有url参数也有body参数
-     */
+      /** 这里采用了循环请求，等全部循环上传请求完成以后再去执行合并请求的操作  Promise.all
+       * 参数既有url参数也有body参数
+       */
       if(this.fileDataList.length>0){
 
         this.ywUpload(this.fileDataList,params,url,tableList,refName,params.file.uid);
@@ -398,8 +398,9 @@ export default {
               message:data.fileName+ '上传成功',
               type: 'success'
             });
+            data.isDeleted = 2;
             tableList.push(data);
-            console.log(tableList)
+            this.$refs[refName].uploadFiles.forEach(item=>{item.attachmentUuid=data.attachmentUuid});
           }
           if(data.fileName&&data.status===0){
             loading.close();
@@ -456,8 +457,8 @@ export default {
         });
         count += size;
         num++
-    }
-    return fileChunkList
+      }
+      return fileChunkList
     },
     //分块上传结束
 
@@ -691,7 +692,8 @@ export default {
     //附件删除
     handleRemoveApk (file, fileList) {
       var ifDel = true, that = this;
-      var id = file.response ? file.response.data.attachmentUuid : file.attachmentUuid;
+      // var id = file.response ? file.response.data.attachmentUuid : file.attachmentUuid;
+      var id =  file.attachmentUuid;
       return new Promise(function (resolve, reject) {
         del_file(id).then(resp => {
           if (resp.code == 0) {
@@ -699,8 +701,10 @@ export default {
               message: "删除成功",
               type: "success",
             });
-            if (file.response) {
-              that.apkFiles.remove(file.response.data);
+            if (file.raw) {
+              var idx = that.apkFiles.findIndex(item => item.attachmentUuid === file.attachmentUuid);
+              that.apkFiles.splice(idx, 1);
+              // that.apkFiles.remove(file.response.data);
               that.key = Math.random();
             } else {
               console.log(file)
