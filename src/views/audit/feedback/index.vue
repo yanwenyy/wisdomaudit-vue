@@ -480,8 +480,8 @@
                        ref="upload2"
                        :headers="headers"
                        action="#"
-                       :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',attachmentList,'upload2')}"
-                       :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'审计整改')}"
+                       :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditPreviousDemandData/uploadDataList',apkFiles,'upload2')}"
+                       :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'反馈审计资料')}"
                        :before-remove="handleRemoveApk"
                        :file-list="edit_file_list2"
                        accept=".zip,.doc,.docx,.xls,.xlsx,.txt"
@@ -491,6 +491,7 @@
                 点击上传或将文件拖到虚线框<br />支持.zip,.doc,.docx,.xls,.xlsx,.txt
               </div>
             </el-upload>
+
           </el-form-item>
         </el-form>
 
@@ -574,14 +575,11 @@
 <script>
 import axios from "axios";
 import Vault from "@WISDOMAUDIT/components/Vaultcertification";
-
 import { down_file } from
   '@SDMOBILE/api/shandong/ls'
-
 import { data_pageList, feedback_pageList, operation_record_list, operation_download, operation_uploadData, operation_findFile, operation_reportData, file_remove_list } from
   '@SDMOBILE/api/shandong/feedback'
 import { fmtDate } from '@SDMOBILE/model/time.js';
-
 export default {
   components: {
     Vault
@@ -589,7 +587,6 @@ export default {
   data () {
     return {
       fileDataList: [],//用来接收切割过的文件
-
 
       vaultV: false,
       sceneId: 1557, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
@@ -830,7 +827,7 @@ export default {
       let count = 0;
       let num = 1;
       var total = parseInt((file.size) / size);
-      while (num <= total) {
+      if (file.size < size) {
         fileChunkList.push({
           file: file.slice(count, count + size),
           chunkNumber: num,
@@ -841,13 +838,31 @@ export default {
           fileName: file.name,
           fileSize: file.size,
           ext1: ext1,//模块名称
-          totalChunks: total,
+          totalChunks: num,
           path: '',
           identifier: _idStr,
         });
-        count += size;
-        num++
+      } else {
+        while (num <= total) {
+          fileChunkList.push({
+            file: file.slice(count, count + size),
+            chunkNumber: num,
+            chunkSize: size,
+            totalSize: file.size,
+            filename: file.name,
+            relativePath: file.name,
+            fileName: file.name,
+            fileSize: file.size,
+            ext1: ext1,//模块名称
+            totalChunks: total,
+            path: '',
+            identifier: _idStr,
+          });
+          count += size;
+          num++
+        }
       }
+
       return fileChunkList
     },
     //分块上传结束
@@ -939,14 +954,8 @@ export default {
               message: '删除成功',
               type: 'success'
             });
-            let params2 = {
-              pageNo: this.data_query.pageNo,
-              pageSize: this.data_query.pageSize,
-              condition: {
-                dataTaskNumber: this.data_query.condition.dataTaskNumber,
-              }
-            }
-            this.feedback_post(params2)//资料列表
+
+            this.feedback_post()//资料列表
             break;
           default:
             // 删除失败
@@ -992,18 +1001,14 @@ export default {
           this.uoload_post();//上传事件
         } else {
           // 没有新增
-          this.upload_succes();//上传成功
+          this.success_btn2 = 0;//隐藏加载按钮
+          this.$message({
+            message: '上传成功',
+            type: 'success'
+          });
+          this.add_update_dlag = false;//关闭弹窗
         }
       }
-    },
-    // 上传成功
-    upload_succes () {
-      this.success_btn2 = 0;//隐藏加载按钮
-      this.$message({
-        message: '上传成功',
-        type: 'success'
-      });
-      this.add_update_dlag = false;//关闭弹窗
     },
     // 上传事件
     uoload_post () {
@@ -1011,41 +1016,38 @@ export default {
       formData.append('status', this.status)
       formData.append('auditPreviousDemandDataUuid', this.auditPreviousDemandDataUuid)
       this.fileList2.forEach((item) => {
-
         if (item.raw) {
           formData.append('file', item.raw);
         } else {
           return;
         }
       })
-      // axios({
-      //   method: 'post',
-      //   url: '/wisdomaudit/auditPreviousDemandData/uploadDataList',
-      //   headers: {
-      //     TOKEN: this.dqtoken,
-      //     'Content-Type': 'multipart/form-data'
-      //   },
-      //   data: formData,
-      // }).then(resp => {
-      //   if (resp.data.code == 0) {
-      this.upload_succes();//上传成功
-      //刷新列表
-      let params = {
-        pageNo: this.data_query.pageNo,
-        pageSize: this.data_query.pageSize,
-        condition: {
-          dataTaskNumber: this.data_query.condition.dataTaskNumber,
+      axios({
+        method: 'post',
+        url: '/wisdomaudit/auditPreviousDemandData/uploadDataList',
+        headers: {
+          TOKEN: this.dqtoken,
+          'Content-Type': 'multipart/form-data'
+        },
+        data: formData,
+      }).then(resp => {
+        if (resp.data.code == 0) {
+          this.success_btn2 = 0;//隐藏加载按钮
+          this.$message({
+            message: '上传成功',
+            type: 'success'
+          });
+          this.add_update_dlag = false;//关闭弹窗
+          //刷新列表
+          this.feedback_post()//资料列表
+        } else {
+          this.success_btn2 = 0;//隐藏加载按钮
+          this.$message({
+            message: resp.msg,
+            type: 'error'
+          });
         }
-      }
-      this.feedback_post(params)//资料列表
-      // } else {
-      //   this.success_btn2 = 0;//隐藏加载按钮
-      //   this.$message({
-      //     message: resp.msg,
-      //     type: 'error'
-      //   });
-      // }
-      // })
+      })
     },
 
     // 关闭上传
@@ -1091,14 +1093,8 @@ export default {
       this.launchPeople = data.launchPeople;// 发起人
       this.dialogVisible = true;//显示反馈
       this.data_query.condition.dataTaskNumber = data.addDataTaskUuid
-      let params = {
-        pageNo: this.data_query.pageNo,
-        pageSize: this.data_query.pageSize,
-        condition: {
-          dataTaskNumber: this.data_query.condition.dataTaskNumber,
-        }
-      }
-      this.feedback_post(params)//资料列表
+
+      this.feedback_post()//资料列表
     },
 
     // 反馈
@@ -1110,14 +1106,7 @@ export default {
       this.launchPeople = data.launchPeople;// 发起人
       this.dialogVisible = true;//显示反馈
       this.data_query.condition.dataTaskNumber = data.addDataTaskUuid
-      let params = {
-        pageNo: this.data_query.pageNo,
-        pageSize: this.data_query.pageSize,
-        condition: {
-          dataTaskNumber: this.data_query.condition.dataTaskNumber,
-        }
-      }
-      this.feedback_post(params)//资料列表
+      this.feedback_post()//资料列表
     },
 
     // 关闭  反馈  弹窗
@@ -1125,8 +1114,17 @@ export default {
       this.dialogVisible = false
     },
     // 资料列表
-    feedback_post (params) {
+    feedback_post () {
       this.loading_list = true
+
+      let params = {
+        pageNo: this.data_query.pageNo,
+        pageSize: this.data_query.pageSize,
+        condition: {
+          dataTaskNumber: this.data_query.condition.dataTaskNumber,
+        }
+      }
+
       feedback_pageList(params).then(resp => {
         this.feedback_list = resp.data
         this.loading_list = false;
@@ -1134,26 +1132,12 @@ export default {
     },
     handleSizeChange_data (val) {
       this.data_query.pageSize = val
-      let params = {
-        pageNo: this.data_query.pageNo,
-        pageSize: this.data_query.pageSize,
-        condition: {
-          dataTaskNumber: this.data_query.condition.dataTaskNumber,
-        }
-      }
-      this.feedback_post(params)//资料列表
+      this.feedback_post()//资料列表
     },
     // 反馈资料 分页
     handleCurrentChange_data (val) {
       this.data_query.pageNo = val
-      let params = {
-        pageNo: this.data_query.pageNo,
-        pageSize: this.data_query.pageSize,
-        condition: {
-          dataTaskNumber: this.data_query.condition.dataTaskNumber,
-        }
-      }
-      this.feedback_post(params)//资料列表
+      this.feedback_post()//资料列表
     },
 
     // 查看模版
@@ -1339,17 +1323,8 @@ export default {
                 message: "提交成功",
                 type: "success",
               });
-              let params2 = {
-                pageNo: this.data_query.pageNo,
-                pageSize: this.data_query.pageSize,
-                condition: {
-                  dataTaskNumber: this.data_query.condition.dataTaskNumber,
-                }
-              }
-              this.feedback_post(params2)//资料列表
-
+              this.feedback_post()//资料列表
               this.dialogVisible = false;//关闭弹窗
-
               let params = {
                 pageNo: this.params.pageNo,
                 pageSize: this.params.pageSize,
