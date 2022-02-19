@@ -480,7 +480,7 @@
                        ref="upload2"
                        :headers="headers"
                        action="#"
-                       :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditPreviousDemandData/uploadDataList',apkFiles,'upload2')}"
+                       :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',fileList2,'upload2')}"
                        :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'反馈审计资料')}"
                        :before-remove="handleRemoveApk"
                        :file-list="edit_file_list2"
@@ -577,7 +577,7 @@ import axios from "axios";
 import Vault from "@WISDOMAUDIT/components/Vaultcertification";
 import { down_file } from
   '@SDMOBILE/api/shandong/ls'
-import { data_pageList, feedback_pageList, operation_record_list, operation_download, operation_uploadData, operation_findFile, operation_reportData, file_remove_list } from
+import { data_pageList, feedback_pageList, operation_record_list, operation_download, operation_uploadData, operation_findFile, operation_reportData, file_remove_list, updateDataListBusinessId } from
   '@SDMOBILE/api/shandong/feedback'
 import { fmtDate } from '@SDMOBILE/model/time.js';
 export default {
@@ -586,7 +586,8 @@ export default {
   },
   data () {
     return {
-      fileDataList: [],//用来接收切割过的文件
+      fileDataList: [],//用来接收切割过的文
+      file: [],
 
       vaultV: false,
       sceneId: 1557, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
@@ -709,41 +710,6 @@ export default {
 
         this.ywUpload(this.fileDataList, params, url, tableList, refName, params.file.uid);
       }
-      // let promiseAll = this.fileDataList.map(item => {
-      //   let formData =  new FormData();
-      //   formData.append('file', item.file);
-      //   formData.append('chunkNumber', item.chunkNumber);
-      //   formData.append('chunkSize', item.chunkSize);
-      //   formData.append('totalSize', item.totalSize);
-      //   formData.append('filename', item.filename);
-      //   formData.append('relativePath', item.relativePath);
-      //   formData.append('fileName', item.fileName);
-      //   formData.append('fileSize', item.fileSize);
-      //   formData.append('ext1', item.ext1);
-      //   formData.append('totalChunks', item.totalChunks);
-      //   formData.append('path', item.path);
-      //   formData.append('identifier', item.identifier);
-      //   return new Promise((resolve,reject) => {
-      //     axios({
-      //       method: 'post',
-      //       headers: {
-      //         'TOKEN': this.headers.TOKEN,
-      //       },
-      //       data: formData,
-      //       url:url,
-      //       // data: item.file,
-      //     })
-      //       .then(res=>{
-      //         resolve(res.data.data)
-      //       })
-      //       .catch(err=>{
-      //         reject(err)
-      //       })
-      //   })
-      // })
-      // Promise.all(promiseAll).then(resDataAll => {
-      //  console.log(resDataAll)
-      // })
     },
     ywUpload (list, params, url, tableList, refName, uid) {
       const loading = this.$loading({
@@ -803,7 +769,7 @@ export default {
           }
         })
         .catch(err => {
-          console.log(err);
+
           let uid = files.uid
           let idx = this.$refs[refName].uploadFiles.findIndex(item => item.uid === uid) //去除文件列表失败文件（uploadFiles为el-upload中的ref值）
           this.$refs[refName].uploadFiles.splice(idx, 1) //去除文件列表失败文件
@@ -869,7 +835,7 @@ export default {
 
     //通过认证后的方法
     vdownload () {
-      console.log(this.downloaobj.dtype)
+
       if (this.downloaobj.dtype == '下载1') {
         this.download(this.downloaobj.attachmentUuid, this.downloaobj.fileName)
       } else {
@@ -882,7 +848,7 @@ export default {
     },
     //打开金库
     openVault (obj, downtype) {
-      console.log("芝麻开门")
+
       this.downloaobj = obj
       this.downloaobj.dtype = downtype
       axios({
@@ -913,7 +879,7 @@ export default {
             this.$message('因金库未开启或服务异常，文件下载失败，请联系系统管理员。');
             return;
           } else {
-            console.log(rep);
+
             this.approvers = rep.approvers || "";
             this.maxTime = rep.maxTime;
             this.dqtime = new Date();
@@ -934,6 +900,8 @@ export default {
     },
     // 删除
     handleRemoveApk (file, fileList2) {
+
+
       if (file.raw) {
         this.fileList2.remove(file);
       } else {
@@ -943,6 +911,7 @@ export default {
         this.file_remove(params, file, fileList2);
       }
     },
+
     // 删除接口
     file_remove (params, file, fileList2) {
       file_remove_list(params).then(resp => {
@@ -967,6 +936,7 @@ export default {
         }
       })
     },
+
 
     // 上传 新增&&编辑 弹窗
     up_dlag (data, index) {
@@ -994,11 +964,11 @@ export default {
     up () {
       this.success_btn2 = 1;//显示加载按钮  0成功  1 loaging
       if (this.title == '新增附件') {
-        this.uoload_post();//上传事件
+        this.uoload_post(1);//上传事件
       } else {
         // 编辑
         if (this.fileList2) {
-          this.uoload_post();//上传事件
+          this.uoload_post(2);//上传事件
         } else {
           // 没有新增
           this.success_btn2 = 0;//隐藏加载按钮
@@ -1011,43 +981,66 @@ export default {
       }
     },
     // 上传事件
-    uoload_post () {
-      let formData = new FormData()
-      formData.append('status', this.status)
-      formData.append('auditPreviousDemandDataUuid', this.auditPreviousDemandDataUuid)
-      this.fileList2.forEach((item) => {
-        if (item.raw) {
-          formData.append('file', item.raw);
-        } else {
-          return;
+    uoload_post (type) {
+      if (type == 1) {
+        // 新增
+        let params = {
+          auditPreviousDemandDataUuid: this.auditPreviousDemandDataUuid,
+          attachmentList: this.fileList2,
         }
-      })
-      axios({
-        method: 'post',
-        url: '/wisdomaudit/auditPreviousDemandData/uploadDataList',
-        headers: {
-          TOKEN: this.dqtoken,
-          'Content-Type': 'multipart/form-data'
-        },
-        data: formData,
-      }).then(resp => {
-        if (resp.data.code == 0) {
+        // 上传的数据提交
+        updateDataListBusinessId(params).then(resp => {
           this.success_btn2 = 0;//隐藏加载按钮
-          this.$message({
-            message: '上传成功',
-            type: 'success'
-          });
-          this.add_update_dlag = false;//关闭弹窗
-          //刷新列表
-          this.feedback_post()//资料列表
-        } else {
-          this.success_btn2 = 0;//隐藏加载按钮
-          this.$message({
-            message: resp.msg,
-            type: 'error'
-          });
+
+          if (resp.code == 0) {
+            this.$message({
+              message: '上传成功',
+              type: 'success'
+            });
+
+            this.add_update_dlag = false;//关闭弹窗
+            //刷新列表
+            this.feedback_post()//资料列表
+          } else {
+
+            this.$message({
+              message: resp.msg,
+              type: 'error'
+            });
+          }
+        })
+        // }
+      } else {
+        // 编辑
+        let params2 = {
+          auditPreviousDemandDataUuid: this.auditPreviousDemandDataUuid,
+          attachmentList: this.edit_file_list2,
         }
-      })
+        // 上传的数据提交
+        updateDataListBusinessId(params2).then(resp => {
+          this.success_btn2 = 0;//隐藏加载按钮
+
+          if (resp.code == 0) {
+            this.$message({
+              message: '上传成功',
+              type: 'success'
+            });
+
+            this.add_update_dlag = false;//关闭弹窗
+            //刷新列表
+            this.feedback_post()//资料列表
+          } else {
+
+            this.$message({
+              message: resp.msg,
+              type: 'error'
+            });
+          }
+        })
+        // }
+      }
+
+
     },
 
     // 关闭上传
