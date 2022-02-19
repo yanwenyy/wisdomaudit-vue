@@ -160,16 +160,16 @@
             </el-popover>
             <!--<el-upload v-if="scope.row.endConfirmationFile==''||scope.row.endConfirmationFile==null&&(scope.row.createUserUuid==userInfo.user.id)"-->
             <!--<el-upload :show-file-list="false"-->
-                       <!--class="upload-demo inline-block btnStyle"-->
-                       <!--:on-change="fileChange"-->
-                       <!--:action="'/wisdomaudit/auditConfirmation/endFileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid"-->
-                       <!--:on-success="list_data_start"-->
-                       <!--:headers="headers"-->
-                       <!--accept=".docx,.xls,.xlsx,.txt,.zip,.doc">-->
-              <!--<el-button size="small"-->
-                         <!--type="text"-->
-                         <!--style="background: transparent;padding:0"-->
-                         <!--class="editBtn">上传</el-button>-->
+            <!--class="upload-demo inline-block btnStyle"-->
+            <!--:on-change="fileChange"-->
+            <!--:action="'/wisdomaudit/auditConfirmation/endFileUpload?auditConfirmationUuid='+scope.row.auditConfirmationUuid"-->
+            <!--:on-success="list_data_start"-->
+            <!--:headers="headers"-->
+            <!--accept=".docx,.xls,.xlsx,.txt,.zip,.doc">-->
+            <!--<el-button size="small"-->
+            <!--type="text"-->
+            <!--style="background: transparent;padding:0"-->
+            <!--class="editBtn">上传</el-button>-->
             <!--</el-upload>-->
             <el-upload :show-file-list="false"
                        class="upload-demo inline-block btnStyle"
@@ -343,21 +343,21 @@
           <div class="ifLook_upload"
                v-if="ifLook"></div>
           <!--<el-upload class="upload-demo"-->
-                     <!--drag-->
-                     <!--:disabled="ifLook?true:false"-->
-                     <!--action="/wisdomaudit/auditBasy/filesUpload"-->
-                     <!--:on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList1)}"-->
-                     <!--:on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList1,fileList1,fileList1_del)}"-->
-                     <!--multiple-->
-                     <!--:limit="3"-->
-                     <!--:key="key"-->
-                     <!--:on-exceed="handleExceed"-->
-                     <!--:headers="headers"-->
-                     <!--:file-list="fileList1">-->
-            <!--<i class="el-icon-upload"></i>-->
-            <!--<div class="el-upload__text">-->
-              <!--点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc-->
-            <!--</div>-->
+          <!--drag-->
+          <!--:disabled="ifLook?true:false"-->
+          <!--action="/wisdomaudit/auditBasy/filesUpload"-->
+          <!--:on-success="( response, file, fileList)=>{uploadPorgress( response, file, fileList,attachmentList1)}"-->
+          <!--:on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList1,fileList1,fileList1_del)}"-->
+          <!--multiple-->
+          <!--:limit="3"-->
+          <!--:key="key"-->
+          <!--:on-exceed="handleExceed"-->
+          <!--:headers="headers"-->
+          <!--:file-list="fileList1">-->
+          <!--<i class="el-icon-upload"></i>-->
+          <!--<div class="el-upload__text">-->
+          <!--点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc-->
+          <!--</div>-->
           <!--</el-upload>-->
           <el-upload class="upload-demo"
                      drag
@@ -684,7 +684,6 @@
     <!-- @close="resetForm('temp_problem')" -->
     <el-dialog title="新增审计问题"
                :append-to-body='true'
-
                :visible.sync="dialogFormVisible"
                :close-on-click-modal="false"
                width="70%"
@@ -826,24 +825,24 @@
                       class="itemTwo"
                       style="width:100%!important">
           <!--<el-upload class="upload-demo"-->
-                     <!--drag-->
-                     <!--action="/wisdomaudit/auditBasy/filesUpload"-->
-                     <!--:on-success="( response, file, fileList)=>{-->
-                       <!--uploadPorgress2( response, file, fileList,attachmentList2)-->
-                       <!--}"-->
-                     <!--:on-remove="( file, fileList)=>{-->
-                       <!--handleRemove2( file, fileList,attachmentList2,fileList2,fileList2_del)-->
-                       <!--}"-->
-                     <!--:on-progress="update_ing"-->
-                     <!--multiple-->
-                     <!--:key="key"-->
-                     <!--:on-exceed="handleExceed"-->
-                     <!--:headers="headers"-->
-                     <!--:file-list="fileList2">-->
-            <!--<i class="el-icon-upload"></i>-->
-            <!--<div class="el-upload__text">-->
-              <!--点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc-->
-            <!--</div>-->
+          <!--drag-->
+          <!--action="/wisdomaudit/auditBasy/filesUpload"-->
+          <!--:on-success="( response, file, fileList)=>{-->
+          <!--uploadPorgress2( response, file, fileList,attachmentList2)-->
+          <!--}"-->
+          <!--:on-remove="( file, fileList)=>{-->
+          <!--handleRemove2( file, fileList,attachmentList2,fileList2,fileList2_del)-->
+          <!--}"-->
+          <!--:on-progress="update_ing"-->
+          <!--multiple-->
+          <!--:key="key"-->
+          <!--:on-exceed="handleExceed"-->
+          <!--:headers="headers"-->
+          <!--:file-list="fileList2">-->
+          <!--<i class="el-icon-upload"></i>-->
+          <!--<div class="el-upload__text">-->
+          <!--点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc-->
+          <!--</div>-->
           <!--</el-upload>-->
           <el-upload class="upload-demo"
                      drag
@@ -900,7 +899,6 @@
     <!-- 编辑审计问题 -->
     <!-- @close="resetForm('dqProblem')" -->
     <el-dialog width="70%"
-
                :title="ifadd == 1 ? '编辑问题' : '问题详情'"
                :visible.sync="dialogDetailVisible"
                :close-on-click-modal="false"
@@ -1046,24 +1044,24 @@
                       style="width:100%!important"
                       label="上传附件：">
           <!--<el-upload class="upload-demo"-->
-                     <!--drag-->
-                     <!--action="/wisdomaudit/auditBasy/filesUpload"-->
-                     <!--:on-success="( response, file, fileList)=>{-->
-                       <!--uploadPorgress2( response, file, fileList,attachmentList2)-->
-                       <!--}"-->
-                     <!--:on-remove="( file, fileList)=>{-->
-                       <!--handleRemove2( file, fileList,attachmentList2,fileList2,fileList2_del)-->
-                       <!--}"-->
-                     <!--:on-progress="update_ing"-->
-                     <!--multiple-->
-                     <!--:key="key"-->
-                     <!--:on-exceed="handleExceed"-->
-                     <!--:headers="headers"-->
-                     <!--:file-list="fileList2">-->
-            <!--<i class="el-icon-upload"></i>-->
-            <!--<div class="el-upload__text">-->
-              <!--点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc-->
-            <!--</div>-->
+          <!--drag-->
+          <!--action="/wisdomaudit/auditBasy/filesUpload"-->
+          <!--:on-success="( response, file, fileList)=>{-->
+          <!--uploadPorgress2( response, file, fileList,attachmentList2)-->
+          <!--}"-->
+          <!--:on-remove="( file, fileList)=>{-->
+          <!--handleRemove2( file, fileList,attachmentList2,fileList2,fileList2_del)-->
+          <!--}"-->
+          <!--:on-progress="update_ing"-->
+          <!--multiple-->
+          <!--:key="key"-->
+          <!--:on-exceed="handleExceed"-->
+          <!--:headers="headers"-->
+          <!--:file-list="fileList2">-->
+          <!--<i class="el-icon-upload"></i>-->
+          <!--<div class="el-upload__text">-->
+          <!--点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip .doc-->
+          <!--</div>-->
           <!--</el-upload>-->
           <el-upload class="upload-demo"
                      drag
@@ -1218,7 +1216,7 @@ export default {
   props: ['active_project', 'userRole'],
   data () {
     return {
-      fileDataList:[],//用来接收切割过的文件
+      fileDataList: [],//用来接收切割过的文件
 
       confirmaryData_loding: false,//确认单列表loadng
       Table_loading: false,
@@ -1448,18 +1446,18 @@ export default {
   methods: {
     // 分块上传开始
     // 上传文件之前
-    beforeUpload(file, fileList,ext1,ext2) {
+    beforeUpload (file, fileList, ext1, ext2) {
       //  调用函数分割文件 我这里是分割成不超过20M的文件快
-      this.fileDataList = this.createFileChunk(file,1024*1024*3,ext1,ext2);
+      this.fileDataList = this.createFileChunk(file, 1024 * 1024 * 3, ext1, ext2);
     },
     // 自定义文件上传的模式，方法
-    myFileUpload(params,url,tableList,refName){
+    myFileUpload (params, url, tableList, refName) {
       /** 这里采用了循环请求，等全部循环上传请求完成以后再去执行合并请求的操作  Promise.all
        * 参数既有url参数也有body参数
        */
-      if(this.fileDataList.length>0){
+      if (this.fileDataList.length > 0) {
 
-        this.ywUpload(this.fileDataList,params,url,tableList,refName,params.file.uid);
+        this.ywUpload(this.fileDataList, params, url, tableList, refName, params.file.uid);
       }
       // let promiseAll = this.fileDataList.map(item => {
       //   let formData =  new FormData();
@@ -1497,17 +1495,17 @@ export default {
       //  console.log(resDataAll)
       // })
     },
-    ywUpload(list,params,url,tableList,refName,uid){
+    ywUpload (list, params, url, tableList, refName, uid) {
       const loading = this.$loading({
         lock: true,
         text: '上传中',
         spinner: 'el-icon-loading',
         background: 'transparent'
       });
-      var data='';
-      var left=[],right=list;
-      var _obj=right.shift();
-      let formData =  new FormData();
+      var data = '';
+      var left = [], right = list;
+      var _obj = right.shift();
+      let formData = new FormData();
       formData.append('file', _obj.file);
       formData.append('chunkNumber', _obj.chunkNumber);
       formData.append('chunkSize', _obj.chunkSize);
@@ -1527,44 +1525,44 @@ export default {
           'TOKEN': this.headers.TOKEN,
         },
         data: formData,
-        url:url,
+        url: url,
         // data: item.file,
       })
-        .then(res=>{
-          data=res.data.data;
-          if(data.status&&data.status==1){
+        .then(res => {
+          data = res.data.data;
+          if (data.status && data.status == 1) {
             loading.close();
             this.$message({
-              message:data.fileName+ '上传成功',
+              message: data.fileName + '上传成功',
               type: 'success'
             });
-            if(tableList){
+            if (tableList) {
               data.isDeleted = 2;
               tableList.push(data);
-              this.$refs[refName].uploadFiles.forEach(item=>{item.attachmentUuid=data.attachmentUuid});
-            }else{
+              this.$refs[refName].uploadFiles.forEach(item => { item.attachmentUuid = data.attachmentUuid });
+            } else {
               this.list_data_start()
             }
 
           }
-          if(data.fileName&&data.status===0){
+          if (data.fileName && data.status === 0) {
             loading.close();
             this.$message({
-              message:data.fileName+ '上传失败,请重新上传',
+              message: data.fileName + '上传失败,请重新上传',
               type: 'error'
             });
-            if(tableList){
+            if (tableList) {
               var idx = this.$refs[refName].uploadFiles.findIndex(item => item.uid === uid) //去除文件列表失败文件（uploadFiles为el-upload中的ref值）
               this.$refs[refName].uploadFiles.splice(idx, 1) //去除文件列表失败文件
-            }else{
+            } else {
               this.list_data_start()
             }
           }
-          if(right.length>0){
-            this.ywUpload(list,params,url,tableList,refName,uid);
+          if (right.length > 0) {
+            this.ywUpload(list, params, url, tableList, refName, uid);
           }
         })
-        .catch(err=>{
+        .catch(err => {
           console.log(err);
           let uid = files.uid
           let idx = this.$refs[refName].uploadFiles.findIndex(item => item.uid === uid) //去除文件列表失败文件（uploadFiles为el-upload中的ref值）
@@ -1572,12 +1570,12 @@ export default {
         });
     },
     //随机数
-    passwords(pasLen) {
-      var pasArr = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9','_','-','$','%','&','@','+','!'];
+    passwords (pasLen) {
+      var pasArr = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_', '-', '$', '%', '&', '@', '+', '!'];
       var password = '';
       var pasArrLen = pasArr.length;
-      for (var i=0; i<pasLen; i++){
-        var x = Math.floor(Math.random()*pasArrLen);
+      for (var i = 0; i < pasLen; i++) {
+        var x = Math.floor(Math.random() * pasArrLen);
         password += pasArr[x];
       }
       return password;
@@ -1589,7 +1587,7 @@ export default {
       let count = 0;
       let num = 1;
       var total = parseInt((file.size) / size);
-      if(file.size<size){
+      if (file.size < size) {
         fileChunkList.push({
           file: file.slice(count, count + size),
           chunkNumber: num,
@@ -1604,7 +1602,7 @@ export default {
           path: '',
           identifier: _idStr,
         });
-      }else{
+      } else {
         while (num <= total) {
           fileChunkList.push({
             file: file.slice(count, count + size),

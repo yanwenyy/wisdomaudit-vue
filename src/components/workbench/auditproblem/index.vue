@@ -238,8 +238,6 @@
                      style="position: absolute; top: 0; right: -80px"
                      @click="input_select = !input_select">重选</el-button>
         </el-form-item>
-        <!-- <el-form-item> </el-form-item> -->
-
         <el-form-item label="依据："
                       style="margin-bottom: 20px !important"
                       prop="basis"
@@ -256,7 +254,6 @@
                      class="citebtn inline-block"
                      @click="openbasis()">引用审计依据</el-button>
         </el-form-item>
-
         <el-form-item label="描述："
                       style="margin-bottom: 20px !important"
                       prop="describe"
@@ -314,25 +311,35 @@
         <el-form-item label="上传附件："
                       class="itemTwo"
                       style="width:100%!important">
-          <el-upload class="upload-demo"
+          <!-- <el-upload class="upload-demo"
                      drag
                      action="/wisdomaudit/auditBasy/filesUpload"
-                     :on-success="
-              (response, file, fileList) => {
-                uploadPorgress2(response, file, fileList, attachmentList2);
-              }
-            "
+                     :on-success="(response, file, fileList) => {
+                uploadPorgress2(response, file, fileList, attachmentList2);} "
                      :on-remove="
               (file, fileList) => {
-                handleRemove2(
-                  file,
-                  fileList,
-                  attachmentList2,
-                  fileList2,
-                  fileList2_del
-                );
-              }
-            "
+                handleRemove2( file,fileList,attachmentList2, fileList2,fileList2_del ); }"
+                     :on-progress="update_ing"
+                     multiple
+                     :key="key"
+                     :on-exceed="handleExceed"
+                     :headers="headers"
+                     :file-list="fileList2">
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">
+              点击上传或将文件拖到虚线框<br />支持.docx .xls .xlsx .txt .zip
+              .doc
+            </div>
+          </el-upload> -->
+          <el-upload class="upload-demo"
+                     drag
+                     action="#"
+                     ref="upload"
+                     :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',attachmentList2,'upload')}"
+                     :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'审计依据')}"
+                     :on-remove="
+              (file, fileList) => {
+                handleRemove2( file,fileList,attachmentList2, fileList2,fileList2_del ); }"
                      :on-progress="update_ing"
                      multiple
                      :key="key"
