@@ -726,10 +726,12 @@ export default {
               that.key = Math.random();
             } else {
               console.log(file)
-
-              that.formState.attachmentList = that.formState.attachmentList.filter((item) => { item.attachment_uuid != file.attachmentUuid })
-              that.fileList.remove(file);
               console.log(that.formState.attachmentList, 222)
+              var idx = that.formState.attachmentList.findIndex(item => item.attachment_uuid === file.attachmentUuid);
+              that.formState.attachmentList.splice(idx, 1);
+              // that.formState.attachmentList = that.formState.attachmentList.filter((item) => { item.attachment_uuid != file.attachmentUuid })
+              that.fileList.remove(file);
+
             }
             return true;
 
