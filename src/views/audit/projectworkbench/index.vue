@@ -692,14 +692,30 @@
                       v-model="taskSelf.taskDescription"></el-input> -->
           </el-form-item>
           <el-form-item label="上传附件:">
+            <!--<el-upload class="upload-demo"-->
+                       <!--:headers="headers"-->
+                       <!--drag-->
+                       <!--action="#"-->
+                       <!--v-model="taskSelf.enclosure"-->
+                       <!--:on-change="handleChangePic"-->
+                       <!--:file-list="fileList"-->
+                       <!--:auto-upload="false"-->
+                       <!--multiple>-->
+              <!--<i class="el-icon-upload"></i>-->
+              <!--<div class="el-upload__text">-->
+                <!--点击上传或将文件拖到虚线框-->
+                <!--<br />支持.zip,.doc,.docx,.xls,.xlsx,.txt-->
+              <!--</div>-->
+            <!--</el-upload>-->
             <el-upload class="upload-demo"
                        :headers="headers"
                        drag
+                       ref="upload1"
                        action="#"
-                       v-model="taskSelf.enclosure"
-                       :on-change="handleChangePic"
-                       :file-list="fileList"
-                       :auto-upload="false"
+                       :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',attachmentList,'upload1')}"
+                       :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'审计任务')}"
+                       :on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList)}"
+                       :file-list="fileList1"
                        multiple>
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">
@@ -797,14 +813,29 @@
                       v-model="edittaskSelfForm.taskDescription"></el-input> -->
           </el-form-item>
           <el-form-item label="上传附件:">
+            <!--<el-upload class="upload-demo"-->
+                       <!--drag-->
+                       <!--action="#"-->
+                       <!--v-model="edittaskSelfForm.enclosure"-->
+                       <!--:on-change="handleChangePic"-->
+                       <!--:on-remove="handleRemove"-->
+                       <!--:file-list="edit_file_list"-->
+                       <!--:auto-upload="false"-->
+                       <!--multiple>-->
+              <!--<i class="el-icon-upload"></i>-->
+              <!--<div class="el-upload__text">-->
+                <!--点击上传或将文件拖到虚线框-->
+                <!--<br />支持.zip,.doc,.docx,.xls,.xlsx,.txt-->
+              <!--</div>-->
+            <!--</el-upload>-->
             <el-upload class="upload-demo"
                        drag
+                       ref="upload2"
                        action="#"
-                       v-model="edittaskSelfForm.enclosure"
-                       :on-change="handleChangePic"
-                       :on-remove="handleRemove"
+                       :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',attachmentList,'upload2')}"
+                       :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'审计任务')}"
+                       :on-remove="( file, fileList)=>{handleRemove( file, fileList,attachmentList,edit_file_list,fileList_Delet)}"
                        :file-list="edit_file_list"
-                       :auto-upload="false"
                        multiple>
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">
@@ -883,6 +914,8 @@ export default {
   },
   data () {
     return {
+      fileDataList:[],//用来接收切割过的文件
+      attachmentList:[],
       vaultV: false,
       sceneId: 1557, //经营指标、模型结果编号:1556 附件上传后下载编号:1557
       approvers: [], //审批人列表
@@ -987,7 +1020,7 @@ export default {
         projectId: "",
       },
       project: [],
-      fileList: [], //上传的文件
+      fileList1: [], //上传的文件
       file: [], //
       Upload_file: [], //上传文件更新id
       edit_file_list: [],
@@ -1002,7 +1035,7 @@ export default {
         belongField: "",
         belongSpcial: "",
         taskType: "2",
-        enclosure: "",
+        enclosure: [],
         attachmentList: [],
       },
       edittaskSelfForm: {
@@ -1014,7 +1047,7 @@ export default {
         belongField: "",
         belongSpcial: "",
         taskType: "",
-        enclosure: "", //附件
+        enclosure: [], //附件
         attachmentList: [], //附件上传入参
       },
       editTaskSelfData: {
@@ -1193,6 +1226,179 @@ export default {
     }
   },
   methods: {
+    // 分块上传开始
+    // 上传文件之前
+    beforeUpload(file, fileList,ext1) {
+      //  调用函数分割文件 我这里是分割成不超过20M的文件快
+      this.fileDataList = this.createFileChunk(file,1024*1024*3,ext1);
+    },
+    // 自定义文件上传的模式，方法
+    myFileUpload(params,url,tableList,refName){
+      /** 这里采用了循环请求，等全部循环上传请求完成以后再去执行合并请求的操作  Promise.all
+       * 参数既有url参数也有body参数
+       */
+      if(this.fileDataList.length>0){
+
+        this.ywUpload(this.fileDataList,params,url,tableList,refName,params.file.uid);
+      }
+      // let promiseAll = this.fileDataList.map(item => {
+      //   let formData =  new FormData();
+      //   formData.append('file', item.file);
+      //   formData.append('chunkNumber', item.chunkNumber);
+      //   formData.append('chunkSize', item.chunkSize);
+      //   formData.append('totalSize', item.totalSize);
+      //   formData.append('filename', item.filename);
+      //   formData.append('relativePath', item.relativePath);
+      //   formData.append('fileName', item.fileName);
+      //   formData.append('fileSize', item.fileSize);
+      //   formData.append('ext1', item.ext1);
+      //   formData.append('totalChunks', item.totalChunks);
+      //   formData.append('path', item.path);
+      //   formData.append('identifier', item.identifier);
+      //   return new Promise((resolve,reject) => {
+      //     axios({
+      //       method: 'post',
+      //       headers: {
+      //         'TOKEN': this.headers.TOKEN,
+      //       },
+      //       data: formData,
+      //       url:url,
+      //       // data: item.file,
+      //     })
+      //       .then(res=>{
+      //         resolve(res.data.data)
+      //       })
+      //       .catch(err=>{
+      //         reject(err)
+      //       })
+      //   })
+      // })
+      // Promise.all(promiseAll).then(resDataAll => {
+      //  console.log(resDataAll)
+      // })
+    },
+    ywUpload(list,params,url,tableList,refName,uid){
+      const loading = this.$loading({
+        lock: true,
+        text: '上传中',
+        spinner: 'el-icon-loading',
+        background: 'transparent'
+      });
+      var data='';
+      var left=[],right=list;
+      var _obj=right.shift();
+      let formData =  new FormData();
+      formData.append('file', _obj.file);
+      formData.append('chunkNumber', _obj.chunkNumber);
+      formData.append('chunkSize', _obj.chunkSize);
+      formData.append('totalSize', _obj.totalSize);
+      formData.append('filename', _obj.filename);
+      formData.append('relativePath', _obj.relativePath);
+      formData.append('fileName', _obj.fileName);
+      formData.append('fileSize', _obj.fileSize);
+      formData.append('ext1', _obj.ext1);
+      formData.append('totalChunks', _obj.totalChunks);
+      formData.append('path', _obj.path);
+      formData.append('identifier', _obj.identifier);
+      axios({
+        method: 'post',
+        headers: {
+          'TOKEN': this.headers.TOKEN,
+        },
+        data: formData,
+        url:url,
+        // data: item.file,
+      })
+        .then(res=>{
+          data=res.data.data;
+          if(data.status&&data.status==1){
+            loading.close();
+            this.$message({
+              message:data.fileName+ '上传成功',
+              type: 'success'
+            });
+            data.isDeleted = 2;
+            tableList.push(data);
+            this.$refs[refName].uploadFiles.forEach(item=>{item.attachmentUuid=data.attachmentUuid});
+          }
+          if(data.fileName&&data.status===0){
+            loading.close();
+            this.$message({
+              message:data.fileName+ '上传失败,请重新上传',
+              type: 'error'
+            });
+            var idx = this.$refs[refName].uploadFiles.findIndex(item => item.uid === uid) //去除文件列表失败文件（uploadFiles为el-upload中的ref值）
+            this.$refs[refName].uploadFiles.splice(idx, 1) //去除文件列表失败文件
+          }
+          if(right.length>0){
+            this.ywUpload(list,params,url,tableList,refName,uid);
+          }
+        })
+        .catch(err=>{
+          console.log(err);
+          let uid = files.uid
+          let idx = this.$refs[refName].uploadFiles.findIndex(item => item.uid === uid) //去除文件列表失败文件（uploadFiles为el-upload中的ref值）
+          this.$refs[refName].uploadFiles.splice(idx, 1) //去除文件列表失败文件
+        });
+    },
+    //随机数
+    passwords(pasLen) {
+      var pasArr = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9','_','-','$','%','&','@','+','!'];
+      var password = '';
+      var pasArrLen = pasArr.length;
+      for (var i=0; i<pasLen; i++){
+        var x = Math.floor(Math.random()*pasArrLen);
+        password += pasArr[x];
+      }
+      return password;
+    },
+    // 文件分割的方法
+    createFileChunk (file, size = chunkSize, ext1) {
+      var _idStr = this.passwords(16);
+      const fileChunkList = [];
+      let count = 0;
+      let num = 1;
+      var total = parseInt((file.size) / size);
+      if(file.size<size){
+        fileChunkList.push({
+          file: file.slice(count, count + size),
+          chunkNumber: num,
+          chunkSize: size,
+          totalSize: file.size,
+          filename: file.name,
+          relativePath: file.name,
+          fileName: file.name,
+          fileSize: file.size,
+          ext1: ext1,//模块名称
+          totalChunks: num,
+          path: '',
+          identifier: _idStr,
+        });
+      }else{
+        while (num <= total) {
+          fileChunkList.push({
+            file: file.slice(count, count + size),
+            chunkNumber: num,
+            chunkSize: size,
+            totalSize: file.size,
+            filename: file.name,
+            relativePath: file.name,
+            fileName: file.name,
+            fileSize: file.size,
+            ext1: ext1,//模块名称
+            totalChunks: total,
+            path: '',
+            identifier: _idStr,
+          });
+          count += size;
+          num++
+        }
+      }
+
+      return fileChunkList
+    },
+    //分块上传结束
+
 
     //通过认证后的方法
     vdownload () {
@@ -1955,13 +2161,13 @@ export default {
 
       this.addDialogVisible = false;
       this.fileList_Delet = [];
-      this.fileList = [];
+      this.fileList1 = [];
       this.Upload_file = [];
       this.taskSelf.attachmentList = [];
       this.taskSelf = {};//清空传的集合
       this.taskSelfDialogVisible = true;//显示新增任务
       this.taskSelf.taskDescription = '';//清空描述
-
+      this.attachmentList=[];
       this.thematicSelect(this.thematic);//专题下拉框
 
     },
@@ -2006,80 +2212,44 @@ export default {
           }
 
           // 有附件
-          if (this.fileList.length > 0) {
-            const loading = this.$loading({
-              lock: true,
-              text: "上传中",
-              spinner: "el-icon-loading",
-              background: "transparent",
-            });
-            let formData = new FormData();
-            formData.append("file", this.file.raw);
-            this.fileList.forEach((item) => {
-              formData.append("files", item.raw);
-            });
+          if (this.attachmentList.length > 0) {
+            //新增自建任务接口
+            this.taskSelf.attachmentList = this.attachmentList;
+            this.taskSelf.managementProjectUuid =
+              this.managementProjectUuid;
+            this.taskSelf.taskType = 2;
+            // 提交步骤
+            let params1 = {
+              managementProjectUuid: this.managementProjectUuid,//项目id
+              taskDescription: this.taskSelf.taskDescription,//描述
+              taskName: this.taskSelf.taskName,//名称
+              taskType: 2,//任务类型
+              enclosure: this.taskSelf.enclosure,//附件
+              peopleName: this.taskSelf.peopleName,//责任人
+              peopleTableUuid: this.taskSelf.peopleTableUuid,//责任人id
+              belongSpcial: this.taskSelf.belongSpcial,//领域
+              belongField: this.taskSelf.belongField,//专题
+              attachmentList: this.taskSelf.attachmentList,//上传成功de 的文件
 
-
-            axios({
-              method: "post",
-              url: "/wisdomaudit/attachment/fileUploads",
-              headers: {
-                TOKEN: this.dqtoken,
-                'Content-Type': 'multipart/form-data'
+              // 专题
+              entity: {
+                belongSpcialSize: this.belongSpcialSize,//专题size
+                dictname: this.taskSelf.belongSpcial,//专题name
               },
-              data: formData,
-
-            }).then((resp) => {
-              if (resp.data.code == 0) {
-                // this.$message.success("上传成功！");
-                this.Upload_file = resp.data.data;
-                loading.close();
-
-                //新增自建任务接口
-                this.taskSelf.attachmentList = this.Upload_file;
-                this.taskSelf.managementProjectUuid =
-                  this.managementProjectUuid;
-                this.taskSelf.taskType = 2;
-                // 提交步骤
-                let params1 = {
-                  managementProjectUuid: this.managementProjectUuid,//项目id
-                  taskDescription: this.taskSelf.taskDescription,//描述
-                  taskName: this.taskSelf.taskName,//名称
-                  taskType: 2,//任务类型
-                  enclosure: this.taskSelf.enclosure,//附件
-                  peopleName: this.taskSelf.peopleName,//责任人
-                  peopleTableUuid: this.taskSelf.peopleTableUuid,//责任人id
-                  belongSpcial: this.taskSelf.belongSpcial,//领域
-                  belongField: this.taskSelf.belongField,//专题
-                  attachmentList: this.taskSelf.attachmentList,//上传成功de 的文件
-
-                  // 专题
-                  entity: {
-                    belongSpcialSize: this.belongSpcialSize,//专题size
-                    dictname: this.taskSelf.belongSpcial,//专题name
-                  },
-                  zdyCode: this.zdyCode,
-                }
+              zdyCode: this.zdyCode,
+            }
 
 
-                selfTaskFunction(params1).then((resp) => {
-                  this.$message.success("自建任务创建成功！");
-                  this.taskSelfDialogVisible = false;
-                  this.addDialogVisible = true;
-                  this.getModelList.condition.managementProjectUuid =
-                    this.managementProjectUuid;
-                  //
-                  this.thematicSelect(this.thematic);//专题下拉框
+            selfTaskFunction(params1).then((resp) => {
+              this.$message.success("自建任务创建成功！");
+              this.taskSelfDialogVisible = false;
+              this.addDialogVisible = true;
+              this.getModelList.condition.managementProjectUuid =
+                this.managementProjectUuid;
+              //
+              this.thematicSelect(this.thematic);//专题下拉框
 
-                  this.getauditModelList(this.getModelList);
-                });
-              } else {
-                loading.close();
-                this.$message({
-                  message: resp.msg,
-                  type: "error",
-                });
-              }
+              this.getauditModelList(this.getModelList);
             });
           } else {
             // 没有附件
@@ -2141,9 +2311,9 @@ export default {
       this.other_input = true;
       this.Upload_file = [];
       this.fileList_Delet = [];
-      this.fileList = [];
+      this.fileList1 = [];
       this.editTaskSelfDialogVisible = true;
-
+      this.attachmentList=[];
 
       editTaskSelf(row.auditTaskUuid).then((resp) => {
         this.edittaskSelfForm = resp.data;
@@ -2185,94 +2355,54 @@ export default {
 
 
           // 有附件
-          if (this.fileList.length > 0) {
-            const loading = this.$loading({
-              lock: true,
-              text: "上传中",
-              spinner: "el-icon-loading",
-              background: "transparent",
+          if (this.attachmentList.length > 0) {
+            for (let p = 0; p < this.attachmentList.length; p++) {
+              this.attachmentList[p].isDeleted = 2;
+            };
+            this.edit_file_list.forEach((item) => {
+              item.status = null;
             });
-            let formData = new FormData();
-            // formData.append("file", this.file.raw);
-            this.fileList.forEach((item) => {
-              if (item.raw) {
-                formData.append("files", item.raw);
-              }
+            this.fileList_Delet.forEach((item) => {
+              item.status = null;
             });
+            var upList = this.edit_file_list
+              .concat(this.attachmentList)
+              .concat(this.fileList_Delet);
+            this.edittaskSelfForm.attachmentList = upList;
+            this.edittaskSelfForm.managementProjectUuid =
+              this.managementProjectUuid;
 
-            axios({
-              method: "post",
-              url: "/wisdomaudit/attachment/fileUploads",
-              headers: {
-                TOKEN: this.dqtoken,
-                'Content-Type': 'multipart/form-data'
+
+
+            // 提交步骤
+            let params1 = {
+              auditTaskUuid: this.edittaskSelfForm.auditTaskUuid,
+              managementProjectUuid: this.managementProjectUuid,//项目id
+              taskDescription: this.edittaskSelfForm.taskDescription,//描述
+              taskName: this.edittaskSelfForm.taskName,//名称
+              taskType: 2,//任务类型
+              enclosure: this.edittaskSelfForm.enclosure,//附件
+              peopleName: this.edittaskSelfForm.peopleName,//责任人
+              peopleTableUuid: this.edittaskSelfForm.peopleTableUuid,//责任人id
+              belongSpcial: this.edittaskSelfForm.belongSpcial,//领域
+              belongField: this.edittaskSelfForm.belongField,//专题
+              attachmentList: this.edittaskSelfForm.attachmentList,//上传成功de 的文件
+
+              // 专题
+              entity: {
+                belongSpcialSize: this.belongSpcialSize,//专题size
+                dictname: this.edittaskSelfForm.belongSpcial,//专题name
               },
-              data: formData,
-
-            }).then((resp) => {
-              if (resp.data.code == 0) {
-                // this.$message.success("上传成功！");
-                this.Upload_file = resp.data.data;
-                loading.close();
-
-                if (this.Upload_file) {
-                  for (let p = 0; p < this.Upload_file.length; p++) {
-                    this.Upload_file[p].isDeleted = 2;
-                  }
-                }
-
-                this.edit_file_list.forEach((item) => {
-                  item.status = null;
-                });
-                this.fileList_Delet.forEach((item) => {
-                  item.status = null;
-                });
-                var upList = this.edit_file_list
-                  .concat(this.Upload_file)
-                  .concat(this.fileList_Delet);
-                this.edittaskSelfForm.attachmentList = upList;
-                this.edittaskSelfForm.managementProjectUuid =
+              zdyCode: this.zdyCode,
+            }
+            editTaskSelfInfo(params1).then((resp) => {
+              if (resp.code == 0) {
+                this.$message.success("修改自建任务成功！");
+                this.editTaskSelfDialogVisible = false;
+                this.addDialogVisible = true;
+                this.getModelList.condition.managementProjectUuid =
                   this.managementProjectUuid;
-
-
-
-                // 提交步骤
-                let params1 = {
-                  auditTaskUuid: this.edittaskSelfForm.auditTaskUuid,
-                  managementProjectUuid: this.managementProjectUuid,//项目id
-                  taskDescription: this.edittaskSelfForm.taskDescription,//描述
-                  taskName: this.edittaskSelfForm.taskName,//名称
-                  taskType: 2,//任务类型
-                  enclosure: this.edittaskSelfForm.enclosure,//附件
-                  peopleName: this.edittaskSelfForm.peopleName,//责任人
-                  peopleTableUuid: this.edittaskSelfForm.peopleTableUuid,//责任人id
-                  belongSpcial: this.edittaskSelfForm.belongSpcial,//领域
-                  belongField: this.edittaskSelfForm.belongField,//专题
-                  attachmentList: this.edittaskSelfForm.attachmentList,//上传成功de 的文件
-
-                  // 专题
-                  entity: {
-                    belongSpcialSize: this.belongSpcialSize,//专题size
-                    dictname: this.edittaskSelfForm.belongSpcial,//专题name
-                  },
-                  zdyCode: this.zdyCode,
-                }
-                editTaskSelfInfo(params1).then((resp) => {
-                  if (resp.code == 0) {
-                    this.$message.success("修改自建任务成功！");
-                    this.editTaskSelfDialogVisible = false;
-                    this.addDialogVisible = true;
-                    this.getModelList.condition.managementProjectUuid =
-                      this.managementProjectUuid;
-                    this.getauditModelList(this.getModelList);
-                  }
-                });
-              } else {
-                loading.close();
-                this.$message({
-                  message: resp.msg,
-                  type: "error",
-                });
+                this.getauditModelList(this.getModelList);
               }
             });
           } else {
@@ -2431,16 +2561,30 @@ export default {
         }
       });
     },
-    handleRemove (file, fileList) {
-      if (file.response) {
-        this.fileList.remove(file.response.data);
-        this.key = Math.random();
+    handleRemove (file, fileList, tableList, showList, delList) {
+      if (file.raw) {
+        console.log(tableList)
+        var idx = tableList.findIndex(item => item.attachmentUuid === file.attachmentUuid);
+        tableList.splice(idx, 1);
+        // tableList.remove(file);
+        // this.key = Math.random();
       } else {
-        this.edit_file_list.remove(file);
+        showList.remove(file);
         file.isDeleted = 1;
-        this.fileList_Delet.push(file);
+        delList.push(file);
+        console.log(showList, delList)
       }
     },
+    // handleRemove (file, fileList) {
+    //   if (file.response) {
+    //     this.fileList1.remove(file.response.data);
+    //     this.key = Math.random();
+    //   } else {
+    //     this.edit_file_list.remove(file);
+    //     file.isDeleted = 1;
+    //     this.fileList_Delet.push(file);
+    //   }
+    // },
   },
 };
 </script>

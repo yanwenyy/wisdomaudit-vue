@@ -1583,7 +1583,7 @@ export default {
       return password;
     },
     // 文件分割的方法
-    createFileChunk (file, size = chunkSize, ext1) {
+    createFileChunk (file, size = chunkSize, ext1,ext2) {
       var _idStr = this.passwords(16);
       const fileChunkList = [];
       let count = 0;
@@ -1600,6 +1600,7 @@ export default {
           fileName: file.name,
           fileSize: file.size,
           ext1: ext1,//模块名称
+          ext2: ext2,//模块名称
           totalChunks: num,
           path: '',
           identifier: _idStr,
@@ -1616,6 +1617,7 @@ export default {
             fileName: file.name,
             fileSize: file.size,
             ext1: ext1,//模块名称
+            ext2: ext2,//模块名称
             totalChunks: total,
             path: '',
             identifier: _idStr,
