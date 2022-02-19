@@ -1598,8 +1598,8 @@ export default {
 
             // 提交步骤
             let params1 = {
-              auditTaskUuid: this.editTask.managementProjectUuid,
-              managementProjectUuid: this.managementProjectUuid,//项目id
+              auditTaskUuid: this.editTask.auditTaskUuid,
+              managementProjectUuid:  this.editTask.managementProjectUuid,//项目id
               taskDescription: this.editTask.taskDescription,//描述
               taskName: this.editTask.taskName,//名称
               taskType: 2,//任务类型
