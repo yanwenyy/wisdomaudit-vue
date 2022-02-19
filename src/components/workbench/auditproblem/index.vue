@@ -855,7 +855,7 @@ export default {
     this.headers = { TOKEN: sessionStorage.getItem("TOKEN") };
   },
   methods: {
-    
+
 // 分块上传开始
     // 上传文件之前
     beforeUpload(file, fileList,ext1) {
@@ -914,7 +914,11 @@ export default {
             });
             data.isDeleted = 2;
             tableList.push(data);
-            this.$refs[refName].uploadFiles.forEach(item=>{item.attachmentUuid=data.attachmentUuid});
+            this.$refs[refName].uploadFiles.forEach(item=>{
+              if( item.uid === uid){
+                item.attachmentUuid=data.attachmentUuid
+              }
+              });
           }
           if(data.fileName&&data.status===0){
             loading.close();
@@ -1098,7 +1102,7 @@ export default {
         this.$refs["dataForm"].clearValidate();
       })
       this.dialogDetailVisible = false;//编辑的弹窗
-      this.dialogFormVisible = false;//新增的弹窗        
+      this.dialogFormVisible = false;//新增的弹窗
       if (str == "temp") {
         this.temp.auditTaskUuid = [];
         this.temp.basis = [];
@@ -1350,7 +1354,7 @@ export default {
         this.auditTasklList = res.data.data;
       });
     },
-    // 获取专题数据 
+    // 获取专题数据
     getloadcascader (str) {
       axios({
         url: `/wisdomaudit/init/loadcascader`,
