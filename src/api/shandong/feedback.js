@@ -106,3 +106,15 @@ export function file_remove_list (data) {
     data: qs.stringify(data),
   })
 }
+
+
+
+export function updateDataListBusinessId (data) {
+  return request({
+    baseURL: baseURL,
+    url: '/auditPreviousDemandData/updateDataListBusinessId',
+    method: 'post',
+    isLoading: false,
+    data
+  })
+}
