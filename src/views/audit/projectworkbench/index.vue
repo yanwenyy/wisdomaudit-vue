@@ -1319,7 +1319,11 @@ export default {
             });
             data.isDeleted = 2;
             tableList.push(data);
-            this.$refs[refName].uploadFiles.forEach(item=>{item.attachmentUuid=data.attachmentUuid});
+            this.$refs[refName].uploadFiles.forEach(item=>{
+              if( item.uid === uid){
+                item.attachmentUuid=data.attachmentUuid
+              }
+            });
           }
           if(data.fileName&&data.status===0){
             loading.close();
