@@ -318,9 +318,8 @@
                          :headers="headers"
                          :show-file-list="false"
                          ref="upload"
-                         :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload',attachmentList2,'upload')}"
-                         :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'审计整改')}"
-                         :file-list="fileList"
+                         :http-request="( params)=>{myFileUpload( params,'/wisdomaudit/auditBasy/filesUpload')}"
+                         :before-upload="(file, fileList)=>{beforeUpload(file, fileList,'优秀案例及内参',referenceTableUuid,pdictid)}"
                          accept=".zip,.doc,.docx,.xls,.xlsx,.txt">
                 <el-button type="primary"
                            v-if="success_btn2 ==0"
@@ -526,9 +525,9 @@ export default {
 
     // 分块上传开始
     // 上传文件之前
-    beforeUpload (file, fileList, ext1) {
+    beforeUpload (file, fileList, ext1, referenceTableUuid,pdictid) {
       //  调用函数分割文件 我这里是分割成不超过20M的文件快
-      this.fileDataList = this.createFileChunk(file, 1024 * 1024 * 3, ext1);
+      this.fileDataList = this.createFileChunk(file, 1024 * 1024 * 3, ext1, referenceTableUuid,pdictid);
     },
     // 自定义文件上传的模式，方法
     myFileUpload (params, url, tableList, refName) {
@@ -539,6 +538,41 @@ export default {
 
         this.ywUpload(this.fileDataList, params, url, tableList, refName, params.file.uid);
       }
+      // let promiseAll = this.fileDataList.map(item => {
+      //   let formData =  new FormData();
+      //   formData.append('file', item.file);
+      //   formData.append('chunkNumber', item.chunkNumber);
+      //   formData.append('chunkSize', item.chunkSize);
+      //   formData.append('totalSize', item.totalSize);
+      //   formData.append('filename', item.filename);
+      //   formData.append('relativePath', item.relativePath);
+      //   formData.append('fileName', item.fileName);
+      //   formData.append('fileSize', item.fileSize);
+      //   formData.append('ext1', item.ext1);
+      //   formData.append('totalChunks', item.totalChunks);
+      //   formData.append('path', item.path);
+      //   formData.append('identifier', item.identifier);
+      //   return new Promise((resolve,reject) => {
+      //     axios({
+      //       method: 'post',
+      //       headers: {
+      //         'TOKEN': this.headers.TOKEN,
+      //       },
+      //       data: formData,
+      //       url:url,
+      //       // data: item.file,
+      //     })
+      //       .then(res=>{
+      //         resolve(res.data.data)
+      //       })
+      //       .catch(err=>{
+      //         reject(err)
+      //       })
+      //   })
+      // })
+      // Promise.all(promiseAll).then(resDataAll => {
+      //  console.log(resDataAll)
+      // })
     },
     ywUpload (list, params, url, tableList, refName, uid) {
       const loading = this.$loading({
@@ -560,6 +594,8 @@ export default {
       formData.append('fileName', _obj.fileName);
       formData.append('fileSize', _obj.fileSize);
       formData.append('ext1', _obj.ext1);
+      formData.append('dicId', _obj.dicId);
+      formData.append('referenceTableUuid', _obj.referenceTableUuid);
       formData.append('totalChunks', _obj.totalChunks);
       formData.append('path', _obj.path);
       formData.append('identifier', _obj.identifier);
@@ -580,9 +616,14 @@ export default {
               message: data.fileName + '上传成功',
               type: 'success'
             });
-            data.isDeleted = 2;
-            tableList.push(data);
-            this.$refs[refName].uploadFiles.forEach(item => { item.attachmentUuid = data.attachmentUuid });
+            if (tableList) {
+              data.isDeleted = 2;
+              tableList.push(data);
+              this.$refs[refName].uploadFiles.forEach(item => { item.attachmentUuid = data.attachmentUuid });
+            } else {
+              this.toManagementList_data()
+            }
+
           }
           if (data.fileName && data.status === 0) {
             loading.close();
@@ -590,8 +631,12 @@ export default {
               message: data.fileName + '上传失败,请重新上传',
               type: 'error'
             });
-            var idx = this.$refs[refName].uploadFiles.findIndex(item => item.uid === uid) //去除文件列表失败文件（uploadFiles为el-upload中的ref值）
-            this.$refs[refName].uploadFiles.splice(idx, 1) //去除文件列表失败文件
+            if (tableList) {
+              var idx = this.$refs[refName].uploadFiles.findIndex(item => item.uid === uid) //去除文件列表失败文件（uploadFiles为el-upload中的ref值）
+              this.$refs[refName].uploadFiles.splice(idx, 1) //去除文件列表失败文件
+            } else {
+              this.toManagementList_data()
+            }
           }
           if (right.length > 0) {
             this.ywUpload(list, params, url, tableList, refName, uid);
@@ -616,7 +661,7 @@ export default {
       return password;
     },
     // 文件分割的方法
-    createFileChunk (file, size = chunkSize, ext1) {
+    createFileChunk (file, size = chunkSize, ext1,referenceTableUuid,pdictid) {
       var _idStr = this.passwords(16);
       const fileChunkList = [];
       let count = 0;
@@ -633,6 +678,8 @@ export default {
           fileName: file.name,
           fileSize: file.size,
           ext1: ext1,//模块名称
+          referenceTableUuid: referenceTableUuid,//模块名称
+          dicId: pdictid,//模块名称
           totalChunks: num,
           path: '',
           identifier: _idStr,
@@ -649,6 +696,8 @@ export default {
             fileName: file.name,
             fileSize: file.size,
             ext1: ext1,//模块名称
+            referenceTableUuid: referenceTableUuid,//模块名称
+            dicId: pdictid,//模块名称
             totalChunks: total,
             path: '',
             identifier: _idStr,
@@ -670,7 +719,7 @@ export default {
         data.forEach((item) => {
           if (item.name == '知识库') {
             let control_children = item.children
-            // 
+            //
             control_children.forEach((item_son) => {
               if (item_son.name == '优秀案例及内参') {
                 let control_children_son = item_son.children
@@ -1022,18 +1071,18 @@ export default {
     },
     // 上传时
     up_ing (file) {
-      // 
+      //
     },
 
-    befooreupload (file) {
-      if (file.size == 0) {
-        this.$message({
-          message: '请不要上传空文件',
-          type: 'warning'
-        });
-        return false
-      }
-    },
+    // befooreupload (file) {
+    //   if (file.size == 0) {
+    //     this.$message({
+    //       message: '请不要上传空文件',
+    //       type: 'warning'
+    //     });
+    //     return false
+    //   }
+    // },
 
 
     // 上传
@@ -1113,7 +1162,7 @@ export default {
         const blob = new Blob([content],
           { type: 'application/octet-stream,charset=UTF-8' }
         )
-        // 刷新列 
+        // 刷新列
         this.pageList_data();//外层列表
         this.toManagementList_data();//右侧列表
 
@@ -1168,7 +1217,7 @@ export default {
                 // let lastPageSize = (this.tableData_list.total - 1) % this.tableData_list.size;
                 // this.list_query.pageNo = lastPageSize < 1 ? this.tableData_list.current - 1 : this.tableData_list.current;
                 // this.pageList_data(); // 刷新 列表
-                // 刷新列 
+                // 刷新列
                 this.pageList_data();//外层列表
                 this.toManagementList_data();//右侧列表
 
